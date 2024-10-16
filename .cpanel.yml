@@ -1,4 +1,5 @@
 deployment:
-  tasks:
-    - npm install
-    - npm run build
+  type: nodejs
+  version: '16.20.2'  # Especifica la versión de Node.js que estás utilizando
+  environment:
+    NODE_ENV: 'production'
