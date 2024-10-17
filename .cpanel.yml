@@ -3,7 +3,8 @@ deployment:
   version: '16.20.2'
   environment:
     NODE_ENV: 'production'
-  tasks:
-    - export NODE_ENV=production
-    - /usr/local/bin/npm install --production
-    - /usr/local/bin/npm start
+  commands:
+    install:
+      - npm install
+    start:
+      - npm start
