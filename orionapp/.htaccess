@@ -1,0 +1,12 @@
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION BEGIN
+PassengerAppRoot "/home/cambioso/public_html/orionapp"
+PassengerBaseURI "/orionapp"
+PassengerNodejs "/home/cambioso/nodevenv/public_html/orionapp/16/bin/node"
+PassengerAppType node
+PassengerStartupFile /home/cambioso/public_html/orionapp/app.js
+PassengerAppLogFile "/home/cambioso/logs/passenger.log"
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION END
+# DO NOT REMOVE OR MODIFY. CLOUDLINUX ENV VARS CONFIGURATION BEGIN
+<IfModule Litespeed>
+</IfModule>
+# DO NOT REMOVE OR MODIFY. CLOUDLINUX ENV VARS CONFIGURATION END

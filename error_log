@@ -1,0 +1,72 @@
+[17-Oct-2024 11:44:07 America/Santiago] PHP Warning:  Undefined variable $servername in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:44:07 America/Santiago] PHP Warning:  Undefined variable $username in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:44:07 America/Santiago] PHP Warning:  Undefined variable $password in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:44:07 America/Santiago] PHP Warning:  Undefined variable $dbname in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:44:07 America/Santiago] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user ''@'localhost' (using password: NO) in /home/cambioso/public_html/index.php:4
+Stack trace:
+#0 /home/cambioso/public_html/index.php(4): mysqli->__construct()
+#1 {main}
+  thrown in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:45:31 America/Santiago] PHP Warning:  Undefined variable $servername in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:45:31 America/Santiago] PHP Warning:  Undefined variable $username in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:45:31 America/Santiago] PHP Warning:  Undefined variable $password in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:45:31 America/Santiago] PHP Warning:  Undefined variable $dbname in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:45:31 America/Santiago] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user ''@'localhost' (using password: NO) in /home/cambioso/public_html/index.php:4
+Stack trace:
+#0 /home/cambioso/public_html/index.php(4): mysqli->__construct()
+#1 {main}
+  thrown in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:45:39 America/Santiago] PHP Warning:  Undefined variable $servername in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:45:39 America/Santiago] PHP Warning:  Undefined variable $username in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:45:39 America/Santiago] PHP Warning:  Undefined variable $password in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:45:39 America/Santiago] PHP Warning:  Undefined variable $dbname in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:45:39 America/Santiago] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user ''@'localhost' (using password: NO) in /home/cambioso/public_html/index.php:4
+Stack trace:
+#0 /home/cambioso/public_html/index.php(4): mysqli->__construct()
+#1 {main}
+  thrown in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:45:39 America/Santiago] PHP Warning:  Undefined variable $servername in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:45:39 America/Santiago] PHP Warning:  Undefined variable $username in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:45:39 America/Santiago] PHP Warning:  Undefined variable $password in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:45:39 America/Santiago] PHP Warning:  Undefined variable $dbname in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:45:39 America/Santiago] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user ''@'localhost' (using password: NO) in /home/cambioso/public_html/index.php:4
+Stack trace:
+#0 /home/cambioso/public_html/index.php(4): mysqli->__construct()
+#1 {main}
+  thrown in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:45:40 America/Santiago] PHP Warning:  Undefined variable $servername in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:45:40 America/Santiago] PHP Warning:  Undefined variable $username in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:45:40 America/Santiago] PHP Warning:  Undefined variable $password in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:45:40 America/Santiago] PHP Warning:  Undefined variable $dbname in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:45:40 America/Santiago] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user ''@'localhost' (using password: NO) in /home/cambioso/public_html/index.php:4
+Stack trace:
+#0 /home/cambioso/public_html/index.php(4): mysqli->__construct()
+#1 {main}
+  thrown in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:45:40 America/Santiago] PHP Warning:  Undefined variable $servername in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:45:40 America/Santiago] PHP Warning:  Undefined variable $username in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:45:40 America/Santiago] PHP Warning:  Undefined variable $password in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:45:40 America/Santiago] PHP Warning:  Undefined variable $dbname in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:45:40 America/Santiago] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user ''@'localhost' (using password: NO) in /home/cambioso/public_html/index.php:4
+Stack trace:
+#0 /home/cambioso/public_html/index.php(4): mysqli->__construct()
+#1 {main}
+  thrown in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:46:23 America/Santiago] PHP Warning:  Undefined variable $servername in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:46:23 America/Santiago] PHP Warning:  Undefined variable $username in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:46:23 America/Santiago] PHP Warning:  Undefined variable $password in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:46:23 America/Santiago] PHP Warning:  Undefined variable $dbname in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:46:23 America/Santiago] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user ''@'localhost' (using password: NO) in /home/cambioso/public_html/index.php:4
+Stack trace:
+#0 /home/cambioso/public_html/index.php(4): mysqli->__construct()
+#1 {main}
+  thrown in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:58:27 America/Santiago] PHP Warning:  Undefined variable $servername in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:58:27 America/Santiago] PHP Warning:  Undefined variable $username in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:58:27 America/Santiago] PHP Warning:  Undefined variable $password in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:58:27 America/Santiago] PHP Warning:  Undefined variable $dbname in /home/cambioso/public_html/index.php on line 4
+[17-Oct-2024 11:58:27 America/Santiago] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user ''@'localhost' (using password: NO) in /home/cambioso/public_html/index.php:4
+Stack trace:
+#0 /home/cambioso/public_html/index.php(4): mysqli->__construct()
+#1 {main}
+  thrown in /home/cambioso/public_html/index.php on line 4
