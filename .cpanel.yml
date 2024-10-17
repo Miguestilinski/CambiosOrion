@@ -1,0 +1,10 @@
+deployment:
+  type: nodejs
+  version: '16.20.2'
+  environment:
+    NODE_ENV: 'production'
+  commands:
+    install:
+      - npm install
+    start:
+      - node app.js
