@@ -1,8 +1,8 @@
 <?php
 $servername = "localhost"; // Cambia esto si tu servidor no es localhost
-$username = "tu_usuario"; // Reemplaza con tu nombre de usuario de la base de datos
-$password = "tu_contraseña"; // Reemplaza con tu contraseña de la base de datos
-$dbname = "tu_base_de_datos"; // Reemplaza con el nombre de tu base de datos
+$username = "cambioso_admin"; // Reemplaza con tu nombre de usuario de la base de datos
+$password = "sFI2J7P.%3bO"; // Reemplaza con tu contraseña de la base de datos
+$dbname = "cambioso_db"; // Reemplaza con el nombre de tu base de datos
 
 // Intenta establecer la conexión
 $conn = new mysqli($servername, $username, $password, $dbname);
