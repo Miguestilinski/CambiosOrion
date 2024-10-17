@@ -1,16 +1,18 @@
 <?php
+$servername = "localhost"; // Cambia esto si tu servidor no es localhost
+$username = "tu_usuario"; // Reemplaza con tu nombre de usuario de la base de datos
+$password = "tu_contraseña"; // Reemplaza con tu contraseña de la base de datos
+$dbname = "tu_base_de_datos"; // Reemplaza con el nombre de tu base de datos
 
-// Crear conexión
+// Intenta establecer la conexión
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Verificar la conexión
+// Verifica la conexión
 if ($conn->connect_error) {
     die("Conexión fallida: " . $conn->connect_error);
 }
-
-// Aquí puedes agregar más lógica para manejar tu aplicación
-
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
