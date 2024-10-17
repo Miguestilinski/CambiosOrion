@@ -1,5 +1,10 @@
 deployment:
   type: nodejs
-  version: '16.20.2'  # Especifica la versión de Node.js que estás utilizando
+  version: '16.20.2'
   environment:
     NODE_ENV: 'production'
+  commands:
+  install:
+    - npm install
+  start:
+    - npm start
