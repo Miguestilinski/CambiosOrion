@@ -13,10 +13,7 @@ PassengerAppLogFile "/home/cambioso/logs/passenger.log"
     php_value upload_max_filesize 10M
     php_value post_max_size 10M
 </IfModule>
-# DO NOT REMOVE OR MODIFY. CLOUDLINUX ENV VARS CONFIGURATION END
 
-# Reglas de reescritura (opcional, si necesitas redirigir)
-RewriteEngine On
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ /orionapp/app.js [QSA,L]
+# Configuración de variables de entorno
+SetEnv NODE_ENV production
+# DO NOT REMOVE OR MODIFY. CLOUDLINUX ENV VARS CONFIGURATION END
