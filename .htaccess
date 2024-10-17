@@ -6,6 +6,7 @@ PassengerAppType node
 PassengerStartupFile /home/cambioso/public_html/orionapp/app.js
 PassengerAppLogFile "/home/cambioso/logs/passenger.log"
 # DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION END
+
 # DO NOT REMOVE OR MODIFY. CLOUDLINUX ENV VARS CONFIGURATION BEGIN
 # Configuración de PHP
 <IfModule mod_php7.c>
