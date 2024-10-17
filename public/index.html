@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bienvenido a la Casa de Cambios</title>
+    <title>Casa de Cambios</title>
     <link rel="stylesheet" href="styles/index.css">
 </head>
 <body>
@@ -12,15 +12,37 @@
         <nav>
             <ul>
                 <li><a href="index.html">Inicio</a></li>
-                <li><a href="inicio.html">Servicios</a></li>
+                <li><a href="#">Servicios</a></li>
             </ul>
         </nav>
     </header>
 
     <main>
         <section>
-            <h2>Bienvenidos</h2>
-            <p>Embárcate en un viaje fascinante por nuestros servicios de cambio de divisas.</p>
+            <h2>Conversor de Divisas</h2>
+            <div class="currency-converter">
+                <div class="converter-section">
+                    <input type="number" id="amount1" placeholder="Cantidad" step="0.01" min="0">
+                    <select id="currency1">
+                        <option value="USD">USD - Dólar estadounidense</option>
+                        <option value="EUR">EUR - Euro</option>
+                        <option value="CLP">CLP - Peso chileno</option>
+                        <!-- Puedes agregar más opciones aquí -->
+                    </select>
+                </div>
+
+                <div class="converter-section">
+                    <input type="number" id="amount2" placeholder="Cantidad" step="0.01" min="0" disabled>
+                    <select id="currency2">
+                        <option value="CLP">CLP - Peso chileno</option>
+                        <option value="USD">USD - Dólar estadounidense</option>
+                        <option value="EUR">EUR - Euro</option>
+                        <!-- Puedes agregar más opciones aquí -->
+                    </select>
+                </div>
+
+                <button onclick="convert()">Convertir</button>
+            </div>
         </section>
     </main>
 
