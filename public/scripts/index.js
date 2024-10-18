@@ -8,18 +8,12 @@ window.onload = function() {
 
 function loadCurrencies() {
     fetch('/api/divisas') // Verifica que este endpoint esté funcionando
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Error en la red');
-            }
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
             const currency1Select = document.getElementById("currency1");
             const currency2Select = document.getElementById("currency2");
 
             data.forEach(divisa => {
-                // Asegúrate de que estos campos existan en tu respuesta
                 const option1 = document.createElement("option");
                 option1.value = divisa.nombre; 
                 option1.textContent = `${divisa.icono} ${divisa.nombre}`;
@@ -33,6 +27,7 @@ function loadCurrencies() {
         })
         .catch(error => console.error('Error al cargar las divisas:', error));
 }
+
 
 function loadExchangeRates() {
     fetch('/api/divisas') // Cambia esta ruta si es necesario

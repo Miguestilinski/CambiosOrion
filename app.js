@@ -36,17 +36,17 @@ app.get('/', (req, res) => {
 
 // Ruta para obtener todas las divisas
 app.get('/api/divisas', (req, res) => {
+  console.log('Solicitando divisas...');
   const query = 'SELECT nombre, icono, compra, venta, tasa FROM divisas'; // Ajusta esto según tu tabla
 
   db.query(query, (error, results) => {
-    if (error) {
-      console.error('Error al consultar la base de datos:', error);
-      return res.status(500).json({ error: 'Error al consultar la base de datos', details: error });
-    }
-    res.json(results); // Devuelve las divisas en formato JSON
+      if (error) {
+          console.error('Error al consultar la base de datos:', error);
+          return res.status(500).json({ error: 'Error al consultar la base de datos', details: error });
+      }
+      res.json(results); // Devuelve las divisas en formato JSON
   });
 });
-
 
 // Iniciar el servidor
 app.listen(port, () => {
