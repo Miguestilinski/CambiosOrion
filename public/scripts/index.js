@@ -7,8 +7,13 @@ window.onload = function() {
 
 // Cargar las divisas
 function loadCurrencies() {
-    fetch('obtener_divisas.php') // Cambia esto al archivo PHP que has mencionado
-        .then(response => response.json())
+    fetch('https://cambiosorion.cl/orionapp/obtener_divisas.php') // Asegúrate de que esta URL sea correcta
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error en la red: ' + response.status);
+            }
+            return response.json();
+        })
         .then(data => {
             const currency1Select = document.getElementById("currency1");
             const currency2Select = document.getElementById("currency2");
@@ -28,9 +33,9 @@ function loadCurrencies() {
 
                 // Cargar las tasas de cambio
                 exchangeRates[divisa.nombre] = {
-                    compra: divisa.compra,
-                    venta: divisa.venta,
-                    tasa: divisa.tasa
+                    compra: parseFloat(divisa.compra),
+                    venta: parseFloat(divisa.venta),
+                    tasa: parseFloat(divisa.tasa)
                 };
             });
         })
