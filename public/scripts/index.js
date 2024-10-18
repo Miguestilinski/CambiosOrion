@@ -3,11 +3,11 @@ let exchangeRates = {};
 // Llamar a la función para cargar las divisas al inicio
 window.onload = function() {
     loadCurrencies();
-    loadExchangeRates();
 };
 
+// Cargar todas las divisas y sus tasas
 function loadCurrencies() {
-    fetch('/api/divisas') // Cambiado a la ruta correcta de tu API
+    fetch('/api/divisas')
         .then(response => response.json())
         .then(data => {
             const currency1Select = document.getElementById("currency1");
@@ -15,7 +15,7 @@ function loadCurrencies() {
 
             data.forEach(divisa => {
                 const option1 = document.createElement("option");
-                option1.value = divisa.nombre; // Asumiendo que 'nombre' es el campo correcto
+                option1.value = divisa.nombre;
                 option1.textContent = `${divisa.icono} ${divisa.nombre}`;
                 currency1Select.appendChild(option1);
 
@@ -24,27 +24,26 @@ function loadCurrencies() {
                 option2.textContent = `${divisa.icono} ${divisa.nombre}`;
                 currency2Select.appendChild(option2);
             });
+
+            // Cargar las tasas de cambio después de que se carguen las divisas
+            loadExchangeRates(data);
         })
         .catch(error => console.error('Error al cargar las divisas:', error));
 }
 
-function loadExchangeRates() {
-    fetch('/api/divisas') // Cambiado a la ruta correcta de tu API
-        .then(response => response.json())
-        .then(data => {
-            exchangeRates = {};
-            data.forEach(divisa => {
-                // Guardar las tasas de conversión en el objeto exchangeRates
-                exchangeRates[divisa.nombre] = {
-                    compra: divisa.compra, // Asegúrate de que estos campos existan en tu respuesta
-                    venta: divisa.venta,
-                    tasa: divisa.tasa
-                };
-            });
-        })
-        .catch(error => console.error('Error al cargar las tasas de cambio:', error));
+// Cargar tasas de cambio en el objeto exchangeRates
+function loadExchangeRates(data) {
+    exchangeRates = {};
+    data.forEach(divisa => {
+        exchangeRates[divisa.nombre] = {
+            compra: divisa.compra,
+            venta: divisa.venta,
+            tasa: divisa.tasa
+        };
+    });
 }
 
+// Función para realizar la conversión
 function convert() {
     const amount1 = document.getElementById("amount1").value;
     const currency1 = document.getElementById("currency1").value;
