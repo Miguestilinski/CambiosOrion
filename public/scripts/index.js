@@ -15,28 +15,37 @@ function loadCurrencies() {
             return response.json();
         })
         .then(data => {
-            const currency1Select = document.getElementById("currency1");
-            const currency2Select = document.getElementById("currency2");
+            const dropdown1 = document.getElementById("dropdown1");
+            const dropdown2 = document.getElementById("dropdown2");
 
             data.forEach(divisa => {
-                // Agregar opción para currency1
-                const option1 = document.createElement("option");
-                option1.value = divisa.nombre; 
-                option1.textContent = `${divisa.icono} ${divisa.nombre}`;
-                currency1Select.appendChild(option1);
-
-                // Agregar opción para currency2
-                const option2 = document.createElement("option");
-                option2.value = divisa.nombre; 
-                option2.textContent = `${divisa.icono} ${divisa.nombre}`;
-                currency2Select.appendChild(option2);
-
-                // Cargar las tasas de cambio
-                exchangeRates[divisa.nombre] = {
-                    compra: parseFloat(divisa.compra),
-                    venta: parseFloat(divisa.venta),
-                    tasa: parseFloat(divisa.tasa)
+                // Crear opción para currency1
+                const option1 = document.createElement("div");
+                option1.innerHTML = `<img src="${divisa.icono}" alt="${divisa.nombre}"> ${divisa.nombre}`;
+                option1.onclick = function() {
+                    document.getElementById("currency1").textContent = divisa.nombre;
+                    dropdown1.style.display = 'none'; // Ocultar dropdown
+                    exchangeRates[divisa.nombre] = {
+                        compra: parseFloat(divisa.compra),
+                        venta: parseFloat(divisa.venta),
+                        tasa: parseFloat(divisa.tasa)
+                    };
                 };
+                dropdown1.appendChild(option1);
+
+                // Crear opción para currency2
+                const option2 = document.createElement("div");
+                option2.innerHTML = `<img src="${divisa.icono}" alt="${divisa.nombre}"> ${divisa.nombre}`;
+                option2.onclick = function() {
+                    document.getElementById("currency2").textContent = divisa.nombre;
+                    dropdown2.style.display = 'none'; // Ocultar dropdown
+                    exchangeRates[divisa.nombre] = {
+                        compra: parseFloat(divisa.compra),
+                        venta: parseFloat(divisa.venta),
+                        tasa: parseFloat(divisa.tasa)
+                    };
+                };
+                dropdown2.appendChild(option2);
             });
         })
         .catch(error => console.error('Error al cargar las divisas:', error));
@@ -45,8 +54,8 @@ function loadCurrencies() {
 // Función para convertir divisas
 function convert() {
     const amount1 = parseFloat(document.getElementById("amount1").value);
-    const currency1 = document.getElementById("currency1").value;
-    const currency2 = document.getElementById("currency2").value;
+    const currency1 = document.getElementById("currency1").textContent;
+    const currency2 = document.getElementById("currency2").textContent;
 
     if (amount1 && exchangeRates[currency1]) {
         const rate = exchangeRates[currency1].venta; // Usar la tasa de venta
@@ -54,5 +63,21 @@ function convert() {
         document.getElementById("amount2").value = result.toFixed(2);
     } else {
         document.getElementById("amount2").value = "0.00";
+    }
+}
+
+// Función para alternar el dropdown
+function toggleDropdown(dropdownId) {
+    const dropdown = document.getElementById(dropdownId);
+    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+}
+
+// Cerrar dropdown al hacer clic fuera
+window.onclick = function(event) {
+    if (!event.target.matches('.select-box')) {
+        const dropdowns = document.getElementsByClassName("dropdown-content");
+        for (let i = 0; i < dropdowns.length; i++) {
+            dropdowns[i].style.display = "none";
+        }
     }
 }
