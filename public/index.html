@@ -41,31 +41,5 @@
     </footer>
 
     <script src="scripts/index.js"></script>
-    <script>
-        // Llamada para cargar las divisas al iniciar la página
-        window.onload = loadCurrencies;
-
-        function loadCurrencies() {
-            fetch('obtener_divisas.php')
-                .then(response => response.json())
-                .then(data => {
-                    const currency1Select = document.getElementById("currency1");
-                    const currency2Select = document.getElementById("currency2");
-
-                    data.forEach(divisa => {
-                        const option1 = document.createElement("option");
-                        option1.value = divisa.nombre;
-                        option1.textContent = `${divisa.icono} ${divisa.nombre}`;
-                        currency1Select.appendChild(option1);
-
-                        const option2 = document.createElement("option");
-                        option2.value = divisa.nombre;
-                        option2.textContent = `${divisa.icono} ${divisa.nombre}`;
-                        currency2Select.appendChild(option2);
-                    });
-                })
-                .catch(error => console.error('Error al cargar las divisas:', error));
-        }
-    </script>
 </body>
 </html>
