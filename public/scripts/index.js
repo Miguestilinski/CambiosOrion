@@ -7,7 +7,7 @@ window.onload = function() {
 
 // Cargar las divisas
 function loadCurrencies() {
-    fetch('https://cambiosorion.cl/orionapp/obtener_divisas.php') // Asegúrate de que esta URL sea correcta
+    fetch('https://cambiosorion.cl/data/obtener_divisas.php') // Asegúrate de que esta URL sea correcta
         .then(response => {
             if (!response.ok) {
                 throw new Error('Error en la red: ' + response.status);
@@ -21,7 +21,7 @@ function loadCurrencies() {
             data.forEach(divisa => {
                 // Crear opción para currency1
                 const option1 = document.createElement("div");
-                option1.innerHTML = `<img src="${divisa.icono}" alt="${divisa.nombre}"> ${divisa.nombre}`;
+                option1.innerHTML = `<img src="${divisa.icono}" alt="${divisa.nombre}" style="width: 20px; height: 20px;"> ${divisa.nombre}`;
                 option1.onclick = function() {
                     document.getElementById("currency1").textContent = divisa.nombre;
                     dropdown1.style.display = 'none'; // Ocultar dropdown
@@ -35,7 +35,7 @@ function loadCurrencies() {
 
                 // Crear opción para currency2
                 const option2 = document.createElement("div");
-                option2.innerHTML = `<img src="${divisa.icono}" alt="${divisa.nombre}"> ${divisa.nombre}`;
+                option2.innerHTML = `<img src="${divisa.icono}" alt="${divisa.nombre}" style="width: 20px; height: 20px;"> ${divisa.nombre}`;
                 option2.onclick = function() {
                     document.getElementById("currency2").textContent = divisa.nombre;
                     dropdown2.style.display = 'none'; // Ocultar dropdown

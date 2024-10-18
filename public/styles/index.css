@@ -1,3 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Estilos personalizados */
+
 body {
     font-family: Arial, sans-serif;
     background-color: #f0f0f0;
@@ -52,13 +58,6 @@ input[type="number"] {
     border-radius: 8px;
     text-align: right;
     margin-bottom: 10px;
-}
-
-select {
-    font-size: 1rem;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
 }
 
 button {
