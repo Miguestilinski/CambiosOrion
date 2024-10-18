@@ -15,12 +15,12 @@ const db = mysql.createConnection({
   database: process.env.DB_NAME
 });
 
-
 // Conectar a la base de datos y manejar errores
 db.connect((error) => {
   if (error) {
     console.error('Error al conectar a la base de datos:', error.stack);
-    return;
+    // Para evitar que el proceso se cierre, puedes lanzar un error o mantenerlo en espera
+    return process.exit(1); // Salir del proceso
   }
   console.log('Conectado a la base de datos.');
 });
