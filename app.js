@@ -6,8 +6,10 @@ const mysql = require('mysql');
 const app = express();
 const port = process.env.PORT || 3000; // Usar el puerto de la variable de entorno o 3000
 
+// Cargar las variables de entorno
 require('dotenv').config();
 
+// Crear conexión a la base de datos
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -19,8 +21,7 @@ const db = mysql.createConnection({
 db.connect((error) => {
   if (error) {
     console.error('Error al conectar a la base de datos:', error.stack);
-    // Para evitar que el proceso se cierre, puedes lanzar un error o mantenerlo en espera
-    return process.exit(1); // Salir del proceso
+    return process.exit(1); // Salir del proceso en caso de error
   }
   console.log('Conectado a la base de datos.');
 });
@@ -36,6 +37,10 @@ app.get('/', (req, res) => {
 // Ruta para obtener las tasas de cambio
 app.get('/api/divisas', (req, res) => {
   const { from, to } = req.query;
+
+  if (!from || !to) {
+    return res.status(400).send('Se requieren los parámetros from y to.');
+  }
 
   const query = `SELECT rate FROM divisas WHERE currency_from = ? AND currency_to = ? ORDER BY updated_at DESC LIMIT 1`;
   db.query(query, [from, to], (error, results) => {
