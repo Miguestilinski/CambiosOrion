@@ -41,11 +41,12 @@ app.get('/api/divisas', (req, res) => {
   db.query(query, (error, results) => {
     if (error) {
       console.error('Error al consultar la base de datos:', error);
-      return res.status(500).send('Error al consultar la base de datos');
+      return res.status(500).json({ error: 'Error al consultar la base de datos', details: error });
     }
     res.json(results); // Devuelve las divisas en formato JSON
   });
 });
+
 
 // Iniciar el servidor
 app.listen(port, () => {
