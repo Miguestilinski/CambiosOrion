@@ -2,16 +2,27 @@
 
 const express = require('express');
 const path = require('path');
-const app = express();
-const port = 3000;
 const mysql = require('mysql');
+const app = express();
+const port = process.env.PORT || 3000; // Usar el puerto de la variable de entorno o 3000
 
-// Conexión a la base de datos
+require('dotenv').config();
+
 const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'cambioso_admin',
-  password: 'sFI2J7P.%3bO',
-  database: 'cambioso_db'
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME
+});
+
+
+// Conectar a la base de datos y manejar errores
+db.connect((error) => {
+  if (error) {
+    console.error('Error al conectar a la base de datos:', error.stack);
+    return;
+  }
+  console.log('Conectado a la base de datos.');
 });
 
 // Servir archivos estáticos desde el directorio "public"
@@ -28,14 +39,15 @@ app.get('/api/divisas', (req, res) => {
 
   const query = `SELECT rate FROM divisas WHERE currency_from = ? AND currency_to = ? ORDER BY updated_at DESC LIMIT 1`;
   db.query(query, [from, to], (error, results) => {
-      if (error) {
-          return res.status(500).send('Error al consultar la base de datos');
-      }
-      if (results.length > 0) {
-          res.json({ rate: results[0].rate });
-      } else {
-          res.status(404).send('Tasa de cambio no encontrada');
-      }
+    if (error) {
+      console.error('Error al consultar la base de datos:', error);
+      return res.status(500).send('Error al consultar la base de datos');
+    }
+    if (results.length > 0) {
+      res.json({ rate: results[0].rate });
+    } else {
+      res.status(404).send('Tasa de cambio no encontrada');
+    }
   });
 });
 
