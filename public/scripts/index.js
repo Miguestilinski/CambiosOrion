@@ -24,7 +24,7 @@ function loadCurrencies() {
             data.forEach(divisa => {
                 // Crear opción para currency1
                 const option1 = document.createElement("div");
-                option1.innerHTML = `<img src="/icons/${divisa.icono}" alt="${divisa.nombre}" class="w-5 h-5 mr-2"> ${divisa.nombre}`;
+                option1.innerHTML = `<img src="/orionapp/icons/${divisa.icono}" alt="${divisa.nombre}" class="w-5 h-5 mr-2"> ${divisa.nombre}`;
                 option1.className = "p-2 hover:bg-gray-100 cursor-pointer";
                 option1.onclick = function () {
                     document.getElementById("currency1").textContent = divisa.nombre;
@@ -40,7 +40,7 @@ function loadCurrencies() {
 
                 // Crear opción para currency2
                 const option2 = document.createElement("div");
-                option2.innerHTML = `<img src="/icons/${divisa.icono}" alt="${divisa.nombre}" class="w-5 h-5 mr-2"> ${divisa.nombre}`;
+                option2.innerHTML = `<img src="/orionapp/icons/${divisa.icono}" alt="${divisa.nombre}" class="w-5 h-5 mr-2"> ${divisa.nombre}`;
                 option2.className = "p-2 hover:bg-gray-100 cursor-pointer";
                 option2.onclick = function () {
                     document.getElementById("currency2").textContent = divisa.nombre;
