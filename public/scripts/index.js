@@ -1,9 +1,10 @@
 let exchangeRates = {};
 
 // Llamar a la función para cargar las divisas al inicio
-window.onload = function () {
-    loadCurrencies();
-};
+document.addEventListener("DOMContentLoaded", function() {
+    loadCurrencies(); // Llama a tu función una vez que el DOM esté listo
+});
+
 
 // Cargar las divisas
 function loadCurrencies() {
