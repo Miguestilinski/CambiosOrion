@@ -58,9 +58,13 @@ function loadCurrencies() {
             document.getElementById("currency1").textContent = "CLP"; // Opción predeterminada
             document.getElementById("currency2").textContent = "USD"; // Opción predeterminada
 
-            // Actualizar tasas de conversión inicial
-            exchangeRates["CLP"] = { compra: 1, venta: 1, tasa: 1 }; // Ejemplo de tasas, actualiza según tus datos
-            exchangeRates["USD"] = { compra: 1, venta: 1, tasa: 1 }; // Ejemplo de tasas, actualiza según tus datos
+            // Asegúrate de que las tasas de cambio estén disponibles para las divisas predeterminadas
+            // Aquí deberías obtener las tasas de cambio para CLP y USD de tu data
+            exchangeRates["CLP"] = {}; // Asegúrate de llenar estos valores correctamente
+            exchangeRates["USD"] = {}; // Asegúrate de llenar estos valores correctamente
+
+            // Actualizar las tasas iniciales según las divisas predeterminadas
+            convertFromAmount1(); // Para establecer el resultado inicial en amount2
         })
         .catch(error => console.error('Error al cargar las divisas:', error));
 }

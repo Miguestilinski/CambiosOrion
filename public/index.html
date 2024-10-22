@@ -18,7 +18,7 @@
         <section class="max-w-xl mx-auto my-10 bg-white p-8 rounded-lg shadow-lg">
             <h2 class="text-center text-2xl font-semibold text-gray-800 mb-6">Cotizar cambio</h2>
 
-            <div class="currency-converter flex justify-between space-x-8"> <!-- Espaciado horizontal -->
+            <div class="currency-converter flex justify-between space-x-10"> <!-- Espaciado horizontal aumentado -->
                 <!-- Columna izquierda -->
                 <div class="converter-box w-1/2 pr-4">
                     <label for="amount1" class="block text-lg font-bold mb-2">¿Qué divisa tienes?</label>
@@ -30,9 +30,7 @@
                             onclick="toggleDropdown('dropdown1')">CLP</div> <!-- Opción por defecto -->
                         <div id="dropdown1" class="dropdown-content hidden absolute left-0 right-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-md z-10">
                             <!-- Opciones de moneda -->
-                            <div onclick="selectCurrency('currency1', 'CLP')">CLP</div>
-                            <div onclick="selectCurrency('currency1', 'USD')">USD</div>
-                            <!-- Añade más divisas según sea necesario -->
+                            <!-- Eliminadas CLP y USD para usar desde la base de datos -->
                         </div>
                     </div>
                 </div>
@@ -48,9 +46,7 @@
                             onclick="toggleDropdown('dropdown2')">USD</div> <!-- Opción por defecto -->
                         <div id="dropdown2" class="dropdown-content hidden absolute left-0 right-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-md z-10">
                             <!-- Opciones de moneda -->
-                            <div onclick="selectCurrency('currency2', 'USD')">USD</div>
-                            <div onclick="selectCurrency('currency2', 'CLP')">CLP</div>
-                            <!-- Añade más divisas según sea necesario -->
+                            <!-- Eliminadas CLP y USD para usar desde la base de datos -->
                         </div>
                     </div>
                 </div>

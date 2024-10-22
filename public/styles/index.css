@@ -3,7 +3,6 @@
 @tailwind utilities;
 
 /* Estilos personalizados */
-
 body {
     @apply font-sans bg-gray-100 m-0 p-0;
 }
@@ -21,7 +20,7 @@ h2 {
 }
 
 .currency-converter {
-    @apply flex justify-between items-start gap-5;
+    @apply flex justify-between items-start gap-10; /* Aumentado el gap de 5 a 10 */
 }
 
 .converter-box {
