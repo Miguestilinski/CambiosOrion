@@ -53,7 +53,7 @@ function loadCurrencies() {
                         tasa: parseFloat(divisa.tasa)
                     };
                     // Realizar la conversión automática cuando se selecciona una divisa
-                    convertFromAmount2(); // Asegúrate de llamar a convertFromAmount2 para reflejar el cambio
+                    convertFromAmount2();
                 };
                 dropdown2.appendChild(option2);
             });
