@@ -5,7 +5,6 @@ document.addEventListener("DOMContentLoaded", function() {
     loadCurrencies(); // Llama a tu función una vez que el DOM esté listo
 });
 
-
 // Cargar las divisas
 function loadCurrencies() {
     fetch('https://cambiosorion.cl/data/obtener_divisas.php')
@@ -51,40 +50,39 @@ function loadCurrencies() {
             });
 
             // Establecer divisas por defecto
-            document.getElementById("currency1").textContent = "CLP"; 
-            document.getElementById("currency2").textContent = "USD"; 
+            document.getElementById("currency1-text").textContent = "CLP"; 
+            document.getElementById("currency2-text").textContent = "USD"; 
 
             // Inicializar el ícono al cargar
-            updateCurrencyIcon(); // Asegúrate de que esto se llame después de que todos los elementos estén en el DOM
+            updateCurrencyIcon(); 
         })
         .catch(error => console.error('Error al cargar las divisas:', error));
 }
 
-
 // Función para establecer currency1
 function setCurrency1(currency) {
-    document.getElementById("currency1").textContent = currency;
+    document.getElementById("currency1-text").textContent = currency;
 
     // Si el usuario selecciona una divisa diferente a CLP, currency2 se convierte en CLP automáticamente
     if (currency !== "CLP") {
-        document.getElementById("currency2").textContent = "CLP";
+        document.getElementById("currency2-text").textContent = "CLP";
     }
 
-    exchangeRates[currency] = exchangeRates[currency] || { compra: 0, venta: 0 }; // Si aún no se ha asignado la tasa de esa divisa
+    exchangeRates[currency] = exchangeRates[currency] || { compra: 0, venta: 0 };
     convertFromAmount1();
     updateCurrencyIcon(); // Actualizar el ícono al seleccionar
 }
 
 // Función para establecer currency2
 function setCurrency2(currency) {
-    document.getElementById("currency2").textContent = currency;
+    document.getElementById("currency2-text").textContent = currency;
 
     // Si el usuario selecciona una divisa diferente a CLP, currency1 se convierte en CLP automáticamente
     if (currency !== "CLP") {
-        document.getElementById("currency1").textContent = "CLP";
+        document.getElementById("currency1-text").textContent = "CLP";
     }
 
-    exchangeRates[currency] = exchangeRates[currency] || { compra: 0, venta: 0 }; // Si aún no se ha asignado la tasa de esa divisa
+    exchangeRates[currency] = exchangeRates[currency] || { compra: 0, venta: 0 };
     convertFromAmount2();
     updateCurrencyIcon(); // Actualizar el ícono al seleccionar
 }
@@ -144,17 +142,18 @@ function convertFromAmount2() {
     }
 }
 
+// Función para alternar la visibilidad de los dropdowns
+function toggleDropdown(dropdownId) {
+    const dropdown = document.getElementById(dropdownId);
+    dropdown.classList.toggle('hidden');
+}
+
 function updateCurrencyIcon() {
     const currency1 = document.getElementById("currency1").textContent;
     const currency2 = document.getElementById("currency2").textContent;
 
-    console.log("Actualizando íconos para:", currency1, currency2);
-
     const iconCurrency1 = document.getElementById("icon-currency1");
     const iconCurrency2 = document.getElementById("icon-currency2");
-
-    console.log("Icono 1:", iconCurrency1); // Verificar si el elemento existe
-    console.log("Icono 2:", iconCurrency2); // Verificar si el elemento existe
 
     if (iconCurrency1 && iconCurrency2) {
         iconCurrency1.src = exchangeRates[currency1].icono;
@@ -164,11 +163,6 @@ function updateCurrencyIcon() {
     }
 }
 
-// Función para alternar el dropdown
-function toggleDropdown(dropdownId) {
-    const dropdown = document.getElementById(dropdownId);
-    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-}
 
 // Cerrar dropdowns al hacer clic fuera
 window.onclick = function (event) {
