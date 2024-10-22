@@ -1,7 +1,7 @@
 let exchangeRates = {};
 
 // Llamar a la función para cargar las divisas al inicio
-window.onload = function() {
+window.onload = function () {
     loadCurrencies();
 };
 
@@ -23,7 +23,7 @@ function loadCurrencies() {
                 const option1 = document.createElement("div");
                 option1.innerHTML = `<img src="${divisa.icono}" alt="${divisa.nombre}" class="w-5 h-5 mr-2"> ${divisa.nombre}`;
                 option1.className = "p-2 hover:bg-gray-100 cursor-pointer";
-                option1.onclick = function() {
+                option1.onclick = function () {
                     document.getElementById("currency1").textContent = divisa.nombre;
                     dropdown1.style.display = 'none'; // Ocultar dropdown
                     exchangeRates[divisa.nombre] = {
@@ -40,7 +40,7 @@ function loadCurrencies() {
                 const option2 = document.createElement("div");
                 option2.innerHTML = `<img src="${divisa.icono}" alt="${divisa.nombre}" class="w-5 h-5 mr-2"> ${divisa.nombre}`;
                 option2.className = "p-2 hover:bg-gray-100 cursor-pointer";
-                option2.onclick = function() {
+                option2.onclick = function () {
                     document.getElementById("currency2").textContent = divisa.nombre;
                     dropdown2.style.display = 'none'; // Ocultar dropdown
                     exchangeRates[divisa.nombre] = {
@@ -49,10 +49,18 @@ function loadCurrencies() {
                         tasa: parseFloat(divisa.tasa)
                     };
                     // Realizar la conversión automática cuando se selecciona una divisa
-                    convertFromAmount1();
+                    convertFromAmount2(); // Asegúrate de llamar a convertFromAmount2 para reflejar el cambio
                 };
                 dropdown2.appendChild(option2);
             });
+
+            // Establecer opciones por defecto
+            document.getElementById("currency1").textContent = "CLP"; // Opción predeterminada
+            document.getElementById("currency2").textContent = "USD"; // Opción predeterminada
+
+            // Actualizar tasas de conversión inicial
+            exchangeRates["CLP"] = { compra: 1, venta: 1, tasa: 1 }; // Ejemplo de tasas, actualiza según tus datos
+            exchangeRates["USD"] = { compra: 1, venta: 1, tasa: 1 }; // Ejemplo de tasas, actualiza según tus datos
         })
         .catch(error => console.error('Error al cargar las divisas:', error));
 }
@@ -72,6 +80,21 @@ function convertFromAmount1() {
     }
 }
 
+// Función para convertir desde la segunda cantidad
+function convertFromAmount2() {
+    const amount2 = parseFloat(document.getElementById("amount2").value);
+    const currency1 = document.getElementById("currency1").textContent;
+    const currency2 = document.getElementById("currency2").textContent;
+
+    if (amount2 && exchangeRates[currency1] && exchangeRates[currency2]) {
+        const rate = exchangeRates[currency2].compra;
+        const result = (amount2 / rate) * exchangeRates[currency1].venta;
+        document.getElementById("amount1").value = result.toFixed(2);
+    } else {
+        document.getElementById("amount1").value = "0.00";
+    }
+}
+
 // Función para alternar el dropdown
 function toggleDropdown(dropdownId) {
     const dropdown = document.getElementById(dropdownId);
@@ -79,7 +102,7 @@ function toggleDropdown(dropdownId) {
 }
 
 // Cerrar dropdowns al hacer clic fuera
-window.onclick = function(event) {
+window.onclick = function (event) {
     if (!event.target.matches('.select-box')) {
         const dropdowns = document.getElementsByClassName("dropdown-content");
         for (let i = 0; i < dropdowns.length; i++) {
