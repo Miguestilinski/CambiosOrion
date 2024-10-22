@@ -126,10 +126,24 @@ button:hover {
 /* Caja de selección */
 .select-box {
     padding: 10px;
-    border: 1px solid #ccc;
     background-color: #fff;
     cursor: pointer;
     border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.select-box img {
+    vertical-align: middle;
+}
+
+.select-box span {
+    flex-grow: 1;
+}
+
+.select-box img:last-child {
+    margin-left: auto;
 }
 
 /* Contenido desplegable */
@@ -138,7 +152,6 @@ button:hover {
     position: absolute;
     background-color: #fff;
     min-width: 100%;
-    border: 1px solid #ccc;
     z-index: 1;
     max-height: 150px; /* Tamaño fijo para evitar que sea demasiado grande */
     overflow-y: scroll; /* Permite el scroll */
