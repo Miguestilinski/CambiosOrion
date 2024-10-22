@@ -2,7 +2,7 @@ let exchangeRates = {};
 
 // Llamar a la función para cargar las divisas al inicio
 window.onload = function () {
-    loadCurrencies();
+    loadCurrencies(); // Asegúrate de que esta llamada sea a loadCurrencies
 };
 
 // Cargar las divisas
