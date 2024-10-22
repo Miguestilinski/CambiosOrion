@@ -67,7 +67,15 @@ button {
 }
 
 .select-box {
-    @apply p-3 border border-gray-300 bg-white rounded-lg cursor-pointer;
+    @apply p-3 border border-gray-300 bg-white rounded-lg cursor-pointer flex justify-between items-center; /* Modificado para alinear íconos y texto */
+}
+
+.select-box img {
+    @apply w-6 h-6 ml-2; /* Margen izquierdo para la imagen */
+}
+
+.select-box span {
+    @apply flex-grow text-right; /* Alinear texto a la derecha */
 }
 
 .dropdown-content {
@@ -140,6 +148,7 @@ button:hover {
 
 .select-box span {
     flex-grow: 1;
+    text-align: right; /* Alinear el texto a la derecha */
 }
 
 .select-box img:last-child {

@@ -111,7 +111,6 @@ function convertFromAmount1() {
     }
 }
 
-
 // Función para convertir desde la segunda cantidad (desde currency2 a currency1)
 function convertFromAmount2() {
     const amount2 = parseFloat(document.getElementById("amount2").value);
@@ -122,11 +121,11 @@ function convertFromAmount2() {
         let result;
 
         if (currency2 === "CLP") {
-            // Convertir desde CLP a otra divisa usando tasa de venta (vendes CLP, compras la divisa)
-            result = (amount2 / exchangeRates[currency1].venta).toFixed(2);
-        } else if (currency1 === "CLP") {
             // Convertir desde otra divisa a CLP usando tasa de compra (vendes la divisa, compras CLP)
-            result = (amount2 * exchangeRates[currency2].compra).toFixed(2);
+            result = (amount2 * exchangeRates[currency1].compra).toFixed(2);
+        } else if (currency1 === "CLP") {
+            // Convertir desde CLP a otra divisa usando tasa de venta (vendes CLP, compras la divisa)
+            result = (amount2 / exchangeRates[currency2].venta).toFixed(2);
         } else {
             // Convertir entre dos divisas extranjeras (con CLP como intermediario)
             const clpAmount = amount2 * exchangeRates[currency2].compra;  // Convierte de divisa2 a CLP usando compra
@@ -139,19 +138,8 @@ function convertFromAmount2() {
     }
 }
 
-
-// Función para alternar el dropdown
+// Función para mostrar/ocultar el dropdown
 function toggleDropdown(dropdownId) {
     const dropdown = document.getElementById(dropdownId);
     dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
 }
-
-// Cerrar dropdowns al hacer clic fuera
-window.onclick = function (event) {
-    if (!event.target.matches('.select-box')) {
-        const dropdowns = document.getElementsByClassName("dropdown-content");
-        for (let i = 0; i < dropdowns.length; i++) {
-            dropdowns[i].style.display = "none";
-        }
-    }
-};
