@@ -125,7 +125,7 @@ function convertFromAmount2() {
             result = (amount2 * exchangeRates[currency1].venta).toFixed(2);
         } else if (currency2 !== "CLP" && currency1 === "CLP") {
             // Convertir de CLP a currency2
-            result = (amount2 / exchangeRates[currency2].venta).toFixed(2);
+            result = (amount2 / exchangeRates[currency2].compra).toFixed(2); // Cambia a 'compra' aquí
         } else {
             // Si ambas divisas son iguales, no se requiere conversión
             result = amount2.toFixed(2);
