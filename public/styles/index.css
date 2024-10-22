@@ -31,11 +31,25 @@ label {
     @apply text-lg mb-2 font-semibold;
 }
 
+/* Estilo para el input de números */
 input[type="number"] {
     @apply text-2xl p-3 border border-gray-300 rounded-lg text-right mb-4;
     /* Estilo para eliminar flechas */
-    -webkit-appearance: none; /* Chrome, Safari */
-    -moz-appearance: textfield; /* Firefox */
+    -webkit-appearance: none; /* Oculta flechas en Chrome/Safari */
+    -moz-appearance: textfield; /* Oculta flechas en Firefox */
+    appearance: none; /* Elimina el estilo predeterminado en otros navegadores */
+}
+
+/* Para ocultar los botones de incremento y decremento en los navegadores */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none; /* Oculta en Chrome/Safari */
+    margin: 0; /* Elimina márgenes */
+}
+
+input[type="number"]::-moz-inner-spin-button,
+input[type="number"]::-moz-outer-spin-button {
+    display: none; /* Oculta en Firefox */
 }
 
 /* Estilo del botón */
@@ -43,6 +57,7 @@ button {
     @apply w-full bg-green-600 text-white py-3 text-lg rounded-lg mt-4 hover:bg-green-700;
 }
 
+/* Disclaimer */
 .disclaimer {
     @apply text-sm text-gray-500 text-center mt-4;
 }
@@ -75,19 +90,6 @@ button {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Estilo para el input de números */
-input[type="number"] {
-    font-size: 2rem;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    text-align: right;
-    margin-bottom: 10px;
-    /* Estilo para eliminar flechas */
-    -webkit-appearance: none; /* Oculta flechas en Chrome/Safari */
-    -moz-appearance: textfield; /* Oculta flechas en Firefox */
 }
 
 /* Estilo del botón */
