@@ -30,6 +30,8 @@ function loadCurrencies() {
                         venta: parseFloat(divisa.venta),
                         tasa: parseFloat(divisa.tasa)
                     };
+                    // Realizar la conversión automática cuando se selecciona una divisa
+                    convertFromAmount1();
                 };
                 dropdown1.appendChild(option1);
 
@@ -44,6 +46,8 @@ function loadCurrencies() {
                         venta: parseFloat(divisa.venta),
                         tasa: parseFloat(divisa.tasa)
                     };
+                    // Realizar la conversión automática cuando se selecciona una divisa
+                    convertFromAmount1();
                 };
                 dropdown2.appendChild(option2);
             });
@@ -51,18 +55,33 @@ function loadCurrencies() {
         .catch(error => console.error('Error al cargar las divisas:', error));
 }
 
-// Función para convertir divisas
-function convert() {
+// Conversión automática desde la primera caja de entrada
+function convertFromAmount1() {
     const amount1 = parseFloat(document.getElementById("amount1").value);
     const currency1 = document.getElementById("currency1").textContent;
     const currency2 = document.getElementById("currency2").textContent;
 
-    if (amount1 && exchangeRates[currency1]) {
-        const rate = exchangeRates[currency1].venta; // Usar la tasa de venta
-        const result = (amount1 / rate) * exchangeRates[currency2].compra; // Convertir al valor de currency2
+    if (amount1 && exchangeRates[currency1] && exchangeRates[currency2]) {
+        const rate = exchangeRates[currency1].venta; // Usar la tasa de venta de currency1
+        const result = (amount1 / rate) * exchangeRates[currency2].compra; // Convertir al valor de currency2 usando tasa de compra
         document.getElementById("amount2").value = result.toFixed(2);
     } else {
         document.getElementById("amount2").value = "0.00";
+    }
+}
+
+// Conversión automática desde la segunda caja de entrada
+function convertFromAmount2() {
+    const amount2 = parseFloat(document.getElementById("amount2").value);
+    const currency1 = document.getElementById("currency1").textContent;
+    const currency2 = document.getElementById("currency2").textContent;
+
+    if (amount2 && exchangeRates[currency1] && exchangeRates[currency2]) {
+        const rate = exchangeRates[currency2].compra; // Usar la tasa de compra de currency2
+        const result = (amount2 * rate) / exchangeRates[currency1].venta; // Convertir al valor de currency1 usando tasa de venta
+        document.getElementById("amount1").value = result.toFixed(2);
+    } else {
+        document.getElementById("amount1").value = "0.00";
     }
 }
 
@@ -80,4 +99,4 @@ window.onclick = function(event) {
             dropdowns[i].style.display = "none";
         }
     }
-}
+};
