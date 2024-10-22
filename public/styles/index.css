@@ -33,8 +33,12 @@ label {
 
 input[type="number"] {
     @apply text-2xl p-3 border border-gray-300 rounded-lg text-right mb-4;
+    /* Estilo para eliminar flechas */
+    -webkit-appearance: none; /* Chrome, Safari */
+    -moz-appearance: textfield; /* Firefox */
 }
 
+/* Estilo del botón */
 button {
     @apply w-full bg-green-600 text-white py-3 text-lg rounded-lg mt-4 hover:bg-green-700;
 }
@@ -81,6 +85,9 @@ input[type="number"] {
     border-radius: 8px;
     text-align: right;
     margin-bottom: 10px;
+    /* Estilo para eliminar flechas */
+    -webkit-appearance: none; /* Oculta flechas en Chrome/Safari */
+    -moz-appearance: textfield; /* Oculta flechas en Firefox */
 }
 
 /* Estilo del botón */
