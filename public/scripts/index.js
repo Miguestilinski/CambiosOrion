@@ -59,9 +59,16 @@ function loadCurrencies() {
             document.getElementById("currency2").textContent = "USD"; // Opción predeterminada
 
             // Asegúrate de que las tasas de cambio estén disponibles para las divisas predeterminadas
-            // Aquí deberías obtener las tasas de cambio para CLP y USD de tu data
-            exchangeRates["CLP"] = {}; // Asegúrate de llenar estos valores correctamente
-            exchangeRates["USD"] = {}; // Asegúrate de llenar estos valores correctamente
+            exchangeRates["CLP"] = {
+                compra: parseFloat(data.find(d => d.nombre === "CLP").compra),
+                venta: parseFloat(data.find(d => d.nombre === "CLP").venta),
+                tasa: parseFloat(data.find(d => d.nombre === "CLP").tasa)
+            };
+            exchangeRates["USD"] = {
+                compra: parseFloat(data.find(d => d.nombre === "USD").compra),
+                venta: parseFloat(data.find(d => d.nombre === "USD").venta),
+                tasa: parseFloat(data.find(d => d.nombre === "USD").tasa)
+            };
 
             // Actualizar las tasas iniciales según las divisas predeterminadas
             convertFromAmount1(); // Para establecer el resultado inicial en amount2
