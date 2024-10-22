@@ -21,7 +21,8 @@ function loadCurrencies() {
             data.forEach(divisa => {
                 // Crear opción para currency1
                 const option1 = document.createElement("div");
-                option1.innerHTML = `<img src="${divisa.icono}" alt="${divisa.nombre}" style="width: 20px; height: 20px;"> ${divisa.nombre}`;
+                option1.innerHTML = `<img src="${divisa.icono}" alt="${divisa.nombre}" class="w-5 h-5 mr-2"> ${divisa.nombre}`;
+                option1.className = "p-2 hover:bg-gray-100 cursor-pointer";
                 option1.onclick = function() {
                     document.getElementById("currency1").textContent = divisa.nombre;
                     dropdown1.style.display = 'none'; // Ocultar dropdown
@@ -37,7 +38,8 @@ function loadCurrencies() {
 
                 // Crear opción para currency2
                 const option2 = document.createElement("div");
-                option2.innerHTML = `<img src="${divisa.icono}" alt="${divisa.nombre}" style="width: 20px; height: 20px;"> ${divisa.nombre}`;
+                option2.innerHTML = `<img src="${divisa.icono}" alt="${divisa.nombre}" class="w-5 h-5 mr-2"> ${divisa.nombre}`;
+                option2.className = "p-2 hover:bg-gray-100 cursor-pointer";
                 option2.onclick = function() {
                     document.getElementById("currency2").textContent = divisa.nombre;
                     dropdown2.style.display = 'none'; // Ocultar dropdown
@@ -55,33 +57,18 @@ function loadCurrencies() {
         .catch(error => console.error('Error al cargar las divisas:', error));
 }
 
-// Conversión automática desde la primera caja de entrada
+// Función para convertir desde la primera cantidad
 function convertFromAmount1() {
     const amount1 = parseFloat(document.getElementById("amount1").value);
     const currency1 = document.getElementById("currency1").textContent;
     const currency2 = document.getElementById("currency2").textContent;
 
     if (amount1 && exchangeRates[currency1] && exchangeRates[currency2]) {
-        const rate = exchangeRates[currency1].venta; // Usar la tasa de venta de currency1
-        const result = (amount1 / rate) * exchangeRates[currency2].compra; // Convertir al valor de currency2 usando tasa de compra
+        const rate = exchangeRates[currency1].venta;
+        const result = (amount1 / rate) * exchangeRates[currency2].compra;
         document.getElementById("amount2").value = result.toFixed(2);
     } else {
         document.getElementById("amount2").value = "0.00";
-    }
-}
-
-// Conversión automática desde la segunda caja de entrada
-function convertFromAmount2() {
-    const amount2 = parseFloat(document.getElementById("amount2").value);
-    const currency1 = document.getElementById("currency1").textContent;
-    const currency2 = document.getElementById("currency2").textContent;
-
-    if (amount2 && exchangeRates[currency1] && exchangeRates[currency2]) {
-        const rate = exchangeRates[currency2].compra; // Usar la tasa de compra de currency2
-        const result = (amount2 * rate) / exchangeRates[currency1].venta; // Convertir al valor de currency1 usando tasa de venta
-        document.getElementById("amount1").value = result.toFixed(2);
-    } else {
-        document.getElementById("amount1").value = "0.00";
     }
 }
 
@@ -91,7 +78,7 @@ function toggleDropdown(dropdownId) {
     dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
 }
 
-// Cerrar dropdown al hacer clic fuera
+// Cerrar dropdowns al hacer clic fuera
 window.onclick = function(event) {
     if (!event.target.matches('.select-box')) {
         const dropdowns = document.getElementsByClassName("dropdown-content");
