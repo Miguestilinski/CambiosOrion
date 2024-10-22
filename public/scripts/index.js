@@ -22,44 +22,43 @@ function loadCurrencies() {
             dropdown2.innerHTML = '';
 
             data.forEach(divisa => {
-                // Guardar las tasas de cambio en el objeto exchangeRates
                 exchangeRates[divisa.nombre] = {
                     compra: parseFloat(divisa.compra),
-                    venta: parseFloat(divisa.venta)
+                    venta: parseFloat(divisa.venta),
+                    icono: divisa.icono
                 };
 
-                // Crear opción para currency1
                 const option1 = document.createElement("div");
                 option1.innerHTML = `<img src="${divisa.icono}" alt="${divisa.nombre}" class="w-5 h-5 mr-2"> ${divisa.nombre}`;
                 option1.className = "p-2 hover:bg-gray-100 cursor-pointer";
                 option1.onclick = function () {
                     setCurrency1(divisa.nombre);
                     dropdown1.style.display = 'none';
-                    updateCurrencyIcon(); // Actualizar el ícono después de seleccionar
+                    updateCurrencyIcon();
                 };
                 dropdown1.appendChild(option1);
 
-                // Crear opción para currency2
                 const option2 = document.createElement("div");
                 option2.innerHTML = `<img src="${divisa.icono}" alt="${divisa.nombre}" class="w-5 h-5 mr-2"> ${divisa.nombre}`;
                 option2.className = "p-2 hover:bg-gray-100 cursor-pointer";
                 option2.onclick = function () {
                     setCurrency2(divisa.nombre);
                     dropdown2.style.display = 'none';
-                    updateCurrencyIcon(); // Actualizar el ícono después de seleccionar
+                    updateCurrencyIcon();
                 };
                 dropdown2.appendChild(option2);
             });
 
-            // Establecer divisas por defecto (CLP a USD)
+            // Establecer divisas por defecto
             document.getElementById("currency1").textContent = "CLP"; 
             document.getElementById("currency2").textContent = "USD"; 
 
-            convertFromAmount1(); 
-            updateCurrencyIcon(); // Inicializar el ícono al cargar
+            // Inicializar el ícono al cargar
+            updateCurrencyIcon(); // Asegúrate de que esto se llame después de que todos los elementos estén en el DOM
         })
         .catch(error => console.error('Error al cargar las divisas:', error));
 }
+
 
 // Función para establecer currency1
 function setCurrency1(currency) {
@@ -148,13 +147,15 @@ function updateCurrencyIcon() {
     const currency1 = document.getElementById("currency1").textContent;
     const currency2 = document.getElementById("currency2").textContent;
 
-    console.log("Actualizando íconos para:", currency1, currency2); // Mensaje de depuración
+    console.log("Actualizando íconos para:", currency1, currency2);
 
     const iconCurrency1 = document.getElementById("icon-currency1");
     const iconCurrency2 = document.getElementById("icon-currency2");
 
+    console.log("Icono 1:", iconCurrency1); // Verificar si el elemento existe
+    console.log("Icono 2:", iconCurrency2); // Verificar si el elemento existe
+
     if (iconCurrency1 && iconCurrency2) {
-        // Actualiza los íconos de las divisas
         iconCurrency1.src = exchangeRates[currency1].icono;
         iconCurrency2.src = exchangeRates[currency2].icono;
     } else {
