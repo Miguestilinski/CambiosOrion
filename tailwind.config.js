@@ -1,9 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  mode: 'jit',
   content: [
-    "./index.html",
-    "./public/styles/**/*.css",
-    "./public/scripts/**/*.js" // Asegúrate de que Tailwind busque en la ruta correcta
+    './public/**/*.html',
+    './public/styles/**/*.css',
+    './public/scripts/**/*.{js,jsx}', 
   ],
   theme: {
     extend: {},
