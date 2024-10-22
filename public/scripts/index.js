@@ -145,6 +145,7 @@ function convertFromAmount2() {
 }
 
 
+
 // Función para actualizar el ícono de la divisa
 function updateCurrencyIcon() {
     const currency1 = document.getElementById("currency1").textContent;
@@ -153,13 +154,15 @@ function updateCurrencyIcon() {
     const iconElement1 = document.getElementById("icon-currency1");
     const iconElement2 = document.getElementById("icon-currency2");
 
-    // Cambia el ícono para currency1
-    const selectedCurrency1 = exchangeRates[currency1] ? exchangeRates[currency1].icono : '';
-    iconElement1.src = selectedCurrency1;
+    // Cambia el ícono para currency1 si existe
+    if (iconElement1 && exchangeRates[currency1]) {
+        iconElement1.src = exchangeRates[currency1].icono;
+    }
 
-    // Cambia el ícono para currency2
-    const selectedCurrency2 = exchangeRates[currency2] ? exchangeRates[currency2].icono : '';
-    iconElement2.src = selectedCurrency2;
+    // Cambia el ícono para currency2 si existe
+    if (iconElement2 && exchangeRates[currency2]) {
+        iconElement2.src = exchangeRates[currency2].icono;
+    }
 }
 
 // Función para alternar el dropdown
