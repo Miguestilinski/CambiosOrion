@@ -35,6 +35,7 @@ function loadCurrencies() {
                 option1.onclick = function () {
                     setCurrency1(divisa.nombre);
                     dropdown1.style.display = 'none';
+                    updateCurrencyIcon(); // Actualizar el ícono después de seleccionar
                 };
                 dropdown1.appendChild(option1);
 
@@ -45,6 +46,7 @@ function loadCurrencies() {
                 option2.onclick = function () {
                     setCurrency2(divisa.nombre);
                     dropdown2.style.display = 'none';
+                    updateCurrencyIcon(); // Actualizar el ícono después de seleccionar
                 };
                 dropdown2.appendChild(option2);
             });
@@ -54,6 +56,7 @@ function loadCurrencies() {
             document.getElementById("currency2").textContent = "USD"; 
 
             convertFromAmount1(); 
+            updateCurrencyIcon(); // Inicializar el ícono al cargar
         })
         .catch(error => console.error('Error al cargar las divisas:', error));
 }
@@ -69,6 +72,7 @@ function setCurrency1(currency) {
 
     exchangeRates[currency] = exchangeRates[currency] || { compra: 0, venta: 0 }; // Si aún no se ha asignado la tasa de esa divisa
     convertFromAmount1();
+    updateCurrencyIcon(); // Actualizar el ícono al seleccionar
 }
 
 // Función para establecer currency2
@@ -82,6 +86,7 @@ function setCurrency2(currency) {
 
     exchangeRates[currency] = exchangeRates[currency] || { compra: 0, venta: 0 }; // Si aún no se ha asignado la tasa de esa divisa
     convertFromAmount2();
+    updateCurrencyIcon(); // Actualizar el ícono al seleccionar
 }
 
 // Función para convertir desde la primera cantidad (desde currency1 a currency2)
@@ -139,17 +144,23 @@ function convertFromAmount2() {
     }
 }
 
+
+// Función para actualizar el ícono de la divisa
 function updateCurrencyIcon() {
-    const currencySelect = document.getElementById("currency1");
-    const selectedOption = currencySelect.options[currencySelect.selectedIndex];
-    const iconPath = selectedOption.getAttribute("data-icon");
+    const currency1 = document.getElementById("currency1").textContent;
+    const currency2 = document.getElementById("currency2").textContent;
 
-    // Cambia el icono en la interfaz
-    const iconElement = document.getElementById("currency-icon");
-    iconElement.src = iconPath;
+    const iconElement1 = document.getElementById("icon-currency1");
+    const iconElement2 = document.getElementById("icon-currency2");
+
+    // Cambia el ícono para currency1
+    const selectedCurrency1 = exchangeRates[currency1] ? exchangeRates[currency1].icono : '';
+    iconElement1.src = selectedCurrency1;
+
+    // Cambia el ícono para currency2
+    const selectedCurrency2 = exchangeRates[currency2] ? exchangeRates[currency2].icono : '';
+    iconElement2.src = selectedCurrency2;
 }
-
-currencySelect.addEventListener("change", updateCurrencyIcon);
 
 // Función para alternar el dropdown
 function toggleDropdown(dropdownId) {
