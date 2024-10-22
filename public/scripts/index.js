@@ -148,19 +148,13 @@ function toggleDropdown(dropdownId) {
     dropdown.classList.toggle('hidden');
 }
 
+// Función para actualizar los íconos
 function updateCurrencyIcon() {
-    const currency1 = document.getElementById("currency1").textContent;
-    const currency2 = document.getElementById("currency2").textContent;
+    const currency1 = document.getElementById("currency1-text").textContent;
+    const currency2 = document.getElementById("currency2-text").textContent;
 
-    const iconCurrency1 = document.getElementById("icon-currency1");
-    const iconCurrency2 = document.getElementById("icon-currency2");
-
-    if (iconCurrency1 && iconCurrency2) {
-        iconCurrency1.src = exchangeRates[currency1].icono;
-        iconCurrency2.src = exchangeRates[currency2].icono;
-    } else {
-        console.error("No se pudieron encontrar los íconos en el DOM");
-    }
+    document.getElementById("icon-currency1").src = exchangeRates[currency1].icono;
+    document.getElementById("icon-currency2").src = exchangeRates[currency2].icono;
 }
 
 
