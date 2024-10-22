@@ -2,7 +2,7 @@ let exchangeRates = {};
 
 // Llamar a la función para cargar las divisas al inicio
 window.onload = function () {
-    loadCurrencies(); // Asegúrate de que esta llamada sea a loadCurrencies
+    loadCurrencies();
 };
 
 // Cargar las divisas
@@ -27,14 +27,8 @@ function loadCurrencies() {
                 option1.innerHTML = `<img src="${divisa.icono}" alt="${divisa.nombre}" class="w-5 h-5 mr-2"> ${divisa.nombre}`;
                 option1.className = "p-2 hover:bg-gray-100 cursor-pointer";
                 option1.onclick = function () {
-                    document.getElementById("currency1").textContent = divisa.nombre;
+                    setCurrency1(divisa.nombre);
                     dropdown1.style.display = 'none';
-                    exchangeRates[divisa.nombre] = {
-                        compra: parseFloat(divisa.compra),
-                        venta: parseFloat(divisa.venta),
-                        tasa: parseFloat(divisa.tasa)
-                    };
-                    convertFromAmount1();
                 };
                 dropdown1.appendChild(option1);
 
@@ -43,14 +37,8 @@ function loadCurrencies() {
                 option2.innerHTML = `<img src="${divisa.icono}" alt="${divisa.nombre}" class="w-5 h-5 mr-2"> ${divisa.nombre}`;
                 option2.className = "p-2 hover:bg-gray-100 cursor-pointer";
                 option2.onclick = function () {
-                    document.getElementById("currency2").textContent = divisa.nombre;
+                    setCurrency2(divisa.nombre);
                     dropdown2.style.display = 'none';
-                    exchangeRates[divisa.nombre] = {
-                        compra: parseFloat(divisa.compra),
-                        venta: parseFloat(divisa.venta),
-                        tasa: parseFloat(divisa.tasa)
-                    };
-                    convertFromAmount2();
                 };
                 dropdown2.appendChild(option2);
             });
@@ -59,20 +47,45 @@ function loadCurrencies() {
             document.getElementById("currency1").textContent = "CLP"; 
             document.getElementById("currency2").textContent = "USD"; 
 
+            // Inicializar tasas de CLP y USD
             exchangeRates["CLP"] = {
                 compra: parseFloat(data.find(d => d.nombre === "CLP").compra),
                 venta: parseFloat(data.find(d => d.nombre === "CLP").venta),
-                tasa: parseFloat(data.find(d => d.nombre === "CLP").tasa)
             };
             exchangeRates["USD"] = {
                 compra: parseFloat(data.find(d => d.nombre === "USD").compra),
                 venta: parseFloat(data.find(d => d.nombre === "USD").venta),
-                tasa: parseFloat(data.find(d => d.nombre === "USD").tasa)
             };
 
             convertFromAmount1(); 
         })
         .catch(error => console.error('Error al cargar las divisas:', error));
+}
+
+// Función para establecer currency1
+function setCurrency1(currency) {
+    document.getElementById("currency1").textContent = currency;
+
+    // Si el usuario selecciona una divisa diferente a CLP, currency2 se convierte en CLP automáticamente
+    if (currency !== "CLP") {
+        document.getElementById("currency2").textContent = "CLP";
+    }
+
+    exchangeRates[currency] = exchangeRates[currency] || { compra: 0, venta: 0 }; // Si aún no se ha asignado la tasa de esa divisa
+    convertFromAmount1();
+}
+
+// Función para establecer currency2
+function setCurrency2(currency) {
+    document.getElementById("currency2").textContent = currency;
+
+    // Si el usuario selecciona una divisa diferente a CLP, currency1 se convierte en CLP automáticamente
+    if (currency !== "CLP") {
+        document.getElementById("currency1").textContent = "CLP";
+    }
+
+    exchangeRates[currency] = exchangeRates[currency] || { compra: 0, venta: 0 }; // Si aún no se ha asignado la tasa de esa divisa
+    convertFromAmount2();
 }
 
 // Función para convertir desde la primera cantidad
@@ -82,9 +95,18 @@ function convertFromAmount1() {
     const currency2 = document.getElementById("currency2").textContent;
 
     if (amount1 && exchangeRates[currency1] && exchangeRates[currency2]) {
-        const rate = exchangeRates[currency1].venta;
-        const result = (amount1 / rate) * exchangeRates[currency2].compra;
-        document.getElementById("amount2").value = result.toFixed(2);
+        let result;
+        if (currency1 === "CLP" && currency2 !== "CLP") {
+            // Convertir de CLP a currency2
+            result = (amount1 / exchangeRates[currency2].venta).toFixed(2);
+        } else if (currency1 !== "CLP" && currency2 === "CLP") {
+            // Convertir de currency1 a CLP
+            result = (amount1 * exchangeRates[currency1].venta).toFixed(2);
+        } else {
+            // Si ambas divisas son iguales, no se requiere conversión
+            result = amount1.toFixed(2);
+        }
+        document.getElementById("amount2").value = result;
     } else {
         document.getElementById("amount2").value = "0.00";
     }
@@ -97,9 +119,18 @@ function convertFromAmount2() {
     const currency2 = document.getElementById("currency2").textContent;
 
     if (amount2 && exchangeRates[currency1] && exchangeRates[currency2]) {
-        const rate = exchangeRates[currency2].compra;
-        const result = (amount2 / rate) * exchangeRates[currency1].venta;
-        document.getElementById("amount1").value = result.toFixed(2);
+        let result;
+        if (currency2 === "CLP" && currency1 !== "CLP") {
+            // Convertir de currency1 a CLP
+            result = (amount2 * exchangeRates[currency1].venta).toFixed(2);
+        } else if (currency2 !== "CLP" && currency1 === "CLP") {
+            // Convertir de CLP a currency2
+            result = (amount2 / exchangeRates[currency2].venta).toFixed(2);
+        } else {
+            // Si ambas divisas son iguales, no se requiere conversión
+            result = amount2.toFixed(2);
+        }
+        document.getElementById("amount1").value = result;
     } else {
         document.getElementById("amount1").value = "0.00";
     }
