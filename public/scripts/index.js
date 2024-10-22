@@ -156,10 +156,10 @@ function updateCurrencyIcon() {
     document.getElementById("icon-currency2").src = exchangeRates[currency2].icono; // Cambia aquí
 }
 
-// Función para mostrar/ocultar el menú desplegable
+// Función para alternar el dropdown
 function toggleDropdown(dropdownId) {
     const dropdown = document.getElementById(dropdownId);
-    dropdown.classList.toggle('hidden');
+    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
 }
 
 // Cerrar dropdowns al hacer clic fuera
