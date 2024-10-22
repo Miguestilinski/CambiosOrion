@@ -102,8 +102,12 @@ function convertFromAmount1() {
         } else if (currency1 !== "CLP" && currency2 === "CLP") {
             // Convertir de currency1 a CLP
             result = (amount1 * exchangeRates[currency1].venta).toFixed(2);
+        } else if (currency1 !== "CLP" && currency2 !== "CLP") {
+            // Si ambas divisas son extranjeras, convertir a CLP primero y luego a la otra divisa
+            const clpAmount = amount1 * exchangeRates[currency1].venta; // Convertir a CLP
+            result = (clpAmount / exchangeRates[currency2].venta).toFixed(2); // Luego convertir de CLP a currency2
         } else {
-            // Si ambas divisas son iguales, no se requiere conversión
+            // Si ambas divisas son CLP, no se requiere conversión
             result = amount1.toFixed(2);
         }
         document.getElementById("amount2").value = result;
@@ -121,13 +125,17 @@ function convertFromAmount2() {
     if (amount2 && exchangeRates[currency1] && exchangeRates[currency2]) {
         let result;
         if (currency2 === "CLP" && currency1 !== "CLP") {
-            // Convertir de currency1 a CLP
+            // Convertir de currency2 a CLP
             result = (amount2 * exchangeRates[currency1].venta).toFixed(2);
         } else if (currency2 !== "CLP" && currency1 === "CLP") {
             // Convertir de CLP a currency2
             result = (amount2 / exchangeRates[currency2].compra).toFixed(2); // Cambia a 'compra' aquí
+        } else if (currency1 !== "CLP" && currency2 !== "CLP") {
+            // Si ambas divisas son extranjeras, convertir a CLP primero y luego a la otra divisa
+            const clpAmount = amount2 * exchangeRates[currency2].compra; // Convertir a CLP
+            result = (clpAmount / exchangeRates[currency1].compra).toFixed(2); // Luego convertir de CLP a currency1
         } else {
-            // Si ambas divisas son iguales, no se requiere conversión
+            // Si ambas divisas son CLP, no se requiere conversión
             result = amount2.toFixed(2);
         }
         document.getElementById("amount1").value = result;
