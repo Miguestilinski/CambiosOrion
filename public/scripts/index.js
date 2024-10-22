@@ -146,29 +146,20 @@ function convertFromAmount2() {
 
 
 
-// Función para actualizar el ícono de la divisa
+// Actualizar el ícono de la divisa seleccionada
 function updateCurrencyIcon() {
     const currency1 = document.getElementById("currency1").textContent;
     const currency2 = document.getElementById("currency2").textContent;
 
-    const iconElement1 = document.getElementById("icon-currency1");
-    const iconElement2 = document.getElementById("icon-currency2");
-
-    // Cambia el ícono para currency1 si existe
-    if (iconElement1 && exchangeRates[currency1]) {
-        iconElement1.src = exchangeRates[currency1].icono;
-    }
-
-    // Cambia el ícono para currency2 si existe
-    if (iconElement2 && exchangeRates[currency2]) {
-        iconElement2.src = exchangeRates[currency2].icono;
-    }
+    // Actualiza los íconos de las divisas
+    document.getElementById("icon-currency1").src = exchangeRates[currency1].icono; // Cambia aquí
+    document.getElementById("icon-currency2").src = exchangeRates[currency2].icono; // Cambia aquí
 }
 
-// Función para alternar el dropdown
+// Función para mostrar/ocultar el menú desplegable
 function toggleDropdown(dropdownId) {
     const dropdown = document.getElementById(dropdownId);
-    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+    dropdown.classList.toggle('hidden');
 }
 
 // Cerrar dropdowns al hacer clic fuera
