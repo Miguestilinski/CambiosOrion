@@ -1,18 +1,28 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* Estilos personalizados */
+/* Estilos globales */
 body {
-    @apply font-sans bg-gray-100 m-0 p-0;
+    @apply font-sans bg-gray-100;
 }
 
+/* Header */
 header {
-    @apply bg-green-600 text-white text-center py-5;
+    @apply bg-green-600 text-white py-4 text-center;
+}
+
+header h1 {
+    @apply text-3xl font-bold;
+}
+
+header p {
+    @apply text-lg mt-2;
+}
+
+/* Sección principal del conversor */
+.container {
+    @apply max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg;
 }
 
 h2 {
-    @apply text-center text-gray-700 text-2xl font-semibold;
+    @apply text-2xl font-semibold text-gray-800 text-center mb-6;
 }
 
 .converter-section {
@@ -51,6 +61,7 @@ input[type="number"]::-moz-inner-spin-button,
 input[type="number"]::-moz-outer-spin-button {
     display: none; /* Oculta en Firefox */
 }
+
 
 /* Estilo del botón */
 button {
@@ -183,4 +194,9 @@ button:hover {
     width: 20px; /* Tamaño de la imagen */
     height: 20px; /* Tamaño de la imagen */
     margin-right: 10px; /* Espacio entre la imagen y el texto */
+}
+
+/* Footer */
+footer {
+    @apply text-sm text-gray-500 text-center mt-6;
 }
