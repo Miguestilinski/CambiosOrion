@@ -18,6 +18,7 @@ header {
 .header-logo {
     display: flex;
     align-items: center;
+    margin-right: 50px; /* Aumenta el espacio entre el logo y el menú de navegación */
 }
 
 .header-logo img.logo {
@@ -35,7 +36,8 @@ header {
 nav ul {
     display: flex;
     list-style: none;
-    gap: 30px; /* Espacio entre los elementos */
+    gap: 30px; /* Espacio entre los elementos del menú */
+    margin-right: 50px; /* Aumenta el espacio entre el menú y los botones de acción */
 }
 
 nav ul li {
@@ -57,7 +59,7 @@ nav ul li.selected a {
 .header-actions {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 20px; /* Espacio entre los botones de iniciar sesión y registrarse */
 }
 
 .header-actions a {
@@ -82,8 +84,6 @@ nav ul li.selected a {
     background-color: black;
     margin: 0 auto;
 }
-
-
 
 /* Sección principal del conversor */
 .container {
