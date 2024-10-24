@@ -23,7 +23,7 @@ function loadCurrencies() {
 
             data.forEach(divisa => {
                 // Reemplazar la ruta del icono cuadrado con la ruta del icono circular
-                const circularIcon = `/orionapp/node_modules/circle-flags/flags/${divisa.codigo_iso}.svg`;
+                const circularIcon = `${divisa.codigo_iso}.svg`;
                 exchangeRates[divisa.nombre] = {
                     compra: parseFloat(divisa.compra),
                     venta: parseFloat(divisa.venta),
