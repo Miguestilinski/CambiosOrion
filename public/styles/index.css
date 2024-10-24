@@ -10,9 +10,8 @@ header {
     align-items: center;
     padding: 16px;
     background-color: white; /* Fondo blanco */
-    border-bottom: none; /* Elimina la línea divisoria del header */
-    margin: 0 auto; /* Centra el header */
-    position: relative; /* Para alinear la línea divisoria */
+    margin: 0 auto;
+    position: relative; /* Necesario para la posición de la línea divisoria */
 }
 
 /* Logo y nombre */
@@ -81,14 +80,12 @@ nav ul li.selected a {
 /* Línea negra alineada con los elementos del header */
 .header-divider {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: calc(100% - 80px); /* Ajusta el ancho para excluir los márgenes */
-    height: 1px;
-    background-color: black;
-    margin-left: 80px; /* Mismo ancho que el margen izquierdo */
-    margin-right: 16px; /* Ajuste a la derecha para los botones */
+    bottom: 0; /* Alinea la línea al final del header */
+    left: 80px; /* Comienza desde el inicio del logo */
+    right: 16px; /* Termina al final del botón de registrarse */
+    height: 1px; /* Grosor de 1pt */
+    background-color: black; /* Color negro */
+    content: "";
 }
 
 /* Sección principal del conversor */
