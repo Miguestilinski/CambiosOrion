@@ -34,8 +34,7 @@ function loadCurrencies() {
                 option1.className = "p-2 hover:bg-gray-100 cursor-pointer";
                 option1.onclick = function () {
                     setCurrency1(divisa.nombre);
-                    dropdown1.style.display = 'none';
-                    updateCurrencyIcon();
+                    toggleDropdown('dropdown1'); // Cierra el dropdown
                 };
                 dropdown1.appendChild(option1);
 
@@ -44,8 +43,7 @@ function loadCurrencies() {
                 option2.className = "p-2 hover:bg-gray-100 cursor-pointer";
                 option2.onclick = function () {
                     setCurrency2(divisa.nombre);
-                    dropdown2.style.display = 'none';
-                    updateCurrencyIcon();
+                    toggleDropdown('dropdown2'); // Cierra el dropdown
                 };
                 dropdown2.appendChild(option2);
             });
@@ -91,8 +89,8 @@ function setCurrency2(currency) {
 // Función para convertir desde la primera cantidad (desde currency1 a currency2)
 function convertFromAmount1() {
     const amount1 = parseFloat(document.getElementById("amount1").value);
-    const currency1 = document.getElementById("currency1").textContent;
-    const currency2 = document.getElementById("currency2").textContent;
+    const currency1 = document.getElementById("currency1-text").textContent;
+    const currency2 = document.getElementById("currency2-text").textContent;
 
     if (amount1 && exchangeRates[currency1] && exchangeRates[currency2]) {
         let result;
@@ -104,23 +102,22 @@ function convertFromAmount1() {
             // Convertir desde otra divisa a CLP usando tasa de compra (vendes la divisa, compras CLP)
             result = (amount1 * exchangeRates[currency1].compra).toFixed(2);
         } else {
-            // Convertir entre dos divisas extranjeras (con CLP como intermediario)
-            const clpAmount = amount1 * exchangeRates[currency1].compra;  // Convierte de divisa1 a CLP usando compra
-            result = (clpAmount / exchangeRates[currency2].venta).toFixed(2); // Convierte de CLP a divisa2 usando venta
+            // Convertir entre dos divisas
+            const amountInCLP = amount1 * exchangeRates[currency1].compra; // Primero convertimos a CLP
+            result = (amountInCLP / exchangeRates[currency2].venta).toFixed(2);
         }
 
-        document.getElementById("amount2").value = result;
+        document.getElementById("amount2").value = result; // Mostrar el resultado en amount2
     } else {
-        document.getElementById("amount2").value = "0.00";
+        document.getElementById("amount2").value = ''; // Limpiar el campo si no hay valor
     }
 }
-
 
 // Función para convertir desde la segunda cantidad (desde currency2 a currency1)
 function convertFromAmount2() {
     const amount2 = parseFloat(document.getElementById("amount2").value);
-    const currency1 = document.getElementById("currency1").textContent;
-    const currency2 = document.getElementById("currency2").textContent;
+    const currency1 = document.getElementById("currency1-text").textContent;
+    const currency2 = document.getElementById("currency2-text").textContent;
 
     if (amount2 && exchangeRates[currency1] && exchangeRates[currency2]) {
         let result;
@@ -132,39 +129,39 @@ function convertFromAmount2() {
             // Convertir desde otra divisa a CLP usando tasa de compra (vendes la divisa, compras CLP)
             result = (amount2 * exchangeRates[currency2].compra).toFixed(2);
         } else {
-            // Convertir entre dos divisas extranjeras (con CLP como intermediario)
-            const clpAmount = amount2 * exchangeRates[currency2].compra;  // Convierte de divisa2 a CLP usando compra
-            result = (clpAmount / exchangeRates[currency1].venta).toFixed(2); // Convierte de CLP a divisa1 usando venta
+            // Convertir entre dos divisas
+            const amountInCLP = amount2 * exchangeRates[currency2].compra; // Primero convertimos a CLP
+            result = (amountInCLP / exchangeRates[currency1].venta).toFixed(2);
         }
 
-        document.getElementById("amount1").value = result;
+        document.getElementById("amount1").value = result; // Mostrar el resultado en amount1
     } else {
-        document.getElementById("amount1").value = "0.00";
+        document.getElementById("amount1").value = ''; // Limpiar el campo si no hay valor
     }
 }
 
-// Función para alternar la visibilidad de los dropdowns
+// Función para alternar el estado de visibilidad del dropdown
 function toggleDropdown(dropdownId) {
     const dropdown = document.getElementById(dropdownId);
-    dropdown.classList.toggle('hidden');
+    dropdown.classList.toggle("hidden");
 }
 
-// Función para actualizar los íconos
+// Actualizar el ícono de las divisas seleccionadas
 function updateCurrencyIcon() {
     const currency1 = document.getElementById("currency1-text").textContent;
     const currency2 = document.getElementById("currency2-text").textContent;
 
-    document.getElementById("icon-currency1").src = exchangeRates[currency1].icono;
-    document.getElementById("icon-currency2").src = exchangeRates[currency2].icono;
+    document.getElementById("icon-currency1").src = exchangeRates[currency1]?.icono || '/orionapp/node_modules/circle-flags/flags/cl.svg';
+    document.getElementById("icon-currency2").src = exchangeRates[currency2]?.icono || '/orionapp/node_modules/circle-flags/flags/us.svg';
 }
 
-
-// Cerrar dropdowns al hacer clic fuera
-window.onclick = function (event) {
-    if (!event.target.matches('.select-box')) {
-        const dropdowns = document.getElementsByClassName("dropdown-content");
-        for (let i = 0; i < dropdowns.length; i++) {
-            dropdowns[i].style.display = "none";
+// Cerrar los dropdowns al hacer clic fuera de ellos
+document.addEventListener("click", function(event) {
+    const dropdowns = ['dropdown1', 'dropdown2'];
+    dropdowns.forEach(id => {
+        const dropdown = document.getElementById(id);
+        if (!dropdown.contains(event.target) && !document.getElementById("currency" + id.charAt(id.length - 1)).contains(event.target)) {
+            dropdown.classList.add("hidden");
         }
-    }
-};
+    });
+});
