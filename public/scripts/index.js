@@ -1,6 +1,6 @@
 let exchangeRates = {};
+let iconsLoaded = {}; // Almacena los íconos en memoria
 
-// Llamar a la función para cargar las divisas al inicio
 document.addEventListener("DOMContentLoaded", function() {
     loadCurrencies(); // Llama a tu función una vez que el DOM esté listo
 });
@@ -29,6 +29,9 @@ function loadCurrencies() {
                     icono: circularIcon
                 };
 
+                // Pre-cargar el ícono si no está en memoria
+                preloadIcon(circularIcon);
+
                 const option1 = document.createElement("div");
                 option1.innerHTML = `<img src="${circularIcon}" alt="${divisa.nombre}" class="w-5 h-5 mr-2"> ${divisa.nombre}`;
                 option1.className = "p-2 hover:bg-gray-100 cursor-pointer";
@@ -56,6 +59,15 @@ function loadCurrencies() {
             updateCurrencyIcon(); 
         })
         .catch(error => console.error('Error al cargar las divisas:', error));
+}
+
+// Función para pre-cargar el ícono
+function preloadIcon(iconUrl) {
+    if (!iconsLoaded[iconUrl]) {
+        const img = new Image();
+        img.src = iconUrl; // Carga la imagen en el navegador
+        iconsLoaded[iconUrl] = true; // Marcar como cargado
+    }
 }
 
 // Función para establecer currency1
