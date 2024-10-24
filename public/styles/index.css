@@ -1,6 +1,9 @@
 /* Estilos globales */
 body {
     @apply font-sans bg-gray-100;
+    min-height: 100vh; /* Asegura que el body ocupe al menos toda la altura de la ventana */
+    display: flex;
+    flex-direction: column; /* Coloca el footer al final */
 }
 
 /* Header */
@@ -85,12 +88,12 @@ nav ul li.selected a {
     right: 16px; /* Termina al final del botón de registrarse */
     height: 1px; /* Grosor de 1pt */
     background-color: black; /* Color negro */
-    content: "";
 }
 
 /* Sección principal del conversor */
 .container {
     @apply max-w-lg mx-auto bg-white p-10 rounded-lg shadow-lg;
+    flex: 1; /* Permite que el contenedor crezca para ocupar el espacio disponible */
 }
 
 h2 {
@@ -271,106 +274,119 @@ button:hover {
 /* Contenedor principal del footer */
 footer {
     background-color: white; /* Fondo blanco para el footer */
-  }
-  
-  .footer-container {
+    display: flex;
+    flex-direction: column; /* Para que el footer ocupe toda la altura */
+    min-height: 100px; /* Asegura que el footer tenga una altura mínima */
+    margin-top: auto; /* Empuja el footer hacia abajo */
+}
+
+.footer-container {
     display: flex;
     justify-content: space-between; /* Distribuir el espacio entre las 3 secciones */
     padding: 40px;
-  }
-  
-  /* Sección del logo */
-  .footer-logo {
+}
+
+/* Sección del logo */
+.footer-logo {
     display: flex;
     flex-direction: column; /* Para alinear el nombre debajo del logo */
     align-items: center;
-  }
-  
-  .footer-logo .logo {
+    margin-bottom: 40px; /* Espacio adicional entre el logo y el mapa de navegación */
+}
+
+.footer-logo .logo {
     width: 140px; /* Ancho del logo */
     margin-bottom: 10px;
-  }
-  
-  .footer-logo .nombre {
+}
+
+.footer-logo .nombre {
     width: 150px; /* Ancho del nombre */
     height: auto; /* Mantén las proporciones */
-  }
-  
-  /* Mapa de navegación */
-  .footer-navigation {
+}
+
+/* Mapa de navegación */
+.footer-navigation {
     display: flex; /* Para alinear las secciones del menú en una fila */
     justify-content: space-between; /* Espacio entre las secciones */
     width: 100%; /* Tomar todo el ancho disponible */
-  }
-  
-  .nav-section {
+    margin-bottom: 40px; /* Espacio adicional entre el mapa de navegación y la información de contacto */
+}
+
+.nav-section {
     display: flex;
     flex-direction: column; /* Apilar los elementos dentro de cada sección */
     align-items: flex-start; /* Alinear a la izquierda */
-  }
-  
-  .footer-navigation h3 {
+}
+
+.footer-navigation h3 {
     font-size: 18px;
     font-weight: bold;
     margin-bottom: 8px;
-  }
-  
-  .footer-navigation ul {
+}
+
+.footer-navigation ul {
     list-style: none;
     padding: 0;
-  }
-  
-  .footer-navigation li {
+}
+
+.footer-navigation li {
     margin-bottom: 5px;
-  }
-  
-  .footer-navigation a {
+}
+
+.footer-navigation a {
     text-decoration: none;
     color: black;
-  }
-  
-  /* Información de contacto */
-  .footer-contact {
+}
+
+/* Información de contacto */
+.footer-contact {
     display: flex;
     flex-direction: column;
     gap: 20px;
-  }
-  
-  .contact-info {
+    margin-bottom: 20px; /* Espacio adicional entre la info de contacto y las redes sociales */
+}
+
+.contact-info {
     display: flex;
     flex-direction: column;
     gap: 10px;
-  }
-  
-  .contact-item {
+}
+
+.contact-item {
     display: flex;
     align-items: center; /* Alineación vertical de iconos y texto */
     gap: 10px;
-  }
-  
-  .contact-item img.icon {
+}
+
+.contact-item img.icon {
     width: 24px;
     height: 24px; /* Tamaño de los iconos de contacto */
-  }
-  
-  .contact-item p {
+}
+
+.contact-item p {
     margin: 0;
-  }
-  
-  .contact-item small {
+}
+
+.contact-item small {
     font-size: 12px; /* Tamaño menor para el horario */
     color: #555;
-  }
-  
-  /* Redes sociales */
-  .social-media {
+}
+
+/* Redes sociales */
+.social-media {
     display: flex;
     justify-content: center; /* Centrar los iconos de redes sociales */
     gap: 15px;
-  }
-  
-  .social-media img {
+}
+
+.social-media img {
     width: 24px;
     height: 24px;
-  }
-  
+}
+
+/* Footer copyright */
+.footer-copyright {
+    text-align: center; /* Centrar el texto del copyright */
+    padding: 20px 0; /* Espacio arriba y abajo del copyright */
+    background-color: #f9f9f9; /* Fondo gris claro */
+}
