@@ -302,7 +302,7 @@ footer {
     display: flex; /* Para alinear las secciones del menú en una fila */
     justify-content: space-between; /* Espacio entre las secciones */
     width: 100%; /* Tomar todo el ancho disponible */
-    margin-right: 80px; /* Aumentado el espacio horizontal entre el mapa de navegación y la información de contacto */
+    margin-right: 50px; /* Aumentado el espacio horizontal entre el mapa de navegación y la información de contacto */
 }
 
 .nav-section {
