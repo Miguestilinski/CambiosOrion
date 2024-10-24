@@ -5,16 +5,85 @@ body {
 
 /* Header */
 header {
-    @apply bg-green-600 text-white py-4 text-center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background-color: white; /* Fondo blanco */
+    border-bottom: 1px solid black; /* Línea negra de 1pt debajo del header */
+    max-width: 1200px; /* Limita el ancho del header */
+    margin: 0 auto; /* Centra el header */
 }
 
-header h1 {
-    @apply text-3xl font-bold;
+/* Logo y nombre */
+.header-logo {
+    display: flex;
+    align-items: center;
 }
 
-header p {
-    @apply text-lg mt-2;
+.header-logo img {
+    height: 40px; /* Ajusta el tamaño del logo */
+    margin-right: 10px; /* Espacio entre logo y nombre */
 }
+
+.header-logo span {
+    font-size: 20px;
+    font-weight: bold;
+    color: black;
+}
+
+/* Menú de navegación */
+nav ul {
+    display: flex;
+    list-style: none;
+    gap: 30px; /* Espacio entre los elementos */
+}
+
+nav ul li {
+    font-size: 16px;
+    font-weight: 500;
+    position: relative;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: black; /* Color negro del texto */
+}
+
+nav ul li.selected a {
+    border-bottom: 2px solid black; /* Línea negra de 2pts debajo del seleccionado */
+}
+
+/* Iniciar Sesión y Registrarse */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.header-actions a {
+    font-size: 16px;
+    color: black;
+    text-decoration: none;
+}
+
+.header-actions .register-button {
+    background-color: blue;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 5px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+/* Línea negra alineada al centro */
+.header-divider {
+    width: 90%; /* Ajusta el porcentaje según el ancho que desees */
+    height: 1px;
+    background-color: black;
+    margin: 0 auto;
+}
+
 
 /* Sección principal del conversor */
 .container {
