@@ -11,7 +11,6 @@ header {
     padding: 16px;
     background-color: white; /* Fondo blanco */
     border-bottom: 1px solid black; /* Línea negra de 1pt debajo del header */
-    max-width: 1200px; /* Limita el ancho del header */
     margin: 0 auto; /* Centra el header */
 }
 
@@ -21,15 +20,15 @@ header {
     align-items: center;
 }
 
-.header-logo img {
-    height: 40px; /* Ajusta el tamaño del logo */
+.header-logo img.logo {
+    width: 50px; /* Ajusta el tamaño del logo */
+    height: auto; /* Mantén las proporciones */
     margin-right: 10px; /* Espacio entre logo y nombre */
 }
 
-.header-logo span {
-    font-size: 20px;
-    font-weight: bold;
-    color: black;
+.header-logo img.nombre {
+    width: 150px; /* Ajusta el tamaño del nombre */
+    height: auto; /* Mantén las proporciones */
 }
 
 /* Menú de navegación */
@@ -83,6 +82,7 @@ nav ul li.selected a {
     background-color: black;
     margin: 0 auto;
 }
+
 
 
 /* Sección principal del conversor */
