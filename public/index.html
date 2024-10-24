@@ -8,6 +8,15 @@
     <link rel="stylesheet" href="styles/index.css">
     <link href="./styles/output.css" rel="stylesheet">
     <link rel="icon" href="/orionapp/icons/favicon.png" type="image/png">
+    <style>
+        /* Estilos para el dropdown */
+        .dropdown-content {
+            display: none; /* Ocultar por defecto */
+        }
+        .dropdown-content.show {
+            display: block; /* Mostrar cuando tenga la clase 'show' */
+        }
+    </style>
 </head>
 
 <body class="bg-gray-100 font-sans">
@@ -32,7 +41,7 @@
                             <img id="icon-currency1" src="/orionapp/node_modules/circle-flags/flags/cl.svg" alt="Icono divisa" class="w-5 h-5 mr-2">
                             <span id="currency1-text">CLP</span>
                         </div>
-                        <div id="dropdown1" class="dropdown-content hidden absolute left-0 right-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-md z-10">
+                        <div id="dropdown1" class="dropdown-content absolute left-0 right-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-md z-10">
                             <!-- Opciones de moneda se llenarán dinámicamente -->
                         </div>
                     </div>
@@ -50,7 +59,7 @@
                             <img id="icon-currency2" src="/orionapp/node_modules/circle-flags/flags/us.svg" alt="Icono divisa" class="w-5 h-5 mr-2">
                             <span id="currency2-text">USD</span>
                         </div>
-                        <div id="dropdown2" class="dropdown-content hidden absolute left-0 right-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-md z-10">
+                        <div id="dropdown2" class="dropdown-content absolute left-0 right-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-md z-10">
                             <!-- Opciones de moneda se llenarán dinámicamente -->
                         </div>
                     </div>

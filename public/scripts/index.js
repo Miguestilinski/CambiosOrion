@@ -97,19 +97,13 @@ function convertFromAmount1() {
 
         if (currency1 === "CLP") {
             // Convertir desde CLP a otra divisa usando tasa de venta (vendes CLP, compras la divisa)
-            result = (amount1 / exchangeRates[currency2].venta).toFixed(2);
-        } else if (currency2 === "CLP") {
-            // Convertir desde otra divisa a CLP usando tasa de compra (vendes la divisa, compras CLP)
-            result = (amount1 * exchangeRates[currency1].compra).toFixed(2);
+            result = amount1 / exchangeRates[currency2].venta;
         } else {
-            // Convertir entre dos divisas
-            const amountInCLP = amount1 * exchangeRates[currency1].compra; // Primero convertimos a CLP
-            result = (amountInCLP / exchangeRates[currency2].venta).toFixed(2);
+            // Convertir desde una divisa a CLP usando tasa de compra (vendes la divisa, compras CLP)
+            result = amount1 * exchangeRates[currency1].compra;
         }
 
-        document.getElementById("amount2").value = result; // Mostrar el resultado en amount2
-    } else {
-        document.getElementById("amount2").value = ''; // Limpiar el campo si no hay valor
+        document.getElementById("amount2").value = result.toFixed(2);
     }
 }
 
@@ -123,45 +117,38 @@ function convertFromAmount2() {
         let result;
 
         if (currency2 === "CLP") {
-            // Convertir desde CLP a otra divisa usando tasa de venta (vendes CLP, compras la divisa)
-            result = (amount2 / exchangeRates[currency1].venta).toFixed(2);
-        } else if (currency1 === "CLP") {
-            // Convertir desde otra divisa a CLP usando tasa de compra (vendes la divisa, compras CLP)
-            result = (amount2 * exchangeRates[currency2].compra).toFixed(2);
+            // Convertir desde CLP a otra divisa usando tasa de compra (vendes CLP, compras la divisa)
+            result = amount2 * exchangeRates[currency1].venta;
         } else {
-            // Convertir entre dos divisas
-            const amountInCLP = amount2 * exchangeRates[currency2].compra; // Primero convertimos a CLP
-            result = (amountInCLP / exchangeRates[currency1].venta).toFixed(2);
+            // Convertir desde una divisa a CLP usando tasa de venta (vendes la divisa, compras CLP)
+            result = amount2 / exchangeRates[currency2].compra;
         }
 
-        document.getElementById("amount1").value = result; // Mostrar el resultado en amount1
-    } else {
-        document.getElementById("amount1").value = ''; // Limpiar el campo si no hay valor
+        document.getElementById("amount1").value = result.toFixed(2);
     }
 }
 
-// Función para alternar el estado de visibilidad del dropdown
+// Función para alternar la visibilidad del dropdown
 function toggleDropdown(dropdownId) {
     const dropdown = document.getElementById(dropdownId);
-    dropdown.classList.toggle("hidden");
+    dropdown.classList.toggle("show");
 }
 
-// Actualizar el ícono de las divisas seleccionadas
+// Actualiza el ícono de las divisas seleccionadas
 function updateCurrencyIcon() {
     const currency1 = document.getElementById("currency1-text").textContent;
     const currency2 = document.getElementById("currency2-text").textContent;
-
-    document.getElementById("icon-currency1").src = exchangeRates[currency1]?.icono || '/orionapp/node_modules/circle-flags/flags/cl.svg';
-    document.getElementById("icon-currency2").src = exchangeRates[currency2]?.icono || '/orionapp/node_modules/circle-flags/flags/us.svg';
+    
+    document.getElementById("icon-currency1").src = exchangeRates[currency1].icono;
+    document.getElementById("icon-currency2").src = exchangeRates[currency2].icono;
 }
 
-// Cerrar los dropdowns al hacer clic fuera de ellos
-document.addEventListener("click", function(event) {
-    const dropdowns = ['dropdown1', 'dropdown2'];
-    dropdowns.forEach(id => {
-        const dropdown = document.getElementById(id);
-        if (!dropdown.contains(event.target) && !document.getElementById("currency" + id.charAt(id.length - 1)).contains(event.target)) {
-            dropdown.classList.add("hidden");
-        }
-    });
-});
+// Cierra los dropdowns si se hace clic fuera de ellos
+window.onclick = function(event) {
+    if (!event.target.matches('.select-box')) {
+        const dropdowns = document.querySelectorAll('.dropdown-content');
+        dropdowns.forEach(dropdown => {
+            dropdown.classList.remove('show');
+        });
+    }
+};
