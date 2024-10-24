@@ -284,7 +284,7 @@ footer {
     display: flex;
     flex-direction: column; /* Para alinear el nombre debajo del logo */
     align-items: center;
-    margin-right: 40px; /* Reducido el espacio horizontal entre el logo y el mapa de navegación */
+    margin-right: 20px; /* Reducido el espacio horizontal entre el logo y el mapa de navegación */
 }
 
 .footer-logo .logo {
@@ -302,7 +302,7 @@ footer {
     display: flex; /* Para alinear las secciones del menú en una fila */
     justify-content: space-between; /* Espacio entre las secciones */
     width: 100%; /* Tomar todo el ancho disponible */
-    margin-right: 20px; /* Aumentado el espacio horizontal entre el mapa de navegación y la información de contacto */
+    margin-right: 20px; /* Espacio horizontal entre el mapa de navegación y la información de contacto */
 }
 
 .nav-section {
@@ -321,7 +321,7 @@ footer {
     display: flex;
     list-style: none;
     padding: 0;
-    gap: 10px; /* Reducido el espacio entre los elementos del menú */
+    gap: 5px; /* Reducido el espacio entre los elementos del menú */
 }
 
 .footer-navigation li {
