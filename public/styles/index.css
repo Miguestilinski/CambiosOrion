@@ -90,7 +90,7 @@ nav ul li.selected a {
 
 /* Sección principal del conversor */
 .container {
-    @apply max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg;
+    @apply max-w-lg mx-auto bg-white p-10 rounded-lg shadow-lg;
 }
 
 h2 {
@@ -268,7 +268,100 @@ button:hover {
     margin-right: 10px; /* Espacio entre la imagen y el texto */
 }
 
-/* Footer */
-footer {
-    @apply text-sm text-gray-500 text-center mt-6;
-}
+/* Contenedor principal del footer */
+.footer-container {
+    display: flex;
+    justify-content: space-between; /* Distribuir el espacio entre las 3 secciones */
+    padding: 40px;
+    background-color: #f8f8f8;
+  }
+  
+  /* Sección del logo */
+  .footer-logo {
+    display: flex;
+    flex-direction: column; /* Para alinear el nombre debajo del logo */
+    align-items: center;
+  }
+  
+  .footer-logo .logo {
+    width: 140px; /* Ancho del logo */
+    margin-bottom: 10px;
+  }
+  
+  .footer-logo .nombre {
+    width: 150px; /* Ancho del nombre */
+    height: auto; /* Mantén las proporciones */
+  }
+  
+  /* Mapa de navegación */
+  .footer-navigation {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Espacio entre las secciones del menú */
+  }
+  
+  .footer-navigation h3 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+  
+  .footer-navigation ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .footer-navigation li {
+    margin-bottom: 5px;
+  }
+  
+  .footer-navigation a {
+    text-decoration: none;
+    color: black;
+  }
+  
+  /* Información de contacto */
+  .footer-contact {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .contact-item {
+    display: flex;
+    align-items: center; /* Alineación vertical de iconos y texto */
+    gap: 10px;
+  }
+  
+  .contact-item img.icon {
+    width: 24px;
+    height: 24px; /* Tamaño de los iconos de contacto */
+  }
+  
+  .contact-item p {
+    margin: 0;
+  }
+  
+  .contact-item small {
+    font-size: 12px; /* Tamaño menor para el horario */
+    color: #555;
+  }
+  
+  /* Redes sociales */
+  .social-media {
+    display: flex;
+    justify-content: center; /* Centrar los iconos de redes sociales */
+    gap: 15px;
+  }
+  
+  .social-media img {
+    width: 24px;
+    height: 24px;
+  }
+  
