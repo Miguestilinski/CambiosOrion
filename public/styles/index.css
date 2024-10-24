@@ -352,8 +352,8 @@ footer {
 }
 
 .contact-item img.icon {
-    width: 24px;
-    height: 24px; /* Tamaño de los iconos de contacto */
+    width: 40px;
+    height: 40px; /* Tamaño de los iconos de contacto */
 }
 
 .contact-item p {
@@ -373,8 +373,8 @@ footer {
 }
 
 .social-media img {
-    width: 24px;
-    height: 24px;
+    width: 40px;
+    height: 40px;
 }
 
 /* Footer copyright */
