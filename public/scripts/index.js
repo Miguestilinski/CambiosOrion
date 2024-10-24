@@ -144,6 +144,10 @@ function convertFromAmount2() {
 function toggleDropdown(dropdownId) {
     const dropdown = document.getElementById(dropdownId);
     dropdown.classList.toggle("show");
+    // Para evitar que el clic en el dropdown cierre inmediatamente
+    dropdown.onclick = function(event) {
+        event.stopPropagation();
+    };
 }
 
 // Actualiza el ícono de las divisas seleccionadas
@@ -157,10 +161,10 @@ function updateCurrencyIcon() {
 
 // Cierra los dropdowns si se hace clic fuera de ellos
 window.onclick = function(event) {
-    if (!event.target.matches('.select-box')) {
-        const dropdowns = document.querySelectorAll('.dropdown-content');
-        dropdowns.forEach(dropdown => {
+    const dropdowns = document.querySelectorAll('.dropdown-content');
+    dropdowns.forEach(dropdown => {
+        if (!dropdown.contains(event.target) && !dropdown.previousElementSibling.contains(event.target)) {
             dropdown.classList.remove('show');
-        });
-    }
+        }
+    });
 };
