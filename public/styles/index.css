@@ -269,11 +269,14 @@ button:hover {
 }
 
 /* Contenedor principal del footer */
-.footer-container {
+footer {
+    background-color: white; /* Fondo blanco para el footer */
+  }
+  
+  .footer-container {
     display: flex;
     justify-content: space-between; /* Distribuir el espacio entre las 3 secciones */
     padding: 40px;
-    background-color: #f8f8f8;
   }
   
   /* Sección del logo */
@@ -295,9 +298,15 @@ button:hover {
   
   /* Mapa de navegación */
   .footer-navigation {
+    display: flex; /* Para alinear las secciones del menú en una fila */
+    justify-content: space-between; /* Espacio entre las secciones */
+    width: 100%; /* Tomar todo el ancho disponible */
+  }
+  
+  .nav-section {
     display: flex;
-    flex-direction: column;
-    gap: 20px; /* Espacio entre las secciones del menú */
+    flex-direction: column; /* Apilar los elementos dentro de cada sección */
+    align-items: flex-start; /* Alinear a la izquierda */
   }
   
   .footer-navigation h3 {
