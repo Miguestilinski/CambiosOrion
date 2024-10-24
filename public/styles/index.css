@@ -10,8 +10,9 @@ header {
     align-items: center;
     padding: 16px;
     background-color: white; /* Fondo blanco */
-    border-bottom: 1px solid black; /* Línea negra de 1pt debajo del header */
+    border-bottom: none; /* Elimina la línea divisoria del header */
     margin: 0 auto; /* Centra el header */
+    position: relative; /* Para alinear la línea divisoria */
 }
 
 /* Logo y nombre */
@@ -77,12 +78,17 @@ nav ul li.selected a {
     text-decoration: none;
 }
 
-/* Línea negra alineada al centro */
+/* Línea negra alineada con los elementos del header */
 .header-divider {
-    width: 90%; /* Ajusta el porcentaje según el ancho que desees */
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: calc(100% - 80px); /* Ajusta el ancho para excluir los márgenes */
     height: 1px;
     background-color: black;
-    margin: 0 auto;
+    margin-left: 80px; /* Mismo ancho que el margen izquierdo */
+    margin-right: 16px; /* Ajuste a la derecha para los botones */
 }
 
 /* Sección principal del conversor */
