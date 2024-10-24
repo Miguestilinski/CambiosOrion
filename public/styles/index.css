@@ -20,7 +20,7 @@ h2 {
 }
 
 .currency-converter {
-    @apply flex justify-between items-start gap-10; /* Aumentado el gap de 5 a 10 */
+    @apply flex justify-between items-start gap-10;
 }
 
 .converter-box {
@@ -31,33 +31,26 @@ label {
     @apply text-lg mb-2 font-semibold;
 }
 
-/* Estilo para el input de números */
 input[type="number"] {
     @apply text-2xl p-3 border border-gray-300 rounded-lg text-right mb-4;
-    /* Estilo para eliminar flechas */
-    -webkit-appearance: none; /* Oculta flechas en Chrome/Safari */
-    -moz-appearance: textfield; /* Oculta flechas en Firefox */
-    appearance: none; /* Elimina el estilo predeterminado en otros navegadores */
+    appearance: none;
 }
 
-/* Para ocultar los botones de incremento y decremento en los navegadores */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none; /* Oculta en Chrome/Safari */
-    margin: 0; /* Elimina márgenes */
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 input[type="number"]::-moz-inner-spin-button,
 input[type="number"]::-moz-outer-spin-button {
-    display: none; /* Oculta en Firefox */
+    display: none;
 }
 
-/* Estilo del botón */
 button {
     @apply w-full bg-green-600 text-white py-3 text-lg rounded-lg mt-4 hover:bg-green-700;
 }
 
-/* Disclaimer */
 .disclaimer {
     @apply text-sm text-gray-500 text-center mt-4;
 }
@@ -67,15 +60,15 @@ button {
 }
 
 .select-box {
-    @apply p-3 border border-gray-300 bg-white rounded-lg cursor-pointer flex justify-between items-center; /* Modificado para alinear íconos y texto */
+    @apply p-3 border border-gray-300 bg-white rounded-lg cursor-pointer flex justify-between items-center;
 }
 
 .select-box img {
-    @apply w-6 h-6 ml-2; /* Margen izquierdo para la imagen */
+    @apply w-6 h-6 ml-2;
 }
 
 .select-box span {
-    @apply flex-grow text-right; /* Alinear texto a la derecha */
+    @apply flex-grow text-right;
 }
 
 .dropdown-content {
@@ -89,6 +82,7 @@ button {
 .dropdown-content img {
     @apply w-6 h-6 mr-3;
 }
+
 
 /* Modificaciones personalizadas para mejorar la apariencia y funcionalidad */
 
