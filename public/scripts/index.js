@@ -22,14 +22,16 @@ function loadCurrencies() {
             dropdown2.innerHTML = '';
 
             data.forEach(divisa => {
+                // Reemplazar la ruta del icono cuadrado con la ruta del icono circular
+                const circularIcon = `/orionapp/node_modules/circle-flags/flags/${divisa.codigo_iso}.svg`;
                 exchangeRates[divisa.nombre] = {
                     compra: parseFloat(divisa.compra),
                     venta: parseFloat(divisa.venta),
-                    icono: divisa.icono
+                    icono: circularIcon
                 };
 
                 const option1 = document.createElement("div");
-                option1.innerHTML = `<img src="${divisa.icono}" alt="${divisa.nombre}" class="w-5 h-5 mr-2"> ${divisa.nombre}`;
+                option1.innerHTML = `<img src="${circularIcon}" alt="${divisa.nombre}" class="w-5 h-5 mr-2"> ${divisa.nombre}`;
                 option1.className = "p-2 hover:bg-gray-100 cursor-pointer";
                 option1.onclick = function () {
                     setCurrency1(divisa.nombre);
@@ -39,7 +41,7 @@ function loadCurrencies() {
                 dropdown1.appendChild(option1);
 
                 const option2 = document.createElement("div");
-                option2.innerHTML = `<img src="${divisa.icono}" alt="${divisa.nombre}" class="w-5 h-5 mr-2"> ${divisa.nombre}`;
+                option2.innerHTML = `<img src="${circularIcon}" alt="${divisa.nombre}" class="w-5 h-5 mr-2"> ${divisa.nombre}`;
                 option2.className = "p-2 hover:bg-gray-100 cursor-pointer";
                 option2.onclick = function () {
                     setCurrency2(divisa.nombre);
