@@ -87,29 +87,78 @@
                 </div>
             </div>
           </section>
-          <section class="max-w-xl mx-auto my-10 bg-white p-8 rounded-xl shadow-lg">
-            <h2 class="text-center text-2xl font-semibold text-gray-800 mb-6">Cotizar cambio</h2>
-            
-            <div class="currency-converter flex justify-between">
-                <!-- Tu código existente para el conversor aquí -->
-            </div>
-            
-            <!-- Tabla comparativa de divisas -->
-            <h3 class="text-center text-xl font-semibold text-gray-800 my-6">Tabla Comparativa de Divisas</h3>
-            
-            <table id="currency-table" class="w-full border border-gray-300">
-                <thead>
-                    <tr class="bg-gray-200">
-                        <th class="p-2">Divisa</th>
-                        <th class="p-2">Tasa de Compra</th>
-                        <th class="p-2">Tasa de Venta</th>
-                    </tr>
-                </thead>
-                <tbody id="currency-table-body">
-                    <!-- Filas de divisas se llenarán aquí -->
-                </tbody>
-            </table>
-        </section>        
+          <section class="relative overflow-x-auto shadow-md sm:rounded-lg">
+              <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                  <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+                      <tr>
+                          <th scope="col" class="px-6 py-3 rounded-s-lg">
+                              Currency
+                          </th>
+                          <th scope="col" class="px-6 py-3">
+                              Exchange Rate
+                          </th>
+                          <th scope="col" class="px-6 py-3">
+                              Change (24h)
+                          </th>
+                          <th scope="col" class="px-6 py-3 rounded-e-lg">
+                              Action
+                          </th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr class="odd:bg-white even:bg-gray-50 dark:odd:bg-gray-900 dark:even:bg-gray-800">
+                          <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                              USD
+                          </th>
+                          <td class="px-6 py-4">
+                              1.00
+                          </td>
+                          <td class="px-6 py-4 text-green-500">
+                              +0.15%
+                          </td>
+                          <td class="px-6 py-4">
+                              <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">View</a>
+                          </td>
+                      </tr>
+                      <tr class="odd:bg-white even:bg-gray-50 dark:odd:bg-gray-900 dark:even:bg-gray-800">
+                          <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                              EUR
+                          </th>
+                          <td class="px-6 py-4">
+                              1.18
+                          </td>
+                          <td class="px-6 py-4 text-red-500">
+                              -0.10%
+                          </td>
+                          <td class="px-6 py-4">
+                              <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">View</a>
+                          </td>
+                      </tr>
+                      <tr class="odd:bg-white even:bg-gray-50 dark:odd:bg-gray-900 dark:even:bg-gray-800">
+                          <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                              GBP
+                          </th>
+                          <td class="px-6 py-4">
+                              1.39
+                          </td>
+                          <td class="px-6 py-4 text-green-500">
+                              +0.05%
+                          </td>
+                          <td class="px-6 py-4">
+                              <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">View</a>
+                          </td>
+                      </tr>
+                  </tbody>
+                  <tfoot>
+                      <tr class="font-semibold text-gray-900 dark:text-white">
+                          <th scope="row" class="px-6 py-3 text-base">Total Currencies</th>
+                          <td class="px-6 py-3">3</td>
+                          <td class="px-6 py-3"></td>
+                          <td class="px-6 py-3"></td>
+                      </tr>
+                  </tfoot>
+              </table>     
+        </section>      
       </main>
   </div>  
     <footer>
