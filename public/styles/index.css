@@ -123,11 +123,11 @@ h2 {
 }
 
 .currency-converter {
-    @apply flex justify-between items-start gap-10; /* Aumentado el gap de 5 a 10 */
+    @apply flex justify-between items-start gap-10; /* Mantiene el espacio entre los contenedores */
 }
 
 .converter-box {
-    @apply flex flex-col flex-1;
+    @apply flex flex-col items-center flex-1; /* Centra el contenido en cada columna */
 }
 
 label {
@@ -166,7 +166,8 @@ input[type="number"]::-moz-outer-spin-button {
 }
 
 .select-box {
-    @apply p-3 border border-gray-300 bg-white rounded-lg cursor-pointer flex justify-between items-center; /* Modificado para alinear íconos y texto */
+    @apply p-3 border border-gray-300 bg-white rounded-lg cursor-pointer flex justify-center items-center; /* Centra horizontalmente */
+    gap: 8px; /* Espacio entre icono y texto */
 }
 
 .select-box img {
@@ -216,6 +217,7 @@ input[type="number"]::-moz-outer-spin-button {
 
 /* Caja de selección */
 .select-box {
+    @apply p-3 border border-gray-300 bg-white rounded-lg cursor-pointer flex justify-center items-center; /* Cambia justify-between por justify-center */
     display: flex;
     align-items: center;
     justify-content: center; /* Centrar los elementos */
@@ -227,6 +229,7 @@ input[type="number"]::-moz-outer-spin-button {
 }
 
 .select-box img {
+    @apply w-6 h-6; /* Sin márgenes adicionales */
     width: 20px;
     height: 20px;
 }
