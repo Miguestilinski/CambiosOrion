@@ -140,19 +140,11 @@ function convertFromAmount2() {
     }
 }
 
-// Función para alternar la visibilidad del dropdown
 function toggleDropdown(dropdownId) {
     const dropdown = document.getElementById(dropdownId);
-    const parent = dropdown.parentElement; // Obtener el contenedor relativo (.relative)
-
-    // Alternar la clase 'open' en el contenedor padre
-    parent.classList.toggle("open");
-
-    // Evitar que el clic en el dropdown cierre inmediatamente
-    dropdown.onclick = function(event) {
-        event.stopPropagation();
-    };
+    dropdown.classList.toggle("hidden"); // Alternar la visibilidad del dropdown
 }
+
 
 // Actualiza el ícono de las divisas seleccionadas
 function updateCurrencyIcon() {
@@ -165,14 +157,10 @@ function updateCurrencyIcon() {
 
 // Cierra los dropdowns si se hace clic fuera de ellos
 window.onclick = function(event) {
-    const dropdownParents = document.querySelectorAll('.relative');
-    dropdownParents.forEach(parent => {
-        const dropdown = parent.querySelector('.dropdown-content');
-        const toggleButton = parent.querySelector('.select-box');
-
-        // Cierra el dropdown si se hace clic fuera del área del dropdown o del botón
-        if (!parent.contains(event.target) && dropdown && toggleButton) {
-            parent.classList.remove('open');
+    const dropdowns = document.querySelectorAll('.dropdown-content');
+    dropdowns.forEach(dropdown => {
+        if (!dropdown.previousElementSibling.contains(event.target)) { // Verifica si el clic no fue en el elemento anterior (el que abre el dropdown)
+            dropdown.classList.add('hidden'); // Asegúrate de que el dropdown esté oculto
         }
     });
 };

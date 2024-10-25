@@ -276,6 +276,10 @@ input[type="number"]::-moz-outer-spin-button {
     cursor: pointer;
 }
 
+.hidden {
+    display: none;
+}
+
 /* Mostrar dropdown al hacer clic */
 .relative.open .dropdown-content {
     display: block;
