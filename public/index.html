@@ -11,8 +11,8 @@
 </head>
 
 <body class="bg-gray-100 font-sans">
-    <header class="bg-white shadow-md py-4">
-        <div class="container mx-auto flex justify-between items-center px-4">
+    <header class="bg-white shadow-md py-4 w-full">
+        <div class="flex justify-between items-center px-4">
             <!-- Logo y Nombre -->
             <div class="header-logo">
                 <img src="/orionapp/assets/LogoOrion-black.png" alt="Logo Cambios Orion" class="logo">
@@ -20,7 +20,7 @@
             </div>
             <!-- Menú de Navegación -->
             <nav>
-                <ul>
+                <ul class="flex space-x-4">
                     <li class="selected"><a href="index.html">Inicio</a></li>
                     <li><a href="#">Servicio</a></li>
                     <li><a href="#">Nosotros</a></li>
@@ -32,14 +32,13 @@
                 <a href="#">Iniciar Sesión</a>
                 <a href="#" class="register-button">Registrarse</a>
             </div>
-        
         </div>
         <!-- Línea divisoria -->
-        <div class="border-t border-black mx-16 mt-2"></div>
+        <div class="border-t border-black mx-4 mt-2"></div>
     </header>
     <div class="main-content">
       <main>
-          <section class="max-w-xl mx-auto my-10 bg-white p-8 rounded-xl shadow-lg">
+          <section class="max-w-xl mx-auto my-10 bg-white p-8 rounded-xl shadow-lg w-full">
               <h2 class="text-center text-2xl font-semibold text-gray-800 mb-6">Cotizar cambio</h2>
               <div class="currency-converter flex justify-between">
                 <!-- Columna izquierda -->
@@ -87,7 +86,7 @@
                 </div>
             </div>
           </section>
-          <section class="max-w-xl mx-auto my-10 bg-white rounded-xl">
+          <section class="max-w-xl mx-auto my-10 bg-white rounded-xl w-full">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <thead class="text-xs uppercase bg-transparent text-gray-700 dark:text-gray-400">
                     <tr>
@@ -109,8 +108,8 @@
         </section>        
       </main>
   </div>  
-    <footer>
-        <div class="footer-container">
+    <footer class="bg-white shadow-md w-full">
+        <div class="footer-container px-4">
           <!-- Sección del logo -->
           <div class="footer-logo">
             <img src="/orionapp/assets/LogoOrion-black.png" alt="Logo Orion" class="logo">
@@ -141,45 +140,8 @@
                 </ul>
                 </div>
             </div>
-      
-          <!-- Información de contacto -->
-          <div class="footer-contact">
-            <div class="contact-info">
-              <!-- Dirección -->
-              <div class="contact-item">
-                <img src="/orionapp/icons/location-black.png" alt="Icono de ubicación" class="icon">
-                <div>
-                  <p>Agustinas 1035 Of 13, Santiago</p>
-                  <small>Lunes a Viernes 09:00 a 17:00 hrs </small>
-                </div>
-              </div>
-      
-              <!-- Teléfono -->
-              <div class="contact-item">
-                <img src="/orionapp/icons/phone-black.png" alt="Icono de teléfono" class="icon">
-                <div>
-                  <p>+56 9 6728 4285</p>
-                  <p>+56 9 9160 6887</p>
-                </div>
-              </div>
-      
-              <!-- Correo -->
-              <div class="contact-item">
-                <img src="/orionapp/icons/email-black.png" alt="Icono de correo" class="icon">
-                <div>
-                  <p>contacto@cambiosorion.cl</p>
-                </div>
-              </div>
-            </div>
-      
-            <!-- Redes sociales -->
-            <div class="social-media">
-              <img src="/orionapp/icons/instagram-black.png" alt="Instagram">
-              <img src="/orionapp/icons/facebook-black.png" alt="Facebook">
-            </div>
-          </div>
         </div>
-      </footer>      
-    <script src="scripts/index.js"></script>
+    </footer>
+    <script src="script.js"></script>
 </body>
 </html>

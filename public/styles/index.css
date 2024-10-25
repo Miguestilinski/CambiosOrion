@@ -22,6 +22,7 @@ header {
     background-color: white; /* Fondo blanco */
     margin: 0;
     position: relative; /* Necesario para la posición de la línea divisoria */
+    flex-wrap: wrap; /* Permitir que los elementos se envuelvan en pantallas pequeñas */
 }
 
 /* Logo y nombre */
@@ -100,7 +101,6 @@ nav ul li.selected a {
     right: 16px; /* Termina al final del botón de registrarse */
     height: 1px; /* Grosor de 1pt */
     background-color: black; /* Color negro */
-    content: "";
 }
 
 /* Clase para el contenido principal */
@@ -129,6 +129,7 @@ h2 {
 
 .converter-box {
     @apply flex flex-col items-center flex-1; /* Centra el contenido en cada columna */
+    min-width: 200px; /* Ancho mínimo para asegurar que no se reduzca demasiado */
 }
 
 label {
@@ -296,9 +297,9 @@ input[type="number"]::-moz-outer-spin-button {
 
 /* Imágenes de las banderas en las opciones */
 .dropdown-content img {
-    width: 20px; /* Tamaño de la imagen */
-    height: 20px; /* Tamaño de la imagen */
-    margin-right: 10px; /* Espacio entre la imagen y el texto */
+    width: 30px; /* Ajusta el tamaño de las imágenes */
+    height: auto;
+    margin-right: 8px; /* Espacio entre la imagen y el texto */
 }
 
 /* Contenedor principal del footer */
@@ -426,12 +427,44 @@ footer {
 }
 
 @media (max-width: 768px) {
+    nav ul {
+        flex-direction: column; /* Cambia a columna en pantallas pequeñas */
+        gap: 10px; /* Espacio reducido entre elementos */
+    }
+
     .footer-container {
         flex-direction: column;
         align-items: center;
     }
+
     .footer-navigation {
         width: 100%;
         justify-content: center;
+    }
+
+    .header-actions {
+        flex-direction: column; /* Cambia a columna para los botones de acción */
+        gap: 10px; /* Espacio entre botones reducido */
+    }
+
+    .converter-box {
+        flex: 1 1 100%; /* Cada columna ocupa el 100% del ancho en pantallas pequeñas */
+    }
+
+    /* Ajustes adicionales para la sección del conversor */
+    .converter-section {
+        padding: 20px; /* Ajusta el padding en pantallas pequeñas */
+    }
+
+    .header-logo img.logo {
+        width: 60px; /* Reduce el tamaño del logo */
+    }
+
+    .header-logo img.nombre {
+        width: 100px; /* Reduce el tamaño del nombre */
+    }
+
+    .header-actions .register-button {
+        padding: 6px 12px; /* Ajusta el padding de los botones en pantallas pequeñas */
     }
 }
