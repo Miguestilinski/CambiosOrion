@@ -251,6 +251,10 @@ input[type="number"]::-moz-outer-spin-button {
     text-align: right; /* Alinear el texto a la derecha */
 }
 
+.currency-selector {
+    justify-content: center;
+}
+
 /* Contenido desplegable */
 .dropdown-content {
     display: none;
