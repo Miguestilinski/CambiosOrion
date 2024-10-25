@@ -338,12 +338,14 @@ footer {
     display: flex; /* Para alinear las secciones del menú en una fila */
     justify-content: space-between; /* Espacio entre las secciones */
     width: 50%; /* Tomar todo el ancho disponible */
+    flex-wrap: wrap; /* Permitir que las secciones se envuelvan si no hay espacio */
 }
 
 .nav-section {
     display: flex;
     flex-direction: column; /* Apilar los elementos dentro de cada sección */
     align-items: flex-start; /* Alinear a la izquierda */
+    width: 30%; /* Ajustar el ancho según lo necesario */
 }
 
 .footer-navigation h3 {
@@ -354,8 +356,10 @@ footer {
 
 .footer-navigation ul {
     display: flex;
-    list-style: none;
+    flex-direction: column; /* Apilar los elementos de la lista verticalmente */
+    list-style: none; /* Sin viñetas */
     padding: 0;
+    margin: 0; 
     gap: 5px; /* Reducido el espacio entre los elementos del menú */
 }
 
