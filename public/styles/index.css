@@ -12,12 +12,6 @@ html, body {
     margin: 0;
 }
 
-
-/* Clase para el contenido principal */
-.main-content {
-    flex: 1; /* Toma el espacio restante para que el footer esté en la parte inferior */
-}
-
 /* Header */
 header {
     width: 100vw; /* Asegura que ocupe todo el ancho de la ventana */
@@ -109,6 +103,11 @@ nav ul li.selected a {
     content: "";
 }
 
+/* Clase para el contenido principal */
+.main-content {
+    flex: 1; /* Toma el espacio restante para que el footer esté en la parte inferior */
+}
+
 /* Sección principal del conversor */
 .container {
     @apply max-w-lg mx-auto bg-white p-10 rounded-lg shadow-lg;
@@ -123,7 +122,9 @@ h2 {
 }
 
 .currency-converter {
-    @apply flex justify-between items-start gap-10; /* Mantiene el espacio entre los contenedores */
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap; /* Para permitir que los elementos se ajusten si no caben */
 }
 
 .converter-box {
@@ -200,6 +201,11 @@ input[type="number"]::-moz-outer-spin-button {
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.converter-box {
+    flex: 1 1 45%; /* Permite que cada columna ocupe aproximadamente el 45% del ancho */
+    padding: 1rem; /* Espaciado interno */
+}
+
 /* Disclaimer */
 .disclaimer {
     font-size: 0.9rem;
@@ -249,6 +255,7 @@ input[type="number"]::-moz-outer-spin-button {
 .dropdown-content {
     display: none;
     position: absolute;
+    display: none; /* Asegúrate de manejar el estado visible con JavaScript */
     background-color: #fff;
     min-width: 100%;
     z-index: 1;
