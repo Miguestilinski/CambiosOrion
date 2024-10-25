@@ -428,8 +428,9 @@ footer {
 
 @media (max-width: 768px) {
     nav ul {
-        flex-direction: column; /* Cambia a columna en pantallas pequeñas */
-        gap: 10px; /* Espacio reducido entre elementos */
+        flex-direction: column; /* Cambia a columna */
+        gap: 10px; /* Espacio entre los elementos en columna */
+        margin-right: 0; /* Elimina el margen derecho */
     }
 
     .footer-container {
@@ -443,8 +444,8 @@ footer {
     }
 
     .header-actions {
-        flex-direction: column; /* Cambia a columna para los botones de acción */
-        gap: 10px; /* Espacio entre botones reducido */
+        flex-direction: column; /* Cambia a columna */
+        align-items: flex-start; /* Alinea a la izquierda */
     }
 
     .converter-box {
