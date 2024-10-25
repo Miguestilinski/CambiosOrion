@@ -272,6 +272,10 @@ input[type="number"]::-moz-outer-spin-button {
     background-color: #f1f1f1;
 }
 
+.relative {
+    cursor: pointer;
+}
+
 /* Mostrar dropdown al hacer clic */
 .relative.open .dropdown-content {
     display: block;
@@ -293,7 +297,6 @@ footer {
 }
 
 .footer-container {
-    margin: 20px 0;
     display: flex;
     justify-content: space-between; /* Distribuir el espacio entre las 3 secciones */
 }
