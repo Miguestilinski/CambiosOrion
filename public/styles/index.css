@@ -229,7 +229,6 @@ input[type="number"]::-moz-outer-spin-button {
 .select-box img {
     width: 20px;
     height: 20px;
-    vertical-align: left;
 }
 
 /* Chevron */
@@ -241,10 +240,6 @@ input[type="number"]::-moz-outer-spin-button {
 .select-box span {
     flex-grow: 1;
     text-align: right; /* Alinear el texto a la derecha */
-}
-
-.select-box img:last-child {
-    margin-left: auto;
 }
 
 /* Contenido desplegable */
@@ -274,10 +269,6 @@ input[type="number"]::-moz-outer-spin-button {
 
 .dropdown-content.show {
     display: block; /* Muestra el dropdown */
-}
-
-.cursor-pointer {
-    cursor: pointer; /* Cambia el cursor al pasar sobre el contenedor */
 }
 
 .relative {
