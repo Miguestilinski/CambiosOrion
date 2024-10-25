@@ -218,12 +218,12 @@ input[type="number"]::-moz-outer-spin-button {
 .select-box {
     display: flex;
     align-items: center;
+    justify-content: center; /* Centrar los elementos */
     cursor: pointer;
     gap: 8px; /* Espacio entre los elementos */
     padding: 10px;
     background-color: #fff;
     border-radius: 8px;
-    justify-content: space-between;
 }
 
 .select-box img {
