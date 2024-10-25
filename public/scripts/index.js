@@ -56,7 +56,10 @@ function loadCurrencies() {
             document.getElementById("currency2-text").textContent = "USD"; 
 
             // Inicializar el ícono al cargar
-            updateCurrencyIcon(); 
+            updateCurrencyIcon();
+
+            // Llenar la tabla comparativa
+            fillCurrencyTable();
         })
         .catch(error => console.error('Error al cargar las divisas:', error));
 }
@@ -166,3 +169,43 @@ window.onclick = function(event) {
         }
     });
 };
+
+// Llenar la tabla comparativa de divisas
+function fillCurrencyTable() {
+    const tableBody = document.getElementById("currency-table-body");
+    tableBody.innerHTML = ''; // Limpiar contenido previo
+
+    for (const [divisa, datos] of Object.entries(exchangeRates)) {
+        const row = document.createElement("tr");
+        
+        // Crear celdas
+        const cellCurrency = document.createElement("td");
+        cellCurrency.textContent = divisa;
+        cellCurrency.className = "p-2";
+
+        const cellIcon = document.createElement("td");
+        const img = document.createElement("img");
+        img.src = datos.icono;
+        img.alt = divisa;
+        img.className = "w-5 h-5";
+        cellIcon.appendChild(img);
+        cellIcon.className = "p-2";
+
+        const cellCompra = document.createElement("td");
+        cellCompra.textContent = datos.compra.toFixed(2);
+        cellCompra.className = "p-2";
+
+        const cellVenta = document.createElement("td");
+        cellVenta.textContent = datos.venta.toFixed(2);
+        cellVenta.className = "p-2";
+
+        // Agregar celdas a la fila
+        row.appendChild(cellCurrency);
+        row.appendChild(cellIcon);
+        row.appendChild(cellCompra);
+        row.appendChild(cellVenta);
+
+        // Agregar fila a la tabla
+        tableBody.appendChild(row);
+    }
+}
