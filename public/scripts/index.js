@@ -1,8 +1,8 @@
 let exchangeRates = {};
 let iconsLoaded = {}; // Almacena los íconos en memoria
 
-document.addEventListener("DOMContentLoaded", function() {
-    loadCurrencies(); // Llama a tu función una vez que el DOM esté listo
+document.addEventListener("DOMContentLoaded", () => {
+    loadCurrencies();
 });
 
 // Cargar las divisas
