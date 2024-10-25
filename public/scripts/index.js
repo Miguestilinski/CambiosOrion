@@ -170,13 +170,14 @@ window.onclick = function(event) {
     });
 };
 
-// Llenar la tabla comparativa de divisas con icono y nombre en la misma celda
 function fillCurrencyTable() {
     const tableBody = document.getElementById("currency-table-body");
     tableBody.innerHTML = ''; // Limpiar contenido previo
 
     // Crear la primera fila con CLP
     const clpRow = document.createElement("tr");
+    clpRow.className = "bg-gray-100"; // Fondo claro para CLP
+    
     const clpCell = document.createElement("td");
     clpCell.className = "p-2 flex items-center";
 
@@ -202,10 +203,11 @@ function fillCurrencyTable() {
         if (divisa === "CLP" || count >= 4) continue; // Omitir CLP y limitar a 4 divisas
 
         const row = document.createElement("tr");
+        row.className = count % 2 === 0 ? "bg-white" : "bg-gray-100"; // Colores alternos
 
         // Combinar icono y nombre de divisa en una celda
         const cellCurrency = document.createElement("td");
-        cellCurrency.className = "p-2 flex items-center";
+        cellCurrency.className = "p-2 flex items-center rounded-l-md"; // Borde redondeado izquierdo
         
         const icon = document.createElement("img");
         icon.src = datos.icono;
@@ -220,7 +222,7 @@ function fillCurrencyTable() {
 
         const cellVenta = document.createElement("td");
         cellVenta.textContent = `${datos.venta.toFixed(2)} CLP`;
-        cellVenta.className = "p-2";
+        cellVenta.className = "p-2 rounded-r-md"; // Borde redondeado derecho
 
         // Agregar celdas a la fila
         row.appendChild(cellCurrency);
