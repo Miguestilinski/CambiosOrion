@@ -75,6 +75,11 @@ nav ul li.selected a {
     border-radius: 5px;
     font-weight: bold;
     text-decoration: none;
+    transition: transform 0.2s ease;
+}
+
+.header-actions .register-button:hover {
+    transform: scale(1.2);
 }
 
 /* Línea negra alineada con los elementos del header */
@@ -135,11 +140,6 @@ input[type="number"]::-moz-outer-spin-button {
 }
 
 
-/* Estilo del botón */
-button {
-    @apply w-full bg-green-600 text-white py-3 text-lg rounded-lg mt-4 hover:bg-green-700;
-}
-
 /* Disclaimer */
 .disclaimer {
     @apply text-sm text-gray-500 text-center mt-4;
@@ -181,22 +181,6 @@ button {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Estilo del botón */
-button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 15px;
-    font-size: 1.1rem;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    margin-top: 20px;
-}
-
-button:hover {
-    background-color: #45a049;
 }
 
 /* Disclaimer */
@@ -330,12 +314,7 @@ footer {
 }
 
 .footer-navigation a {
-    color: #0066cc; /* Azul para los enlaces */
-    transition: color 0.3s ease;
-}
-
-.footer-navigation a:hover {
-    color: #003366; /* Color más oscuro al pasar el cursor */
+    color: black
 }
 
 /* Información de contacto */
@@ -383,7 +362,7 @@ footer {
 .social-media img {
     width: 40px;
     height: 40px;
-    transition: transform 0.3s ease;
+    transition: transform 0.2s ease;
 }
 
 .social-media img:hover {
