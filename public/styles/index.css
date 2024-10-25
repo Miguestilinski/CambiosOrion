@@ -3,6 +3,19 @@ body {
     @apply font-sans bg-gray-100;
 }
 
+html, body {
+    height: 100%; /* Asegura que el contenedor ocupe toda la pantalla */
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+}
+
+
+/* Clase para el contenido principal */
+.main-content {
+    flex: 1; /* Toma el espacio restante para que el footer esté en la parte inferior */
+}
+
 /* Header */
 header {
     display: flex;
@@ -79,7 +92,7 @@ nav ul li.selected a {
 }
 
 .header-actions .register-button:hover {
-    transform: scale(1.2);
+    transform: scale(1.1);
 }
 
 /* Línea negra alineada con los elementos del header */
@@ -256,6 +269,8 @@ input[type="number"]::-moz-outer-spin-button {
 footer {
     background-color: white; /* Fondo blanco para el footer */
     box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%; /* Asegura que ocupe todo el ancho */
+    padding: 40px;
 }
 
 .footer-container {
@@ -366,7 +381,7 @@ footer {
 }
 
 .social-media img:hover {
-    transform: scale(1.2);
+    transform: scale(1.1);
 }
 
 /* Footer copyright */
