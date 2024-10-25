@@ -257,7 +257,7 @@ input[type="number"]::-moz-outer-spin-button {
 
 /* Contenido desplegable */
 .dropdown-content {
-    display: none;
+    display: none; /* Ocultar por defecto */
     position: absolute;
     display: none; /* Asegúrate de manejar el estado visible con JavaScript */
     background-color: #fff;
@@ -290,8 +290,8 @@ input[type="number"]::-moz-outer-spin-button {
 }
 
 /* Mostrar dropdown al hacer clic */
-.relative.open .dropdown-content {
-    display: block;
+.dropdown-content.open {
+    display: block; /* Mostrar si tiene la clase 'open' */
 }
 
 /* Imágenes de las banderas en las opciones */
