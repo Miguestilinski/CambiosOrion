@@ -216,17 +216,26 @@ input[type="number"]::-moz-outer-spin-button {
 
 /* Caja de selección */
 .select-box {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    gap: 8px; /* Espacio entre los elementos */
     padding: 10px;
     background-color: #fff;
-    cursor: pointer;
     border-radius: 8px;
-    display: flex;
     justify-content: space-between;
-    align-items: center;
 }
 
 .select-box img {
-    vertical-align: middle;
+    width: 20px;
+    height: 20px;
+    vertical-align: left;
+}
+
+/* Chevron */
+.select-box .w-4.h-4 {
+    width: 16px;
+    height: 16px;
 }
 
 .select-box span {
@@ -245,20 +254,27 @@ input[type="number"]::-moz-outer-spin-button {
     background-color: #fff;
     min-width: 100%;
     z-index: 1;
+    margin-top: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     max-height: 150px; /* Tamaño fijo para evitar que sea demasiado grande */
     overflow-y: scroll; /* Permite el scroll */
 }
 
 /* Opciones dentro del dropdown */
 .dropdown-content div {
-    padding: 10px;
-    cursor: pointer;
     display: flex;
     align-items: center;
+    padding: 8px 12px;
+    cursor: pointer;
 }
 
 .dropdown-content div:hover {
     background-color: #f1f1f1;
+}
+
+/* Mostrar dropdown al hacer clic */
+.relative.open .dropdown-content {
+    display: block;
 }
 
 /* Imágenes de las banderas en las opciones */
