@@ -1,109 +1,71 @@
 /* Estilos globales */
 body {
-    @apply font-sans bg-gray-100;
-    margin: 0; /* Elimina márgenes en el body */
-    padding: 0; /* Elimina padding en el body */
-}
-
-html, body {
+    @apply font-sans bg-gray-100 m-0 p-0;
     height: 100%; /* Asegura que el contenedor ocupe toda la pantalla */
     display: flex;
     flex-direction: column;
-    margin: 0;
 }
 
 /* Header */
 header {
-    width: 100vw; /* Asegura que ocupe todo el ancho de la ventana */
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px;
-    background-color: white; /* Fondo blanco */
-    margin: 0;
+    @apply flex justify-between items-center bg-white p-4;
+    width: 100%; /* Asegura que ocupe todo el ancho de la ventana */
     position: relative; /* Necesario para la posición de la línea divisoria */
 }
 
 /* Logo y nombre */
 .header-logo {
-    display: flex;
-    align-items: center;
-    margin-right: 50px; /* Aumenta el espacio entre el logo y el menú de navegación */
+    @apply flex items-center mr-12; /* Espacio entre el logo y el menú de navegación */
 }
 
 .header-logo img.logo {
-    width: 80px; /* Ajusta el tamaño del logo */
-    height: auto; /* Mantén las proporciones */
-    margin-right: 10px; /* Espacio entre logo y nombre */
+    @apply w-20 h-auto mr-2; /* Ajusta el tamaño del logo y el margen */
 }
 
 .header-logo img.nombre {
-    width: 120px; /* Ajusta el tamaño del nombre */
-    height: auto; /* Mantén las proporciones */
+    @apply w-30 h-auto; /* Ajusta el tamaño del nombre */
 }
 
 /* Menú de navegación */
 nav ul {
-    display: flex;
-    list-style: none;
-    gap: 30px; /* Espacio entre los elementos del menú */
-    margin-right: 50px; /* Aumenta el espacio entre el menú y los botones de acción */
+    @apply flex list-none gap-8 mr-12; /* Espacio entre los elementos del menú */
 }
 
 nav ul li {
-    font-size: 16px;
-    font-weight: 500;
-    position: relative;
+    @apply relative;
 }
 
 nav ul li a {
-    text-decoration: none;
-    color: black; /* Color negro del texto */
+    @apply text-black no-underline;
 }
 
 nav ul li.selected a {
-    border-bottom: 2px solid black; /* Línea negra de 2pts debajo del seleccionado */
+    @apply border-b-2 border-black; /* Línea negra de 2pts debajo del seleccionado */
 }
 
 /* Iniciar Sesión y Registrarse */
 .header-actions {
-    display: flex;
-    align-items: center;
-    gap: 20px; /* Espacio entre los botones de iniciar sesión y registrarse */
+    @apply flex items-center gap-5; /* Espacio entre los botones de iniciar sesión y registrarse */
 }
 
 .header-actions a {
-    font-size: 16px;
-    color: black;
-    text-decoration: none;
+    @apply text-black text-lg;
 }
 
 .header-actions .register-button {
-    background-color: blue;
-    color: white;
-    padding: 8px 16px;
-    border-radius: 5px;
-    font-weight: bold;
-    text-decoration: none;
-    transition: transform 0.2s ease;
+    @apply bg-blue-500 text-white px-4 py-2 rounded-md font-bold transition-transform duration-200;
 }
 
 .header-actions .register-button:hover {
     transform: scale(1.05);
 }
 
-/* Línea negra alineada con los elementos del header */
+/* Línea divisoria */
 .header-divider {
-    position: absolute;
-    bottom: 0; /* Alinea la línea al final del header */
-    left: 80px; /* Comienza desde el inicio del logo */
-    right: 16px; /* Termina al final del botón de registrarse */
-    height: 1px; /* Grosor de 1pt */
-    background-color: black; /* Color negro */
-    content: "";
+    @apply absolute bottom-0 left-20 right-4 h-px bg-black;
 }
 
-/* Clase para el contenido principal */
+/* Contenido principal */
 .main-content {
     flex: 1; /* Toma el espacio restante para que el footer esté en la parte inferior */
 }
@@ -121,18 +83,13 @@ h2 {
     @apply max-w-xl mx-auto mt-12 bg-white p-6 rounded-lg shadow-lg;
 }
 
+/* Conversor de moneda */
 .currency-converter {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap; /* Para permitir que los elementos se ajusten si no caben */
+    @apply flex justify-between flex-wrap; /* Para permitir que los elementos se ajusten si no caben */
 }
 
 .converter-box {
     @apply flex flex-col items-center flex-1; /* Centra el contenido en cada columna */
-}
-
-label {
-    @apply text-lg mb-2 font-semibold;
 }
 
 /* Estilo para el input de números */
@@ -144,7 +101,6 @@ input[type="number"] {
     appearance: none; /* Elimina el estilo predeterminado en otros navegadores */
 }
 
-/* Para ocultar los botones de incremento y decremento en los navegadores */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none; /* Oculta en Chrome/Safari */
@@ -156,262 +112,87 @@ input[type="number"]::-moz-outer-spin-button {
     display: none; /* Oculta en Firefox */
 }
 
-
 /* Disclaimer */
 .disclaimer {
     @apply text-sm text-gray-500 text-center mt-4;
 }
 
+/* Selector personalizado */
 .custom-select {
     @apply relative w-full;
 }
 
 .select-box {
-    @apply p-3 border border-gray-300 bg-white rounded-lg cursor-pointer flex justify-center items-center; /* Centra horizontalmente */
-    gap: 8px; /* Espacio entre icono y texto */
-}
-
-.select-box img {
-    @apply w-6 h-6 ml-2; /* Margen izquierdo para la imagen */
-}
-
-.select-box span {
-    @apply flex-grow text-right; /* Alinear texto a la derecha */
-}
-
-.dropdown-content {
-    @apply absolute z-10 w-full bg-white border border-gray-300 rounded-lg shadow-md max-h-40 overflow-y-scroll mt-1;
-}
-
-.dropdown-content div {
-    @apply p-3 flex items-center cursor-pointer hover:bg-gray-100;
-}
-
-.dropdown-content img {
-    @apply w-6 h-6 mr-3;
-}
-
-/* Modificaciones personalizadas para mejorar la apariencia y funcionalidad */
-
-/* Fondo y sombra del contenedor del conversor */
-.converter-section {
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.converter-box {
-    flex: 1 1 45%; /* Permite que cada columna ocupe aproximadamente el 45% del ancho */
-    padding: 1rem; /* Espaciado interno */
-}
-
-/* Disclaimer */
-.disclaimer {
-    font-size: 0.9rem;
-    color: #666;
-    text-align: center;
-    margin-top: 10px;
-}
-
-/* Contenedor de selección personalizado */
-.custom-select {
-    position: relative;
-    display: inline-block;
-    width: 100%; /* Ajusta según sea necesario */
-}
-
-/* Caja de selección */
-.select-box {
-    @apply p-3 border border-gray-300 bg-white rounded-lg cursor-pointer flex justify-center items-center; /* Cambia justify-between por justify-center */
-    display: flex;
-    align-items: center;
-    justify-content: center; /* Centrar los elementos */
-    cursor: pointer;
-    gap: 8px; /* Espacio entre los elementos */
-    padding: 10px;
-    background-color: #fff;
-    border-radius: 8px;
+    @apply p-3 border border-gray-300 bg-white rounded-lg cursor-pointer flex justify-center items-center gap-2;
 }
 
 .select-box img {
     @apply w-6 h-6; /* Sin márgenes adicionales */
-    width: 20px;
-    height: 20px;
-}
-
-/* Chevron */
-.select-box .w-4.h-4 {
-    width: 16px;
-    height: 16px;
-}
-
-.select-box span {
-    flex-grow: 1;
-    text-align: right; /* Alinear el texto a la derecha */
-}
-
-.currency-selector {
-    justify-content: center;
 }
 
 /* Contenido desplegable */
 .dropdown-content {
-    display: none;
-    position: absolute;
-    display: none; /* Asegúrate de manejar el estado visible con JavaScript */
-    background-color: #fff;
-    min-width: 100%;
-    z-index: 1;
-    margin-top: 8px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    max-height: 150px; /* Tamaño fijo para evitar que sea demasiado grande */
-    overflow-y: scroll; /* Permite el scroll */
+    @apply absolute z-10 w-full bg-white border border-gray-300 rounded-lg shadow-md max-h-40 overflow-y-scroll mt-1;
+    display: none; /* Ocultar por defecto */
 }
 
 /* Opciones dentro del dropdown */
 .dropdown-content div {
-    display: flex;
-    align-items: center;
-    padding: 8px 12px;
-    cursor: pointer;
-}
-
-.dropdown-content div:hover {
-    background-color: #f1f1f1;
-}
-
-.dropdown-content.show {
-    display: block; /* Muestra el dropdown */
-}
-
-.relative {
-    cursor: pointer;
-}
-
-/* Mostrar dropdown al hacer clic */
-.relative.open .dropdown-content {
-    display: block;
-}
-
-/* Imágenes de las banderas en las opciones */
-.dropdown-content img {
-    width: 20px; /* Tamaño de la imagen */
-    height: 20px; /* Tamaño de la imagen */
-    margin-right: 10px; /* Espacio entre la imagen y el texto */
+    @apply p-3 flex items-center cursor-pointer hover:bg-gray-100;
 }
 
 /* Contenedor principal del footer */
 footer {
-    background-color: white; /* Fondo blanco para el footer */
-    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
-    width: 100%; /* Asegura que ocupe todo el ancho */
-    padding: 40px;
+    @apply bg-white shadow-md w-full p-10;
 }
 
 .footer-container {
-    display: flex;
-    justify-content: space-between; /* Distribuir el espacio entre las 3 secciones */
+    @apply flex justify-between; /* Distribuir el espacio entre las secciones */
 }
 
-/* Sección del logo */
+/* Logo del footer */
 .footer-logo {
-    display: flex;
-    flex-direction: column; /* Para alinear el nombre debajo del logo */
-    align-items: center;
-    margin-right: 20px; /* Reducido el espacio horizontal entre el logo y el mapa de navegación */
+    @apply flex flex-col items-center mr-5; /* Espacio entre el logo y el mapa de navegación */
 }
 
 .footer-logo .logo {
-    width: 120px; /* Ancho del logo */
-    margin-bottom: 10px;
-}
-
-.footer-logo .nombre {
-    width: 150px; /* Ancho del nombre */
-    height: auto; /* Mantén las proporciones */
+    @apply w-30 mb-2; /* Ancho del logo */
 }
 
 /* Mapa de navegación */
 .footer-navigation {
-    display: flex; /* Para alinear las secciones del menú en una fila */
-    justify-content: space-between; /* Espacio entre las secciones */
-    width: 50%; /* Tomar todo el ancho disponible */
+    @apply flex justify-between w-1/2; /* Tomar todo el ancho disponible */
 }
 
 .nav-section {
-    display: flex;
-    flex-direction: column; /* Apilar los elementos dentro de cada sección */
-    align-items: flex-start; /* Alinear a la izquierda */
+    @apply flex flex-col items-start; /* Alinear a la izquierda */
 }
 
 .footer-navigation h3 {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 8px;
+    @apply text-lg font-bold mb-2;
 }
 
 .footer-navigation ul {
-    display: flex;
-    list-style: none;
-    padding: 0;
-    gap: 5px; /* Reducido el espacio entre los elementos del menú */
-}
-
-.footer-navigation li {
-    margin-bottom: 5px;
+    @apply flex list-none p-0 gap-2; /* Reducido el espacio entre los elementos del menú */
 }
 
 .footer-navigation a {
-    color: black
+    @apply text-black;
 }
 
 /* Información de contacto */
 .footer-contact {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+    @apply flex flex-col gap-5;
     margin-left: 20px; /* Mover la información de contacto hacia la izquierda */
-    margin-bottom: 40px; /* Espacio adicional entre la info de contacto y las redes sociales */
-}
-
-.contact-info {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.contact-item {
-    display: flex;
-    align-items: center; /* Alineación vertical de iconos y texto */
-    gap: 10px;
-}
-
-.contact-item img.icon {
-    width: 30px;
-    height: 30px; /* Tamaño de los iconos de contacto */
-}
-
-.contact-item p {
-    margin: 0;
-}
-
-.contact-item small {
-    font-size: 12px; /* Tamaño menor para el horario */
-    color: #555;
 }
 
 /* Redes sociales */
 .social-media {
-    display: flex;
-    justify-content: center; /* Centrar los iconos de redes sociales */
-    gap: 15px;
+    @apply flex justify-center gap-4;
 }
 
 .social-media img {
-    width: 30px;
-    height: 30px;
-    transition: transform 0.2s ease;
+    @apply w-8 h-8 transition-transform duration-200;
 }
 
 .social-media img:hover {
@@ -420,18 +201,15 @@ footer {
 
 /* Footer copyright */
 .footer-copyright {
-    text-align: center; /* Centrar el texto del copyright */
-    padding: 20px 0; /* Espacio arriba y abajo del copyright */
-    background-color: #f9f9f9; /* Fondo gris claro */
+    @apply text-center py-5 bg-gray-100; /* Fondo gris claro */
 }
 
+/* Responsivo */
 @media (max-width: 768px) {
     .footer-container {
-        flex-direction: column;
-        align-items: center;
+        @apply flex-col items-center;
     }
     .footer-navigation {
-        width: 100%;
-        justify-content: center;
+        @apply w-full justify-center;
     }
 }

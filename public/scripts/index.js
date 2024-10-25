@@ -143,15 +143,7 @@ function convertFromAmount2() {
 // Función para alternar la visibilidad del dropdown
 function toggleDropdown(dropdownId) {
     const dropdown = document.getElementById(dropdownId);
-    const parent = dropdown.parentElement; // Obtener el contenedor relativo (.relative)
-
-    // Alternar la clase 'hidden' en el dropdown
-    dropdown.classList.toggle('hidden');
-    
-    // Evitar que el clic en el dropdown cierre inmediatamente
-    dropdown.onclick = function(event) {
-        event.stopPropagation();
-    };
+    dropdown.classList.toggle("hidden"); // Alternar la clase 'hidden'
 }
 
 // Actualiza el ícono de las divisas seleccionadas
@@ -167,8 +159,8 @@ function updateCurrencyIcon() {
 window.onclick = function(event) {
     const dropdowns = document.querySelectorAll('.dropdown-content');
     dropdowns.forEach(dropdown => {
-        if (!dropdown.parentElement.contains(event.target)) {
-            dropdown.classList.add('hidden');
+        if (!dropdown.previousElementSibling.contains(event.target) && dropdown.classList.contains('open')) {
+            dropdown.classList.add('hidden'); // Asegúrate de que esté oculto
         }
     });
 };
