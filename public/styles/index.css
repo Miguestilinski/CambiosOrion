@@ -95,7 +95,7 @@ nav ul li.selected a {
 }
 
 .header-actions .register-button:hover {
-    transform: scale(1.1);
+    transform: scale(1.05);
 }
 
 /* Línea negra alineada con los elementos del header */
@@ -291,7 +291,7 @@ footer {
 }
 
 .footer-logo .logo {
-    width: 140px; /* Ancho del logo */
+    width: 120px; /* Ancho del logo */
     margin-bottom: 10px;
 }
 
@@ -356,8 +356,8 @@ footer {
 }
 
 .contact-item img.icon {
-    width: 40px;
-    height: 40px; /* Tamaño de los iconos de contacto */
+    width: 30px;
+    height: 30px; /* Tamaño de los iconos de contacto */
 }
 
 .contact-item p {
@@ -377,8 +377,8 @@ footer {
 }
 
 .social-media img {
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     transition: transform 0.2s ease;
 }
 
