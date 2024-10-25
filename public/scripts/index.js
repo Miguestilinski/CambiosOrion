@@ -170,42 +170,65 @@ window.onclick = function(event) {
     });
 };
 
-// Llenar la tabla comparativa de divisas
+// Llenar la tabla comparativa de divisas con icono y nombre en la misma celda
 function fillCurrencyTable() {
     const tableBody = document.getElementById("currency-table-body");
     tableBody.innerHTML = ''; // Limpiar contenido previo
 
-    for (const [divisa, datos] of Object.entries(exchangeRates)) {
-        const row = document.createElement("tr");
-        
-        // Crear celdas
-        const cellCurrency = document.createElement("td");
-        cellCurrency.textContent = divisa;
-        cellCurrency.className = "p-2";
+    // Crear la primera fila con CLP
+    const clpRow = document.createElement("tr");
+    const clpCell = document.createElement("td");
+    clpCell.className = "p-2 flex items-center";
 
-        const cellIcon = document.createElement("td");
-        const img = document.createElement("img");
-        img.src = datos.icono;
-        img.alt = divisa;
-        img.className = "w-5 h-5";
-        cellIcon.appendChild(img);
-        cellIcon.className = "p-2";
+    // Ícono y nombre de CLP
+    const clpImg = document.createElement("img");
+    clpImg.src = exchangeRates["CLP"].icono;
+    clpImg.alt = "CLP";
+    clpImg.className = "w-5 h-5 mr-2";
+    clpCell.appendChild(clpImg);
+    clpCell.appendChild(document.createTextNode("CLP"));
+    clpRow.appendChild(clpCell);
+
+    // Crear celdas vacías para compra y venta
+    clpRow.appendChild(document.createElement("td"));
+    clpRow.appendChild(document.createElement("td"));
+    tableBody.appendChild(clpRow);
+
+    // Contador de divisas
+    let count = 0;
+
+    // Rellenar filas para otras divisas, máximo de 4
+    for (const [divisa, datos] of Object.entries(exchangeRates)) {
+        if (divisa === "CLP" || count >= 4) continue; // Omitir CLP y limitar a 4 divisas
+
+        const row = document.createElement("tr");
+
+        // Combinar icono y nombre de divisa en una celda
+        const cellCurrency = document.createElement("td");
+        cellCurrency.className = "p-2 flex items-center";
+        
+        const icon = document.createElement("img");
+        icon.src = datos.icono;
+        icon.alt = divisa;
+        icon.className = "w-5 h-5 mr-2";
+        cellCurrency.appendChild(icon);
+        cellCurrency.appendChild(document.createTextNode(divisa));
 
         const cellCompra = document.createElement("td");
-        cellCompra.textContent = datos.compra.toFixed(2);
+        cellCompra.textContent = `${datos.compra.toFixed(2)} CLP`;
         cellCompra.className = "p-2";
 
         const cellVenta = document.createElement("td");
-        cellVenta.textContent = datos.venta.toFixed(2);
+        cellVenta.textContent = `${datos.venta.toFixed(2)} CLP`;
         cellVenta.className = "p-2";
 
         // Agregar celdas a la fila
         row.appendChild(cellCurrency);
-        row.appendChild(cellIcon);
         row.appendChild(cellCompra);
         row.appendChild(cellVenta);
 
         // Agregar fila a la tabla
         tableBody.appendChild(row);
+        count++; // Incrementar el contador de divisas
     }
 }
