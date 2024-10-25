@@ -174,10 +174,10 @@ function fillCurrencyTable() {
     const tableBody = document.getElementById("currency-table-body");
     tableBody.innerHTML = ''; // Limpiar contenido previo
 
-    // Crear la primera fila con CLP
+    // Crear la fila para CLP con color azul
     const clpRow = document.createElement("tr");
-    clpRow.className = "bg-gray-100"; // Fondo claro para CLP
-    
+    clpRow.className = "bg-blue-100"; // Fondo azul para la fila CLP
+
     const clpCell = document.createElement("td");
     clpCell.className = "p-2 flex items-center";
 
@@ -234,3 +234,13 @@ function fillCurrencyTable() {
         count++; // Incrementar el contador de divisas
     }
 }
+
+// Aplicar estilo al encabezado de la tabla
+const currencyTableHeader = document.querySelectorAll("#currency-table thead th");
+currencyTableHeader.forEach((header, index) => {
+    header.classList.add("bg-transparent", "p-2", "border-none"); // Fondo transparente y sin bordes
+
+    if (index === 0) {
+        header.classList.add("hidden"); // Ocultar el encabezado de la columna "Divisa"
+    }
+});
