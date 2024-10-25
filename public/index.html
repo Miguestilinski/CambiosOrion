@@ -49,23 +49,21 @@
                       <input type="number" id="amount1" placeholder="0.00" step="0.01" min="0"
                           class="w-full p-4 border rounded-lg shadow-md text-right bg-white mb-3 appearance-none"
                           oninput="convertFromAmount1()">
-                      <div class="relative flex items-center h-full">
-                          <div id="currency1" class="flex items-center cursor-pointer p-2 justify-center"
-                              onclick="toggleDropdown('dropdown1')">
-                              <img id="icon-currency1" src="/orionapp/node_modules/circle-flags/flags/cl.svg" alt="Icono divisa" class="w-5 h-5 mr-2">
-                              <span id="currency1-text" class="text-center">CLP</span>
-                              <img src="/orionapp/icons/chevron-down-black.svg" alt="Chevron" class="w-4 h-4 ml-2">
+                      <div id="currency1" class="flex items-center cursor-pointer p-2 justify-center"
+                          onclick="toggleDropdown('dropdown1')">
+                          <img id="icon-currency1" src="/orionapp/node_modules/circle-flags/flags/cl.svg" alt="Icono divisa" class="w-5 h-5 mr-2">
+                          <span id="currency1-text" class="text-center">CLP</span>
+                          <img src="/orionapp/icons/chevron-down-black.svg" alt="Chevron" class="w-4 h-4 ml-2">
+                      </div>
+                      <div id="dropdown1" class="dropdown-content absolute left-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-md z-10 w-36 hidden">
+                          <!-- Opciones de moneda se llenarán dinámicamente -->
+                          <div onclick="selectCurrency('USD', '/orionapp/node_modules/circle-flags/flags/us.svg', 'currency1', 'dropdown1')" class="p-2 hover:bg-gray-200 cursor-pointer">
+                              <img src="/orionapp/node_modules/circle-flags/flags/us.svg" alt="Icono USD" class="w-5 h-5 inline-block mr-2"> USD
                           </div>
-                          <div id="dropdown1" class="dropdown-content absolute left-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-md z-10 w-36 hidden">
-                              <!-- Opciones de moneda se llenarán dinámicamente -->
-                              <div onclick="selectCurrency('USD', '/orionapp/node_modules/circle-flags/flags/us.svg', 'currency1', 'dropdown1')" class="p-2 hover:bg-gray-200 cursor-pointer">
-                                  <img src="/orionapp/node_modules/circle-flags/flags/us.svg" alt="Icono USD" class="w-5 h-5 inline-block mr-2"> USD
-                              </div>
-                              <div onclick="selectCurrency('EUR', '/orionapp/node_modules/circle-flags/flags/eu.svg', 'currency1', 'dropdown1')" class="p-2 hover:bg-gray-200 cursor-pointer">
-                                  <img src="/orionapp/node_modules/circle-flags/flags/eu.svg" alt="Icono EUR" class="w-5 h-5 inline-block mr-2"> EUR
-                              </div>
-                              <!-- Agrega más opciones según sea necesario -->
+                          <div onclick="selectCurrency('EUR', '/orionapp/node_modules/circle-flags/flags/eu.svg', 'currency1', 'dropdown1')" class="p-2 hover:bg-gray-200 cursor-pointer">
+                              <img src="/orionapp/node_modules/circle-flags/flags/eu.svg" alt="Icono EUR" class="w-5 h-5 inline-block mr-2"> EUR
                           </div>
+                          <!-- Agrega más opciones según sea necesario -->
                       </div>
                   </div>
   
@@ -75,23 +73,21 @@
                       <input type="number" id="amount2" placeholder="0.00" step="0.01" min="0"
                           class="w-full p-4 border rounded-lg shadow-md text-right bg-white mb-3 appearance-none"
                           oninput="convertFromAmount2()">
-                      <div class="relative flex items-center h-full">
-                          <div id="currency2" class="flex items-center cursor-pointer p-2 justify-center"
-                              onclick="toggleDropdown('dropdown2')">
-                              <img id="icon-currency2" src="/orionapp/node_modules/circle-flags/flags/us.svg" alt="Icono divisa" class="w-5 h-5 mr-2">
-                              <span id="currency2-text" class="text-center">USD</span>
-                              <img src="/orionapp/icons/chevron-down-black.svg" alt="Chevron" class="w-4 h-4 ml-2">
+                      <div id="currency2" class="flex items-center cursor-pointer p-2 justify-center"
+                          onclick="toggleDropdown('dropdown2')">
+                          <img id="icon-currency2" src="/orionapp/node_modules/circle-flags/flags/us.svg" alt="Icono divisa" class="w-5 h-5 mr-2">
+                          <span id="currency2-text" class="text-center">USD</span>
+                          <img src="/orionapp/icons/chevron-down-black.svg" alt="Chevron" class="w-4 h-4 ml-2">
+                      </div>
+                      <div id="dropdown2" class="dropdown-content absolute left-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-md z-10 w-36 hidden">
+                          <!-- Opciones de moneda se llenarán dinámicamente -->
+                          <div onclick="selectCurrency('CLP', '/orionapp/node_modules/circle-flags/flags/cl.svg', 'currency2', 'dropdown2')" class="p-2 hover:bg-gray-200 cursor-pointer">
+                              <img src="/orionapp/node_modules/circle-flags/flags/cl.svg" alt="Icono CLP" class="w-5 h-5 inline-block mr-2"> CLP
                           </div>
-                          <div id="dropdown2" class="dropdown-content absolute left-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-md z-10 w-36 hidden">
-                              <!-- Opciones de moneda se llenarán dinámicamente -->
-                              <div onclick="selectCurrency('CLP', '/orionapp/node_modules/circle-flags/flags/cl.svg', 'currency2', 'dropdown2')" class="p-2 hover:bg-gray-200 cursor-pointer">
-                                  <img src="/orionapp/node_modules/circle-flags/flags/cl.svg" alt="Icono CLP" class="w-5 h-5 inline-block mr-2"> CLP
-                              </div>
-                              <div onclick="selectCurrency('EUR', '/orionapp/node_modules/circle-flags/flags/eu.svg', 'currency2', 'dropdown2')" class="p-2 hover:bg-gray-200 cursor-pointer">
-                                  <img src="/orionapp/node_modules/circle-flags/flags/eu.svg" alt="Icono EUR" class="w-5 h-5 inline-block mr-2"> EUR
-                              </div>
-                              <!-- Agrega más opciones según sea necesario -->
+                          <div onclick="selectCurrency('EUR', '/orionapp/node_modules/circle-flags/flags/eu.svg', 'currency2', 'dropdown2')" class="p-2 hover:bg-gray-200 cursor-pointer">
+                              <img src="/orionapp/node_modules/circle-flags/flags/eu.svg" alt="Icono EUR" class="w-5 h-5 inline-block mr-2"> EUR
                           </div>
+                          <!-- Agrega más opciones según sea necesario -->
                       </div>
                   </div>
               </div>
