@@ -1,11 +1,11 @@
 /* Estilos globales */
 body {
-    @apply font-sans bg-gray-100;
-    margin: 0; /* Elimina márgenes en el body */
-    padding: 0; /* Elimina padding en el body */
+    @apply font-sans bg-white;
+    margin: 0;
+    padding: 0;
     background: rgba(0, 0, 0, 0.45) url('/orionapp/assets/FondoOrion.jpg') no-repeat center top;
     background-size: cover;
-    background-attachment: fixed; /* Hace que la imagen se mantenga en su lugar */
+    background-attachment: fixed;
     position: relative;
     z-index: 1;
 }
@@ -19,8 +19,9 @@ body::before {
     width: 100%;
     height: 100%;
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 60%, black 100%);
-    pointer-events: none; /* Permite interactuar con el contenido */
-    z-index: -1; /* Permite que el degradado se mantenga detrás del contenido */
+    opacity: 0.45; /* Controla la opacidad aquí */
+    pointer-events: none;
+    z-index: -1;
 }
 
 html, body {
@@ -112,14 +113,14 @@ nav ul li.selected a {
     transform: scale(1.05);
 }
 
-/* Línea negra alineada con los elementos del header */
+/* Línea divisoria blanca de 1pt debajo del header */
 .header-divider {
     position: absolute;
-    bottom: 0; /* Alinea la línea al final del header */
-    left: 80px; /* Comienza desde el inicio del logo */
-    right: 16px; /* Termina al final del botón de registrarse */
-    height: 1px; /* Grosor de 1pt */
-    background-color: white; /* Color blanco */
+    bottom: 0;
+    left: 10%; /* Ajusta la alineación inicial */
+    right: 10%; /* Ajusta la alineación final */
+    height: 1px;
+    background-color: white;
 }
 
 /* Clase para el contenido principal */
