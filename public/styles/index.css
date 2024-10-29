@@ -40,6 +40,7 @@ header {
     justify-content: space-between;
     align-items: center;
     padding: 16px;
+    background-color: #333; /* Cambia el color de fondo */
     background-image: inherit; /* Hereda la imagen de fondo del body */
     background-size: cover; /* Asegura que la imagen cubra todo el fondo */
     background-position: center; /* Centra la imagen */
