@@ -21,6 +21,9 @@ function loadCurrencies() {
             dropdown1.innerHTML = '';
             dropdown2.innerHTML = '';
 
+            // Verifica el contenido de data
+            console.log(data); // Agrega esto para ver qué se está recibiendo
+
             data.forEach(divisa => {
                 const circularIcon = divisa.icono_circular;
                 exchangeRates[divisa.nombre] = {
@@ -50,13 +53,6 @@ function loadCurrencies() {
                 };
                 dropdown2.appendChild(option2);
             });
-
-            // Establecer divisas por defecto
-            document.getElementById("currency1-text").textContent = "CLP"; 
-            document.getElementById("currency2-text").textContent = "USD"; 
-
-            // Inicializar el ícono al cargar
-            updateCurrencyIcon();
 
             // Llenar la tabla comparativa
             fillCurrencyTable();
