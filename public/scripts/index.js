@@ -135,7 +135,7 @@ function convertFromAmount2() {
             // Convertir desde CLP a otra divisa usando tasa de compra (vendes CLP, compras la divisa)
             result = amount2 * exchangeRates[currency1].venta;
         } else {
-            // Convertir desde una divisa a CLP usando tasa de venta (vendes la divisa, compras CLP)
+            // Convertir desde otra divisa a CLP usando tasa de venta (vendes la divisa, compras CLP)
             result = amount2 / exchangeRates[currency2].compra;
         }
 
@@ -143,104 +143,36 @@ function convertFromAmount2() {
     }
 }
 
-// Función para alternar la visibilidad del dropdown
-function toggleDropdown(dropdownId) {
-    const dropdown = document.getElementById(dropdownId);
-    dropdown.classList.toggle("open"); // Alternar la clase 'open'
-}
-
-// Actualiza el ícono de las divisas seleccionadas
+// Función para actualizar el ícono de divisa seleccionado
 function updateCurrencyIcon() {
     const currency1 = document.getElementById("currency1-text").textContent;
     const currency2 = document.getElementById("currency2-text").textContent;
-    
+
     document.getElementById("icon-currency1").src = exchangeRates[currency1].icono;
     document.getElementById("icon-currency2").src = exchangeRates[currency2].icono;
 }
 
-
-// Cierra los dropdowns si se hace clic fuera de ellos
-window.onclick = function(event) {
-    const dropdowns = document.querySelectorAll('.dropdown-content');
-    dropdowns.forEach(dropdown => {
-        // Verificar si el clic se hizo fuera del dropdown y del elemento que lo activa
-        if (!dropdown.previousElementSibling.contains(event.target) && dropdown.classList.contains('open')) {
-            dropdown.classList.remove('open'); // Asegúrate de que esté oculto
-        }
-    });
-};
-
+// Función para llenar la tabla comparativa con las tasas de cambio
 function fillCurrencyTable() {
     const tableBody = document.getElementById("currency-table-body");
-    tableBody.innerHTML = ''; // Limpiar contenido previo
+    tableBody.innerHTML = '';
 
-    // Crear la fila para CLP con color azul
-    const clpRow = document.createElement("tr");
-    clpRow.className = "bg-blue-100"; // Fondo azul para la fila CLP
-
-    const clpCell = document.createElement("td");
-    clpCell.className = "p-2 flex items-center";
-
-    // Ícono y nombre de CLP
-    const clpImg = document.createElement("img");
-    clpImg.src = exchangeRates["CLP"].icono;
-    clpImg.alt = "CLP";
-    clpImg.className = "w-5 h-5 mr-2";
-    clpCell.appendChild(clpImg);
-    clpCell.appendChild(document.createTextNode("CLP"));
-    clpRow.appendChild(clpCell);
-
-    // Crear celdas vacías para compra y venta
-    clpRow.appendChild(document.createElement("td"));
-    clpRow.appendChild(document.createElement("td"));
-    tableBody.appendChild(clpRow);
-
-    // Contador de divisas
-    let count = 0;
-
-    // Rellenar filas para otras divisas, máximo de 4
-    for (const [divisa, datos] of Object.entries(exchangeRates)) {
-        if (divisa === "CLP" || count >= 4) continue; // Omitir CLP y limitar a 4 divisas
-
+    for (const [currency, rateInfo] of Object.entries(exchangeRates)) {
         const row = document.createElement("tr");
-        row.className = count % 2 === 0 ? "bg-white" : "bg-gray-100"; // Colores alternos
 
-        // Combinar icono y nombre de divisa en una celda
-        const cellCurrency = document.createElement("td");
-        cellCurrency.className = "p-2 flex items-center rounded-l-md"; // Borde redondeado izquierdo
-        
-        const icon = document.createElement("img");
-        icon.src = datos.icono;
-        icon.alt = divisa;
-        icon.className = "w-5 h-5 mr-2";
-        cellCurrency.appendChild(icon);
-        cellCurrency.appendChild(document.createTextNode(divisa));
+        row.innerHTML = `
+            <td class="px-6 py-4 whitespace-nowrap">${currency}</td>
+            <td class="px-6 py-4">${rateInfo.compra.toFixed(2)}</td>
+            <td class="px-6 py-4">${rateInfo.venta.toFixed(2)}</td>
+        `;
 
-        const cellCompra = document.createElement("td");
-        cellCompra.textContent = `${datos.compra.toFixed(2)} CLP`;
-        cellCompra.className = "p-2";
-
-        const cellVenta = document.createElement("td");
-        cellVenta.textContent = `${datos.venta.toFixed(2)} CLP`;
-        cellVenta.className = "p-2 rounded-r-md"; // Borde redondeado derecho
-
-        // Agregar celdas a la fila
-        row.appendChild(cellCurrency);
-        row.appendChild(cellCompra);
-        row.appendChild(cellVenta);
-
-        // Agregar fila a la tabla
         tableBody.appendChild(row);
-        count++; // Incrementar el contador de divisas
     }
 }
 
-// Aplicar estilo al encabezado de la tabla
-const currencyTableHeader = document.querySelectorAll("#currency-table thead th");
-currencyTableHeader.forEach((header, index) => {
-    header.classList.add("bg-transparent", "p-2", "border-none"); // Fondo transparente y sin bordes
-
-    if (index === 0) {
-        header.classList.add("hidden"); // Ocultar el encabezado de la columna "Divisa"
-    }
-});
+// Función para alternar la visibilidad de un dropdown
+function toggleDropdown(dropdownId) {
+    const dropdown = document.getElementById(dropdownId);
+    dropdown.classList.toggle("hidden");
+    dropdown.classList.toggle("block");
+}
