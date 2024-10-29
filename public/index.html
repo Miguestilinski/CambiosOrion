@@ -48,45 +48,63 @@
                         <input type="number" id="amount1" placeholder="0.00" step="0.01" min="0"
                             class="w-full p-4 border rounded-lg shadow-md text-right bg-white mb-3 appearance-none"
                             oninput="convertFromAmount1()">
-                        <div id="currency1" class="currency-selector flex items-center cursor-pointer p-2"
-                            onclick="toggleDropdown('dropdown1')">
+                        <button id="currency1DropdownButton" data-dropdown-toggle="currency1Dropdown"
+                            class="w-full text-gray-800 bg-white border border-gray-300 hover:bg-gray-100 focus:ring-2 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-left flex items-center justify-between"
+                            type="button">
                             <img id="icon-currency1" src="/orionapp/node_modules/circle-flags/flags/cl.svg" alt="Icono divisa" class="w-5 h-5 mr-2">
-                            <span id="currency1-text" class="text-center">CLP</span>
-                            <img src="/orionapp/icons/chevron-down-black.svg" alt="Chevron" class="w-4 h-4 ml-2">
-                        </div>
-                        <div id="dropdown1" class="dropdown-content absolute left-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-md z-10 w-36 hidden">
-                            <div onclick="selectCurrency('USD', '/orionapp/node_modules/circle-flags/flags/us.svg', 'currency1', 'dropdown1')" class="p-2 hover:bg-gray-200 cursor-pointer">
-                                <img src="/orionapp/node_modules/circle-flags/flags/us.svg" alt="Icono USD" class="w-5 h-5 inline-block mr-2"> USD
-                            </div>
-                            <div onclick="selectCurrency('EUR', '/orionapp/node_modules/circle-flags/flags/eu.svg', 'currency1', 'dropdown1')" class="p-2 hover:bg-gray-200 cursor-pointer">
-                                <img src="/orionapp/node_modules/circle-flags/flags/eu.svg" alt="Icono EUR" class="w-5 h-5 inline-block mr-2"> EUR
-                            </div>
+                            <span id="currency1-text">CLP</span>
+                            <svg class="w-4 h-4 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                            </svg>
+                        </button>
+                        <div id="currency1Dropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-md w-44 mt-2">
+                            <ul class="py-2 text-sm text-gray-700" aria-labelledby="currency1DropdownButton">
+                                <li onclick="selectCurrency('USD', '/orionapp/node_modules/circle-flags/flags/us.svg', 'currency1', 'currency1Dropdown')">
+                                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 items-center">
+                                        <img src="/orionapp/node_modules/circle-flags/flags/us.svg" alt="Icono USD" class="w-5 h-5 inline-block mr-2"> USD
+                                    </a>
+                                </li>
+                                <li onclick="selectCurrency('EUR', '/orionapp/node_modules/circle-flags/flags/eu.svg', 'currency1', 'currency1Dropdown')">
+                                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 items-center">
+                                        <img src="/orionapp/node_modules/circle-flags/flags/eu.svg" alt="Icono EUR" class="w-5 h-5 inline-block mr-2"> EUR
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
-                
+            
                     <!-- Columna derecha -->
                     <div class="converter-box flex-1 pl-4 relative">
                         <label for="amount2" class="block text-lg font-bold mb-2">¿Qué divisa quieres?</label>
                         <input type="number" id="amount2" placeholder="0.00" step="0.01" min="0"
                             class="w-full p-4 border rounded-lg shadow-md text-right bg-white mb-3 appearance-none"
                             oninput="convertFromAmount2()">
-                        <div id="currency2" class="currency-selector flex items-center cursor-pointer p-2"
-                            onclick="toggleDropdown('dropdown2')">
+                        <button id="currency2DropdownButton" data-dropdown-toggle="currency2Dropdown"
+                            class="w-full text-gray-800 bg-white border border-gray-300 hover:bg-gray-100 focus:ring-2 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-left flex items-center justify-between"
+                            type="button">
                             <img id="icon-currency2" src="/orionapp/node_modules/circle-flags/flags/us.svg" alt="Icono divisa" class="w-5 h-5 mr-2">
-                            <span id="currency2-text" class="text-center">USD</span>
-                            <img src="/orionapp/icons/chevron-down-black.svg" alt="Chevron" class="w-4 h-4 ml-2">
-                        </div>
-                        <div id="dropdown2" class="dropdown-content absolute left-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-md z-10 w-36 hidden">
-                            <div onclick="selectCurrency('CLP', '/orionapp/node_modules/circle-flags/flags/cl.svg', 'currency2', 'dropdown2')" class="p-2 hover:bg-gray-200 cursor-pointer">
-                                <img src="/orionapp/node_modules/circle-flags/flags/cl.svg" alt="Icono CLP" class="w-5 h-5 inline-block mr-2"> CLP
-                            </div>
-                            <div onclick="selectCurrency('EUR', '/orionapp/node_modules/circle-flags/flags/eu.svg', 'currency2', 'dropdown2')" class="p-2 hover:bg-gray-200 cursor-pointer">
-                                <img src="/orionapp/node_modules/circle-flags/flags/eu.svg" alt="Icono EUR" class="w-5 h-5 inline-block mr-2"> EUR
-                            </div>
+                            <span id="currency2-text">USD</span>
+                            <svg class="w-4 h-4 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                            </svg>
+                        </button>
+                        <div id="currency2Dropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-md w-44 mt-2">
+                            <ul class="py-2 text-sm text-gray-700" aria-labelledby="currency2DropdownButton">
+                                <li onclick="selectCurrency('CLP', '/orionapp/node_modules/circle-flags/flags/cl.svg', 'currency2', 'currency2Dropdown')">
+                                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 items-center">
+                                        <img src="/orionapp/node_modules/circle-flags/flags/cl.svg" alt="Icono CLP" class="w-5 h-5 inline-block mr-2"> CLP
+                                    </a>
+                                </li>
+                                <li onclick="selectCurrency('EUR', '/orionapp/node_modules/circle-flags/flags/eu.svg', 'currency2', 'currency2Dropdown')">
+                                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 items-center">
+                                        <img src="/orionapp/node_modules/circle-flags/flags/eu.svg" alt="Icono EUR" class="w-5 h-5 inline-block mr-2"> EUR
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
-            </section>
+            </section>            
             <section class="max-w-xl mx-auto my-10 bg-white rounded-xl">
                 <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                     <thead class="text-xs uppercase bg-transparent text-gray-700 dark:text-gray-400">
