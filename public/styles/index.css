@@ -48,12 +48,6 @@ header {
     flex-wrap: wrap; /* Permitir que los elementos se envuelvan en pantallas pequeñas */
 }
 
-.divisor {
-    height: 2px; /* Altura de la línea divisoria */
-    background-color: white; /* Color de la línea divisoria */
-    margin: 0; /* Asegúrate de que no haya márgenes */
-}
-
 /* Logo y nombre */
 .header-logo {
     display: flex;
@@ -124,13 +118,11 @@ nav ul li.selected a {
 
 /* Línea divisoria blanca de 1pt debajo del header */
 .header-divider {
-    position: absolute;
-    bottom: 0;
-    left: 10%; /* Ajusta la alineación inicial */
-    right: 10%; /* Ajusta la alineación final */
-    height: 1px;
-    background-color: white; /* Asegúrate de que el color sea visible */
-    z-index: 1; /* Asegúrate de que la línea esté por encima de otros elementos */
+    position: relative; /* Cambié de absolute a relative para asegurarte de que la línea se coloque dentro del flujo normal */
+    height: 2px; /* Altura de la línea divisoria */
+    background-color: white; /* Color de la línea divisoria */
+    width: 100%; /* Asegúrate de que ocupe todo el ancho */
+    z-index: 1; /* Mantener el z-index */
 }
 
 /* Clase para el contenido principal */
