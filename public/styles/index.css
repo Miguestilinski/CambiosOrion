@@ -27,7 +27,6 @@ body::before {
 }
 
 html, body {
-    height: 100%; /* Asegura que el contenedor ocupe toda la pantalla */
     display: flex;
     flex-direction: column;
     margin: 0;
@@ -119,9 +118,10 @@ nav ul li.selected a {
 /* Línea divisoria blanca de 1pt debajo del header */
 .header-divider {
     position: relative; /* Cambié de absolute a relative para asegurarte de que la línea se coloque dentro del flujo normal */
-    height: 2px; /* Altura de la línea divisoria */
+    height: 0.5px; /* Altura de la línea divisoria */
+    align-self: center;
     background-color: white; /* Color de la línea divisoria */
-    width: 100%; /* Asegúrate de que ocupe todo el ancho */
+    width: 80%; /* Asegúrate de que ocupe todo el ancho */
     z-index: 1; /* Mantener el z-index */
 }
 
