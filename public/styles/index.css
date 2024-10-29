@@ -254,6 +254,15 @@ input[type="number"]::-moz-outer-spin-button {
 
 .currency-selector {
     justify-content: center;
+    padding: 0; /* Sin padding adicional */
+    border: none; /* Sin borde */
+}
+
+.convert-selector img,
+.convert-selector span,
+.convert-selector svg {
+    display: inline-flex; /* Alinea los elementos en una sola fila */
+    margin: 0; /* Sin margen adicional */
 }
 
 /* Contenido desplegable */
