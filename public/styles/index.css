@@ -3,7 +3,7 @@ body {
     @apply font-sans bg-gray-100;
     margin: 0; /* Elimina márgenes en el body */
     padding: 0; /* Elimina padding en el body */
-    background: url('/orionapp/assets/FondoOrion.jpg') no-repeat center top;
+    background: rgba(0, 0, 0, 0.45) url('/orionapp/assets/FondoOrion.jpg') no-repeat center top;
     background-size: cover;
     background-attachment: fixed; /* Hace que la imagen se mantenga en su lugar */
     position: relative;
@@ -38,7 +38,7 @@ header {
     align-items: center;
     padding: 16px;
     background: inherit; /* Utiliza el mismo fondo que el body */
-    background-blend-mode: overlay; /* Mejora la visibilidad del texto en el header */
+    background: rgba(255, 255, 255, 0.8); /* Fondo blanco semi-transparente */
     margin: 0;
     position: relative; /* Necesario para la posición de la línea divisoria */
     flex-wrap: wrap; /* Permitir que los elementos se envuelvan en pantallas pequeñas */
