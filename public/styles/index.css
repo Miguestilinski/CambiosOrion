@@ -338,13 +338,16 @@ input[type="number"]::-moz-outer-spin-button {
     background-color: white;
     width: 100%;
     padding: 3rem 0;
+    display: flex;
+    justify-content: center;
 }
 
 /* Contenedor interno dividido en dos */
 .sending-money-container {
     display: flex;
     max-width: 1200px;
-    margin: 0 auto;
+    width: 80%; /* Ajuste del ancho general */
+    min-height: 400px; /* Altura mínima para mantener contenedor cuadrado */
     border-radius: 1rem;
     overflow: hidden;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
@@ -353,6 +356,8 @@ input[type="number"]::-moz-outer-spin-button {
 /* Mitad de la Imagen */
 .sending-money-image {
     flex: 1;
+    min-width: 50%;
+    min-height: 400px; /* Asegura que la imagen sea cuadrada */
 }
 
 /* Mitad del Contenido */
@@ -365,6 +370,7 @@ input[type="number"]::-moz-outer-spin-button {
     flex-direction: column;
     justify-content: center;
     text-align: left;
+    min-height: 400px; /* Mantiene el contenedor cuadrado */
 }
 
 /* Estilo del botón */
@@ -381,7 +387,6 @@ input[type="number"]::-moz-outer-spin-button {
 .sending-money-button:hover {
     background-color: #2563eb;
 }
-
 
 /* Contenedor principal del footer */
 footer {
