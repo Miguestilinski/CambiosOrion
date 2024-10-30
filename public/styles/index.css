@@ -333,14 +333,55 @@ input[type="number"]::-moz-outer-spin-button {
     margin-right: 8px; /* Espacio entre la imagen y el texto */
 }
 
-
-sending-money {
-    background: white;
-    padding: 20px;
-    margin: 20px 0;
-    position: relative;
-    z-index: 2;
+/* Sección completa */
+.sending-money-section {
+    background-color: white;
+    width: 100%;
+    padding: 3rem 0;
 }
+
+/* Contenedor interno dividido en dos */
+.sending-money-container {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Mitad de la Imagen */
+.sending-money-image {
+    flex: 1;
+}
+
+/* Mitad del Contenido */
+.sending-money-content {
+    flex: 1;
+    background-color: #1e293b; /* Color de fondo para el contenido */
+    padding: 2rem;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: left;
+}
+
+/* Estilo del botón */
+.sending-money-button {
+    display: inline-block;
+    background-color: #3b82f6;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+.sending-money-button:hover {
+    background-color: #2563eb;
+}
+
 
 /* Contenedor principal del footer */
 footer {
