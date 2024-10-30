@@ -347,7 +347,9 @@ input[type="number"]::-moz-outer-spin-button {
     display: flex;
     max-width: 1200px;
     width: 80%; /* Ajuste del ancho general */
-    min-height: 400px; /* Altura mínima para mantener contenedor cuadrado */
+    min-width: 600px; /* Ancho mínimo para asegurar rectángulo */
+    min-height: 300px; /* Altura mínima para asegurar rectángulo */
+    height: auto;
     border-radius: 1rem;
     overflow: hidden;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
@@ -356,8 +358,8 @@ input[type="number"]::-moz-outer-spin-button {
 /* Mitad de la Imagen */
 .sending-money-image {
     flex: 1;
-    min-width: 50%;
-    min-height: 400px; /* Asegura que la imagen sea cuadrada */
+    min-width: 300px; /* Asegura que la imagen sea cuadrada */
+    min-height: 300px;
 }
 
 /* Mitad del Contenido */
@@ -370,7 +372,8 @@ input[type="number"]::-moz-outer-spin-button {
     flex-direction: column;
     justify-content: center;
     text-align: left;
-    min-height: 400px; /* Mantiene el contenedor cuadrado */
+    min-width: 300px; /* Cuadrado para el lado de texto */
+    min-height: 300px;
 }
 
 /* Estilo del botón */
