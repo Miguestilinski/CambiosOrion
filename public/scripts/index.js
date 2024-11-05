@@ -6,6 +6,7 @@ let displayedCurrencies = ["CLP", "USD", "EUR", "ARS"];
 
 document.addEventListener("DOMContentLoaded", function () {
     loadCurrencies();
+    fillCurrencyTable();
 });
 
 // Cargar las divisas
