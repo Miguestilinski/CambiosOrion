@@ -207,15 +207,6 @@ input[type="number"]::-moz-outer-spin-button {
     pointer-events: auto;
 }
 
-.non-clickable-area {
-    position: absolute; /* Hacerla absoluta */
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    pointer-events: none; /* Desactiva los clics */
-}
-
 /* Contenedor de selección personalizado */
 .custom-select {
     position: relative;
