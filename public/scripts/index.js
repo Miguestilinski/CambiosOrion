@@ -159,10 +159,7 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
             console.error(`El dropdown con ID ${dropdownId} no se encuentra en el DOM.`);
         }
-    }
-    
-    // Hacer que la función sea global
-    window.toggleDropdown = toggleDropdown;    
+    }  
 
     function fillCurrencyTable() {
         const tableBody = document.getElementById("currency-table-body");
@@ -208,17 +205,22 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    function toggleEditMode() {
-        isEditMode = !isEditMode;
-        document.querySelectorAll(".edit-column").forEach(col => col.classList.toggle("hidden", !isEditMode));
-    }
-
-    function deleteCurrency(currency) {
-        if (confirm(`¿Está seguro de que desea eliminar ${currency}?`)) {
-            displayedCurrencies = displayedCurrencies.filter(curr => curr !== currency);
-            fillCurrencyTable();
-        }
-    }
-
     loadCurrencies();
 });
+
+function toggleEditMode() {
+    isEditMode = !isEditMode;
+
+    // Muestra/oculta la columna de acciones (botones de eliminar)
+    document.querySelectorAll(".edit-column").forEach(col => {
+        col.classList.toggle("hidden", !isEditMode);
+    });
+}
+
+// Hacer la función global para que sea accesible en el HTML
+window.toggleEditMode = toggleEditMode;
+
+function deleteCurrency(currency) {
+    displayedCurrencies = displayedCurrencies.filter(curr => curr !== currency);
+    fillCurrencyTable();
+}
