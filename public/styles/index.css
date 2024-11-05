@@ -253,6 +253,7 @@ input[type="number"]::-moz-outer-spin-button {
     position: absolute;
     background-color: #fff;
     min-width: 100%;
+    max-height: 200px;
     z-index: 1;
     margin-top: 8px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
