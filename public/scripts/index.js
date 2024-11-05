@@ -169,11 +169,13 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Función para alternar la visibilidad de un dropdown
     function toggleDropdown(dropdownId) {
         const dropdown = document.getElementById(dropdownId);
-        dropdown.classList.toggle("hidden");
-        dropdown.classList.toggle("block");
+        if (dropdown) {
+            dropdown.classList.toggle("hidden");
+        } else {
+            console.error(`El dropdown con ID ${dropdownId} no se encuentra en el DOM.`);
+        }
     }
 
     loadCurrencies();
