@@ -134,6 +134,7 @@ h2 {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
+    transition: all 0.2s ease;
 }
 
 .converter-box {
@@ -204,10 +205,6 @@ input[type="number"]::-moz-outer-spin-button {
 
 .converter-box {
     @apply flex-1 p-4;
-}
-
-.currency-converter {
-    transition: all 0.2s ease;
 }
 
 /* Contenedor de selección personalizado */
