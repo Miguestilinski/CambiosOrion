@@ -246,7 +246,6 @@ input[type="number"]::-moz-outer-spin-button {
 
 /* Dropdown */
 .dropdown-content {
-    display: none;
     position: absolute;
     background-color: #fff;
     top: 100%;
