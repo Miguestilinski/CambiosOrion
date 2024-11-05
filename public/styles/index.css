@@ -196,7 +196,7 @@ input[type="number"]::-moz-outer-spin-button {
 /* Modificaciones personalizadas para mejorar la apariencia y funcionalidad */
 .convert-selector {
     display: flex;
-    align-items: center;
+    justify-self: center;
     padding: 0.5rem;
     background-color: #fff; 
     cursor: pointer; 
