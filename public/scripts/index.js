@@ -178,6 +178,9 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error(`El dropdown con ID ${dropdownId} no se encuentra en el DOM.`);
         }
     }
+    
+    // Hacer que la función sea global
+    window.toggleDropdown = toggleDropdown;    
 
     loadCurrencies();
 });
