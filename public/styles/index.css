@@ -4,9 +4,7 @@ body {
     margin: 0;
     padding: 0;
     background: rgba(0, 0, 0, 0.45) url('/orionapp/assets/FondoOrion.jpg') no-repeat center top;
-    background-size: cover; /* Asegura que la imagen cubra todo el fondo */
-    background-position: center; /* Centra la imagen */
-    background-repeat: no-repeat; /* Evita que la imagen se repita */
+    background-size: cover;
     background-attachment: fixed;
     position: relative;
     z-index: 1;
@@ -20,8 +18,7 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7) 60%, black 100%); /* Aumentar el negro aquí */
-    opacity: 1; /* Aumentar opacidad al 100% para oscurecer más */
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7) 60%, black 100%);
     pointer-events: none;
     z-index: -1;
 }
@@ -29,48 +26,45 @@ body::before {
 html, body {
     display: flex;
     flex-direction: column;
-    margin: 0;
 }
 
 /* Header */
 header {
-    width: 100vw; /* Asegura que ocupe todo el ancho de la ventana */
+    width: 100vw;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 16px;
-    background-size: cover; /* Asegura que la imagen cubra todo el fondo */
-    background-position: center; /* Centra la imagen */
-    background-repeat: no-repeat; /* Evita que la imagen se repita */
-    margin: 0;
-    position: relative; /* Necesario para la posición de la línea divisoria */
-    flex-wrap: wrap; /* Permitir que los elementos se envuelvan en pantallas pequeñas */
+    position: relative;
+    flex-wrap: wrap;
 }
 
 /* Logo y nombre */
 .header-logo {
     display: flex;
     align-items: center;
-    margin-right: 50px; /* Aumenta el espacio entre el logo y el menú de navegación */
+    margin-right: 50px;
+}
+
+.header-logo img {
+    height: auto; /* Mantén las proporciones */
 }
 
 .header-logo img.logo {
-    width: 80px; /* Ajusta el tamaño del logo */
-    height: auto; /* Mantén las proporciones */
-    margin-right: 10px; /* Espacio entre logo y nombre */
+    width: 80px;
+    margin-right: 10px;
 }
 
 .header-logo img.nombre {
-    width: 120px; /* Ajusta el tamaño del nombre */
-    height: auto; /* Mantén las proporciones */
+    width: 120px;
 }
 
 /* Menú de navegación */
 nav ul {
     display: flex;
     list-style: none;
-    gap: 30px; /* Espacio entre los elementos del menú */
-    margin-right: 50px; /* Aumenta el espacio entre el menú y los botones de acción */
+    gap: 30px;
+    margin-right: 50px;
 }
 
 nav ul li {
@@ -81,18 +75,18 @@ nav ul li {
 
 nav ul li a {
     text-decoration: none;
-    color: white; /* Color negro del texto */
+    color: white;
 }
 
 nav ul li.selected a {
-    border-bottom: 2px solid white; /* Línea negra de 2pts debajo del seleccionado */
+    border-bottom: 2px solid white;
 }
 
 /* Iniciar Sesión y Registrarse */
 .header-actions {
     display: flex;
     align-items: center;
-    gap: 20px; /* Espacio entre los botones de iniciar sesión y registrarse */
+    gap: 20px;
 }
 
 .header-actions a {
@@ -102,13 +96,7 @@ nav ul li.selected a {
 }
 
 .header-actions .register-button {
-    background-color: blue;
-    color: white;
-    padding: 8px 16px;
-    border-radius: 5px;
-    font-weight: bold;
-    text-decoration: none;
-    transition: transform 0.2s ease;
+    @apply bg-blue-500 text-white p-2 rounded-md font-bold transition-transform duration-200;
 }
 
 .header-actions .register-button:hover {
@@ -117,17 +105,16 @@ nav ul li.selected a {
 
 /* Línea divisoria blanca de 1pt debajo del header */
 .header-divider {
-    position: relative; /* Cambié de absolute a relative para asegurarte de que la línea se coloque dentro del flujo normal */
-    height: 0.5px; /* Altura de la línea divisoria */
+    height: 0.5px;
     align-self: center;
-    background-color: white; /* Color de la línea divisoria */
-    width: 80%; /* Asegúrate de que ocupe todo el ancho */
-    z-index: 1; /* Mantener el z-index */
+    background-color: white;
+    width: 80%;
+    z-index: 1;
 }
 
 /* Clase para el contenido principal */
 .main-content {
-    flex: 1; /* Toma el espacio restante para que el footer esté en la parte inferior */
+    flex: 1;
 }
 
 /* Sección principal del conversor */
@@ -146,12 +133,11 @@ h2 {
 .currency-converter {
     display: flex;
     justify-content: space-between;
-    flex-wrap: wrap; /* Para permitir que los elementos se ajusten si no caben */
+    flex-wrap: wrap;
 }
 
 .converter-box {
-    @apply flex flex-col items-center flex-1; /* Centra el contenido en cada columna */
-    min-width: 200px; /* Ancho mínimo para asegurar que no se reduzca demasiado */
+    @apply flex flex-col items-center flex-1 min-w-[200px];
 }
 
 label {
@@ -161,24 +147,18 @@ label {
 /* Estilo para el input de números */
 input[type="number"] {
     @apply text-2xl p-3 border border-gray-300 rounded-lg text-right mb-4;
-    /* Estilo para eliminar flechas */
-    -webkit-appearance: none; /* Oculta flechas en Chrome/Safari */
-    -moz-appearance: textfield; /* Oculta flechas en Firefox */
-    appearance: none; /* Elimina el estilo predeterminado en otros navegadores */
+    -webkit-appearance: none; 
+    -moz-appearance: textfield; 
+    appearance: none; 
 }
 
 /* Para ocultar los botones de incremento y decremento en los navegadores */
 input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none; /* Oculta en Chrome/Safari */
-    margin: 0; /* Elimina márgenes */
-}
-
+input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-moz-inner-spin-button,
 input[type="number"]::-moz-outer-spin-button {
-    display: none; /* Oculta en Firefox */
+    display: none; 
 }
-
 
 /* Disclaimer */
 .disclaimer {
@@ -190,16 +170,15 @@ input[type="number"]::-moz-outer-spin-button {
 }
 
 .select-box {
-    @apply p-3 border border-gray-300 bg-white rounded-lg cursor-pointer flex justify-center items-center; /* Centra horizontalmente */
-    gap: 8px; /* Espacio entre icono y texto */
+    @apply p-3 border border-gray-300 bg-white rounded-lg cursor-pointer flex justify-center items-center gap-8;
 }
 
 .select-box img {
-    @apply w-6 h-6 ml-2; /* Margen izquierdo para la imagen */
+    @apply w-6 h-6; 
 }
 
 .select-box span {
-    @apply flex-grow text-right; /* Alinear texto a la derecha */
+    @apply flex-grow text-right; 
 }
 
 .dropdown-content {
@@ -215,57 +194,34 @@ input[type="number"]::-moz-outer-spin-button {
 }
 
 /* Modificaciones personalizadas para mejorar la apariencia y funcionalidad */
-
-/* Fondo y sombra del contenedor del conversor */
 .convert-selector {
-    display: flex; /* Asegura que los elementos se alineen horizontalmente */
-    align-items: center; /* Centra verticalmente los íconos y el texto */
-    padding: 0.5rem; /* Agrega un poco de espaciado interno */
-    border: 1px solid #e2e8f0; /* Añade un borde para mejorar la apariencia */
-    border-radius: 0.375rem; /* Bordes redondeados */
-    background-color: #fff; /* Fondo blanco */
-    cursor: pointer; /* Cambia el cursor al pasar sobre el área */
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    border: 1px solid #e2e8f0; 
+    border-radius: 0.375rem; 
+    background-color: #fff; 
+    cursor: pointer; 
 }
+
 .converter-box {
-    flex: 1 1 45%; /* Permite que cada columna ocupe aproximadamente el 45% del ancho */
-    padding: 1rem; /* Espaciado interno */
+    @apply flex-1 p-4;
 }
 
 .currency-converter {
-    transition: all 0.2s ease; /* Suaviza los cambios */
-}
-
-/* Disclaimer */
-.disclaimer {
-    font-size: 0.9rem;
-    color: #666;
-    text-align: center;
-    margin-top: 10px;
+    transition: all 0.2s ease;
 }
 
 /* Contenedor de selección personalizado */
 .custom-select {
     position: relative;
     display: inline-block;
-    width: 100%; /* Ajusta según sea necesario */
+    width: 100%;
 }
 
 /* Caja de selección */
 .select-box {
-    @apply p-3 border border-gray-300 bg-white rounded-lg cursor-pointer flex justify-center items-center; /* Cambia justify-between por justify-center */
-    display: flex;
-    align-items: center;
-    justify-content: center; /* Centrar los elementos */
-    cursor: pointer;
-    gap: 8px; /* Espacio entre los elementos */
-    background-color: #fff;
-    border-radius: 8px;
-}
-
-.select-box img {
-    @apply w-6 h-6; /* Sin márgenes adicionales */
-    width: 20px;
-    height: 20px;
+    @apply flex justify-center items-center cursor-pointer gap-8; 
 }
 
 /* Chevron */
@@ -276,49 +232,34 @@ input[type="number"]::-moz-outer-spin-button {
 
 .select-box span {
     flex-grow: 1;
-    text-align: right; /* Alinear el texto a la derecha */
+    text-align: right; 
 }
 
 .currency-selector {
     justify-content: center;
-    padding: 0; /* Sin padding adicional */
-    border: none; /* Sin borde */
+    padding: 0; 
+    border: none; 
 }
 
 .convert-selector img,
 .convert-selector span,
 .convert-selector svg {
-    display: inline-flex; /* Alinea los elementos en una sola fila */
-    margin: 0; /* Sin margen adicional */
+    display: inline-flex; 
 }
 
+/* Dropdown */
 .dropdown-content {
-    display: none; /* Ocultar por defecto */
+    display: none; 
     position: absolute;
-    justify-content: flex-start; /* Cambiar a flex-start para alinear elementos al inicio */
-    align-items: center;    /* Centra verticalmente */
+    justify-content: flex-start; 
+    align-items: center; 
     background-color: #fff;
     min-width: 100%;
     z-index: 1;
     margin-top: 8px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    max-height: 150px; /* Tamaño fijo para evitar que sea demasiado grande */
-    overflow-y: scroll; /* Permite el scroll */
-}
-
-/* Opciones dentro del dropdown */
-.dropdown-content div {
-    @apply p-3 flex items-center cursor-pointer hover:bg-gray-100; /* Mantén el flex para alinear los elementos */
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-}
-
-/* Imágenes de las banderas en las opciones */
-.dropdown-content img {
-    @apply w-6 h-6 mr-3; /* Mantén el margen a la derecha del ícono */
-    width: 30px; /* Ajusta el tamaño de las imágenes */
-    height: auto;
+    max-height: 150px; 
+    overflow-y: scroll; 
 }
 
 .dropdown-content div:hover {
@@ -326,29 +267,23 @@ input[type="number"]::-moz-outer-spin-button {
 }
 
 .dropdown-content.show {
-    display: block; /* Muestra el dropdown */
+    display: block; 
 }
 
 .relative {
     cursor: pointer;
 }
 
-/* Mostrar dropdown al hacer clic */
-.dropdown-content.open {
-    display: block; /* Mostrar si tiene la clase 'open' */
-}
-
 /* Estilo del dropdown */
 #dropdown1, #dropdown2 {
-    width: 200px; /* Cambia este valor para ajustar el ancho */
-    max-height: 200px; /* Altura máxima del dropdown */
-    overflow-y: auto; /* Permite el desplazamiento vertical */
+    width: 200px; 
+    max-height: 200px; 
+    overflow-y: auto; 
 }
 
-/* Asegura que los elementos en el dropdown estén uno al lado del otro */
 #dropdown1 ul, #dropdown2 ul {
     display: flex;
-    flex-wrap: wrap; /* Asegura que los elementos puedan envolverse */
+    flex-wrap: wrap; 
 }
 
 /* Sección completa */
@@ -364,10 +299,9 @@ input[type="number"]::-moz-outer-spin-button {
 .sending-money-container {
     display: flex;
     max-width: 1200px;
-    width: 80%; /* Ajuste del ancho general */
-    min-width: 600px; /* Ancho mínimo para asegurar rectángulo */
-    min-height: 300px; /* Altura mínima para asegurar rectángulo */
-    height: auto;
+    width: 80%; 
+    min-width: 600px; 
+    min-height: 300px; 
     border-radius: 1rem;
     overflow: hidden;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
@@ -376,9 +310,9 @@ input[type="number"]::-moz-outer-spin-button {
 /* Mitad de la Imagen */
 .sending-money-image {
     flex: 1;
-    min-width: 300px; /* Asegura que la imagen sea cuadrada */
-    min-height: 300px;
+    min-width: 300px; 
 }
+
 
 /* Mitad del Contenido */
 .sending-money-content {
