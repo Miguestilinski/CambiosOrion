@@ -1,9 +1,16 @@
 let exchangeRates = {};
 let iconsLoaded = {};
 let isEditMode = false;
+let activeDropdown = null;
 let displayedCurrencies = ["CLP", "USD", "EUR", "ARS"];
 
 document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("click", function (event) {
+        if (activeDropdown && !activeDropdown.contains(event.target)) {
+            activeDropdown.classList.add("hidden");
+            activeDropdown = null;
+        }
+    });
     // Cargar las divisas
     function loadCurrencies() {
         fetch('https://cambiosorion.cl/data/obtener_divisas.php')
@@ -155,9 +162,11 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log(`Toggling dropdown: ${dropdownId}`);
         const dropdown = document.getElementById(dropdownId);
         if (dropdown) {
+            if (activeDropdown && activeDropdown !== dropdown) {
+                activeDropdown.classList.add("hidden");
+            }
             dropdown.classList.toggle("hidden");
-        } else {
-            console.error(`El dropdown con ID ${dropdownId} no se encuentra en el DOM.`);
+            activeDropdown = dropdown.classList.contains("hidden") ? null : dropdown;
         }
     }
     
