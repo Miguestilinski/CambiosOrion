@@ -131,6 +131,7 @@ h2 {
 }
 
 .currency-converter {
+    @apply flex justify-center;
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
@@ -245,8 +246,10 @@ input[type="number"]::-moz-outer-spin-button {
 
 /* Dropdown */
 .dropdown-content {
+    display: none;
     position: absolute;
     background-color: #fff;
+    top: 100%;
     width: auto;
     max-height: 150px;
     max-width: 200px;
