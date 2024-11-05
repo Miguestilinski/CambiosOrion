@@ -231,6 +231,10 @@ input[type="number"]::-moz-outer-spin-button {
     padding: 1rem; /* Espaciado interno */
 }
 
+.currency-converter {
+    transition: all 0.2s ease; /* Suaviza los cambios */
+}
+
 /* Disclaimer */
 .disclaimer {
     font-size: 0.9rem;
@@ -310,6 +314,13 @@ input[type="number"]::-moz-outer-spin-button {
     cursor: pointer;
 }
 
+/* Imágenes de las banderas en las opciones */
+.dropdown-content img {
+    @apply w-6 h-6 mr-3; /* Mantén el margen a la derecha del ícono */
+    width: 30px; /* Ajusta el tamaño de las imágenes */
+    height: auto;
+}
+
 .dropdown-content div:hover {
     background-color: #f1f1f1;
 }
@@ -327,11 +338,17 @@ input[type="number"]::-moz-outer-spin-button {
     display: block; /* Mostrar si tiene la clase 'open' */
 }
 
-/* Imágenes de las banderas en las opciones */
-.dropdown-content img {
-    @apply w-6 h-6 mr-3; /* Mantén el margen a la derecha del ícono */
-    width: 30px; /* Ajusta el tamaño de las imágenes */
-    height: auto;
+/* Estilo del dropdown */
+#dropdown1, #dropdown2 {
+    width: 200px; /* Cambia este valor para ajustar el ancho */
+    max-height: 200px; /* Altura máxima del dropdown */
+    overflow-y: auto; /* Permite el desplazamiento vertical */
+}
+
+/* Asegura que los elementos en el dropdown estén uno al lado del otro */
+#dropdown1 ul, #dropdown2 ul {
+    display: flex;
+    flex-wrap: wrap; /* Asegura que los elementos puedan envolverse */
 }
 
 /* Sección completa */
