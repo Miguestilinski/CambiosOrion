@@ -1,10 +1,6 @@
 let exchangeRates = {};
 let iconsLoaded = {}; // Almacena los íconos en memoria
 
-document.addEventListener("DOMContentLoaded", () => {
-    loadCurrencies();
-});
-
 // Cargar las divisas
 function loadCurrencies() {
     fetch('https://cambiosorion.cl/data/obtener_divisas.php')
@@ -20,6 +16,14 @@ function loadCurrencies() {
 
             if (dropdown1) dropdown1.innerHTML = '';
             console.log(document.getElementById("dropdown1")); // Verifica si existe
+            if (container) {
+                array.forEach((item) => {
+                    // Código para agregar elementos al DOM
+                    container.appendChild(/* tu elemento aquí */);
+                });
+            } else {
+                console.error('Contenedor no encontrado');
+            }
 
             if (dropdown2) dropdown2.innerHTML = '';
 
@@ -174,3 +178,7 @@ function toggleDropdown(dropdownId) {
     dropdown.classList.toggle("hidden");
     dropdown.classList.toggle("block");
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    loadCurrencies();
+});
