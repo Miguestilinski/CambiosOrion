@@ -15,12 +15,13 @@ function loadCurrencies() {
             const dropdown2 = document.getElementById("dropdown2");
 
             if (dropdown1) dropdown1.innerHTML = '';
-            console.log(document.getElementById("dropdown1")); // Verifica si existe
-
             if (dropdown2) dropdown2.innerHTML = '';
 
-            // Verifica el contenido de data
-            console.log(data); // Agrega esto para ver qué se está recibiendo
+
+            if (!dropdown1 || !dropdown2) {
+                console.error("Error: uno de los dropdowns no se encuentra en el DOM.");
+                return; // Detiene la ejecución si alguno de los dropdowns no está disponible
+            }
 
             data.forEach(divisa => {
                 const circularIcon = divisa.icono_circular;
@@ -57,6 +58,8 @@ function loadCurrencies() {
         })
         .catch(error => console.error('Error al cargar las divisas:', error));
 }
+console.log(data); // Agrega esto justo después de obtener los datos
+
 
 // Función para pre-cargar el ícono
 function preloadIcon(iconUrl) {
