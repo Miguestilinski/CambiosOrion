@@ -198,13 +198,20 @@ input[type="number"]::-moz-outer-spin-button {
 /* Modificaciones personalizadas para mejorar la apariencia y funcionalidad */
 .convert-selector {
     position: relative;
-    display: flex;
+    display: inline-flex;
     justify-content: center;
     align-items: center;
     padding: 0.5rem;
     background-color: #fff; 
     cursor: pointer; 
     pointer-events: auto;
+}
+
+.convert-selector img,
+.convert-selector span,
+.convert-selector svg {
+    display: inline-flex; 
+    align-items: center;
 }
 
 /* Contenedor de selección personalizado */
@@ -236,12 +243,6 @@ input[type="number"]::-moz-outer-spin-button {
     justify-content: center;
     padding: 0; 
     border: none; 
-}
-
-.convert-selector img,
-.convert-selector span,
-.convert-selector svg {
-    display: inline-flex; 
 }
 
 /* Dropdown */
