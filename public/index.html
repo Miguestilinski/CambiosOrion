@@ -48,15 +48,15 @@
                             class="w-full p-4 border rounded-lg shadow-md text-right bg-white mb-3 appearance-none"
                             oninput="convertFromAmount1()">
                         <div id="dropdown1Button" class="convert-selector flex items-center cursor-pointer"
-                             onclick="toggleDropdown('dropdown1')">
+                            onclick="toggleDropdown('dropdown1')">
                             <img id="icon-currency1" src="/orionapp/node_modules/circle-flags/flags/cl.svg" alt="Icono divisa" class="w-5 h-5 mr-2">
                             <span id="currency1-text" class="font-medium">CLP</span>
                             <svg class="w-4 h-4 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
                             </svg>
                         </div>
-                        <div id="dropdown1" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-md w-44 mt-2 max-h-48 overflow-y-auto">
-                            <ul class="py-2 text-sm text-gray-700 flex flex-wrap" aria-labelledby="dropdown1Button">
+                        <div id="dropdown1" class="absolute z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-md w-32 mt-2 max-h-48 overflow-y-auto">
+                            <ul class="py-2 text-sm text-gray-700" aria-labelledby="dropdown1Button">
                                 <li onclick="selectCurrency('USD', '/orionapp/node_modules/circle-flags/flags/us.svg', 'currency1', 'dropdown1')">
                                     <a href="#" class="block px-4 py-2 hover:bg-gray-100 items-center flex">
                                         <img src="/orionapp/node_modules/circle-flags/flags/us.svg" alt="Icono USD" class="w-5 h-5 inline-block mr-2"> USD
@@ -66,7 +66,7 @@
                             </ul>
                         </div>
                     </div>
-    
+
                     <!-- Columna derecha -->
                     <div class="converter-box flex-1 pl-4 relative">
                         <label for="amount2" class="block text-lg font-bold mb-2">¿Qué divisa quieres?</label>
@@ -74,17 +74,17 @@
                             class="w-full p-4 border rounded-lg shadow-md text-right bg-white mb-3 appearance-none"
                             oninput="convertFromAmount2()">
                         <div id="dropdown2Button" class="convert-selector flex items-center cursor-pointer"
-                             onclick="toggleDropdown('dropdown2')">
+                            onclick="toggleDropdown('dropdown2')">
                             <img id="icon-currency2" src="/orionapp/node_modules/circle-flags/flags/us.svg" alt="Icono divisa" class="w-5 h-5 mr-2">
                             <span id="currency2-text" class="font-medium">USD</span>
                             <svg class="w-4 h-4 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
                             </svg>
                         </div>
-                        <div id="dropdown2" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-md w-44 mt-2">
+                        <div id="dropdown2" class="absolute z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-md w-32 mt-2 max-h-48 overflow-y-auto">
                             <ul class="py-2 text-sm text-gray-700" aria-labelledby="dropdown2Button">
                                 <li onclick="selectCurrency('CLP', '/orionapp/node_modules/circle-flags/flags/cl.svg', 'currency2', 'dropdown2')">
-                                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 items-center">
+                                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 items-center flex">
                                         <img src="/orionapp/node_modules/circle-flags/flags/cl.svg" alt="Icono CLP" class="w-5 h-5 inline-block mr-2"> CLP
                                     </a>
                                 </li>
@@ -94,6 +94,7 @@
                     </div>
                 </div>
             </section>
+
             <!-- Envío de Dinero -->
             <section id="sending-money" class="sending-money-section bg-white w-full shadow-lg p-8">
                 <div class="sending-money-container">
