@@ -16,14 +16,6 @@ function loadCurrencies() {
 
             if (dropdown1) dropdown1.innerHTML = '';
             console.log(document.getElementById("dropdown1")); // Verifica si existe
-            if (container) {
-                array.forEach((item) => {
-                    // Código para agregar elementos al DOM
-                    container.appendChild(/* tu elemento aquí */);
-                });
-            } else {
-                console.error('Contenedor no encontrado');
-            }
 
             if (dropdown2) dropdown2.innerHTML = '';
 
