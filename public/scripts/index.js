@@ -164,6 +164,11 @@ document.addEventListener("DOMContentLoaded", function () {
     function toggleDropdown(dropdownId) {
         console.log(`Toggling dropdown: ${dropdownId}`);
         const dropdown = document.getElementById(dropdownId);
+        if (dropdown) {
+            dropdown.classList.toggle("hidden");
+        } else {
+            console.error(`El dropdown con ID ${dropdownId} no se encuentra en el DOM.`);
+        }
     }
     
     // Hacer que la función sea global
