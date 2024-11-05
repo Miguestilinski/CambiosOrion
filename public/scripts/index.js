@@ -157,6 +157,7 @@ function updateCurrencyIcon() {
 
 function fillCurrencyTable() {
     const tableBody = document.getElementById("currency-table-body");
+    console.log("Table body:", tableBody);
     if (!tableBody) {
         console.error("Error: 'currency-table-body' no se encuentra en el DOM.");
         return; // Evita continuar si el elemento no existe
