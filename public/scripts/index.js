@@ -12,15 +12,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 return response.json();
             })
             .then(data => {
-                const currency1Dropdown = document.getElementById("currency1Dropdown");
-                const currency2Dropdown = document.getElementById("currency2Dropdown");
+                const dropdown1 = document.getElementById("dropdown1");
+                const dropdown2 = document.getElementById("dropdown2");
 
-                console.log(currency1Dropdown, currency2Dropdown);
+                console.log(dropdown1, dropdown2);
 
-                if (currency1Dropdown) currency1Dropdown.innerHTML = '';
-                if (currency2Dropdown) currency2Dropdown.innerHTML = '';
+                if (dropdown1) dropdown1.innerHTML = '';
+                if (dropdown2) dropdown2.innerHTML = '';
 
-                if (!currency1Dropdown || !currency2Dropdown) {
+                if (!dropdown1 || !dropdown2) {
                     console.error("Error: uno de los dropdowns no se encuentra en el DOM.");
                     return; // Detiene la ejecución si alguno de los dropdowns no está disponible
                 }
@@ -41,18 +41,18 @@ document.addEventListener("DOMContentLoaded", function () {
                     option1.className = "p-2 hover:bg-gray-100 cursor-pointer";
                     option1.onclick = function () {
                         setCurrency1(divisa.nombre);
-                        toggleDropdown('currency1Dropdown'); // Cierra el dropdown
+                        toggleDropdown('dropdown1'); // Cierra el dropdown
                     };
-                    currency1Dropdown.appendChild(option1);
+                    dropdown1.appendChild(option1);
 
                     const option2 = document.createElement("div");
                     option2.innerHTML = `<img src="${circularIcon}" alt="${divisa.nombre}" class="w-5 h-5 mr-2"> ${divisa.nombre}`;
                     option2.className = "p-2 hover:bg-gray-100 cursor-pointer";
                     option2.onclick = function () {
                         setCurrency2(divisa.nombre);
-                        toggleDropdown('currency2Dropdown'); // Cierra el dropdown
+                        toggleDropdown('dropdown2'); // Cierra el dropdown
                     };
-                    currency2Dropdown.appendChild(option2);
+                    dropdown2.appendChild(option2);
                 });
 
                 // Llenar la tabla comparativa
