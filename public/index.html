@@ -47,7 +47,9 @@
                         <input type="number" id="amount1" placeholder="0.00" step="0.01" min="0"
                             class="w-full p-4 border rounded-lg shadow-md text-right bg-white mb-3 appearance-none"
                             oninput="convertFromAmount1()">
-                        <div id="dropdown1Button" class="convert-selector flex items-center cursor-pointer"
+                        <!-- Contenedor que hace el área no clickeable -->
+                        <div class="non-clickable-area"></div>
+                        <div id="dropdown1Button" class="convert-selector flex items-center"
                             onclick="toggleDropdown('dropdown1')">
                             <img id="icon-currency1" src="/orionapp/node_modules/circle-flags/flags/cl.svg" alt="Icono divisa" class="w-5 h-5 mr-2">
                             <span id="currency1-text" class="font-medium">CLP</span>
@@ -69,12 +71,16 @@
                     </div>
 
                     <!-- Columna derecha -->
-                    <div class="converter-box flex-1 pl-4 relative">
-                        <label for="amount2" class="block text-lg font-bold mb-2">¿Qué divisa quieres?</label>
+                    <div class="converter-box flex-1 pr-4 relative">
+                        <label for="amount2" class="block text-lg font-bold mb-2">¿Qué divisa tienes?</label>
                         <input type="number" id="amount2" placeholder="0.00" step="0.01" min="0"
                             class="w-full p-4 border rounded-lg shadow-md text-right bg-white mb-3 appearance-none"
                             oninput="convertFromAmount2()">
-                        <div id="dropdown2Button" class="convert-selector flex items-center cursor-pointer"
+                        
+                        <!-- Contenedor que hace el área no clickeable -->
+                        <div class="non-clickable-area"></div>
+                        
+                        <div id="dropdown2Button" class="convert-selector flex items-center"
                             onclick="toggleDropdown('dropdown2')">
                             <img id="icon-currency2" src="/orionapp/node_modules/circle-flags/flags/us.svg" alt="Icono divisa" class="w-5 h-5 mr-2">
                             <span id="currency2-text" class="font-medium">USD</span>
@@ -82,18 +88,19 @@
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
                             </svg>
                         </div>
-                        <div id="dropdown2" class="absolute z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-md w-32 mt-2 max-h-24 overflow-y-auto">
+                        
+                        <div id="dropdown2" class="dropdown-content absolute z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-md overflow-y-auto">
                             <ul class="py-1 text-sm text-gray-700" aria-labelledby="dropdown2Button">
                                 <li onclick="selectCurrency('CLP', '/orionapp/node_modules/circle-flags/flags/cl.svg', 'currency2', 'dropdown2')">
-                                    <a href="#" class="block px-2 py-1 hover:bg-gray-100 items-center currency-option">
-                                        <img src="/orionapp/node_modules/circle-flags/flags/cl.svg" alt="Icono CLP" class="w-5 h-5 inline-block mr-2"> 
+                                    <a href="#" class="px-2 py-1 hover:bg-gray-100 flex items-center currency-option">
+                                        <img src="/orionapp/node_modules/circle-flags/flags/cl.svg" alt="Icono USD" class="w-5 h-5 inline-block mr-2"> 
                                         <span>CLP</span>
                                     </a>
                                 </li>
                                 <!-- Agrega más opciones según sea necesario -->
                             </ul>
                         </div>
-                    </div>
+                    </div>                    
                 </div>
             </section>
             <!-- Envío de Dinero -->
