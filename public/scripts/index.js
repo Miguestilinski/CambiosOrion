@@ -201,27 +201,35 @@ function updateAddCurrencyDropdown() {
 function toggleDropdown(dropdownId) {
     const dropdown = document.getElementById(dropdownId);
     if (dropdown) {
+        console.log(`Toggling dropdown: ${dropdownId}`);
+        console.log(`Active dropdown before: ${activeDropdown}`);
+        
         if (activeDropdown && activeDropdown !== dropdown) {
             activeDropdown.classList.add("hidden");
         }
         dropdown.classList.toggle("hidden");
         activeDropdown = dropdown.classList.contains("hidden") ? null : dropdown;
+
+        console.log(`Active dropdown after: ${activeDropdown}`);
     }
 }
+
 
 window.toggleDropdown = toggleDropdown;
 
 document.addEventListener("click", function (event) {
     if (activeDropdown && !activeDropdown.contains(event.target)) {
+        console.log("Clic fuera del dropdown");
         activeDropdown.classList.add("hidden");
         activeDropdown = null;
+    } else {
+        console.log("Clic dentro del dropdown o elemento activo.");
     }
 });
 
+
 function toggleEditMode() {
     isEditMode = !isEditMode;
-
-    // Muestra/oculta la columna de acciones (botones de eliminar)
     document.querySelectorAll(".edit-column").forEach(col => {
         col.classList.toggle("hidden", !isEditMode);
     });
