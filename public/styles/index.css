@@ -139,6 +139,7 @@ h2 {
 
 .converter-box {
     @apply flex flex-col items-center flex-1 min-w-[200px];
+    @apply flex-1 p-4;
 }
 
 label {
@@ -196,15 +197,23 @@ input[type="number"]::-moz-outer-spin-button {
 
 /* Modificaciones personalizadas para mejorar la apariencia y funcionalidad */
 .convert-selector {
+    position: relative;
     display: flex;
-    justify-self: center;
+    justify-content: center;
+    align-items: center;
     padding: 0.5rem;
     background-color: #fff; 
     cursor: pointer; 
+    pointer-events: auto;
 }
 
-.converter-box {
-    @apply flex-1 p-4;
+.non-clickable-area {
+    position: absolute; /* Hacerla absoluta */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none; /* Desactiva los clics */
 }
 
 /* Contenedor de selección personalizado */
@@ -212,11 +221,13 @@ input[type="number"]::-moz-outer-spin-button {
     position: relative;
     display: inline-block;
     width: 100%;
+    pointer-events: none
 }
 
 /* Caja de selección */
 .select-box {
     @apply flex justify-center items-center cursor-pointer gap-8; 
+    pointer-events: auto;
 }
 
 /* Chevron */
@@ -244,7 +255,6 @@ input[type="number"]::-moz-outer-spin-button {
 
 /* Dropdown */
 .dropdown-content {
-    display: none; 
     position: absolute;
     background-color: #fff;
     width: auto;
@@ -509,11 +519,16 @@ footer {
 
     .converter-box {
         flex: 1 1 100%; /* Cada columna ocupa el 100% del ancho en pantallas pequeñas */
+        position: relative; /* Asegúrate de que el contenedor es relativo */
+        pointer-events: auto;
     }
 
-    /* Ajustes adicionales para la sección del conversor */
     .converter-section {
-        padding: 20px; /* Ajusta el padding en pantallas pequeñas */
+        padding: 20px;
+    }
+
+    .converter-box > *:not(.convert-selector) {
+        pointer-events: none; /* Desactiva eventos de puntero en los otros elementos */
     }
 
     .header-logo img.logo {
