@@ -198,8 +198,6 @@ input[type="number"]::-moz-outer-spin-button {
     display: flex;
     align-items: center;
     padding: 0.5rem;
-    border: 1px solid #e2e8f0; 
-    border-radius: 0.375rem; 
     background-color: #fff; 
     cursor: pointer; 
 }
