@@ -159,7 +159,9 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
             console.error(`El dropdown con ID ${dropdownId} no se encuentra en el DOM.`);
         }
-    }  
+    }
+    
+    window.toggleDropdown = toggleDropdown;    
 
     function fillCurrencyTable() {
         const tableBody = document.getElementById("currency-table-body");
