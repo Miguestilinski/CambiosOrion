@@ -183,7 +183,7 @@ input[type="number"]::-moz-outer-spin-button {
 }
 
 .dropdown-content {
-    @apply absolute z-10 w-full bg-white border border-gray-300 rounded-lg shadow-md max-h-40 overflow-y-scroll mt-1;
+    @apply absolute z-10 w-full bg-white border border-gray-300 rounded-lg shadow-md max-h-40 overflow-y-auto mt-1;
 }
 
 .dropdown-content div {
@@ -257,8 +257,7 @@ input[type="number"]::-moz-outer-spin-button {
 }
 
 .dropdown-content ul {
-    display: flex; /* Cambia esto a flex */
-    flex-direction: column; /* Si deseas que se apilen verticalmente, este valor puede ser 'column' */
+    display: flex;
     padding: 0;
     margin: 0;
 }
