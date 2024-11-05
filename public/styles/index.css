@@ -217,13 +217,15 @@ input[type="number"]::-moz-outer-spin-button {
 /* Modificaciones personalizadas para mejorar la apariencia y funcionalidad */
 
 /* Fondo y sombra del contenedor del conversor */
-.converter-section {
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+.convert-selector {
+    display: flex; /* Asegura que los elementos se alineen horizontalmente */
+    align-items: center; /* Centra verticalmente los íconos y el texto */
+    padding: 0.5rem; /* Agrega un poco de espaciado interno */
+    border: 1px solid #e2e8f0; /* Añade un borde para mejorar la apariencia */
+    border-radius: 0.375rem; /* Bordes redondeados */
+    background-color: #fff; /* Fondo blanco */
+    cursor: pointer; /* Cambia el cursor al pasar sobre el área */
 }
-
 .converter-box {
     flex: 1 1 45%; /* Permite que cada columna ocupe aproximadamente el 45% del ancho */
     padding: 1rem; /* Espaciado interno */
@@ -252,7 +254,6 @@ input[type="number"]::-moz-outer-spin-button {
     justify-content: center; /* Centrar los elementos */
     cursor: pointer;
     gap: 8px; /* Espacio entre los elementos */
-    padding: 10px;
     background-color: #fff;
     border-radius: 8px;
 }
@@ -303,9 +304,9 @@ input[type="number"]::-moz-outer-spin-button {
 
 /* Opciones dentro del dropdown */
 .dropdown-content div {
+    @apply p-3 flex items-center cursor-pointer hover:bg-gray-100; /* Mantén el flex para alinear los elementos */
     display: flex;
     align-items: center;
-    padding: 8px 12px;
     cursor: pointer;
 }
 
@@ -328,9 +329,9 @@ input[type="number"]::-moz-outer-spin-button {
 
 /* Imágenes de las banderas en las opciones */
 .dropdown-content img {
+    @apply w-6 h-6 mr-3; /* Mantén el margen a la derecha del ícono */
     width: 30px; /* Ajusta el tamaño de las imágenes */
     height: auto;
-    margin-right: 8px; /* Espacio entre la imagen y el texto */
 }
 
 /* Sección completa */

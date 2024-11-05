@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     preloadIcon(circularIcon);
 
                     const option1 = document.createElement("div");
-                    option1.innerHTML = `<img src="${circularIcon}" alt="${divisa.nombre}" class="w-5 h-5 mr-2"> ${divisa.nombre}`;
+                    option1.innerHTML = `<img src="${circularIcon}" alt="${divisa.nombre}" class="w-6 h-6 mr-2"> ${divisa.nombre}`;
                     option1.className = "p-2 hover:bg-gray-100 cursor-pointer";
                     option1.onclick = function () {
                         setCurrency1(divisa.nombre);
