@@ -291,7 +291,8 @@ input[type="number"]::-moz-outer-spin-button {
 .dropdown-content {
     display: none; /* Ocultar por defecto */
     position: absolute;
-    display: none; /* Asegúrate de manejar el estado visible con JavaScript */
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center;    /* Centra verticalmente */
     background-color: #fff;
     min-width: 100%;
     z-index: 1;

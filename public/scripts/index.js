@@ -18,8 +18,10 @@ function loadCurrencies() {
             const dropdown1 = document.getElementById("dropdown1");
             const dropdown2 = document.getElementById("dropdown2");
 
-            dropdown1.innerHTML = '';
-            dropdown2.innerHTML = '';
+            if (dropdown1) dropdown1.innerHTML = '';
+            console.log(document.getElementById("dropdown1")); // Verifica si existe
+
+            if (dropdown2) dropdown2.innerHTML = '';
 
             // Verifica el contenido de data
             console.log(data); // Agrega esto para ver qué se está recibiendo
