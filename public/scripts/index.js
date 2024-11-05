@@ -15,8 +15,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 const dropdown1 = document.getElementById("dropdown1");
                 const dropdown2 = document.getElementById("dropdown2");
 
+                console.log(dropdown1, dropdown2);
+
                 if (dropdown1) dropdown1.innerHTML = '';
                 if (dropdown2) dropdown2.innerHTML = '';
+
+                if (!dropdown1 || !dropdown2) {
+                    console.error("Error: uno de los dropdowns no se encuentra en el DOM.");
+                    return; // Detiene la ejecución si alguno de los dropdowns no está disponible
+                }
 
                 data.forEach(divisa => {
                     const circularIcon = divisa.icono_circular;
