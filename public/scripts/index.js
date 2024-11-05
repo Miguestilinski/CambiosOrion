@@ -200,28 +200,30 @@ function updateAddCurrencyDropdown() {
 
 function toggleDropdown(dropdownId) {
     const dropdown = document.getElementById(dropdownId);
-    if (dropdown) {
-        console.log(`Toggling dropdown: ${dropdownId}`);
-        console.log("Active dropdown before:", activeDropdown);
-        
-        if (activeDropdown && activeDropdown !== dropdown) {
-            activeDropdown.classList.add("hidden");
-            console.log("Hiding previous dropdown");
-        }
-        
-        dropdown.classList.toggle("hidden");
-        
-        // Actualiza el activeDropdown
-        activeDropdown = dropdown.classList.contains("hidden") ? null : dropdown;
-        
-        console.log("Active dropdown after:", activeDropdown);
+    console.log(`Toggling dropdown: ${dropdownId}`);
+    console.log("Active dropdown before:", activeDropdown);
+    
+    if (activeDropdown && activeDropdown !== dropdown) {
+        activeDropdown.classList.add("hidden");
+        console.log("Hiding previous dropdown");
     }
+    
+    // Alternar la visibilidad del dropdown actual
+    if (dropdown.classList.contains("hidden")) {
+        dropdown.classList.remove("hidden");
+        activeDropdown = dropdown; // Actualiza el dropdown activo
+    } else {
+        dropdown.classList.add("hidden");
+        activeDropdown = null; // Si se oculta, reinicia el dropdown activo
+    }
+
+    console.log("Active dropdown after:", activeDropdown);
 }
 
 window.toggleDropdown = toggleDropdown;
 
 document.addEventListener("click", function (event) {
-    if (activeDropdown && !activeDropdown.contains(event.target)) {
+    if (activeDropdown && !activeDropdown.contains(event.target) && !event.target.matches('button')) {
         console.log("Clic fuera del dropdown");
         activeDropdown.classList.add("hidden");
         activeDropdown = null;
