@@ -200,12 +200,12 @@ input[type="number"]::-moz-outer-spin-button {
 
 /* Modificaciones personalizadas para mejorar la apariencia y funcionalidad */
 .currency-selector {
-    @apply flex justify-center items-center;
+    @apply flex justify-center;
     position: relative;
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    padding: 0.5rem;
+    padding: 0.25rem 0.5rem;
     background-color: #fff;
     cursor: pointer;
     pointer-events: auto;
@@ -268,7 +268,7 @@ input[type="number"]::-moz-outer-spin-button {
     display: flex; /* Utiliza flex para apilar horizontalmente */
     align-items: center; /* Alinea verticalmente */
     cursor: pointer;
-    padding: 8px; /* Añade padding para mejorar el área de clic */
+    padding: 0.5rem;
     transition: background-color 0.2s; /* Añade una transición suave */
 }
 
@@ -279,7 +279,7 @@ input[type="number"]::-moz-outer-spin-button {
 .dropdown-content img {
     width: 24px; /* Ajusta el tamaño del icono */
     height: 24px; /* Ajusta el tamaño del icono */
-    margin-right: 8px; /* Espaciado entre el icono y el texto */
+    margin-right: 0.5rem; /* Espaciado entre el icono y el texto */
 }
 
 .dropdown-content.show {
