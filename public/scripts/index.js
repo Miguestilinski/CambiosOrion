@@ -1,16 +1,10 @@
 let exchangeRates = {};
 let iconsLoaded = {};
 let isEditMode = false;
-let activeDropdown = null;
 let displayedCurrencies = ["CLP", "USD", "EUR", "ARS"];
 
 document.addEventListener("DOMContentLoaded", function () {
-    document.addEventListener("click", function (event) {
-        if (activeDropdown && !activeDropdown.contains(event.target)) {
-            activeDropdown.classList.add("hidden");
-            activeDropdown = null;
-        }
-    });
+    let activeDropdown = null;
     // Cargar las divisas
     function loadCurrencies() {
         fetch('https://cambiosorion.cl/data/obtener_divisas.php')
@@ -65,6 +59,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 updateAddCurrencyDropdown();
                 fillCurrencyTable();
+
+                if (document.getElementById("currency-table-body")) {
+                    fillCurrencyTable();
+                } else {
+                    console.error("Error: 'currency-table-body' no se encuentra en el DOM.");
+                }
             })
             .catch(error => console.error('Error al cargar las divisas:', error));
     }
@@ -156,21 +156,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         document.getElementById("icon-currency1").src = exchangeRates[currency1].icono;
         document.getElementById("icon-currency2").src = exchangeRates[currency2].icono;
-    }
-
-    function toggleDropdown(dropdownId) {
-        console.log(`Toggling dropdown: ${dropdownId}`);
-        const dropdown = document.getElementById(dropdownId);
-        if (dropdown) {
-            if (activeDropdown && activeDropdown !== dropdown) {
-                activeDropdown.classList.add("hidden");
-            }
-            dropdown.classList.toggle("hidden");
-            activeDropdown = dropdown.classList.contains("hidden") ? null : dropdown;
-        }
-    }
-    
-    window.toggleDropdown = toggleDropdown;    
+    }   
 
     function fillCurrencyTable() {
         const tableBody = document.getElementById("currency-table-body");
@@ -221,6 +207,27 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     loadCurrencies();
+});
+
+function toggleDropdown(dropdownId) {
+    console.log(`Toggling dropdown: ${dropdownId}`);
+    const dropdown = document.getElementById(dropdownId);
+    if (dropdown) {
+        if (activeDropdown && activeDropdown !== dropdown) {
+            activeDropdown.classList.add("hidden");
+        }
+        dropdown.classList.toggle("hidden");
+        activeDropdown = dropdown.classList.contains("hidden") ? null : dropdown;
+    }
+}
+
+window.toggleDropdown = toggleDropdown;
+
+document.addEventListener("click", function (event) {
+    if (activeDropdown && !activeDropdown.contains(event.target)) {
+        activeDropdown.classList.add("hidden");
+        activeDropdown = null;
+    }
 });
 
 function toggleEditMode() {
