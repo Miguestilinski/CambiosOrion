@@ -139,7 +139,10 @@ h2 {
 
 .converter-box {
     @apply flex flex-col items-center flex-1 min-w-[200px];
-    @apply flex-1 p-4;
+    display: flex; /* Asegura que use flexbox */
+    flex-direction: column; /* Asegura que los elementos se apilen verticalmente */
+    justify-content: center; /* Centra verticalmente el contenido */
+    padding: 1rem; /* Ajusta el padding según necesites */
 }
 
 label {
@@ -197,6 +200,7 @@ input[type="number"]::-moz-outer-spin-button {
 
 /* Modificaciones personalizadas para mejorar la apariencia y funcionalidad */
 .currency-selector {
+    @apply flex justify-center items-center;
     position: relative;
     display: inline-flex;
     justify-content: center;
@@ -504,16 +508,11 @@ footer {
 
     .converter-box {
         flex: 1 1 100%; /* Cada columna ocupa el 100% del ancho en pantallas pequeñas */
-        position: relative; /* Asegúrate de que el contenedor es relativo */
-        pointer-events: auto;
+        position: relative;
     }
 
     .converter-section {
         padding: 20px;
-    }
-
-    .converter-box > *:not(.currency-selector) {
-        pointer-events: none; /* Desactiva eventos de puntero en los otros elementos */
     }
 
     .header-logo img.logo {
