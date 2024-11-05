@@ -196,20 +196,20 @@ input[type="number"]::-moz-outer-spin-button {
 }
 
 /* Modificaciones personalizadas para mejorar la apariencia y funcionalidad */
-.convert-selector {
+.currency-selector {
     position: relative;
     display: inline-flex;
     justify-content: center;
     align-items: center;
     padding: 0.5rem;
-    background-color: #fff; 
-    cursor: pointer; 
+    background-color: #fff;
+    cursor: pointer;
     pointer-events: auto;
 }
 
-.convert-selector img,
-.convert-selector span,
-.convert-selector svg {
+.currency-selector img,
+.currency-selector span,
+.currency-selector svg {
     display: inline-flex; 
     align-items: center;
 }
@@ -237,12 +237,6 @@ input[type="number"]::-moz-outer-spin-button {
 .select-box span {
     flex-grow: 1;
     text-align: right; 
-}
-
-.currency-selector {
-    justify-content: center;
-    padding: 0; 
-    border: none; 
 }
 
 /* Dropdown */
@@ -296,7 +290,6 @@ input[type="number"]::-moz-outer-spin-button {
 }
 
 .relative {
-    cursor: pointer;
     position: relative;
 }
 
@@ -519,7 +512,7 @@ footer {
         padding: 20px;
     }
 
-    .converter-box > *:not(.convert-selector) {
+    .converter-box > *:not(.currency-selector) {
         pointer-events: none; /* Desactiva eventos de puntero en los otros elementos */
     }
 
