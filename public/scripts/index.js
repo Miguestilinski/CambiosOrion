@@ -201,13 +201,6 @@ function updateAddCurrencyDropdown() {
 function toggleDropdown(dropdownId) {
     const dropdown = document.getElementById(dropdownId);
     if (dropdown) {
-        dropdown.classList.toggle("hidden");
-    }
-}
-
-function toggleDropdown(dropdownId) {
-    const dropdown = document.getElementById(dropdownId);
-    if (dropdown) {
         if (activeDropdown && activeDropdown !== dropdown) {
             activeDropdown.classList.add("hidden");
         }
