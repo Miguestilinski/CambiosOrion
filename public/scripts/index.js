@@ -58,7 +58,6 @@ function loadCurrencies() {
         })
         .catch(error => console.error('Error al cargar las divisas:', error));
 }
-console.log(data); // Agrega esto justo después de obtener los datos
 
 
 // Función para pre-cargar el ícono
