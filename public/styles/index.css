@@ -206,7 +206,7 @@ input[type="number"]::-moz-outer-spin-button {
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    padding: 0.25rem 0.5rem;
+    padding: 0.5rem;
     background-color: #fff;
     cursor: pointer;
     pointer-events: auto;
@@ -250,10 +250,10 @@ input[type="number"]::-moz-outer-spin-button {
     background-color: #fff;
     top: 100%;
     width: auto;
+    transform: translateY(-50%);
     max-height: 150px;
     max-width: 200px;
-    z-index: 9;
-    margin-top: 8px;
+    z-index: 10;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     overflow-y: auto;
     transition: opacity 0.2s ease, visibility 0.2s ease;
