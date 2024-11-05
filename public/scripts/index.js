@@ -15,11 +15,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 const dropdown1 = document.getElementById("dropdown1");
                 const dropdown2 = document.getElementById("dropdown2");
 
-                console.log(currency1Dropdown, currency2Dropdown);
+                console.log(dropdown1, dropdown2);
 
                 if (dropdown1) dropdown1.innerHTML = '';
                 if (dropdown2) dropdown2.innerHTML = '';
-
 
                 if (!dropdown1 || !dropdown2) {
                     console.error("Error: uno de los dropdowns no se encuentra en el DOM.");
@@ -170,13 +169,14 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function toggleDropdown(dropdownId) {
+        console.log(`Toggling dropdown: ${dropdownId}`);
         const dropdown = document.getElementById(dropdownId);
         if (dropdown) {
             dropdown.classList.toggle("hidden");
+            console.log(`Dropdown ${dropdownId} found and toggled.`);
         } else {
             console.error(`El dropdown con ID ${dropdownId} no se encuentra en el DOM.`);
         }
-    }
 
     loadCurrencies();
 });
