@@ -251,8 +251,6 @@ input[type="number"]::-moz-outer-spin-button {
 .dropdown-content {
     display: none; 
     position: absolute;
-    justify-content: flex-start; 
-    align-items: center; 
     background-color: #fff;
     min-width: 100%;
     z-index: 1;
@@ -262,28 +260,37 @@ input[type="number"]::-moz-outer-spin-button {
     overflow-y: scroll; 
 }
 
+.dropdown-content ul {
+    display: flex; /* Cambia esto a flex */
+    flex-direction: column; /* Si deseas que se apilen verticalmente, este valor puede ser 'column' */
+}
+
+/* Modificación de los elementos de la lista */
+.dropdown-content div {
+    display: flex; /* Utiliza flex para apilar horizontalmente */
+    align-items: center; /* Alinea verticalmente */
+    cursor: pointer;
+    padding: 8px; /* Añade padding para mejorar el área de clic */
+    transition: background-color 0.2s; /* Añade una transición suave */
+}
+
 .dropdown-content div:hover {
     background-color: #f1f1f1;
+}
+
+.dropdown-content img {
+    width: 24px; /* Ajusta el tamaño del icono */
+    height: 24px; /* Ajusta el tamaño del icono */
+    margin-right: 8px; /* Espaciado entre el icono y el texto */
 }
 
 .dropdown-content.show {
     display: block; 
 }
 
+
 .relative {
     cursor: pointer;
-}
-
-/* Estilo del dropdown */
-#dropdown1, #dropdown2 {
-    width: 200px; 
-    max-height: 200px; 
-    overflow-y: auto; 
-}
-
-#dropdown1 ul, #dropdown2 ul {
-    display: flex;
-    flex-wrap: wrap; 
 }
 
 /* Sección completa */
