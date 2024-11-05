@@ -1,5 +1,7 @@
 let exchangeRates = {};
-let iconsLoaded = {}; // Almacena los íconos en memoria
+let iconsLoaded = {};
+let isEditMode = false;
+let displayedCurrencies = ["CLP", "USD", "EUR", "ARS"];
 
 document.addEventListener("DOMContentLoaded", function () {
     // Cargar las divisas
@@ -22,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 if (!dropdown1 || !dropdown2) {
                     console.error("Error: uno de los dropdowns no se encuentra en el DOM.");
-                    return; // Detiene la ejecución si alguno de los dropdowns no está disponible
+                    return;
                 }
 
                 data.forEach(divisa => {
@@ -33,7 +35,6 @@ document.addEventListener("DOMContentLoaded", function () {
                         icono: circularIcon
                     };
 
-                    // Pre-cargar el ícono si no está en memoria
                     preloadIcon(circularIcon);
 
                     const option1 = document.createElement("div");
@@ -41,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     option1.className = "p-2 hover:bg-gray-100 cursor-pointer";
                     option1.onclick = function () {
                         setCurrency1(divisa.nombre);
-                        toggleDropdown('dropdown1'); // Cierra el dropdown
+                        toggleDropdown('dropdown1');
                     };
                     dropdown1.appendChild(option1);
 
@@ -50,12 +51,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     option2.className = "p-2 hover:bg-gray-100 cursor-pointer";
                     option2.onclick = function () {
                         setCurrency2(divisa.nombre);
-                        toggleDropdown('dropdown2'); // Cierra el dropdown
+                        toggleDropdown('dropdown2');
                     };
                     dropdown2.appendChild(option2);
                 });
 
-                // Llenar la tabla comparativa
+                updateAddCurrencyDropdown();
                 fillCurrencyTable();
             })
             .catch(error => console.error('Error al cargar las divisas:', error));
@@ -163,64 +164,61 @@ document.addEventListener("DOMContentLoaded", function () {
     // Hacer que la función sea global
     window.toggleDropdown = toggleDropdown;    
 
-    loadCurrencies();
-
-    let isEditMode = false;
-
-    // Función para llenar la tabla comparativa con las tasas de cambio
     function fillCurrencyTable() {
         const tableBody = document.getElementById("currency-table-body");
         tableBody.innerHTML = '';
-    
-        for (const [currency, rateInfo] of Object.entries(exchangeRates)) {
-            const row = document.createElement("tr");
-    
-            row.innerHTML = `
-                <td class="px-6 py-4">${currency}</td>
-                <td class="px-6 py-4">${rateInfo.compra.toFixed(2)}</td>
-                <td class="px-6 py-4">${rateInfo.venta.toFixed(2)}</td>
-                <td class="px-6 py-4 edit-column hidden">
-                    <button onclick="deleteCurrency('${currency}')" class="px-2 py-1 bg-red-500 text-white rounded">Eliminar</button>
-                </td>
-            `;
-    
-            tableBody.appendChild(row);
-        }
-    }
-
-    // Función para agregar una nueva divisa con datos de ejemplo
-    function addCurrency() {
-        const newCurrency = prompt("Ingrese la nueva divisa (ej. JPY):");
-        const compra = parseFloat(prompt("Ingrese el monto de compra:"));
-        const venta = parseFloat(prompt("Ingrese el monto de venta:"));
-
-        if (newCurrency && !isNaN(compra) && !isNaN(venta)) {
-            exchangeRates[newCurrency] = { compra, venta };
-            fillCurrencyTable();
-        } else {
-            alert("Datos inválidos. Intente nuevamente.");
-        }
-    }
-
-    // Función para alternar el modo de edición
-    function toggleEditMode() {
-        isEditMode = !isEditMode;
-
-        // Muestra/oculta la columna de acciones (botones de eliminar)
-        document.querySelectorAll(".edit-column").forEach(col => {
-            col.classList.toggle("hidden", !isEditMode);
+        displayedCurrencies.forEach(currency => {
+            if (exchangeRates[currency]) {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td class="px-6 py-4">${currency}</td>
+                    <td class="px-6 py-4">${exchangeRates[currency].compra.toFixed(2)}</td>
+                    <td class="px-6 py-4">${exchangeRates[currency].venta.toFixed(2)}</td>
+                    <td class="px-6 py-4 edit-column hidden">
+                        <button onclick="deleteCurrency('${currency}')" class="px-2 py-1 bg-red-500 text-white rounded">Eliminar</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            }
         });
     }
 
-    // Función para eliminar una divisa específica
+    function updateAddCurrencyDropdown() {
+        const dropdown = document.getElementById("add-currency-dropdown");
+        dropdown.innerHTML = '';
+        Object.keys(exchangeRates).forEach(currency => {
+            if (!displayedCurrencies.includes(currency)) {
+                const option = document.createElement("div");
+                option.innerHTML = `<img src="${exchangeRates[currency].icono}" alt="${currency}" class="w-6 h-6 mr-2"> ${currency}`;
+                option.className = "p-2 hover:bg-gray-100 cursor-pointer";
+                option.onclick = function () {
+                    displayedCurrencies.push(currency);
+                    toggleDropdown('add-currency-dropdown');
+                    fillCurrencyTable();
+                };
+                dropdown.appendChild(option);
+            }
+        });
+    }
+
+    function toggleDropdown(dropdownId) {
+        const dropdown = document.getElementById(dropdownId);
+        if (dropdown) {
+            dropdown.classList.toggle("hidden");
+        }
+    }
+
+    function toggleEditMode() {
+        isEditMode = !isEditMode;
+        document.querySelectorAll(".edit-column").forEach(col => col.classList.toggle("hidden", !isEditMode));
+    }
+
     function deleteCurrency(currency) {
         if (confirm(`¿Está seguro de que desea eliminar ${currency}?`)) {
-            delete exchangeRates[currency];
+            displayedCurrencies = displayedCurrencies.filter(curr => curr !== currency);
             fillCurrencyTable();
         }
     }
 
-    // Llenar la tabla inicial al cargar la página
-    fillCurrencyTable();
-
+    loadCurrencies();
 });

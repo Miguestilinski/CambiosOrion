@@ -366,6 +366,16 @@ input[type="number"]::-moz-outer-spin-button {
     display: table-cell;
 }
 
+#add-currency-dropdown {
+    z-index: 10;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.edit-column.hidden {
+    display: none;
+}
+
 /* Contenedor principal del footer */
 footer {
     background: black; /* Fondo negro sólido */
