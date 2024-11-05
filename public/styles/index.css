@@ -143,6 +143,7 @@ h2 {
     display: flex; /* Asegura que use flexbox */
     flex-direction: column; /* Asegura que los elementos se apilen verticalmente */
     justify-content: center; /* Centra verticalmente el contenido */
+    align-items: center;
     padding: 1rem; /* Ajusta el padding según necesites */
 }
 
@@ -250,7 +251,7 @@ input[type="number"]::-moz-outer-spin-button {
     background-color: #fff;
     top: 100%;
     width: auto;
-    transform: translateY(-50%);
+    transform: translateX(50%);
     max-height: 150px;
     max-width: 200px;
     z-index: 10;
