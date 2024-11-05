@@ -356,6 +356,16 @@ input[type="number"]::-moz-outer-spin-button {
     background-color: #2563eb;
 }
 
+/* Oculta la columna de edición por defecto */
+.edit-column {
+    display: none;
+}
+
+/* Muestra la columna de edición cuando el modo de edición está activado */
+.edit-column.show {
+    display: table-cell;
+}
+
 /* Contenedor principal del footer */
 footer {
     background: black; /* Fondo negro sólido */

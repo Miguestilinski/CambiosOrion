@@ -117,7 +117,7 @@
                 <table class="w-full text-sm text-left text-gray-500">
                     <thead class="text-xs uppercase bg-gray-100 text-gray-700">
                         <tr>
-                            <th scope="col" class="px-6 py-3 hidden">
+                            <th scope="col" class="px-6 py-3">
                                 Divisa
                             </th>
                             <th scope="col" class="px-6 py-3">
@@ -126,12 +126,20 @@
                             <th scope="col" class="px-6 py-3">
                                 Cambio (24h)
                             </th>
+                            <th scope="col" class="px-6 py-3 edit-column hidden"> <!-- Columna extra para el modo de edición -->
+                                Acciones
+                            </th>
                         </tr>
                     </thead>
                     <tbody id="currency-table-body">
                         <!-- Las filas de divisas se agregarán aquí dinámicamente -->
                     </tbody>
                 </table>
+                <!-- Botones para agregar y editar -->
+                <div class="flex justify-between mt-4">
+                    <button onclick="addCurrency()" class="px-4 py-2 bg-blue-500 text-white rounded">Agregar Divisa</button>
+                    <button onclick="toggleEditMode()" class="px-4 py-2 bg-gray-500 text-white rounded">Editar</button>
+                </div>
             </section>
         </main>
     </div>
