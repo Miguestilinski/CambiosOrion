@@ -356,6 +356,10 @@ input[type="number"]::-moz-outer-spin-button {
     background-color: #2563eb;
 }
 
+.content-table {
+    justify-content: center;
+}
+
 /* Oculta la columna de edición por defecto */
 .edit-column {
     display: none;
@@ -377,9 +381,11 @@ input[type="number"]::-moz-outer-spin-button {
 }
 
 .edit-btn {
-    background-color: rgba(0, 123, 255, 0.5); /* Azul con opacidad */
-    color: blue;
+    background-color: rgba(231, 240, 250, 1);
+    color: rgba(0, 108, 224, 1);
     padding: 10px 20px;
+    top: 10px;
+    right: 10px;
     border-radius: 8px;
     font-weight: bold;
     border: none;
@@ -388,13 +394,13 @@ input[type="number"]::-moz-outer-spin-button {
 }
 
 .edit-btn:hover {
-    background-color: rgba(0, 123, 255, 0.7); /* Cambia a más opaco al pasar el ratón */
+    background-color: rgba(168, 200, 250, 1); /* Cambia a más opaco al pasar el ratón */
 }
 
 /* Estilo del botón "Agregar Divisa" */
 .add-currency-btn {
-    background-color: rgba(0, 123, 255, 0.5); /* Azul con opacidad */
-    color: blue;
+    background-color: rgba(231, 240, 250, 1);
+    color: rgba(0, 108, 224, 1);
     padding: 10px 20px;
     border-radius: 8px;
     font-weight: bold;
