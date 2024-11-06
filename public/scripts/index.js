@@ -202,19 +202,19 @@ function toggleDropdown(dropdownId) {
     const dropdown = document.getElementById(dropdownId);
     console.log(`Toggling dropdown: ${dropdownId}`);
     console.log("Active dropdown before:", activeDropdown);
-    
+
     if (activeDropdown && activeDropdown !== dropdown) {
         activeDropdown.classList.add("hidden");
         console.log("Hiding previous dropdown");
     }
-    
-    // Alternar la visibilidad del dropdown actual
+
+    // Asegúrate de que el dropdown se alterna correctamente
     if (dropdown.classList.contains("hidden")) {
         dropdown.classList.remove("hidden");
-        activeDropdown = dropdown; // Actualiza el dropdown activo
+        activeDropdown = dropdown;
     } else {
         dropdown.classList.add("hidden");
-        activeDropdown = null; // Si se oculta, reinicia el dropdown activo
+        activeDropdown = null;
     }
 
     console.log("Active dropdown after:", activeDropdown);
