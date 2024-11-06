@@ -221,8 +221,8 @@ function toggleDropdown(dropdownId, event) {
 
     console.log("Active dropdown after:", activeDropdown);
 }
-
 window.toggleDropdown = toggleDropdown;
+
 document.addEventListener("click", function (event) {
     // Verifica si el clic está fuera del dropdown activo y del elemento de activación
     if (
@@ -242,11 +242,10 @@ function toggleEditMode() {
         col.classList.toggle("hidden", !isEditMode);
     });
 }
-
-// Hacer la función global para que sea accesible en el HTML
 window.toggleEditMode = toggleEditMode;
 
 function deleteCurrency(currency) {
     displayedCurrencies = displayedCurrencies.filter(curr => curr !== currency);
     fillCurrencyTable();
 }
+window.deleteCurrency = deleteCurrency;
