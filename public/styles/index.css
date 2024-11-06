@@ -413,6 +413,8 @@ input[type="number"]::-moz-outer-spin-button {
     border: none;
     cursor: pointer;
     text-align: center;
+    margin-right: 1rem;
+    margin-top: 0.5rem;
 }
 
 .edit-btn:hover {
@@ -431,6 +433,7 @@ input[type="number"]::-moz-outer-spin-button {
     text-align: center;
     display: flex;
     align-items: center;
+    margin-top: 1rem;
 }
 
 .add-currency-btn:hover {
