@@ -157,26 +157,23 @@ function updateCurrencyIcon() {
 }   
 
 function fillCurrencyTable() {
-    const tableBody = document.getElementById("currency-table-body");
-    console.log("Table body:", tableBody);
-    if (!tableBody) {
-        console.error("Error: 'currency-table-body' no se encuentra en el DOM.");
-        return; // Evita continuar si el elemento no existe
-    }
-    tableBody.innerHTML = '';
-    displayedCurrencies.forEach(currency => {
-        if (exchangeRates[currency]) {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-                <td class="px-6 py-4">${currency}</td>
-                <td class="px-6 py-4">${exchangeRates[currency].compra.toFixed(2)}</td>
-                <td class="px-6 py-4">${exchangeRates[currency].venta.toFixed(2)}</td>
-                <td class="px-6 py-4 edit-column hidden">
-                    <button onclick="deleteCurrency('${currency}')" class="px-2 py-1 bg-red-500 text-white rounded">Eliminar</button>
-                </td>
-            `;
-            tableBody.appendChild(row);
-        }
+    // Limpia el contenido de la tabla antes de llenarla
+    const tableBody = document.querySelector("#currency-table tbody");
+    tableBody.innerHTML = ""; // Limpia el contenido de la tabla
+
+    currencyData.forEach((currency, index) => {
+        const row = document.createElement("tr");
+
+        // Agrega las celdas de la moneda y el valor
+        row.innerHTML = `
+            <td>${currency.name}</td>
+            <td>${currency.value}</td>
+            <td class="edit-column hidden">
+                <button onclick="deleteCurrency(${index})">🗑️</button>
+            </td>
+        `;
+
+        tableBody.appendChild(row);
     });
 }
 
