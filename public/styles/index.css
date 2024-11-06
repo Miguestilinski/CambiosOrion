@@ -376,6 +376,31 @@ input[type="number"]::-moz-outer-spin-button {
     display: none;
 }
 
+/* Estilo para el botón de eliminar */
+.delete-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    background-color: red; /* Rojo de fondo */
+    border-radius: 50%; /* Hacer el botón circular */
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.delete-btn:hover {
+    background-color: darkred; /* Cambia a un rojo más oscuro al pasar el mouse */
+}
+
+/* Estilo para los iconos dentro del botón */
+.delete-btn svg {
+    width: 20px;
+    height: 20px;
+    color: white; /* Blanco para el ícono */
+}
+
 /* Contenedor principal del footer */
 footer {
     background: black; /* Fondo negro sólido */
