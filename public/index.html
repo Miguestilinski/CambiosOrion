@@ -131,13 +131,11 @@
                         <!-- Las filas de divisas se agregarán aquí dinámicamente -->
                     </tbody>
                 </table>
-                <!-- Botón "Agregar Divisa" fuera de la tabla -->
                 <div class="flex justify-between items-center mb-4">
                     <div class="relative">
-                        <!-- Convertimos el div en un botón con el estilo visual del botón original -->
-                        <button class="currency-selector font-medium" data-dropdown-id="add-currency-dropdown"
-                            onclick="toggleDropdown('add-currency-dropdown', event)">
-                            Agregar Divisa
+                        <!-- El botón "Agregar Divisa" ahora es el único elemento aquí -->
+                        <button onclick="toggleDropdown('add-currency-dropdown', event)" class="add-currency-btn flex items-center space-x-2">
+                            <span class="add-icon">+</span> <span>Agregar Divisa</span>
                         </button>
                         <div id="add-currency-dropdown" class="dropdown-content hidden divide-y divide-gray-100 rounded-lg shadow-md overflow-y-auto">
                             <!-- Opciones de divisas a agregar se llenarán dinámicamente -->
