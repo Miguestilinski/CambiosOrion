@@ -157,23 +157,26 @@ function updateCurrencyIcon() {
 }   
 
 function fillCurrencyTable() {
-    // Limpia el contenido de la tabla antes de llenarla
-    const tableBody = document.querySelector("#currency-table tbody");
-    tableBody.innerHTML = ""; // Limpia el contenido de la tabla
-
-    currencyData.forEach((currency, index) => {
-        const row = document.createElement("tr");
-
-        // Agrega las celdas de la moneda y el valor
-        row.innerHTML = `
-            <td>${currency.name}</td>
-            <td>${currency.value}</td>
-            <td class="edit-column hidden">
-                <button onclick="deleteCurrency(${index})">🗑️</button>
-            </td>
-        `;
-
-        tableBody.appendChild(row);
+    const tableBody = document.getElementById("currency-table-body");
+    console.log("Table body:", tableBody);
+    if (!tableBody) {
+        console.error("Error: 'currency-table-body' no se encuentra en el DOM.");
+        return; // Evita continuar si el elemento no existe
+    }
+    tableBody.innerHTML = '';
+    displayedCurrencies.forEach(currency => {
+        if (exchangeRates[currency]) {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td class="px-6 py-4">${currency}</td>
+                <td class="px-6 py-4">${exchangeRates[currency].compra.toFixed(2)}</td>
+                <td class="px-6 py-4">${exchangeRates[currency].venta.toFixed(2)}</td>
+                <td class="px-6 py-4 edit-column hidden">
+                    <button onclick="deleteCurrency('${currency}')" class="px-2 py-1 bg-red-500 text-white rounded">Eliminar</button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        }
     });
 }
 
@@ -235,10 +238,10 @@ document.addEventListener("click", function (event) {
 
 function toggleEditMode() {
     isEditMode = !isEditMode;
-    console.log("Edit Mode:", isEditMode); // Añade un log para confirmar si el modo edición está cambiando
+    console.log("Edit Mode:", isEditMode); // Confirmación del cambio de modo
 
-    // Selecciona y alterna la visibilidad de las columnas de edición
     document.querySelectorAll(".edit-column").forEach(col => {
+        console.log("Edit Column:", col); // Añade este log
         if (isEditMode) {
             col.classList.remove("hidden");
         } else {
@@ -247,6 +250,26 @@ function toggleEditMode() {
     });
 }
 window.toggleEditMode = toggleEditMode;
+
+document.querySelectorAll(".edit-column").forEach(col => {
+    if (isEditMode) {
+        col.classList.remove("hidden");
+        col.style.display = "table-cell"; // Asegúrate que se muestre
+    } else {
+        col.classList.add("hidden");
+        col.style.display = "none"; // Asegúrate que se oculte
+    }
+});
+
+row.innerHTML = `
+    <td class="px-6 py-4">${currency}</td>
+    <td class="px-6 py-4">${exchangeRates[currency].compra.toFixed(2)}</td>
+    <td class="px-6 py-4">${exchangeRates[currency].venta.toFixed(2)}</td>
+    <td class="px-6 py-4 edit-column ${isEditMode ? '' : 'hidden'}">
+        <button onclick="deleteCurrency('${currency}')" class="px-2 py-1 bg-red-500 text-white rounded">Eliminar</button>
+    </td>
+`;
+
 
 function deleteCurrency(currency) {
     displayedCurrencies = displayedCurrencies.filter(curr => curr !== currency);
