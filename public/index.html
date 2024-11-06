@@ -113,14 +113,16 @@
                 </div>
             </section>
             <!-- Tabla de cambio de divisas -->
-            <section class="max-w-xl mx-auto my-10 bg-white rounded-xl shadow-lg p-8">
+            <section class="max-w-xl mx-auto my-10 bg-white rounded-xl shadow-lg p-8 relative">
+                <!-- Botón "Editar" fuera de la tabla -->
+                <button onclick="toggleEditMode()" class="edit-btn absolute top-0 right-0 mt-4 mr-4">
+                    Editar
+                </button>
+
                 <div class="flex justify-between items-center mb-4">
-                    <button onclick="toggleEditMode()" class="text-black px-4 py-2 rounded">
-                        Editar
-                    </button>
                     <div class="relative">
                         <div class="currency-selector" data-dropdown-id="add-currency-dropdown"
-                             onclick="toggleDropdown('add-currency-dropdown', event)">
+                            onclick="toggleDropdown('add-currency-dropdown', event)">
                             <span class="font-medium">Agregar Divisa</span>
                         </div>
                         <div id="add-currency-dropdown" class="dropdown-content hidden divide-y divide-gray-100 rounded-lg shadow-md overflow-y-auto">
@@ -128,6 +130,7 @@
                         </div>
                     </div>
                 </div>
+
                 <table class="w-full text-sm text-left text-gray-500">
                     <thead class="text-xs uppercase bg-gray-100 text-gray-700">
                         <tr>
@@ -141,6 +144,11 @@
                         <!-- Las filas de divisas se agregarán aquí dinámicamente -->
                     </tbody>
                 </table>
+
+                <!-- Botón "Agregar Divisa" fuera de la tabla -->
+                <button onclick="toggleDropdown('add-currency-dropdown', event)" class="add-currency-btn absolute bottom-0 left-0 mb-4 ml-4">
+                    <span class="add-icon">+</span> Agregar Divisa
+                </button>
             </section>
         </main>
     </div>

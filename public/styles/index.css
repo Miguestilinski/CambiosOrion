@@ -376,6 +376,39 @@ input[type="number"]::-moz-outer-spin-button {
     display: none;
 }
 
+.edit-btn {
+    background-color: rgba(0, 123, 255, 0.5); /* Azul con opacidad */
+    color: blue;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+}
+
+.edit-btn:hover {
+    background-color: rgba(0, 123, 255, 0.7); /* Cambia a más opaco al pasar el ratón */
+}
+
+/* Estilo del botón "Agregar Divisa" */
+.add-currency-btn {
+    background-color: rgba(0, 123, 255, 0.5); /* Azul con opacidad */
+    color: blue;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    display: flex;
+    align-items: center;
+}
+
+.add-currency-btn:hover {
+    background-color: rgba(0, 123, 255, 0.7); /* Cambia a más opaco al pasar el ratón */
+}
+
 /* Estilo para el botón de eliminar */
 .delete-btn {
     display: flex;
