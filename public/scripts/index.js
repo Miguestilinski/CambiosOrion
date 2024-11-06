@@ -167,8 +167,12 @@ function fillCurrencyTable() {
     displayedCurrencies.forEach(currency => {
         if (exchangeRates[currency]) {
             const row = document.createElement("tr");
+            const currencyIcon = exchangeRates[currency].icono;
+            const currencyName = currency;
             row.innerHTML = `
-                <td class="px-6 py-4">${currency}</td>
+                <td class="px-6 py-4 flex items-center">
+                    <img src="${currencyIcon}" alt="${currencyName}" class="w-6 h-6 mr-2"> ${currencyName}
+                </td>
                 <td class="px-6 py-4">${exchangeRates[currency].compra.toFixed(2)}</td>
                 <td class="px-6 py-4">${exchangeRates[currency].venta.toFixed(2)}</td>
                 <td class="px-6 py-4 edit-column ${isEditMode ? '' : 'hidden'}">
