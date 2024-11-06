@@ -223,7 +223,12 @@ function toggleDropdown(dropdownId) {
 window.toggleDropdown = toggleDropdown;
 
 document.addEventListener("click", function (event) {
-    if (activeDropdown && !activeDropdown.contains(event.target) && !event.target.matches('button')) {
+    // Revisa si el clic está fuera del dropdown y del botón que activa el dropdown
+    if (activeDropdown && 
+        !activeDropdown.contains(event.target) && 
+        !event.target.matches('button') && 
+        !event.target.closest('.dropdown-button')) { // <-- Asegúrate de añadir esta línea
+
         console.log("Clic fuera del dropdown");
         activeDropdown.classList.add("hidden");
         activeDropdown = null;
