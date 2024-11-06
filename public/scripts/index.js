@@ -171,7 +171,7 @@ function fillCurrencyTable() {
                 <td class="px-6 py-4">${currency}</td>
                 <td class="px-6 py-4">${exchangeRates[currency].compra.toFixed(2)}</td>
                 <td class="px-6 py-4">${exchangeRates[currency].venta.toFixed(2)}</td>
-                <td class="px-6 py-4 edit-column hidden">
+                <td class="px-6 py-4 edit-column ${isEditMode ? '' : 'hidden'}">
                     <button onclick="deleteCurrency('${currency}')" class="px-2 py-1 bg-red-500 text-white rounded">Eliminar</button>
                 </td>
             `;
@@ -260,16 +260,6 @@ document.querySelectorAll(".edit-column").forEach(col => {
         col.style.display = "none"; // Asegúrate que se oculte
     }
 });
-
-row.innerHTML = `
-    <td class="px-6 py-4">${currency}</td>
-    <td class="px-6 py-4">${exchangeRates[currency].compra.toFixed(2)}</td>
-    <td class="px-6 py-4">${exchangeRates[currency].venta.toFixed(2)}</td>
-    <td class="px-6 py-4 edit-column ${isEditMode ? '' : 'hidden'}">
-        <button onclick="deleteCurrency('${currency}')" class="px-2 py-1 bg-red-500 text-white rounded">Eliminar</button>
-    </td>
-`;
-
 
 function deleteCurrency(currency) {
     displayedCurrencies = displayedCurrencies.filter(curr => curr !== currency);
