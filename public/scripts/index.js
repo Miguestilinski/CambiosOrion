@@ -198,8 +198,10 @@ function updateAddCurrencyDropdown() {
     });
 }
 
-function toggleDropdown(dropdownId) {
+function toggleDropdown(dropdownId, event) {
+    event.stopPropagation(); // Evita que el evento burbujee y cierre el dropdown
     const dropdown = document.getElementById(dropdownId);
+
     console.log(`Toggling dropdown: ${dropdownId}`);
     console.log("Active dropdown before:", activeDropdown);
 
@@ -208,33 +210,31 @@ function toggleDropdown(dropdownId) {
         console.log("Hiding previous dropdown");
     }
 
-    // Asegúrate de que el dropdown se alterna correctamente
+    // Alternar la visibilidad del dropdown actual
     if (dropdown.classList.contains("hidden")) {
         dropdown.classList.remove("hidden");
-        activeDropdown = dropdown;
+        activeDropdown = dropdown; // Actualiza el dropdown activo
     } else {
         dropdown.classList.add("hidden");
-        activeDropdown = null;
+        activeDropdown = null; // Si se oculta, reinicia el dropdown activo
     }
 
     console.log("Active dropdown after:", activeDropdown);
 }
 
 window.toggleDropdown = toggleDropdown;
-
 document.addEventListener("click", function (event) {
-    // Revisa si el clic está fuera del dropdown y del botón que activa el dropdown
-    if (activeDropdown && 
-        !activeDropdown.contains(event.target) && 
-        !event.target.matches('button') && 
-        !event.target.closest('.dropdown-button')) { // <-- Asegúrate de añadir esta línea
-
+    // Verifica si el clic está fuera del dropdown activo y del elemento de activación
+    if (
+        activeDropdown &&
+        !activeDropdown.contains(event.target) &&
+        !event.target.closest("[data-dropdown-id]")
+    ) {
         console.log("Clic fuera del dropdown");
         activeDropdown.classList.add("hidden");
         activeDropdown = null;
     }
 });
-
 
 function toggleEditMode() {
     isEditMode = !isEditMode;
