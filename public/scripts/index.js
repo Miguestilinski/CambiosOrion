@@ -164,7 +164,7 @@ function fillCurrencyTable() {
         return; // Evita continuar si el elemento no existe
     }
     tableBody.innerHTML = '';
-    displayedCurrencies.forEach(currency => {
+    displayedCurrencies.forEach((currency, index) => {
         if (exchangeRates[currency]) {
             const row = document.createElement("tr");
             if (index === 0) {
