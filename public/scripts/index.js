@@ -244,8 +244,10 @@ function toggleEditMode() {
         console.log("Edit Column:", col); // Añade este log
         if (isEditMode) {
             col.classList.remove("hidden");
+            col.style.display = "table-cell"; // Asegúrate de que se muestre como una celda de tabla
         } else {
             col.classList.add("hidden");
+            col.style.display = "none"; // Asegúrate de que se oculte
         }
     });
 }
