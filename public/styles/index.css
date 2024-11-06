@@ -360,6 +360,28 @@ input[type="number"]::-moz-outer-spin-button {
     justify-content: center;
 }
 
+/* Fila azul para la primera fila */
+#currency-table-body tr:first-child {
+    background-color: #1e3a8a; /* Azul oscuro */
+    color: white;
+}
+
+/* Filas intercaladas con fondo blanco y gris */
+#currency-table-body tr:nth-child(even) {
+    background-color: #f9fafb; /* Gris claro */
+}
+
+#currency-table-body tr:nth-child(odd) {
+    background-color: #ffffff; /* Blanco */
+}
+
+/* Colores de texto */
+#currency-table-body td {
+    padding: 16px;
+    font-size: 14px;
+    color: #4b5563; /* Gris oscuro */
+}
+
 /* Oculta la columna de edición por defecto */
 .edit-column {
     display: none;
