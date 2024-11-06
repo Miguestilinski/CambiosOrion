@@ -238,8 +238,15 @@ document.addEventListener("click", function (event) {
 
 function toggleEditMode() {
     isEditMode = !isEditMode;
+    console.log("Edit Mode:", isEditMode); // Añade un log para confirmar si el modo edición está cambiando
+
+    // Selecciona y alterna la visibilidad de las columnas de edición
     document.querySelectorAll(".edit-column").forEach(col => {
-        col.classList.toggle("hidden", !isEditMode);
+        if (isEditMode) {
+            col.classList.remove("hidden");
+        } else {
+            col.classList.add("hidden");
+        }
     });
 }
 window.toggleEditMode = toggleEditMode;
