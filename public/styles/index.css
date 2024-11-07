@@ -359,39 +359,32 @@ input[type="number"]::-moz-outer-spin-button {
 .content-table {
     justify-content: center;
     border-collapse: separate; /* Permite bordes redondeados */
-    border-spacing: 0; /* Elimina el espacio entre las celdas */
+    border-spacing: 0 8px; /* Espacio entre filas para ver bordes redondeados */
 }
 
-/* Bordes redondeados en las filas (tr) */
+/* Bordes redondeados para cada fila */
 #currency-table-body tr {
-    border-radius: 8px; /* Redondear las filas */
+    background-color: #ffffff; /* Fondo blanco por defecto */
+    color: #4b5563; /* Color de texto gris oscuro */
+    border-radius: 8px; /* Redondeo de los bordes de la fila */
+    overflow: hidden; /* Oculta contenido que sobresale en esquinas redondeadas */
 }
 
-/* Colores de fondo y texto en la primera fila */
+/* Fondo y color de texto de la primera fila */
 #currency-table-body tr:first-child {
     background-color: #1e3a8a; /* Azul oscuro */
     color: white; /* Texto blanco */
+    font-weight: bold; /* Opcional: destacar texto en la primera fila */
+    border-radius: 8px; /* Redondeo para la primera fila también */
 }
 
-/* Filas intercaladas con colores de fondo */
-#currency-table-body tr:nth-child(even) {
+/* Filas intercaladas para mejorar la legibilidad */
+#currency-table-body tr:nth-child(even):not(:first-child) {
     background-color: #f9fafb; /* Gris claro */
 }
 
-#currency-table-body tr:nth-child(odd) {
+#currency-table-body tr:nth-child(odd):not(:first-child) {
     background-color: #ffffff; /* Blanco */
-}
-
-/* Colores de texto para todas las celdas */
-#currency-table-body td {
-    padding: 16px;
-    font-size: 14px;
-    color: #4b5563; /* Gris oscuro para las filas */
-}
-
-/* Bordes redondeados en las celdas */
-#currency-table-body td {
-    border-radius: 8px; /* Asegura que las celdas también se vean con bordes redondeados */
 }
 
 /* Oculta la columna de edición por defecto */
