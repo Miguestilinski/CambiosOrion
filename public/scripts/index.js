@@ -204,7 +204,13 @@ function updateAddCurrencyDropdown() {
             option.innerHTML = `<img src="${exchangeRates[currency].icono}" alt="${currency}" class="w-6 h-6 mr-2"> ${currency}`;
             option.className = "p-2 hover:bg-gray-100 cursor-pointer";
             option.onclick = function () {
-                // Agregar la divisa seleccionada a la tabla
+                if (isEditMode) {
+                    isEditMode = false;
+                    document.querySelectorAll(".edit-column").forEach(col => {
+                        col.classList.add("hidden");
+                        col.style.display = "none"; // Ocultar columnas de edición
+                    });
+                }
                 displayedCurrencies.push(currency);
                 toggleDropdown('add-currency-dropdown', event);  // Pasa el evento aquí
                 fillCurrencyTable();  // Actualiza la tabla con la nueva divisa
