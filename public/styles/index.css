@@ -355,49 +355,50 @@ input[type="number"]::-moz-outer-spin-button {
     background-color: #2563eb;
 }
 
-/* Estilo general para la tabla */
+/* Contenedor de la tabla */
 .content-table {
     justify-content: center;
-    border-collapse: separate; /* Permite bordes redondeados */
-    border-spacing: 0 8px; /* Espacio entre filas para ver bordes redondeados */
+    border-collapse: separate;
+    border-spacing: 0 8px; /* Espacio entre filas */
 }
 
 /* Bordes redondeados para cada fila */
 #currency-table-body tr {
-    background-color: #ffffff; /* Fondo blanco por defecto */
-    color: #4b5563; /* Color de texto gris oscuro */
-    border-radius: 8px; /* Redondeo de los bordes de la fila */
-    overflow: hidden; /* Oculta contenido que sobresale en esquinas redondeadas */
+    background-color: #ffffff;
+    color: #4b5563;
+    border-radius: 8px; /* Redondeo de la fila completa */
+    overflow: hidden;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    display: flex; /* Asegura que los bordes redondeados se apliquen a la fila completa */
 }
 
-/* Fondo y color de texto de la primera fila */
+/* Primera fila: fondo y color de texto */
 #currency-table-body tr:first-child {
-    background-color: #1e3a8a; /* Azul oscuro */
+    background-color: #1e3a8a;
     color: white; /* Texto blanco */
-    font-weight: bold; /* Opcional: destacar texto en la primera fila */
-    border-radius: 8px; /* Redondeo para la primera fila también */
+    font-weight: bold;
 }
 
-/* Filas intercaladas para mejorar la legibilidad */
+/* Alternar colores en filas pares e impares */
 #currency-table-body tr:nth-child(even):not(:first-child) {
-    background-color: #f9fafb; /* Gris claro */
+    background-color: #f9fafb;
 }
 
 #currency-table-body tr:nth-child(odd):not(:first-child) {
-    background-color: #ffffff; /* Blanco */
+    background-color: #ffffff;
 }
 
-/* Alinear texto al centro en las columnas que no son "Divisa" */
+/* Alinear texto al centro en columnas que no son "Divisa" */
 #currency-table-body td:not(:first-child) {
     text-align: center;
 }
 
-/* Espaciado interno y tamaño de fuente de todas las celdas */
+/* Ajustes en celdas: espaciado interno y tamaño de fuente */
 #currency-table-body td {
     padding: 16px;
     font-size: 14px;
     color: #4b5563;
+    flex: 1; /* Flexibilidad para distribuir cada celda en la fila */
 }
 
 /* Oculta la columna de edición por defecto */
