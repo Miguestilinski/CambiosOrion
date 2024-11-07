@@ -174,9 +174,9 @@ function fillCurrencyTable() {
                 <td class="px-6 py-4 flex items-center">
                     <img src="${currencyIcon}" alt="${currencyName}" class="w-6 h-6 mr-2"> ${currencyName}
                 </td>
-                <td class="px-6 py-4">${Math.round(exchangeRates[currency].compra)} CLP</td>
-                <td class="px-6 py-4">${Math.round(exchangeRates[currency].venta)} CLP</td>
-                <td class="px-6 py-4 edit-column ${isEditMode ? '' : 'hidden'}">
+                <td class="">${Math.round(exchangeRates[currency].compra)} CLP</td>
+                <td class="">${Math.round(exchangeRates[currency].venta)} CLP</td>
+                <td class="edit-column ${isEditMode ? '' : 'hidden'}">
                     <button onclick="deleteCurrency('${currency}')" class="delete-btn">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6 text-white">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
