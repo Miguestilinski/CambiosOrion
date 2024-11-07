@@ -399,10 +399,21 @@ section .max-w-xl {
     text-align: center;
 }
 
+#currency-table-body td:first-child {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    overflow: hidden; /* Evita que las imágenes "corten" el borde */
+}
+
 /* Ajustes en celdas: espaciado interno y tamaño de fuente */
 #currency-table-body td {
+    border: none;
     padding: 16px;
     font-size: 14px;
+}
+
+#currency-table-body td:first-child img {
+    border-radius: 8px;
 }
 
 /* Oculta la columna de edición por defecto */
