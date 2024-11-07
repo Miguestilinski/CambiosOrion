@@ -369,7 +369,6 @@ input[type="number"]::-moz-outer-spin-button {
     border-radius: 8px; /* Redondeo de la fila completa */
     overflow: hidden;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    display: flex; /* Asegura que los bordes redondeados se apliquen a la fila completa */
 }
 
 /* Primera fila: fondo y color de texto */
@@ -398,7 +397,6 @@ input[type="number"]::-moz-outer-spin-button {
     padding: 16px;
     font-size: 14px;
     color: #4b5563;
-    flex: 1; /* Flexibilidad para distribuir cada celda en la fila */
 }
 
 /* Oculta la columna de edición por defecto */
@@ -456,7 +454,7 @@ input[type="number"]::-moz-outer-spin-button {
 }
 
 .add-currency-btn:hover {
-    background-color: rgba(0, 123, 255, 0.7); /* Cambia a más opaco al pasar el ratón */
+    background-color: rgba(168, 200, 250, 1);; /* Cambia a más opaco al pasar el ratón */
 }
 
 /* Estilo para el botón de eliminar */
