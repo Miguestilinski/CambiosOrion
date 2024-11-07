@@ -283,7 +283,6 @@ document.querySelectorAll(".edit-column").forEach(col => {
 function deleteCurrency(currency) {
     displayedCurrencies = displayedCurrencies.filter(curr => curr !== currency);
     isEditMode = false;
-    toggleEditMode();
     updateAddCurrencyDropdown();  // Actualiza el dropdown
     fillCurrencyTable();  // Refresca la tabla
 }
