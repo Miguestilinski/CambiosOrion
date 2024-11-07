@@ -457,7 +457,6 @@ section .max-w-xl {
     color: rgba(0, 108, 224, 1);
     font-size: 12px;
     padding: 8px 15px;
-    top: 5px;
     right: 10px;
     border-radius: 8px;
     font-weight: bold;
@@ -466,10 +465,11 @@ section .max-w-xl {
     text-align: center;
     margin-right: 1rem;
     margin-top: 0.5rem;
+    transition: background-color 0.3s ease;
 }
 
-.edit-btn:hover {
-    background-color: rgba(168, 200, 250, 1); /* Cambia a más opaco al pasar el ratón */
+.edit-btn:hover, .add-currency-btn:hover {
+    background-color: rgba(168, 200, 250, 1);
 }
 
 /* Estilo del botón "Agregar Divisa" */
@@ -486,11 +486,9 @@ section .max-w-xl {
     display: flex;
     align-items: center;
     margin-top: 1rem;
+    transition: background-color 0.3s ease;
 }
 
-.add-currency-btn:hover {
-    background-color: rgba(168, 200, 250, 1);; /* Cambia a más opaco al pasar el ratón */
-}
 
 /* Estilo para el botón de eliminar */
 .delete-btn {
@@ -499,8 +497,8 @@ section .max-w-xl {
     align-items: center;
     width: 20px;
     height: 20px;
-    background-color: red; /* Rojo de fondo */
-    border-radius: 50%; /* Hacer el botón circular */
+    background-color: red;
+    border-radius: 50%;
     border: none;
     cursor: pointer;
     transition: background-color 0.3s ease;
