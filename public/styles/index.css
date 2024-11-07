@@ -383,11 +383,6 @@ input[type="number"]::-moz-outer-spin-button {
     color: #ffffff !important;
 }
 
-/* Alternar colores en filas pares e impares */
-#currency-table-body tr :nth-child(even):not(:first-child) {
-    background-color: #f9fafb;
-}
-
 #currency-table-body tr:nth-child(odd):not(:first-child) {
     background-color: #ffffff;
     color: #4b5563;
