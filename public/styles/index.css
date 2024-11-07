@@ -455,8 +455,9 @@ section .max-w-xl {
 .edit-btn {
     background-color: rgba(231, 240, 250, 1);
     color: rgba(0, 108, 224, 1);
-    padding: 10px 20px;
-    top: 10px;
+    font-size: 12px;
+    padding: 8px 15px;
+    top: 5px;
     right: 10px;
     border-radius: 8px;
     font-weight: bold;
@@ -475,7 +476,8 @@ section .max-w-xl {
 .add-currency-btn {
     background-color: rgba(231, 240, 250, 1);
     color: rgba(0, 108, 224, 1);
-    padding: 10px 20px;
+    font-size: 12px;
+    padding: 8px 15px;
     border-radius: 8px;
     font-weight: bold;
     border: none;
