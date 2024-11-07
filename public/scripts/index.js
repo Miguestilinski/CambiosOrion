@@ -281,9 +281,9 @@ document.querySelectorAll(".edit-column").forEach(col => {
 });
 
 function deleteCurrency(currency) {
-    // Eliminar la divisa de la lista de divisas mostradas
     displayedCurrencies = displayedCurrencies.filter(curr => curr !== currency);
-    // Llamar nuevamente para actualizar el dropdown con las divisas disponibles
+    isEditMode = false;
+    toggleEditMode();
     updateAddCurrencyDropdown();  // Actualiza el dropdown
     fillCurrencyTable();  // Refresca la tabla
 }
