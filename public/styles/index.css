@@ -326,7 +326,6 @@ input[type="number"]::-moz-outer-spin-button {
     min-width: 300px; 
 }
 
-
 /* Mitad del Contenido */
 .sending-money-content {
     flex: 1;
@@ -358,28 +357,29 @@ input[type="number"]::-moz-outer-spin-button {
 
 .content-table {
     justify-content: center;
+    border-collapse: separate; 
+    border-spacing: 0; 
 }
 
-/* Fila azul para la primera fila */
+#currency-table-body tr td {
+    padding: 16px;
+    font-size: 14px;
+    color: #4b5563; /* Gris oscuro */
+    border-radius: 8px; /* Redondear las celdas */
+}
+
 #currency-table-body tr:first-child {
     background-color: #1e3a8a; /* Azul oscuro */
-    color: white;
+    color: white; /* Texto blanco */
 }
 
-/* Filas intercaladas con fondo blanco y gris */
+/* Filas intercaladas */
 #currency-table-body tr:nth-child(even) {
     background-color: #f9fafb; /* Gris claro */
 }
 
 #currency-table-body tr:nth-child(odd) {
     background-color: #ffffff; /* Blanco */
-}
-
-/* Colores de texto */
-#currency-table-body td {
-    padding: 16px;
-    font-size: 14px;
-    color: #4b5563; /* Gris oscuro */
 }
 
 /* Oculta la columna de edición por defecto */

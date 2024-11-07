@@ -167,18 +167,7 @@ function fillCurrencyTable() {
     displayedCurrencies.forEach((currency, index) => {
         if (exchangeRates[currency]) {
             const row = document.createElement("tr");
-            if (index === 0) {
-                row.style.backgroundColor = "#1e3a8a"; // Azul
-                row.style.color = "white"; // Blanco en el texto
-            } else {
-                // Para las filas siguientes, alternamos colores de fondo
-                if (index % 2 === 0) {
-                    row.style.backgroundColor = "#f9fafb"; // Gris claro
-                } else {
-                    row.style.backgroundColor = "#ffffff"; // Blanco
-                }
-                row.style.color = "black"; // Texto negro para las demás filas
-            }
+            
             const currencyIcon = exchangeRates[currency].icono;
             const currencyName = currency;
             row.innerHTML = `
