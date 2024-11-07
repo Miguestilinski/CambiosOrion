@@ -68,12 +68,17 @@ function loadCurrencies() {
 }
 
 
-// Función para pre-cargar el ícono
 function preloadIcon(iconUrl) {
     if (!iconsLoaded[iconUrl]) {
         const img = new Image();
+        img.onload = () => {
+            iconsLoaded[iconUrl] = true;
+        };
+        img.onerror = () => {
+            iconsLoaded[iconUrl] = false;
+            console.error(`No se pudo cargar el ícono: ${iconUrl}`);
+        };
         img.src = iconUrl; // Carga la imagen en el navegador
-        iconsLoaded[iconUrl] = true; // Marcar como cargado
     }
 }
 
@@ -171,12 +176,12 @@ function fillCurrencyTable() {
             const currencyIcon = exchangeRates[currency].icono;
             const currencyName = currency;
             row.innerHTML = `
-                <td class="px-6 py-4 flex items-center">
+                <td class="px-4 py-2 flex items-center justify-start space-x-2 sm:w-auto w-full">
                     <img src="${currencyIcon}" alt="${currencyName}" class="w-6 h-6 mr-2"> ${currencyName}
                 </td>
-                <td class="">${Math.round(exchangeRates[currency].compra)} CLP</td>
-                <td class="">${Math.round(exchangeRates[currency].venta)} CLP</td>
-                <td class="edit-column ${isEditMode ? '' : 'hidden'}">
+                <td class="px-4 py-2">${Math.round(exchangeRates[currency].compra)} CLP</td>
+                <td class="px-4 py-2">${Math.round(exchangeRates[currency].venta)} CLP</td>
+                <td class="px-4 py-2 ${isEditMode ? '' : 'hidden'}">
                     <button onclick="deleteCurrency('${currency}')" class="delete-btn">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6 text-white">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -227,20 +232,18 @@ function toggleDropdown(dropdownId, event) {
 
     if (activeDropdown && activeDropdown !== dropdown) {
         activeDropdown.classList.add("hidden");
-        activeDropdown.style.display = "none";
     }
 
     // Alternar la visibilidad del dropdown actual
     if (dropdown.classList.contains("hidden")) {
         dropdown.classList.remove("hidden");
-        dropdown.style.display = "block";
         activeDropdown = dropdown;
     } else {
         dropdown.classList.add("hidden");
-        dropdown.style.display = "none";
         activeDropdown = null;
     }
 }
+
 window.toggleDropdown = toggleDropdown;
 
 document.addEventListener("click", function (event) {
