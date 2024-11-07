@@ -384,11 +384,7 @@ section .max-w-xl {
 
 /* Primera fila: fondo y color de texto */
 #currency-table-body tr:first-child {
-    background-color: #1e3a8a;
-    color: #ffffff !important;
     font-weight: bold;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
 }
 
 #currency-table-body tr:first-child td {
@@ -401,8 +397,8 @@ section .max-w-xl {
     color: #4b5563;
 }
 
-#currency-table-body tr:last-child {
-    border-bottom-left-radius: 8px; /* Esquina inferior izquierda */
+#currency-table-body td:last-child {
+    border-top-right-radius: 8px; /* Esquina inferior izquierda */
     border-bottom-right-radius: 8px; /* Esquina inferior derecha */
 }
 
@@ -418,7 +414,6 @@ section .max-w-xl {
 }
 
 #currency-table-body td:first-child {
-    padding-left: 12px; /* Añade un poco de margen izquierdo para que el texto no se pegue a la celda */
     border-top-left-radius: 8px; /* Borde redondeado en la esquina superior izquierda */
     border-bottom-left-radius: 8px; /* Borde redondeado en la esquina inferior izquierda */
     overflow: hidden;
@@ -495,8 +490,8 @@ section .max-w-xl {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 30px;
-    height: 30px;
+    width: 20px;
+    height: 20px;
     background-color: red; /* Rojo de fondo */
     border-radius: 50%; /* Hacer el botón circular */
     border: none;
@@ -510,8 +505,8 @@ section .max-w-xl {
 
 /* Estilo para los iconos dentro del botón */
 .delete-btn svg {
-    width: 20px;
-    height: 20px;
+    width: 10px;
+    height: 10px;
     color: white; /* Blanco para el ícono */
 }
 
