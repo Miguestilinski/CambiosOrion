@@ -355,31 +355,43 @@ input[type="number"]::-moz-outer-spin-button {
     background-color: #2563eb;
 }
 
+/* Estilo general para la tabla */
 .content-table {
     justify-content: center;
-    border-collapse: separate; 
-    border-spacing: 0; 
+    border-collapse: separate; /* Permite bordes redondeados */
+    border-spacing: 0; /* Elimina el espacio entre las celdas */
 }
 
-#currency-table-body tr td {
-    padding: 16px;
-    font-size: 14px;
-    color: #4b5563; /* Gris oscuro */
-    border-radius: 8px; /* Redondear las celdas */
+/* Bordes redondeados en las filas (tr) */
+#currency-table-body tr {
+    border-radius: 8px; /* Redondear las filas */
 }
 
+/* Colores de fondo y texto en la primera fila */
 #currency-table-body tr:first-child {
     background-color: #1e3a8a; /* Azul oscuro */
     color: white; /* Texto blanco */
 }
 
-/* Filas intercaladas */
+/* Filas intercaladas con colores de fondo */
 #currency-table-body tr:nth-child(even) {
     background-color: #f9fafb; /* Gris claro */
 }
 
 #currency-table-body tr:nth-child(odd) {
     background-color: #ffffff; /* Blanco */
+}
+
+/* Colores de texto para todas las celdas */
+#currency-table-body td {
+    padding: 16px;
+    font-size: 14px;
+    color: #4b5563; /* Gris oscuro para las filas */
+}
+
+/* Bordes redondeados en las celdas */
+#currency-table-body td {
+    border-radius: 8px; /* Asegura que las celdas también se vean con bordes redondeados */
 }
 
 /* Oculta la columna de edición por defecto */

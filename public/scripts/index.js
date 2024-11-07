@@ -167,7 +167,7 @@ function fillCurrencyTable() {
     displayedCurrencies.forEach((currency, index) => {
         if (exchangeRates[currency]) {
             const row = document.createElement("tr");
-            
+            row.classList.add("currency-row");
             const currencyIcon = exchangeRates[currency].icono;
             const currencyName = currency;
             row.innerHTML = `
