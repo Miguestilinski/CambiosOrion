@@ -184,6 +184,9 @@ function fillCurrencyTable() {
                     </button>
                 </td>
             `;
+            if (index === 0) {
+                row.classList.add("first-row");
+            }
             tableBody.appendChild(row);
         }
     });

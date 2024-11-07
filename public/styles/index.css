@@ -367,25 +367,33 @@ input[type="number"]::-moz-outer-spin-button {
 #currency-table-body tr {
     background-color: #ffffff;
     color: #4b5563;
-    border-radius: 8px; /* Redondeo de la fila completa */
     overflow: hidden;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
+#currency-table-body tr td:last-child {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
 /* Primera fila: fondo y color de texto */
-#currency-table-body tr:first-child {
+#currency-table-body tr:first-child td{
     background-color: #1e3a8a;
     color: #ffffff !important;
     font-weight: bold;
-    border-radius: 8px;
+}
+
+#currency-table-body tr td:last-child {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
 }
 
 /* Alternar colores en filas pares e impares */
-#currency-table-body tr:nth-child(even):not(:first-child) {
+#currency-table-body tr :nth-child(even):not(:first-child) td{
     background-color: #f9fafb;
 }
 
-#currency-table-body tr:nth-child(odd):not(:first-child) {
+#currency-table-body tr:nth-child(odd):not(:first-child) td{
     background-color: #ffffff;
 }
 
