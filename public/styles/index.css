@@ -360,6 +360,7 @@ input[type="number"]::-moz-outer-spin-button {
     justify-content: center;
     border-collapse: separate;
     border-spacing: 0 8px; /* Espacio entre filas */
+    width: 100%;
 }
 
 /* Bordes redondeados para cada fila */
@@ -374,8 +375,9 @@ input[type="number"]::-moz-outer-spin-button {
 /* Primera fila: fondo y color de texto */
 #currency-table-body tr:first-child {
     background-color: #1e3a8a;
-    color: white; /* Texto blanco */
+    color: #ffffff !important;
     font-weight: bold;
+    border-radius: 8px;
 }
 
 /* Alternar colores en filas pares e impares */
