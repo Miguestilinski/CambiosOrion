@@ -194,26 +194,26 @@ function fillCurrencyTable() {
 
 function updateAddCurrencyDropdown() {
     const dropdown = document.getElementById("add-currency-dropdown");
-    dropdown.innerHTML = '';
-    
-    // Agregar divisas que no están en displayedCurrencies, incluyendo las eliminadas
+    dropdown.innerHTML = '';  // Limpiar el dropdown actual
+
+    // Agregar divisas que no están en displayedCurrencies
     Object.keys(exchangeRates).forEach(currency => {
-        // Solo mostrar divisas que no están en la tabla (displayedCurrencies)
+        // Solo mostrar divisas que no están en displayedCurrencies
         if (!displayedCurrencies.includes(currency)) {
             const option = document.createElement("div");
             option.innerHTML = `<img src="${exchangeRates[currency].icono}" alt="${currency}" class="w-6 h-6 mr-2"> ${currency}`;
             option.className = "p-2 hover:bg-gray-100 cursor-pointer";
-            option.onclick = function (event) {
+            option.onclick = function () {
                 // Agregar la divisa seleccionada a la tabla
                 displayedCurrencies.push(currency);
                 toggleDropdown('add-currency-dropdown', event);  // Pasa el evento aquí
-                fillCurrencyTable();
-            };            
+                fillCurrencyTable();  // Actualiza la tabla con la nueva divisa
+                updateAddCurrencyDropdown();  // Actualiza el dropdown
+            };
             dropdown.appendChild(option);
         }
     });
 }
-
 
 function toggleDropdown(dropdownId, event) {
     event.stopPropagation(); // Evita que el evento burbujee y cierre el dropdown
@@ -284,7 +284,7 @@ function deleteCurrency(currency) {
     // Eliminar la divisa de la lista de divisas mostradas
     displayedCurrencies = displayedCurrencies.filter(curr => curr !== currency);
     // Llamar nuevamente para actualizar el dropdown con las divisas disponibles
-    updateAddCurrencyDropdown();
-    fillCurrencyTable();
+    updateAddCurrencyDropdown();  // Actualiza el dropdown
+    fillCurrencyTable();  // Refresca la tabla
 }
 window.deleteCurrency = deleteCurrency;
