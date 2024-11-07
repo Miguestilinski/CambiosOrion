@@ -195,12 +195,16 @@ function fillCurrencyTable() {
 function updateAddCurrencyDropdown() {
     const dropdown = document.getElementById("add-currency-dropdown");
     dropdown.innerHTML = '';
+    
+    // Agregar divisas que no están en displayedCurrencies, incluyendo las eliminadas
     Object.keys(exchangeRates).forEach(currency => {
+        // Solo mostrar divisas que no están en la tabla (displayedCurrencies)
         if (!displayedCurrencies.includes(currency)) {
             const option = document.createElement("div");
             option.innerHTML = `<img src="${exchangeRates[currency].icono}" alt="${currency}" class="w-6 h-6 mr-2"> ${currency}`;
             option.className = "p-2 hover:bg-gray-100 cursor-pointer";
             option.onclick = function (event) {
+                // Agregar la divisa seleccionada a la tabla
                 displayedCurrencies.push(currency);
                 toggleDropdown('add-currency-dropdown', event);  // Pasa el evento aquí
                 fillCurrencyTable();
@@ -209,6 +213,7 @@ function updateAddCurrencyDropdown() {
         }
     });
 }
+
 
 function toggleDropdown(dropdownId, event) {
     event.stopPropagation(); // Evita que el evento burbujee y cierre el dropdown
@@ -276,7 +281,10 @@ document.querySelectorAll(".edit-column").forEach(col => {
 });
 
 function deleteCurrency(currency) {
+    // Eliminar la divisa de la lista de divisas mostradas
     displayedCurrencies = displayedCurrencies.filter(curr => curr !== currency);
+    // Llamar nuevamente para actualizar el dropdown con las divisas disponibles
+    updateAddCurrencyDropdown();
     fillCurrencyTable();
 }
 window.deleteCurrency = deleteCurrency;
