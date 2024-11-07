@@ -368,6 +368,13 @@ section .max-w-xl {
     overflow: hidden; /* Para ocultar cualquier borde sobresaliente */
 }
 
+.content-table {
+    justify-content: center;
+    border-collapse: separate;
+    border-spacing: 0 8px; /* Espacio entre filas */
+    width: 100%;
+}
+
 /* Bordes redondeados para cada fila */
 #currency-table-body tr {
     color: white;
@@ -394,26 +401,35 @@ section .max-w-xl {
     color: #4b5563;
 }
 
+#currency-table-body tr:last-child {
+    border-bottom-left-radius: 8px; /* Esquina inferior izquierda */
+    border-bottom-right-radius: 8px; /* Esquina inferior derecha */
+}
+
 /* Alinear texto al centro en columnas que no son "Divisa" */
 #currency-table-body td:not(:first-child) {
     text-align: center;
 }
 
-#currency-table-body td:first-child {
-    border-top-left-radius: 8px;
-    border-bottom-left-radius: 8px;
-    overflow: hidden; /* Evita que las imágenes "corten" el borde */
-}
-
 /* Ajustes en celdas: espaciado interno y tamaño de fuente */
 #currency-table-body td {
-    border: none;
     padding: 16px;
     font-size: 14px;
 }
 
+#currency-table-body td:first-child {
+    padding-left: 12px; /* Añade un poco de margen izquierdo para que el texto no se pegue a la celda */
+    border-top-left-radius: 8px; /* Borde redondeado en la esquina superior izquierda */
+    border-bottom-left-radius: 8px; /* Borde redondeado en la esquina inferior izquierda */
+    overflow: hidden;
+}
+
 #currency-table-body td:first-child img {
     border-radius: 8px;
+}
+
+#currency-table-body td {
+    border: none;
 }
 
 /* Oculta la columna de edición por defecto */
