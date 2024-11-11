@@ -1,78 +1,60 @@
-// Función para formatear el RUT
 function formatearRUT(rut) {
-    // Eliminar todos los caracteres que no sean números ni la letra K
     rut = rut.replace(/[^\dKk]/g, '').toUpperCase();
 
-    // Si el RUT tiene menos de 8 caracteres, no lo formateamos
     if (rut.length <= 1) return rut;
 
-    // Dividir en partes (cuerpo y dígito verificador)
-    const cuerpo = rut.slice(0, -1); // Los números antes del último caracter
-    const dv = rut.slice(-1); // El último caracter que es el dígito verificador
+    const cuerpo = rut.slice(0, -1);
+    const dv = rut.slice(-1);
 
-    // Agregar puntos al cuerpo
     const cuerpoFormateado = cuerpo.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 
-    // Si el RUT es válido (tiene un cuerpo y un dígito verificador), devolver el formato completo
-    return cuerpoFormateado + '-' + dv;
+    return cuerpoFormateado + '-' + dv.toLowerCase();
 }
 
 // Función para validar el RUT chileno
 function validarRUT(rut) {
-    // Eliminar espacios en blanco y guiones
     rut = rut.replace(/[^\dKk]/g, '').toUpperCase();
 
-    // Verificar que el RUT tenga al menos 2 caracteres
     if (rut.length < 2) return false;
 
-    // Separar el cuerpo y el dígito verificador
     const cuerpo = rut.slice(0, -1);
     const dv = rut.slice(-1);
 
-    // Validar que el cuerpo del RUT contenga solo números
     if (!/^\d+$/.test(cuerpo)) return false;
 
-    // Calcular el dígito verificador
     let suma = 0;
     let multiplo = 2;
 
-    // Recorremos el RUT de derecha a izquierda
     for (let i = cuerpo.length - 1; i >= 0; i--) {
         suma += cuerpo.charAt(i) * multiplo;
         multiplo = multiplo === 7 ? 2 : multiplo + 1;
     }
-
     const dvCalculado = 11 - (suma % 11);
-
-    // Verificar el dígito verificador
     const dvCorrecto = dvCalculado === 10 ? 'K' : dvCalculado === 11 ? '0' : dvCalculado.toString();
     
     return dv === dvCorrecto;
 }
 
-// Función para manejar el formulario y validación
 document.addEventListener("DOMContentLoaded", function () {
     const loginForm = document.getElementById("loginForm");
 
     document.getElementById("rut").addEventListener("blur", function () {
         const rut = this.value;
+        valor = valor.replace(/[^\dKk-]/g, '');
         this.value = formatearRUT(rut);
     });
 
     loginForm.addEventListener("submit", async function (event) {
-        event.preventDefault(); // Previene el envío tradicional del formulario
+        event.preventDefault();
 
-        // Obtiene valores del formulario
         const rut = document.getElementById("rut").value;
         const contrasena = document.getElementById("contrasena").value;
 
-        // Validar RUT
         if (!validarRUT(rut)) {
-            // Mostrar mensaje de error si el RUT no es válido
             document.getElementById('rut-error').textContent = "Escriba un RUT válido.";
             document.getElementById('rut-error').classList.remove('hidden');
             document.getElementById('rut').classList.add('bg-red-50', 'border-red-500', 'text-red-900');
-            return; // Detener el envío del formulario
+            return;
         }
 
         try {
