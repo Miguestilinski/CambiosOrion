@@ -46,7 +46,7 @@ function loadCurrencies() {
                 option1.className = "p-2 hover:bg-gray-100 cursor-pointer";
                 option1.onclick = function () {
                     setCurrency1(divisa.nombre);
-                    toggleDropdown('dropdown1');
+                    toggleDropdown('dropdown1', event);
                 };
                 dropdown1.appendChild(option1);
 
@@ -55,7 +55,7 @@ function loadCurrencies() {
                 option2.className = "p-2 hover:bg-gray-100 cursor-pointer";
                 option2.onclick = function () {
                     setCurrency2(divisa.nombre);
-                    toggleDropdown('dropdown2');
+                    toggleDropdown('dropdown2', event);
                 };
                 dropdown2.appendChild(option2);
             });
@@ -195,64 +195,49 @@ function fillCurrencyTable() {
     });
 }
 
-function updateAddCurrencyDropdown() {
-    const dropdown = document.getElementById("add-currency-dropdown");
-    dropdown.innerHTML = '';  // Limpiar el dropdown actual
-
-    // Agregar divisas que no están en displayedCurrencies
-    Object.keys(exchangeRates).forEach(currency => {
-        // Solo mostrar divisas que no están en displayedCurrencies
-        if (!displayedCurrencies.includes(currency)) {
-            const option = document.createElement("div");
-            option.innerHTML = `<img src="${exchangeRates[currency].icono}" alt="${currency}" class="w-6 h-6 mr-2"> ${currency}`;
-            option.className = "p-2 hover:bg-gray-100 cursor-pointer";
-            option.onclick = function () {
-                if (isEditMode) {
-                    isEditMode = false;
-                    document.querySelectorAll(".edit-column").forEach(col => {
-                        col.classList.add("hidden");
-                        col.style.display = "none"; // Ocultar columnas de edición
-                    });
-                }
-                displayedCurrencies.push(currency);
-                toggleDropdown('add-currency-dropdown', event);  // Pasa el evento aquí
-                fillCurrencyTable();  // Actualiza la tabla con la nueva divisa
-                updateAddCurrencyDropdown();  // Actualiza el dropdown
-            };
-            dropdown.appendChild(option);
-        }
-    });
-}
-
 function toggleDropdown(dropdownId, event) {
-    event.stopPropagation();
+    if (activeDropdown && activeDropdown !== dropdownId) {
+        document.getElementById(activeDropdown).classList.add("hidden");
+    }
+
     const dropdown = document.getElementById(dropdownId);
+    dropdown.classList.toggle("hidden");
 
-    if (activeDropdown && activeDropdown !== dropdown) {
-        activeDropdown.classList.add("hidden");
-    }
-
-    // Alternar la visibilidad del dropdown actual
     if (dropdown.classList.contains("hidden")) {
-        dropdown.classList.remove("hidden");
-        activeDropdown = dropdown;
-    } else {
-        dropdown.classList.add("hidden");
         activeDropdown = null;
+    } else {
+        activeDropdown = dropdownId;
     }
+    event.stopPropagation(); // Evita que el clic se propague
 }
 
 window.toggleDropdown = toggleDropdown;
 
-document.addEventListener("click", function (event) {
-    // Verifica si el clic está fuera del dropdown activo y del elemento de activación
-    if (
-        activeDropdown &&
-        !activeDropdown.contains(event.target) &&
-        !event.target.closest("[data-dropdown-id]")
-    ) {
-        console.log("Clic fuera del dropdown");
-        activeDropdown.classList.add("hidden");
+function updateAddCurrencyDropdown() {
+    const dropdownAdd = document.getElementById("dropdown-add-currency");
+    if (dropdownAdd) {
+        const availableCurrencies = Object.keys(exchangeRates);
+        const usedCurrencies = displayedCurrencies;
+        const availableToAdd = availableCurrencies.filter(currency => !usedCurrencies.includes(currency));
+
+        dropdownAdd.innerHTML = "";
+        availableToAdd.forEach(currency => {
+            const option = document.createElement("div");
+            option.innerHTML = `<img src="${exchangeRates[currency].icono}" alt="${currency}" class="w-6 h-6 mr-2"> ${currency}`;
+            option.className = "p-2 hover:bg-gray-100 cursor-pointer";
+            option.onclick = function () {
+                displayedCurrencies.push(currency);
+                fillCurrencyTable();
+                updateAddCurrencyDropdown();
+            };
+            dropdownAdd.appendChild(option);
+        });
+    }
+}
+
+document.addEventListener("click", () => {
+    if (activeDropdown) {
+        document.getElementById(activeDropdown).classList.add("hidden");
         activeDropdown = null;
     }
 });
