@@ -31,7 +31,7 @@ function loadCurrencies() {
             if (dropdown1) dropdown1.innerHTML = '';
             if (dropdown2) dropdown2.innerHTML = '';
 
-            data.forEach(divisa => {
+            responseData.forEach(divisa => {
                 const circularIcon = divisa.icono_circular;
                 exchangeRates[divisa.nombre] = {
                     compra: parseFloat(divisa.compra),
