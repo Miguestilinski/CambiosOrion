@@ -2,8 +2,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const loginForm = document.getElementById("loginForm");
 
     loginForm.addEventListener("submit", async function (event) {
-        event.preventDefault();
+        event.preventDefault(); // Previene el envío tradicional del formulario
 
+        // Obtiene valores del formulario
         const rut = document.getElementById("rut").value;
         const contrasena = document.getElementById("contrasena").value;
 
@@ -18,13 +19,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const result = await response.json();
 
+            // Restablece el estilo de error antes de cualquier cambio
             resetErrorStyles();
 
             if (result.success) {
+                // Redirige al usuario a la página principal
                 window.location.href = 'index.html';
             } else {
+                // Muestra mensaje de error y marca los campos con error
                 document.getElementById('error-message').classList.remove('hidden');
-                setErrorStyles(result.field);
+                setErrorStyles(result.field); // Define qué campo necesita el estilo de error
             }
         } catch (error) {
             console.error('Error al iniciar sesión:', error);
@@ -32,36 +36,16 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-
-// Función para iniciar sesión
-function loginUser(email, password) {
-    if (!email || !password) {
-        alert("Por favor ingresa todos los campos.");
-        return;
-    }
-
-    // Simulando una llamada a la API (puedes cambiar esto a una llamada real)
-    const userData = {
-        email: "usuario@ejemplo.com",
-        password: "12345",
-    };
-
-    if (email === userData.email && password === userData.password) {
-        alert("Inicio de sesión exitoso.");
-        // Redirigir al usuario después de un inicio de sesión exitoso
-        window.location.href = "dashboard.html";
-    } else {
-        alert("Credenciales incorrectas. Intenta nuevamente.");
-    }
-}
-
+// Función para restablecer los estilos de error
 function resetErrorStyles() {
+    // Elimina las clases de error
     document.getElementById('rut').classList.remove('bg-red-50', 'border-red-500', 'text-red-900');
     document.getElementById('contrasena').classList.remove('bg-red-50', 'border-red-500', 'text-red-900');
     document.getElementById('rut-error').classList.add('hidden');
     document.getElementById('contrasena-error').classList.add('hidden');
 }
 
+// Función para aplicar estilos de error
 function setErrorStyles(field) {
     if (field === 'rut') {
         document.getElementById('rut').classList.add('bg-red-50', 'border-red-500', 'text-red-900');
