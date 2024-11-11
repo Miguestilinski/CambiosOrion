@@ -126,6 +126,45 @@ h2 {
     @apply text-2xl font-semibold text-gray-800 text-center mb-6;
 }
 
+/* Estilos para el contenedor del formulario */
+.form-container {
+    max-width: 400px; /* Ajusta el ancho del contenedor */
+    margin: 0 auto; /* Centra el contenedor horizontalmente */
+    padding: 20px;
+    background-color: white; /* Fondo blanco */
+    border-radius: 10px; /* Bordes redondeados */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra suave */
+}
+
+/* Ajustes para input y button dentro del contenedor */
+.form-container input[type="text"],
+.form-container input[type="password"],
+.form-container input[type="email"],
+.form-container select {
+    width: 100%; /* Ajusta al ancho del contenedor */
+    padding: 10px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.form-container button {
+    width: 100%;
+    padding: 12px;
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.form-container button:hover {
+    background-color: #2563eb;
+}
+
 input[type="text"],
 input[type="email"],
 input[type="password"] {
