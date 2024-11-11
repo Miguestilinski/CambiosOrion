@@ -64,7 +64,15 @@ function loadCurrencies() {
             updateAddCurrencyDropdown();
             fillCurrencyTable();
         })
-        .catch(error => console.error('Error al cargar las divisas:', error));
+        .catch(error => {
+            console.error('Error al cargar las divisas:', error);
+            if (retries > 0) {
+                console.log(`Reintentando cargar las divisas... (${retries} intentos restantes)`);
+                setTimeout(() => loadCurrencies(retries - 1), 2000);
+            } else {
+                console.error('No se pudo cargar las divisas después de varios intentos.');
+            }
+        });
 }
 
 
