@@ -38,31 +38,41 @@
         <main>
             <h2 class="text-white">Crear cuenta</h2>
             <div class="form-container">
-                <form action="/data/registro.php" method="POST">
+                <form id="register-form">
+                    <!-- Campo RUT -->
                     <label for="rut" class="text-black">RUT:</label>
-                    <input type="text" name="rut" required><br>
-
+                    <input type="text" name="rut" id="rut" required><br>
+    
+                    <!-- Campo Tipo de usuario -->
                     <label for="tipo_usuario" class="text-black">Tipo de usuario:</label>
-                    <select name="tipo_usuario" required>
+                    <select name="tipo_usuario" id="tipo_usuario" required>
                         <option value="persona">Persona</option>
                         <option value="empresa">Empresa</option>
                     </select><br>
-
+    
+                    <!-- Campo Nombre de usuario -->
                     <label for="nombre_usuario" class="text-black">Nombre de usuario:</label>
-                    <input type="text" name="nombre_usuario" required><br>
-
+                    <input type="text" name="nombre_usuario" id="nombre_usuario" required><br>
+    
+                    <!-- Campo Correo electrónico -->
                     <label for="correo" class="text-black">Correo electrónico:</label>
-                    <input type="email" name="correo" required><br>
-
+                    <input type="email" name="correo" id="correo" required><br>
+    
+                    <!-- Campo Contraseña -->
                     <label for="contrasena" class="text-black">Contraseña:</label>
-                    <input type="password" name="contrasena" required><br>
-
+                    <input type="password" name="contrasena" id="contrasena" required><br>
+    
+                    <!-- Campo Confirmar Contraseña -->
+                    <label for="confirm_contrasena" class="text-black">Confirmar Contraseña:</label>
+                    <input type="password" name="confirm_contrasena" id="confirm_contrasena" required><br>
+    
+                    <!-- Botón para registrar -->
                     <button type="submit" class="text-white">Registrarse</button>
                 </form>
             </div>
         </main>
     </div>
-
+    
     <footer>
         <div class="footer-container">
             <!-- Sección del logo -->

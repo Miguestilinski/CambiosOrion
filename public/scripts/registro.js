@@ -4,35 +4,86 @@ document.addEventListener("DOMContentLoaded", function () {
 
     registerForm.addEventListener("submit", function (event) {
         event.preventDefault();
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
-        const confirmPassword = document.getElementById("confirm-password").value;
 
-        // Llamada a la función de registro
-        registerUser(email, password, confirmPassword);
+        // Obtener valores de los campos
+        const rut = document.getElementById("rut").value;
+        const tipoUsuario = document.getElementById("tipo_usuario").value;
+        const nombreUsuario = document.getElementById("nombre_usuario").value;
+        const correo = document.getElementById("correo").value;
+        const contrasena = document.getElementById("contrasena").value;
+        const confirmContrasena = document.getElementById("confirm_contrasena").value;
+
+        // Validaciones de los campos
+        if (!rut || !nombreUsuario || !correo || !contrasena || !confirmContrasena) {
+            alert("Por favor completa todos los campos.");
+            return;
+        }
+
+        if (contrasena !== confirmContrasena) {
+            alert("Las contraseñas no coinciden.");
+            return;
+        }
+
+        // Validar formato de RUT
+        if (!validarRUT(rut)) {
+            alert("Por favor ingresa un RUT válido.");
+            return;
+        }
+
+        // Simulando un registro de usuario
+        const newUser = {
+            rut: rut,
+            tipo_usuario: tipoUsuario,
+            nombre_usuario: nombreUsuario,
+            correo: correo,
+            contrasena: contrasena
+        };
+
+        // Simulando la llamada a la API para registrar el usuario
+        alert("Registro exitoso.");
+
+        // Redirigir a la página de inicio de sesión
+        window.location.href = "iniciar_sesion.html";
+    });
+
+    // Filtrar los caracteres permitidos mientras el usuario escribe el RUT
+    document.getElementById("rut").addEventListener("input", function () {
+        let valor = this.value;
+        valor = valor.replace(/[^0-9Kk-]/g, ''); // Permitir solo números, 'K' o 'k' y el guion
+        this.value = valor;
+    });
+
+    // Función para formatear el RUT
+    document.getElementById("rut").addEventListener("blur", function () {
+        this.value = formatearRUT(this.value);
     });
 });
 
-// Función para registrar un nuevo usuario
-function registerUser(email, password, confirmPassword) {
-    if (!email || !password || !confirmPassword) {
-        alert("Por favor completa todos los campos.");
-        return;
-    }
+// Función para validar el RUT
+function validarRUT(rut) {
+    rut = rut.replace(/[^\dKk]/g, '').toUpperCase(); // Eliminar todo menos números y la letra K
+    if (rut.length < 2) return false; // Si el RUT tiene menos de 2 caracteres es inválido
 
-    if (password !== confirmPassword) {
-        alert("Las contraseñas no coinciden.");
-        return;
-    }
+    // Obtener cuerpo y dígito verificador
+    const cuerpo = rut.slice(0, -1);
+    const dv = rut.slice(-1);
 
-    // Simulando una llamada a la API (puedes cambiar esto a una llamada real)
-    const newUser = {
-        email: email,
-        password: password,
-    };
+    // Validar el dígito verificador (lo ideal sería tener una función para validarlo, pero por ahora lo simplificamos)
+    if (!/^\d+$/.test(cuerpo)) return false; // El cuerpo solo debe contener números
 
-    // Aquí iría una llamada real a la API para registrar el usuario
-    alert("Registro exitoso.");
-    // Redirigir a la página de inicio de sesión después de registrarse
-    window.location.href = "iniciar_sesion.html";
+    if (dv !== "K" && !/^\d$/.test(dv)) return false; // El dígito verificador debe ser un número o K
+
+    return true;
+}
+
+// Función para formatear el RUT con puntos y guion
+function formatearRUT(rut) {
+    rut = rut.replace(/[^\dKk]/g, '').toUpperCase(); // Eliminar caracteres no permitidos y convertir a mayúscula
+    if (rut.length <= 1) return rut;
+
+    const cuerpo = rut.slice(0, -1); // Los números antes del último caracter
+    const dv = rut.slice(-1); // El último caracter que es el dígito verificador
+
+    const cuerpoFormateado = cuerpo.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    return cuerpoFormateado + '-' + dv.toLowerCase(); // Convertir la 'K' a minúscula
 }
