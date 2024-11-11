@@ -34,20 +34,22 @@
             </div>
         </div>
     </header>
+    <div class="header-divider"></div>
+    <div class="main-content">
+        <main>
+            <h2>Iniciar sesión</h2>
+            <!-- Formulario de Inicio de sesión -->
+            <form action="iniciar_sesion.php" method="POST">
+                <label for="rut">RUT:</label>
+                <input type="text" name="rut" required><br>
 
-    <main>
-        <h2>Iniciar sesión</h2>
-        <!-- Formulario de Inicio de sesión -->
-        <form action="iniciar_sesion.php" method="POST">
-            <label for="rut">RUT:</label>
-            <input type="text" name="rut" required><br>
+                <label for="contrasena">Contraseña:</label>
+                <input type="password" name="contrasena" required><br>
 
-            <label for="contrasena">Contraseña:</label>
-            <input type="password" name="contrasena" required><br>
-
-            <button type="submit">Iniciar sesión</button>
-        </form>
-    </main>
+                <button type="submit">Iniciar sesión</button>
+            </form>
+        </main>
+    </div>
 
     <footer>
         <div class="footer-container">
