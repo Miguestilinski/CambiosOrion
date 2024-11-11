@@ -1,16 +1,36 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Inicializar cualquier cosa si es necesario cuando la página está completamente cargada
-    const loginForm = document.getElementById("login-form");
+    const loginForm = document.getElementById("loginForm");
 
-    loginForm.addEventListener("submit", function (event) {
+    loginForm.addEventListener("submit", async function (event) {
         event.preventDefault();
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
 
-        // Llamada a la función de inicio de sesión
-        loginUser(email, password);
+        const rut = document.getElementById("rut").value;
+        const contrasena = document.getElementById("contrasena").value;
+        const errorMessage = document.getElementById("error-message");
+
+        try {
+            const response = await fetch('/data/iniciar_sesion.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `rut=${encodeURIComponent(rut)}&contrasena=${encodeURIComponent(contrasena)}`
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                window.location.href = 'index.html';
+            } else {
+                errorMessage.textContent = result.message;
+                errorMessage.classList.remove('hidden');
+            }
+        } catch (error) {
+            console.error('Error al iniciar sesión:', error);
+        }
     });
 });
+
 
 // Función para iniciar sesión
 function loginUser(email, password) {
