@@ -1,17 +1,16 @@
-/* Estilos para la pantalla de iniciar sesión */
+/* Estilos globales */
 body {
+    @apply font-sans bg-white;
+    margin: 0;
+    padding: 0;
     background: rgba(0, 0, 0, 0.45) url('/orionapp/assets/FondoOrion.jpg') no-repeat center top;
     background-size: cover;
     background-attachment: fixed;
     position: relative;
     z-index: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
 }
 
-/* Degradado en la imagen de fondo */
+/* Degradado solo en la imagen de fondo */
 body::before {
     content: "";
     position: fixed;
@@ -22,6 +21,11 @@ body::before {
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7) 60%, black 100%);
     pointer-events: none;
     z-index: -1;
+}
+
+html, body {
+    display: flex;
+    flex-direction: column;
 }
 
 /* Header */
