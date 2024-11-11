@@ -123,7 +123,7 @@ nav ul li.selected a {
 }
 
 h2 {
-    @apply text-2xl font-semibold text-gray-800 text-center mb-6;
+    @apply text-2xl font-semibold text-white text-center mb-6;
 }
 
 /* Estilos para el contenedor del formulario */
@@ -166,7 +166,6 @@ h2 {
 }
 
 input[type="text"],
-input[type="email"],
 input[type="password"] {
     width: 100%;
     padding: 12px;
@@ -174,6 +173,14 @@ input[type="password"] {
     border: 1px solid #ccc;
     border-radius: 6px;
     font-size: 16px;
+}
+
+p {
+    transition: all 0.3s ease-in-out;
+}
+
+p.hidden {
+    display: none;
 }
 
 button {
@@ -192,32 +199,33 @@ button:hover {
     background-color: #2563eb;
 }
 
-.terms-and-conditions {
+.forgot-password {
+    display: block;
     text-align: center;
-    font-size: 14px;
     margin-top: 10px;
+    font-size: 14px;
 }
 
-.terms-and-conditions a {
+.forgot-password a {
     color: #3b82f6;
     text-decoration: none;
 }
 
-.terms-and-conditions a:hover {
+.forgot-password a:hover {
     text-decoration: underline;
 }
 
-.login-link {
+.register-link {
     text-align: center;
     margin-top: 15px;
 }
 
-.login-link a {
+.register-link a {
     color: #3b82f6;
     text-decoration: none;
 }
 
-.login-link a:hover {
+.register-link a:hover {
     text-decoration: underline;
 }
 
@@ -346,42 +354,28 @@ footer {
 
 /* Footer copyright */
 .footer-copyright {
-    text-align: center; /* Centrar el texto del copyright */
-    padding: 20px 0; /* Espacio arriba y abajo del copyright */
-    background-color: #f9f9f9; /* Fondo gris claro */
+    text-align: center;
+    font-size: 14px;
+    margin-top: 40px;
+    color: #d1d0d0;
 }
 
-@media (max-width: 768px) {
-    nav ul {
-        flex-direction: column; /* Cambia a columna */
-        gap: 10px; /* Espacio entre los elementos en columna */
-        margin-right: 0; /* Elimina el margen derecho */
-    }
-
-    .footer-container {
-        flex-direction: column;
-        align-items: center;
+/* Media Queries */
+@media screen and (max-width: 768px) {
+    .footer-logo {
+        margin-bottom: 20px;
     }
 
     .footer-navigation {
+        flex-direction: column;
+    }
+
+    .footer-navigation .nav-section {
         width: 100%;
-        justify-content: center;
+        margin-bottom: 15px;
     }
 
-    .header-actions {
-        flex-direction: column; /* Cambia a columna */
-        align-items: flex-start; /* Alinea a la izquierda */
-    }
-
-    .header-logo img.logo {
-        width: 60px; /* Reduce el tamaño del logo */
-    }
-
-    .header-logo img.nombre {
-        width: 100px; /* Reduce el tamaño del nombre */
-    }
-
-    .header-actions .register-button {
-        padding: 6px 12px; /* Ajusta el padding de los botones en pantallas pequeñas */
+    .footer-contact {
+        margin-left: 0;
     }
 }
