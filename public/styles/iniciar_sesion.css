@@ -168,7 +168,7 @@ h2 {
     background-color: #2563eb;
 }
 
-input[type="email"],
+input[type="text"],
 input[type="password"] {
     width: 100%;
     padding: 12px;
@@ -176,6 +176,14 @@ input[type="password"] {
     border: 1px solid #ccc;
     border-radius: 6px;
     font-size: 16px;
+}
+
+p {
+    transition: all 0.3s ease-in-out;
+}
+
+p.hidden {
+    display: none;
 }
 
 button {
