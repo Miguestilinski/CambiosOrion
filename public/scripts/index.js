@@ -11,15 +11,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Cargar las divisas
 function loadCurrencies() {
-    fetch('https://cambiosorion.cl/data/obtener_divisas.php')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Error en la red: ' + response.status + ' - ' + response.statusText);
-            }
-            return response.json();
-        })
+    // Usar un proxy CORS
+    const proxyUrl = 'https://api.allorigins.win/get?url=';
+    const targetUrl = encodeURIComponent('https://cambiosorion.cl/data/obtener_divisas.php');
+
+    fetch(proxyUrl + targetUrl)
+        .then(response => response.json())
         .then(data => {
-            if (!data || data.length === 0) {
+            // La API devuelve los datos como JSON en la propiedad 'contents'
+            const responseData = JSON.parse(data.contents);
+            
+            if (!responseData || responseData.length === 0) {
                 console.error("No se recibieron datos de divisas.");
                 return;
             }
