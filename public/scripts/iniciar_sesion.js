@@ -17,11 +17,43 @@ function formatearRUT(rut) {
     return cuerpoFormateado + '-' + dv;
 }
 
+// Función para validar el RUT chileno
+function validarRUT(rut) {
+    // Eliminar espacios en blanco y guiones
+    rut = rut.replace(/[^\dKk]/g, '').toUpperCase();
+
+    // Verificar que el RUT tenga al menos 2 caracteres
+    if (rut.length < 2) return false;
+
+    // Separar el cuerpo y el dígito verificador
+    const cuerpo = rut.slice(0, -1);
+    const dv = rut.slice(-1);
+
+    // Validar que el cuerpo del RUT contenga solo números
+    if (!/^\d+$/.test(cuerpo)) return false;
+
+    // Calcular el dígito verificador
+    let suma = 0;
+    let multiplo = 2;
+
+    // Recorremos el RUT de derecha a izquierda
+    for (let i = cuerpo.length - 1; i >= 0; i--) {
+        suma += cuerpo.charAt(i) * multiplo;
+        multiplo = multiplo === 7 ? 2 : multiplo + 1;
+    }
+
+    const dvCalculado = 11 - (suma % 11);
+
+    // Verificar el dígito verificador
+    const dvCorrecto = dvCalculado === 10 ? 'K' : dvCalculado === 11 ? '0' : dvCalculado.toString();
+    
+    return dv === dvCorrecto;
+}
+
 // Función para manejar el formulario y validación
 document.addEventListener("DOMContentLoaded", function () {
     const loginForm = document.getElementById("loginForm");
 
-    // Evento para formatear el RUT al perder el foco (blur)
     document.getElementById("rut").addEventListener("blur", function () {
         const rut = this.value;
         this.value = formatearRUT(rut);
