@@ -6,7 +6,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const rut = document.getElementById("rut").value;
         const contrasena = document.getElementById("contrasena").value;
-        const errorMessage = document.getElementById("error-message");
 
         try {
             const response = await fetch('/data/iniciar_sesion.php', {
@@ -19,11 +18,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const result = await response.json();
 
+            resetErrorStyles();
+
             if (result.success) {
                 window.location.href = 'index.html';
             } else {
-                errorMessage.textContent = result.message;
-                errorMessage.classList.remove('hidden');
+                document.getElementById('error-message').classList.remove('hidden');
+                setErrorStyles(result.field);
             }
         } catch (error) {
             console.error('Error al iniciar sesión:', error);
@@ -51,5 +52,22 @@ function loginUser(email, password) {
         window.location.href = "dashboard.html";
     } else {
         alert("Credenciales incorrectas. Intenta nuevamente.");
+    }
+}
+
+function resetErrorStyles() {
+    document.getElementById('rut').classList.remove('bg-red-50', 'border-red-500', 'text-red-900');
+    document.getElementById('contrasena').classList.remove('bg-red-50', 'border-red-500', 'text-red-900');
+    document.getElementById('rut-error').classList.add('hidden');
+    document.getElementById('contrasena-error').classList.add('hidden');
+}
+
+function setErrorStyles(field) {
+    if (field === 'rut') {
+        document.getElementById('rut').classList.add('bg-red-50', 'border-red-500', 'text-red-900');
+        document.getElementById('rut-error').classList.remove('hidden');
+    } else if (field === 'contrasena') {
+        document.getElementById('contrasena').classList.add('bg-red-50', 'border-red-500', 'text-red-900');
+        document.getElementById('contrasena-error').classList.remove('hidden');
     }
 }
