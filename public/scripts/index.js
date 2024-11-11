@@ -14,23 +14,20 @@ function loadCurrencies() {
     fetch('https://cambiosorion.cl/data/obtener_divisas.php')
         .then(response => {
             if (!response.ok) {
-                throw new Error('Error en la red: ' + response.status);
+                throw new Error('Error en la red: ' + response.status + ' - ' + response.statusText);
             }
             return response.json();
         })
         .then(data => {
+            if (!data || data.length === 0) {
+                console.error("No se recibieron datos de divisas.");
+                return;
+            }
             const dropdown1 = document.getElementById("dropdown1");
             const dropdown2 = document.getElementById("dropdown2");
 
-            console.log(dropdown1, dropdown2);
-
             if (dropdown1) dropdown1.innerHTML = '';
             if (dropdown2) dropdown2.innerHTML = '';
-
-            if (!dropdown1 || !dropdown2) {
-                console.error("Error: uno de los dropdowns no se encuentra en el DOM.");
-                return;
-            }
 
             data.forEach(divisa => {
                 const circularIcon = divisa.icono_circular;
@@ -64,17 +61,8 @@ function loadCurrencies() {
             updateAddCurrencyDropdown();
             fillCurrencyTable();
         })
-        .catch(error => {
-            console.error('Error al cargar las divisas:', error);
-            if (retries > 0) {
-                console.log(`Reintentando cargar las divisas... (${retries} intentos restantes)`);
-                setTimeout(() => loadCurrencies(retries - 1), 2000);
-            } else {
-                console.error('No se pudo cargar las divisas después de varios intentos.');
-            }
-        });
+        .catch(error => console.error('Error al cargar las divisas:', error));
 }
-
 
 function preloadIcon(iconUrl) {
     if (!iconsLoaded[iconUrl]) {
