@@ -371,6 +371,19 @@ footer {
 
     #menu-toggle {
         display: block; /* Muestra el botón de menú en móvil */
+        width: 40px; /* Hazlo cuadrado */
+        height: 40px;
+        background-color: #333; /* Fondo del botón, ajusta según prefieras */
+        border: none;
+        border-radius: 8px; /* Opcional: bordes redondeados */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .menu-icon {
+        width: 24px; /* Ajusta el tamaño del icono */
+        height: 24px;
     }
 
     #nav-menu {
