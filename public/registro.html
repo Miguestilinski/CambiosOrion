@@ -34,44 +34,52 @@
         </div>
     </header>
     <div class="header-divider"></div>
-    <div class="main-content">
-        <main>
-            <h2 class="text-white">Crear cuenta</h2>
-            <div class="form-container">
-                <form id="register-form">
-                    <!-- Campo RUT -->
-                    <label for="rut" class="text-black">RUT:</label>
-                    <input type="text" name="rut" id="rut" placeholder="12.345.678-9" required><br>
-    
-                    <!-- Campo Tipo de usuario -->
-                    <label for="tipo_usuario" class="text-black">Tipo de usuario:</label>
-                    <select name="tipo_usuario" id="tipo_usuario" required>
-                        <option value="persona">Persona</option>
-                        <option value="empresa">Empresa</option>
-                    </select><br>
-    
-                    <!-- Campo Nombre de usuario -->
-                    <label for="nombre_usuario" class="text-black">Nombre de usuario:</label>
-                    <input type="text" name="nombre_usuario" id="nombre_usuario" required><br>
-    
-                    <!-- Campo Correo electrónico -->
-                    <label for="correo" class="text-black">Correo electrónico:</label>
-                    <input type="email" name="correo" id="correo" placeholder="nombre@correo.com" required><br>
-    
-                    <!-- Campo Contraseña -->
-                    <label for="contrasena" class="text-black">Contraseña:</label>
-                    <input type="password" name="contrasena" id="contrasena" required><br>
-    
-                    <!-- Campo Confirmar Contraseña -->
-                    <label for="confirm_contrasena" class="text-black">Confirmar Contraseña:</label>
-                    <input type="password" name="confirm_contrasena" id="confirm_contrasena" required><br>
-    
-                    <!-- Botón para registrar -->
-                    <button type="submit" class="text-white">Registrarse</button>
-                </form>
+    <div class="max-w-md mx-auto my-10 bg-gray-800 p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-bold text-white text-center mb-6">Crear cuenta</h2>
+        <form id="register-form">
+            <!-- Campo RUT -->
+            <div class="mb-5">
+                <label for="rut" class="block mb-2 text-sm font-medium text-white">RUT:</label>
+                <input type="text" name="rut" id="rut" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="12.345.678-9" required />
             </div>
-        </main>
-    </div>
+            
+            <!-- Campo Tipo de usuario -->
+            <div class="mb-5">
+                <label for="tipo_usuario" class="block mb-2 text-sm font-medium text-white">Tipo de usuario:</label>
+                <select name="tipo_usuario" id="tipo_usuario" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                    <option value="persona">Persona</option>
+                    <option value="empresa">Empresa</option>
+                </select>
+            </div>
+            
+            <!-- Campo Nombre de usuario -->
+            <div class="mb-5">
+                <label for="nombre_usuario" class="block mb-2 text-sm font-medium text-white">Nombre de usuario:</label>
+                <input type="text" name="nombre_usuario" id="nombre_usuario" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required />
+            </div>
+            
+            <!-- Campo Correo electrónico -->
+            <div class="mb-5">
+                <label for="correo" class="block mb-2 text-sm font-medium text-white">Correo electrónico:</label>
+                <input type="email" name="correo" id="correo" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="nombre@correo.com" required />
+            </div>
+            
+            <!-- Campo Contraseña -->
+            <div class="mb-5">
+                <label for="contrasena" class="block mb-2 text-sm font-medium text-white">Contraseña:</label>
+                <input type="password" name="contrasena" id="contrasena" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required />
+            </div>
+            
+            <!-- Campo Confirmar Contraseña -->
+            <div class="mb-5">
+                <label for="confirm_contrasena" class="block mb-2 text-sm font-medium text-white">Confirmar Contraseña:</label>
+                <input type="password" name="confirm_contrasena" id="confirm_contrasena" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required />
+            </div>
+            
+            <!-- Botón para registrar -->
+            <button type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Registrarse</button>
+        </form>
+    </div>    
     
     <footer>
         <div class="footer-container">
