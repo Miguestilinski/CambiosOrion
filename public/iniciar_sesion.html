@@ -15,46 +15,61 @@
     <header class="shadow-md py-2">
         <div class="container mx-auto flex justify-between items-center px-4">
             <!-- Logo y Nombre -->
-            <div class="header-logo">
+            <div class="header-logo flex items-center">
                 <img src="/orionapp/assets/LogoOrion-silver.png" alt="Logo Cambios Orion" class="logo">
                 <img src="/orionapp/assets/NombreOrion-white.png" alt="Nombre Cambios Orion" class="nombre">
             </div>
     
-            <!-- Menú de Navegación en Versión Móvil -->
-            <div class="md:hidden flex items-center space-x-4">
-                <button id="nav-menu-toggle" class="p-2 rounded">
-                    <img src="/orionapp/icons/menu-white.svg" alt="Menú de navegación" class="w-6 h-6">
-                </button>
-                <button id="session-menu-toggle" class="p-2 rounded">
-                    <img src="/orionapp/icons/profile-white.png" alt="Menú de inicio de sesión" class="w-6 h-6">
-                </button>
-            </div>
-    
-            <!-- Menú de Navegación (versión móvil) -->
-            <nav id="nav-menu" class="hidden">
-                <ul>
-                    <li><a href="index.html" class="block py-2">Inicio</a></li>
-                    <li><a href="#" class="block py-2">Servicios</a></li>
-                    <li><a href="#" class="block py-2">Nosotros</a></li>
-                    <li><a href="#" class="block py-2">Contacto</a></li>
+            <!-- Menú de Navegación (Versión Escritorio) -->
+            <nav class="hidden md:flex">
+                <ul class="flex gap-4">
+                    <li class="selected"><a href="index.html">Inicio</a></li>
+                    <li><a href="#">Servicios</a></li>
+                    <li><a href="#">Nosotros</a></li>
+                    <li><a href="#">Contacto</a></li>
                 </ul>
             </nav>
     
-            <!-- Menú de sesión (versión móvil) -->
-            <div id="session-menu" class="hidden">
-                <ul>
-                    <li><a href="iniciar_sesion.html" class="block py-2">Iniciar sesión</a></li>
-                    <li><a href="registro.html" class="block py-2">Registrarse</a></li>
-                </ul>
-            </div>
-    
-            <!-- Botones de Sesión (versión escritorio) -->
+            <!-- Botones de Sesión (Versión Escritorio) -->
             <div class="header-actions hidden md:flex gap-4">
                 <a href="iniciar_sesion.html">Iniciar sesión</a>
                 <a href="registro.html" class="register-button">Registrarse</a>
             </div>
+    
+            <!-- Botones para versión móvil -->
+            <div class="flex md:hidden gap-4">
+                <button id="nav-menu-toggle" class="text-white">
+                    <!-- Ícono de menú para navegación -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+                <button id="session-menu-toggle" class="text-white">
+                    <!-- Ícono de usuario para sesión -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A12.084 12.084 0 0112 15c2.623 0 5.068.828 6.879 2.217M15 12a3 3 0 10-6 0 3 3 0 006 0zm9 10a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </button>
+            </div>
         </div>
-    </header>    
+    
+        <!-- Menú desplegable de navegación (Versión Móvil) -->
+        <nav id="nav-menu" class="md:hidden bg-gray-800 text-white p-4 rounded-lg hidden">
+            <ul class="flex flex-col gap-2">
+                <li class="selected"><a href="index.html">Inicio</a></li>
+                <li><a href="#">Servicios</a></li>
+                <li><a href="#">Nosotros</a></li>
+                <li><a href="#">Contacto</a></li>
+            </ul>
+        </nav>
+    
+        <!-- Menú desplegable de sesión (Versión Móvil) -->
+        <div id="session-menu" class="md:hidden bg-gray-800 text-white p-4 rounded-lg hidden">
+            <a href="iniciar_sesion.html" class="block mb-2">Iniciar sesión</a>
+            <a href="registro.html" class="register-button block">Registrarse</a>
+        </div>
+    </header>
+      
 
     <div class="header-divider"></div>
     <div class="max-w-md w-full mx-auto my-10 bg-gray-800 p-6 rounded-lg shadow-md">

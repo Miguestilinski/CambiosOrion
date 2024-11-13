@@ -35,31 +35,31 @@ function validarRUT(rut) {
     return dv === dvCorrecto;
 }
 
-// Mostrar/ocultar el menú de navegación en móvil
+// Alternar el menú de navegación en móvil
 document.getElementById("nav-menu-toggle").addEventListener("click", function () {
     var navMenu = document.getElementById("nav-menu");
     var sessionMenu = document.getElementById("session-menu");
+
     // Alternar la visibilidad del menú de navegación
     navMenu.classList.toggle("hidden");
-    navMenu.classList.toggle("active");
-    // Asegurarse de que el menú de sesión esté oculto si el de navegación está visible
-    if (navMenu.classList.contains("active")) {
+
+    // Asegurar que el menú de sesión esté oculto si el de navegación está visible
+    if (!navMenu.classList.contains("hidden")) {
         sessionMenu.classList.add("hidden");
-        sessionMenu.classList.remove("active");
     }
 });
 
-// Mostrar/ocultar el menú de inicio de sesión en móvil
+// Alternar el menú de sesión en móvil
 document.getElementById("session-menu-toggle").addEventListener("click", function () {
     var sessionMenu = document.getElementById("session-menu");
     var navMenu = document.getElementById("nav-menu");
+
     // Alternar la visibilidad del menú de sesión
     sessionMenu.classList.toggle("hidden");
-    sessionMenu.classList.toggle("active");
-    // Asegurarse de que el menú de navegación esté oculto si el de sesión está visible
-    if (sessionMenu.classList.contains("active")) {
+
+    // Asegurar que el menú de navegación esté oculto si el de sesión está visible
+    if (!sessionMenu.classList.contains("hidden")) {
         navMenu.classList.add("hidden");
-        navMenu.classList.remove("active");
     }
 });
 
