@@ -368,6 +368,16 @@ footer {
     display: none; /* Asegura que estén ocultos por defecto */
 }
 
+.mobile-menu {
+    position: absolute;
+    top: 60px;
+    right: 10px;
+    background-color: #333;
+    width: 200px;
+    padding: 10px;
+    border-radius: 8px;
+}
+
 /* Configuraciones de visualización en pantallas de hasta 768px */
 @media (max-width: 768px) {
 
@@ -422,5 +432,22 @@ footer {
     /* Estilos de botón de registro en pantallas pequeñas */
     .header-actions .register-button {
         padding: 6px 12px; /* Ajusta el padding de los botones en pantallas pequeñas */
+    }
+
+    .footer-logo {
+        margin-bottom: 20px;
+    }
+
+    .footer-navigation {
+        flex-direction: column;
+    }
+
+    .footer-navigation .nav-section {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .footer-contact {
+        margin-left: 0;
     }
 }

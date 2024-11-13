@@ -35,33 +35,22 @@ function validarRUT(rut) {
     return dv === dvCorrecto;
 }
 
-// Alternar el menú de navegación en móvil
-document.getElementById("nav-menu-toggle").addEventListener("click", function () {
-    var navMenu = document.getElementById("nav-menu");
-    var sessionMenu = document.getElementById("session-menu");
+// Obtener los botones y menús
+const menuToggle = document.getElementById('menu-toggle');
+const sessionToggle = document.getElementById('session-toggle');
+const navMenu = document.getElementById('nav-menu');
+const sessionMenu = document.getElementById('session-menu');
 
-    // Alternar la visibilidad del menú de navegación
-    navMenu.classList.toggle("hidden");
-
-    // Asegurar que el menú de sesión esté oculto si el de navegación está visible
-    if (!navMenu.classList.contains("hidden")) {
-        sessionMenu.classList.add("hidden");
-    }
+// Función para alternar la visibilidad del menú de navegación
+menuToggle.addEventListener('click', function() {
+    navMenu.style.display = (navMenu.style.display === 'block' || navMenu.style.display === '') ? 'none' : 'block';
 });
 
-// Alternar el menú de sesión en móvil
-document.getElementById("session-menu-toggle").addEventListener("click", function () {
-    var sessionMenu = document.getElementById("session-menu");
-    var navMenu = document.getElementById("nav-menu");
-
-    // Alternar la visibilidad del menú de sesión
-    sessionMenu.classList.toggle("hidden");
-
-    // Asegurar que el menú de navegación esté oculto si el de sesión está visible
-    if (!sessionMenu.classList.contains("hidden")) {
-        navMenu.classList.add("hidden");
-    }
+// Función para alternar la visibilidad del menú de sesión
+sessionToggle.addEventListener('click', function() {
+    sessionMenu.style.display = (sessionMenu.style.display === 'block' || sessionMenu.style.display === '') ? 'none' : 'block';
 });
+
 
 document.addEventListener("DOMContentLoaded", function () {
     const loginForm = document.getElementById("loginForm");
