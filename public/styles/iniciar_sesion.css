@@ -362,7 +362,34 @@ footer {
     background-color: #f9f9f9; /* Fondo gris claro */
 }
 
+/* Menú oculto por defecto en dispositivos móviles */
+#nav-menu {
+    display: none;
+}
+
 @media (max-width: 768px) {
+
+    #menu-toggle {
+        display: block; /* Muestra el botón de menú en móvil */
+    }
+
+    /* Estilos para el menú cuando se activa en móvil */
+    #nav-menu.active {
+        display: block;
+        position: absolute;
+        top: 60px; /* Ajusta según el tamaño de tu header */
+        right: 10px;
+        background-color: #333; /* Fondo del menú desplegable */
+        width: calc(100% - 20px);
+        padding: 10px;
+        border-radius: 8px;
+    }
+
+    #nav-menu ul {
+        flex-direction: column;
+        gap: 10px;
+    }
+
     nav ul {
         flex-direction: column; /* Cambia a columna */
         gap: 10px; /* Espacio entre los elementos en columna */
@@ -382,6 +409,7 @@ footer {
     .header-actions {
         flex-direction: column; /* Cambia a columna */
         align-items: flex-start; /* Alinea a la izquierda */
+        gap: 8px;
     }
 
     .header-logo img.logo {

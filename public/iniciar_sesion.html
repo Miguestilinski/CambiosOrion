@@ -16,12 +16,16 @@
     <header class="shadow-md py-2">
         <div class="container mx-auto flex justify-between items-center px-4">
             <!-- Logo y Nombre -->
-            <div class="header-logo">
+            <div class="header-logo flex items-center">
                 <img src="/orionapp/assets/LogoOrion-silver.png" alt="Logo Cambios Orion" class="logo">
                 <img src="/orionapp/assets/NombreOrion-white.png" alt="Nombre Cambios Orion" class="nombre">
             </div>
+            <!-- Botón de menú para versión móvil -->
+            <button id="menu-toggle" class="block md:hidden text-white">
+                ☰ <!-- Ícono de menú -->
+            </button>
             <!-- Menú de Navegación -->
-            <nav>
+            <nav id="nav-menu" class="hidden md:flex">
                 <ul class="flex gap-4">
                     <li class="selected"><a href="index.html">Inicio</a></li>
                     <li><a href="#">Servicios</a></li>
@@ -36,6 +40,7 @@
             </div>
         </div>
     </header>
+
     <div class="header-divider"></div>
     <div class="max-w-md w-full mx-auto my-10 bg-gray-800 p-6 rounded-lg shadow-md">
         <h2 class="text-2xl font-bold text-white text-center mb-6">Iniciar sesión</h2>
