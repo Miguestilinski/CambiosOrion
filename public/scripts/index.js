@@ -1,10 +1,47 @@
+// Obtener los botones y menús
+const menuToggle = document.getElementById('menu-toggle');
+const sessionToggle = document.getElementById('session-toggle');
+const navMenu = document.getElementById('nav-menu');
+const sessionMenu = document.getElementById('session-menu');
+
 let exchangeRates = {};
 let iconsLoaded = {};
 let isEditMode = false;
 let activeDropdown = null;
 let displayedCurrencies = ["CLP", "USD", "EUR", "ARS"];
 
+// Alternar visibilidad del menú de navegación
+menuToggle.addEventListener('click', function() {
+    navMenu.classList.toggle('hidden');
+    if (!sessionMenu.classList.contains('hidden')) {
+        sessionMenu.classList.add('hidden');
+    }
+});
+
+// Alternar visibilidad del menú de sesión
+sessionToggle.addEventListener('click', function() {
+    sessionMenu.classList.toggle('hidden');
+    if (!navMenu.classList.contains('hidden')) {
+        navMenu.classList.add('hidden');
+    }
+});
+
+// Marcar la opción activa en el menú
+function setActiveLink(menuId) {
+    const links = document.querySelectorAll(`${menuId} a`);
+    const currentPath = window.location.pathname;
+    links.forEach(link => {
+        if (link.getAttribute('href') === currentPath) {
+            link.classList.add('selected');
+        } else {
+            link.classList.remove('selected');
+        }
+    });
+}
+
 document.addEventListener("DOMContentLoaded", function () {
+    setActiveLink('#nav-menu');
+    setActiveLink('#session-menu');
     loadCurrencies();
     fillCurrencyTable();
 });
