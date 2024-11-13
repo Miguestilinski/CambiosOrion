@@ -16,10 +16,15 @@ function loadCurrencies() {
     fetch(proxyUrl + targetUrl)
         .then(response => response.json())
         .then(data => {
-            const responseData = JSON.parse(data.contents || '{}');
-            
-            if (!responseData || responseData.length === 0) {
-                console.error("No se recibieron datos de divisas.");
+            // Verificar el contenido de data y data.contents para entender su estructura
+            console.log("Datos recibidos:", data);
+
+            // Si los datos están en 'contents', intenta parsearlos
+            const responseData = data.contents ? JSON.parse(data.contents) : data;
+
+            // Asegurarse de que responseData es un array antes de usar forEach
+            if (!Array.isArray(responseData)) {
+                console.error("Formato de datos inesperado:", responseData);
                 return;
             }
 
