@@ -373,8 +373,9 @@ footer {
 
 @media (max-width: 768px) {
 
-    #mobile-menu {
-        display: block;
+    #nav-menu,
+    #session-menu {
+        display: none;
     }
 
     #menu-toggle {
