@@ -366,6 +366,9 @@ footer {
 #nav-menu {
     display: flex;
 }
+#menu-toggle {
+    display: none; /* Oculto por defecto */
+}
 
 @media (max-width: 768px) {
 
