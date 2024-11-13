@@ -354,10 +354,9 @@ footer {
 
 /* Footer copyright */
 .footer-copyright {
-    text-align: center;
-    font-size: 14px;
-    margin-top: 40px;
-    color: #d1d0d0;
+    text-align: center; /* Centrar el texto del copyright */
+    padding: 20px 0; /* Espacio arriba y abajo del copyright */
+    background-color: #f9f9f9; /* Fondo gris claro */
 }
 
 .mobile-menu {

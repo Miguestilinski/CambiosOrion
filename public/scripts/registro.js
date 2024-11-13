@@ -50,6 +50,15 @@ window.addEventListener('DOMContentLoaded', function() {
     setActiveLink('#session-menu');
 });
 
+// Marcar la opción activa al cargar la página
+window.addEventListener('DOMContentLoaded', function() {
+    // Aplicar la clase 'selected' en el menú de navegación
+    setActiveLink('#nav-menu');
+
+    // Aplicar la clase 'selected' en el menú de sesión
+    setActiveLink('#session-menu');
+});
+
 document.addEventListener("DOMContentLoaded", function () {
     // Inicializar el formulario de registro
     const registerForm = document.getElementById("register-form");

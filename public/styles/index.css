@@ -515,6 +515,60 @@ section .max-w-xl {
     color: white; /* Blanco para el ícono */
 }
 
+p {
+    transition: all 0.3s ease-in-out;
+}
+
+p.hidden {
+    display: none;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #2563eb;
+}
+
+.forgot-password {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.forgot-password a {
+    color: #3b82f6;
+    text-decoration: none;
+}
+
+.forgot-password a:hover {
+    text-decoration: underline;
+}
+
+.register-link {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.register-link a {
+    color: #3b82f6;
+    text-decoration: none;
+}
+
+.register-link a:hover {
+    text-decoration: underline;
+}
+
 /* Contenedor principal del footer */
 footer {
     background: black; /* Fondo negro sólido */
@@ -685,7 +739,6 @@ footer {
     nav ul {
         flex-direction: column; /* Cambia a columna */
         gap: 10px; /* Espacio entre los elementos en columna */
-        margin-right: 0; /* Elimina el margen derecho */
     }
 
     .header-actions {
