@@ -395,7 +395,7 @@ footer {
 
 /* Añadir una línea debajo de la opción seleccionada */
 .mobile-menu a.selected {
-    border-bottom: 2px solid #ffbf00; /* Línea amarilla debajo de la opción activa */
+    border-bottom: 2px solid white; /* Línea amarilla debajo de la opción activa */
 }
 
 /* Estilos para la versión móvil */

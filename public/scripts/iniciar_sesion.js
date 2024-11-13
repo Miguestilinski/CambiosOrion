@@ -63,26 +63,28 @@ sessionToggle.addEventListener('click', function() {
     }
 });
 
-// Marcar la opción seleccionada en el menú de navegación
-const navLinks = navMenu.querySelectorAll('a');
-navLinks.forEach(link => {
-    link.addEventListener('click', function() {
-        // Eliminar la clase 'selected' de todos los enlaces
-        navLinks.forEach(l => l.classList.remove('selected'));
-        // Añadir la clase 'selected' al enlace actual
-        link.classList.add('selected');
-    });
-});
+// Función para marcar la opción activa en el menú de navegación y sesión
+function setActiveLink(menuId) {
+    const links = document.querySelectorAll(`${menuId} a`);
+    const currentPath = window.location.pathname; // Obtener la ruta actual
 
-// Marcar la opción seleccionada en el menú de sesión
-const sessionLinks = sessionMenu.querySelectorAll('a');
-sessionLinks.forEach(link => {
-    link.addEventListener('click', function() {
-        // Eliminar la clase 'selected' de todos los enlaces
-        sessionLinks.forEach(l => l.classList.remove('selected'));
-        // Añadir la clase 'selected' al enlace actual
-        link.classList.add('selected');
+    links.forEach(link => {
+        // Si la URL del enlace coincide con la URL actual, marca como seleccionado
+        if (link.getAttribute('href') === currentPath) {
+            link.classList.add('selected');
+        } else {
+            link.classList.remove('selected');
+        }
     });
+}
+
+// Marcar la opción activa al cargar la página
+window.addEventListener('DOMContentLoaded', function() {
+    // Aplicar la clase 'selected' en el menú de navegación
+    setActiveLink('#nav-menu');
+
+    // Aplicar la clase 'selected' en el menú de sesión
+    setActiveLink('#session-menu');
 });
 
 document.addEventListener("DOMContentLoaded", function () {
