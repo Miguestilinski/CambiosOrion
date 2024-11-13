@@ -63,6 +63,28 @@ sessionToggle.addEventListener('click', function() {
     }
 });
 
+// Marcar la opción seleccionada en el menú de navegación
+const navLinks = navMenu.querySelectorAll('a');
+navLinks.forEach(link => {
+    link.addEventListener('click', function() {
+        // Eliminar la clase 'selected' de todos los enlaces
+        navLinks.forEach(l => l.classList.remove('selected'));
+        // Añadir la clase 'selected' al enlace actual
+        link.classList.add('selected');
+    });
+});
+
+// Marcar la opción seleccionada en el menú de sesión
+const sessionLinks = sessionMenu.querySelectorAll('a');
+sessionLinks.forEach(link => {
+    link.addEventListener('click', function() {
+        // Eliminar la clase 'selected' de todos los enlaces
+        sessionLinks.forEach(l => l.classList.remove('selected'));
+        // Añadir la clase 'selected' al enlace actual
+        link.classList.add('selected');
+    });
+});
+
 document.addEventListener("DOMContentLoaded", function () {
     const loginForm = document.getElementById("loginForm");
 
