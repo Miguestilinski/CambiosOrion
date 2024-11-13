@@ -35,22 +35,22 @@ function validarRUT(rut) {
     return dv === dvCorrecto;
 }
 
-// Obtener los botones y menús
-const menuToggle = document.getElementById('menu-toggle');
-const sessionToggle = document.getElementById('session-toggle');
-const navMenu = document.getElementById('nav-menu');
-const sessionMenu = document.getElementById('session-menu');
+document.addEventListener('DOMContentLoaded', function() {
+    // Obtener los botones y menús
+    const menuToggle = document.getElementById('menu-toggle');
+    const sessionToggle = document.getElementById('session-toggle');
+    const navMenu = document.getElementById('nav-menu');
+    const sessionMenu = document.getElementById('session-menu');
 
-// Función para alternar la visibilidad del menú de navegación
-menuToggle.addEventListener('click', function() {
-    // Alterna la visibilidad del menú de navegación
-    navMenu.classList.toggle('hidden');
-});
+    // Función para alternar la visibilidad del menú de navegación
+    menuToggle.addEventListener('click', function() {
+        navMenu.classList.toggle('hidden');
+    });
 
-// Función para alternar la visibilidad del menú de sesión
-sessionToggle.addEventListener('click', function() {
-    // Alterna la visibilidad del menú de sesión
-    sessionMenu.classList.toggle('hidden');
+    // Función para alternar la visibilidad del menú de sesión
+    sessionToggle.addEventListener('click', function() {
+        sessionMenu.classList.toggle('hidden');
+    });
 });
 
 document.addEventListener("DOMContentLoaded", function () {
