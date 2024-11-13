@@ -43,12 +43,20 @@ const sessionMenu = document.getElementById('session-menu');
 
 // Función para alternar la visibilidad del menú de navegación
 menuToggle.addEventListener('click', function() {
-    navMenu.classList.toggle('hidden'); // Muestra u oculta el menú de navegación
+    // Cerrar el menú de sesión si está abierto
+    sessionMenu.classList.add('hidden');
+    
+    // Alternar la visibilidad del menú de navegación
+    navMenu.classList.toggle('hidden');
 });
 
 // Función para alternar la visibilidad del menú de sesión
 sessionToggle.addEventListener('click', function() {
-    sessionMenu.classList.toggle('hidden'); // Muestra u oculta el menú de sesión
+    // Cerrar el menú de navegación si está abierto
+    navMenu.classList.add('hidden');
+    
+    // Alternar la visibilidad del menú de sesión
+    sessionMenu.classList.toggle('hidden');
 });
 
 document.addEventListener("DOMContentLoaded", function () {
