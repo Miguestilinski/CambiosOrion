@@ -21,7 +21,7 @@
             </div>
     
             <!-- Botones para Móvil -->
-            <div class="md:hidden flex gap-4">
+            <div class="flex gap-4 md:hidden"> <!-- Oculto en pantallas medianas o mayores -->
                 <!-- Botón de Menú de Navegación -->
                 <button id="menu-toggle" class="menu-button">
                     <img src="/orionapp/icons/menu-white.svg" alt="Menú">
@@ -33,7 +33,7 @@
             </div>
     
             <!-- Menú de Navegación -->
-            <nav class="hidden md:flex">
+            <nav class="hidden md:flex"> <!-- Visible solo en escritorio -->
                 <ul class="flex gap-4">
                     <li class="selected"><a href="index.html">Inicio</a></li>
                     <li><a href="servicios.html">Servicios</a></li>
@@ -43,7 +43,7 @@
             </nav>
     
             <!-- Botones de Sesión -->
-            <div class="header-action gap-4 hidden md:flex">
+            <div class="header-action gap-4 hidden md:flex"> <!-- Visible solo en escritorio -->
                 <a href="iniciar_sesion.html">Iniciar sesión</a>
                 <a href="registro.html" class="register-button">Registrarse</a>
             </div>
