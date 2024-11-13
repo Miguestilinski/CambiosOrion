@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
 // Cargar las divisas
 function loadCurrencies() {
     // Usar un proxy CORS
-    const proxyUrl = 'https://api.allorigins.win/get?url=';
+    const proxyUrl = 'https://corsproxy.io/?';
     const targetUrl = encodeURIComponent('https://cambiosorion.cl/data/obtener_divisas.php');
 
     fetch(proxyUrl + targetUrl)
