@@ -360,26 +360,54 @@ footer {
     color: #d1d0d0;
 }
 
+.mobile-menu {
+    position: absolute;
+    top: 60px;
+    right: 10px;
+    background-color: black;
+    color: white;
+    width: 200px;
+    padding: 10px;
+    border-radius: 8px;
+    z-index: 999;
+}
+
+/* Estilo para las opciones del menú */
+.mobile-menu ul {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+.mobile-menu li {
+    margin: 12px 0; /* Espacio entre los elementos */
+}
+
+.mobile-menu a {
+    color: white;
+    font-size: 18px; /* Tamaño de fuente más grande */
+    text-decoration: none;
+    display: block;
+    padding: 8px 0; /* Espacio interno en los enlaces */
+}
+
+/* Añadir una línea debajo de la opción seleccionada */
+.mobile-menu a.selected {
+    border-bottom: 2px solid white; /* Línea amarilla debajo de la opción activa */
+}
+
+/* Estilos para la versión móvil */
 @media (max-width: 768px) {
+    /* Menú de navegación y botones en versión móvil */
     nav ul {
         flex-direction: column; /* Cambia a columna */
         gap: 10px; /* Espacio entre los elementos en columna */
-        margin-right: 0; /* Elimina el margen derecho */
-    }
-
-    .footer-container {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .footer-navigation {
-        width: 100%;
-        justify-content: center;
     }
 
     .header-actions {
         flex-direction: column; /* Cambia a columna */
         align-items: flex-start; /* Alinea a la izquierda */
+        gap: 8px;
     }
 
     .header-logo img.logo {
@@ -392,5 +420,26 @@ footer {
 
     .header-actions .register-button {
         padding: 6px 12px; /* Ajusta el padding de los botones en pantallas pequeñas */
+    }
+
+    /* Botones de menú en versión móvil */
+    .menu-button {
+        background-color: transparent;
+        border: none;
+        padding: 8px;
+    }
+
+    .menu-button img {
+        width: 24px; /* Tamaño del icono */
+    }
+
+    .footer-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .footer-navigation {
+        width: 100%;
+        justify-content: center;
     }
 }
