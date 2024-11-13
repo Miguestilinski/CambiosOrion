@@ -9,22 +9,20 @@ document.addEventListener("DOMContentLoaded", function () {
     fillCurrencyTable();
 });
 
-// Cargar las divisas
 function loadCurrencies() {
-    // Usar un proxy CORS
     const proxyUrl = 'https://corsproxy.io/?';
-    const targetUrl = encodeURIComponent('https://cambiosorion.cl/data/obtener_divisas.php');
+    const targetUrl = 'https://cambiosorion.cl/data/obtener_divisas.php';
 
     fetch(proxyUrl + targetUrl)
         .then(response => response.json())
         .then(data => {
-            // La API devuelve los datos como JSON en la propiedad 'contents'
-            const responseData = JSON.parse(data.contents);
+            const responseData = JSON.parse(data.contents || '{}');
             
             if (!responseData || responseData.length === 0) {
                 console.error("No se recibieron datos de divisas.");
                 return;
             }
+
             const dropdown1 = document.getElementById("dropdown1");
             const dropdown2 = document.getElementById("dropdown2");
 
