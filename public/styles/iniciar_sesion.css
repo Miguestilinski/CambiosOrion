@@ -362,17 +362,40 @@ footer {
     background-color: #f9f9f9; /* Fondo gris claro */
 }
 
-
 .mobile-menu {
     position: absolute;
     top: 60px;
     right: 10px;
     background-color: black;
-    color: #d1d0d0;
+    color: white;
     width: 200px;
     padding: 10px;
     border-radius: 8px;
     z-index: 999;
+}
+
+/* Estilo para las opciones del menú */
+.mobile-menu ul {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+.mobile-menu li {
+    margin: 12px 0; /* Espacio entre los elementos */
+}
+
+.mobile-menu a {
+    color: white;
+    font-size: 18px; /* Tamaño de fuente más grande */
+    text-decoration: none;
+    display: block;
+    padding: 8px 0; /* Espacio interno en los enlaces */
+}
+
+/* Añadir una línea debajo de la opción seleccionada */
+.mobile-menu a.selected {
+    border-bottom: 2px solid #ffbf00; /* Línea amarilla debajo de la opción activa */
 }
 
 /* Estilos para la versión móvil */
