@@ -364,13 +364,17 @@ footer {
 
 /* Menú oculto por defecto en dispositivos móviles */
 #nav-menu {
-    display: none;
+    display: flex;
 }
 
 @media (max-width: 768px) {
 
     #menu-toggle {
         display: block; /* Muestra el botón de menú en móvil */
+    }
+
+    #nav-menu {
+        display: none; /* Oculta el menú en móviles */
     }
 
     /* Estilos para el menú cuando se activa en móvil */
