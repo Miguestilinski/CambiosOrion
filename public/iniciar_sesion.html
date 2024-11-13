@@ -12,41 +12,59 @@
 
 </head>
 <body class="font-sans">
-    <body class="font-sans">
-        <header class="shadow-md py-2">
-            <div class="container mx-auto flex justify-between items-center px-4">
-                <!-- Logo y Nombre -->
-                <div class="header-logo">
-                    <img src="/orionapp/assets/LogoOrion-silver.png" alt="Logo Cambios Orion" class="logo">
-                    <img src="/orionapp/assets/NombreOrion-white.png" alt="Nombre Cambios Orion" class="nombre">
-                </div>
-                <!-- Menú de Navegación -->
-                <nav id="nav-menu">
-                    <ul class="flex gap-4">
-                        <li class="selected"><a href="index.html">Inicio</a></li>
-                        <li><a href="#">Servicios</a></li>
-                        <li><a href="#">Nosotros</a></li>
-                        <li><a href="#">Contacto</a></li>
-                    </ul>
-                </nav>
-                <!-- Botones de Sesión en Versión Escritorio -->
-                <div class="header-actions flex gap-4 hidden md:flex">
-                    <a href="iniciar_sesion.html">Iniciar sesión</a>
-                    <a href="registro.html" class="register-button">Registrarse</a>
-                </div>
-                <!-- Botón del Menú para la Versión Móvil -->
-                <div id="menu-toggle" class="md:hidden flex items-center">
-                    <img src="/orionapp/assets/menu-white.svg" alt="Menú" class="w-6 h-6" />
-                </div>
-                <!-- Menú de sesión en versión móvil -->
-                <div id="mobile-menu" class="hidden absolute top-14 right-4 bg-gray-800 text-white rounded-lg shadow-lg p-4 w-40">
-                    <ul>
-                        <li><a href="iniciar_sesion.html" class="block py-2 px-4">Iniciar sesión</a></li>
-                        <li><a href="registro.html" class="block py-2 px-4">Registrarse</a></li>
-                    </ul>
-                </div>
+    <header class="shadow-md py-2">
+        <div class="container mx-auto flex justify-between items-center px-4">
+            <!-- Logo y Nombre -->
+            <div class="header-logo">
+                <img src="/orionapp/assets/LogoOrion-silver.png" alt="Logo Cambios Orion" class="logo">
+                <img src="/orionapp/assets/NombreOrion-white.png" alt="Nombre Cambios Orion" class="nombre">
             </div>
-        </header>
+    
+            <!-- Botones para Móvil -->
+            <div class="md:hidden flex gap-4">
+                <!-- Botón de Menú de Navegación -->
+                <button id="menu-toggle" class="menu-button">
+                    <img src="/orionapp/icons/menu-white.svg" alt="Menú">
+                </button>
+                <!-- Botón de Menú de Sesión -->
+                <button id="session-toggle" class="menu-button">
+                    <img src="/orionapp/icons/profile-white.png" alt="Sesión">
+                </button>
+            </div>
+    
+            <!-- Menú de Navegación -->
+            <nav class="hidden md:flex">
+                <ul class="flex gap-4">
+                    <li class="selected"><a href="index.html">Inicio</a></li>
+                    <li><a href="#">Servicios</a></li>
+                    <li><a href="#">Nosotros</a></li>
+                    <li><a href="#">Contacto</a></li>
+                </ul>
+            </nav>
+    
+            <!-- Botones de Sesión -->
+            <div class="header-actions flex gap-4 hidden md:flex">
+                <a href="iniciar_sesion.html">Iniciar sesión</a>
+                <a href="registro.html" class="register-button">Registrarse</a>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Menú de navegación en móviles -->
+    <div id="nav-menu" class="mobile-menu hidden">
+        <ul>
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="#">Servicios</a></li>
+            <li><a href="#">Nosotros</a></li>
+            <li><a href="#">Contacto</a></li>
+        </ul>
+    </div>
+    
+    <!-- Menú de sesión en móviles -->
+    <div id="session-menu" class="mobile-menu hidden">
+        <a href="iniciar_sesion.html">Iniciar sesión</a>
+        <a href="registro.html" class="register-button">Registrarse</a>
+    </div>    
 
     <div class="header-divider"></div>
     <div class="max-w-md w-full mx-auto my-10 bg-gray-800 p-6 rounded-lg shadow-md">
