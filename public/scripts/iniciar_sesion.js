@@ -35,7 +35,7 @@ function validarRUT(rut) {
     return dv === dvCorrecto;
 }
 
-// Obtener los botones y menús
+// Obtener los botones y los menús
 const menuToggle = document.getElementById('menu-toggle');
 const sessionToggle = document.getElementById('session-toggle');
 const navMenu = document.getElementById('nav-menu');
@@ -50,7 +50,6 @@ menuToggle.addEventListener('click', function() {
 sessionToggle.addEventListener('click', function() {
     sessionMenu.style.display = (sessionMenu.style.display === 'block' || sessionMenu.style.display === '') ? 'none' : 'block';
 });
-
 
 document.addEventListener("DOMContentLoaded", function () {
     const loginForm = document.getElementById("loginForm");

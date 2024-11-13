@@ -362,49 +362,20 @@ footer {
     background-color: #f9f9f9; /* Fondo gris claro */
 }
 
-/* Menú de navegación en móviles */
+/* Oculta los menús por defecto */
 #nav-menu,
 #session-menu {
-    display: none; /* Asegura que estén ocultos por defecto */
+    display: none;
 }
 
-.mobile-menu {
-    position: absolute;
-    top: 60px;
-    right: 10px;
-    background-color: #333;
-    width: 200px;
-    padding: 10px;
-    border-radius: 8px;
-}
-
-/* Configuraciones de visualización en pantallas de hasta 768px */
+/* Menú de navegación y sesión en versión móvil */
 @media (max-width: 768px) {
-
-    /* Mostrar botones de menú en móvil */
-    .md\:hidden {
-        display: flex;
-    }
-
-    /* Estilos del menú de navegación y sesión en versión móvil */
-    #nav-menu,
-    #session-menu {
-        position: absolute;
-        top: 60px;
-        right: 10px;
-        background-color: #333;
-        width: 200px;
-        padding: 10px;
-        border-radius: 8px;
-    }
-
-    /* Estilos para los elementos de navegación en móviles */
     nav ul {
         flex-direction: column; /* Cambia a columna */
-        gap: 10px; /* Espacio entre los elementos en columna */
+        gap: 10px; /* Espacio entre los elementos */
+        margin-right: 0; /* Elimina el margen derecho */
     }
 
-    /* Footer en móviles */
     .footer-container {
         flex-direction: column;
         align-items: center;
@@ -415,39 +386,33 @@ footer {
         justify-content: center;
     }
 
-    /* Oculta las acciones del header en móviles y ajusta su diseño en modo desplegable */
     .header-actions {
-        display: none; /* Oculta en pantallas móviles */
+        display: none; /* Oculta los botones de sesión */
     }
 
-    /* Ajustes para el logo y el nombre en móviles */
+    /* Estilo de los botones de menú */
+    .menu-button {
+        background-color: #333;
+        color: #fff;
+        padding: 8px 12px;
+        border-radius: 4px;
+    }
+
     .header-logo img.logo {
-        width: 60px; /* Ajusta el tamaño del logo */
+        width: 60px; /* Reduce el tamaño del logo */
     }
 
     .header-logo img.nombre {
-        width: 100px; /* Ajusta el tamaño del nombre */
+        width: 100px; /* Reduce el tamaño del nombre */
     }
 
-    /* Estilos de botón de registro en pantallas pequeñas */
-    .header-actions .register-button {
-        padding: 6px 12px; /* Ajusta el padding de los botones en pantallas pequeñas */
-    }
-
-    .footer-logo {
-        margin-bottom: 20px;
-    }
-
-    .footer-navigation {
-        flex-direction: column;
-    }
-
-    .footer-navigation .nav-section {
-        width: 100%;
-        margin-bottom: 15px;
-    }
-
-    .footer-contact {
-        margin-left: 0;
+    .mobile-menu {
+        position: absolute;
+        top: 60px;
+        right: 10px;
+        background-color: #333;
+        width: 200px;
+        padding: 10px;
+        border-radius: 8px;
     }
 }

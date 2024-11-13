@@ -360,22 +360,37 @@ footer {
     color: #d1d0d0;
 }
 
-/* Media Queries */
-@media screen and (max-width: 768px) {
-    .footer-logo {
-        margin-bottom: 20px;
+@media (max-width: 768px) {
+    nav ul {
+        flex-direction: column; /* Cambia a columna */
+        gap: 10px; /* Espacio entre los elementos en columna */
+        margin-right: 0; /* Elimina el margen derecho */
+    }
+
+    .footer-container {
+        flex-direction: column;
+        align-items: center;
     }
 
     .footer-navigation {
-        flex-direction: column;
-    }
-
-    .footer-navigation .nav-section {
         width: 100%;
-        margin-bottom: 15px;
+        justify-content: center;
     }
 
-    .footer-contact {
-        margin-left: 0;
+    .header-actions {
+        flex-direction: column; /* Cambia a columna */
+        align-items: flex-start; /* Alinea a la izquierda */
+    }
+
+    .header-logo img.logo {
+        width: 60px; /* Reduce el tamaño del logo */
+    }
+
+    .header-logo img.nombre {
+        width: 100px; /* Reduce el tamaño del nombre */
+    }
+
+    .header-actions .register-button {
+        padding: 6px 12px; /* Ajusta el padding de los botones en pantallas pequeñas */
     }
 }
