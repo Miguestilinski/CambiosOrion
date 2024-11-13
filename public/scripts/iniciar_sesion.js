@@ -35,6 +35,11 @@ function validarRUT(rut) {
     return dv === dvCorrecto;
 }
 
+document.getElementById("menu-toggle").addEventListener("click", function () {
+    var navMenu = document.getElementById("nav-menu");
+    navMenu.classList.toggle("active");
+});
+
 document.addEventListener("DOMContentLoaded", function () {
     const loginForm = document.getElementById("loginForm");
 
