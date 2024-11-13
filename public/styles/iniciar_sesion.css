@@ -362,40 +362,34 @@ footer {
     background-color: #f9f9f9; /* Fondo gris claro */
 }
 
-/* Oculta los menús por defecto */
+/* Menú de navegación en móviles */
 #nav-menu,
 #session-menu {
-    display: none;
+    display: none; /* Oculta los menús por defecto */
 }
 
-/* Menú de navegación y sesión en versión móvil */
+.mobile-menu {
+    position: absolute;
+    top: 60px;
+    right: 10px;
+    background-color: #333;
+    width: 200px;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+/* Estilos para la versión móvil */
 @media (max-width: 768px) {
+    /* Menú de navegación y botones en versión móvil */
     nav ul {
         flex-direction: column; /* Cambia a columna */
-        gap: 10px; /* Espacio entre los elementos */
-        margin-right: 0; /* Elimina el margen derecho */
-    }
-
-    .footer-container {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .footer-navigation {
-        width: 100%;
-        justify-content: center;
+        gap: 10px; /* Espacio entre los elementos en columna */
     }
 
     .header-actions {
-        display: none; /* Oculta los botones de sesión */
-    }
-
-    /* Estilo de los botones de menú */
-    .menu-button {
-        background-color: #333;
-        color: #fff;
-        padding: 8px 12px;
-        border-radius: 4px;
+        flex-direction: column; /* Cambia a columna */
+        align-items: flex-start; /* Alinea a la izquierda */
+        gap: 8px;
     }
 
     .header-logo img.logo {
@@ -406,13 +400,28 @@ footer {
         width: 100px; /* Reduce el tamaño del nombre */
     }
 
-    .mobile-menu {
-        position: absolute;
-        top: 60px;
-        right: 10px;
-        background-color: #333;
-        width: 200px;
-        padding: 10px;
-        border-radius: 8px;
+    .header-actions .register-button {
+        padding: 6px 12px; /* Ajusta el padding de los botones en pantallas pequeñas */
+    }
+
+    /* Botones de menú en versión móvil */
+    .menu-button {
+        background-color: transparent;
+        border: none;
+        padding: 8px;
+    }
+
+    .menu-button img {
+        width: 24px; /* Tamaño del icono */
+    }
+
+    .footer-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .footer-navigation {
+        width: 100%;
+        justify-content: center;
     }
 }
