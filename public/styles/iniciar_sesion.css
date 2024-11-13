@@ -362,17 +362,13 @@ footer {
     background-color: #f9f9f9; /* Fondo gris claro */
 }
 
-/* Menú de navegación en móviles */
-#nav-menu,
-#session-menu {
-    display: none; /* Oculta los menús por defecto */
-}
 
 .mobile-menu {
     position: absolute;
     top: 60px;
     right: 10px;
-    background-color: #333;
+    background-color: black;
+    color: #d1d0d0;
     width: 200px;
     padding: 10px;
     border-radius: 8px;
