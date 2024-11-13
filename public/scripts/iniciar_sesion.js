@@ -36,8 +36,13 @@ function validarRUT(rut) {
 }
 
 document.getElementById("menu-toggle").addEventListener("click", function () {
+    // Toggler para el menú de navegación (si se requiere alguna acción extra, por ejemplo, ocultar elementos de navegación en dispositivos pequeños)
     var navMenu = document.getElementById("nav-menu");
     navMenu.classList.toggle("active");
+
+    // Toggler para el menú de inicio de sesión
+    var mobileMenu = document.getElementById("mobile-menu");
+    mobileMenu.classList.toggle("hidden");
 });
 
 document.addEventListener("DOMContentLoaded", function () {

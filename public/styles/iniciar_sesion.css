@@ -362,15 +362,20 @@ footer {
     background-color: #f9f9f9; /* Fondo gris claro */
 }
 
-/* Menú oculto por defecto en dispositivos móviles */
-#nav-menu {
-    display: flex;
+/* Menú de navegación en móviles */
+#nav-menu.active {
+    display: block; /* O cualquier estilo para mostrar el menú */
 }
-#menu-toggle {
-    display: none; /* Oculto por defecto */
+
+#nav-menu {
+    display: none; /* Por defecto, el menú está oculto en móviles */
 }
 
 @media (max-width: 768px) {
+
+    #mobile-menu {
+        display: block;
+    }
 
     #menu-toggle {
         display: block; /* Muestra el botón de menú en móvil */

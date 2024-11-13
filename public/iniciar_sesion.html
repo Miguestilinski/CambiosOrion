@@ -11,21 +11,16 @@
 
 
 </head>
-
 <body class="font-sans">
     <header class="shadow-md py-2">
         <div class="container mx-auto flex justify-between items-center px-4">
             <!-- Logo y Nombre -->
-            <div class="header-logo flex items-center">
+            <div class="header-logo">
                 <img src="/orionapp/assets/LogoOrion-silver.png" alt="Logo Cambios Orion" class="logo">
                 <img src="/orionapp/assets/NombreOrion-white.png" alt="Nombre Cambios Orion" class="nombre">
             </div>
-            <!-- Botón de menú para versión móvil -->
-            <button id="menu-toggle" aria-label="Toggle Menu">
-                <img src="/orionapp/icons/menu-white.svg" alt="Menú" class="menu-icon">
-            </button>    
             <!-- Menú de Navegación -->
-            <nav id="nav-menu" class="hidden md:flex">
+            <nav id="nav-menu">
                 <ul class="flex gap-4">
                     <li class="selected"><a href="index.html">Inicio</a></li>
                     <li><a href="#">Servicios</a></li>
@@ -33,10 +28,21 @@
                     <li><a href="#">Contacto</a></li>
                 </ul>
             </nav>
-            <!-- Botones de Sesión -->
-            <div class="header-actions flex gap-4">
+            <!-- Botones de Sesión en Versión Escritorio -->
+            <div class="header-actions flex gap-4 hidden md:flex">
                 <a href="iniciar_sesion.html">Iniciar sesión</a>
                 <a href="registro.html" class="register-button">Registrarse</a>
+            </div>
+            <!-- Botón del Menú para la Versión Móvil -->
+            <div id="menu-toggle" class="md:hidden flex items-center">
+                <img src="/orionapp/assets/menu-white.svg" alt="Menú" class="w-6 h-6" />
+            </div>
+            <!-- Menú de sesión en versión móvil -->
+            <div id="mobile-menu" class="hidden absolute top-14 right-4 bg-gray-800 text-white rounded-lg shadow-lg p-4 w-40">
+                <ul>
+                    <li><a href="iniciar_sesion.html" class="block py-2 px-4">Iniciar sesión</a></li>
+                    <li><a href="registro.html" class="block py-2 px-4">Registrarse</a></li>
+                </ul>
             </div>
         </div>
     </header>
