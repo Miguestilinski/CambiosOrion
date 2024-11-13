@@ -41,9 +41,11 @@ document.getElementById("nav-menu-toggle").addEventListener("click", function ()
     var sessionMenu = document.getElementById("session-menu");
     // Alternar la visibilidad del menú de navegación
     navMenu.classList.toggle("hidden");
+    navMenu.classList.toggle("active");
     // Asegurarse de que el menú de sesión esté oculto si el de navegación está visible
-    if (!navMenu.classList.contains("hidden")) {
+    if (navMenu.classList.contains("active")) {
         sessionMenu.classList.add("hidden");
+        sessionMenu.classList.remove("active");
     }
 });
 
@@ -53,9 +55,11 @@ document.getElementById("session-menu-toggle").addEventListener("click", functio
     var navMenu = document.getElementById("nav-menu");
     // Alternar la visibilidad del menú de sesión
     sessionMenu.classList.toggle("hidden");
+    sessionMenu.classList.toggle("active");
     // Asegurarse de que el menú de navegación esté oculto si el de sesión está visible
-    if (!sessionMenu.classList.contains("hidden")) {
+    if (sessionMenu.classList.contains("active")) {
         navMenu.classList.add("hidden");
+        navMenu.classList.remove("active");
     }
 });
 

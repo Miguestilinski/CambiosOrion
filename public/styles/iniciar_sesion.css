@@ -363,57 +363,29 @@ footer {
 }
 
 /* Menú de navegación en móviles */
-#nav-menu.active {
-    display: block; /* O cualquier estilo para mostrar el menú */
-}
-
-#nav-menu {
-    display: none; /* Por defecto, el menú está oculto en móviles */
+#nav-menu,
+#session-menu {
+    display: none;
 }
 
 @media (max-width: 768px) {
 
+    /* Mostrar botones de menú en móvil */
+    .md\\:hidden {
+        display: flex;
+    }
+
+    /* Menú de navegación y sesión en versión móvil */
     #nav-menu,
     #session-menu {
-        display: none;
-    }
-
-    #menu-toggle {
-        display: block; /* Muestra el botón de menú en móvil */
-        width: 40px; /* Hazlo cuadrado */
-        height: 40px;
-        background-color: #333; /* Fondo del botón, ajusta según prefieras */
-        border: none;
-        border-radius: 8px; /* Opcional: bordes redondeados */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .menu-icon {
-        width: 24px; /* Ajusta el tamaño del icono */
-        height: 24px;
-    }
-
-    #nav-menu {
-        display: none; /* Oculta el menú en móviles */
-    }
-
-    /* Estilos para el menú cuando se activa en móvil */
-    #nav-menu.active {
-        display: block;
         position: absolute;
-        top: 60px; /* Ajusta según el tamaño de tu header */
+        top: 60px;
         right: 10px;
-        background-color: #333; /* Fondo del menú desplegable */
-        width: calc(100% - 20px);
+        background-color: #333;
+        width: 200px;
         padding: 10px;
         border-radius: 8px;
-    }
-
-    #nav-menu ul {
-        flex-direction: column;
-        gap: 10px;
+        display: none;
     }
 
     nav ul {
@@ -433,6 +405,7 @@ footer {
     }
 
     .header-actions {
+        display: none;
         flex-direction: column; /* Cambia a columna */
         align-items: flex-start; /* Alinea a la izquierda */
         gap: 8px;
