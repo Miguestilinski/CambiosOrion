@@ -13,43 +13,28 @@
 <body class="font-sans">
     <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js"></script>
     <header>
-        <!-- Logo y nombre -->
+        <!-- Logo y nombre en el centro -->
         <div class="header-logo">
             <img src="/orionapp/assets/LogoOrion-silver.png" alt="Logo Cambios Orion" class="logo">
             <img src="/orionapp/assets/NombreOrion-white.png" alt="Nombre Cambios Orion" class="nombre">
         </div>
     
-        <!-- Versión simplificada para móvil -->
-        <div class="mobile-header">
-            <!-- Botón de menú de navegación en versión móvil -->
+        <!-- Contenedor para los botones de menú en móvil -->
+        <div class="mobile-buttons">
+            <!-- Botón de menú de navegación en móvil -->
             <button class="menu-button" id="nav-menu-button">
                 <img src="/orionapp/icons/menu-white.svg" alt="Menú">
             </button>
     
-            <!-- Botón de menú de sesión en versión móvil -->
+            <!-- Botón de menú de sesión en móvil -->
             <button class="menu-button" id="session-menu-button">
                 <img src="/orionapp/icons/profile-white.png" alt="Sesión">
             </button>
         </div>
     
-        <!-- Menú de navegación y botones de sesión normales en versión de escritorio -->
-        <nav class="desktop-nav">
+        <!-- Menú de navegación desplegable en móvil -->
+        <div class="mobile-menu" id="nav-mobile-menu">
             <ul>
-                <li class="selected"><a href="index.html">Inicio</a></li>
-                <li><a href="servicios.html">Servicios</a></li>
-                <li><a href="#">Nosotros</a></li>
-                <li><a href="#">Contacto</a></li>
-            </ul>
-        </nav>
-    
-        <div class="header-actions desktop-actions">
-            <a href="iniciar_sesion.html">Iniciar sesión</a>
-            <a href="registro.html" class="selected register-button">Registrarse</a>
-        </div>
-    
-        <!-- Menús móviles ocultos por defecto -->
-        <div class="mobile-menu" id="nav-mobile-menu" style="display: none;">
-            <ul class="flex gap-4">
                 <li><a href="index.html">Inicio</a></li>
                 <li><a href="servicios.html">Servicios</a></li>
                 <li><a href="#">Nosotros</a></li>
@@ -57,11 +42,30 @@
             </ul>
         </div>
     
-        <div class="mobile-menu" id="session-mobile-menu" style="display: none;">
+        <!-- Menú de sesión desplegable en móvil -->
+        <div class="mobile-menu" id="session-mobile-menu">
+            <ul>
+                <li><a href="iniciar_sesion.html">Iniciar Sesión</a></li>
+                <li><a href="registro.html" class="register-button">Registrarse</a></li>
+            </ul>
+        </div>
+    
+        <!-- Menú de navegación y botones de sesión en versión de escritorio -->
+        <nav>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="servicios.html">Servicios</a></li>
+                <li><a href="#">Nosotros</a></li>
+                <li><a href="#">Contacto</a></li>
+            </ul>
+        </nav>
+    
+        <div class="header-actions">
             <a href="iniciar_sesion.html">Iniciar sesión</a>
             <a href="registro.html" class="selected register-button">Registrarse</a>
         </div>
-    </header>             
+    </header>
+              
 
     <div class="header-divider"></div>
     <div class="main-content">

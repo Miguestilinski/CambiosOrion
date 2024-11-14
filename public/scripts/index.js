@@ -21,12 +21,16 @@ function toggleMenu(menu) {
 if (navMenuButton && sessionMenuButton && navMobileMenu && sessionMobileMenu) {
     navMenuButton.addEventListener('click', () => {
         toggleMenu(navMobileMenu);
-        sessionMobileMenu.style.display = 'none';
+        if (sessionMobileMenu.style.display === 'block') {
+            sessionMobileMenu.style.display = 'none';
+        }
     });
 
     sessionMenuButton.addEventListener('click', () => {
         toggleMenu(sessionMobileMenu);
-        navMobileMenu.style.display = 'none';
+        if (navMobileMenu.style.display === 'block') {
+            navMobileMenu.style.display = 'none';
+        }
     });
 }
 
