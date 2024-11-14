@@ -13,56 +13,43 @@
 <body class="font-sans">
     <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js"></script>
     <header class="shadow-md py-2">
-        <div class="container mx-auto flex justify-between items-center px-4">
-            <!-- Logo y Nombre, visible en todos los dispositivos -->
-            <div class="header-logo">
-                <img src="/orionapp/assets/LogoOrion-silver.png" alt="Logo Cambios Orion" class="logo">
-                <img src="/orionapp/assets/NombreOrion-white.png" alt="Nombre Cambios Orion" class="nombre">
-            </div>
-    
-            <!-- Botones para Móvil, ocultos en pantallas medianas o mayores -->
-            <div class="flex gap-4 md:hidden"> <!-- Solo visible en móvil -->
-                <button id="menu-toggle" class="menu-button">
-                    <img src="/orionapp/icons/menu-white.svg" alt="Menú">
-                </button>
-                <button id="session-toggle" class="menu-button">
-                    <img src="/orionapp/icons/profile-white.png" alt="Sesión">
-                </button>
-            </div>
-    
-            <!-- Menú de Navegación, visible solo en escritorio -->
-            <nav class="hidden md:flex"> <!-- Visible solo en escritorio -->
-                <ul class="flex gap-4">
-                    <li class="selected"><a href="index.html">Inicio</a></li>
-                    <li><a href="servicios.html">Servicios</a></li>
-                    <li><a href="#">Nosotros</a></li>
-                    <li><a href="#">Contacto</a></li>
-                </ul>
-            </nav>
-    
-            <!-- Botones de Sesión, visible solo en escritorio -->
-            <div class="header-action gap-4 hidden md:flex"> <!-- Visible solo en escritorio -->
-                <a href="iniciar_sesion.html">Iniciar sesión</a>
-                <a href="registro.html" class="register-button">Registrarse</a>
-            </div>
+        <!-- Logo y nombre -->
+        <div class="header-logo">
+            <img src="/orionapp/assets/logo.png" alt="Logo" class="logo">
+            <img src="/orionapp/assets/nombre.png" alt="Nombre" class="nombre">
         </div>
     
-        <!-- Menú de navegación en móviles -->
-        <div id="nav-menu" class="mobile-menu hidden">
+        <!-- Menú de navegación (solo visible en escritorio) -->
+        <nav class="desktop-nav">
             <ul>
-                <li><a href="index.html">Inicio</a></li>
-                <li><a href="servicios.html">Servicios</a></li>
-                <li><a href="#">Nosotros</a></li>
-                <li><a href="#">Contacto</a></li>
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#servicios">Servicios</a></li>
+                <li><a href="#contacto">Contacto</a></li>
             </ul>
+        </nav>
+    
+        <!-- Botones de acción en el header (solo visibles en escritorio) -->
+        <div class="header-actions desktop-actions">
+            <a href="#iniciar-sesion">Iniciar Sesión</a>
+            <a href="#registro" class="register-button">Registrarse</a>
         </div>
     
-        <!-- Menú de sesión en móviles -->
-        <div id="session-menu" class="mobile-menu hidden">
-            <a href="iniciar_sesion.html">Iniciar sesión</a>
-            <a href="registro.html" class="register-button">Registrarse</a>
-        </div>
-    </header>       
+        <!-- Botón del menú móvil (solo visible en móvil) -->
+        <button class="menu-button mobile-only">
+            <img src="/orionapp/assets/menu-icon.png" alt="Menú">
+        </button>
+    </header>
+    
+    <!-- Menú móvil desplegable (solo visible en móvil) -->
+    <div class="mobile-menu mobile-only">
+        <ul>
+            <li><a href="#inicio">Inicio</a></li>
+            <li><a href="#servicios">Servicios</a></li>
+            <li><a href="#contacto">Contacto</a></li>
+            <li><a href="#iniciar-sesion">Iniciar Sesión</a></li>
+            <li><a href="#registro">Registrarse</a></li>
+        </ul>
+    </div>      
 
     <div class="header-divider"></div>
     <div class="main-content">
