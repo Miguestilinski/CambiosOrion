@@ -1,8 +1,8 @@
-// Obtener los botones y menús
-const menuToggle = document.getElementById('menu-toggle');
-const sessionToggle = document.getElementById('session-toggle');
-const navMenu = document.getElementById('nav-menu');
-const sessionMenu = document.getElementById('session-menu');
+// Variables para los elementos del header
+const navMenuButton = document.getElementById('nav-menu-button');
+const sessionMenuButton = document.getElementById('session-menu-button');
+const navMobileMenu = document.getElementById('nav-mobile-menu');
+const sessionMobileMenu = document.getElementById('session-mobile-menu');
 
 let exchangeRates = {};
 let iconsLoaded = {};
@@ -10,20 +10,22 @@ let isEditMode = false;
 let activeDropdown = null;
 let displayedCurrencies = ["CLP", "USD", "EUR", "ARS"];
 
-// Alternar visibilidad del menú de navegación
-menuToggle.addEventListener('click', function() {
-    navMenu.classList.toggle('hidden');
-    if (!sessionMenu.classList.contains('hidden')) {
-        sessionMenu.classList.add('hidden');
-    }
+// Función para alternar visibilidad
+function toggleMenu(menu) {
+    menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+}
+
+// Event Listeners para los botones
+navMenuButton.addEventListener('click', () => {
+    toggleMenu(navMobileMenu);
+    // Opcional: Oculta el menú de sesión cuando el de navegación se muestra
+    sessionMobileMenu.style.display = 'none';
 });
 
-// Alternar visibilidad del menú de sesión
-sessionToggle.addEventListener('click', function() {
-    sessionMenu.classList.toggle('hidden');
-    if (!navMenu.classList.contains('hidden')) {
-        navMenu.classList.add('hidden');
-    }
+sessionMenuButton.addEventListener('click', () => {
+    toggleMenu(sessionMobileMenu);
+    // Opcional: Oculta el menú de navegación cuando el de sesión se muestra
+    navMobileMenu.style.display = 'none';
 });
 
 // Marcar la opción activa en el menú
