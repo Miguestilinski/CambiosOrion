@@ -12,21 +12,23 @@ let displayedCurrencies = ["CLP", "USD", "EUR", "ARS"];
 
 // Función para alternar visibilidad
 function toggleMenu(menu) {
-    menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+    if (menu) {
+        menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+    }
 }
 
 // Event Listeners para los botones
-navMenuButton.addEventListener('click', () => {
-    toggleMenu(navMobileMenu);
-    // Opcional: Oculta el menú de sesión cuando el de navegación se muestra
-    sessionMobileMenu.style.display = 'none';
-});
+if (navMenuButton && sessionMenuButton && navMobileMenu && sessionMobileMenu) {
+    navMenuButton.addEventListener('click', () => {
+        toggleMenu(navMobileMenu);
+        sessionMobileMenu.style.display = 'none';
+    });
 
-sessionMenuButton.addEventListener('click', () => {
-    toggleMenu(sessionMobileMenu);
-    // Opcional: Oculta el menú de navegación cuando el de sesión se muestra
-    navMobileMenu.style.display = 'none';
-});
+    sessionMenuButton.addEventListener('click', () => {
+        toggleMenu(sessionMobileMenu);
+        navMobileMenu.style.display = 'none';
+    });
+}
 
 // Marcar la opción activa en el menú
 function setActiveLink(menuId) {
