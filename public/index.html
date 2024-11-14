@@ -14,24 +14,23 @@
     <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js"></script>
     <header class="shadow-md py-2">
         <div class="container mx-auto flex justify-between items-center px-4">
-            <!-- Logo y Nombre -->
+            <!-- Logo y Nombre, visible en todos los dispositivos -->
             <div class="header-logo">
                 <img src="/orionapp/assets/LogoOrion-silver.png" alt="Logo Cambios Orion" class="logo">
                 <img src="/orionapp/assets/NombreOrion-white.png" alt="Nombre Cambios Orion" class="nombre">
             </div>
     
-            <div class="flex gap-4 md:hidden" style="display: none;">
-                <!-- Botón de Menú de Navegación -->
+            <!-- Botones para Móvil, ocultos en pantallas medianas o mayores -->
+            <div class="flex gap-4 md:hidden"> <!-- Solo visible en móvil -->
                 <button id="menu-toggle" class="menu-button">
                     <img src="/orionapp/icons/menu-white.svg" alt="Menú">
                 </button>
-                <!-- Botón de Menú de Sesión -->
                 <button id="session-toggle" class="menu-button">
                     <img src="/orionapp/icons/profile-white.png" alt="Sesión">
                 </button>
-            </div>            
-
-            <!-- Menú de Navegación -->
+            </div>
+    
+            <!-- Menú de Navegación, visible solo en escritorio -->
             <nav class="hidden md:flex"> <!-- Visible solo en escritorio -->
                 <ul class="flex gap-4">
                     <li class="selected"><a href="index.html">Inicio</a></li>
@@ -41,7 +40,7 @@
                 </ul>
             </nav>
     
-            <!-- Botones de Sesión -->
+            <!-- Botones de Sesión, visible solo en escritorio -->
             <div class="header-action gap-4 hidden md:flex"> <!-- Visible solo en escritorio -->
                 <a href="iniciar_sesion.html">Iniciar sesión</a>
                 <a href="registro.html" class="register-button">Registrarse</a>
@@ -63,7 +62,7 @@
             <a href="iniciar_sesion.html">Iniciar sesión</a>
             <a href="registro.html" class="register-button">Registrarse</a>
         </div>
-    </header>    
+    </header>       
 
     <div class="header-divider"></div>
     <div class="main-content">
