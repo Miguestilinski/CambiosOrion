@@ -735,7 +735,22 @@ footer {
     border-bottom: 2px solid white; /* Línea amarilla debajo de la opción activa */
 }
 
+/* Ocultar elementos móviles en pantallas de escritorio */
+.mobile-only {
+    display: none;
+}
+
 @media (max-width: 768px) {
+    
+    .mobile-only {
+        display: block;
+    }
+
+    /* Ocultar elementos de escritorio en pantallas móviles */
+    .desktop-nav, .desktop-actions {
+        display: none;
+    }
+
     nav ul {
         flex-direction: column; /* Cambia a columna */
         gap: 10px; /* Espacio entre los elementos en columna */
