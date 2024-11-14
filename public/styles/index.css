@@ -59,6 +59,11 @@ header {
     width: 120px;
 }
 
+/* Estilos para el menú de navegación en escritorio */
+nav {
+    display: block;
+}
+
 /* Menú de navegación */
 nav ul {
     display: flex;
@@ -86,6 +91,7 @@ nav ul li.selected a {
 .header-actions {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     gap: 20px;
 }
 
@@ -699,6 +705,14 @@ footer {
     background-color: #f9f9f9; /* Fondo gris claro */
 }
 
+.menu-button {
+    display: none;
+}
+
+.mobile-menu {
+    display: none; /* Menú móvil oculto en escritorio */
+}
+
 /* Estilo para las opciones del menú */
 .mobile-menu ul {
     padding: 0;
@@ -737,6 +751,11 @@ footer {
 
 @media (max-width: 768px) {
 
+    /* Menú de navegación y botones de sesión ocultos en móvil */
+    nav {
+        display: none;
+    }
+
     /* Mostrar versión simplificada en móvil */
     .mobile-header {
         display: flex;
@@ -765,6 +784,7 @@ footer {
     }
 
     .header-actions {
+        display: none;
         flex-direction: column; /* Cambia a columna */
         align-items: flex-start; /* Alinea a la izquierda */
         gap: 8px;
