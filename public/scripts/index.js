@@ -106,6 +106,16 @@ function loadCurrencies() {
         .catch(error => console.error('Error al cargar las divisas:', error));
 }
 
+window.addEventListener('resize', function () {
+    const mobileButtons = document.querySelector('.md\\:hidden');
+    if (window.innerWidth >= 768) {
+        mobileButtons.style.display = 'none';
+    } else {
+        mobileButtons.style.display = 'flex';
+    }
+});
+
+
 function preloadIcon(iconUrl) {
     if (!iconsLoaded[iconUrl]) {
         const img = new Image();
