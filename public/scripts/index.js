@@ -25,6 +25,11 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
     }
+
+    setActiveLink('#nav-menu');
+    setActiveLink('#session-menu');
+    loadCurrencies();
+    fillCurrencyTable();
 });
 
 // Función para alternar visibilidad
@@ -46,13 +51,6 @@ function setActiveLink(menuId) {
         }
     });
 }
-
-document.addEventListener("DOMContentLoaded", function () {
-    setActiveLink('#nav-menu');
-    setActiveLink('#session-menu');
-    loadCurrencies();
-    fillCurrencyTable();
-});
 
 function loadCurrencies() {
     const proxyUrl = 'https://corsproxy.io/?';
