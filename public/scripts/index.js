@@ -9,18 +9,18 @@ document.addEventListener("DOMContentLoaded", function() {
     const sessionMenuButton = document.getElementById('session-menu-button');
     const navMobileMenu = document.getElementById('nav-mobile-menu');
     const sessionMobileMenu = document.getElementById('session-mobile-menu');
-    
+
     if (navMenuButton && sessionMenuButton && navMobileMenu && sessionMobileMenu) {
         navMenuButton.addEventListener('click', () => {
             toggleMenu(navMobileMenu);
-            if (sessionMobileMenu.style.display === 'block') {
+            if (sessionMobileMenu && sessionMobileMenu.style.display === 'block') {
                 sessionMobileMenu.style.display = 'none';
             }
         });
 
         sessionMenuButton.addEventListener('click', () => {
             toggleMenu(sessionMobileMenu);
-            if (navMobileMenu.style.display === 'block') {
+            if (navMobileMenu && navMobileMenu.style.display === 'block') {
                 navMobileMenu.style.display = 'none';
             }
         });

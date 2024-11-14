@@ -749,7 +749,7 @@ footer {
     display: flex;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 871px) {
 
     /* Menú de navegación y botones de sesión ocultos en móvil */
     nav {
