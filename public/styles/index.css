@@ -735,12 +735,32 @@ footer {
     border-bottom: 2px solid white; /* Línea amarilla debajo de la opción activa */
 }
 
-/* Ocultar elementos móviles en pantallas de escritorio */
-.mobile-only {
+/* Ocultar versión simplificada en escritorio y mostrarla en móvil */
+.mobile-header,
+.mobile-menu {
     display: none;
 }
 
+/* Mostrar versión completa en escritorio */
+.desktop-nav,
+.desktop-actions {
+    display: flex;
+}
+
 @media (max-width: 768px) {
+
+    /* Mostrar versión simplificada en móvil */
+    .mobile-header {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+    }
+    
+    /* Ocultar menú de escritorio en móvil */
+    .desktop-nav,
+    .desktop-actions {
+        display: none;
+    }
     
     .mobile-only {
         display: block;
@@ -776,9 +796,13 @@ footer {
 
     /* Botones de menú en versión móvil */
     .menu-button {
-        background-color: transparent;
+        background: none;
         border: none;
         padding: 8px;
+    }
+
+    .mobile-menu ul li {
+        margin: 0.5rem 0;
     }
 
     .menu-button img {
