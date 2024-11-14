@@ -1,37 +1,37 @@
-// Variables para los elementos del header
-const navMenuButton = document.getElementById('nav-menu-button');
-const sessionMenuButton = document.getElementById('session-menu-button');
-const navMobileMenu = document.getElementById('nav-mobile-menu');
-const sessionMobileMenu = document.getElementById('session-mobile-menu');
-
 let exchangeRates = {};
 let iconsLoaded = {};
 let isEditMode = false;
 let activeDropdown = null;
 let displayedCurrencies = ["CLP", "USD", "EUR", "ARS"];
 
+document.addEventListener("DOMContentLoaded", function() {
+    const navMenuButton = document.getElementById('nav-menu-button');
+    const sessionMenuButton = document.getElementById('session-menu-button');
+    const navMobileMenu = document.getElementById('nav-mobile-menu');
+    const sessionMobileMenu = document.getElementById('session-mobile-menu');
+    
+    if (navMenuButton && sessionMenuButton && navMobileMenu && sessionMobileMenu) {
+        navMenuButton.addEventListener('click', () => {
+            toggleMenu(navMobileMenu);
+            if (sessionMobileMenu.style.display === 'block') {
+                sessionMobileMenu.style.display = 'none';
+            }
+        });
+
+        sessionMenuButton.addEventListener('click', () => {
+            toggleMenu(sessionMobileMenu);
+            if (navMobileMenu.style.display === 'block') {
+                navMobileMenu.style.display = 'none';
+            }
+        });
+    }
+});
+
 // Función para alternar visibilidad
 function toggleMenu(menu) {
     if (menu) {
         menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
     }
-}
-
-// Event Listeners para los botones
-if (navMenuButton && sessionMenuButton && navMobileMenu && sessionMobileMenu) {
-    navMenuButton.addEventListener('click', () => {
-        toggleMenu(navMobileMenu);
-        if (sessionMobileMenu.style.display === 'block') {
-            sessionMobileMenu.style.display = 'none';
-        }
-    });
-
-    sessionMenuButton.addEventListener('click', () => {
-        toggleMenu(sessionMobileMenu);
-        if (navMobileMenu.style.display === 'block') {
-            navMobileMenu.style.display = 'none';
-        }
-    });
 }
 
 // Marcar la opción activa en el menú
@@ -122,7 +122,6 @@ window.addEventListener('resize', function () {
         mobileButtons.style.display = 'flex';
     }
 });
-
 
 function preloadIcon(iconUrl) {
     if (!iconsLoaded[iconUrl]) {
@@ -312,6 +311,13 @@ document.addEventListener("click", function (event) {
         console.log("Clic fuera del dropdown");
         activeDropdown.classList.add("hidden");
         activeDropdown = null;
+    }
+     // Cerrar el menú si el clic es fuera de un botón o menú
+     if (!navMenuButton.contains(event.target) && !navMobileMenu.contains(event.target)) {
+        navMobileMenu.style.display = 'none';
+    }
+    if (!sessionMenuButton.contains(event.target) && !sessionMobileMenu.contains(event.target)) {
+        sessionMobileMenu.style.display = 'none';
     }
 });
 

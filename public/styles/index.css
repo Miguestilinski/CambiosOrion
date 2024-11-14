@@ -833,13 +833,14 @@ footer {
     /* Menús desplegables en versión móvil */
     .mobile-menu {
         position: absolute;
-        right: 16px;
-        top: 60px; /* Ajustar para que aparezca debajo del botón */
-        background-color: #333;
-        border-radius: 4px;
+        right: 20px;
+        top: 70px; /* Ajustar para que aparezca debajo del botón */
+        background-color: black;
+        border-radius: 8px;
         display: none;
         padding: 10px;
         width: 150px;
+        z-index: 999;
     }
 
     .mobile-menu ul li {
