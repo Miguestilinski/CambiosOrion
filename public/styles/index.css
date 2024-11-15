@@ -103,6 +103,9 @@ nav ul li.selected a {
 
 .header-actions .register-button {
     @apply bg-blue-500 text-white p-2 rounded-md font-bold transition-transform duration-200;
+    background-color: #3f83f8;
+    border-radius: 8px;
+    padding: 8px
 }
 
 .header-actions .register-button:hover {
