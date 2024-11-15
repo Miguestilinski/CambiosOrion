@@ -30,14 +30,6 @@ document.addEventListener('click', function (event) {
         if (sessionMobileMenu.style) sessionMobileMenu.style.display = 'none';
     }
 
-    // Control de otros menús o dropdowns
-    const menus = document.querySelectorAll('.dropdown-menu');
-    menus.forEach((menu) => {
-        if (menu && menu.style.display) {
-            menu.style.display = (menu.style.display === 'none') ? 'block' : 'none';
-        }
-    });
-
     setActiveLink('#nav-menu');
     setActiveLink('#session-menu');
     loadCurrencies();
