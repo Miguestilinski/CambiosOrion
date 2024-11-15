@@ -359,6 +359,10 @@ footer {
     transform: scale(1.1);
 }
 
+.contact-item img.icon:hover {
+    transform: scale(1.1);
+}
+
 /* Footer copyright */
 .footer-copyright {
     text-align: center; /* Centrar el texto del copyright */
