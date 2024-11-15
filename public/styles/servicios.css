@@ -301,6 +301,7 @@ footer {
 .contact-item img.icon {
     width: 30px;
     height: 30px; /* Tamaño de los iconos de contacto */
+    object-fit: cover; 
 }
 
 .contact-item p {
