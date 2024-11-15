@@ -114,11 +114,6 @@ function loadCurrencies() {
 
 window.addEventListener('resize', function () {
     const mobileButtons = document.querySelector('.md\\:hidden');
-    if (window.innerWidth >= 871) {
-        mobileButtons.style.display = 'none';
-    } else {
-        mobileButtons.style.display = 'flex';
-    }
 });
 
 function preloadIcon(iconUrl) {
