@@ -129,37 +129,73 @@ h2 {
     @apply text-2xl font-semibold text-white text-center mb-6;
 }
 
+/* Estilo general de las secciones */
+.service-section {
+    padding: 4rem 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+/* Estilo para las secciones impares */
 .service-section:nth-of-type(odd) {
     background: rgba(0, 0, 0, 0.45) url('/orionapp/assets/FondoOrion.jpg') no-repeat center;
     background-size: cover;
     background-attachment: fixed;
-    color: white; /* Cambia el texto a blanco para mejorar el contraste */
 }
 
+.service-section:nth-of-type(odd) .service-container {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    padding: 2rem;
+}
+
+/* Estilo para las secciones pares */
 .service-section:nth-of-type(even) {
     background-color: white;
-    color: black; /* Cambia el texto a negro para fondo blanco */
+}
+
+.service-section:nth-of-type(even) .service-container {
+    background-color: #1e293b; /* Azul oscuro */
+    color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    padding: 2rem;
+}
+
+/* Ajustes para el texto y botones */
+.service-content h2 {
+    font-size: 1.875rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.service-content p {
+    margin-bottom: 1.5rem;
 }
 
 .service-content a {
-    color: inherit; /* Hereda el color de la sección */
-    background-color: rgba(255, 255, 255, 0.2);
+    display: inline-block;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
     text-decoration: none;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .service-content a:hover {
-    background-color: rgba(255, 255, 255, 0.5); /* Cambia ligeramente el color al pasar el cursor */
+    background-color: white;
+    color: #1e293b;
 }
 
-.service-content h2, .service-content p {
-    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
-}
-
-.service-section:nth-of-type(even) {
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+/* Imagen dentro del recuadro */
+.service-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
 }
 
 /* Contenedor principal del footer */
