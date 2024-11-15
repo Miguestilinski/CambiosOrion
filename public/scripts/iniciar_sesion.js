@@ -59,11 +59,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const loginForm = document.getElementById("loginForm");
 
-    document.getElementById("rut").addEventListener("input", function (event) {
-        let valor = this.value;
-        valor = valor.replace(/[^0-9Kk-]/g, '');
-        this.value = valor;
-    });
 
     loginForm.addEventListener("submit", async function (event) {
         event.preventDefault();
