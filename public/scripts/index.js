@@ -4,27 +4,39 @@ let isEditMode = false;
 let activeDropdown = null;
 let displayedCurrencies = ["CLP", "USD", "EUR", "ARS"];
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener('click', function (event) {
     const navMenuButton = document.getElementById('nav-menu-button');
     const sessionMenuButton = document.getElementById('session-menu-button');
     const navMobileMenu = document.getElementById('nav-mobile-menu');
     const sessionMobileMenu = document.getElementById('session-mobile-menu');
 
-    if (navMenuButton && sessionMenuButton && navMobileMenu && sessionMobileMenu) {
-        navMenuButton.addEventListener('click', () => {
-            toggleMenu(navMobileMenu);
-            if (sessionMobileMenu && sessionMobileMenu.style && sessionMobileMenu.style.display === 'block') {
-                sessionMobileMenu.style.display = 'none';
-            }            
-        });
-
-        sessionMenuButton.addEventListener('click', () => {
-            toggleMenu(sessionMobileMenu);
-            if (navMobileMenu && navMobileMenu.style.display === 'block') {
-                navMobileMenu.style.display = 'none';
-            }
-        });
+    // Validación de existencia de navMenuButton y navMobileMenu
+    if (
+        navMenuButton &&
+        navMobileMenu &&
+        navMenuButton.contains(event.target) &&
+        !navMobileMenu.contains(event.target)
+    ) {
+        if (navMobileMenu.style) navMobileMenu.style.display = 'none';
     }
+
+    // Validación de existencia de sessionMenuButton y sessionMobileMenu
+    if (
+        sessionMenuButton &&
+        sessionMobileMenu &&
+        sessionMenuButton.contains(event.target) &&
+        !sessionMobileMenu.contains(event.target)
+    ) {
+        if (sessionMobileMenu.style) sessionMobileMenu.style.display = 'none';
+    }
+
+    // Control de otros menús o dropdowns
+    const menus = document.querySelectorAll('.dropdown-menu');
+    menus.forEach((menu) => {
+        if (menu && menu.style.display) {
+            menu.style.display = (menu.style.display === 'none') ? 'block' : 'none';
+        }
+    });
 
     setActiveLink('#nav-menu');
     setActiveLink('#session-menu');
