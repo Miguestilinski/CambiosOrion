@@ -404,7 +404,7 @@ footer {
 }
 
 /* Estilos para la versión móvil */
-@media (max-width: 871px) {
+@media (max-width: 887px) {
     /* Menú de navegación y botones en versión móvil */
     nav ul {
         flex-direction: column; /* Cambia a columna */

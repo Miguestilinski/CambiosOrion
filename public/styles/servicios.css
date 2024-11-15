@@ -394,13 +394,8 @@ footer {
     display: flex;
 }
 
-/* Añadir una línea debajo de la opción seleccionada */
-.mobile-menu a.selected {
-    border-bottom: 2px solid white; /* Línea amarilla debajo de la opción activa */
-}
-
 /* Estilos para la versión móvil */
-@media (max-width: 871px) {
+@media (max-width: 887px) {
 
     /* Menú de navegación y botones de sesión ocultos en móvil */
     nav {
