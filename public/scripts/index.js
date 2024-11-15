@@ -13,9 +13,9 @@ document.addEventListener("DOMContentLoaded", function() {
     if (navMenuButton && sessionMenuButton && navMobileMenu && sessionMobileMenu) {
         navMenuButton.addEventListener('click', () => {
             toggleMenu(navMobileMenu);
-            if (sessionMobileMenu && sessionMobileMenu.style.display === 'block') {
+            if (sessionMobileMenu && sessionMobileMenu.style && sessionMobileMenu.style.display === 'block') {
                 sessionMobileMenu.style.display = 'none';
-            }
+            }            
         });
 
         sessionMenuButton.addEventListener('click', () => {
