@@ -43,3 +43,7 @@ function setActiveLink(menuId) {
         }
     });
 }
+
+window.addEventListener('resize', function () {
+    const mobileButtons = document.querySelector('.md\\:hidden');
+});
