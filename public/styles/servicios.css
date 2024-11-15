@@ -62,6 +62,11 @@ header {
     width: 120px;
 }
 
+/* Estilos para el menú de navegación en escritorio */
+nav {
+    display: block;
+}
+
 /* Menú de navegación */
 nav ul {
     display: flex;
@@ -89,6 +94,7 @@ nav ul li.selected a {
 .header-actions {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     gap: 20px;
 }
 
