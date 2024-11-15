@@ -10,24 +10,20 @@ document.addEventListener('click', function (event) {
     const navMobileMenu = document.getElementById('nav-mobile-menu');
     const sessionMobileMenu = document.getElementById('session-mobile-menu');
 
-    // Validación de existencia de navMenuButton y navMobileMenu
-    if (
-        navMenuButton &&
-        navMobileMenu &&
-        navMenuButton.contains(event.target) &&
-        !navMobileMenu.contains(event.target)
-    ) {
-        if (navMobileMenu.style) navMobileMenu.style.display = 'none';
-    }
+    if (navMenuButton && sessionMenuButton && navMobileMenu && sessionMobileMenu) {
+        navMenuButton.addEventListener('click', () => {
+            toggleMenu(navMobileMenu);
+            if (sessionMobileMenu && sessionMobileMenu.style && sessionMobileMenu.style.display === 'block') {
+                sessionMobileMenu.style.display = 'none';
+            }            
+        });
 
-    // Validación de existencia de sessionMenuButton y sessionMobileMenu
-    if (
-        sessionMenuButton &&
-        sessionMobileMenu &&
-        sessionMenuButton.contains(event.target) &&
-        !sessionMobileMenu.contains(event.target)
-    ) {
-        if (sessionMobileMenu.style) sessionMobileMenu.style.display = 'none';
+        sessionMenuButton.addEventListener('click', () => {
+            toggleMenu(sessionMobileMenu);
+            if (navMobileMenu && navMobileMenu.style.display === 'block') {
+                navMobileMenu.style.display = 'none';
+            }
+        });
     }
 
     setActiveLink('#nav-menu');
