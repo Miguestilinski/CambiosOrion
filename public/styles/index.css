@@ -763,6 +763,11 @@ footer {
         display: none;
     }
 
+    nav ul {
+        flex-direction: column; /* Cambia a columna */
+        gap: 10px; /* Espacio entre los elementos en columna */
+    }
+
     /* Mostrar versión simplificada en móvil */
     .mobile-header {
         display: flex;
@@ -783,11 +788,6 @@ footer {
     /* Ocultar elementos de escritorio en pantallas móviles */
     .desktop-nav, .desktop-actions {
         display: none;
-    }
-
-    nav ul {
-        flex-direction: column; /* Cambia a columna */
-        gap: 10px; /* Espacio entre los elementos en columna */
     }
 
     .header-actions {
