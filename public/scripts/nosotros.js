@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     const apiKey = "AIzaSyDNWdnOEsPOqlKvBHcg2AN7YY5AGlZ5fcM";
     const url = `https://maps.googleapis.com/maps/api/place/details/json?placeid=${placeId}&key=${apiKey}`;
 
-
     const reviewsContainer = document.getElementById("reviews-container");
     const ratingContainer = document.getElementById("rating-container");
     const googleReviewLink = document.getElementById("google-review-link");
