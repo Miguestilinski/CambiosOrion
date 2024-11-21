@@ -191,6 +191,27 @@ button:hover {
     text-decoration: underline;
 }
 
+.review-card {
+  background: #f9f9f9;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  min-width: 300px;
+  display: inline-block;
+  margin-right: 15px;
+}
+
+#reviews-container {
+  display: flex;
+  overflow-x: auto;
+}
+
+.stars {
+  font-size: 1rem;
+  color: #ffc107;
+}
+
+
 /* Contenedor principal del footer */
 footer {
     background: black; /* Fondo negro sólido */
