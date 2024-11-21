@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", async function () {
-    const placeId = "ChIJVc2tm-bFYpYRaDgA0qs7CvM";
+    const placeId = "ChIJVc2tm-bFYpYRaDgA0qs7CvM"; // Asegúrate de que el ID sea correcto
 
     const reviewsContainer = document.getElementById("reviews-container");
     const ratingContainer = document.getElementById("rating-container");
@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                             </div>
                             <div class="mt-2">
                                 <div class="stars">${renderStars(review.rating)}</div>
-                                <p class="text-gray-700 truncate">${review.text}</p>
+                                <p class="text-gray-700">${review.text}</p>
                             </div>
                         `;
                         reviewsContainer.appendChild(reviewElement);

@@ -194,23 +194,57 @@ button:hover {
 .review-card {
   background: #f9f9f9;
   border-radius: 10px;
-  padding: 10px;
+  padding: 15px;
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-  min-width: 300px;
+  min-width: 250px; /* Asegura que el tamaño sea adecuado */
   display: inline-block;
   margin-right: 15px;
+  margin-bottom: 10px;
+  max-width: 320px; /* Establece un máximo para el ancho */
 }
 
 #reviews-container {
   display: flex;
   overflow-x: auto;
+  padding-bottom: 10px;
+  flex-wrap: wrap; /* Permite que las reseñas se acomoden mejor en pantallas pequeñas */
 }
 
 .stars {
-  font-size: 1rem;
+  font-size: 1.25rem; /* Aumenta el tamaño de las estrellas */
   color: #ffc107;
 }
 
+#rating-container {
+  text-align: left;
+  font-size: 1.5rem;
+}
+
+#google-review-link {
+  text-decoration: none;
+  background-color: #4CAF50; /* Verde de fondo para el botón */
+  color: white;
+  padding: 8px 16px;
+  border-radius: 5px;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+}
+
+#google-review-link:hover {
+  background-color: #45a049;
+}
+
+.review-card img {
+  max-width: 40px; /* Asegura que las imágenes del perfil no sean demasiado grandes */
+  max-height: 40px;
+}
+
+.review-card p {
+  margin: 0;
+}
 
 /* Contenedor principal del footer */
 footer {
