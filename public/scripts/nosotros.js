@@ -1,13 +1,13 @@
 document.addEventListener("DOMContentLoaded", async function () {
     const placeId = "ChIJVc2tm-bFYpYRaDgA0qs7CvM";
-    const apiKey = "AIzaSyDNWdnOEsPOqlKvBHcg2AN7YY5AGlZ5fcM";
 
     const reviewsContainer = document.getElementById("reviews-container");
     const ratingContainer = document.getElementById("rating-container");
     const googleReviewLink = document.getElementById("google-review-link");
 
     async function fetchPlaceDetails() {
-        const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=name,rating,user_ratings_total,reviews&key=${apiKey}`;
+        const url = `/api/place-details?place_id=${placeId}`; // Llama al servidor en lugar de la API de Google directamente
+
         try {
             const response = await fetch(url);
             const data = await response.json();
