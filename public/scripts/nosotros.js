@@ -1,20 +1,23 @@
 document.addEventListener("DOMContentLoaded", async function () {
-    const placeId = "ChIJVc2tm-bFYpYRaDgA0qs7CvM"; // Asegúrate de que el ID sea correcto
+    const placeId = "ChIJVc2tm-bFYpYRaDgA0qs7CvM";
 
     const reviewsContainer = document.getElementById("reviews-container");
     const ratingContainer = document.getElementById("rating-container");
     const googleReviewLink = document.getElementById("google-review-link");
 
     async function fetchPlaceDetails() {
-        const url = `/api/place-details?place_id=${placeId}`; // Llama al servidor en lugar de la API de Google directamente
+        const url = `/api/place-details?place_id=${placeId}`;
 
         try {
             const response = await fetch(url);
             const data = await response.json();
 
+            console.log(data); // Para depurar la respuesta completa
+
             if (data.result) {
-                // Mostrar calificación global
                 const { rating, user_ratings_total, reviews } = data.result;
+
+                // Mostrar calificación global
                 ratingContainer.innerHTML = `
                     <div>
                         <h3 class="text-4xl font-bold">${rating.toFixed(1)}</h3>
@@ -23,7 +26,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                     </div>
                 `;
 
-                // Renderizar reseñas en carrusel
+                // Mostrar reseñas si existen
                 if (reviews && reviews.length) {
                     reviews.forEach(review => {
                         const reviewElement = document.createElement("div");
@@ -38,7 +41,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                             </div>
                             <div class="mt-2">
                                 <div class="stars">${renderStars(review.rating)}</div>
-                                <p class="text-gray-700">${review.text}</p>
+                                <p class="text-gray-700 truncate">${review.text}</p>
                             </div>
                         `;
                         reviewsContainer.appendChild(reviewElement);

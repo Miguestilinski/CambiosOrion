@@ -192,22 +192,19 @@ button:hover {
 }
 
 .review-card {
-  background: #f9f9f9;
-  border-radius: 10px;
-  padding: 15px;
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-  min-width: 250px; /* Asegura que el tamaño sea adecuado */
-  display: inline-block;
-  margin-right: 15px;
-  margin-bottom: 10px;
-  max-width: 320px; /* Establece un máximo para el ancho */
+    background: #f9f9f9;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    min-width: 300px;
+    margin-bottom: 15px; /* Añadir espacio entre las reseñas */
 }
 
 #reviews-container {
-  display: flex;
-  overflow-x: auto;
-  padding-bottom: 10px;
-  flex-wrap: wrap; /* Permite que las reseñas se acomoden mejor en pantallas pequeñas */
+    display: flex;
+    flex-direction: column; /* Cambiado de horizontal a vertical */
+    overflow-y: auto; /* Permitir scroll vertical */
+    max-height: 300px; /* Ajusta la altura máxima según lo que necesites */
 }
 
 .stars {
