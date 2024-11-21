@@ -192,23 +192,27 @@ button:hover {
 }
 
 .review-card {
-    background: #f9f9f9;
+    background: #f9f9f9;  /* Fondo gris claro */
+    color: #333;           /* Texto oscuro */
     border-radius: 10px;
     padding: 10px;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
     min-width: 300px;
-    margin-bottom: 15px; /* Añadir espacio entre las reseñas */
+    margin-right: 15px;
 }
 
 #reviews-container {
     display: flex;
-    flex-direction: column; /* Cambiado de horizontal a vertical */
-    overflow-y: auto; /* Permitir scroll vertical */
-    max-height: 300px; /* Ajusta la altura máxima según lo que necesites */
+    flex-direction: column;
+    overflow-y: auto;
+    max-height: 400px; /* Establece una altura máxima */
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-radius: 10px;
 }
 
 .stars {
-  font-size: 1.25rem; /* Aumenta el tamaño de las estrellas */
+  font-size: 1rem; /* Aumenta el tamaño de las estrellas */
   color: #ffc107;
 }
 
