@@ -4,7 +4,16 @@ let isEditMode = false;
 let activeDropdown = null;
 let displayedCurrencies = ["CLP", "USD", "EUR", "ARS"];
 
-document.addEventListener('click', function (event) {
+function initializePage() {
+    loadCurrencies(); // Carga las divisas al inicio
+    fillCurrencyTable(); // Llena la tabla al inicio
+    setActiveLink('#nav-menu');
+    setActiveLink('#session-menu');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    initializePage();
+    
     const navMenuButton = document.getElementById('nav-menu-button');
     const sessionMenuButton = document.getElementById('session-menu-button');
     const navMobileMenu = document.getElementById('nav-mobile-menu');
@@ -25,11 +34,6 @@ document.addEventListener('click', function (event) {
             }
         });
     }
-
-    setActiveLink('#nav-menu');
-    setActiveLink('#session-menu');
-    loadCurrencies();
-    fillCurrencyTable();
 });
 
 // Función para alternar visibilidad
