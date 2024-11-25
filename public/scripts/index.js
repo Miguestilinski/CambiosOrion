@@ -329,7 +329,6 @@ document.addEventListener("click", function (event) {
 
 function toggleEditMode() {
     isEditMode = !isEditMode;
-    console.log("Edit Mode:", isEditMode); // Confirmación del cambio de modo
 
     document.querySelectorAll(".edit-column").forEach(col => {
         if (isEditMode) {

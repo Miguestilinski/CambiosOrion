@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Llamada a la API de Google Maps
     const placeId = "ChIJVc2tm-bFYpYRaDgA0qs7CvM";
-    const apiKey = "AIzaSyDNWdnOEsPOqlKvBHcg2AN7YY5AGlZ5fcM";
+    const apiKey = "AIzaSyBN5INxNQ08hplxH8r6m4jRjZDi5AycjQI";
     const url = `https://maps.googleapis.com/maps/api/place/details/json?placeid=${placeId}&key=${apiKey}`;
 
     const reviewsContainer = document.getElementById("reviews-container");
