@@ -190,7 +190,7 @@ p.hidden {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 button {

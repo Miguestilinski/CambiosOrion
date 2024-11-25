@@ -42,16 +42,20 @@ document.addEventListener('DOMContentLoaded', () => {
 function toggleMenu(menuToOpen, menuToClose) {
     if (menuToClose) closeMenu(menuToClose);
 
+    // Alternar visibilidad del menú
     if (menuToOpen.classList.contains('hidden')) {
         menuToOpen.classList.remove('hidden');
+        menuToOpen.removeAttribute('hidden');
     } else {
         menuToOpen.classList.add('hidden');
+        menuToOpen.setAttribute('hidden', true);
     }
 }
 
 function closeMenu(menu) {
     if (!menu.classList.contains('hidden')) {
         menu.classList.add('hidden');
+        menu.setAttribute('hidden', true);
     }
 }
 
