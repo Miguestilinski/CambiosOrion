@@ -370,16 +370,8 @@ footer {
     background-color: #f9f9f9; /* Fondo gris claro */
 }
 
-.mobile-menu {
-    position: absolute;
-    top: 60px;
-    right: 10px;
-    background-color: black;
-    color: white;
-    width: 200px;
-    padding: 10px;
-    border-radius: 8px;
-    z-index: 999;
+.menu-button {
+    display: none;
 }
 
 /* Estilo para las opciones del menú */
@@ -406,18 +398,61 @@ footer {
     border-bottom: 2px solid white; /* Línea amarilla debajo de la opción activa */
 }
 
-/* Estilos para la versión móvil */
+/* Mostrar versión completa en escritorio */
+.desktop-nav,
+.desktop-actions {
+    display: flex;
+}
+
 @media (max-width: 887px) {
-    /* Menú de navegación y botones en versión móvil */
+
+    /* Menú de navegación y botones de sesión ocultos en móvil */
+    nav {
+        display: none;
+    }
+
     nav ul {
         flex-direction: column; /* Cambia a columna */
         gap: 10px; /* Espacio entre los elementos en columna */
     }
 
+    /* Mostrar versión simplificada en móvil */
+    .mobile-header {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+    }
+    
+    /* Ocultar menú de escritorio en móvil */
+    .desktop-nav,
+    .desktop-actions {
+        display: none;
+    }
+    
+    .mobile-only {
+        display: block;
+    }
+
+    /* Ocultar elementos de escritorio en pantallas móviles */
+    .desktop-nav, .desktop-actions {
+        display: none;
+    }
+
     .header-actions {
+        display: none;
         flex-direction: column; /* Cambia a columna */
         align-items: flex-start; /* Alinea a la izquierda */
         gap: 8px;
+    }
+
+    .header-actions,
+    nav {
+        display: none;
+    }
+
+    .header-logo {
+        display: flex;
+        justify-content: center;
     }
 
     .header-logo img.logo {
@@ -432,15 +467,66 @@ footer {
         padding: 6px 12px; /* Ajusta el padding de los botones en pantallas pequeñas */
     }
 
-    /* Botones de menú en versión móvil */
     .menu-button {
-        background-color: transparent;
+        background: none;
         border: none;
-        padding: 8px;
+        width: 40px;
+        height: 40px; 
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Contenedor para alinear los botones de menú en la versión móvil */
+    .mobile-buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-right: 16px;
+    }
+
+    /* Menús desplegables en versión móvil */
+    .mobile-menu {
+        position: absolute;
+        right: 20px;
+        top: 70px; /* Ajustar para que aparezca debajo del botón */
+        background-color: black;
+        border-radius: 8px;
+        padding: 10px;
+        width: 150px;
+        z-index: 999;
+    }
+
+    .mobile-menu ul li {
+        margin: 0.5rem 0;
+    }
+
+    .mobile-menu ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .mobile-menu ul li a {
+        color: #fff;
+        text-decoration: none;
+        display: block;
+        padding: 8px 0;
     }
 
     .menu-button img {
-        width: 24px; /* Tamaño del icono */
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    .converter-box {
+        flex: 1 1 100%; /* Cada columna ocupa el 100% del ancho en pantallas pequeñas */
+        position: relative;
+    }
+
+    .converter-section {
+        padding: 20px;
     }
 
     .footer-container {

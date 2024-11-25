@@ -113,6 +113,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    // Integración del código del header: 
     setActiveLink('#nav-menu');
     setActiveLink('#session-menu');
 });
