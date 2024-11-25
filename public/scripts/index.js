@@ -178,20 +178,21 @@ function formatNumber(num) {
     return Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 }
 
-// Función para convertir desde la primera cantidad (desde currency1 a currency2)
 function convertFromAmount1() {
-    const amount1 = parseFloat(document.getElementById("amount1").value);
+    const rawAmount1 = document.getElementById("amount1").value.replace(/\./g, ''); // Eliminar puntos
+    const amount1 = parseFloat(rawAmount1); // Convertir a número
+
     const currency1 = document.getElementById("currency1-text").textContent;
     const currency2 = document.getElementById("currency2-text").textContent;
 
-    if (amount1 && exchangeRates[currency1] && exchangeRates[currency2]) {
+    if (!isNaN(amount1) && exchangeRates[currency1] && exchangeRates[currency2]) {
         let result;
 
         if (currency1 === "CLP") {
-            // Convertir desde CLP a otra divisa usando tasa de venta (vendes CLP, compras la divisa)
+            // Convertir desde CLP a otra divisa usando tasa de venta
             result = amount1 / exchangeRates[currency2].venta;
         } else {
-            // Convertir desde una divisa a CLP usando tasa de compra (vendes la divisa, compras CLP)
+            // Convertir desde otra divisa a CLP usando tasa de compra
             result = amount1 * exchangeRates[currency1].compra;
         }
 
@@ -199,20 +200,21 @@ function convertFromAmount1() {
     }
 }
 
-// Función para convertir desde la segunda cantidad (desde currency2 a currency1)
 function convertFromAmount2() {
-    const amount2 = parseFloat(document.getElementById("amount2").value);
+    const rawAmount2 = document.getElementById("amount2").value.replace(/\./g, ''); // Eliminar puntos
+    const amount2 = parseFloat(rawAmount2); // Convertir a número
+
     const currency1 = document.getElementById("currency1-text").textContent;
     const currency2 = document.getElementById("currency2-text").textContent;
 
-    if (amount2 && exchangeRates[currency1] && exchangeRates[currency2]) {
+    if (!isNaN(amount2) && exchangeRates[currency1] && exchangeRates[currency2]) {
         let result;
 
         if (currency2 === "CLP") {
-            // Convertir desde CLP a otra divisa usando tasa de compra (vendes CLP, compras la divisa)
+            // Convertir desde CLP a otra divisa usando tasa de compra
             result = amount2 * exchangeRates[currency1].venta;
         } else {
-            // Convertir desde otra divisa a CLP usando tasa de venta (vendes la divisa, compras CLP)
+            // Convertir desde otra divisa a CLP usando tasa de venta
             result = amount2 / exchangeRates[currency2].compra;
         }
 
@@ -222,15 +224,15 @@ function convertFromAmount2() {
 
 // Evento para formatear el valor del input mientras el usuario escribe
 document.getElementById("amount1").addEventListener("input", (event) => {
-    const rawValue = event.target.value.replace(/\./g, ''); // Eliminar puntos para procesar correctamente
+    const rawValue = event.target.value.replace(/\./g, ''); // Eliminar puntos
     const formattedValue = formatNumber(parseFloat(rawValue));
-    event.target.value = formattedValue || ''; // Asignar el valor formateado o vacío si no es válido
+    event.target.value = formattedValue || ''; // Mostrar valor formateado o vacío
 });
 
 document.getElementById("amount2").addEventListener("input", (event) => {
-    const rawValue = event.target.value.replace(/\./g, ''); // Eliminar puntos para procesar correctamente
+    const rawValue = event.target.value.replace(/\./g, ''); // Eliminar puntos
     const formattedValue = formatNumber(parseFloat(rawValue));
-    event.target.value = formattedValue || ''; // Asignar el valor formateado o vacío si no es válido
+    event.target.value = formattedValue || ''; // Mostrar valor formateado o vacío
 });
 
 // Función para actualizar el ícono de divisa seleccionado
