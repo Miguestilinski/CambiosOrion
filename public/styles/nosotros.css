@@ -391,10 +391,6 @@ footer {
     display: none;
 }
 
-.mobile-menu {
-    display: none; /* Menú móvil oculto en escritorio */
-}
-
 /* Estilo para las opciones del menú */
 .mobile-menu ul {
     padding: 0;
@@ -417,12 +413,6 @@ footer {
 /* Añadir una línea debajo de la opción seleccionada */
 .mobile-menu a.selected {
     border-bottom: 2px solid white; /* Línea amarilla debajo de la opción activa */
-}
-
-/* Ocultar versión simplificada en escritorio y mostrarla en móvil */
-.mobile-header,
-.mobile-menu {
-    display: none;
 }
 
 /* Mostrar versión completa en escritorio */
@@ -519,7 +509,6 @@ footer {
         top: 70px; /* Ajustar para que aparezca debajo del botón */
         background-color: black;
         border-radius: 8px;
-        display: none;
         padding: 10px;
         width: 150px;
         z-index: 999;
@@ -546,6 +535,15 @@ footer {
         width: 100%;
         height: 100%;
         object-fit: contain;
+    }
+
+    .converter-box {
+        flex: 1 1 100%; /* Cada columna ocupa el 100% del ancho en pantallas pequeñas */
+        position: relative;
+    }
+
+    .converter-section {
+        padding: 20px;
     }
 
     .footer-container {

@@ -13,42 +13,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (navMenuButton && sessionMenuButton && navMobileMenu && sessionMobileMenu) {
         navMenuButton.addEventListener('click', (event) => {
-            toggleMenu(navMobileMenu); // Solo se pasa un menú
+            toggleMenu(navMobileMenu); // Cambié la llamada para solo pasar un menú
             event.stopPropagation();
         });
 
         sessionMenuButton.addEventListener('click', (event) => {
-            toggleMenu(sessionMobileMenu); // Solo se pasa un menú
+            toggleMenu(sessionMobileMenu); // Cambié la llamada para solo pasar un menú
             event.stopPropagation();
         });
 
-        // Si se hace clic en cualquier lugar fuera de los menús, los cierra
-        document.addEventListener('click', (event) => {
-            if (!event.target.closest('.mobile-buttons')) {
-                closeMenu(navMobileMenu);
-                closeMenu(sessionMobileMenu);
-            }
+        document.addEventListener('click', () => {
+            closeMenu(navMobileMenu);
+            closeMenu(sessionMobileMenu);
         });
     }
 });
 
-// Alterna la visibilidad del menú
-function toggleMenu(menuToOpen) {
+// Función para alternar visibilidad del menú
+function toggleMenu(menuToOpen, menuToClose) {
+    if (menuToClose) closeMenu(menuToClose);
+
     // Alternamos la clase 'hidden' para mostrar o esconder el menú
     if (menuToOpen.classList.contains('hidden')) {
-        menuToOpen.classList.remove('hidden'); // Mostrar el menú
+        menuToOpen.classList.remove('hidden'); // Muestra el menú
     } else {
-        menuToOpen.classList.add('hidden'); // Ocultar el menú
+        menuToOpen.classList.add('hidden'); // Oculta el menú
     }
 }
 
 function closeMenu(menu) {
     if (!menu.classList.contains('hidden')) {
-        menu.classList.add('hidden'); // Asegúrate de ocultar el menú
+        menu.classList.add('hidden'); // Asegúrate de ocultar el menú si está visible
     }
 }
 
-// Marcar el enlace activo en el menú
+// Marcar la opción activa en el menú
 function setActiveLink(menuId) {
     const links = document.querySelectorAll(`${menuId} a`);
     const currentPath = window.location.pathname;
