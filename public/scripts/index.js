@@ -172,6 +172,12 @@ function setCurrency2(currency) {
     updateCurrencyIcon(); // Actualizar el ícono al seleccionar
 }
 
+// Función para formatear números sin decimales y con separador de miles
+function formatNumber(num) {
+    if (isNaN(num)) return '';
+    return Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
+
 // Función para convertir desde la primera cantidad (desde currency1 a currency2)
 function convertFromAmount1() {
     const amount1 = parseFloat(document.getElementById("amount1").value);
@@ -189,7 +195,7 @@ function convertFromAmount1() {
             result = amount1 * exchangeRates[currency1].compra;
         }
 
-        document.getElementById("amount2").value = result.toFixed(2);
+        document.getElementById("amount2").value = formatNumber(result);
     }
 }
 
@@ -210,9 +216,22 @@ function convertFromAmount2() {
             result = amount2 / exchangeRates[currency2].compra;
         }
 
-        document.getElementById("amount1").value = result.toFixed(2);
+        document.getElementById("amount1").value = formatNumber(result);
     }
 }
+
+// Evento para formatear el valor del input mientras el usuario escribe
+document.getElementById("amount1").addEventListener("input", (event) => {
+    const rawValue = event.target.value.replace(/\./g, ''); // Eliminar puntos para procesar correctamente
+    const formattedValue = formatNumber(parseFloat(rawValue));
+    event.target.value = formattedValue || ''; // Asignar el valor formateado o vacío si no es válido
+});
+
+document.getElementById("amount2").addEventListener("input", (event) => {
+    const rawValue = event.target.value.replace(/\./g, ''); // Eliminar puntos para procesar correctamente
+    const formattedValue = formatNumber(parseFloat(rawValue));
+    event.target.value = formattedValue || ''; // Asignar el valor formateado o vacío si no es válido
+});
 
 // Función para actualizar el ícono de divisa seleccionado
 function updateCurrencyIcon() {
