@@ -191,6 +191,22 @@ button:hover {
     text-decoration: underline;
 }
 
+/* Contenedor principal de las opiniones */
+.opinions-container {
+    margin-top: 4rem;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Título de la sección */
+.widget-title {
+    font-size: 1.875rem;
+    font-weight: bold;
+    text-align: center;
+    color: white;
+}
+
 #reviews-container {
     display: flex;
     flex-direction: row;
@@ -222,34 +238,88 @@ button:hover {
   font-size: 1.5rem;
 }
 
-#google-review-link {
-  text-decoration: none;
-  background-color: #1760fe;
-  color: white;
-  padding: 8px 16px;
-  border-radius: 5px;
-  font-weight: bold;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 0.3s;
+/* Contenedor de calificación */
+#rating-container .rating-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
 }
 
-#google-review-link:hover {
-  background-color: #45a049;
+#rating-container .rating-value {
+    font-size: 2rem;
+    color: #ffc107; /* Color dorado para la calificación */
+}
+
+.google-review-btn {
+    text-decoration: none;
+    background-color: #1760fe;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 5px;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+}
+
+.google-review-btn:hover {
+    background-color: #4681fe;
+}
+
+.reviews-section {
+    margin-top: 2rem;
+}
+
+.reviews-section h3 {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+#reviews-container {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 20px;
+    max-height: 400px;
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-radius: 10px;
 }
 
 .review-card {
-    margin-right: 20px;  /* Aumenta la separación entre tarjetas */
+    background-color: white;
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    flex: 0 0 auto;
+    width: 280px;
+    transition: transform 0.3s ease;
 }
 
-.review-card img {
-  max-width: 40px; /* Asegura que las imágenes del perfil no sean demasiado grandes */
-  max-height: 40px;
+.review-card:hover {
+    transform: translateY(-10px); /* Efecto hover */
 }
 
-.review-card p {
-  margin: 0;
+/* Imagen de perfil del cliente */
+.review-card .review-image {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.review-card .review-image img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Contenido de la reseña */
+.review-card .review-content .review-text {
+    font-size: 1rem;
+    color: #333;
 }
 
 /* Contenedor principal del footer */
