@@ -520,15 +520,6 @@ footer {
         object-fit: contain;
     }
 
-    .converter-box {
-        flex: 1 1 100%; /* Cada columna ocupa el 100% del ancho en pantallas pequeñas */
-        position: relative;
-    }
-
-    .converter-section {
-        padding: 20px;
-    }
-
     .footer-container {
         flex-direction: column;
         align-items: center;
