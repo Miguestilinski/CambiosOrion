@@ -172,15 +172,10 @@ function setCurrency2(currency) {
     updateCurrencyIcon(); // Actualizar el ícono al seleccionar
 }
 
-// Función para eliminar puntos y convertir texto en número
-function parseCurrencyInput(value) {
-    return parseFloat(value.replace(/\./g, '').replace(',', '.')) || 0; // Convierte puntos a vacío y comas a punto
-}
-
-// Función para formatear números con separadores de miles
+// Función para formatear números sin decimales y con separador de miles
 function formatNumber(num) {
     if (isNaN(num)) return '';
-    return num.toLocaleString('es-ES'); // Usa el formato de números locales (español)
+    return Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 }
 
 // Función para convertir desde la primera cantidad (desde currency1 a currency2)
