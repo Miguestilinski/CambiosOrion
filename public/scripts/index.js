@@ -21,12 +21,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (navMenuButton && sessionMenuButton && navMobileMenu && sessionMobileMenu) {
         navMenuButton.addEventListener('click', (event) => {
-            toggleMenu(navMobileMenu, sessionMobileMenu);
+            toggleMenu(navMobileMenu); // Cambié la llamada para solo pasar un menú
             event.stopPropagation();
         });
 
         sessionMenuButton.addEventListener('click', (event) => {
-            toggleMenu(sessionMobileMenu, navMobileMenu);
+            toggleMenu(sessionMobileMenu); // Cambié la llamada para solo pasar un menú
             event.stopPropagation();
         });
 
@@ -38,16 +38,14 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Función para alternar visibilidad
-function toggleMenu(menuToOpen, menuToClose) {
-    if (menuToClose) closeMenu(menuToClose);
-
+function toggleMenu(menuToOpen) {
     // Alternar visibilidad del menú
     if (menuToOpen.classList.contains('hidden')) {
         menuToOpen.classList.remove('hidden');
         menuToOpen.removeAttribute('hidden');
     } else {
         menuToOpen.classList.add('hidden');
-        menuToOpen.setAttribute('hidden', false);
+        menuToOpen.setAttribute('hidden', true);
     }
 }
 
@@ -70,6 +68,7 @@ function setActiveLink(menuId) {
         }
     });
 }
+
 
 function loadCurrencies() {
     const proxyUrl = 'https://corsproxy.io/?';
