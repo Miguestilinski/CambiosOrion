@@ -37,24 +37,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Función para alternar visibilidad
+// Función para alternar visibilidad del menú
 function toggleMenu(menuToOpen, menuToClose) {
     if (menuToClose) closeMenu(menuToClose);
 
-    // Alternar visibilidad del menú
+    // Alternamos la clase 'hidden' para mostrar o esconder el menú
     if (menuToOpen.classList.contains('hidden')) {
-        menuToOpen.classList.remove('hidden');
-        menuToOpen.removeAttribute('hidden'); // También eliminamos el atributo 'hidden' si está presente
+        menuToOpen.classList.remove('hidden'); // Muestra el menú
     } else {
-        menuToOpen.classList.add('hidden');
-        menuToOpen.setAttribute('hidden', true); // Agregar el atributo 'hidden' cuando se cierra
+        menuToOpen.classList.add('hidden'); // Oculta el menú
     }
 }
 
 function closeMenu(menu) {
     if (!menu.classList.contains('hidden')) {
-        menu.classList.add('hidden');
-        menu.setAttribute('hidden', true); // Asegúrate de agregar 'hidden' para ocultarlo
+        menu.classList.add('hidden'); // Asegúrate de ocultar el menú si está visible
     }
 }
 
