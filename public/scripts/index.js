@@ -75,8 +75,6 @@ function loadCurrencies() {
     fetch(proxyUrl + targetUrl)
         .then(response => response.json())
         .then(data => {
-            // Verificar el contenido de data y data.contents para entender su estructura
-            console.log("Datos recibidos:", data);
 
             // Si los datos están en 'contents', intenta parsearlos
             const responseData = data.contents ? JSON.parse(data.contents) : data;
@@ -227,7 +225,6 @@ function updateCurrencyIcon() {
 
 function fillCurrencyTable() {
     const tableBody = document.getElementById("currency-table-body");
-    console.log("Table body:", tableBody);
     if (!tableBody) {
         console.error("Error: 'currency-table-body' no se encuentra en el DOM.");
         return; // Evita continuar si el elemento no existe
@@ -335,7 +332,6 @@ function toggleEditMode() {
     console.log("Edit Mode:", isEditMode); // Confirmación del cambio de modo
 
     document.querySelectorAll(".edit-column").forEach(col => {
-        console.log("Edit Column:", col); // Añade este log
         if (isEditMode) {
             col.classList.remove("hidden");
             col.style.display = "table-cell"; // Asegúrate de que se muestre como una celda de tabla
