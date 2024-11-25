@@ -47,7 +47,7 @@ function toggleMenu(menuToOpen, menuToClose) {
         menuToOpen.removeAttribute('hidden');
     } else {
         menuToOpen.classList.add('hidden');
-        menuToOpen.setAttribute('hidden', true);
+        menuToOpen.setAttribute('hidden', false);
     }
 }
 
