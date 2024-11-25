@@ -354,10 +354,6 @@ footer {
     display: none;
 }
 
-.mobile-menu {
-    display: none; /* Menú móvil oculto en escritorio */
-}
-
 /* Estilo para las opciones del menú */
 .mobile-menu ul {
     padding: 0;
@@ -380,12 +376,6 @@ footer {
 /* Añadir una línea debajo de la opción seleccionada */
 .mobile-menu a.selected {
     border-bottom: 2px solid white; /* Línea amarilla debajo de la opción activa */
-}
-
-/* Ocultar versión simplificada en escritorio y mostrarla en móvil */
-.mobile-header,
-.mobile-menu {
-    display: none;
 }
 
 /* Mostrar versión completa en escritorio */

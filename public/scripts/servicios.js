@@ -1,33 +1,49 @@
-document.addEventListener('click', function (event) {
+function initializePage() {
+    setActiveLink('#nav-menu');
+    setActiveLink('#session-menu');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    initializePage();
+
     const navMenuButton = document.getElementById('nav-menu-button');
     const sessionMenuButton = document.getElementById('session-menu-button');
     const navMobileMenu = document.getElementById('nav-mobile-menu');
     const sessionMobileMenu = document.getElementById('session-mobile-menu');
 
     if (navMenuButton && sessionMenuButton && navMobileMenu && sessionMobileMenu) {
-        navMenuButton.addEventListener('click', () => {
-            toggleMenu(navMobileMenu);
-            if (sessionMobileMenu && sessionMobileMenu.style && sessionMobileMenu.style.display === 'block') {
-                sessionMobileMenu.style.display = 'none';
-            }            
+        navMenuButton.addEventListener('click', (event) => {
+            toggleMenu(navMobileMenu); // Cambié la llamada para solo pasar un menú
+            event.stopPropagation();
         });
 
-        sessionMenuButton.addEventListener('click', () => {
-            toggleMenu(sessionMobileMenu);
-            if (navMobileMenu && navMobileMenu.style.display === 'block') {
-                navMobileMenu.style.display = 'none';
-            }
+        sessionMenuButton.addEventListener('click', (event) => {
+            toggleMenu(sessionMobileMenu); // Cambié la llamada para solo pasar un menú
+            event.stopPropagation();
+        });
+
+        document.addEventListener('click', () => {
+            closeMenu(navMobileMenu);
+            closeMenu(sessionMobileMenu);
         });
     }
-
-    setActiveLink('#nav-menu');
-    setActiveLink('#session-menu');
 });
 
-// Función para alternar visibilidad
-function toggleMenu(menu) {
-    if (menu) {
-        menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+// Función para alternar visibilidad del menú
+function toggleMenu(menuToOpen, menuToClose) {
+    if (menuToClose) closeMenu(menuToClose);
+
+    // Alternamos la clase 'hidden' para mostrar o esconder el menú
+    if (menuToOpen.classList.contains('hidden')) {
+        menuToOpen.classList.remove('hidden'); // Muestra el menú
+    } else {
+        menuToOpen.classList.add('hidden'); // Oculta el menú
+    }
+}
+
+function closeMenu(menu) {
+    if (!menu.classList.contains('hidden')) {
+        menu.classList.add('hidden'); // Asegúrate de ocultar el menú si está visible
     }
 }
 

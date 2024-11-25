@@ -68,7 +68,6 @@ function setActiveLink(menuId) {
     });
 }
 
-
 function loadCurrencies() {
     const proxyUrl = 'https://corsproxy.io/?';
     const targetUrl = 'https://cambiosorion.cl/data/obtener_divisas.php';
