@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (navMenuButton && sessionMenuButton && navMobileMenu && sessionMobileMenu) {
         navMenuButton.addEventListener('click', (event) => {
             toggleMenu(navMobileMenu, sessionMobileMenu);
-            event.stopPropagation(); // Evita que el evento propague y cierre inmediatamente el menú
+            event.stopPropagation();
         });
 
         sessionMenuButton.addEventListener('click', (event) => {
@@ -30,7 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
             event.stopPropagation();
         });
 
-        // Cierra cualquier menú si haces clic fuera de ellos
         document.addEventListener('click', () => {
             closeMenu(navMobileMenu);
             closeMenu(sessionMobileMenu);

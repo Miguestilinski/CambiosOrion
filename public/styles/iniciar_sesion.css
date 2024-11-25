@@ -189,10 +189,6 @@ p.hidden {
     display: none;
 }
 
-.hidden {
-    display: none !important;
-}
-
 button {
     width: 100%;
     padding: 12px;
