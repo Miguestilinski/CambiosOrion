@@ -837,20 +837,6 @@ footer {
         padding: 10px;
         width: 150px;
         z-index: 999;
-        visibility: hidden; /* Lo dejamos oculto usando 'visibility' */
-        opacity: 0; /* También lo hacemos transparente */
-        transition: opacity 0.3s ease, visibility 0s 0.3s;
-    }
-
-    .mobile-menu.hidden {
-        visibility: hidden;
-        opacity: 0;
-    }
-
-    .mobile-menu:not(.hidden) {
-        visibility: visible;
-        opacity: 1;
-        transition: opacity 0.3s ease, visibility 0s 0s; /* Instantáneo cuando está visible */
     }
 
     .mobile-menu ul li {
