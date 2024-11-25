@@ -172,68 +172,85 @@ function setCurrency2(currency) {
     updateCurrencyIcon(); // Actualizar el ícono al seleccionar
 }
 
-// Función para formatear números sin decimales y con separador de miles
-function formatNumber(num) {
-    if (isNaN(num)) return '';
-    return Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+// Modificar los inputs para formatear y validar el contenido
+document.addEventListener('DOMContentLoaded', () => {
+    const amountInputs = [document.getElementById("amount1"), document.getElementById("amount2")];
+
+    amountInputs.forEach(input => {
+        if (input) {
+            // Restringir la entrada a solo números y formato con separador de miles
+            input.addEventListener('input', (event) => {
+                const rawValue = event.target.value.replace(/\./g, ''); // Quitar puntos existentes
+                const numericValue = rawValue.replace(/\D/g, ''); // Quitar caracteres no numéricos
+
+                if (numericValue.length > 9) {
+                    event.target.value = formatWithThousandsSeparator(numericValue.slice(0, 9));
+                } else {
+                    event.target.value = formatWithThousandsSeparator(numericValue);
+                }
+            });
+
+            // Evitar caracteres no permitidos
+            input.addEventListener('keydown', (event) => {
+                const allowedKeys = ["Backspace", "ArrowLeft", "ArrowRight", "Delete", "Tab"];
+                const isNumber = /^[0-9]$/.test(event.key);
+
+                if (!isNumber && !allowedKeys.includes(event.key)) {
+                    event.preventDefault();
+                }
+            });
+
+            // Actualizar el valor al salir del campo
+            input.addEventListener('blur', () => {
+                const rawValue = input.value.replace(/\./g, '');
+                const numericValue = rawValue.replace(/\D/g, '');
+                input.value = formatWithThousandsSeparator(numericValue);
+            });
+        }
+    });
+});
+
+// Formatear números con separador de miles
+function formatWithThousandsSeparator(value) {
+    return value.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Inserta puntos como separadores de miles
 }
 
+// Mantener las conversiones funcionales
 function convertFromAmount1() {
-    const rawAmount1 = document.getElementById("amount1").value.replace(/\./g, ''); // Eliminar puntos
-    const amount1 = parseFloat(rawAmount1); // Convertir a número
-
+    const amount1 = parseFloat(document.getElementById("amount1").value.replace(/\./g, ''));
     const currency1 = document.getElementById("currency1-text").textContent;
     const currency2 = document.getElementById("currency2-text").textContent;
 
-    if (!isNaN(amount1) && exchangeRates[currency1] && exchangeRates[currency2]) {
+    if (amount1 && exchangeRates[currency1] && exchangeRates[currency2]) {
         let result;
 
         if (currency1 === "CLP") {
-            // Convertir desde CLP a otra divisa usando tasa de venta
             result = amount1 / exchangeRates[currency2].venta;
         } else {
-            // Convertir desde otra divisa a CLP usando tasa de compra
             result = amount1 * exchangeRates[currency1].compra;
         }
 
-        document.getElementById("amount2").value = formatNumber(result);
+        document.getElementById("amount2").value = formatWithThousandsSeparator(result.toFixed(0));
     }
 }
 
 function convertFromAmount2() {
-    const rawAmount2 = document.getElementById("amount2").value.replace(/\./g, ''); // Eliminar puntos
-    const amount2 = parseFloat(rawAmount2); // Convertir a número
-
+    const amount2 = parseFloat(document.getElementById("amount2").value.replace(/\./g, ''));
     const currency1 = document.getElementById("currency1-text").textContent;
     const currency2 = document.getElementById("currency2-text").textContent;
 
-    if (!isNaN(amount2) && exchangeRates[currency1] && exchangeRates[currency2]) {
+    if (amount2 && exchangeRates[currency1] && exchangeRates[currency2]) {
         let result;
 
         if (currency2 === "CLP") {
-            // Convertir desde CLP a otra divisa usando tasa de compra
             result = amount2 * exchangeRates[currency1].venta;
         } else {
-            // Convertir desde otra divisa a CLP usando tasa de venta
             result = amount2 / exchangeRates[currency2].compra;
         }
 
-        document.getElementById("amount1").value = formatNumber(result);
+        document.getElementById("amount1").value = formatWithThousandsSeparator(result.toFixed(0));
     }
 }
-
-// Evento para formatear el valor del input mientras el usuario escribe
-document.getElementById("amount1").addEventListener("input", (event) => {
-    const rawValue = event.target.value.replace(/\./g, ''); // Eliminar puntos
-    const formattedValue = formatNumber(parseFloat(rawValue));
-    event.target.value = formattedValue || ''; // Mostrar valor formateado o vacío
-});
-
-document.getElementById("amount2").addEventListener("input", (event) => {
-    const rawValue = event.target.value.replace(/\./g, ''); // Eliminar puntos
-    const formattedValue = formatNumber(parseFloat(rawValue));
-    event.target.value = formattedValue || ''; // Mostrar valor formateado o vacío
-});
 
 // Función para actualizar el ícono de divisa seleccionado
 function updateCurrencyIcon() {
