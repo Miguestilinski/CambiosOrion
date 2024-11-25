@@ -61,5 +61,10 @@ function setActiveLink(menuId) {
 }
 
 window.addEventListener('resize', function () {
-    const mobileButtons = document.querySelector('.md\\:hidden');
+    const mobileButtons = document.querySelector('.mobile-buttons');
+    if (window.innerWidth <= 887) {
+        mobileButtons.style.display = 'flex';
+    } else {
+        mobileButtons.style.display = 'none';
+    }
 });

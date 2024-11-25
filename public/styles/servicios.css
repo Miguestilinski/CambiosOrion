@@ -409,13 +409,14 @@ footer {
     .desktop-actions {
         display: none;
     }
-    
+
     .mobile-only {
         display: block;
     }
 
     /* Ocultar elementos de escritorio en pantallas móviles */
-    .desktop-nav, .desktop-actions {
+    .desktop-nav,
+    .desktop-actions {
         display: none;
     }
 
