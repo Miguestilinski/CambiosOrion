@@ -13,33 +13,45 @@ function initializePage() {
 
 document.addEventListener('DOMContentLoaded', () => {
     initializePage();
-    
+
     const navMenuButton = document.getElementById('nav-menu-button');
     const sessionMenuButton = document.getElementById('session-menu-button');
     const navMobileMenu = document.getElementById('nav-mobile-menu');
     const sessionMobileMenu = document.getElementById('session-mobile-menu');
 
     if (navMenuButton && sessionMenuButton && navMobileMenu && sessionMobileMenu) {
-        navMenuButton.addEventListener('click', () => {
-            toggleMenu(navMobileMenu);
-            if (sessionMobileMenu && sessionMobileMenu.style && sessionMobileMenu.style.display === 'block') {
-                sessionMobileMenu.style.display = 'none';
-            }            
+        navMenuButton.addEventListener('click', (event) => {
+            toggleMenu(navMobileMenu, sessionMobileMenu);
+            event.stopPropagation(); // Evita que el evento propague y cierre inmediatamente el menú
         });
 
-        sessionMenuButton.addEventListener('click', () => {
-            toggleMenu(sessionMobileMenu);
-            if (navMobileMenu && navMobileMenu.style.display === 'block') {
-                navMobileMenu.style.display = 'none';
-            }
+        sessionMenuButton.addEventListener('click', (event) => {
+            toggleMenu(sessionMobileMenu, navMobileMenu);
+            event.stopPropagation();
+        });
+
+        // Cierra cualquier menú si haces clic fuera de ellos
+        document.addEventListener('click', () => {
+            closeMenu(navMobileMenu);
+            closeMenu(sessionMobileMenu);
         });
     }
 });
 
 // Función para alternar visibilidad
-function toggleMenu(menu) {
-    if (menu) {
-        menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+function toggleMenu(menuToOpen, menuToClose) {
+    if (menuToClose) closeMenu(menuToClose);
+
+    if (menuToOpen.classList.contains('hidden')) {
+        menuToOpen.classList.remove('hidden');
+    } else {
+        menuToOpen.classList.add('hidden');
+    }
+}
+
+function closeMenu(menu) {
+    if (!menu.classList.contains('hidden')) {
+        menu.classList.add('hidden');
     }
 }
 
