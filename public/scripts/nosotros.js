@@ -1,9 +1,11 @@
 document.addEventListener("DOMContentLoaded", async function () {
+    // Variables de los menús
     const navMenuButton = document.getElementById('nav-menu-button');
     const sessionMenuButton = document.getElementById('session-menu-button');
     const navMobileMenu = document.getElementById('nav-mobile-menu');
     const sessionMobileMenu = document.getElementById('session-mobile-menu');
 
+    // Llamada a la API de Google Maps
     const placeId = "ChIJVc2tm-bFYpYRaDgA0qs7CvM";
     const apiKey = "AIzaSyDNWdnOEsPOqlKvBHcg2AN7YY5AGlZ5fcM";
     const url = `https://maps.googleapis.com/maps/api/place/details/json?placeid=${placeId}&key=${apiKey}`;
@@ -12,6 +14,47 @@ document.addEventListener("DOMContentLoaded", async function () {
     const ratingContainer = document.getElementById("rating-container");
     const googleReviewLink = document.getElementById("google-review-link");
 
+    // Función para inicializar la página
+    initializePage();
+
+    // Función para alternar visibilidad de menús
+    function toggleMenu(menuToOpen, menuToClose) {
+        if (menuToClose) closeMenu(menuToClose);
+
+        if (menuToOpen.classList.contains('hidden')) {
+            menuToOpen.classList.remove('hidden');
+        } else {
+            menuToOpen.classList.add('hidden');
+        }
+    }
+
+    // Función para cerrar menús
+    function closeMenu(menu) {
+        if (!menu.classList.contains('hidden')) {
+            menu.classList.add('hidden');
+        }
+    }
+
+    // Función para marcar los enlaces activos
+    function setActiveLink(menuId) {
+        const links = document.querySelectorAll(`${menuId} a`);
+        const currentPath = window.location.pathname;
+        links.forEach(link => {
+            if (link.getAttribute('href') === currentPath) {
+                link.classList.add('selected');
+            } else {
+                link.classList.remove('selected');
+            }
+        });
+    }
+
+    // Inicializa los menús activos
+    function initializePage() {
+        setActiveLink('#nav-menu');
+        setActiveLink('#session-menu');
+    }
+
+    // Llamada a la API de Google Places para obtener detalles del lugar
     async function fetchPlaceDetails() {
         const url = `/api/place-details?place_id=${placeId}`;
 
@@ -60,6 +103,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     }
 
+    // Función para representar las estrellas
     function renderStars(rating) {
         const fullStars = Math.floor(rating);
         const halfStar = rating % 1 >= 0.5;
@@ -78,6 +122,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         return `<span class="text-yellow-500">${starsHTML}</span>`;
     }
 
+    // Función para calcular el tiempo desde la fecha de la reseña
     function timeSince(date) {
         const now = new Date();
         const diffInMs = now - date;
@@ -85,6 +130,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         return days;
     }
 
+    // Llamadas de eventos para el menú móvil
     if (navMenuButton && sessionMenuButton && navMobileMenu && sessionMobileMenu) {
         navMenuButton.addEventListener('click', () => {
             toggleMenu(navMobileMenu);
@@ -101,31 +147,19 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
     }
 
+    // Llamar a la función para obtener los detalles del lugar
     fetchPlaceDetails();
-    setActiveLink('#nav-menu');
-    setActiveLink('#session-menu');
 });
 
-// Función para alternar visibilidad
+// Redefinir la función para alternar menús
 function toggleMenu(menu) {
     if (menu) {
         menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
     }
 }
 
-// Marcar la opción activa en el menú
-function setActiveLink(menuId) {
-    const links = document.querySelectorAll(`${menuId} a`);
-    const currentPath = window.location.pathname;
-    links.forEach(link => {
-        if (link.getAttribute('href') === currentPath) {
-            link.classList.add('selected');
-        } else {
-            link.classList.remove('selected');
-        }
-    });
+// Función para inicializar la página
+function initializePage() {
+    setActiveLink('#nav-menu');
+    setActiveLink('#session-menu');
 }
-
-window.addEventListener('resize', function () {
-    const mobileButtons = document.querySelector('.md\\:hidden');
-});
