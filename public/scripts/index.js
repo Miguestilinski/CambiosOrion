@@ -172,15 +172,21 @@ function setCurrency2(currency) {
     updateCurrencyIcon(); // Actualizar el ícono al seleccionar
 }
 
-// Función para formatear números sin decimales y con separador de miles
+// Función para eliminar puntos y convertir texto en número
+function parseCurrencyInput(value) {
+    return parseFloat(value.replace(/\./g, '').replace(',', '.')) || 0; // Convierte puntos a vacío y comas a punto
+}
+
+// Función para formatear números con separadores de miles
 function formatNumber(num) {
     if (isNaN(num)) return '';
-    return Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    return num.toLocaleString('es-ES'); // Usa el formato de números locales (español)
 }
 
 // Función para convertir desde la primera cantidad (desde currency1 a currency2)
 function convertFromAmount1() {
-    const amount1 = parseFloat(document.getElementById("amount1").value);
+    const rawValue = parseFloat(document.getElementById("amount1").value);
+    const amount1 = parseCurrencyInput(rawValue);
     const currency1 = document.getElementById("currency1-text").textContent;
     const currency2 = document.getElementById("currency2-text").textContent;
 
@@ -201,7 +207,8 @@ function convertFromAmount1() {
 
 // Función para convertir desde la segunda cantidad (desde currency2 a currency1)
 function convertFromAmount2() {
-    const amount2 = parseFloat(document.getElementById("amount2").value);
+    const rawValue = document.getElementById("amount2").value;
+    const amount2 = parseCurrencyInput(rawValue);
     const currency1 = document.getElementById("currency1-text").textContent;
     const currency2 = document.getElementById("currency2-text").textContent;
 
@@ -220,17 +227,13 @@ function convertFromAmount2() {
     }
 }
 
-// Evento para formatear el valor del input mientras el usuario escribe
-document.getElementById("amount1").addEventListener("input", (event) => {
-    const rawValue = event.target.value.replace(/\./g, ''); // Eliminar puntos para procesar correctamente
-    const formattedValue = formatNumber(parseFloat(rawValue));
-    event.target.value = formattedValue || ''; // Asignar el valor formateado o vacío si no es válido
+// Actualización de los eventos input para manejar texto sin errores
+document.getElementById("amount1").addEventListener("input", () => {
+    convertFromAmount1();
 });
 
-document.getElementById("amount2").addEventListener("input", (event) => {
-    const rawValue = event.target.value.replace(/\./g, ''); // Eliminar puntos para procesar correctamente
-    const formattedValue = formatNumber(parseFloat(rawValue));
-    event.target.value = formattedValue || ''; // Asignar el valor formateado o vacío si no es válido
+document.getElementById("amount2").addEventListener("input", () => {
+    convertFromAmount2();
 });
 
 // Función para actualizar el ícono de divisa seleccionado
