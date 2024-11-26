@@ -15,6 +15,10 @@ document.addEventListener("DOMContentLoaded", function() {
         
         clienteForm.classList.add('active');
         administrativoForm.classList.remove('active');
+        
+        // Eliminar 'required' de campos no relevantes
+        document.getElementById('rut').removeAttribute('required');
+        document.getElementById('email').setAttribute('required', 'required');
     });
 
     administrativoTab.addEventListener('click', function() {
@@ -23,6 +27,10 @@ document.addEventListener("DOMContentLoaded", function() {
         
         administrativoForm.classList.add('active');
         clienteForm.classList.remove('active');
+        
+        // Eliminar 'required' de campos no relevantes
+        document.getElementById('email').removeAttribute('required');
+        document.getElementById('rut').setAttribute('required', 'required');
     });
 
     // Manejo de la validación y el envío del formulario
