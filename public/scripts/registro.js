@@ -83,17 +83,19 @@ function initRegisterForm() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(userData),
             });
-
-            const result = await response.text();
-            alert(result);
-
+        
+            const result = await response.json();
+        
             if (response.ok) {
+                alert(result.success);
                 window.location.href = "iniciar_sesion.html";
+            } else {
+                alert(result.error || "Error desconocido en el servidor");
             }
         } catch (error) {
-            console.error("Error al registrar:", error);
-            alert("Hubo un problema al procesar el registro.");
-        }
+            console.error("Error al procesar la solicitud:", error);
+            alert("Hubo un problema al conectarse con el servidor.");
+        }        
     });
 
     // Validaciones de RUT
