@@ -60,6 +60,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Verifica si los elementos existen antes de agregar eventos
     const loginForm = document.getElementById("loginForm");
     const rutInput = document.getElementById("rut");
+    const emailInput = document.getElementById("correo");
 
     if (rutInput) {
         rutInput.addEventListener("blur", function () {
@@ -79,11 +80,12 @@ document.addEventListener("DOMContentLoaded", function () {
             event.preventDefault();
 
             const rut = document.getElementById("rut").value;
+            const correo = document.getElementById("correo").value;
             const contrasena = document.getElementById("contrasena").value;
             const tipoUsuario = document.querySelector('input[name="tipo-usuario"]:checked').value; // Detecta la pestaña seleccionada
 
-            // Validación de RUT
-            if (!validarRUT(rut)) {
+            // Validación de RUT para clientes
+            if (tipoUsuario === 'cliente' && !validarRUT(rut)) {
                 document.getElementById('rut-error').textContent = "Escriba un RUT válido.";
                 document.getElementById('rut-error').classList.remove('hidden');
                 document.getElementById('rut').classList.add('bg-red-50', 'border-red-500', 'text-red-900');
@@ -92,12 +94,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
             try {
                 let url;
+                let body;
+
                 if (tipoUsuario === 'cliente') {
                     // Si es cliente, valida con RUT y contraseña
                     url = '/data/iniciar_sesion_cliente.php'; // URL para cliente
+                    body = `rut=${encodeURIComponent(rut)}&contrasena=${encodeURIComponent(contrasena)}`;
                 } else {
-                    // Si es administrativo, valida con usuario y contraseña de correo
+                    // Si es administrativo, valida con correo y contraseña
                     url = '/data/iniciar_sesion_administrativo.php'; // URL para administrativo
+                    body = `correo=${encodeURIComponent(correo)}&contrasena=${encodeURIComponent(contrasena)}`;
                 }
 
                 const response = await fetch(url, {
@@ -105,7 +111,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
                     },
-                    body: `rut=${encodeURIComponent(rut)}&contrasena=${encodeURIComponent(contrasena)}`
+                    body: body
                 });
 
                 const result = await response.json();
@@ -162,8 +168,10 @@ function resetErrorStyles() {
     if (contrasenaError) contrasenaError.classList.add('hidden');
 
     const rutInput = document.getElementById('rut');
+    const correoInput = document.getElementById('correo');
     const contrasenaInput = document.getElementById('contrasena');
     if (rutInput) rutInput.classList.remove('bg-red-50', 'border-red-500', 'text-red-900');
+    if (correoInput) correoInput.classList.remove('bg-red-50', 'border-red-500', 'text-red-900');
     if (contrasenaInput) contrasenaInput.classList.remove('bg-red-50', 'border-red-500', 'text-red-900');
 }
 
@@ -174,6 +182,11 @@ function setErrorStyles(field) {
         const rutError = document.getElementById('rut-error');
         if (rutInput) rutInput.classList.add('bg-red-50', 'border-red-500', 'text-red-900');
         if (rutError) rutError.classList.remove('hidden');
+    } else if (field === 'correo') {
+        const correoInput = document.getElementById('correo');
+        const correoError = document.getElementById('correo-error');
+        if (correoInput) correoInput.classList.add('bg-red-50', 'border-red-500', 'text-red-900');
+        if (correoError) correoError.classList.remove('hidden');
     } else if (field === 'contrasena') {
         const contrasenaInput = document.getElementById('contrasena');
         const contrasenaError = document.getElementById('contrasena-error');
