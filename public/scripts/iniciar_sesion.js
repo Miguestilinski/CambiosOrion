@@ -40,6 +40,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const sessionMenuButton = document.getElementById('session-menu-button');
     const navMobileMenu = document.getElementById('nav-mobile-menu');
     const sessionMobileMenu = document.getElementById('session-mobile-menu');
+    const loginForm = document.getElementById("loginForm");
+    const rutInput = document.getElementById("rut");
+    const emailInput = document.getElementById("correo");
+    const tipoUsuarioTabs = document.querySelectorAll('.tipo-usuario-tab');
 
     if (navMenuButton && sessionMenuButton && navMobileMenu && sessionMobileMenu) {
         navMenuButton.addEventListener('click', () => {
@@ -56,11 +60,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
-
-    // Verifica si los elementos existen antes de agregar eventos
-    const loginForm = document.getElementById("loginForm");
-    const rutInput = document.getElementById("rut");
-    const emailInput = document.getElementById("correo");
 
     if (rutInput) {
         rutInput.addEventListener("blur", function () {
@@ -130,7 +129,30 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Integración del código del header: 
+    // Función para manejar la selección de tipo de usuario (cliente o administrativo)
+    tipoUsuarioTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            // Elimina la clase 'selected' de todas las pestañas
+            tipoUsuarioTabs.forEach(tab => tab.classList.remove('selected'));
+            // Agrega la clase 'selected' a la pestaña clickeada
+            this.classList.add('selected');
+
+            // Muestra el formulario correspondiente según el tipo de usuario seleccionado
+            const tipoUsuario = this.dataset.tipoUsuario; // Se asume que las pestañas tienen un atributo data-tipo-usuario
+            const clienteForm = document.getElementById('cliente-form');
+            const administrativoForm = document.getElementById('administrativo-form');
+
+            if (tipoUsuario === 'cliente') {
+                clienteForm.style.display = 'block';
+                administrativoForm.style.display = 'none';
+            } else {
+                clienteForm.style.display = 'none';
+                administrativoForm.style.display = 'block';
+            }
+        });
+    });
+
+    // Establece la pestaña activa por defecto
     setActiveLink('#nav-menu');
     setActiveLink('#session-menu');
 });
