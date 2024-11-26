@@ -51,12 +51,12 @@ header {
 }
 
 .header-logo img.logo {
-    width: 80px;
+    width: 60px;
     margin-right: 10px;
 }
 
 .header-logo img.nombre {
-    width: 120px;
+    width: 100px;
 }
 
 /* Menú de navegación */
