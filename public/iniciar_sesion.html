@@ -74,13 +74,30 @@
     <div class="header-divider"></div>
     <div class="max-w-md w-full mx-auto my-10 bg-gray-800 p-6 rounded-lg shadow-md">
         <h2 class="text-2xl font-bold text-white text-center mb-6">Iniciar sesión</h2>
+        
         <form id="loginForm">
+            <!-- Selector de tipo de usuario (Cliente o Administrativo) -->
             <div class="mb-5">
+                <label for="userType" class="block mb-2 text-sm font-medium text-white">Tipo de usuario:</label>
+                <select id="userType" name="userType" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    <option value="cliente" selected>Cliente</option>
+                    <option value="administrativo">Administrativo</option>
+                </select>
+            </div>
+            
+            <!-- Campos dinámicos basados en el tipo de usuario -->
+            <div id="rutField" class="mb-5">
                 <label for="rut" class="block mb-2 text-sm font-medium text-white">RUT:</label>
                 <input type="text" name="rut" id="rut" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="12.345.678-9" required />
                 <p id="rut-error" class="mt-2 text-sm text-red-600 dark:text-red-500 hidden"></p> <!-- Mensaje de error -->
             </div>
             
+            <div id="emailField" class="mb-5 hidden">
+                <label for="email" class="block mb-2 text-sm font-medium text-white">Correo electrónico:</label>
+                <input type="email" name="email" id="email" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="usuario@dominio.com" />
+                <p id="email-error" class="mt-2 text-sm text-red-600 dark:text-red-500 hidden"></p> <!-- Mensaje de error -->
+            </div>
+
             <div class="mb-5">
                 <label for="contrasena" class="block mb-2 text-sm font-medium text-white">Contraseña:</label>
                 <input type="password" name="contrasena" id="contrasena" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required />
@@ -98,7 +115,7 @@
             
             <p id="error-message" class="hidden text-red-500 text-center mt-4">Credenciales incorrectas. Intenta nuevamente.</p>
         </form>
-    </div>    
+    </div> 
     
     <footer>
         <div class="footer-container">
