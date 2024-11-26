@@ -11,30 +11,6 @@ function formatearRUT(rut) {
     return cuerpoFormateado + '-' + dv.toLowerCase();
 }
 
-// Función para validar el RUT chileno
-function validarRUT(rut) {
-    rut = rut.replace(/[^\dKk]/g, '').toUpperCase();
-
-    if (rut.length < 2) return false;
-
-    const cuerpo = rut.slice(0, -1);
-    const dv = rut.slice(-1);
-
-    if (!/^\d+$/.test(cuerpo)) return false;
-
-    let suma = 0;
-    let multiplo = 2;
-
-    for (let i = cuerpo.length - 1; i >= 0; i--) {
-        suma += cuerpo.charAt(i) * multiplo;
-        multiplo = multiplo === 7 ? 2 : multiplo + 1;
-    }
-    const dvCalculado = 11 - (suma % 11);
-    const dvCorrecto = dvCalculado === 10 ? 'K' : dvCalculado === 11 ? '0' : dvCalculado.toString();
-    
-    return dv === dvCorrecto;
-}
-
 document.addEventListener("DOMContentLoaded", function() {
     const clienteTab = document.getElementById('clienteTab');
     const administrativoTab = document.getElementById('administrativoTab');
@@ -76,12 +52,16 @@ document.addEventListener("DOMContentLoaded", function() {
             document.getElementById('rut-error').textContent = "Escriba un RUT válido.";
             document.getElementById('rut-error').classList.remove('hidden');
             return;
+        } else {
+            document.getElementById('rut-error').classList.add('hidden');
         }
 
         if (tipoUsuario === 'administrativo' && !email) {
             document.getElementById('email-error').textContent = "Escriba un correo electrónico válido.";
             document.getElementById('email-error').classList.remove('hidden');
             return;
+        } else {
+            document.getElementById('email-error').classList.add('hidden');
         }
 
         // Aquí iría la lógica para enviar los datos al servidor (fetch o AJAX)
@@ -106,7 +86,6 @@ document.addEventListener("DOMContentLoaded", function() {
         return lastDigit === expectedDv;
     }
 });
-
 
 // Función para alternar visibilidad
 function toggleMenu(menu) {
