@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const tipoUsuario = document.querySelector('.tab-button.active').dataset.tipoUsuario;
         const rut = document.getElementById("rut") ? document.getElementById("rut").value : '';
         const email = document.getElementById("email") ? document.getElementById("email").value : '';
-        const contrasena = document.getElementById("contrasena").value;
+        const password = document.getElementById("password").value;
 
         // Validación para el formulario de "Cliente"
         if (tipoUsuario === 'cliente') {
@@ -54,12 +54,12 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         }
 
-        if (!contrasena) {
-            document.getElementById('contrasena-error').textContent = "Escriba una contraseña.";
-            document.getElementById('contrasena-error').classList.remove('hidden');
+        if (!password) {
+            document.getElementById('password-error').textContent = "Escriba una contraseña.";
+            document.getElementById('password-error').classList.remove('hidden');
             return;
         } else {
-            document.getElementById('contrasena-error').classList.add('hidden');
+            document.getElementById('password-error').classList.add('hidden');
         }
 
         // Enviar los datos con fetch
@@ -80,8 +80,8 @@ document.addEventListener("DOMContentLoaded", function() {
                     document.getElementById('rut-error').textContent = message;
                 } else if (field === "correo") {
                     document.getElementById('email-error').textContent = message;
-                } else if (field === "contrasena") {
-                    document.getElementById('contrasena-error').textContent = message;
+                } else if (field === "password") {
+                    document.getElementById('password-error').textContent = message;
                 }
             }
         })
@@ -120,16 +120,16 @@ document.addEventListener("DOMContentLoaded", function() {
 function resetErrorStyles() {
     // Elimina las clases de error
     const rutError = document.getElementById('rut-error');
-    const contrasenaError = document.getElementById('contrasena-error');
+    const passwordError = document.getElementById('password-error');
     if (rutError) rutError.classList.add('hidden');
-    if (contrasenaError) contrasenaError.classList.add('hidden');
+    if (passwordError) passwordError.classList.add('hidden');
 
     const rutInput = document.getElementById('rut');
     const correoInput = document.getElementById('correo');
-    const contrasenaInput = document.getElementById('contrasena');
+    const passwordInput = document.getElementById('password');
     if (rutInput) rutInput.classList.remove('bg-red-50', 'border-red-500', 'text-red-900');
     if (correoInput) correoInput.classList.remove('bg-red-50', 'border-red-500', 'text-red-900');
-    if (contrasenaInput) contrasenaInput.classList.remove('bg-red-50', 'border-red-500', 'text-red-900');
+    if (passwordInput) passwordInput.classList.remove('bg-red-50', 'border-red-500', 'text-red-900');
 }
 
 // Función para aplicar estilos de error
@@ -144,10 +144,10 @@ function setErrorStyles(field) {
         const correoError = document.getElementById('correo-error');
         if (correoInput) correoInput.classList.add('bg-red-50', 'border-red-500', 'text-red-900');
         if (correoError) correoError.classList.remove('hidden');
-    } else if (field === 'contrasena') {
-        const contrasenaInput = document.getElementById('contrasena');
-        const contrasenaError = document.getElementById('contrasena-error');
-        if (contrasenaInput) contrasenaInput.classList.add('bg-red-50', 'border-red-500', 'text-red-900');
-        if (contrasenaError) contrasenaError.classList.remove('hidden');
+    } else if (field === 'password') {
+        const passwordInput = document.getElementById('password');
+        const passwordError = document.getElementById('password-error');
+        if (passwordInput) passwordInput.classList.add('bg-red-50', 'border-red-500', 'text-red-900');
+        if (passwordError) passwordError.classList.remove('hidden');
     }
 }

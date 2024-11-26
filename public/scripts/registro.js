@@ -56,16 +56,16 @@ function initRegisterForm() {
         const tipoUsuario = document.getElementById("tipo_cliente")?.value;
         const nombreUsuario = document.getElementById("nombre")?.value;
         const correo = document.getElementById("correo")?.value;
-        const contrasena = document.getElementById("contrasena")?.value;
-        const confirmContrasena = document.getElementById("confirm_contrasena")?.value;
+        const password = document.getElementById("password")?.value;
+        const confirmpassword = document.getElementById("confirm_password")?.value;
     
         // Validaciones
-        if (!rut || !nombreUsuario || !correo || !contrasena || !confirmContrasena) {
+        if (!rut || !nombreUsuario || !correo || !password || !confirmpassword) {
             alert("Por favor completa todos los campos.");
             return;
         }
     
-        if (contrasena !== confirmContrasena) {
+        if (password !== confirmpassword) {
             alert("Las contraseñas no coinciden.");
             return;
         }
@@ -75,7 +75,7 @@ function initRegisterForm() {
             return;
         }
     
-        const userData = { rut, tipo_cliente: tipoUsuario, nombre: nombreUsuario, correo, contrasena };
+        const userData = { rut, tipo_cliente: tipoUsuario, nombre: nombreUsuario, correo, password };
     
         try {
             const response = await fetch('https://cambiosorion.cl/data/registro.php', {
