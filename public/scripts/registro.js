@@ -53,7 +53,7 @@ function initRegisterForm() {
         event.preventDefault();
     
         const rut = document.getElementById("rut")?.value;
-        const tipoUsuario = document.getElementById("tipo_usuario")?.value;
+        const tipoUsuario = document.getElementById("tipo_cliente")?.value;
         const nombreUsuario = document.getElementById("nombre_usuario")?.value;
         const correo = document.getElementById("correo")?.value;
         const contrasena = document.getElementById("contrasena")?.value;
@@ -75,7 +75,7 @@ function initRegisterForm() {
             return;
         }
     
-        const userData = { rut, tipo_usuario: tipoUsuario, nombre_usuario: nombreUsuario, correo, contrasena };
+        const userData = { rut, tipo_cliente: tipoUsuario, nombre_usuario: nombreUsuario, correo, contrasena };
     
         try {
             const response = await fetch('https://cambiosorion.cl/data/registro.php', {
