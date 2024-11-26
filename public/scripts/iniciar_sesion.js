@@ -1,16 +1,3 @@
-function formatearRUT(rut) {
-    rut = rut.replace(/[^\dKk]/g, '').toUpperCase();
-
-    if (rut.length <= 1) return rut;
-
-    const cuerpo = rut.slice(0, -1);
-    const dv = rut.slice(-1);
-
-    const cuerpoFormateado = cuerpo.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-
-    return cuerpoFormateado + '-' + dv.toLowerCase();
-}
-
 document.addEventListener("DOMContentLoaded", function() {
     const clienteTab = document.getElementById('clienteTab');
     const administrativoTab = document.getElementById('administrativoTab');
@@ -67,6 +54,19 @@ document.addEventListener("DOMContentLoaded", function() {
         // Aquí iría la lógica para enviar los datos al servidor (fetch o AJAX)
         console.log("Formulario enviado");
     });
+
+    function formatearRUT(rut) {
+        rut = rut.replace(/[^\dKk]/g, '').toUpperCase();
+    
+        if (rut.length <= 1) return rut;
+    
+        const cuerpo = rut.slice(0, -1);
+        const dv = rut.slice(-1);
+    
+        const cuerpoFormateado = cuerpo.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    
+        return cuerpoFormateado + '-' + dv.toLowerCase();
+    }    
 
     function validarRUT(rut) {
         const rutSinFormato = rut.replace(/[.-]/g, '');
