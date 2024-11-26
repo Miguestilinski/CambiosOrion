@@ -235,6 +235,22 @@ button:hover {
     text-decoration: underline;
 }
 
+.hidden {
+    display: none;
+}
+
+.bg-red-50 {
+    background-color: #fee2e2;
+}
+
+.border-red-500 {
+    border-color: #ef4444;
+}
+
+.text-red-900 {
+    color: #991b1b;
+}
+
 /* Contenedor principal del footer */
 footer {
     background: black; /* Fondo negro sólido */
