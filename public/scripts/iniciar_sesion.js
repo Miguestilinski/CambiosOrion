@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const email = document.getElementById("email").value;
         const contrasena = document.getElementById("contrasena").value;
 
-        // Validación del RUT solo si se está en el formulario de Cliente
+        // Solo validar el RUT si el formulario de cliente está activo
         if (tipoUsuario === 'cliente' && !validarRUT(rut)) {
             document.getElementById('rut-error').textContent = "Escriba un RUT válido.";
             document.getElementById('rut-error').classList.remove('hidden');
@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function() {
             document.getElementById('rut-error').classList.add('hidden');
         }
 
-        // Validación del correo solo si se está en el formulario Administrativo
+        // Validar el correo solo si el formulario administrativo está activo
         if (tipoUsuario === 'administrativo' && !email) {
             document.getElementById('email-error').textContent = "Escriba un correo electrónico válido.";
             document.getElementById('email-error').classList.remove('hidden');
