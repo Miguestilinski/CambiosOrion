@@ -51,52 +51,53 @@ function initRegisterForm() {
 
     registerForm.addEventListener("submit", async (event) => {
         event.preventDefault();
-
+    
         const rut = document.getElementById("rut")?.value;
         const tipoUsuario = document.getElementById("tipo_usuario")?.value;
         const nombreUsuario = document.getElementById("nombre_usuario")?.value;
         const correo = document.getElementById("correo")?.value;
         const contrasena = document.getElementById("contrasena")?.value;
         const confirmContrasena = document.getElementById("confirm_contrasena")?.value;
-
+    
         // Validaciones
         if (!rut || !nombreUsuario || !correo || !contrasena || !confirmContrasena) {
             alert("Por favor completa todos los campos.");
             return;
         }
-
+    
         if (contrasena !== confirmContrasena) {
             alert("Las contraseñas no coinciden.");
             return;
         }
-
+    
         if (!validarRUT(rut)) {
             alert("Por favor ingresa un RUT válido.");
             return;
         }
-
+    
         const userData = { rut, tipo_usuario: tipoUsuario, nombre_usuario: nombreUsuario, correo, contrasena };
-
+    
         try {
             const response = await fetch('https://cambiosorion.cl/data/registro.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(userData),
             });
-        
-            const result = await response.json();
-        
+    
+            const result = await response.json();  // Aquí usamos `.json()`
+    
+            // Manejo de la respuesta
             if (response.ok) {
                 alert(result.success);
                 window.location.href = "iniciar_sesion.html";
             } else {
-                alert(result.error || "Error desconocido en el servidor");
+                alert(result.error || "Error al registrar el usuario.");
             }
         } catch (error) {
             console.error("Error al procesar la solicitud:", error);
-            alert("Hubo un problema al conectarse con el servidor.");
-        }        
-    });
+            alert("Hubo un problema al procesar el registro.");
+        }
+    });    
 
     // Validaciones de RUT
     const rutInput = document.getElementById("rut");
