@@ -81,6 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const rut = document.getElementById("rut").value;
             const contrasena = document.getElementById("contrasena").value;
 
+            // Validación de RUT
             if (!validarRUT(rut)) {
                 document.getElementById('rut-error').textContent = "Escriba un RUT válido.";
                 document.getElementById('rut-error').classList.remove('hidden');
