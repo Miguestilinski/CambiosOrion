@@ -1,3 +1,55 @@
+// Obtener los botones y menús
+const menuToggle = document.getElementById('menu-toggle');
+const sessionToggle = document.getElementById('session-toggle');
+const navMenu = document.getElementById('nav-menu');
+const sessionMenu = document.getElementById('session-menu');
+
+// Función para alternar la visibilidad del menú de navegación
+menuToggle.addEventListener('click', function() {
+    // Alternar la visibilidad del menú de navegación
+    navMenu.classList.toggle('hidden');
+    
+    // Si el menú de sesión está abierto, cerrarlo
+    if (!sessionMenu.classList.contains('hidden')) {
+        sessionMenu.classList.add('hidden');
+    }
+});
+
+// Función para alternar la visibilidad del menú de sesión
+sessionToggle.addEventListener('click', function() {
+    // Alternar la visibilidad del menú de sesión
+    sessionMenu.classList.toggle('hidden');
+    
+    // Si el menú de navegación está abierto, cerrarlo
+    if (!navMenu.classList.contains('hidden')) {
+        navMenu.classList.add('hidden');
+    }
+});
+
+// Función para marcar la opción activa en el menú de navegación y sesión
+function setActiveLink(menuId) {
+    const links = document.querySelectorAll(`${menuId} a`);
+    const currentPath = window.location.pathname; // Obtener la ruta actual
+
+    links.forEach(link => {
+        // Si la URL del enlace coincide con la URL actual, marca como seleccionado
+        if (link.getAttribute('href') === currentPath) {
+            link.classList.add('selected');
+        } else {
+            link.classList.remove('selected');
+        }
+    });
+}
+
+// Marcar la opción activa al cargar la página
+window.addEventListener('DOMContentLoaded', function() {
+    // Aplicar la clase 'selected' en el menú de navegación
+    setActiveLink('#nav-menu');
+
+    // Aplicar la clase 'selected' en el menú de sesión
+    setActiveLink('#session-menu');
+});
+
 // Funcionalidad del formulario de registro
 document.addEventListener("DOMContentLoaded", function () {
     const registerForm = document.getElementById("register-form");
@@ -71,3 +123,32 @@ document.addEventListener("DOMContentLoaded", function () {
         this.value = formatearRUT(this.value);
     });
 });
+
+// Función para validar el RUT
+function validarRUT(rut) {
+    rut = rut.replace(/[^\dKk]/g, '').toUpperCase(); // Eliminar todo menos números y la letra K
+    if (rut.length < 2) return false; // Si el RUT tiene menos de 2 caracteres es inválido
+
+    // Obtener cuerpo y dígito verificador
+    const cuerpo = rut.slice(0, -1);
+    const dv = rut.slice(-1);
+
+    // Validar el dígito verificador (lo ideal sería tener una función para validarlo, pero por ahora lo simplificamos)
+    if (!/^\d+$/.test(cuerpo)) return false; // El cuerpo solo debe contener números
+
+    if (dv !== "K" && !/^\d$/.test(dv)) return false; // El dígito verificador debe ser un número o K
+
+    return true;
+}
+
+// Función para formatear el RUT con puntos y guion
+function formatearRUT(rut) {
+    rut = rut.replace(/[^\dKk]/g, '').toUpperCase(); // Eliminar caracteres no permitidos y convertir a mayúscula
+    if (rut.length <= 1) return rut;
+
+    const cuerpo = rut.slice(0, -1); // Los números antes del último caracter
+    const dv = rut.slice(-1); // El último caracter que es el dígito verificador
+
+    const cuerpoFormateado = cuerpo.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    return cuerpoFormateado + '-' + dv.toLowerCase(); // Convertir la 'K' a minúscula
+}
