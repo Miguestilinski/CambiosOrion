@@ -251,6 +251,21 @@ button:hover {
     color: #991b1b;
 }
 
+.tipo-usuario-tab {
+    cursor: pointer;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.tipo-usuario-tab.selected {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+}
+
 /* Contenedor principal del footer */
 footer {
     background: black; /* Fondo negro sólido */
