@@ -78,7 +78,7 @@ function initRegisterForm() {
         const userData = { rut, tipo_usuario: tipoUsuario, nombre_usuario: nombreUsuario, correo, contrasena };
     
         try {
-            const response = await fetch('registro.php', { // Cambiar URL para el archivo PHP
+            const response = await fetch('https://cambiosorion.cl/data/registro.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(userData),
