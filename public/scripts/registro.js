@@ -78,13 +78,12 @@ function initRegisterForm() {
         const userData = { rut, tipo_usuario: tipoUsuario, nombre_usuario: nombreUsuario, correo, contrasena };
     
         try {
-            const response = await fetch('https://cambiosorion.cl/data/registro.php', {
+            const response = await fetch('registro.php', { // Cambiar URL para el archivo PHP
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(userData),
             });
     
-            // Verificar si la respuesta es vacía
             if (!response.ok) {
                 const errorText = await response.text();
                 console.error('Error en la respuesta del servidor:', errorText);
@@ -92,9 +91,8 @@ function initRegisterForm() {
                 return;
             }
     
-            const result = await response.json();  // Aquí usamos `.json()`
+            const result = await response.json();  
     
-            // Manejo de la respuesta
             if (result.success) {
                 alert(result.success);
                 window.location.href = "iniciar_sesion.html";
@@ -107,7 +105,7 @@ function initRegisterForm() {
         }
     });    
 
-    // Validaciones de RUT
+    // Validar el RUT
     const rutInput = document.getElementById("rut");
     if (rutInput) {
         rutInput.addEventListener("input", () => {
@@ -147,7 +145,5 @@ function formatearRUT(rut) {
 
 // Inicializar todas las funcionalidades al cargar el DOM
 document.addEventListener("DOMContentLoaded", () => {
-    initMenu();
-    setActiveLinks();
     initRegisterForm();
 });
