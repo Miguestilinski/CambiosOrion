@@ -53,6 +53,31 @@ document.addEventListener("DOMContentLoaded", function() {
             document.getElementById('email-error').classList.add('hidden');
         }
 
+        const formData = new FormData(loginForm);
+        fetch('iniciar_sesion.php', {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            if (data.success) {
+                // Redirigir o mostrar el éxito
+            } else {
+                // Mostrar el mensaje de error
+                if (data.field === "rut") {
+                    document.getElementById('rut-error').textContent = data.message;
+                } else if (data.field === "correo") {
+                    document.getElementById('email-error').textContent = data.message;
+                } else if (data.field === "contrasena") {
+                    document.getElementById('password-error').textContent = data.message;
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+
         // Aquí iría la lógica para enviar los datos al servidor (fetch o AJAX)
         console.log("Formulario enviado");
     });
