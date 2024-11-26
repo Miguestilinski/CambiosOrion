@@ -17,8 +17,8 @@ document.addEventListener("DOMContentLoaded", function() {
         administrativoForm.classList.remove('active');
         
         // Eliminar 'required' de campos no relevantes
-        document.getElementById('rut').removeAttribute('required');
-        document.getElementById('email').setAttribute('required', 'required');
+        document.getElementById('rut').setAttribute('required', 'required');
+        document.getElementById('email').removeAttribute('required');
     });
 
     administrativoTab.addEventListener('click', function() {
@@ -29,8 +29,8 @@ document.addEventListener("DOMContentLoaded", function() {
         clienteForm.classList.remove('active');
         
         // Eliminar 'required' de campos no relevantes
-        document.getElementById('email').removeAttribute('required');
-        document.getElementById('rut').setAttribute('required', 'required');
+        document.getElementById('email').setAttribute('required', 'required');
+        document.getElementById('rut').removeAttribute('required');
     });
 
     // Manejo de la validación y el envío del formulario
@@ -45,51 +45,24 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // Validación para el formulario de "Cliente"
         if (tipoUsuario === 'cliente') {
-            // Solo validamos RUT y contraseña
-            const rutField = document.getElementById("rut");
-            if (rutField && rutField.offsetParent !== null) {  // Verifica si el campo es visible
-                if (!validarRUT(rut)) {
-                    document.getElementById('rut-error').textContent = "Escriba un RUT válido.";
-                    document.getElementById('rut-error').classList.remove('hidden');
-                    return;
-                } else {
-                    document.getElementById('rut-error').classList.add('hidden');
-                }
-            }
-
-            if (!contrasena) {
-                document.getElementById('password-error').textContent = "Escriba una contraseña.";
-                document.getElementById('password-error').classList.remove('hidden');
+            if (!validarRUT(rut)) {
+                document.getElementById('rut-error').textContent = "Escriba un RUT válido.";
+                document.getElementById('rut-error').classList.remove('hidden');
                 return;
             } else {
-                document.getElementById('password-error').classList.add('hidden');
+                document.getElementById('rut-error').classList.add('hidden');
             }
         }
 
-        // Validación para el formulario de "Administrativo"
-        if (tipoUsuario === 'administrativo') {
-            // Solo validamos email y contraseña
-            const emailField = document.getElementById("email");
-            if (emailField && emailField.offsetParent !== null) {  // Verifica si el campo es visible
-                if (!email) {
-                    document.getElementById('email-error').textContent = "Escriba un correo electrónico válido.";
-                    document.getElementById('email-error').classList.remove('hidden');
-                    return;
-                } else {
-                    document.getElementById('email-error').classList.add('hidden');
-                }
-            }
-
-            if (!contrasena) {
-                document.getElementById('password-error').textContent = "Escriba una contraseña.";
-                document.getElementById('password-error').classList.remove('hidden');
-                return;
-            } else {
-                document.getElementById('password-error').classList.add('hidden');
-            }
+        if (!contrasena) {
+            document.getElementById('contrasena-error').textContent = "Escriba una contraseña.";
+            document.getElementById('contrasena-error').classList.remove('hidden');
+            return;
+        } else {
+            document.getElementById('contrasena-error').classList.add('hidden');
         }
 
-        // Enviar el formulario
+        // Enviar los datos con fetch
         const formData = new FormData(loginForm);
         fetch('iniciar_sesion.php', {
             method: 'POST',
@@ -97,7 +70,6 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
             if (data.success) {
                 // Redirigir o mostrar el éxito
             } else {
@@ -107,15 +79,13 @@ document.addEventListener("DOMContentLoaded", function() {
                 } else if (data.field === "correo") {
                     document.getElementById('email-error').textContent = data.message;
                 } else if (data.field === "contrasena") {
-                    document.getElementById('password-error').textContent = data.message;
+                    document.getElementById('contrasena-error').textContent = data.message;
                 }
             }
         })
         .catch(error => {
             console.error('Error:', error);
         });
-
-        console.log("Formulario enviado");
     });
 
     // Funciones de validación
