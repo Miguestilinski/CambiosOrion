@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // Enviar los datos con fetch
         const formData = new FormData(loginForm);
-        fetch('iniciar_sesion.php', {
+        fetch('https://cambiosorion.cl/data/iniciar_sesion.php', {
             method: 'POST',
             body: formData,
         })
