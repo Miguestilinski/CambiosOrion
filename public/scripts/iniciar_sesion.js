@@ -31,20 +31,22 @@ document.addEventListener("DOMContentLoaded", function() {
         event.preventDefault();
 
         const tipoUsuario = document.querySelector('.tab-button.active').dataset.tipoUsuario;
-        const rut = document.getElementById("rut").value;
-        const email = document.getElementById("email").value;
+        const rut = document.getElementById("rut") ? document.getElementById("rut").value : '';
+        const email = document.getElementById("email") ? document.getElementById("email").value : '';
         const contrasena = document.getElementById("contrasena").value;
 
-        // Solo validar el RUT si el formulario de cliente está activo
-        if (tipoUsuario === 'cliente' && !validarRUT(rut)) {
-            document.getElementById('rut-error').textContent = "Escriba un RUT válido.";
-            document.getElementById('rut-error').classList.remove('hidden');
-            return;
-        } else {
-            document.getElementById('rut-error').classList.add('hidden');
+        // Validación para el formulario de "Cliente"
+        if (tipoUsuario === 'cliente') {
+            if (!validarRUT(rut)) {
+                document.getElementById('rut-error').textContent = "Escriba un RUT válido.";
+                document.getElementById('rut-error').classList.remove('hidden');
+                return;
+            } else {
+                document.getElementById('rut-error').classList.add('hidden');
+            }
         }
 
-        // Validar el correo solo si el formulario administrativo está activo
+        // Validación para el formulario de "Administrativo"
         if (tipoUsuario === 'administrativo' && !email) {
             document.getElementById('email-error').textContent = "Escriba un correo electrónico válido.";
             document.getElementById('email-error').classList.remove('hidden');
@@ -78,23 +80,10 @@ document.addEventListener("DOMContentLoaded", function() {
             console.error('Error:', error);
         });
 
-        // Aquí iría la lógica para enviar los datos al servidor (fetch o AJAX)
         console.log("Formulario enviado");
     });
 
-    function formatearRUT(rut) {
-        rut = rut.replace(/[^\dKk]/g, '').toUpperCase();
-    
-        if (rut.length <= 1) return rut;
-    
-        const cuerpo = rut.slice(0, -1);
-        const dv = rut.slice(-1);
-    
-        const cuerpoFormateado = cuerpo.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    
-        return cuerpoFormateado + '-' + dv.toLowerCase();
-    }    
-
+    // Funciones de validación
     function validarRUT(rut) {
         const rutSinFormato = rut.replace(/[.-]/g, '');
         let sum = 0;
