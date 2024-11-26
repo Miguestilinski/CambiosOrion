@@ -35,143 +35,58 @@ function validarRUT(rut) {
     return dv === dvCorrecto;
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-    const navMenuButton = document.getElementById('nav-menu-button');
-    const sessionMenuButton = document.getElementById('session-menu-button');
-    const navMobileMenu = document.getElementById('nav-mobile-menu');
-    const sessionMobileMenu = document.getElementById('session-mobile-menu');
-    const loginForm = document.getElementById("loginForm");
-    const rutInput = document.getElementById("rut");
-    const emailInput = document.getElementById("correo");
-    const tipoUsuarioTabs = document.querySelectorAll('.tipo-usuario-tab');
+document.addEventListener("DOMContentLoaded", function() {
+    const clienteTab = document.getElementById('clienteTab');
+    const administrativoTab = document.getElementById('administrativoTab');
+    const clienteForm = document.getElementById('cliente-form');
+    const administrativoForm = document.getElementById('administrativo-form');
+    
+    // Establecer "Cliente" como seleccionado por defecto
+    clienteTab.classList.add('active');
+    clienteForm.classList.add('active');
 
-    if (navMenuButton && sessionMenuButton && navMobileMenu && sessionMobileMenu) {
-        navMenuButton.addEventListener('click', () => {
-            toggleMenu(navMobileMenu);
-            if (sessionMobileMenu && sessionMobileMenu.style && sessionMobileMenu.style.display === 'block') {
-                sessionMobileMenu.style.display = 'none';
-            }
-        });
-
-        sessionMenuButton.addEventListener('click', () => {
-            toggleMenu(sessionMobileMenu);
-            if (navMobileMenu && navMobileMenu.style.display === 'block') {
-                navMobileMenu.style.display = 'none';
-            }
-        });
-    }
-
-    if (rutInput) {
-        rutInput.addEventListener("blur", function () {
-            const rut = this.value;
-            this.value = formatearRUT(rut);
-        });
-
-        rutInput.addEventListener("input", function () {
-            let valor = this.value;
-            valor = valor.replace(/[^0-9Kk-]/g, '');
-            this.value = valor;
-        });
-    }
-
-    if (loginForm) {
-        loginForm.addEventListener("submit", async function (event) {
-            event.preventDefault();
-
-            const rut = document.getElementById("rut").value;
-            const correo = document.getElementById("correo").value;
-            const contrasena = document.getElementById("contrasena").value;
-            const tipoUsuario = document.querySelector('input[name="tipo-usuario"]:checked').value; // Detecta la pestaña seleccionada
-
-            // Validación de RUT para clientes
-            if (tipoUsuario === 'cliente' && !validarRUT(rut)) {
-                document.getElementById('rut-error').textContent = "Escriba un RUT válido.";
-                document.getElementById('rut-error').classList.remove('hidden');
-                document.getElementById('rut').classList.add('bg-red-50', 'border-red-500', 'text-red-900');
-                return;
-            }
-
-            try {
-                let url;
-                let body;
-
-                if (tipoUsuario === 'cliente') {
-                    // Si es cliente, valida con RUT y contraseña
-                    url = '/data/iniciar_sesion_cliente.php'; // URL para cliente
-                    body = `rut=${encodeURIComponent(rut)}&contrasena=${encodeURIComponent(contrasena)}`;
-                } else {
-                    // Si es administrativo, valida con correo y contraseña
-                    url = '/data/iniciar_sesion_administrativo.php'; // URL para administrativo
-                    body = `correo=${encodeURIComponent(correo)}&contrasena=${encodeURIComponent(contrasena)}`;
-                }
-
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: body
-                });
-
-                const result = await response.json();
-
-                resetErrorStyles();
-
-                if (result.success) {
-                    window.location.href = 'index.html';
-                } else {
-                    document.getElementById('error-message').classList.remove('hidden');
-                    setErrorStyles(result.field);
-                }
-            } catch (error) {
-                console.error('Error al iniciar sesión:', error);
-            }
-        });
-    }
-
-    // Función para manejar la selección de tipo de usuario (cliente o administrativo)
-    tipoUsuarioTabs.forEach(tab => {
-        tab.addEventListener('click', function() {
-            // Elimina la clase 'selected' de todas las pestañas
-            tipoUsuarioTabs.forEach(tab => tab.classList.remove('bg-blue-600', 'text-white', 'active'));
-            // Agrega la clase 'selected' a la pestaña clickeada
-            this.classList.add('bg-blue-600', 'text-white', 'active');
-
-            // Muestra el formulario correspondiente según el tipo de usuario seleccionado
-            const tipoUsuario = this.dataset.tipoUsuario;
-            document.getElementById('cliente-form').style.display = (tipoUsuario === 'cliente') ? 'block' : 'none';
-            document.getElementById('emailField').style.display = (tipoUsuario === 'administrativo') ? 'block' : 'none';
-        });
+    // Cambiar entre "Cliente" y "Administrativo" al hacer clic
+    clienteTab.addEventListener('click', function() {
+        clienteTab.classList.add('active');
+        administrativoTab.classList.remove('active');
+        
+        clienteForm.classList.add('active');
+        administrativoForm.classList.remove('active');
     });
 
-    function toggleMenu(menu) {
-        if (menu.style.display === 'block') {
-            menu.style.display = 'none';
-        } else {
-            menu.style.display = 'block';
+    administrativoTab.addEventListener('click', function() {
+        administrativoTab.classList.add('active');
+        clienteTab.classList.remove('active');
+        
+        administrativoForm.classList.add('active');
+        clienteForm.classList.remove('active');
+    });
+
+    // Manejo de la validación y el envío del formulario
+    const loginForm = document.getElementById("loginForm");
+    loginForm.addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const tipoUsuario = document.querySelector('.tab-button.active').dataset.tipoUsuario;
+        const rut = document.getElementById("rut").value;
+        const email = document.getElementById("email").value;
+        const contrasena = document.getElementById("contrasena").value;
+
+        if (tipoUsuario === 'cliente' && !validarRUT(rut)) {
+            document.getElementById('rut-error').textContent = "Escriba un RUT válido.";
+            document.getElementById('rut-error').classList.remove('hidden');
+            return;
         }
-    }
 
-    function setErrorStyles(field) {
-        const errorField = document.getElementById(field);
-        if (errorField) {
-            errorField.classList.add('bg-red-50', 'border-red-500', 'text-red-900');
-            document.getElementById(`${field}-error`).classList.remove('hidden');
+        if (tipoUsuario === 'administrativo' && !email) {
+            document.getElementById('email-error').textContent = "Escriba un correo electrónico válido.";
+            document.getElementById('email-error').classList.remove('hidden');
+            return;
         }
-    }
 
-    function resetErrorStyles() {
-        const errorFields = document.querySelectorAll('.bg-red-50');
-        errorFields.forEach(field => field.classList.remove('bg-red-50', 'border-red-500', 'text-red-900'));
-        const errorMessages = document.querySelectorAll('.hidden');
-        errorMessages.forEach(msg => msg.classList.add('hidden'));
-    }
-
-    function formatearRUT(rut) {
-        if (!rut) return '';
-        const re = /^(\d{1,3})(\d{3})(\d{3})([-|k|K])$/;
-        return rut.replace(re, '$1.$2.$3-$4');
-    }
+        // Aquí iría la lógica para enviar los datos al servidor (fetch o AJAX)
+        console.log("Formulario enviado");
+    });
 
     function validarRUT(rut) {
         const rutSinFormato = rut.replace(/[.-]/g, '');
@@ -191,6 +106,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return lastDigit === expectedDv;
     }
 });
+
 
 // Función para alternar visibilidad
 function toggleMenu(menu) {

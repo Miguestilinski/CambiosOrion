@@ -77,28 +77,26 @@
         
         <form id="loginForm">
             <!-- Selector de tipo de usuario (Cliente o Administrativo) como tabs -->
-            <ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 dark:text-gray-400">
-                <li class="me-2">
-                    <a href="#" id="clienteTab" class="inline-block px-4 py-3 text-white bg-blue-600 rounded-lg active" data-tipo-usuario="cliente" aria-current="page">Cliente</a>
-                </li>
-                <li class="me-2">
-                    <a href="#" id="administrativoTab" class="inline-block px-4 py-3 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-white" data-tipo-usuario="administrativo">Administrativo</a>
-                </li>
-            </ul>
+            <div class="tabs mb-6">
+                <button type="button" id="clienteTab" class="tab-button active" data-tipo-usuario="cliente">Cliente</button>
+                <button type="button" id="administrativoTab" class="tab-button" data-tipo-usuario="administrativo">Administrativo</button>
+            </div>
     
-            <!-- Campos dinámicos basados en el tipo de usuario -->
-            <div id="cliente-form" class="tipo-usuario-form mb-5">
+            <!-- Formulario Cliente -->
+            <div id="cliente-form" class="form-section">
                 <label for="rut" class="block mb-2 text-sm font-medium text-white">RUT:</label>
                 <input type="text" name="rut" id="rut" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="12.345.678-9" required />
                 <p id="rut-error" class="mt-2 text-sm text-red-600 dark:text-red-500 hidden"></p>
             </div>
             
-            <div id="emailField" class="tipo-usuario-form mb-5 hidden">
+            <!-- Formulario Administrativo -->
+            <div id="administrativo-form" class="form-section hidden">
                 <label for="email" class="block mb-2 text-sm font-medium text-white">Correo electrónico:</label>
-                <input type="email" name="email" id="email" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="usuario@dominio.com" />
+                <input type="email" name="email" id="email" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="usuario@dominio.com" required />
                 <p id="email-error" class="mt-2 text-sm text-red-600 dark:text-red-500 hidden"></p>
             </div>
     
+            <!-- Contraseña -->
             <div class="mb-5">
                 <label for="contrasena" class="block mb-2 text-sm font-medium text-white">Contraseña:</label>
                 <input type="password" name="contrasena" id="contrasena" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required />
@@ -116,7 +114,7 @@
             
             <p id="error-message" class="hidden text-red-500 text-center mt-4">Credenciales incorrectas. Intenta nuevamente.</p>
         </form>
-    </div>    
+    </div>
     
     <footer>
         <div class="footer-container">

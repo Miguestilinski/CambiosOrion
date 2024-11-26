@@ -251,19 +251,35 @@ button:hover {
     color: #991b1b;
 }
 
-.tipo-usuario-tab {
-    cursor: pointer;
-    padding: 10px;
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    display: inline-block;
-    margin-right: 10px;
+.tabs {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
 }
 
-.tipo-usuario-tab.selected {
+.tab-button {
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px 5px 0 0;
+    font-size: 16px;
+    text-align: center;
+    width: 50%;
+}
+
+.tab-button.active {
     background-color: #007bff;
     color: white;
-    font-weight: bold;
+}
+
+.form-section {
+    display: none;
+}
+
+.form-section.active {
+    display: block;
 }
 
 /* Contenedor principal del footer */
