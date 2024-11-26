@@ -80,6 +80,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const rut = document.getElementById("rut").value;
             const contrasena = document.getElementById("contrasena").value;
+            const tipoUsuario = document.querySelector('input[name="tipo-usuario"]:checked').value; // Detecta la pestaña seleccionada
 
             // Validación de RUT
             if (!validarRUT(rut)) {
@@ -90,7 +91,16 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             try {
-                const response = await fetch('/data/iniciar_sesion.php', {
+                let url;
+                if (tipoUsuario === 'cliente') {
+                    // Si es cliente, valida con RUT y contraseña
+                    url = '/data/iniciar_sesion_cliente.php'; // URL para cliente
+                } else {
+                    // Si es administrativo, valida con usuario y contraseña de correo
+                    url = '/data/iniciar_sesion_administrativo.php'; // URL para administrativo
+                }
+
+                const response = await fetch(url, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
