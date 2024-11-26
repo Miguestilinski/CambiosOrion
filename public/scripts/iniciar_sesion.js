@@ -71,40 +71,48 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Redirigir o mostrar el éxito
+                // Redirigir al dashboard o mostrar un mensaje de éxito
+                window.location.href = "/dashboard.html";
             } else {
-                // Mostrar el mensaje de error
-                if (data.field === "rut") {
-                    document.getElementById('rut-error').textContent = data.message;
-                } else if (data.field === "correo") {
-                    document.getElementById('email-error').textContent = data.message;
-                } else if (data.field === "contrasena") {
-                    document.getElementById('contrasena-error').textContent = data.message;
+                // Mostrar mensajes de error en campos específicos
+                const { field, message } = data;
+                if (field === "rut") {
+                    document.getElementById('rut-error').textContent = message;
+                } else if (field === "correo") {
+                    document.getElementById('email-error').textContent = message;
+                } else if (field === "contrasena") {
+                    document.getElementById('contrasena-error').textContent = message;
                 }
             }
         })
         .catch(error => {
             console.error('Error:', error);
-        });
+        });        
     });
+    
 
     // Funciones de validación
     function validarRUT(rut) {
-        const rutSinFormato = rut.replace(/[.-]/g, '');
-        let sum = 0;
-        let factor = 2;
-
-        for (let i = rutSinFormato.length - 2; i >= 0; i--) {
-            sum += parseInt(rutSinFormato[i]) * factor;
-            factor = factor === 7 ? 2 : factor + 1;
+        rut = rut.replace(/[^\dKk]/g, '').toUpperCase();
+    
+        if (rut.length < 2) return false;
+    
+        const cuerpo = rut.slice(0, -1);
+        const dv = rut.slice(-1);
+    
+        if (!/^\d+$/.test(cuerpo)) return false;
+    
+        let suma = 0;
+        let multiplo = 2;
+    
+        for (let i = cuerpo.length - 1; i >= 0; i--) {
+            suma += cuerpo.charAt(i) * multiplo;
+            multiplo = multiplo === 7 ? 2 : multiplo + 1;
         }
-
-        const remainder = sum % 11;
-        const dv = 11 - remainder;
-        const lastDigit = rutSinFormato[rutSinFormato.length - 1].toUpperCase();
-        const expectedDv = dv === 11 ? '0' : dv === 10 ? 'K' : dv.toString();
-
-        return lastDigit === expectedDv;
+        const dvCalculado = 11 - (suma % 11);
+        const dvCorrecto = dvCalculado === 10 ? 'K' : dvCalculado === 11 ? '0' : dvCalculado.toString();
+        
+        return dv === dvCorrecto;
     }
 });
 
