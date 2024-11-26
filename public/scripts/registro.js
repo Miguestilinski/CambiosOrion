@@ -84,10 +84,18 @@ function initRegisterForm() {
                 body: JSON.stringify(userData),
             });
     
+            // Verificar si la respuesta es vacía
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Error en la respuesta del servidor:', errorText);
+                alert("Hubo un problema al procesar la solicitud.");
+                return;
+            }
+    
             const result = await response.json();  // Aquí usamos `.json()`
     
             // Manejo de la respuesta
-            if (response.ok) {
+            if (result.success) {
                 alert(result.success);
                 window.location.href = "iniciar_sesion.html";
             } else {
