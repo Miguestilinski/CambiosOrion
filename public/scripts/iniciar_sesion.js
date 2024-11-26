@@ -133,28 +133,63 @@ document.addEventListener("DOMContentLoaded", function () {
     tipoUsuarioTabs.forEach(tab => {
         tab.addEventListener('click', function() {
             // Elimina la clase 'selected' de todas las pestañas
-            tipoUsuarioTabs.forEach(tab => tab.classList.remove('selected'));
+            tipoUsuarioTabs.forEach(tab => tab.classList.remove('bg-blue-600', 'text-white', 'active'));
             // Agrega la clase 'selected' a la pestaña clickeada
-            this.classList.add('selected');
+            this.classList.add('bg-blue-600', 'text-white', 'active');
 
             // Muestra el formulario correspondiente según el tipo de usuario seleccionado
-            const tipoUsuario = this.dataset.tipoUsuario; // Se asume que las pestañas tienen un atributo data-tipo-usuario
-            const clienteForm = document.getElementById('cliente-form');
-            const administrativoForm = document.getElementById('administrativo-form');
-
-            if (tipoUsuario === 'cliente') {
-                clienteForm.style.display = 'block';
-                administrativoForm.style.display = 'none';
-            } else {
-                clienteForm.style.display = 'none';
-                administrativoForm.style.display = 'block';
-            }
+            const tipoUsuario = this.dataset.tipoUsuario;
+            document.getElementById('cliente-form').style.display = (tipoUsuario === 'cliente') ? 'block' : 'none';
+            document.getElementById('emailField').style.display = (tipoUsuario === 'administrativo') ? 'block' : 'none';
         });
     });
 
-    // Establece la pestaña activa por defecto
-    setActiveLink('#nav-menu');
-    setActiveLink('#session-menu');
+    function toggleMenu(menu) {
+        if (menu.style.display === 'block') {
+            menu.style.display = 'none';
+        } else {
+            menu.style.display = 'block';
+        }
+    }
+
+    function setErrorStyles(field) {
+        const errorField = document.getElementById(field);
+        if (errorField) {
+            errorField.classList.add('bg-red-50', 'border-red-500', 'text-red-900');
+            document.getElementById(`${field}-error`).classList.remove('hidden');
+        }
+    }
+
+    function resetErrorStyles() {
+        const errorFields = document.querySelectorAll('.bg-red-50');
+        errorFields.forEach(field => field.classList.remove('bg-red-50', 'border-red-500', 'text-red-900'));
+        const errorMessages = document.querySelectorAll('.hidden');
+        errorMessages.forEach(msg => msg.classList.add('hidden'));
+    }
+
+    function formatearRUT(rut) {
+        if (!rut) return '';
+        const re = /^(\d{1,3})(\d{3})(\d{3})([-|k|K])$/;
+        return rut.replace(re, '$1.$2.$3-$4');
+    }
+
+    function validarRUT(rut) {
+        const rutSinFormato = rut.replace(/[.-]/g, '');
+        let sum = 0;
+        let factor = 2;
+
+        for (let i = rutSinFormato.length - 2; i >= 0; i--) {
+            sum += parseInt(rutSinFormato[i]) * factor;
+            factor = factor === 7 ? 2 : factor + 1;
+        }
+
+        const remainder = sum % 11;
+        const dv = 11 - remainder;
+        const lastDigit = rutSinFormato[rutSinFormato.length - 1].toUpperCase();
+        const expectedDv = dv === 11 ? '0' : dv === 10 ? 'K' : dv.toString();
+
+        return lastDigit === expectedDv;
+    }
 });
 
 // Función para alternar visibilidad
