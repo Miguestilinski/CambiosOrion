@@ -37,24 +37,51 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // Validación para el formulario de "Cliente"
         if (tipoUsuario === 'cliente') {
-            if (!validarRUT(rut)) {
-                document.getElementById('rut-error').textContent = "Escriba un RUT válido.";
-                document.getElementById('rut-error').classList.remove('hidden');
+            // Solo validamos RUT y contraseña
+            const rutField = document.getElementById("rut");
+            if (rutField && rutField.offsetParent !== null) {  // Verifica si el campo es visible
+                if (!validarRUT(rut)) {
+                    document.getElementById('rut-error').textContent = "Escriba un RUT válido.";
+                    document.getElementById('rut-error').classList.remove('hidden');
+                    return;
+                } else {
+                    document.getElementById('rut-error').classList.add('hidden');
+                }
+            }
+
+            if (!contrasena) {
+                document.getElementById('password-error').textContent = "Escriba una contraseña.";
+                document.getElementById('password-error').classList.remove('hidden');
                 return;
             } else {
-                document.getElementById('rut-error').classList.add('hidden');
+                document.getElementById('password-error').classList.add('hidden');
             }
         }
 
         // Validación para el formulario de "Administrativo"
-        if (tipoUsuario === 'administrativo' && !email) {
-            document.getElementById('email-error').textContent = "Escriba un correo electrónico válido.";
-            document.getElementById('email-error').classList.remove('hidden');
-            return;
-        } else {
-            document.getElementById('email-error').classList.add('hidden');
+        if (tipoUsuario === 'administrativo') {
+            // Solo validamos email y contraseña
+            const emailField = document.getElementById("email");
+            if (emailField && emailField.offsetParent !== null) {  // Verifica si el campo es visible
+                if (!email) {
+                    document.getElementById('email-error').textContent = "Escriba un correo electrónico válido.";
+                    document.getElementById('email-error').classList.remove('hidden');
+                    return;
+                } else {
+                    document.getElementById('email-error').classList.add('hidden');
+                }
+            }
+
+            if (!contrasena) {
+                document.getElementById('password-error').textContent = "Escriba una contraseña.";
+                document.getElementById('password-error').classList.remove('hidden');
+                return;
+            } else {
+                document.getElementById('password-error').classList.add('hidden');
+            }
         }
 
+        // Enviar el formulario
         const formData = new FormData(loginForm);
         fetch('iniciar_sesion.php', {
             method: 'POST',
