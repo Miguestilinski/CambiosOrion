@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 const { field, message } = data;
                 if (field === "rut") {
                     document.getElementById('rut-error').textContent = message;
-                } else if (field === "correo") {
+                } else if (field === "email") {
                     document.getElementById('email-error').textContent = message;
                 } else if (field === "password") {
                     document.getElementById('password-error').textContent = message;
@@ -137,10 +137,10 @@ function resetErrorStyles() {
     if (passwordError) passwordError.classList.add('hidden');
 
     const rutInput = document.getElementById('rut');
-    const correoInput = document.getElementById('correo');
+    const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
     if (rutInput) rutInput.classList.remove('bg-red-50', 'border-red-500', 'text-red-900');
-    if (correoInput) correoInput.classList.remove('bg-red-50', 'border-red-500', 'text-red-900');
+    if (emailInput) emailInput.classList.remove('bg-red-50', 'border-red-500', 'text-red-900');
     if (passwordInput) passwordInput.classList.remove('bg-red-50', 'border-red-500', 'text-red-900');
 }
 
@@ -151,11 +151,11 @@ function setErrorStyles(field) {
         const rutError = document.getElementById('rut-error');
         if (rutInput) rutInput.classList.add('bg-red-50', 'border-red-500', 'text-red-900');
         if (rutError) rutError.classList.remove('hidden');
-    } else if (field === 'correo') {
-        const correoInput = document.getElementById('correo');
-        const correoError = document.getElementById('correo-error');
-        if (correoInput) correoInput.classList.add('bg-red-50', 'border-red-500', 'text-red-900');
-        if (correoError) correoError.classList.remove('hidden');
+    } else if (field === 'email') {
+        const emailInput = document.getElementById('email');
+        const emailError = document.getElementById('email-error');
+        if (emailInput) emailInput.classList.add('bg-red-50', 'border-red-500', 'text-red-900');
+        if (emailError) emailError.classList.remove('hidden');
     } else if (field === 'password') {
         const passwordInput = document.getElementById('password');
         const passwordError = document.getElementById('password-error');
