@@ -19,6 +19,8 @@ document.addEventListener("DOMContentLoaded", function() {
         // Eliminar 'required' de campos no relevantes
         document.getElementById('rut').setAttribute('required', 'required');
         document.getElementById('email').removeAttribute('required');
+
+        document.getElementById('tipoUsuario').value = 'cliente';
     });
 
     administrativoTab.addEventListener('click', function() {
@@ -31,6 +33,8 @@ document.addEventListener("DOMContentLoaded", function() {
         // Eliminar 'required' de campos no relevantes
         document.getElementById('email').setAttribute('required', 'required');
         document.getElementById('rut').removeAttribute('required');
+
+        document.getElementById('tipoUsuario').value = 'administrativo';
     });
 
     // Manejo de la validación y el envío del formulario
@@ -70,6 +74,7 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         .then(response => response.json())
         .then(data => {
+            console.log("Datos enviados:", Object.fromEntries(formData));
             console.log("Respuesta del servidor:", data);
             if (data.success) {
                 localStorage.setItem('userAuthenticated', 'true');

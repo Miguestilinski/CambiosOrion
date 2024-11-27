@@ -85,6 +85,8 @@
                 <button type="button" id="clienteTab" class="tab-button active" data-tipo-usuario="cliente">Cliente</button>
                 <button type="button" id="administrativoTab" class="tab-button" data-tipo-usuario="administrativo">Administrativo</button>
             </div>
+
+            <input type="hidden" id="tipoUsuario" name="tipoUsuario" value="cliente">
     
             <!-- Formulario Cliente -->
             <div id="cliente-form" class="form-section active">
@@ -103,7 +105,7 @@
             <!-- Contraseña -->
             <div class="mb-5">
                 <label for="password" class="block mb-2 text-sm font-medium text-white">Contraseña:</label>
-                <input type="password" name="password" id="password" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
+                <input type="password" name="password" id="password" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"/>
                 <p id="password-error" class="mt-2 text-sm text-red-600 dark:text-red-500 hidden"></p>
             </div>
     
