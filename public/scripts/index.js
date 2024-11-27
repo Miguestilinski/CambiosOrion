@@ -52,22 +52,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function showUserActions() {
     const userActions = document.getElementById('user-actions');
+    const guestActions = document.getElementById('guest-actions');
+
+    // Muestra las acciones del usuario autenticado y oculta las del invitado
     if (userActions) {
         userActions.style.display = 'block'; // Muestra las acciones del usuario
         userActions.classList.remove('hidden'); // Elimina la clase 'hidden' si está presente
-    } else {
-        console.error('Elemento no encontrado: #user-actions');
+    }
+
+    if (guestActions) {
+        guestActions.style.display = 'none'; // Oculta las acciones del invitado
     }
 }
 
-// Función para mostrar acciones de invitado
 function showGuestActions() {
+    const userActions = document.getElementById('user-actions');
     const guestActions = document.getElementById('guest-actions');
+
+    // Muestra las acciones del invitado y oculta las del usuario autenticado
+    if (userActions) {
+        userActions.style.display = 'none'; // Oculta las acciones del usuario autenticado
+    }
+
     if (guestActions) {
         guestActions.style.display = 'block'; // Muestra las acciones del invitado
         guestActions.classList.remove('hidden'); // Elimina la clase 'hidden' si está presente
-    } else {
-        console.error('Elemento no encontrado: #guest-actions');
     }
 }
 
@@ -76,13 +85,17 @@ function handleSessionStatus() {
     const sessionStatus = localStorage.getItem('userAuthenticated') === 'true'; // O el valor que determines
     console.log("Estado de la sesión:", sessionStatus);
 
+    const userActions = document.getElementById('user-actions');
+    const guestActions = document.getElementById('guest-actions');
+
     if (sessionStatus) {
         // Si el usuario está autenticado, mostrar las acciones de usuario
-        document.getElementById('user-actions').style.display = 'block'; // Alternativa
-        document.getElementById('user-actions').classList.remove('hidden'); // Si la clase hidden está presente, eliminarla
+        userActions.style.display = 'block';
+        guestActions.style.display = 'none';
     } else {
-        // Si no está autenticado, ocultar las acciones
-        console.log("Usuario no autenticado");
+        // Si no está autenticado, mostrar acciones para invitados
+        userActions.style.display = 'none';
+        guestActions.style.display = 'block';
     }
 }
 
