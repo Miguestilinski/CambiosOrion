@@ -1,5 +1,5 @@
 body {
-    background-image: url('/orionapp/assets/FondoOrion.jpg');
+    background: rgba(0, 0, 0, 0.45) url('/orionapp/assets/FondoOrion.jpg') no-repeat center top;
     background-size: cover;
     background-position: center;
     color: white;
