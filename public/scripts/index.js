@@ -9,20 +9,22 @@ function initializePage() {
     fillCurrencyTable();
     setActiveLink('#nav-menu');
     setActiveLink('#session-menu');
+    handleSessionStatus();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     initializePage();
 
     const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
-    console.log('Estado de la sesión: ', isAuthenticated);
+    console.log('Estado de la sesión:', isAuthenticated);
 
+    // Verifica si el usuario está autenticado y muestra las acciones correspondientes
     if (isAuthenticated) {
-        console.log('Usuario autenticado. Mostrando acciones de usuario.');
-        showUserActions(); // Mostrar acciones de usuario autenticado
+        console.log("Usuario autenticado, mostrando acciones");
+        showUserActions(); // Función que muestra las acciones del usuario autenticado
     } else {
-        console.log('No autenticado. Mostrando acciones para invitados.');
-        showGuestActions(); // Mostrar acciones para invitados
+        console.log("Usuario no autenticado");
+        showGuestActions(); // Función que muestra las acciones para los invitados
     }
 
     const navMenuButton = document.getElementById('nav-menu-button');
@@ -50,18 +52,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function showUserActions() {
     const userActions = document.getElementById('user-actions');
-    console.log('Elemento user-actions:', userActions);
     if (userActions) {
-        userActions.style.display = 'block';
+        userActions.style.display = 'block'; // Muestra las acciones del usuario
+        userActions.classList.remove('hidden'); // Elimina la clase 'hidden' si está presente
     } else {
         console.error('Elemento no encontrado: #user-actions');
     }
 }
 
+// Función para mostrar acciones de invitado
 function showGuestActions() {
-    console.log('Activando acciones para el invitado');
-    document.getElementById('user-actions').style.display = 'none';
-    document.getElementById('guest-actions').style.display = 'block';
+    const guestActions = document.getElementById('guest-actions');
+    if (guestActions) {
+        guestActions.style.display = 'block'; // Muestra las acciones del invitado
+        guestActions.classList.remove('hidden'); // Elimina la clase 'hidden' si está presente
+    } else {
+        console.error('Elemento no encontrado: #guest-actions');
+    }
+}
+
+// Verifica el estado de la sesión (si está autenticado o no)
+function handleSessionStatus() {
+    const sessionStatus = localStorage.getItem('userAuthenticated') === 'true'; // O el valor que determines
+    console.log("Estado de la sesión:", sessionStatus);
+
+    if (sessionStatus) {
+        // Si el usuario está autenticado, mostrar las acciones de usuario
+        document.getElementById('user-actions').style.display = 'block'; // Alternativa
+        document.getElementById('user-actions').classList.remove('hidden'); // Si la clase hidden está presente, eliminarla
+    } else {
+        // Si no está autenticado, ocultar las acciones
+        console.log("Usuario no autenticado");
+    }
 }
 
 // Función para alternar visibilidad del menú
