@@ -15,10 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initializePage();
 
     const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
-    console.log('Estado de la sesión: ', isAuthenticated); // Log del estado de autenticación
+    console.log('Estado de la sesión: ', isAuthenticated);
 
-
-    // Mostrar los elementos correspondientes basados en la autenticación del usuario
     if (isAuthenticated) {
         console.log('Usuario autenticado. Mostrando acciones de usuario.');
         showUserActions(); // Mostrar acciones de usuario autenticado
@@ -51,10 +49,10 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function showUserActions() {
-    const userActions = document.getElementById('user-actions'); // Asegúrate de que el ID sea correcto
+    const userActions = document.getElementById('user-actions');
     console.log('Elemento user-actions:', userActions);
-    if (userActions) { // Verificamos que el elemento exista
-        userActions.classList.add('active');
+    if (userActions) {
+        userActions.style.display = 'block';
     } else {
         console.error('Elemento no encontrado: #user-actions');
     }
@@ -62,10 +60,9 @@ function showUserActions() {
 
 function showGuestActions() {
     console.log('Activando acciones para el invitado');
-    document.getElementById('user-actions').classList.add('hidden');
-    document.getElementById('guest-actions').classList.remove('hidden');
+    document.getElementById('user-actions').style.display = 'none';
+    document.getElementById('guest-actions').style.display = 'block';
 }
-
 
 // Función para alternar visibilidad del menú
 function toggleMenu(menuToOpen, menuToClose) {
