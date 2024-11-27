@@ -34,7 +34,7 @@ window.addEventListener('offline', updateOnlineStatus);
 updateOnlineStatus();
 
 // Agregar el audio para la alerta
-const priceAlert = new Audio('/sounds/alert.mp3');
+const priceAlert = new Audio('/orionapp/sounds/alert.mp3');
 
 // Objeto para almacenar los precios anteriores
 let preciosAnteriores = {};
