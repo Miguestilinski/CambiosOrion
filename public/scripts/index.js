@@ -9,7 +9,6 @@ function initializePage() {
     fillCurrencyTable();
     setActiveLink('#nav-menu');
     setActiveLink('#session-menu');
-    handleSessionStatus();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
