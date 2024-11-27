@@ -71,8 +71,12 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Redirigir al dashboard o mostrar un mensaje de éxito
-                window.location.href = "/dashboard.html";
+                // Verificar el tipo de usuario y redirigir
+                if (tipoUsuario === 'cliente') {
+                    window.location.href = "index.html";
+                } else if (tipoUsuario === 'administrativo') {
+                    window.location.href = "dashboard.html";
+                }
             } else {
                 // Mostrar mensajes de error en campos específicos
                 const { field, message } = data;

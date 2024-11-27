@@ -401,3 +401,57 @@ function deleteCurrency(currency) {
     fillCurrencyTable();  // Refresca la tabla
 }
 window.deleteCurrency = deleteCurrency;
+
+document.addEventListener('DOMContentLoaded', () => {
+    const isLoggedIn = checkSession(); // Implementa esta función para determinar si hay sesión activa
+    const guestActions = document.getElementById('guest-actions');
+    const userActions = document.getElementById('user-actions');
+    const profileMenuButton = document.getElementById('profile-menu-button');
+    const profileMenu = document.getElementById('profile-menu');
+
+    if (isLoggedIn) {
+        // Mostrar menú de usuario
+        guestActions.classList.add('hidden');
+        userActions.classList.remove('hidden');
+
+        // Lógica para desplegar el menú
+        profileMenuButton.addEventListener('click', () => {
+            profileMenu.classList.toggle('hidden');
+        });
+
+        // Cerrar menú al hacer clic fuera
+        document.addEventListener('click', (event) => {
+            if (!userActions.contains(event.target)) {
+                profileMenu.classList.add('hidden');
+            }
+        });
+
+        // Rellenar datos de usuario
+        document.getElementById('user-name').textContent = 'Nombre Usuario'; // Cambia con los datos reales
+        document.getElementById('user-email').textContent = 'usuario@ejemplo.com';
+    } else {
+        // Mostrar botones de invitado
+        guestActions.classList.remove('hidden');
+        userActions.classList.add('hidden');
+    }
+
+    // Lógica para cerrar sesión
+    const logoutButton = document.getElementById('logout-button');
+    if (logoutButton) {
+        logoutButton.addEventListener('click', () => {
+            logout(); // Implementa la función para cerrar sesión
+        });
+    }
+});
+
+function checkSession() {
+    // Implementa la lógica para verificar si el usuario tiene sesión activa
+    // Retorna true si está autenticado, false si no
+    return false; // Placeholder
+}
+
+function logout() {
+    // Lógica para cerrar sesión
+    console.log('Cerrar sesión');
+    // Redirigir al usuario o eliminar datos de sesión
+}

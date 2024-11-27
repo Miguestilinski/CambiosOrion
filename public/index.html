@@ -65,8 +65,37 @@
         </nav>
     
         <div class="header-actions">
-            <a href="iniciar_sesion.html">Iniciar sesión</a>
-            <a href="registro.html" class="selected register-button">Registrarse</a>
+            <!-- Botones para usuarios no autenticados -->
+            <div id="guest-actions">
+                <a href="iniciar_sesion.html">Iniciar sesión</a>
+                <a href="registro.html" class="register-button">Registrarse</a>
+            </div>
+
+
+            <!-- Menú desplegable del perfil para usuarios autenticados -->
+            <div id="user-actions" class="hidden relative">
+                <button id="profile-menu-button" class="menu-button">
+                    <img src="/orionapp/icons/profile-white.png" alt="Perfil">
+                </button>
+                <!-- Dropdown menu -->
+                <div id="profile-menu" class="hidden absolute right-0 mt-2 w-44 bg-white divide-y divide-gray-100 rounded-lg shadow">
+                    <div class="px-4 py-3 text-sm text-gray-900">
+                        <div id="user-name">Usuario</div>
+                        <div id="user-email" class="font-medium truncate">email@ejemplo.com</div>
+                    </div>
+                    <ul class="py-2 text-sm text-gray-700">
+                        <li>
+                            <a href="#" class="block px-4 py-2 hover:bg-gray-100">Dashboard</a>
+                        </li>
+                        <li>
+                            <a href="#" class="block px-4 py-2 hover:bg-gray-100">Configuración</a>
+                        </li>
+                    </ul>
+                    <div class="py-2">
+                        <a href="#" id="logout-button" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Cerrar sesión</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>             
 
