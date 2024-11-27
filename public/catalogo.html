@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Divisas</title>
+    <link rel="stylesheet" href="/styles/catalogo.css">
+</head>
+<body>
+    <div class="logo-container">
+        <img src="/images/LogoOrion.png" alt="Logo de Orion">
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th class="icono">Ícono</th>
+                <th class="nombre">Nombre</th>
+                <th class="compra">Compra</th>
+                <th class="venta">Venta</th>
+            </tr>
+        </thead>
+        <tbody id="currency-list">
+            <!-- Los datos se llenarán aquí con JavaScript -->
+        </tbody>
+    </table>
+
+    <!-- Texto adicional -->
+    <div class="info">
+        SE REALIZAN TRANSFERENCIAS AL EXTRANJERO<br>
+        HORARIO: LUN - VIE 09:00 - 17:00HRS
+    </div>
+
+    <!-- audio id="priceAlert" src="/sounds/alert.mp3"></audio-->
+
+    <!-- Pop-up para mostrar el estado offline -->
+    <div id="offline-popup" class="offline-popup">
+        <p>No hay conexión a Internet. Los precios pueden no estar actualizados.</p>
+    </div>
+
+    <script type="module" src="/scripts/catalogo.js"></script>
+</body>
+</html>

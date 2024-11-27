@@ -1,0 +1,142 @@
+body {
+    background-image: url('/images/FondoOrion.png');
+    background-size: cover;
+    background-position: center;
+    color: white;
+    font-family: 'Helvetica', sans-serif;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    /*table-layout: fixed; /* Mantiene el tamaño fijo de las columnas */
+    margin-bottom: 0; /* Eliminar el margen inferior de la tabla */
+}
+
+th {
+    background-color: transparent;
+}
+
+th.compra, th.venta {
+    font-size: 1.6em;
+}
+
+th.icono, th.nombre {
+    visibility: hidden; /* Opcional: si deseas ocultar estos encabezados */
+}
+
+thead tr {
+    border-bottom: none; /* Sin borde para la fila del encabezado */
+}
+
+img {
+    width: 30px; /* Reduce el tamaño de los iconos */
+    height: 30px;
+    object-fit: cover; /* Ajustar el contenido dentro del círculo */
+    border-radius: 50%; /* Hacer los iconos circulares */
+}
+
+td.icono {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Cambiado a center para alinear mejor */
+    padding: 5px; /* Ajustar el padding */
+}
+
+td.nombre {
+    padding: 5px; /* Mantener un espaciado más pequeño */
+    text-align: center; /* Alinear el texto al centro */
+}
+
+.logo-container img {
+    width: 200px; /* Tamaño del logo */
+    height: auto;
+}
+
+/* CSS para que el nombre esté encima del ícono en las divisas destacadas */
+tr.divisa-destacada td.icono {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px; /* Aumentar el padding lateral (izquierda y derecha) */
+}
+
+.divisa-destacada .nombre {
+    font-size: 1.5em; /* Tamaño más grande del nombre */
+    text-align: center; /* Alinear el texto al centro */
+    width: 100%; /* Asegurar que el nombre ocupe todo el ancho */
+    margin-bottom: 5px; /* Espacio entre el nombre y el ícono */
+}
+
+.divisa-destacada .icono img {
+    margin-bottom: 5px; /* Espacio entre el nombre y el ícono */
+    width: 100px; /* Ajustar tamaño de los iconos */
+    height: 100px; /* Ajustar tamaño de los iconos */
+}
+
+td.espacio {
+    width: 5%; /* O ajusta este valor según sea necesario */
+}
+
+/* Estilo para las filas de USD y EUR para hacerlas más grandes y eliminar las líneas */
+tr.divisa-destacada {
+    font-size: 1.3em; /* Tamaño de la fuente estándar para las filas destacadas */
+    height: 120px; /* Aumenta la altura para mayor separación */
+}
+
+/* Alineación y estilo de las celdas de precios en divisas destacadas */
+tr.divisa-destacada td {
+    border-bottom: none; /* Eliminar la línea inferior */
+    padding: 5px 0; /* Espaciado vertical para mantener la separación */
+}
+
+tr.divisa-destacada td.compra {
+    text-align: center; /* Alinear texto al centro debajo de Compra/Venta */
+    font-weight: bold; /* Hacer el texto más grueso */
+    font-size: 3em; /* Tamaño de fuente más grande */
+    padding-right: 40px;
+}
+
+tr.divisa-destacada td.venta {
+    text-align: center; /* Alinear texto al centro debajo de Compra/Venta */
+    font-weight: bold; /* Hacer el texto más grueso */
+    font-size: 3em; /* Tamaño de fuente más grande */
+}
+
+/* Oculta solo los encabezados de las divisas normales */
+tr.divisa-normal th {
+    display: none;
+}
+
+/* Estilo para las filas de otras divisas para hacerlas más pequeñas */
+tr.divisa-normal {
+    font-size: 1.5em; /* Tamaño de fuente menor para estas filas */
+    text-align: center; /* Centrar el texto */
+    border-bottom: 1px solid white;
+}
+
+/* Estilo para el texto adicional */
+.info {
+    text-align: center; /* Centrar el texto */
+    font-size: 1.2em; /* Tamaño de fuente adecuado */
+    margin-top: 20px; /* Espacio superior */
+}
+
+.offline-popup {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: red;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    font-size: 18px;
+    display: none; /* Oculto por defecto */
+    z-index: 1000; /* Asegúrate de que esté encima de otros elementos */
+}
