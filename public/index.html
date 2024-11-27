@@ -64,20 +64,20 @@
             </ul>
         </nav>
     
+        <!-- Acciones del Header según estado de autenticación -->
         <div class="header-actions">
-            <!-- Botones para usuarios no autenticados -->
-            <div id="guest-actions">
+            <!-- Sección para invitados (no autenticados) -->
+            <div id="guest" class="visible">
                 <a href="iniciar_sesion.html">Iniciar sesión</a>
                 <a href="registro.html" class="register-button">Registrarse</a>
             </div>
-
-
-            <!-- Menú desplegable del perfil para usuarios autenticados -->
-            <div id="user-actions" class="hidden relative">
+            
+            <!-- Sección para usuarios autenticados -->
+            <div id="loggedIn" style="display:none;">
                 <button id="profile-menu-button" class="menu-button">
                     <img src="/orionapp/icons/profile-white.png" alt="Perfil">
                 </button>
-                <!-- Dropdown menu -->
+                <!-- Dropdown menú -->
                 <div id="profile-menu" class="hidden absolute right-0 mt-2 w-44 bg-white divide-y divide-gray-100 rounded-lg shadow">
                     <div class="px-4 py-3 text-sm text-gray-900">
                         <div id="user-name">Usuario</div>
@@ -96,8 +96,8 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </header>             
+        </div>       
+    </header>
 
     <div class="header-divider"></div>
     <div class="main-content">

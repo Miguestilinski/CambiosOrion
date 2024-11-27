@@ -5,14 +5,23 @@ let activeDropdown = null;
 let displayedCurrencies = ["CLP", "USD", "EUR", "ARS"];
 
 function initializePage() {
-    loadCurrencies(); // Carga las divisas al inicio
-    fillCurrencyTable(); // Llena la tabla al inicio
+    loadCurrencies();
+    fillCurrencyTable();
     setActiveLink('#nav-menu');
     setActiveLink('#session-menu');
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     initializePage();
+
+    const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
+
+    // Mostrar los elementos correspondientes basados en la autenticación del usuario
+    if (isAuthenticated) {
+        showUserActions(); // Mostrar acciones de usuario autenticado
+    } else {
+        showGuestActions(); // Mostrar acciones para invitados
+    }
 
     const navMenuButton = document.getElementById('nav-menu-button');
     const sessionMenuButton = document.getElementById('session-menu-button');
@@ -36,6 +45,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+function showUserActions() {
+    // Mostrar elementos de usuario autenticado y ocultar los de invitado
+    document.getElementById('user-actions').classList.remove('hidden');
+    document.getElementById('guest-actions').classList.add('hidden');
+}
+
+function showGuestActions() {
+    // Mostrar elementos de invitado y ocultar los de usuario autenticado
+    document.getElementById('user-actions').classList.add('hidden');
+    document.getElementById('guest-actions').classList.remove('hidden');
+}
+
 
 // Función para alternar visibilidad del menú
 function toggleMenu(menuToOpen, menuToClose) {

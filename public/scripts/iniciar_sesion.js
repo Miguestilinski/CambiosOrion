@@ -72,6 +72,7 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(data => {
             console.log("Respuesta del servidor:", data);
             if (data.success) {
+                localStorage.setItem('userAuthenticated', 'true');
                 // Verificar el tipo de usuario y redirigir
                 if (tipoUsuario === 'cliente') {
                     window.location.href = "index.html";
