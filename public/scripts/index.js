@@ -17,15 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
     console.log('Estado de la sesión:', isAuthenticated);
-
-    // Verifica si el usuario está autenticado y muestra las acciones correspondientes
-    if (isAuthenticated) {
-        console.log("Usuario autenticado, mostrando acciones");
-        showUserActions(); // Función que muestra las acciones del usuario autenticado
-    } else {
-        console.log("Usuario no autenticado");
-        showGuestActions(); // Función que muestra las acciones para los invitados
-    }
+    toggleSessionActions(isAuthenticated);
 
     const navMenuButton = document.getElementById('nav-menu-button');
     const sessionMenuButton = document.getElementById('session-menu-button');
@@ -48,6 +40,28 @@ document.addEventListener('DOMContentLoaded', () => {
             closeMenu(sessionMobileMenu);
         });
     }
+});
+
+function toggleSessionActions(isAuthenticated) {
+    const userActions = document.getElementById('user-actions');
+    const guestActions = document.getElementById('guest-actions');
+
+    if (isAuthenticated) {
+        console.log("Usuario autenticado, mostrando acciones");
+        // Muestra las acciones del usuario autenticado
+        userActions.style.display = 'block';
+        guestActions.style.display = 'none';
+    } else {
+        console.log("Usuario no autenticado");
+        // Muestra las acciones del invitado
+        guestActions.style.display = 'block';
+        userActions.style.display = 'none';
+    }
+}
+
+document.getElementById('logout-button')?.addEventListener('click', () => {
+    localStorage.setItem('userAuthenticated', 'false');
+    toggleSessionActions(false);
 });
 
 function showUserActions() {
