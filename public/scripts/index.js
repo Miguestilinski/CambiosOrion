@@ -15,11 +15,15 @@ document.addEventListener('DOMContentLoaded', () => {
     initializePage();
 
     const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
+    console.log('Estado de la sesión: ', isAuthenticated); // Log del estado de autenticación
+
 
     // Mostrar los elementos correspondientes basados en la autenticación del usuario
     if (isAuthenticated) {
+        console.log('Usuario autenticado. Mostrando acciones de usuario.');
         showUserActions(); // Mostrar acciones de usuario autenticado
     } else {
+        console.log('No autenticado. Mostrando acciones para invitados.');
         showGuestActions(); // Mostrar acciones para invitados
     }
 
@@ -47,13 +51,13 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function showUserActions() {
-    // Mostrar elementos de usuario autenticado y ocultar los de invitado
+    console.log('Activando acciones para el usuario autenticado');
     document.getElementById('user-actions').classList.remove('hidden');
     document.getElementById('guest-actions').classList.add('hidden');
 }
 
 function showGuestActions() {
-    // Mostrar elementos de invitado y ocultar los de usuario autenticado
+    console.log('Activando acciones para el invitado');
     document.getElementById('user-actions').classList.add('hidden');
     document.getElementById('guest-actions').classList.remove('hidden');
 }
