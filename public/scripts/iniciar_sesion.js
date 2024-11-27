@@ -70,6 +70,7 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         .then(response => response.json())
         .then(data => {
+            console.log("Respuesta del servidor:", data);
             if (data.success) {
                 // Verificar el tipo de usuario y redirigir
                 if (tipoUsuario === 'cliente') {
@@ -77,6 +78,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 } else if (tipoUsuario === 'administrativo') {
                     window.location.href = "dashboard.html";
                 }
+                console.log("Formulario enviado");
             } else {
                 // Mostrar mensajes de error en campos específicos
                 const { field, message } = data;
@@ -87,11 +89,16 @@ document.addEventListener("DOMContentLoaded", function() {
                 } else if (field === "password") {
                     document.getElementById('password-error').textContent = message;
                 }
+                console.error("Error del servidor:", data.message);
             }
         })
         .catch(error => {
             console.error('Error:', error);
-        });        
+        });   
+        for (const [key, value] of formData.entries()) {
+            console.log(`${key}: ${value}`);
+        }
+
     });
     
 
