@@ -69,17 +69,6 @@ document.getElementById('logout-button')?.addEventListener('click', () => {
     toggleSessionActions(false);
 });
 
-function handleSessionStatus() {
-    const sessionStatus = localStorage.getItem('userAuthenticated') === 'true';
-    console.log("Estado de la sesión:", sessionStatus);
-
-    if (sessionStatus) {
-        showUserActions(); // Muestra las acciones del usuario
-    } else {
-        showGuestActions(); // Muestra las acciones del invitado
-    }
-}
-
 document.addEventListener('DOMContentLoaded', () => {
     initializePage();
 
