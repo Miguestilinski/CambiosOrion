@@ -67,13 +67,13 @@
         <!-- Acciones del Header según estado de autenticación -->
         <div class="header-actions">
             <!-- Sección para invitados (no autenticados) -->
-            <div id="guest" class="visible">
+            <div id="guest" id="guest-actions" class="visible">
                 <a href="iniciar_sesion.html">Iniciar sesión</a>
                 <a href="registro.html" class="register-button">Registrarse</a>
             </div>
             
             <!-- Sección para usuarios autenticados -->
-            <div id="loggedIn" style="display:none;">
+            <div id="loggedIn" id="user-actions" style="display:none;">
                 <button id="profile-menu-button" class="menu-button">
                     <img src="/orionapp/icons/profile-white.png" alt="Perfil">
                 </button>

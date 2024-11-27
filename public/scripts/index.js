@@ -51,9 +51,13 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function showUserActions() {
-    console.log('Activando acciones para el usuario autenticado');
-    document.getElementById('user-actions').classList.remove('hidden');
-    document.getElementById('guest-actions').classList.add('hidden');
+    const userActions = document.getElementById('user-actions'); // Asegúrate de que el ID sea correcto
+    console.log('Elemento user-actions:', userActions);
+    if (userActions) { // Verificamos que el elemento exista
+        userActions.classList.add('active');
+    } else {
+        console.error('Elemento no encontrado: #user-actions');
+    }
 }
 
 function showGuestActions() {
