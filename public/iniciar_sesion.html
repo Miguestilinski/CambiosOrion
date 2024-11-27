@@ -26,12 +26,9 @@
     
         <!-- Contenedor para los botones de menú en móvil (solo visible en pantallas pequeñas) -->
         <div class="mobile-buttons">
-            <!-- Botón de menú de navegación en móvil -->
             <button class="menu-button" id="nav-menu-button">
                 <img src="/orionapp/icons/menu-white.svg" alt="Menú">
             </button>
-    
-            <!-- Botón de menú de sesión en móvil -->
             <button class="menu-button" id="session-menu-button">
                 <img src="/orionapp/icons/profile-white.png" alt="Sesión">
             </button>
@@ -65,11 +62,18 @@
             </ul>
         </nav>
     
-        <div class="header-actions">
+        <!-- Contenedor de acciones del usuario no autenticado -->
+        <div class="header-actions" id="header-actions">
             <a href="iniciar_sesion.html">Iniciar sesión</a>
             <a href="registro.html" class="selected register-button">Registrarse</a>
         </div>
-    </header>
+    
+        <!-- Contenedor de acciones del usuario autenticado -->
+        <div class="header-actions" id="user-actions" style="display: none;">
+            <a href="perfil.html">Mi perfil</a>
+            <a href="cerrar_sesion.html">Cerrar sesión</a>
+        </div>
+    </header>    
 
     <div class="header-divider"></div>
     <div class="max-w-md w-full mx-auto my-10 bg-gray-800 p-6 rounded-lg shadow-md">

@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 if (tipoUsuario === 'cliente') {
                     window.location.href = "index.html";
                 } else if (tipoUsuario === 'administrativo') {
-                    window.location.href = "dashboard.html";
+                    window.location.href = "edit.html";
                 }
             } else {
                 // Mostrar mensajes de error en campos específicos
