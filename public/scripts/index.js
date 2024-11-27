@@ -25,17 +25,11 @@ document.addEventListener('DOMContentLoaded', () => {
         showGuestActions(); // Mostrar acciones para invitados
     }
 
-    const navMenuButton = document.getElementById('nav-menu-button');
     const sessionMenuButton = document.getElementById('session-menu-button');
     const navMobileMenu = document.getElementById('nav-mobile-menu');
     const sessionMobileMenu = document.getElementById('session-mobile-menu');
 
-    if (navMenuButton && sessionMenuButton && navMobileMenu && sessionMobileMenu) {
-        navMenuButton.addEventListener('click', (event) => {
-            toggleMenu(navMobileMenu); // Cambié la llamada para solo pasar un menú
-            event.stopPropagation();
-        });
-
+    if (sessionMenuButton && navMobileMenu && sessionMobileMenu) {
         sessionMenuButton.addEventListener('click', (event) => {
             toggleMenu(sessionMobileMenu); // Cambié la llamada para solo pasar un menú
             event.stopPropagation();
@@ -382,10 +376,6 @@ document.addEventListener("click", function (event) {
         console.log("Clic fuera del dropdown");
         activeDropdown.classList.add("hidden");
         activeDropdown = null;
-    }
-     // Cerrar el menú si el clic es fuera de un botón o menú
-     if (!navMenuButton.contains(event.target) && !navMobileMenu.contains(event.target)) {
-        navMobileMenu.style.display = 'none';
     }
     if (!sessionMenuButton.contains(event.target) && !sessionMobileMenu.contains(event.target)) {
         sessionMobileMenu.style.display = 'none';
