@@ -65,13 +65,7 @@
         </nav>
     
         <!-- Acciones del Header según estado de autenticación -->
-        <div class="header-actions">
-            <!-- Sección para invitados (no autenticados) -->
-            <div id="guest-actions" class="visible">
-                <a href="iniciar_sesion.html">Iniciar sesión</a>
-                <a href="registro.html" class="register-button">Registrarse</a>
-            </div>
-            
+        <div class="header-actions"> 
             <!-- Sección para usuarios autenticados -->
             <div id="user-actions" style="display:none;">
                 <button id="profile-menu-button" class="menu-button">
@@ -96,7 +90,12 @@
                     </div>
                 </div>
             </div>
-        </div>       
+            <!-- Sección para invitados (no autenticados) -->
+            <div id="guest-actions" class="visible">
+                <a href="iniciar_sesion.html">Iniciar sesión</a>
+                <a href="registro.html" class="register-button">Registrarse</a>
+            </div>
+        </div>
     </header>
 
     <div class="header-divider"></div>

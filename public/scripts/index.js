@@ -59,6 +59,8 @@ function toggleSessionActions(isAuthenticated) {
         guestActions.style.display = 'block';
         userActions.style.display = 'none';
     }
+    localStorage.setItem('userAuthenticated', isAuthenticated ? 'true' : 'false');
+    handleSessionStatus();
 }
 
 document.getElementById('logout-button')?.addEventListener('click', () => {
@@ -103,7 +105,6 @@ function handleSessionStatus() {
         showGuestActions(); // Muestra las acciones del invitado
     }
 }
-
 
 // Función para alternar visibilidad del menú
 function toggleMenu(menuToOpen, menuToClose) {
@@ -519,7 +520,7 @@ function checkSession() {
 }
 
 function logout() {
-    // Lógica para cerrar sesión
+    toggleSessionActions(false); // Cambiar el estado de la sesión a false
     console.log('Cerrar sesión');
     // Redirigir al usuario o eliminar datos de sesión
 }
