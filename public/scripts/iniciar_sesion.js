@@ -72,20 +72,23 @@ document.addEventListener("DOMContentLoaded", function() {
             method: 'POST',
             body: formData,
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             console.log("Datos enviados:", Object.fromEntries(formData));
             console.log("Respuesta del servidor:", data);
             if (data.success) {
                 localStorage.setItem('userAuthenticated', 'true');
-                // Verificar el tipo de usuario y redirigir
                 if (tipoUsuario === 'cliente') {
                     window.location.href = "index.html";
                 } else if (tipoUsuario === 'administrativo') {
                     window.location.href = "edit.html";
                 }
             } else {
-                // Mostrar mensajes de error en campos específicos
                 const { field, message } = data;
                 if (field === "rut") {
                     document.getElementById('rut-error').textContent = message;
@@ -98,8 +101,8 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         .catch(error => {
             console.error('Error:', error);
-        });   
-
+            alert("Hubo un problema con la conexión al servidor. Inténtalo más tarde.");
+        });        
     });
     
 
