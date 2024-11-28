@@ -54,58 +54,44 @@ function setupEditEventListeners() {
 }
 
 function loadCurrenciesForEdit() {
-    fetch('https://cambiosorion.cl/data/divisas_api.php')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Error al cargar las divisas');
-            }
-            return response.json();
-        })
+    const proxyUrl = 'https://corsproxy.io/?';
+    const targetUrl = 'https://cambiosorion.cl/data/obtener_divisas.php';
+    fetch(proxyUrl + targetUrl)
+        .then(response => response.json())
         .then(data => {
-            console.log('Datos de divisas recibidos:', data);
-            if (Array.isArray(data) && data.length > 0) {
-                data.forEach(currency => {
-                    editableCurrencies[currency.nombre] = {
-                        compra: currency.compra,
-                        venta: currency.venta,
-                        tasa: currency.tasa,
-                        iconoCircular: currency.icono_circular,
-                        iconoCuadrado: currency.icono_cuadrado
-                    };
-                });
-                fillEditCurrencyTable();
-            } else {
-                console.warn('No hay datos de divisas para mostrar.');
-            }
+            fillEditCurrencyTable(data);  // Llamar a la función para llenar la tabla
         })
         .catch(error => {
-            console.error('Error al cargar las divisas:', error);
+            console.error('Error al obtener las divisas:', error);
         });
 }
 
-function fillEditCurrencyTable() {
-    const editTable = document.getElementById('edit-currency-table');
+function fillEditCurrencyTable(divisas) {
+    console.log('Datos de divisas recibidos:', divisas);
 
-    if (!editTable) {
+    // Verificar que la tabla exista en el DOM
+    const tableBody = document.querySelector('#editCurrencyTable tbody'); // Asegúrate de que el selector sea correcto
+
+    if (tableBody) {
+        // Limpiar la tabla antes de llenarla
+        tableBody.innerHTML = '';
+
+        // Llenar la tabla con los datos recibidos
+        divisas.forEach(divisa => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${divisa.nombre}</td>
+                <td>${divisa.compra}</td>
+                <td>${divisa.venta}</td>
+                <td>${divisa.tasa}</td>
+                <td><img src="${divisa.icono_circular}" alt="${divisa.nombre}"></td>
+                <td><img src="${divisa.icono_cuadrado}" alt="${divisa.nombre}"></td>
+            `;
+            tableBody.appendChild(row);
+        });
+    } else {
         console.error('Tabla de edición no encontrada.');
-        return; // Detener ejecución si no hay tabla
     }
-
-    editTable.innerHTML = '';
-
-    Object.keys(editableCurrencies).forEach(currencyName => {
-        const currency = editableCurrencies[currencyName];
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${currencyName}</td>
-            <td><input type="number" value="${currency.compra}" class="edit-input" data-currency="${currencyName}" data-field="compra"></td>
-            <td><input type="number" value="${currency.venta}" class="edit-input" data-currency="${currencyName}" data-field="venta"></td>
-            <td><input type="number" value="${currency.tasa}" class="edit-input" data-currency="${currencyName}" data-field="tasa"></td>
-        `;
-        editTable.appendChild(row);
-    });
-
-    setupEditInputs();
 }
 
 function setupEditInputs() {
