@@ -13,6 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function initializeEditPage() {
     loadCurrenciesForEdit();
+    setActiveLink('#nav-menu');
+    setActiveLink('#session-menu');
 }
 
 function setupEditEventListeners() {
@@ -34,7 +36,7 @@ function setupEditEventListeners() {
 
 function loadCurrenciesForEdit() {
     const proxyUrl = 'https://corsproxy.io/?';
-    const targetUrl = 'https://cambiosorion.cl/data/divisas_api.php';
+    const targetUrl = 'https://cambiosorion.cl/data/obtener_divisas.php';
 
     fetch(proxyUrl + targetUrl)
         .then(response => response.json())
@@ -105,7 +107,7 @@ function setupEditInputs() {
 
 function saveEditedCurrencies() {
     const proxyUrl = 'https://corsproxy.io/?';
-    const targetUrl = 'https://cambiosorion.cl/data/editar_divisas.php';
+    const targetUrl = 'https://cambiosorion.cl/data/divisas_api.php';
 
     const body = JSON.stringify(Object.values(editableCurrencies));
 
