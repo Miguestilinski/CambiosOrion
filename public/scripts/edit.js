@@ -4,10 +4,6 @@ let editMode = false;
 document.addEventListener('DOMContentLoaded', () => {
     initializeEditPage();
 
-    const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
-    console.log('Estado de la sesión (Edición):', isAuthenticated);
-    toggleSessionActions(isAuthenticated);
-
     const navMenuButton = document.getElementById('nav-menu-button');
     const sessionMenuButton = document.getElementById('session-menu-button');
     const navMobileMenu = document.getElementById('nav-mobile-menu');
@@ -151,22 +147,4 @@ function setActiveLink(menuId) {
             link.classList.remove('selected');
         }
     });
-}
-
-function toggleSessionActions(isAuthenticated) {
-    const userActions = document.getElementById('user-actions');
-    const guestActions = document.getElementById('guest-actions');
-
-    if (!userActions || !guestActions) {
-        console.warn('No se encontraron elementos de sesión en el DOM.');
-        return; // Detener ejecución si faltan elementos
-    }
-
-    if (isAuthenticated) {
-        userActions.style.display = 'block';
-        guestActions.style.display = 'none';
-    } else {
-        guestActions.style.display = 'block';
-        userActions.style.display = 'none';
-    }
 }

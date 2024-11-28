@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edición de Divisas</title>
-    <link rel="stylesheet" href="/styles/edit.css">     
+    <link rel="stylesheet" href="/styles/edit.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">  
 </head>
 <body>
+    <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js"></script>
     <header>
         <!-- Logo y Nombre -->
         <div class="header-logo">
@@ -20,12 +22,9 @@
     
         <!-- Contenedor para los botones de menú en móvil (solo visible en pantallas pequeñas) -->
         <div class="mobile-buttons">
-            <!-- Botón de menú de navegación en móvil -->
             <button class="menu-button" id="nav-menu-button">
                 <img src="/orionapp/icons/menu-white.svg" alt="Menú">
             </button>
-    
-            <!-- Botón de menú de sesión en móvil -->
             <button class="menu-button" id="session-menu-button">
                 <img src="/orionapp/icons/profile-white.png" alt="Sesión">
             </button>
@@ -52,46 +51,25 @@
         <!-- Menú de navegación y botones de sesión en versión de escritorio -->
         <nav>
             <ul>
-                <li class="selected"><a href="index.html">Inicio</a></li>
+                <li><a href="index.html">Inicio</a></li>
                 <li><a href="servicios.html">Servicios</a></li>
                 <li><a href="nosotros.html">Nosotros</a></li>
                 <li><a href="#">Contacto</a></li>
             </ul>
         </nav>
     
-        <!-- Acciones del Header según estado de autenticación -->
-        <div class="header-actions"> 
-            <!-- Sección para usuarios autenticados -->
-            <div id="user-actions" style="display:none;">
-                <button id="profile-menu-button" class="menu-button">
-                    <img src="/orionapp/icons/profile-white.png" alt="Perfil">
-                </button>
-                <!-- Dropdown menú -->
-                <div id="profile-menu" class="hidden absolute right-0 mt-2 w-44 bg-white divide-y divide-gray-100 rounded-lg shadow">
-                    <div class="px-4 py-3 text-sm text-gray-900">
-                        <div id="user-name">Usuario</div>
-                        <div id="user-email" class="font-medium truncate">email@ejemplo.com</div>
-                    </div>
-                    <ul class="py-2 text-sm text-gray-700">
-                        <li>
-                            <a href="#" class="block px-4 py-2 hover:bg-gray-100">Dashboard</a>
-                        </li>
-                        <li>
-                            <a href="#" class="block px-4 py-2 hover:bg-gray-100">Configuración</a>
-                        </li>
-                    </ul>
-                    <div class="py-2">
-                        <a href="#" id="logout-button" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Cerrar sesión</a>
-                    </div>
-                </div>
-            </div>
-            <!-- Sección para invitados (no autenticados) -->
-            <div id="guest-actions" class="visible">
-                <a href="iniciar_sesion.html">Iniciar sesión</a>
-                <a href="registro.html" class="register-button">Registrarse</a>
-            </div>
+        <!-- Contenedor de acciones del usuario no autenticado -->
+        <div class="header-actions" id="header-actions">
+            <a href="iniciar_sesion.html">Iniciar sesión</a>
+            <a href="registro.html" class="selected register-button">Registrarse</a>
         </div>
-    </header>
+    
+        <!-- Contenedor de acciones del usuario autenticado -->
+        <div class="header-actions" id="user-actions" style="display: none;">
+            <a href="perfil.html">Mi perfil</a>
+            <a href="cerrar_sesion.html">Cerrar sesión</a>
+        </div>
+    </header> 
 
     <div class="header-divider"></div>
     <div class="editCurrencyTable">
@@ -116,7 +94,7 @@
             <button id="catalog-button-destacadas">Catálogo Destacadas</button>
         </div>
     </div>
-    
+
     <script src="/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
     <script type="module" src="/scripts/edit.js"></script>
 </body>
