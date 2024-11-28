@@ -50,7 +50,6 @@ img {
     width: 30px; /* Reduce el tamaño de los iconos */
     height: 30px;
     object-fit: cover; /* Ajustar el contenido dentro del círculo */
-    border-radius: 50%; /* Hacer los iconos circulares */
 }
 
 td.icono {

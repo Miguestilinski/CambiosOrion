@@ -69,7 +69,6 @@ img {
     width: 25px; /* Reduce el tamaño de los iconos */
     height: 25px;
     object-fit: cover; /* Ajustar el contenido dentro del círculo */
-    border-radius: 50%; /* Hacer los iconos circulares */
 }
 
 /* Ajustar padding para mantener iconos cerca del borde izquierdo */
