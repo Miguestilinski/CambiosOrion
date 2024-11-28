@@ -75,8 +75,8 @@ function fillEditCurrencyTable(divisas) {
             row.innerHTML = `
                 <td><img src="${divisa.icono_circular}" alt="${divisa.nombre}"></td>
                 <td>${divisa.nombre}</td>
-                <td><input type="number" class="edit-input" data-currency="${divisa.nombre}" data-field="compra" value="${divisa.compra}" step="0.01" min="0"></td>
-                <td><input type="number" class="edit-input" data-currency="${divisa.nombre}" data-field="venta" value="${divisa.venta}" step="0.01" min="0"></td>
+                <td><input type="number" class="edit-input" data-currency="${divisa.nombre}" data-field="compra" value="${divisa.compra}" step="1" min="0"></td>
+                <td><input type="number" class="edit-input" data-currency="${divisa.nombre}" data-field="venta" value="${divisa.venta}" step="1" min="0"></td>
             `;
             tableBody.appendChild(row);
         });
