@@ -71,20 +71,34 @@ function fillEditCurrencyTable(divisas) {
 
         // Llenar la tabla con los datos recibidos
         divisas.forEach(divisa => {
+            // Formatear los valores para eliminar ceros innecesarios
+            const formattedCompra = removeTrailingZeros(divisa.compra);
+            const formattedVenta = removeTrailingZeros(divisa.venta);
+
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td><img src="${divisa.icono_circular}" alt="${divisa.nombre}"></td>
                 <td>${divisa.nombre}</td>
-                <td><input type="number" class="edit-input" data-currency="${divisa.nombre}" data-field="compra" value="${divisa.compra}" step="1" min="0"></td>
-                <td><input type="number" class="edit-input" data-currency="${divisa.nombre}" data-field="venta" value="${divisa.venta}" step="1" min="0"></td>
+                <td><input type="number" class="edit-input" data-currency="${divisa.nombre}" data-field="compra" value="${formattedCompra}" step="any" min="0"></td>
+                <td><input type="number" class="edit-input" data-currency="${divisa.nombre}" data-field="venta" value="${formattedVenta}" step="any" min="0"></td>
             `;
             tableBody.appendChild(row);
         });
+
+        // Configurar los eventos para los inputs editables
+        setupEditInputs();
     } else {
         console.error('Tabla de edición no encontrada.');
     }
 }
 
+// Función para eliminar ceros innecesarios de los decimales
+function removeTrailingZeros(value) {
+    if (value === null || value === undefined) return '';
+    // Convertir a número flotante y luego a string para eliminar ceros finales
+    const floatValue = parseFloat(value);
+    return floatValue.toString();
+}
 
 function setupEditInputs() {
     const editInputs = document.querySelectorAll('.edit-input');
