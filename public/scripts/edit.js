@@ -70,7 +70,7 @@ function fillEditCurrencyTable(divisas) {
     console.log('Datos de divisas recibidos:', divisas);
 
     // Verificar que la tabla exista en el DOM
-    const tableBody = document.querySelector('#editCurrencyTable tbody'); // Asegúrate de que el selector sea correcto
+    const tableBody = document.querySelector('#editCurrencyTable tbody');
 
     if (tableBody) {
         // Limpiar la tabla antes de llenarla
@@ -93,6 +93,10 @@ function fillEditCurrencyTable(divisas) {
         console.error('Tabla de edición no encontrada.');
     }
 }
+
+window.onload = function() {
+    loadCurrenciesForEdit();
+};
 
 function setupEditInputs() {
     const editInputs = document.querySelectorAll('.edit-input');
@@ -169,7 +173,3 @@ function toggleSessionActions(isAuthenticated) {
         userActions.style.display = 'none';
     }
 }
-
-console.log('edit-currency-table:', document.getElementById('edit-currency-table'));
-console.log('user-actions:', document.getElementById('user-actions'));
-console.log('guest-actions:', document.getElementById('guest-actions'));
