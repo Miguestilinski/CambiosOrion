@@ -13,6 +13,12 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initializeEditPage() {
+    console.log('Inicializando página de edición');
+    const isAuthenticated = JSON.parse(localStorage.getItem('userAuthenticated') || 'false');
+    console.log('Estado de la sesión (Edición):', isAuthenticated);
+
+    toggleSessionActions(isAuthenticated);
+    
     loadCurrenciesForEdit();
     setActiveLink('#nav-menu');
     setActiveLink('#session-menu');
@@ -66,14 +72,13 @@ function fillEditCurrencyTable() {
 
     if (!editTable) {
         console.error('Tabla de edición no encontrada.');
-        return; // Terminar si no se encuentra la tabla
+        return; // Detener ejecución si no hay tabla
     }
 
     editTable.innerHTML = '';
 
     Object.keys(editableCurrencies).forEach(currencyName => {
         const currency = editableCurrencies[currencyName];
-
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${currencyName}</td>
@@ -148,33 +153,19 @@ function setActiveLink(menuId) {
 function toggleSessionActions(isAuthenticated) {
     const userActions = document.getElementById('user-actions');
     const guestActions = document.getElementById('guest-actions');
-    const profileMenuButton = document.getElementById('profile-menu-button');
 
     if (!userActions || !guestActions) {
         console.warn('No se encontraron elementos de sesión en el DOM.');
-        return; // Terminar si los elementos no existen
+        return; // Detener ejecución si faltan elementos
     }
 
     if (isAuthenticated) {
-        console.log("Usuario autenticado, mostrando acciones");
         userActions.style.display = 'block';
         guestActions.style.display = 'none';
-
-        if (profileMenuButton) {
-            profileMenuButton.addEventListener('click', () => {
-                const profileMenu = document.getElementById('profile-menu');
-                if (profileMenu) {
-                    profileMenu.classList.toggle('hidden');
-                }
-            });
-        }
     } else {
-        console.log("Usuario no autenticado");
         guestActions.style.display = 'block';
         userActions.style.display = 'none';
     }
-
-    localStorage.setItem('userAuthenticated', isAuthenticated ? 'true' : 'false');
 }
 
 console.log('edit-currency-table:', document.getElementById('edit-currency-table'));
