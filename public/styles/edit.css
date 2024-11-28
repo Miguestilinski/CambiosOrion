@@ -127,6 +127,7 @@ nav ul li.selected a {
     padding: 20px;
     border-radius: 10px;
     width: 90%; /* Ancho ajustado según tus necesidades */
+    margin-top: 2.5rem;
     max-width: 800px; /* Ancho máximo para evitar ser demasiado grande */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Sombra para el contenedor */
 }
@@ -202,7 +203,7 @@ td.nombre {
     width: 100%;
     margin-top: 20px;
     max-width: 600px;
-    padding: 0.5rem 1rem;
+    padding: 0.6rem 1rem;
     font-size: 1.2em;
     background-color: #007BFF;
     color: white;
@@ -220,14 +221,15 @@ td.nombre {
 /* Estilo para el contenedor de los botones de catálogo */
 .catalog-button-container {
     display: flex;
-    justify-content: space-between; /* Espacio entre los botones */
+    justify-content: center; /* Espacio entre los botones */
     width: 100%; /* Ancho completo */
     margin-top: 10px; /* Espaciado arriba */
+    margin-bottom: 3rem;
 }
 
 /* Estilo para los botones de catálogo */
 #catalog-button-normal, #catalog-button-destacadas {
-    padding: 10px;
+    padding: 0.5rem 1rem;
     font-size: 1.2em;
     background-color: #28a745; /* Color verde para el botón */
     color: white;
