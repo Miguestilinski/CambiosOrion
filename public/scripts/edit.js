@@ -36,7 +36,7 @@ function setupEditEventListeners() {
 
 function loadCurrenciesForEdit() {
     const proxyUrl = 'https://corsproxy.io/?';
-    const targetUrl = 'https://cambiosorion.cl/data/obtener_divisas.php';
+    const targetUrl = 'https://cambiosorion.cl/data/divisas_api.php';
 
     fetch(proxyUrl + targetUrl)
         .then(response => response.json())
