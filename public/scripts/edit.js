@@ -66,7 +66,7 @@ function fillEditCurrencyTable() {
 
     if (!editTable) {
         console.error('Tabla de edición no encontrada.');
-        return;
+        return; // Terminar si no se encuentra la tabla
     }
 
     editTable.innerHTML = '';
@@ -150,26 +150,33 @@ function toggleSessionActions(isAuthenticated) {
     const guestActions = document.getElementById('guest-actions');
     const profileMenuButton = document.getElementById('profile-menu-button');
 
-    if (userActions && guestActions && profileMenuButton) {
-        if (isAuthenticated) {
-            console.log("Usuario autenticado, mostrando acciones");
-            userActions.style.display = 'block';
-            guestActions.style.display = 'none';
+    if (!userActions || !guestActions) {
+        console.warn('No se encontraron elementos de sesión en el DOM.');
+        return; // Terminar si los elementos no existen
+    }
 
+    if (isAuthenticated) {
+        console.log("Usuario autenticado, mostrando acciones");
+        userActions.style.display = 'block';
+        guestActions.style.display = 'none';
+
+        if (profileMenuButton) {
             profileMenuButton.addEventListener('click', () => {
                 const profileMenu = document.getElementById('profile-menu');
                 if (profileMenu) {
                     profileMenu.classList.toggle('hidden');
                 }
             });
-        } else {
-            console.log("Usuario no autenticado");
-            guestActions.style.display = 'block';
-            userActions.style.display = 'none';
         }
-
-        localStorage.setItem('userAuthenticated', isAuthenticated ? 'true' : 'false');
     } else {
-        console.warn("No se encontraron elementos de sesión en el DOM.");
+        console.log("Usuario no autenticado");
+        guestActions.style.display = 'block';
+        userActions.style.display = 'none';
     }
+
+    localStorage.setItem('userAuthenticated', isAuthenticated ? 'true' : 'false');
 }
+
+console.log('edit-currency-table:', document.getElementById('edit-currency-table'));
+console.log('user-actions:', document.getElementById('user-actions'));
+console.log('guest-actions:', document.getElementById('guest-actions'));
