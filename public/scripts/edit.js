@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
     console.log('Estado de la sesión (Edición):', isAuthenticated);
+
     toggleSessionActions(isAuthenticated);
 
     setupEditEventListeners();
@@ -22,15 +23,11 @@ function setupEditEventListeners() {
     const cancelButton = document.getElementById('cancel-edit-button');
 
     if (saveButton) {
-        saveButton.addEventListener('click', () => {
-            saveEditedCurrencies();
-        });
+        saveButton.addEventListener('click', saveEditedCurrencies);
     }
 
     if (cancelButton) {
-        cancelButton.addEventListener('click', () => {
-            cancelEdit();
-        });
+        cancelButton.addEventListener('click', cancelEdit);
     }
 }
 
@@ -153,19 +150,26 @@ function toggleSessionActions(isAuthenticated) {
     const guestActions = document.getElementById('guest-actions');
     const profileMenuButton = document.getElementById('profile-menu-button');
 
-    if (isAuthenticated) {
-        console.log("Usuario autenticado, mostrando acciones");
-        userActions.style.display = 'block';
-        guestActions.style.display = 'none';
-        profileMenuButton.addEventListener('click', () => {
-            const profileMenu = document.getElementById('profile-menu');
-            profileMenu.classList.toggle('hidden');
-        });
-    } else {
-        console.log("Usuario no autenticado");
-        guestActions.style.display = 'block';
-        userActions.style.display = 'none';
-    }
+    if (userActions && guestActions && profileMenuButton) {
+        if (isAuthenticated) {
+            console.log("Usuario autenticado, mostrando acciones");
+            userActions.style.display = 'block';
+            guestActions.style.display = 'none';
 
-    localStorage.setItem('userAuthenticated', isAuthenticated ? 'true' : 'false');
+            profileMenuButton.addEventListener('click', () => {
+                const profileMenu = document.getElementById('profile-menu');
+                if (profileMenu) {
+                    profileMenu.classList.toggle('hidden');
+                }
+            });
+        } else {
+            console.log("Usuario no autenticado");
+            guestActions.style.display = 'block';
+            userActions.style.display = 'none';
+        }
+
+        localStorage.setItem('userAuthenticated', isAuthenticated ? 'true' : 'false');
+    } else {
+        console.warn("No se encontraron elementos de sesión en el DOM.");
+    }
 }
