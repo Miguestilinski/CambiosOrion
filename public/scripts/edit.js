@@ -135,3 +135,15 @@ function cancelEdit() {
         loadCurrenciesForEdit();
     }
 }
+
+function setActiveLink(menuId) {
+    const links = document.querySelectorAll(`${menuId} a`);
+    const currentPath = window.location.pathname;
+    links.forEach(link => {
+        if (link.getAttribute('href') === currentPath) {
+            link.classList.add('selected');
+        } else {
+            link.classList.remove('selected');
+        }
+    });
+}
