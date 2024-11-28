@@ -54,7 +54,7 @@ function setupEditEventListeners() {
 }
 
 function loadCurrenciesForEdit() {
-    fetch('http://cambiosorion.cl/data/divisas_api.php')
+    fetch('https://cambiosorion.cl/data/divisas_api.php')
         .then(response => {
             if (!response.ok) {
                 throw new Error('Error al cargar las divisas');
