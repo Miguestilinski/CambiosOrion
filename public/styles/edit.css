@@ -134,6 +134,7 @@ nav ul li.selected a {
 table {
     width: 100%;
     border-collapse: collapse;
+    color: white;
     table-layout: fixed; /* Mantiene el tamaño fijo de las columnas */
     margin-bottom: 0; /* Eliminar el margen inferior de la tabla */
 }
