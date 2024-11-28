@@ -71,6 +71,8 @@ function fillEditCurrencyTable(divisas) {
 
         // Llenar la tabla con los datos recibidos
         divisas.forEach(divisa => {
+            if (divisa.nombre === 'CLP') return; // Ignorar CLP
+            
             // Formatear los valores para eliminar ceros innecesarios
             const formattedCompra = removeTrailingZeros(divisa.compra);
             const formattedVenta = removeTrailingZeros(divisa.venta);
