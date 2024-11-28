@@ -191,18 +191,26 @@ td.nombre {
     padding-left: 1px; /* Menos espacio a la izquierda para nombres */
 }
 
+.save-button-container {
+    display: flex;
+    justify-content: center; /* Centrar el botón */
+    margin-top: 1rem;
+}
+
 /* Estilo para los botones */
 #save-button {
+    width: 100%;
     margin-top: 20px;
-    padding: 10px;
+    max-width: 600px;
+    padding: 0.5rem 1rem;
     font-size: 1.2em;
     background-color: #007BFF;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    width: 100%; /* Ajustar el ancho del botón */
-    transition: background-color 0.3s; /* Transición suave para el hover */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s;
 }
 
 #save-button:hover {
@@ -239,7 +247,7 @@ td.nombre {
 input[type="number"] {
     padding: 10px;
     margin: 10px 0;
-    width: 150px; /* Ancho ajustado para evitar solapamientos */
+    width: 90%;
     border: none;
     border-radius: 5px;
     background-color: rgba(255, 255, 255, 0.1); /* Fondo semi-transparente */
