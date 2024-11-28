@@ -1,107 +1,135 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+let editableCurrencies = {};
+let editMode = false;
 
-const firebaseConfig = {
-    apiKey: "AIzaSyBiGcvDMop_Hn34S4FREinSx3fMViNeaSQ",
-    authDomain: "cambiosorion1035.firebaseapp.com",
-    databaseURL: "https://cambiosorion1035-default-rtdb.firebaseio.com",
-    projectId: "cambiosorion1035",
-    storageBucket: "cambiosorion1035.appspot.com",
-    messagingSenderId: "200079092450",
-    appId: "1:200079092450:web:9443f0d49831483532ccbb",
-    measurementId: "G-XL1LBMP2GW"
-};
+document.addEventListener('DOMContentLoaded', () => {
+    initializeEditPage();
 
-const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
-const dbRef = ref(database, 'Divisas');
-const auth = getAuth(app);
+    const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
+    console.log('Estado de la sesión (Edición):', isAuthenticated);
+    toggleSessionActions(isAuthenticated);
 
-let divisasData = {}; // Aquí guardaremos los datos de las divisas para su posterior uso.
-
-// Verificar el estado de autenticación
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        const userId = user.uid;
-        const userRoleRef = ref(database, `users/${userId}/role`);
-
-        onValue(userRoleRef, (snapshot) => {
-            const role = snapshot.val();
-
-            if (role === 'admin') {
-                loadData();
-            } else {
-                window.location.href = 'catalogo.html';
-            }
-        }, { onlyOnce: true });
-    } else {
-        window.location.href = 'catalogo.html';
-    }
+    setupEditEventListeners();
 });
 
-// Función para cargar los datos de divisas
-function loadData() {
-    onValue(dbRef, (snapshot) => {
-        divisasData = snapshot.val(); // Guardamos los datos de las divisas aquí
-        const list = document.getElementById("currency-list");
-        list.innerHTML = '';
+function initializeEditPage() {
+    loadCurrenciesForEdit();
+}
 
-        const divisasOrdenadas = [
-            "USD", "EUR", "ARS", "BRL", "PEN", "COP", 
-            "UYU", "BOB", "CAD", "GBP", "JPY", "GNY", 
-            "SEK", "AUD", "MXN", "NZD", "CHF", "DKK", 
-            "ORO 100"
-        ];
+function setupEditEventListeners() {
+    const saveButton = document.getElementById('save-currencies-button');
+    const cancelButton = document.getElementById('cancel-edit-button');
 
-        divisasOrdenadas.forEach((key) => {
-            const row = document.createElement("tr");
-            if (divisasData[key]) {
-                const { icono, compra, venta } = divisasData[key];
+    if (saveButton) {
+        saveButton.addEventListener('click', () => {
+            saveEditedCurrencies();
+        });
+    }
 
-                row.innerHTML = `
-                    <td class="icono"><img src="${icono}" alt="${key} icon"></td>
-                    <td class="nombre">${key}</td>
-                    <td><input type="number" step="0.01" value="${compra}" data-key="${key}" data-type="compra"></td>
-                    <td><input type="number" step="0.01" value="${venta}" data-key="${key}" data-type="venta"></td>
-                `;
+    if (cancelButton) {
+        cancelButton.addEventListener('click', () => {
+            cancelEdit();
+        });
+    }
+}
+
+function loadCurrenciesForEdit() {
+    const proxyUrl = 'https://corsproxy.io/?';
+    const targetUrl = 'https://cambiosorion.cl/data/divisas_api.php';
+
+    fetch(proxyUrl + targetUrl)
+        .then(response => response.json())
+        .then(data => {
+            const responseData = data.contents ? JSON.parse(data.contents) : data;
+
+            if (!Array.isArray(responseData)) {
+                console.error("Formato de datos inesperado:", responseData);
+                return;
             }
 
-            list.appendChild(row);
+            editableCurrencies = responseData.reduce((acc, currency) => {
+                acc[currency.nombre] = {
+                    compra: parseFloat(currency.compra),
+                    venta: parseFloat(currency.venta),
+                    tasa: parseFloat(currency.tasa),
+                    icono_circular: currency.icono_circular,
+                    icono_cuadrado: currency.icono_cuadrado
+                };
+                return acc;
+            }, {});
+
+            fillEditCurrencyTable();
+        })
+        .catch(error => console.error('Error al cargar las divisas para edición:', error));
+}
+
+function fillEditCurrencyTable() {
+    const editTable = document.getElementById('edit-currency-table');
+
+    if (!editTable) {
+        console.error('Tabla de edición no encontrada.');
+        return;
+    }
+
+    editTable.innerHTML = '';
+
+    Object.keys(editableCurrencies).forEach(currencyName => {
+        const currency = editableCurrencies[currencyName];
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${currencyName}</td>
+            <td><input type="number" value="${currency.compra}" class="edit-input" data-currency="${currencyName}" data-field="compra"></td>
+            <td><input type="number" value="${currency.venta}" class="edit-input" data-currency="${currencyName}" data-field="venta"></td>
+            <td><input type="number" value="${currency.tasa}" class="edit-input" data-currency="${currencyName}" data-field="tasa"></td>
+        `;
+        editTable.appendChild(row);
+    });
+
+    setupEditInputs();
+}
+
+function setupEditInputs() {
+    const editInputs = document.querySelectorAll('.edit-input');
+
+    editInputs.forEach(input => {
+        input.addEventListener('input', event => {
+            const { currency, field } = event.target.dataset;
+            const newValue = parseFloat(event.target.value);
+
+            if (editableCurrencies[currency]) {
+                editableCurrencies[currency][field] = newValue;
+            }
         });
     });
 }
 
-// Guardar cambios en la base de datos
-document.getElementById('save-button').addEventListener('click', () => {
-    const inputs = document.querySelectorAll('input[type="number"]');
+function saveEditedCurrencies() {
+    const proxyUrl = 'https://corsproxy.io/?';
+    const targetUrl = 'https://cambiosorion.cl/data/editar_divisas.php';
 
-    inputs.forEach((input) => {
-        const key = input.getAttribute('data-key');
-        const type = input.getAttribute('data-type');
-        const value = parseFloat(input.value);
+    const body = JSON.stringify(Object.values(editableCurrencies));
 
-        if (divisasData[key] && value !== divisasData[key][type]) {
-            divisasData[key][type] = value; // Actualizamos el valor en divisasData
+    fetch(proxyUrl + targetUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Cambios guardados:', data);
+            alert('Los cambios se han guardado correctamente.');
+            loadCurrenciesForEdit();
+        })
+        .catch(error => {
+            console.error('Error al guardar los cambios:', error);
+            alert('Ocurrió un error al guardar los cambios.');
+        });
+}
 
-            // Actualizar la base de datos
-            set(ref(database, `Divisas/${key}`), divisasData[key])
-                .then(() => {
-                    console.log(`Valor de ${type} para ${key} actualizado exitosamente.`);
-                })
-                .catch((error) => {
-                    console.error(`Error actualizando ${type} para ${key}: `, error);
-                });
-        }
-    });
-});
-
-// Abrir el catálogo en una nueva ventana
-document.getElementById('catalog-button-normal').addEventListener('click', () => {
-    window.open('catalogo.html', '_blank', 'width=1080,height=1920');
-});
-
-// Abrir el catálogo destacado en una nueva ventana
-document.getElementById('catalog-button-destacadas').addEventListener('click', () => {
-    window.open('destacadas.html', '_blank', 'width=1080,height=1920');
-});
+function cancelEdit() {
+    if (confirm('¿Estás seguro de que deseas cancelar los cambios?')) {
+        loadCurrenciesForEdit();
+    }
+}
