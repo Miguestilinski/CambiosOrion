@@ -62,10 +62,8 @@ function loadCurrenciesForEdit() {
 }
 
 function fillEditCurrencyTable(divisas) {
-    console.log('Datos de divisas recibidos:', divisas);
-
     // Verificar que la tabla exista en el DOM
-    const tableBody = document.querySelector('#currency-list');
+    const tableBody = document.querySelector('#currency-list'); // Cambié aquí el ID
 
     if (tableBody) {
         // Limpiar la tabla antes de llenarla
@@ -77,17 +75,16 @@ function fillEditCurrencyTable(divisas) {
             row.innerHTML = `
                 <td><img src="${divisa.icono_circular}" alt="${divisa.nombre}"></td>
                 <td>${divisa.nombre}</td>
-                <td><input type="number" class="edit-input" data-currency="${divisa.nombre}" data-field="compra" value="${divisa.compra}" step="0.01" min="0" /></td>
-                <td><input type="number" class="edit-input" data-currency="${divisa.nombre}" data-field="venta" value="${divisa.venta}" step="0.01" min="0" /></td>
+                <td><input type="number" class="edit-input" data-currency="${divisa.nombre}" data-field="compra" value="${divisa.compra}" step="0.01" min="0"></td>
+                <td><input type="number" class="edit-input" data-currency="${divisa.nombre}" data-field="venta" value="${divisa.venta}" step="0.01" min="0"></td>
             `;
             tableBody.appendChild(row);
         });
-
-        setupEditInputs();  // Llamar a esta función después de que se haya llenado la tabla
     } else {
         console.error('Tabla de edición no encontrada.');
     }
 }
+
 
 function setupEditInputs() {
     const editInputs = document.querySelectorAll('.edit-input');
