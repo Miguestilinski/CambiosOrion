@@ -55,11 +55,11 @@ function setupEditEventListeners() {
 
 function loadCurrenciesForEdit() {
     const proxyUrl = 'https://corsproxy.io/?';
-    const targetUrl = 'https://cambiosorion.cl/data/obtener_divisas.php';
+    const targetUrl = 'https://cambiosorion.cl/data/divisas_api.php';
     fetch(proxyUrl + targetUrl)
         .then(response => response.json())
         .then(data => {
-            fillEditCurrencyTable(data);  // Llamar a la función para llenar la tabla
+            fillEditCurrencyTable(data);
         })
         .catch(error => {
             console.error('Error al obtener las divisas:', error);
@@ -95,7 +95,6 @@ function fillEditCurrencyTable(divisas) {
 }
 
 window.onload = function() {
-    console.log('Página cargada, comenzando a cargar divisas...');
     loadCurrenciesForEdit();
 };
 
