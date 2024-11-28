@@ -95,6 +95,7 @@ function fillEditCurrencyTable(divisas) {
 }
 
 window.onload = function() {
+    console.log('Página cargada, comenzando a cargar divisas...');
     loadCurrenciesForEdit();
 };
 
