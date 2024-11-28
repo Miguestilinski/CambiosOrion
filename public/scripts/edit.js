@@ -65,7 +65,7 @@ function fillEditCurrencyTable(divisas) {
     console.log('Datos de divisas recibidos:', divisas);
 
     // Verificar que la tabla exista en el DOM
-    const tableBody = document.querySelector('#currency-list'); // Cambié aquí el ID
+    const tableBody = document.querySelector('#currency-list');
 
     if (tableBody) {
         // Limpiar la tabla antes de llenarla
@@ -77,19 +77,17 @@ function fillEditCurrencyTable(divisas) {
             row.innerHTML = `
                 <td><img src="${divisa.icono_circular}" alt="${divisa.nombre}"></td>
                 <td>${divisa.nombre}</td>
-                <td>${divisa.compra}</td>
-                <td>${divisa.venta}</td>
+                <td><input type="number" class="edit-input" data-currency="${divisa.nombre}" data-field="compra" value="${divisa.compra}" step="0.01" min="0" /></td>
+                <td><input type="number" class="edit-input" data-currency="${divisa.nombre}" data-field="venta" value="${divisa.venta}" step="0.01" min="0" /></td>
             `;
             tableBody.appendChild(row);
         });
+
+        setupEditInputs();  // Llamar a esta función después de que se haya llenado la tabla
     } else {
         console.error('Tabla de edición no encontrada.');
     }
 }
-
-window.onload = function() {
-    loadCurrenciesForEdit();
-};
 
 function setupEditInputs() {
     const editInputs = document.querySelectorAll('.edit-input');
@@ -101,6 +99,11 @@ function setupEditInputs() {
 
             if (editableCurrencies[currency]) {
                 editableCurrencies[currency][field] = newValue;
+            } else {
+                editableCurrencies[currency] = {
+                    nombre: currency,
+                    [field]: newValue
+                };
             }
         });
     });
