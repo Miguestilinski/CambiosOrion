@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const navMobileMenu = document.getElementById('nav-mobile-menu');
     const sessionMobileMenu = document.getElementById('session-mobile-menu');
 
-
     if (navMenuButton && sessionMenuButton && navMobileMenu && sessionMobileMenu) {
         navMenuButton.addEventListener('click', (event) => {
             toggleMenu(navMobileMenu); // Cambié la llamada para solo pasar un menú
@@ -35,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initializeEditPage() {
-    loadCurrenciesForEdit();
+    loadCurrenciesForEdit(); // Llamar aquí para cargar las divisas una vez que el DOM está listo
     setActiveLink('#nav-menu');
     setActiveLink('#session-menu');
 }
@@ -69,7 +68,7 @@ function loadCurrenciesForEdit() {
 function fillEditCurrencyTable(divisas) {
     console.log('Datos de divisas recibidos:', divisas);
 
-    // Verificar que la tabla exista en el DOM
+    // Verificar que la tabla exista en el DOM antes de intentar manipularla
     const tableBody = document.querySelector('#editCurrencyTable tbody');
 
     if (tableBody) {
@@ -93,10 +92,6 @@ function fillEditCurrencyTable(divisas) {
         console.error('Tabla de edición no encontrada.');
     }
 }
-
-window.onload = function() {
-    loadCurrenciesForEdit();
-};
 
 function setupEditInputs() {
     const editInputs = document.querySelectorAll('.edit-input');
