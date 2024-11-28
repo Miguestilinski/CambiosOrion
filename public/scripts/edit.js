@@ -6,19 +6,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
     console.log('Estado de la sesión (Edición):', isAuthenticated);
-
     toggleSessionActions(isAuthenticated);
+
+    const navMenuButton = document.getElementById('nav-menu-button');
+    const sessionMenuButton = document.getElementById('session-menu-button');
+    const navMobileMenu = document.getElementById('nav-mobile-menu');
+    const sessionMobileMenu = document.getElementById('session-mobile-menu');
+
+
+    if (navMenuButton && sessionMenuButton && navMobileMenu && sessionMobileMenu) {
+        navMenuButton.addEventListener('click', (event) => {
+            toggleMenu(navMobileMenu); // Cambié la llamada para solo pasar un menú
+            event.stopPropagation();
+        });
+
+        sessionMenuButton.addEventListener('click', (event) => {
+            toggleMenu(sessionMobileMenu); // Cambié la llamada para solo pasar un menú
+            event.stopPropagation();
+        });
+
+        document.addEventListener('click', () => {
+            closeMenu(navMobileMenu);
+            closeMenu(sessionMobileMenu);
+        });
+    }
 
     setupEditEventListeners();
 });
 
 function initializeEditPage() {
-    console.log('Inicializando página de edición');
-    const isAuthenticated = JSON.parse(localStorage.getItem('userAuthenticated') || 'false');
-    console.log('Estado de la sesión (Edición):', isAuthenticated);
-
-    toggleSessionActions(isAuthenticated);
-    
     loadCurrenciesForEdit();
     setActiveLink('#nav-menu');
     setActiveLink('#session-menu');
@@ -38,33 +54,33 @@ function setupEditEventListeners() {
 }
 
 function loadCurrenciesForEdit() {
-    const proxyUrl = 'https://corsproxy.io/?';
-    const targetUrl = 'https://cambiosorion.cl/data/divisas_api.php';
-
-    fetch(proxyUrl + targetUrl)
-        .then(response => response.json())
-        .then(data => {
-            const responseData = data.contents ? JSON.parse(data.contents) : data;
-
-            if (!Array.isArray(responseData)) {
-                console.error("Formato de datos inesperado:", responseData);
-                return;
+    fetch('http://tu-servidor.com/divisas_api.php')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al cargar las divisas');
             }
-
-            editableCurrencies = responseData.reduce((acc, currency) => {
-                acc[currency.nombre] = {
-                    compra: parseFloat(currency.compra),
-                    venta: parseFloat(currency.venta),
-                    tasa: parseFloat(currency.tasa),
-                    icono_circular: currency.icono_circular,
-                    icono_cuadrado: currency.icono_cuadrado
-                };
-                return acc;
-            }, {});
-
-            fillEditCurrencyTable();
+            return response.json();
         })
-        .catch(error => console.error('Error al cargar las divisas para edición:', error));
+        .then(data => {
+            console.log('Datos de divisas recibidos:', data);
+            if (Array.isArray(data) && data.length > 0) {
+                data.forEach(currency => {
+                    editableCurrencies[currency.nombre] = {
+                        compra: currency.compra,
+                        venta: currency.venta,
+                        tasa: currency.tasa,
+                        iconoCircular: currency.icono_circular,
+                        iconoCuadrado: currency.icono_cuadrado
+                    };
+                });
+                fillEditCurrencyTable();
+            } else {
+                console.warn('No hay datos de divisas para mostrar.');
+            }
+        })
+        .catch(error => {
+            console.error('Error al cargar las divisas:', error);
+        });
 }
 
 function fillEditCurrencyTable() {
