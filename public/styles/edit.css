@@ -229,6 +229,7 @@ td.nombre {
 
 /* Estilo para los botones de catálogo */
 #catalog-button-normal, #catalog-button-destacadas {
+    max-width: 400px;
     padding: 0.5rem 1rem;
     font-size: 1.2em;
     background-color: #28a745; /* Color verde para el botón */
