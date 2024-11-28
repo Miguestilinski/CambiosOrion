@@ -34,13 +34,13 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initializeEditPage() {
-    loadCurrenciesForEdit(); // Llamar aquí para cargar las divisas una vez que el DOM está listo
+    loadCurrenciesForEdit();
     setActiveLink('#nav-menu');
     setActiveLink('#session-menu');
 }
 
 function setupEditEventListeners() {
-    const saveButton = document.getElementById('save-currencies-button');
+    const saveButton = document.getElementById('save-button');
     const cancelButton = document.getElementById('cancel-edit-button');
 
     if (saveButton) {
@@ -68,8 +68,8 @@ function loadCurrenciesForEdit() {
 function fillEditCurrencyTable(divisas) {
     console.log('Datos de divisas recibidos:', divisas);
 
-    // Verificar que la tabla exista en el DOM antes de intentar manipularla
-    const tableBody = document.querySelector('#editCurrencyTable tbody');
+    // Verificar que la tabla exista en el DOM
+    const tableBody = document.querySelector('#currency-list'); // Cambié aquí el ID
 
     if (tableBody) {
         // Limpiar la tabla antes de llenarla
@@ -79,12 +79,10 @@ function fillEditCurrencyTable(divisas) {
         divisas.forEach(divisa => {
             const row = document.createElement('tr');
             row.innerHTML = `
+                <td><img src="${divisa.icono_circular}" alt="${divisa.nombre}"></td>
                 <td>${divisa.nombre}</td>
                 <td>${divisa.compra}</td>
                 <td>${divisa.venta}</td>
-                <td>${divisa.tasa}</td>
-                <td><img src="${divisa.icono_circular}" alt="${divisa.nombre}"></td>
-                <td><img src="${divisa.icono_cuadrado}" alt="${divisa.nombre}"></td>
             `;
             tableBody.appendChild(row);
         });
@@ -92,6 +90,10 @@ function fillEditCurrencyTable(divisas) {
         console.error('Tabla de edición no encontrada.');
     }
 }
+
+window.onload = function() {
+    loadCurrenciesForEdit();
+};
 
 function setupEditInputs() {
     const editInputs = document.querySelectorAll('.edit-input');
