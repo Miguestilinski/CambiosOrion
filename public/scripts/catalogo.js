@@ -29,6 +29,7 @@ function loadCurrencies() {
             let cambiosDetectados = false;
             let preciosAnteriores = {};
             
+
             // Recorrer las divisas y mostrar sus detalles
             divisasOrdenadas.forEach((key) => {
                 const divisa = responseData.find(d => d.nombre === key); // Buscar la divisa en los datos
@@ -38,7 +39,7 @@ function loadCurrencies() {
 
                     const { icono_circular, compra, venta } = divisa;
 
-                    // Formatear los valores de compra y venta usando la función removeTrailingZeros
+                    // Formatear los valores de compra y venta
                     const formattedCompra = removeTrailingZeros(compra);
                     const formattedVenta = removeTrailingZeros(venta);
 
@@ -58,8 +59,8 @@ function loadCurrencies() {
                     row.innerHTML = `
                         <td class="icono"><img src="${icono_circular}" alt="${key} icon"></td>
                         <td class="nombre">${key}</td>
-                        <td class="compra compra-${key}">${formattedCompra}</td> <!-- Se utiliza el valor formateado -->
-                        <td class="venta venta-${key}">${formattedVenta}</td> <!-- Se utiliza el valor formateado -->
+                        <td class="compra compra-${key}">${formattedCompra}</td>
+                        <td class="venta venta-${key}">${formattedVenta}</td>
                     `;
 
                     list.appendChild(row);
@@ -80,6 +81,9 @@ function loadCurrencies() {
         })
         .catch(error => console.error('Error al cargar las divisas:', error));
 }
+
+// Llamar a la función para cargar las divisas cuando se cargue la página
+loadCurrencies();
 
 // Función para manejar el estado de conexión (offline/online)
 const offlinePopup = document.getElementById('offline-popup');
