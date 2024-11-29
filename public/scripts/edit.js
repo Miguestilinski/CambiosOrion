@@ -120,16 +120,25 @@ function setupEditInputs() {
             if (editableCurrencies[currency]) {
                 editableCurrencies[currency][field] = newValue;
             } else {
+                const row = input.closest('tr');
+                const iconoCircular = row.querySelector('td img').getAttribute('src');
+                const iconoCuadrado = iconoCircular.replace('circular', 'cuadrado'); // Ejemplo de mapeo
+
                 editableCurrencies[currency] = {
                     nombre: currency,
-                    [field]: newValue
+                    compra: field === 'compra' ? newValue : parseFloat(row.querySelector('[data-field="compra"]').value),
+                    venta: field === 'venta' ? newValue : parseFloat(row.querySelector('[data-field="venta"]').value),
+                    icono_circular: iconoCircular,
+                    icono_cuadrado: iconoCuadrado,
                 };
             }
         });
     });
 }
 
-async function saveEditedCurrencies(data) {
+async function saveEditedCurrencies() {
+    const data = Object.values(editableCurrencies); // Convierte las ediciones en un array
+
     console.log("Datos enviados:", data);
 
     try {
