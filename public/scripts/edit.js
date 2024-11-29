@@ -11,12 +11,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (navMenuButton && sessionMenuButton && navMobileMenu && sessionMobileMenu) {
         navMenuButton.addEventListener('click', (event) => {
-            toggleMenu(navMobileMenu); // Cambié la llamada para solo pasar un menú
+            toggleMenu(navMobileMenu);
             event.stopPropagation();
         });
 
         sessionMenuButton.addEventListener('click', (event) => {
-            toggleMenu(sessionMobileMenu); // Cambié la llamada para solo pasar un menú
+            toggleMenu(sessionMobileMenu);
             event.stopPropagation();
         });
 
@@ -48,11 +48,25 @@ function setupEditEventListeners() {
     }
 }
 
+function toggleMenu(menu) {
+    if (menu) {
+        menu.classList.toggle('visible');
+    }
+}
+
+function closeMenu(menu) {
+    if (menu && menu.classList.contains('visible')) {
+        menu.classList.remove('visible');
+    }
+}
+
 function loadCurrenciesForEdit() {
-    const proxyUrl = 'https://corsproxy.io/?';
     const targetUrl = 'https://cambiosorion.cl/data/divisas_api.php';
-    fetch(proxyUrl + targetUrl)
-        .then(response => response.json())
+    fetch(targetUrl)
+        .then(response => {
+            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+            return response.json();
+        })
         .then(data => {
             fillEditCurrencyTable(data);
         })
@@ -62,18 +76,14 @@ function loadCurrenciesForEdit() {
 }
 
 function fillEditCurrencyTable(divisas) {
-    // Verificar que la tabla exista en el DOM
-    const tableBody = document.querySelector('#currency-list'); // Cambié aquí el ID
+    const tableBody = document.querySelector('#currency-list');
 
     if (tableBody) {
-        // Limpiar la tabla antes de llenarla
         tableBody.innerHTML = '';
 
-        // Llenar la tabla con los datos recibidos
         divisas.forEach(divisa => {
-            if (divisa.nombre === 'CLP') return; // Ignorar CLP
-            
-            // Formatear los valores para eliminar ceros innecesarios
+            if (divisa.nombre === 'CLP') return;
+
             const formattedCompra = removeTrailingZeros(divisa.compra);
             const formattedVenta = removeTrailingZeros(divisa.venta);
 
@@ -87,17 +97,14 @@ function fillEditCurrencyTable(divisas) {
             tableBody.appendChild(row);
         });
 
-        // Configurar los eventos para los inputs editables
         setupEditInputs();
     } else {
         console.error('Tabla de edición no encontrada.');
     }
 }
 
-// Función para eliminar ceros innecesarios de los decimales
 function removeTrailingZeros(value) {
     if (value === null || value === undefined) return '';
-    // Convertir a número flotante y luego a string para eliminar ceros finales
     const floatValue = parseFloat(value);
     return floatValue.toString();
 }
@@ -123,19 +130,21 @@ function setupEditInputs() {
 }
 
 function saveEditedCurrencies() {
-    const proxyUrl = 'https://corsproxy.io/?';
     const targetUrl = 'https://cambiosorion.cl/data/divisas_api.php';
 
     const body = JSON.stringify(Object.values(editableCurrencies));
 
-    fetch(proxyUrl + targetUrl, {
+    fetch(targetUrl, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body
     })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+            return response.json();
+        })
         .then(data => {
             console.log('Cambios guardados:', data);
             alert('Los cambios se han guardado correctamente.');
