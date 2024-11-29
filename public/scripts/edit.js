@@ -95,6 +95,15 @@ function fillEditCurrencyTable(divisas) {
                 <td><input type="number" class="edit-input" data-currency="${divisa.nombre}" data-field="venta" value="${formattedVenta}" step="any" min="0"></td>
             `;
             tableBody.appendChild(row);
+
+            // Inicializar la estructura de la divisa
+            editableCurrencies[divisa.nombre] = {
+                nombre: divisa.nombre,
+                compra: divisa.compra,
+                venta: divisa.venta,
+                icono_circular: divisa.icono_circular,
+                icono_cuadrado: divisa.icono_cuadrado || divisa.icono_circular.replace('circular', 'cuadrado'),
+            };
         });
 
         setupEditInputs();
@@ -123,22 +132,12 @@ function setupEditInputs() {
             }
 
             if (!editableCurrencies[currency]) {
-                // Crear la estructura inicial para una nueva divisa
-                const row = input.closest('tr');
-                const iconoCircular = row.querySelector('td img').getAttribute('src');
-                const iconoCuadrado = iconoCircular.replace('circular', 'cuadrado'); // Ejemplo de mapeo
-
-                editableCurrencies[currency] = {
-                    nombre: currency,
-                    compra: null,
-                    venta: null,
-                    icono_circular: iconoCircular,
-                    icono_cuadrado: iconoCuadrado,
-                };
+                console.error(`No se encontró la divisa ${currency} en editableCurrencies.`);
+                return;
             }
 
             // Actualizar el campo modificado
-            editableCurrencies[currency][field] = newValue;
+            editableCurrencies[currency][field] = isNaN(newValue) ? null : newValue;
         });
     });
 }
@@ -155,8 +154,8 @@ async function saveEditedCurrencies() {
     // Validar que cada divisa tiene todos los campos necesarios
     const isValidData = data.every(divisa =>
         divisa.nombre &&
-        divisa.compra !== undefined &&
-        divisa.venta !== undefined &&
+        divisa.compra !== null &&
+        divisa.venta !== null &&
         divisa.icono_circular &&
         divisa.icono_cuadrado
     );
@@ -195,6 +194,7 @@ async function saveEditedCurrencies() {
 function cancelEdit() {
     if (confirm('¿Estás seguro de que deseas cancelar los cambios?')) {
         loadCurrenciesForEdit();
+        editableCurrencies = {}; // Reiniciar las ediciones
     }
 }
 
