@@ -57,7 +57,6 @@ th.icono, th.nombre {
 }
 
 .logo-container img {
-    width: 200px; /* Tamaño del logo */
     height: auto;
     display: flex;
     flex-direction: column; /* Apilar elementos verticalmente */
@@ -71,7 +70,7 @@ th.icono, th.nombre {
 }
 
 .name-image {
-    width: 50px; /* Ajusta según el tamaño deseado */
+    width: 150px; /* Ajusta según el tamaño deseado */
     margin-bottom: 1rem;
 }
 
