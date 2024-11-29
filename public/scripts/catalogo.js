@@ -74,10 +74,6 @@ function loadCurrencies() {
                     console.error("Error reproduciendo el sonido de alerta:", error);
                 });
             }
-
-            // Actualizar la interfaz adicional
-            updateAddCurrencyDropdown();
-            fillCurrencyTable();
         })
         .catch(error => console.error('Error al cargar las divisas:', error));
 }
