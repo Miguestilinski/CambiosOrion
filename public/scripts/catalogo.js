@@ -28,13 +28,20 @@ function loadCurrencies() {
 
             let cambiosDetectados = false;
             let preciosAnteriores = {};
+            
 
             // Recorrer las divisas y mostrar sus detalles
             divisasOrdenadas.forEach((key) => {
                 const divisa = responseData.find(d => d.nombre === key); // Buscar la divisa en los datos
 
                 if (divisa) {
+                    if (divisa.nombre === 'CLP') return;
+
                     const { icono_circular, compra, venta } = divisa;
+
+                    // Formatear los valores de compra y venta
+                    const formattedCompra = removeTrailingZeros(compra);
+                    const formattedVenta = removeTrailingZeros(venta);
 
                     // Comparar con los precios anteriores
                     if (preciosAnteriores[key]) {
@@ -78,16 +85,6 @@ function loadCurrencies() {
 // Llamar a la función para cargar las divisas cuando se cargue la página
 loadCurrencies();
 
-// Función para actualizar el dropdown de divisas
-function updateAddCurrencyDropdown() {
-    // Lógica para actualizar el dropdown (si es necesario)
-}
-
-// Función para llenar la tabla de divisas (si es necesario)
-function fillCurrencyTable() {
-    // Lógica para actualizar la tabla de divisas (si es necesario)
-}
-
 // Función para manejar el estado de conexión (offline/online)
 const offlinePopup = document.getElementById('offline-popup');
 
@@ -104,3 +101,9 @@ function updateOnlineStatus() {
 window.addEventListener('online', updateOnlineStatus);
 window.addEventListener('offline', updateOnlineStatus);
 updateOnlineStatus();
+
+function removeTrailingZeros(value) {
+    if (value === null || value === undefined) return '';
+    const floatValue = parseFloat(value);
+    return floatValue.toString();
+}
