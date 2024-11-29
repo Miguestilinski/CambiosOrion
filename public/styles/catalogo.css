@@ -23,6 +23,11 @@ body::before {
     z-index: -1;
 }
 
+html, body {
+    display: flex;
+    flex-direction: column;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
