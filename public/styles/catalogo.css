@@ -66,12 +66,13 @@ th.icono, th.nombre {
 }
 
 .logo-image {
-    width: 150px; /* Ajusta según el tamaño deseado */
+    width: 140px; /* Ajusta según el tamaño deseado */
 }
 
 .name-image { 
-    width: 150px; /* Ajusta según el tamaño deseado */
+    width: 140px; /* Ajusta según el tamaño deseado */
     margin-bottom: 1rem;
+    justify-self: center;
 }
 
 tr {
@@ -86,6 +87,7 @@ img {
     width: 25px; /* Reduce el tamaño de los iconos */
     height: 25px;
     object-fit: cover; /* Ajustar el contenido dentro del círculo */
+    margin-bottom: 4px;
 }
 
 /* Ajustar padding para mantener iconos cerca del borde izquierdo */

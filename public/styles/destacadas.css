@@ -23,6 +23,11 @@ body::before {
     z-index: -1;
 }
 
+html, body {
+    display: flex;
+    flex-direction: column;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
@@ -65,8 +70,22 @@ td.nombre {
 }
 
 .logo-container img {
-    width: 200px; /* Tamaño del logo */
     height: auto;
+    display: flex;
+    flex-direction: column; /* Apilar elementos verticalmente */
+    align-items: center;    /* Centrar las imágenes horizontalmente */
+    justify-content: center; /* Centrar las imágenes verticalmente si es necesario */
+    gap: 10px; /* Reduce la distancia entre el logo y la tabla */
+}
+
+.logo-image {
+    width: 140px; /* Ajusta según el tamaño deseado */
+}
+
+.name-image { 
+    width: 140px; /* Ajusta según el tamaño deseado */
+    margin-bottom: 1rem;
+    justify-self: center;
 }
 
 /* CSS para que el nombre esté encima del ícono en las divisas destacadas */
