@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     setupEditEventListeners();
+    setupCatalogButtons(); // Añadido para configurar los botones de catálogo
 });
 
 function initializeEditPage() {
@@ -45,6 +46,23 @@ function setupEditEventListeners() {
 
     if (cancelButton) {
         cancelButton.addEventListener('click', cancelEdit);
+    }
+}
+
+function setupCatalogButtons() {
+    const catalogButtonNormal = document.getElementById('catalog-button-normal');
+    const catalogButtonDestacadas = document.getElementById('catalog-button-destacadas');
+
+    if (catalogButtonNormal) {
+        catalogButtonNormal.addEventListener('click', () => {
+            window.open('catalogo.html', '_blank');
+        });
+    }
+
+    if (catalogButtonDestacadas) {
+        catalogButtonDestacadas.addEventListener('click', () => {
+            window.open('destacadas.html', '_blank');
+        });
     }
 }
 
@@ -96,7 +114,6 @@ function fillEditCurrencyTable(divisas) {
             `;
             tableBody.appendChild(row);
 
-            // Inicializar la estructura de la divisa
             editableCurrencies[divisa.nombre] = {
                 nombre: divisa.nombre,
                 compra: divisa.compra,
@@ -136,14 +153,13 @@ function setupEditInputs() {
                 return;
             }
 
-            // Actualizar el campo modificado
             editableCurrencies[currency][field] = isNaN(newValue) ? null : newValue;
         });
     });
 }
 
 async function saveEditedCurrencies() {
-    const data = Object.values(editableCurrencies); // Convierte las ediciones en un array
+    const data = Object.values(editableCurrencies);
 
     if (!data.length) {
         console.error("No hay datos para guardar.");
@@ -151,7 +167,6 @@ async function saveEditedCurrencies() {
         return;
     }
 
-    // Validar que cada divisa tiene todos los campos necesarios
     const isValidData = data.every(divisa =>
         divisa.nombre &&
         divisa.compra !== null &&
@@ -165,8 +180,6 @@ async function saveEditedCurrencies() {
         alert("Hay datos incompletos. Por favor, verifica las divisas.");
         return;
     }
-
-    console.log("Datos enviados:", data);
 
     try {
         const response = await fetch('https://cambiosorion.cl/data/divisas_api.php', {
@@ -184,7 +197,6 @@ async function saveEditedCurrencies() {
 
         const result = await response.json();
         console.log("Cambios guardados:", result.message);
-        alert("Cambios guardados exitosamente.");
     } catch (error) {
         console.error("Error al guardar los cambios:", error);
         alert(`Error al guardar los cambios: ${error.message}`);
@@ -194,7 +206,7 @@ async function saveEditedCurrencies() {
 function cancelEdit() {
     if (confirm('¿Estás seguro de que deseas cancelar los cambios?')) {
         loadCurrenciesForEdit();
-        editableCurrencies = {}; // Reiniciar las ediciones
+        editableCurrencies = {};
     }
 }
 
