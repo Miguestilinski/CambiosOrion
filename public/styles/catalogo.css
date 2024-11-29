@@ -59,7 +59,20 @@ th.icono, th.nombre {
 .logo-container img {
     width: 200px; /* Tamaño del logo */
     height: auto;
-    margin-bottom: -10px; /* Reduce la distancia entre el logo y la tabla */
+    margin-bottom: -10px;
+    display: flex;
+    flex-direction: column; /* Apilar elementos verticalmente */
+    align-items: center;    /* Centrar las imágenes horizontalmente */
+    justify-content: center; /* Centrar las imágenes verticalmente si es necesario */
+    gap: 10px; /* Reduce la distancia entre el logo y la tabla */
+}
+
+.logo-image {
+    width: 150px; /* Ajusta según el tamaño deseado */
+}
+
+.name-image {
+    width: 50px; /* Ajusta según el tamaño deseado */
 }
 
 tr {
