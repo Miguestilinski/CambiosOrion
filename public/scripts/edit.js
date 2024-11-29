@@ -40,7 +40,7 @@ function setupEditEventListeners() {
     const cancelButton = document.getElementById('cancel-edit-button');
 
     if (saveButton) {
-        saveButton.addEventListener('click', saveEditedCurrencies (data));
+        saveButton.addEventListener('click', saveEditedCurrencies);
     }
 
     if (cancelButton) {
@@ -161,8 +161,6 @@ async function saveEditedCurrencies() {
         console.error("Error al guardar los cambios:", error);
     }
 }
-
-console.log(JSON.stringify(data, null, 2));
 
 function cancelEdit() {
     if (confirm('¿Estás seguro de que deseas cancelar los cambios?')) {
