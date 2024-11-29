@@ -117,27 +117,55 @@ function setupEditInputs() {
             const { currency, field } = event.target.dataset;
             const newValue = parseFloat(event.target.value);
 
-            if (editableCurrencies[currency]) {
-                editableCurrencies[currency][field] = newValue;
-            } else {
+            if (!currency || !field) {
+                console.error("Falta información del dataset:", event.target.dataset);
+                return;
+            }
+
+            if (!editableCurrencies[currency]) {
+                // Crear la estructura inicial para una nueva divisa
                 const row = input.closest('tr');
                 const iconoCircular = row.querySelector('td img').getAttribute('src');
                 const iconoCuadrado = iconoCircular.replace('circular', 'cuadrado'); // Ejemplo de mapeo
 
                 editableCurrencies[currency] = {
                     nombre: currency,
-                    compra: field === 'compra' ? newValue : parseFloat(row.querySelector('[data-field="compra"]').value),
-                    venta: field === 'venta' ? newValue : parseFloat(row.querySelector('[data-field="venta"]').value),
+                    compra: null,
+                    venta: null,
                     icono_circular: iconoCircular,
                     icono_cuadrado: iconoCuadrado,
                 };
             }
+
+            // Actualizar el campo modificado
+            editableCurrencies[currency][field] = newValue;
         });
     });
 }
 
 async function saveEditedCurrencies() {
     const data = Object.values(editableCurrencies); // Convierte las ediciones en un array
+
+    if (!data.length) {
+        console.error("No hay datos para guardar.");
+        alert("No hay datos para guardar.");
+        return;
+    }
+
+    // Validar que cada divisa tiene todos los campos necesarios
+    const isValidData = data.every(divisa =>
+        divisa.nombre &&
+        divisa.compra !== undefined &&
+        divisa.venta !== undefined &&
+        divisa.icono_circular &&
+        divisa.icono_cuadrado
+    );
+
+    if (!isValidData) {
+        console.error("Algunos datos están incompletos:", data);
+        alert("Hay datos incompletos. Por favor, verifica las divisas.");
+        return;
+    }
 
     console.log("Datos enviados:", data);
 
@@ -157,8 +185,10 @@ async function saveEditedCurrencies() {
 
         const result = await response.json();
         console.log("Cambios guardados:", result.message);
+        alert("Cambios guardados exitosamente.");
     } catch (error) {
         console.error("Error al guardar los cambios:", error);
+        alert(`Error al guardar los cambios: ${error.message}`);
     }
 }
 
