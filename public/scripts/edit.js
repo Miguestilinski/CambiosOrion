@@ -40,7 +40,7 @@ function setupEditEventListeners() {
     const cancelButton = document.getElementById('cancel-edit-button');
 
     if (saveButton) {
-        saveButton.addEventListener('click', saveEditedCurrencies);
+        saveButton.addEventListener('click', saveEditedCurrencies (data));
     }
 
     if (cancelButton) {
@@ -130,6 +130,8 @@ function setupEditInputs() {
 }
 
 async function saveEditedCurrencies(data) {
+    console.log("Datos enviados:", data);
+
     try {
         const response = await fetch('https://cambiosorion.cl/data/divisas_api.php', {
             method: 'POST',
@@ -150,6 +152,7 @@ async function saveEditedCurrencies(data) {
         console.error("Error al guardar los cambios:", error);
     }
 }
+
 console.log(JSON.stringify(data, null, 2));
 
 function cancelEdit() {
