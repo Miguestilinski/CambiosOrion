@@ -129,32 +129,28 @@ function setupEditInputs() {
     });
 }
 
-function saveEditedCurrencies() {
-    const targetUrl = 'https://cambiosorion.cl/data/divisas_api.php';
-
-    const body = JSON.stringify(Object.values(editableCurrencies));
-
-    fetch(targetUrl, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body
-    })
-        .then(response => {
-            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-            return response.json();
-        })
-        .then(data => {
-            console.log('Cambios guardados:', data);
-            alert('Los cambios se han guardado correctamente.');
-            loadCurrenciesForEdit();
-        })
-        .catch(error => {
-            console.error('Error al guardar los cambios:', error);
-            alert('Ocurrió un error al guardar los cambios.');
+async function saveEditedCurrencies(data) {
+    try {
+        const response = await fetch('https://cambiosorion.cl/data/divisas_api.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
         });
+
+        if (!response.ok) {
+            const errorDetails = await response.json();
+            throw new Error(errorDetails.error || `HTTP error! Status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log("Cambios guardados:", result.message);
+    } catch (error) {
+        console.error("Error al guardar los cambios:", error);
+    }
 }
+console.log(JSON.stringify(data, null, 2));
 
 function cancelEdit() {
     if (confirm('¿Estás seguro de que deseas cancelar los cambios?')) {
