@@ -112,11 +112,19 @@ nav ul li.selected a {
     transform: scale(1.05);
 }
 
-.guest-actions {
+#user-actions {
+    display: none;
+    align-items: center; /* Alineación del contenido */
+    gap: 10px; /* Espaciado entre elementos */
+}
+
+#guest-actions {
     display: flex;
-    align-items: center;
-    justify-content: flex-end;
     gap: 20px;
+}
+
+.hidden {
+    display: none !important;
 }
 
 /* Línea divisoria blanca de 1pt debajo del header */

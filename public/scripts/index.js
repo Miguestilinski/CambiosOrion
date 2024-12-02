@@ -41,64 +41,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-function toggleSessionActions(isAuthenticated) {
-    const userActions = document.getElementById('user-actions');
-    const guestActions = document.getElementById('guest-actions');
-    const profileMenuButton = document.getElementById('profile-menu-button');
-
-    if (isAuthenticated) {
-        console.log("Usuario autenticado, mostrando acciones");
-        userActions.style.display = 'block';
-        guestActions.style.display = 'none';
-        profileMenuButton.addEventListener('click', () => {
-            const profileMenu = document.getElementById('profile-menu');
-            profileMenu.classList.toggle('hidden');
-        });
-    } else {
-        console.log("Usuario no autenticado");
-        guestActions.style.display = 'block';
-        userActions.style.display = 'none';
-    }
-
-    localStorage.setItem('userAuthenticated', isAuthenticated ? 'true' : 'false');
-}
-
-document.getElementById('logout-button')?.addEventListener('click', () => {
-    localStorage.setItem('userAuthenticated', 'false');
-    toggleSessionActions(false);
-});
-
 document.addEventListener('DOMContentLoaded', () => {
-    initializePage();
-
     const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
     console.log('Estado de la sesión:', isAuthenticated);
-    toggleSessionActions(isAuthenticated); // Se asegura de que las acciones se muestren correctamente
-
-    const navMenuButton = document.getElementById('nav-menu-button');
-    const sessionMenuButton = document.getElementById('session-menu-button');
-    const navMobileMenu = document.getElementById('nav-mobile-menu');
-    const sessionMobileMenu = document.getElementById('session-mobile-menu');
-
-    if (navMenuButton && sessionMenuButton && navMobileMenu && sessionMobileMenu) {
-        navMenuButton.addEventListener('click', (event) => {
-            toggleMenu(navMobileMenu); // Cambié la llamada para solo pasar un menú
-            event.stopPropagation();
-        });
-
-        sessionMenuButton.addEventListener('click', (event) => {
-            toggleMenu(sessionMobileMenu); // Cambié la llamada para solo pasar un menú
-            event.stopPropagation();
-        });
-
-        document.addEventListener('click', () => {
-            closeMenu(navMobileMenu);
-            closeMenu(sessionMobileMenu);
-        });
-    }
+    toggleSessionActions(isAuthenticated);
 });
 
-// Función para alternar visibilidad de las acciones según estado de sesión
 function toggleSessionActions(isAuthenticated) {
     const userActions = document.getElementById('user-actions');
     const guestActions = document.getElementById('guest-actions');
@@ -106,7 +54,7 @@ function toggleSessionActions(isAuthenticated) {
 
     if (isAuthenticated) {
         console.log("Usuario autenticado, mostrando acciones");
-        userActions.style.display = 'block';
+        userActions.style.display = 'flex'; // Asegúrate de usar 'flex' en lugar de 'block'
         guestActions.style.display = 'none';
         profileMenuButton.addEventListener('click', () => {
             const profileMenu = document.getElementById('profile-menu');
@@ -114,10 +62,11 @@ function toggleSessionActions(isAuthenticated) {
         });
     } else {
         console.log("Usuario no autenticado");
-        guestActions.style.display = 'block';
+        guestActions.style.display = 'flex';
         userActions.style.display = 'none';
     }
 
+    // Guarda el estado de autenticación en localStorage
     localStorage.setItem('userAuthenticated', isAuthenticated ? 'true' : 'false');
 }
 
