@@ -112,6 +112,13 @@ nav ul li.selected a {
     transform: scale(1.05);
 }
 
+.guest-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 20px;
+}
+
 /* Línea divisoria blanca de 1pt debajo del header */
 .header-divider {
     height: 0.5px;
