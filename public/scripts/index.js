@@ -41,6 +41,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+function toggleSessionActions(isAuthenticated) {
+    const userActions = document.getElementById('user-actions');
+    const guestActions = document.getElementById('guest-actions');
+    const profileMenuButton = document.getElementById('profile-menu-button');
+    const profileMenu = document.getElementById('profile-menu');
+
+    if (isAuthenticated) {
+        userActions.style.display = 'flex';
+        guestActions.style.display = 'none';
+        profileMenuButton?.addEventListener('click', () => {
+            profileMenu?.classList.toggle('hidden');
+        });
+    } else {
+        guestActions.style.display = 'flex';
+        userActions.style.display = 'none';
+    }
+}
 
 document.getElementById('logout-button')?.addEventListener('click', () => {
     localStorage.setItem('userAuthenticated', 'false');
