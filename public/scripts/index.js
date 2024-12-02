@@ -51,19 +51,40 @@ function toggleSessionActions(isAuthenticated) {
     const userActions = document.getElementById('user-actions');
     const guestActions = document.getElementById('guest-actions');
     const profileMenuButton = document.getElementById('profile-menu-button');
+    const profileMenu = document.getElementById('profile-menu');
 
     if (isAuthenticated) {
         console.log("Usuario autenticado, mostrando acciones");
-        userActions.style.display = 'flex'; // Asegúrate de usar 'flex' en lugar de 'block'
+        // Mostrar las acciones para usuarios autenticados
+        userActions.style.display = 'flex'; // Asegúrate de usar 'flex' para contenedores flexibles
         guestActions.style.display = 'none';
-        profileMenuButton.addEventListener('click', () => {
-            const profileMenu = document.getElementById('profile-menu');
-            profileMenu.classList.toggle('hidden');
-        });
+
+        // Asegurarse de que el botón de perfil sea visible
+        if (profileMenuButton) {
+            profileMenuButton.classList.remove('hidden');
+
+            // Agregar evento para alternar el menú del perfil
+            profileMenuButton.addEventListener('click', () => {
+                if (profileMenu) {
+                    profileMenu.classList.toggle('hidden');
+                }
+            });
+        }
     } else {
-        console.log("Usuario no autenticado");
+        console.log("Usuario no autenticado, mostrando acciones de invitados");
+        // Mostrar las acciones para invitados
         guestActions.style.display = 'flex';
         userActions.style.display = 'none';
+
+        // Asegurarse de que el botón de perfil esté oculto
+        if (profileMenuButton) {
+            profileMenuButton.classList.add('hidden');
+        }
+
+        // Asegurarse de ocultar el menú del perfil
+        if (profileMenu) {
+            profileMenu.classList.add('hidden');
+        }
     }
 
     // Guarda el estado de autenticación en localStorage
@@ -75,6 +96,7 @@ document.getElementById('logout-button')?.addEventListener('click', () => {
     localStorage.setItem('userAuthenticated', 'false');
     toggleSessionActions(false);
 });
+
 
 // Función para alternar visibilidad del menú
 function toggleMenu(menuToOpen, menuToClose) {

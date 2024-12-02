@@ -457,10 +457,6 @@ footer {
     background-color: #f9f9f9; /* Fondo gris claro */
 }
 
-.menu-button {
-    display: none;
-}
-
 /* Estilo para las opciones del menú */
 .mobile-menu ul {
     padding: 0;
@@ -555,6 +551,7 @@ footer {
     }
 
     .menu-button {
+        display: none;
         background: none;
         border: none;
         width: 40px;

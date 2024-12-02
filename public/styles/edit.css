@@ -265,10 +265,6 @@ input[type="number"] {
     font-size: 1.1em; /* Ajustar el tamaño de la fuente */
 }
 
-.menu-button {
-    display: none;
-}
-
 /* Estilo para las opciones del menú */
 .mobile-menu ul {
     padding: 0;
@@ -363,6 +359,7 @@ input[type="number"] {
     }
 
     .menu-button {
+        display: none;
         background: none;
         border: none;
         width: 40px;
