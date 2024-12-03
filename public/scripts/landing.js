@@ -118,6 +118,8 @@ function fillCurrencyTable() {
                 row.classList.add("first-row");
             }
             tableBody.appendChild(row);
+        } else {
+            console.log(`No se encontraron datos para la divisa: ${currency}`);
         }
     });
 }
