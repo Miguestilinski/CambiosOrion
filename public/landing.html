@@ -101,111 +101,27 @@
     <div class="header-divider"></div>
     <div class="main-content">
         <main>
-            <!-- Conversor de divisas -->
+            <!-- Sección de Mantenimiento -->
             <section class="max-w-xl mx-auto my-10 bg-white p-8 rounded-xl shadow-lg">
-                <h2 class="text-center text-2xl font-semibold text-gray-800 mb-6">Cotizar cambio</h2>
-                <div id="currency-converter" class="currency-converter flex justify-between">
-                    <!-- Columna izquierda -->
-                    <div class="converter-box flex-1 relative">
-                        <label for="amount1" class="block text-lg font-bold mb-2">¿Qué divisa tienes?</label>
-                        <input type="number" id="amount1" placeholder="0.00" min="0"
-                            class="w-full p-4 border rounded-lg shadow-md text-right bg-white mb-3 appearance-none"
-                            oninput="convertFromAmount1()">
-                        <div id="dropdown1Button" class="currency-selector"
-                            onclick="toggleDropdown('dropdown1', event)">
-                            <img id="icon-currency1" src="/orionapp/node_modules/circle-flags/flags/cl.svg" alt="Icono divisa" class="w-5 h-5 mr-2">
-                            <span id="currency1-text" class="font-medium">CLP</span>
-                            <svg class="w-4 h-4 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-                            </svg>
-                        </div>
-                        <div id="dropdown1" class="dropdown-content hidden divide-y divide-gray-100 rounded-lg shadow-md overflow-y-auto">
-                            <ul class="py-1 text-sm text-gray-700" aria-labelledby="dropdown1Button">
-                                <li onclick="selectCurrency('USD', '/orionapp/node_modules/circle-flags/flags/us.svg', 'currency1', 'dropdown1')">
-                                    <a href="#" class="px-2 py-1 hover:bg-gray-100 flex items-center currency-option">
-                                        <img src="/orionapp/node_modules/circle-flags/flags/us.svg" alt="Icono USD" class="w-5 h-5 inline-block mr-2"> 
-                                        <span>USD</span>
-                                    </a>
-                                </li>
-                                <!-- Agrega más opciones según sea necesario -->
-                            </ul>
-                        </div>
-                    </div>
+                <h2 class="text-center text-3xl font-semibold text-gray-800 mb-6">¡Estamos en mantenimiento!</h2>
+                <p class="text-center text-gray-600">Nuestra página está siendo actualizada para brindarte un mejor servicio. Vuelve pronto.</p>
+            </section>
 
-                    <!-- Columna derecha -->
-                    <div class="converter-box flex-1 relative">
-                        <label for="amount2" class="block text-lg font-bold mb-2">¿Qué divisa quieres?</label>
-                        <input type="number" id="amount2" placeholder="0.00" min="0"
-                            class="w-full p-4 border rounded-lg shadow-md text-right bg-white mb-3 appearance-none"
-                            oninput="convertFromAmount2()">
-                        <div id="dropdown2Button" class="currency-selector"
-                            onclick="toggleDropdown('dropdown2', event)">
-                            <img id="icon-currency2" src="/orionapp/node_modules/circle-flags/flags/us.svg" alt="Icono divisa" class="w-5 h-5 mr-2">
-                            <span id="currency2-text" class="font-medium">USD</span>
-                            <svg class="w-4 h-4 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-                            </svg>
-                        </div>
-                        
-                        <div id="dropdown2" class="dropdown-content hidden divide-y divide-gray-100 rounded-lg shadow-md overflow-y-auto">
-                            <ul class="py-1 text-sm text-gray-700" aria-labelledby="dropdown2Button">
-                                <li onclick="selectCurrency('CLP', '/orionapp/node_modules/circle-flags/flags/cl.svg', 'currency2', 'dropdown2')">
-                                    <a href="#" class="px-2 py-1 hover:bg-gray-100 flex items-center currency-option">
-                                        <img src="/orionapp/node_modules/circle-flags/flags/cl.svg" alt="Icono USD" class="w-5 h-5 inline-block mr-2"> 
-                                        <span>CLP</span>
-                                    </a>
-                                </li>
-                                <!-- Agrega más opciones según sea necesario -->
-                            </ul>
-                        </div>
-                    </div>                    
-                </div>
-            </section>
-            <!-- Envío de Dinero -->
-            <section id="sending-money" class="sending-money-section bg-white w-full shadow-lg p-8">
-                <div class="sending-money-container">
-                    <!-- Mitad con Imagen -->
-                    <div class="sending-money-image">
-                        <img src="/orionapp/assets/image1.jpg" alt="Imagen de Envío de Dinero" class="w-full h-full object-cover rounded-l-lg">
-                    </div>
-                    <!-- Mitad con Texto -->
-                    <div class="sending-money-content">
-                        <h2 class="text-2xl font-semibold mb-4">Envío de Dinero</h2>
-                        <p class="mb-6 text-gray-200">Envía dinero de manera rápida y segura a tus seres queridos o para tus necesidades financieras.</p>
-                        <a href="#" class="sending-money-button">Enviar Ahora</a>
-                    </div>
-                </div>
-            </section>
-            <!-- Tabla de cambio de divisas -->
-            <section class="max-w-xxl mx-auto my-10 rounded-xl shadow-lg p-8 relative">
-                <!-- Botón "Editar" fuera de la tabla -->
-                <button onclick="toggleEditMode()" class="edit-btn absolute">
-                    Editar
-                </button>
-                <table class="content-table w-full text-s text-gray-500 mt-10">
-                    <thead class="text-xs uppercase text-white">
+            <!-- Tabla de precios de divisas -->
+            <section class="max-w-xxl mx-auto my-10 bg-white p-8 rounded-xl shadow-lg">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Precios de Divisas</h2>
+                <table class="content-table w-full text-sm text-gray-500 mt-4">
+                    <thead class="text-xs uppercase text-white bg-gray-700">
                         <tr>
-                            <th scope="col" class="px-6 py-3"></th>
-                            <th scope="col" class="px-6 py-3">Monto</th>
-                            <th scope="col" class="px-6 py-3">Cambio (24h)</th>
-                            <th scope="col" class="px-6 py-3 edit-column hidden"></th>
+                            <th scope="col" class="px-6 py-3">Divisa</th>
+                            <th scope="col" class="px-6 py-3">Compra</th>
+                            <th scope="col" class="px-6 py-3">Venta</th>
                         </tr>
                     </thead>
                     <tbody id="currency-table-body">
-                        <!-- Las filas de divisas se agregarán aquí dinámicamente -->
+                        <!-- Filas dinámicas generadas desde la base de datos -->
                     </tbody>
                 </table>
-                <div class="flex justify-between items-center mb-4">
-                    <div class="relative">
-                        <!-- El botón "Agregar Divisa" ahora es el único elemento aquí -->
-                        <button onclick="toggleDropdown('add-currency-dropdown', event)" class="add-currency-btn flex items-center space-x-2">
-                            <span class="add-icon">+</span> <span>Agregar Divisa</span>
-                        </button>
-                        <div id="add-currency-dropdown" class="dropdown-content hidden divide-y divide-gray-100 rounded-lg shadow-md overflow-y-auto">
-                            <!-- Opciones de divisas a agregar se llenarán dinámicamente -->
-                        </div>
-                    </div>
-                </div>
             </section>
         </main>
     </div>
