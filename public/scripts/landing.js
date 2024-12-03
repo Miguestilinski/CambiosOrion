@@ -69,7 +69,7 @@ function setActiveLink(menuId) {
 function loadCurrencies() {
     const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
     const targetUrl = 'https://cambiosorion.cl/data/obtener_divisas.php';
-    
+
     fetch(proxyUrl + targetUrl)
         .then(response => {
             if (!response.ok) {
@@ -94,8 +94,8 @@ function loadCurrencies() {
 
                 // Procesa las divisas
                 console.log("Divisas obtenidas:", currencies);
-                exchangeRates = currencies; // Asumiendo que 'currencies' contiene las divisas
-                fillCurrencyTable(); // Actualiza la tabla
+                exchangeRates = currencies;
+                fillCurrencyTable();
             } catch (error) {
                 console.error('Error al parsear el JSON:', error);
             }
