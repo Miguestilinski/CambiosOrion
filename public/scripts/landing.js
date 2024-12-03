@@ -1,8 +1,8 @@
 let exchangeRates = {};
+let displayedCurrencies = ["USD", "EUR", "GBP", "CLP"]; // Asegúrate de que las divisas estén aquí.
 
 function initializePage() {
     loadCurrencies();
-    fillCurrencyTable();
     setActiveLink('#nav-menu');
     setActiveLink('#session-menu');
 }
@@ -37,141 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-    const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
-    console.log('Estado de la sesión:', isAuthenticated);
-    toggleSessionActions(isAuthenticated);
-});
-
-function toggleSessionActions(isAuthenticated) {
-    const userActions = document.getElementById('user-actions');
-    const guestActions = document.getElementById('guest-actions');
-    const profileMenuButton = document.getElementById('profile-menu-button');
-    const profileMenu = document.getElementById('profile-menu');
-
-    if (isAuthenticated) {
-        console.log("Usuario autenticado, mostrando acciones");
-        // Mostrar las acciones para usuarios autenticados
-        userActions.style.display = 'flex'; // Asegúrate de usar 'flex' para contenedores flexibles
-        guestActions.style.display = 'none';
-
-        // Asegurarse de que el botón de perfil sea visible
-        if (profileMenuButton) {
-            profileMenuButton.classList.remove('hidden');
-
-            // Agregar evento para alternar el menú del perfil
-            profileMenuButton.addEventListener('click', () => {
-                if (profileMenu) {
-                    profileMenu.classList.toggle('hidden');
-                }
-            });
-        }
-    } else {
-        console.log("Usuario no autenticado, mostrando acciones de invitados");
-        // Mostrar las acciones para invitados
-        guestActions.style.display = 'flex';
-        userActions.style.display = 'none';
-
-        // Asegurarse de que el botón de perfil esté oculto
-        if (profileMenuButton) {
-            profileMenuButton.classList.add('hidden');
-        }
-
-        // Asegurarse de ocultar el menú del perfil
-        if (profileMenu) {
-            profileMenu.classList.add('hidden');
-        }
-    }
-
-    // Guarda el estado de autenticación en localStorage
-    localStorage.setItem('userAuthenticated', isAuthenticated ? 'true' : 'false');
-}
-
-// Cerrar sesión
-document.getElementById('logout-button')?.addEventListener('click', () => {
-    localStorage.setItem('userAuthenticated', 'false');
-    toggleSessionActions(false);
-});
-
-
-// Función para alternar visibilidad del menú
-function toggleMenu(menuToOpen, menuToClose) {
-    if (menuToClose) closeMenu(menuToClose);
-
-    if (menuToOpen.classList.contains('hidden')) {
-        menuToOpen.classList.remove('hidden');
-    } else {
-        menuToOpen.classList.add('hidden');
-    }
-}
-
-function closeMenu(menu) {
-    if (!menu.classList.contains('hidden')) {
-        menu.classList.add('hidden');
-    }
-}
-
-// Marcar la opción activa en el menú
-function setActiveLink(menuId) {
-    const links = document.querySelectorAll(`${menuId} a`);
-    const currentPath = window.location.pathname;
-    links.forEach(link => {
-        if (link.getAttribute('href') === currentPath) {
-            link.classList.add('selected');
-        } else {
-            link.classList.remove('selected');
-        }
-    });
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    const isLoggedIn = checkSession(); // Implementa esta función para determinar si hay sesión activa
-    const guestActions = document.getElementById('guest-actions');
-    const userActions = document.getElementById('user-actions');
-    const profileMenuButton = document.getElementById('profile-menu-button');
-    const profileMenu = document.getElementById('profile-menu');
-
-    if (isLoggedIn) {
-        // Mostrar menú de usuario
-        guestActions.classList.add('hidden');
-        userActions.classList.remove('hidden');
-
-        // Lógica para desplegar el menú
-        profileMenuButton.addEventListener('click', () => {
-            profileMenu.classList.toggle('hidden');
-        });
-
-        // Cerrar menú al hacer clic fuera
-        document.addEventListener('click', (event) => {
-            if (!userActions.contains(event.target)) {
-                profileMenu.classList.add('hidden');
-            }
-        });
-
-        // Rellenar datos de usuario
-        document.getElementById('user-name').textContent = 'Nombre Usuario'; // Cambia con los datos reales
-        document.getElementById('user-email').textContent = 'usuario@ejemplo.com';
-    } else {
-        // Mostrar botones de invitado
-        guestActions.classList.remove('hidden');
-        userActions.classList.add('hidden');
-    }
-
-    // Lógica para cerrar sesión
-    const logoutButton = document.getElementById('logout-button');
-    if (logoutButton) {
-        logoutButton.addEventListener('click', () => {
-            logout(); // Implementa la función para cerrar sesión
-        });
-    }
-});
-
-function logout() {
-    toggleSessionActions(false); // Cambiar el estado de la sesión a false
-    console.log('Cerrar sesión');
-    // Redirigir al usuario o eliminar datos de sesión
-}
-
+// Función para cargar las divisas
 function loadCurrencies() {
     const proxyUrl = 'https://api.allorigins.win/get?url=';
     const targetUrl = 'https://cambiosorion.cl/data/obtener_divisas.php';
@@ -207,39 +73,16 @@ function loadCurrencies() {
         .catch(error => console.error('Error al cargar las divisas:', error));
 }
 
-window.addEventListener('resize', function () {
-    const mobileButtons = document.querySelector('.md\\:hidden');
-});
-
-function preloadIcon(iconUrl) {
-    if (!iconsLoaded[iconUrl]) {
-        const img = new Image();
-        img.onload = () => {
-            iconsLoaded[iconUrl] = true;
-        };
-        img.onerror = () => {
-            iconsLoaded[iconUrl] = false;
-            console.error(`No se pudo cargar el ícono: ${iconUrl}`);
-        };
-        img.src = iconUrl; // Carga la imagen en el navegador
-    }
-}
-
-// Formatear números con separador de miles
-function formatWithThousandsSeparator(value) {
-    return value.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Inserta puntos como separadores de miles
-}
-
 function fillCurrencyTable() {
     const tableBody = document.getElementById("currency-table-body");
     if (!tableBody) {
         console.error("Error: 'currency-table-body' no se encuentra en el DOM.");
         return; // Evita continuar si el elemento no existe
     }
-    
+
     console.log("Rellenando la tabla de divisas...");
     tableBody.innerHTML = '';
-    
+
     displayedCurrencies.forEach((currency, index) => {
         if (exchangeRates[currency]) {
             console.log(`Procesando la divisa: ${currency}`);
@@ -271,16 +114,38 @@ function fillCurrencyTable() {
     });
 }
 
-console.log(datosDivisas);
-for (let divisa of datosDivisas) {
-    console.log(divisa.nombre);  // Verifica que el nombre de la divisa se está extrayendo correctamente
-    if (divisa.nombre === "CLP") {
-        // Mostrar la divisa o realizar alguna acción
+// Función para marcar la opción activa en el menú
+function setActiveLink(menuId) {
+    const links = document.querySelectorAll(`${menuId} a`);
+    const currentPath = window.location.pathname;
+    links.forEach(link => {
+        if (link.getAttribute('href') === currentPath) {
+            link.classList.add('selected');
+        } else {
+            link.classList.remove('selected');
+        }
+    });
+}
+
+// Función para alternar visibilidad del menú
+function toggleMenu(menuToOpen, menuToClose) {
+    if (menuToClose) closeMenu(menuToClose);
+
+    if (menuToOpen.classList.contains('hidden')) {
+        menuToOpen.classList.remove('hidden');
+    } else {
+        menuToOpen.classList.add('hidden');
     }
 }
 
-if (!divisa) {
-    console.log('No se encontraron datos para la divisa:', divisa);
-} else {
-    // Rellenar la tabla con los datos de la divisa
+function closeMenu(menu) {
+    if (!menu.classList.contains('hidden')) {
+        menu.classList.add('hidden');
+    }
 }
+
+// Cerrar sesión
+document.getElementById('logout-button')?.addEventListener('click', () => {
+    localStorage.setItem('userAuthenticated', 'false');
+    toggleSessionActions(false);
+});
