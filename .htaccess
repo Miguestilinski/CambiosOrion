@@ -5,3 +5,8 @@ PassengerNodejs "/home/cambioso/nodevenv/public_html/orionapp/16/bin/node"
 PassengerAppType node
 PassengerStartupFile "app.js"
 # DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION END
+DirectoryIndex landing.html
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([a-zA-Z0-9_-]+)$ $1.html [L]
