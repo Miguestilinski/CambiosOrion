@@ -240,25 +240,19 @@ function formatWithThousandsSeparator(value) {
     return value.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Inserta puntos como separadores de miles
 }
 
-
-// Función para actualizar el ícono de divisa seleccionado
-function updateCurrencyIcon() {
-    const currency1 = document.getElementById("currency1-text").textContent;
-    const currency2 = document.getElementById("currency2-text").textContent;
-
-    document.getElementById("icon-currency1").src = exchangeRates[currency1].icono;
-    document.getElementById("icon-currency2").src = exchangeRates[currency2].icono;
-}   
-
 function fillCurrencyTable() {
-    const tableBody = document.getElementById("currency-table-body");
-    if (!tableBody) {
-        console.error("Error: 'currency-table-body' no se encuentra en el DOM.");
+    const currencyTable = document.getElementById("currency-table");
+    if (!currencyTable) {
+        console.error("Error: 'currency-table' no se encuentra en el DOM.");
         return; // Evita continuar si el elemento no existe
     }
-    tableBody.innerHTML = '';
+    
+    console.log("Rellenando la tabla de divisas...");
+    currencyTable.innerHTML = '';
+    
     displayedCurrencies.forEach((currency, index) => {
         if (exchangeRates[currency]) {
+            console.log(`Procesando la divisa: ${currency}`);
             const row = document.createElement("tr");
             row.classList.add("currency-row");
             const currencyIcon = exchangeRates[currency].icono;
@@ -280,7 +274,9 @@ function fillCurrencyTable() {
             if (index === 0) {
                 row.classList.add("first-row");
             }
-            tableBody.appendChild(row);
+            currencyTable.appendChild(row);
+        } else {
+            console.log(`No se encontraron datos para la divisa: ${currency}`);
         }
     });
 }
