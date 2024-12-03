@@ -15,10 +15,10 @@
     <header>
         <!-- Logo y Nombre -->
         <div class="header-logo">
-            <a href="#">
+            <a href="index.html">
                 <img src="/orionapp/assets/LogoOrion-silver.png" alt="Logo Cambios Orion" class="logo">
             </a>
-            <a href="#">
+            <a href="index.html">
                 <img src="/orionapp/assets/NombreOrion-white.png" alt="Nombre Cambios Orion" class="nombre">
             </a>
         </div>
@@ -39,9 +39,9 @@
         <!-- Menú de navegación desplegable en móvil -->
         <div class="mobile-menu hidden" id="nav-mobile-menu">
             <ul>
-                <li class="selected"><a href="#">Inicio</a></li>
-                <li><a href="#">Servicios</a></li>
-                <li><a href="#">Nosotros</a></li>
+                <li class="selected"><a href="index.html">Inicio</a></li>
+                <li><a href="servicios.html">Servicios</a></li>
+                <li><a href="nosotros.html">Nosotros</a></li>
                 <li><a href="#">Contacto</a></li>
             </ul>
         </div>
@@ -57,46 +57,18 @@
         <!-- Menú de navegación y botones de sesión en versión de escritorio -->
         <nav>
             <ul>
-                <li class="selected"><a href="#">Inicio</a></li>
-                <li><a href="#">Servicios</a></li>
-                <li><a href="#">Nosotros</a></li>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="servicios.html">Servicios</a></li>
+                <li class="selected"><a href="nosotros.html">Nosotros</a></li>
                 <li><a href="#">Contacto</a></li>
             </ul>
         </nav>
     
-        <!-- Acciones del Header según estado de autenticación -->
-        <div class="header-actions"> 
-            <!-- Sección para usuarios autenticados -->
-            <div id="user-actions" style="display:none;">
-                <button id="profile-menu-button" class="menu-button hidden">
-                    <img src="/orionapp/icons/profile-white.png" alt="Perfil">
-                </button>
-                <!-- Dropdown menú -->
-                <div id="profile-menu" class="hidden absolute right-0 mt-2 w-44 bg-white divide-y divide-gray-100 rounded-lg shadow">
-                    <div class="px-4 py-3 text-sm text-gray-900">
-                        <div id="user-name">Usuario</div>
-                        <div id="user-email" class="font-medium truncate">email@ejemplo.com</div>
-                    </div>
-                    <ul class="py-2 text-sm text-gray-700">
-                        <li>
-                            <a href="#" class="block px-4 py-2 hover:bg-gray-100">Dashboard</a>
-                        </li>
-                        <li>
-                            <a href="#" class="block px-4 py-2 hover:bg-gray-100">Configuración</a>
-                        </li>
-                    </ul>
-                    <div class="py-2">
-                        <a href="#" id="logout-button" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Cerrar sesión</a>
-                    </div>
-                </div>
-            </div>
-            <!-- Sección para invitados (no autenticados) -->
-            <div id="guest-actions" class="guest-actions visible">
-                <a href="iniciar_sesion.html">Iniciar sesión</a>
-                <a href="registro.html" class="register-button">Registrarse</a>
-            </div>
+        <div class="header-actions">
+            <a href="iniciar_sesion.html">Iniciar sesión</a>
+            <a href="registro.html" class="selected register-button">Registrarse</a>
         </div>
-    </header>
+    </header>  
 
     <div class="header-divider"></div>
     <div class="main-content">
