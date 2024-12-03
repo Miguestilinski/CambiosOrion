@@ -1,8 +1,4 @@
 let exchangeRates = {};
-let iconsLoaded = {};
-let isEditMode = false;
-let activeDropdown = null;
-let displayedCurrencies = ["CLP", "USD", "EUR", "ARS"];
 
 function initializePage() {
     loadCurrencies();
@@ -170,12 +166,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-function checkSession() {
-    // Implementa la lógica para verificar si el usuario tiene sesión activa
-    // Retorna true si está autenticado, false si no
-    return false; // Placeholder
-}
-
 function logout() {
     toggleSessionActions(false); // Cambiar el estado de la sesión a false
     console.log('Cerrar sesión');
@@ -279,6 +269,20 @@ function fillCurrencyTable() {
             console.log(`No se encontraron datos para la divisa: ${currency}`);
         }
     });
+}
+
+console.log(datosDivisas);
+for (let divisa of datosDivisas) {
+    console.log(divisa.nombre);  // Verifica que el nombre de la divisa se está extrayendo correctamente
+    if (divisa.nombre === "CLP") {
+        // Mostrar la divisa o realizar alguna acción
+    }
+}
+
+if (!divisa) {
+    console.log('No se encontraron datos para la divisa:', divisa);
+} else {
+    // Rellenar la tabla con los datos de la divisa
 }
 
 function updateAddCurrencyDropdown() {
