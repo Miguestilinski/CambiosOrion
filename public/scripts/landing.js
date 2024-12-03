@@ -42,7 +42,7 @@ function loadCurrencies() {
     const proxyUrl = 'https://api.allorigins.win/get?url=';
     const targetUrl = 'https://cambiosorion.cl/data/obtener_divisas.php';
 
-    fetch(proxyUrl + targetUrl)
+    fetch(targetUrl)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
