@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cambios Orion</title>
+    <link rel="stylesheet" href="styles/index.css">
+    <link href="./styles/output.css" rel="stylesheet">
+    <link rel="icon" href="/orionapp/icons/favicon.png" type="image/png">
+</head>
+
+<body class="font-sans">
+    <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js"></script>
+    <header>
+        <!-- Logo y Nombre -->
+        <div class="header-logo">
+            <a href="#">
+                <img src="/orionapp/assets/LogoOrion-silver.png" alt="Logo Cambios Orion" class="logo">
+            </a>
+            <a href="#">
+                <img src="/orionapp/assets/NombreOrion-white.png" alt="Nombre Cambios Orion" class="nombre">
+            </a>
+        </div>
+    
+        <!-- Contenedor para los botones de menú en móvil (solo visible en pantallas pequeñas) -->
+        <div class="mobile-buttons">
+            <!-- Botón de menú de navegación en móvil -->
+            <button class="menu-button" id="nav-menu-button">
+                <img src="/orionapp/icons/menu-white.svg" alt="Menú">
+            </button>
+    
+            <!-- Botón de menú de sesión en móvil -->
+            <button class="menu-button" id="session-menu-button">
+                <img src="/orionapp/icons/profile-white.png" alt="Sesión">
+            </button>
+        </div>
+    
+        <!-- Menú de navegación desplegable en móvil -->
+        <div class="mobile-menu hidden" id="nav-mobile-menu">
+            <ul>
+                <li class="selected"><a href="#">Inicio</a></li>
+                <li><a href="#">Servicios</a></li>
+                <li><a href="#">Nosotros</a></li>
+                <li><a href="#">Contacto</a></li>
+            </ul>
+        </div>
+    
+        <!-- Menú de sesión desplegable en móvil -->
+        <div class="mobile-menu hidden" id="session-mobile-menu">
+            <ul>
+                <li><a href="iniciar_sesion.html">Iniciar Sesión</a></li>
+                <li><a href="registro.html" class="register-button">Registrarse</a></li>
+            </ul>
+        </div>
+    
+        <!-- Menú de navegación y botones de sesión en versión de escritorio -->
+        <nav>
+            <ul>
+                <li class="selected"><a href="#">Inicio</a></li>
+                <li><a href="#">Servicios</a></li>
+                <li><a href="#">Nosotros</a></li>
+                <li><a href="#">Contacto</a></li>
+            </ul>
+        </nav>
+    
+        <!-- Acciones del Header según estado de autenticación -->
+        <div class="header-actions"> 
+            <!-- Sección para usuarios autenticados -->
+            <div id="user-actions" style="display:none;">
+                <button id="profile-menu-button" class="menu-button hidden">
+                    <img src="/orionapp/icons/profile-white.png" alt="Perfil">
+                </button>
+                <!-- Dropdown menú -->
+                <div id="profile-menu" class="hidden absolute right-0 mt-2 w-44 bg-white divide-y divide-gray-100 rounded-lg shadow">
+                    <div class="px-4 py-3 text-sm text-gray-900">
+                        <div id="user-name">Usuario</div>
+                        <div id="user-email" class="font-medium truncate">email@ejemplo.com</div>
+                    </div>
+                    <ul class="py-2 text-sm text-gray-700">
+                        <li>
+                            <a href="#" class="block px-4 py-2 hover:bg-gray-100">Dashboard</a>
+                        </li>
+                        <li>
+                            <a href="#" class="block px-4 py-2 hover:bg-gray-100">Configuración</a>
+                        </li>
+                    </ul>
+                    <div class="py-2">
+                        <a href="#" id="logout-button" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Cerrar sesión</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Sección para invitados (no autenticados) -->
+            <div id="guest-actions" class="guest-actions visible">
+                <a href="iniciar_sesion.html">Iniciar sesión</a>
+                <a href="registro.html" class="register-button">Registrarse</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="header-divider"></div>
+    <div class="main-content">
+        <main>
+            <!-- Conversor de divisas -->
+            <section class="max-w-xl mx-auto my-10 bg-white p-8 rounded-xl shadow-lg">
+                <h2 class="text-center text-2xl font-semibold text-gray-800 mb-6">Cotizar cambio</h2>
+                <div id="currency-converter" class="currency-converter flex justify-between">
+                    <!-- Columna izquierda -->
+                    <div class="converter-box flex-1 relative">
+                        <label for="amount1" class="block text-lg font-bold mb-2">¿Qué divisa tienes?</label>
+                        <input type="number" id="amount1" placeholder="0.00" min="0"
+                            class="w-full p-4 border rounded-lg shadow-md text-right bg-white mb-3 appearance-none"
+                            oninput="convertFromAmount1()">
+                        <div id="dropdown1Button" class="currency-selector"
+                            onclick="toggleDropdown('dropdown1', event)">
+                            <img id="icon-currency1" src="/orionapp/node_modules/circle-flags/flags/cl.svg" alt="Icono divisa" class="w-5 h-5 mr-2">
+                            <span id="currency1-text" class="font-medium">CLP</span>
+                            <svg class="w-4 h-4 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                            </svg>
+                        </div>
+                        <div id="dropdown1" class="dropdown-content hidden divide-y divide-gray-100 rounded-lg shadow-md overflow-y-auto">
+                            <ul class="py-1 text-sm text-gray-700" aria-labelledby="dropdown1Button">
+                                <li onclick="selectCurrency('USD', '/orionapp/node_modules/circle-flags/flags/us.svg', 'currency1', 'dropdown1')">
+                                    <a href="#" class="px-2 py-1 hover:bg-gray-100 flex items-center currency-option">
+                                        <img src="/orionapp/node_modules/circle-flags/flags/us.svg" alt="Icono USD" class="w-5 h-5 inline-block mr-2"> 
+                                        <span>USD</span>
+                                    </a>
+                                </li>
+                                <!-- Agrega más opciones según sea necesario -->
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Columna derecha -->
+                    <div class="converter-box flex-1 relative">
+                        <label for="amount2" class="block text-lg font-bold mb-2">¿Qué divisa quieres?</label>
+                        <input type="number" id="amount2" placeholder="0.00" min="0"
+                            class="w-full p-4 border rounded-lg shadow-md text-right bg-white mb-3 appearance-none"
+                            oninput="convertFromAmount2()">
+                        <div id="dropdown2Button" class="currency-selector"
+                            onclick="toggleDropdown('dropdown2', event)">
+                            <img id="icon-currency2" src="/orionapp/node_modules/circle-flags/flags/us.svg" alt="Icono divisa" class="w-5 h-5 mr-2">
+                            <span id="currency2-text" class="font-medium">USD</span>
+                            <svg class="w-4 h-4 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                            </svg>
+                        </div>
+                        
+                        <div id="dropdown2" class="dropdown-content hidden divide-y divide-gray-100 rounded-lg shadow-md overflow-y-auto">
+                            <ul class="py-1 text-sm text-gray-700" aria-labelledby="dropdown2Button">
+                                <li onclick="selectCurrency('CLP', '/orionapp/node_modules/circle-flags/flags/cl.svg', 'currency2', 'dropdown2')">
+                                    <a href="#" class="px-2 py-1 hover:bg-gray-100 flex items-center currency-option">
+                                        <img src="/orionapp/node_modules/circle-flags/flags/cl.svg" alt="Icono USD" class="w-5 h-5 inline-block mr-2"> 
+                                        <span>CLP</span>
+                                    </a>
+                                </li>
+                                <!-- Agrega más opciones según sea necesario -->
+                            </ul>
+                        </div>
+                    </div>                    
+                </div>
+            </section>
+            <!-- Envío de Dinero -->
+            <section id="sending-money" class="sending-money-section bg-white w-full shadow-lg p-8">
+                <div class="sending-money-container">
+                    <!-- Mitad con Imagen -->
+                    <div class="sending-money-image">
+                        <img src="/orionapp/assets/image1.jpg" alt="Imagen de Envío de Dinero" class="w-full h-full object-cover rounded-l-lg">
+                    </div>
+                    <!-- Mitad con Texto -->
+                    <div class="sending-money-content">
+                        <h2 class="text-2xl font-semibold mb-4">Envío de Dinero</h2>
+                        <p class="mb-6 text-gray-200">Envía dinero de manera rápida y segura a tus seres queridos o para tus necesidades financieras.</p>
+                        <a href="#" class="sending-money-button">Enviar Ahora</a>
+                    </div>
+                </div>
+            </section>
+            <!-- Tabla de cambio de divisas -->
+            <section class="max-w-xxl mx-auto my-10 rounded-xl shadow-lg p-8 relative">
+                <!-- Botón "Editar" fuera de la tabla -->
+                <button onclick="toggleEditMode()" class="edit-btn absolute">
+                    Editar
+                </button>
+                <table class="content-table w-full text-s text-gray-500 mt-10">
+                    <thead class="text-xs uppercase text-white">
+                        <tr>
+                            <th scope="col" class="px-6 py-3"></th>
+                            <th scope="col" class="px-6 py-3">Monto</th>
+                            <th scope="col" class="px-6 py-3">Cambio (24h)</th>
+                            <th scope="col" class="px-6 py-3 edit-column hidden"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="currency-table-body">
+                        <!-- Las filas de divisas se agregarán aquí dinámicamente -->
+                    </tbody>
+                </table>
+                <div class="flex justify-between items-center mb-4">
+                    <div class="relative">
+                        <!-- El botón "Agregar Divisa" ahora es el único elemento aquí -->
+                        <button onclick="toggleDropdown('add-currency-dropdown', event)" class="add-currency-btn flex items-center space-x-2">
+                            <span class="add-icon">+</span> <span>Agregar Divisa</span>
+                        </button>
+                        <div id="add-currency-dropdown" class="dropdown-content hidden divide-y divide-gray-100 rounded-lg shadow-md overflow-y-auto">
+                            <!-- Opciones de divisas a agregar se llenarán dinámicamente -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <footer>
+      <div class="footer-container">
+          <!-- Sección del logo -->
+          <div class="footer-logo">
+              <img src="/orionapp/assets/LogoOrion-silver.png" alt="Logo Orion" class="logo">
+              <img src="/orionapp/assets/NombreOrion-white.png" alt="Nombre Orion" class="nombre">
+          </div>
+          <!-- Mapa de navegación -->
+          <div class="footer-navigation flex justify-between">
+              <div class="nav-section">
+                  <h3 class="font-bold text-lg">Servicios</h3>
+                  <ul class="list-none p-0">
+                      <li><a href="#" class="block py-1">Envíos</a></li>
+                      <li><a href="#" class="block py-1">Transferencias</a></li>
+                  </ul>
+              </div>
+              <div class="nav-section">
+                  <h3 class="font-bold text-lg">Nosotros</h3>
+                  <ul class="list-none p-0">
+                      <li><a href="#" class="block py-1">Historia</a></li>
+                      <li><a href="#" class="block py-1">Equipo</a></li>
+                  </ul>
+              </div>
+              <div class="nav-section">
+                  <h3 class="font-bold text-lg">Soporte</h3>
+                  <ul class="list-none p-0">
+                      <li><a href="#" class="block py-1">Preguntas frecuentes</a></li>
+                      <li><a href="#" class="block py-1">Contacto</a></li>
+                  </ul>
+              </div>
+          </div>
+          <!-- Información de contacto -->
+          <div class="footer-contact flex flex-wrap justify-between">
+              <div class="contact-info">
+                    <!-- Dirección -->
+                    <div class="contact-item">
+                        <a href="https://maps.app.goo.gl/6fQ31ySCJWSButxQ9" target="_blank">
+                            <img src="/orionapp/icons/location-white.png" alt="Icono de ubicación" class="icon">
+                        </a>
+                        <div>
+                            <a href="https://maps.app.goo.gl/6fQ31ySCJWSButxQ9" target="_blank"><p>Agustinas 1035 Of 13, Santiago</p></a>
+                            <small>Lunes a Viernes 09:00 a 17:00 hrs</small>
+                        </div>
+                    </div> 
+                  <!-- Teléfono -->
+                  <div class="contact-item">
+                      <img src="/orionapp/icons/phone-white.png" alt="Icono de teléfono" class="icon">
+                      <div>
+                          <p>+56 9 7184 6048</p>
+                      </div>
+                  </div>
+                  <!-- Correo -->
+                  <div class="contact-item">
+                      <img src="/orionapp/icons/email-white.png" alt="Icono de correo" class="icon">
+                      <div>
+                          <p>contacto@cambiosorion.cl</p>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <!-- Redes Sociales -->
+            <div class="social-media flex gap-4">
+                <a href="https://wa.me/+56971846048" target="_blank"><img src="/orionapp/icons/whatsapp-white.png" alt="WhatsApp" class="icon"></a>
+                <a href="https://www.facebook.com/CambiosOrion" target="_blank"><img src="/orionapp/icons/facebook-white.png" alt="Facebook" class="icon"></a>
+                <a href="https://www.instagram.com/CambiosOrion" target="_blank"><img src="/orionapp/icons/instagram-white.png" alt="Instagram" class="icon"></a>
+            </div>
+      </div>
+      <div class="footer-bottom text-center p-4">
+          © 2024 Cambios Orion. Todos los derechos reservados.
+      </div>
+  </footer>
+    <script src="/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
+    <script src="scripts/landing.js"></script>
+</body>
+</html>
