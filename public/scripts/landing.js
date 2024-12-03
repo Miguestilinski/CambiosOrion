@@ -3,16 +3,13 @@ let displayedCurrencies = ["USD", "EUR", "ARS", "BRL"];
 
 function initializePage() {
     loadCurrencies();
+    fillCurrencyTable();
     setActiveLink('#nav-menu');
     setActiveLink('#session-menu');
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     initializePage();
-
-    const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
-    console.log('Estado de la sesión:', isAuthenticated);
-    toggleSessionActions(isAuthenticated); // Se asegura de que las acciones se muestren correctamente
 
     const navMenuButton = document.getElementById('nav-menu-button');
     const sessionMenuButton = document.getElementById('session-menu-button');
@@ -37,57 +34,37 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-function toggleSessionActions(isAuthenticated) {
-    const userActions = document.getElementById('user-actions');
-    const guestActions = document.getElementById('guest-actions');
-    const profileMenuButton = document.getElementById('profile-menu-button');
-    const profileMenu = document.getElementById('profile-menu');
+// Función para alternar visibilidad del menú
+function toggleMenu(menuToOpen, menuToClose) {
+    if (menuToClose) closeMenu(menuToClose);
 
-    if (isAuthenticated) {
-        console.log("Usuario autenticado, mostrando acciones");
-        // Mostrar las acciones para usuarios autenticados
-        userActions.style.display = 'flex'; // Asegúrate de usar 'flex' para contenedores flexibles
-        guestActions.style.display = 'none';
-
-        // Asegurarse de que el botón de perfil sea visible
-        if (profileMenuButton) {
-            profileMenuButton.classList.remove('hidden');
-
-            // Agregar evento para alternar el menú del perfil
-            profileMenuButton.addEventListener('click', () => {
-                if (profileMenu) {
-                    profileMenu.classList.toggle('hidden');
-                }
-            });
-        }
+    // Alternamos la clase 'hidden' para mostrar o esconder el menú
+    if (menuToOpen.classList.contains('hidden')) {
+        menuToOpen.classList.remove('hidden'); // Muestra el menú
     } else {
-        console.log("Usuario no autenticado, mostrando acciones de invitados");
-        // Mostrar las acciones para invitados
-        guestActions.style.display = 'flex';
-        userActions.style.display = 'none';
-
-        // Asegurarse de que el botón de perfil esté oculto
-        if (profileMenuButton) {
-            profileMenuButton.classList.add('hidden');
-        }
-
-        // Asegurarse de ocultar el menú del perfil
-        if (profileMenu) {
-            profileMenu.classList.add('hidden');
-        }
+        menuToOpen.classList.add('hidden'); // Oculta el menú
     }
-
-    // Guarda el estado de autenticación en localStorage
-    localStorage.setItem('userAuthenticated', isAuthenticated ? 'true' : 'false');
 }
 
-// Cerrar sesión
-document.getElementById('logout-button')?.addEventListener('click', () => {
-    localStorage.setItem('userAuthenticated', 'false');
-    toggleSessionActions(false);
-});
+function closeMenu(menu) {
+    if (!menu.classList.contains('hidden')) {
+        menu.classList.add('hidden'); // Asegúrate de ocultar el menú si está visible
+    }
+}
 
-// Función para cargar las divisas
+// Marcar la opción activa en el menú
+function setActiveLink(menuId) {
+    const links = document.querySelectorAll(`${menuId} a`);
+    const currentPath = window.location.pathname;
+    links.forEach(link => {
+        if (link.getAttribute('href') === currentPath) {
+            link.classList.add('selected');
+        } else {
+            link.classList.remove('selected');
+        }
+    });
+}
+
 // Función para cargar las divisas
 function loadCurrencies() {
     const targetUrl = 'https://cambiosorion.cl/data/obtener_divisas.php';
@@ -168,38 +145,3 @@ function fillCurrencyTable() {
     });
 }
 
-// Función para marcar la opción activa en el menú
-function setActiveLink(menuId) {
-    const links = document.querySelectorAll(`${menuId} a`);
-    const currentPath = window.location.pathname;
-    links.forEach(link => {
-        if (link.getAttribute('href') === currentPath) {
-            link.classList.add('selected');
-        } else {
-            link.classList.remove('selected');
-        }
-    });
-}
-
-// Función para alternar visibilidad del menú
-function toggleMenu(menuToOpen, menuToClose) {
-    if (menuToClose) closeMenu(menuToClose);
-
-    if (menuToOpen.classList.contains('hidden')) {
-        menuToOpen.classList.remove('hidden');
-    } else {
-        menuToOpen.classList.add('hidden');
-    }
-}
-
-function closeMenu(menu) {
-    if (!menu.classList.contains('hidden')) {
-        menu.classList.add('hidden');
-    }
-}
-
-// Cerrar sesión
-document.getElementById('logout-button')?.addEventListener('click', () => {
-    localStorage.setItem('userAuthenticated', 'false');
-    toggleSessionActions(false);
-});
