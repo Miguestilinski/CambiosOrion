@@ -193,21 +193,26 @@ function loadCurrencies() {
             }
             return response.text(); // Cambiado a text()
         })
-        
         .then(data => {
+            console.log(data); // Revisa el contenido real de la respuesta
 
-            // Si los datos están en 'contents', intenta parsearlos
-            const responseData = data.contents ? JSON.parse(data.contents) : data;
-            const currencies = JSON.parse(data.contents);
-            console.log(currencies);
+            // Si la respuesta es válida, intenta parsearla
+            try {
+                const responseData = JSON.parse(data); // Ahora se parsea el texto completo
+                const currencies = responseData.contents ? JSON.parse(responseData.contents) : null;
 
-            // Asegurarse de que responseData es un array antes de usar forEach
-            if (!Array.isArray(responseData)) {
-                console.error("Formato de datos inesperado:", responseData);
-                return;
+                if (!currencies) {
+                    console.error("No se pudo obtener el JSON de las divisas");
+                    return;
+                }
+
+                // Procesa las divisas
+                console.log(currencies);
+                exchangeRates = currencies; // Suponiendo que 'currencies' contiene las divisas
+                fillCurrencyTable(); // Actualiza la tabla
+            } catch (error) {
+                console.error('Error al parsear el JSON:', error);
             }
-
-            fillCurrencyTable();
         })
         .catch(error => console.error('Error al cargar las divisas:', error));
 }
