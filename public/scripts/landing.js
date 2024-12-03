@@ -241,14 +241,14 @@ function formatWithThousandsSeparator(value) {
 }
 
 function fillCurrencyTable() {
-    const currencyTable = document.getElementById("currency-table");
-    if (!currencyTable) {
-        console.error("Error: 'currency-table' no se encuentra en el DOM.");
+    const tableBody = document.getElementById("currency-table-body");
+    if (!tableBody) {
+        console.error("Error: 'currency-table-body' no se encuentra en el DOM.");
         return; // Evita continuar si el elemento no existe
     }
     
     console.log("Rellenando la tabla de divisas...");
-    currencyTable.innerHTML = '';
+    tableBody.innerHTML = '';
     
     displayedCurrencies.forEach((currency, index) => {
         if (exchangeRates[currency]) {
@@ -274,7 +274,7 @@ function fillCurrencyTable() {
             if (index === 0) {
                 row.classList.add("first-row");
             }
-            currencyTable.appendChild(row);
+            tableBody.appendChild(row);
         } else {
             console.log(`No se encontraron datos para la divisa: ${currency}`);
         }
