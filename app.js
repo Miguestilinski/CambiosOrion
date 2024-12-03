@@ -5,10 +5,13 @@ const path = require('path');
 const mysql = require('mysql');
 const axios = require('axios');
 const app = express();
+const cors = require('cors');
 const port = process.env.PORT || 3000;
 
 // Cargar las variables de entorno
 require('dotenv').config();
+
+app.use(cors());
 
 // Crear conexión a la base de datos
 const db = mysql.createConnection({
