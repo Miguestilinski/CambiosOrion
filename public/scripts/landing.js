@@ -93,12 +93,9 @@ function fillCurrencyTable() {
         return;
     }
 
-    console.log("Rellenando la tabla de divisas...");
     tableBody.innerHTML = '';
-
     displayedCurrencies.forEach((currency, index) => {
         if (exchangeRates[currency]) {
-            console.log(`Procesando la divisa: ${currency}`);
             const row = document.createElement("tr");
             row.classList.add("currency-row");
             const currencyIcon = exchangeRates[currency].icono;
@@ -121,8 +118,6 @@ function fillCurrencyTable() {
                 row.classList.add("first-row");
             }
             tableBody.appendChild(row);
-        } else {
-            console.log(`No se encontraron datos para la divisa: ${currency}`);
         }
     });
 }
