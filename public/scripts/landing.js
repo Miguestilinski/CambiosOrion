@@ -1,5 +1,5 @@
 let exchangeRates = {};
-let displayedCurrencies = ["USD", "EUR", "GBP", "CLP"]; // Asegúrate de que las divisas estén aquí.
+let displayedCurrencies = ["USD", "EUR", "ARS", "BRL"];
 
 function initializePage() {
     loadCurrencies();
@@ -37,40 +37,94 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+function toggleSessionActions(isAuthenticated) {
+    const userActions = document.getElementById('user-actions');
+    const guestActions = document.getElementById('guest-actions');
+    const profileMenuButton = document.getElementById('profile-menu-button');
+    const profileMenu = document.getElementById('profile-menu');
+
+    if (isAuthenticated) {
+        console.log("Usuario autenticado, mostrando acciones");
+        // Mostrar las acciones para usuarios autenticados
+        userActions.style.display = 'flex'; // Asegúrate de usar 'flex' para contenedores flexibles
+        guestActions.style.display = 'none';
+
+        // Asegurarse de que el botón de perfil sea visible
+        if (profileMenuButton) {
+            profileMenuButton.classList.remove('hidden');
+
+            // Agregar evento para alternar el menú del perfil
+            profileMenuButton.addEventListener('click', () => {
+                if (profileMenu) {
+                    profileMenu.classList.toggle('hidden');
+                }
+            });
+        }
+    } else {
+        console.log("Usuario no autenticado, mostrando acciones de invitados");
+        // Mostrar las acciones para invitados
+        guestActions.style.display = 'flex';
+        userActions.style.display = 'none';
+
+        // Asegurarse de que el botón de perfil esté oculto
+        if (profileMenuButton) {
+            profileMenuButton.classList.add('hidden');
+        }
+
+        // Asegurarse de ocultar el menú del perfil
+        if (profileMenu) {
+            profileMenu.classList.add('hidden');
+        }
+    }
+
+    // Guarda el estado de autenticación en localStorage
+    localStorage.setItem('userAuthenticated', isAuthenticated ? 'true' : 'false');
+}
+
+// Cerrar sesión
+document.getElementById('logout-button')?.addEventListener('click', () => {
+    localStorage.setItem('userAuthenticated', 'false');
+    toggleSessionActions(false);
+});
+
+// Función para cargar las divisas
 // Función para cargar las divisas
 function loadCurrencies() {
-    const proxyUrl = 'https://api.allorigins.win/get?url=';
     const targetUrl = 'https://cambiosorion.cl/data/obtener_divisas.php';
 
-    fetch(proxyUrl + encodeURIComponent(targetUrl))
+    fetch(targetUrl)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
-            return response.json(); // Cambié text() a json() para obtener el JSON directamente
+            return response.text(); // Cambiado a text()
         })
         .then(data => {
-            console.log(data); // Revisa el contenido real de la respuesta
+            console.log("Respuesta del servidor:", data); // Revisa el contenido real de la respuesta
 
-            // Si la respuesta es válida, intenta parsearla
             try {
-                const responseData = data.contents ? JSON.parse(data.contents) : null;
+                // Intentamos parsear el texto completo
+                const responseData = JSON.parse(data);
 
-                if (!responseData) {
-                    console.error("No se pudo obtener el JSON de las divisas");
+                // Verifica si 'contents' está presente en la respuesta
+                const currencies = responseData.contents ? JSON.parse(responseData.contents) : null;
+
+                if (!currencies) {
+                    console.error("No se pudo obtener el JSON de las divisas. La respuesta no contiene 'contents'");
                     return;
                 }
 
                 // Procesa las divisas
-                console.log(responseData);
-                const currencies = responseData; // Asumiendo que 'responseData' contiene las divisas
-                exchangeRates = currencies; // Suponiendo que 'currencies' contiene las divisas
+                console.log("Divisas obtenidas:", currencies);
+                exchangeRates = currencies; // Asumiendo que 'currencies' contiene las divisas
                 fillCurrencyTable(); // Actualiza la tabla
             } catch (error) {
                 console.error('Error al parsear el JSON:', error);
             }
         })
-        .catch(error => console.error('Error al cargar las divisas:', error));
+        .catch(error => {
+            console.error('Error al cargar las divisas:', error);
+        });
 }
 
 function fillCurrencyTable() {
