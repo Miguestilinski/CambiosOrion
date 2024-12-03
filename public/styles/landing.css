@@ -97,6 +97,7 @@ nav ul li.selected a {
 
 .header-actions a {
     font-size: 16px;
+    color: white;
     text-decoration: none;
 }
 
@@ -109,22 +110,6 @@ nav ul li.selected a {
 
 .header-actions .register-button:hover {
     transform: scale(1.05);
-}
-
-#user-actions {
-    display: none;
-    align-items: center; /* Alineación del contenido */
-    gap: 10px; /* Espaciado entre elementos */
-}
-
-#guest-actions {
-    display: flex;
-    gap: 20px;
-    align-items: center;
-}
-
-.hidden {
-    display: none !important;
 }
 
 /* Línea divisoria blanca de 1pt debajo del header */
@@ -147,15 +132,7 @@ nav ul li.selected a {
 }
 
 h2 {
-    @apply text-2xl font-semibold text-gray-800 text-center mb-6;
-}
-
-.converter-section {
-    @apply max-w-xl mx-auto mt-12 bg-white p-6 rounded-lg shadow-lg;
-}
-
-label {
-    @apply text-lg mb-2 font-semibold;
+    @apply text-2xl font-semibold text-white text-center mb-6;
 }
 
 /* Contenedor de selección personalizado */
