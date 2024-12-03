@@ -198,6 +198,8 @@ function loadCurrencies() {
 
             // Si los datos están en 'contents', intenta parsearlos
             const responseData = data.contents ? JSON.parse(data.contents) : data;
+            const currencies = JSON.parse(data.contents);
+            console.log(currencies);
 
             // Asegurarse de que responseData es un array antes de usar forEach
             if (!Array.isArray(responseData)) {
@@ -205,42 +207,6 @@ function loadCurrencies() {
                 return;
             }
 
-            const dropdown1 = document.getElementById("dropdown1");
-            const dropdown2 = document.getElementById("dropdown2");
-
-            if (dropdown1) dropdown1.innerHTML = '';
-            if (dropdown2) dropdown2.innerHTML = '';
-
-            responseData.forEach(divisa => {
-                const circularIcon = divisa.icono_circular;
-                exchangeRates[divisa.nombre] = {
-                    compra: parseFloat(divisa.compra),
-                    venta: parseFloat(divisa.venta),
-                    icono: circularIcon
-                };
-
-                preloadIcon(circularIcon);
-
-                const option1 = document.createElement("div");
-                option1.innerHTML = `<img src="${circularIcon}" alt="${divisa.nombre}" class="w-6 h-6 mr-2"> ${divisa.nombre}`;
-                option1.className = "p-2 hover:bg-gray-100 cursor-pointer";
-                option1.onclick = function () {
-                    setCurrency1(divisa.nombre);
-                    toggleDropdown('dropdown1', event);
-                };
-                dropdown1.appendChild(option1);
-
-                const option2 = document.createElement("div");
-                option2.innerHTML = `<img src="${circularIcon}" alt="${divisa.nombre}" class="w-5 h-5 mr-2"> ${divisa.nombre}`;
-                option2.className = "p-2 hover:bg-gray-100 cursor-pointer";
-                option2.onclick = function () {
-                    setCurrency2(divisa.nombre);
-                    toggleDropdown('dropdown2', event);
-                };
-                dropdown2.appendChild(option2);
-            });
-
-            updateAddCurrencyDropdown();
             fillCurrencyTable();
         })
         .catch(error => console.error('Error al cargar las divisas:', error));
