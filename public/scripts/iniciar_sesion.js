@@ -66,7 +66,6 @@ document.addEventListener("DOMContentLoaded", function() {
             document.getElementById('password-error').classList.add('hidden');
         }
 
-        // Enviar los datos con fetch
         const formData = new FormData(loginForm);
         fetch('https://cambiosorion.cl/data/iniciar_sesion.php', {
             method: 'POST',

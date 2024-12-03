@@ -187,7 +187,13 @@ function loadCurrencies() {
     const targetUrl = 'https://cambiosorion.cl/data/obtener_divisas.php';
 
     fetch(proxyUrl + targetUrl)
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.text(); // Cambiado a text()
+        })
+        
         .then(data => {
 
             // Si los datos están en 'contents', intenta parsearlos
@@ -258,113 +264,11 @@ function preloadIcon(iconUrl) {
     }
 }
 
-// Función para establecer currency1
-function setCurrency1(currency) {
-    document.getElementById("currency1-text").textContent = currency;
-
-    // Si el usuario selecciona una divisa diferente a CLP, currency2 se convierte en CLP automáticamente
-    if (currency !== "CLP") {
-        document.getElementById("currency2-text").textContent = "CLP";
-    }
-
-    exchangeRates[currency] = exchangeRates[currency] || { compra: 0, venta: 0 };
-    convertFromAmount1();
-    updateCurrencyIcon(); // Actualizar el ícono al seleccionar
-}
-
-// Función para establecer currency2
-function setCurrency2(currency) {
-    document.getElementById("currency2-text").textContent = currency;
-
-    // Si el usuario selecciona una divisa diferente a CLP, currency1 se convierte en CLP automáticamente
-    if (currency !== "CLP") {
-        document.getElementById("currency1-text").textContent = "CLP";
-    }
-
-    exchangeRates[currency] = exchangeRates[currency] || { compra: 0, venta: 0 };
-    convertFromAmount2();
-    updateCurrencyIcon(); // Actualizar el ícono al seleccionar
-}
-
-// Modificar los inputs para formatear y validar el contenido
-document.addEventListener('DOMContentLoaded', () => {
-    const amountInputs = [document.getElementById("amount1"), document.getElementById("amount2")];
-
-    amountInputs.forEach(input => {
-        if (input) {
-            // Restringir la entrada a solo números y formato con separador de miles
-            input.addEventListener('input', (event) => {
-                const rawValue = event.target.value.replace(/\./g, ''); // Quitar puntos existentes
-                const numericValue = rawValue.replace(/\D/g, ''); // Quitar caracteres no numéricos
-
-                if (numericValue.length > 9) {
-                    event.target.value = formatWithThousandsSeparator(numericValue.slice(0, 9));
-                } else {
-                    event.target.value = formatWithThousandsSeparator(numericValue);
-                }
-            });
-
-            // Evitar caracteres no permitidos
-            input.addEventListener('keydown', (event) => {
-                const allowedKeys = ["Backspace", "ArrowLeft", "ArrowRight", "Delete", "Tab"];
-                const isNumber = /^[0-9]$/.test(event.key);
-
-                if (!isNumber && !allowedKeys.includes(event.key)) {
-                    event.preventDefault();
-                }
-            });
-
-            // Actualizar el valor al salir del campo
-            input.addEventListener('blur', () => {
-                const rawValue = input.value.replace(/\./g, '');
-                const numericValue = rawValue.replace(/\D/g, '');
-                input.value = formatWithThousandsSeparator(numericValue);
-            });
-        }
-    });
-});
-
 // Formatear números con separador de miles
 function formatWithThousandsSeparator(value) {
     return value.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Inserta puntos como separadores de miles
 }
 
-// Mantener las conversiones funcionales
-function convertFromAmount1() {
-    const amount1 = parseFloat(document.getElementById("amount1").value.replace(/\./g, ''));
-    const currency1 = document.getElementById("currency1-text").textContent;
-    const currency2 = document.getElementById("currency2-text").textContent;
-
-    if (amount1 && exchangeRates[currency1] && exchangeRates[currency2]) {
-        let result;
-
-        if (currency1 === "CLP") {
-            result = amount1 / exchangeRates[currency2].venta;
-        } else {
-            result = amount1 * exchangeRates[currency1].compra;
-        }
-
-        document.getElementById("amount2").value = formatWithThousandsSeparator(result.toFixed(0));
-    }
-}
-
-function convertFromAmount2() {
-    const amount2 = parseFloat(document.getElementById("amount2").value.replace(/\./g, ''));
-    const currency1 = document.getElementById("currency1-text").textContent;
-    const currency2 = document.getElementById("currency2-text").textContent;
-
-    if (amount2 && exchangeRates[currency1] && exchangeRates[currency2]) {
-        let result;
-
-        if (currency2 === "CLP") {
-            result = amount2 * exchangeRates[currency1].venta;
-        } else {
-            result = amount2 / exchangeRates[currency2].compra;
-        }
-
-        document.getElementById("amount1").value = formatWithThousandsSeparator(result.toFixed(0));
-    }
-}
 
 // Función para actualizar el ícono de divisa seleccionado
 function updateCurrencyIcon() {
@@ -478,40 +382,3 @@ document.addEventListener("click", function (event) {
         sessionMobileMenu.style.display = 'none';
     }
 });
-
-function toggleEditMode() {
-    isEditMode = !isEditMode;
-
-    document.querySelectorAll(".edit-column").forEach(col => {
-        if (isEditMode) {
-            col.classList.remove("hidden");
-            col.style.display = "table-cell"; // Asegúrate de que se muestre como una celda de tabla
-        } else {
-            col.classList.add("hidden");
-            col.style.display = "none"; // Asegúrate de que se oculte
-        }
-    });
-}
-window.toggleEditMode = toggleEditMode;
-
-document.querySelectorAll(".edit-column").forEach(col => {
-    if (isEditMode) {
-        col.classList.remove("hidden");
-        col.style.display = "table-cell"; // Asegúrate que se muestre
-    } else {
-        col.classList.add("hidden");
-        col.style.display = "none"; // Asegúrate que se oculte
-    }
-});
-
-function deleteCurrency(currency) {
-    displayedCurrencies = displayedCurrencies.filter(curr => curr !== currency);
-    isEditMode = false;
-    document.querySelectorAll(".edit-column").forEach(col => {
-        col.classList.add("hidden");
-        col.style.display = "none"; // Asegúrate que se oculte
-    });
-    updateAddCurrencyDropdown();  // Actualiza el dropdown
-    fillCurrencyTable();  // Refresca la tabla
-}
-window.deleteCurrency = deleteCurrency;
