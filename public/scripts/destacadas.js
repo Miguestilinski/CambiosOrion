@@ -1,9 +1,8 @@
 // Función para cargar las divisas desde el servidor PHP
 function loadHighlightedCurrencies() {
-    const proxyUrl = 'https://corsproxy.io/?';
     const targetUrl = 'https://cambiosorion.cl/data/obtener_divisas.php'; // URL de obtener_divisas.php
 
-    fetch(proxyUrl + targetUrl)
+    fetch(targetUrl)
         .then(response => response.json()) // Suponemos que el servidor devuelve un JSON
         .then(data => {
             // Si los datos están en 'contents', intenta parsearlos
