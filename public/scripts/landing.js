@@ -183,7 +183,7 @@ function logout() {
 }
 
 function loadCurrencies() {
-    const proxyUrl = 'https://corsproxy.io/?';
+    const proxyUrl = 'https://api.allorigins.win/get?url=';
     const targetUrl = 'https://cambiosorion.cl/data/obtener_divisas.php';
 
     fetch(proxyUrl + targetUrl)
