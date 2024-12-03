@@ -154,94 +154,8 @@ h2 {
     @apply max-w-xl mx-auto mt-12 bg-white p-6 rounded-lg shadow-lg;
 }
 
-.currency-converter {
-    @apply flex justify-center;
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    transition: all 0.2s ease;
-}
-
-.converter-box {
-    @apply flex flex-col items-center flex-1 min-w-[200px];
-    display: flex; /* Asegura que use flexbox */
-    flex-direction: column; /* Asegura que los elementos se apilen verticalmente */
-    justify-content: center; /* Centra verticalmente el contenido */
-    align-items: center;
-    padding: 1rem; /* Ajusta el padding según necesites */
-}
-
 label {
     @apply text-lg mb-2 font-semibold;
-}
-
-/* Estilo para el input de números */
-input[type="number"] {
-    @apply text-2xl p-3 border border-gray-300 rounded-lg text-right mb-4;
-    -webkit-appearance: none; 
-    -moz-appearance: textfield; 
-    appearance: none; 
-}
-
-/* Para ocultar los botones de incremento y decremento en los navegadores */
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-moz-inner-spin-button,
-input[type="number"]::-moz-outer-spin-button {
-    display: none; 
-}
-
-/* Disclaimer */
-.disclaimer {
-    @apply text-sm text-gray-500 text-center mt-4;
-}
-
-.custom-select {
-    @apply relative w-full;
-}
-
-.select-box {
-    @apply p-3 border border-gray-300 bg-white rounded-lg cursor-pointer flex justify-center items-center gap-8;
-}
-
-.select-box img {
-    @apply w-6 h-6; 
-}
-
-.select-box span {
-    @apply flex-grow text-right; 
-}
-
-.dropdown-content {
-    @apply absolute z-10 w-full bg-white border border-gray-300 rounded-lg shadow-md max-h-40 overflow-y-auto mt-1;
-}
-
-.dropdown-content div {
-    @apply p-3 flex items-center cursor-pointer hover:bg-gray-100;
-}
-
-.dropdown-content img {
-    @apply w-6 h-6 mr-3;
-}
-
-/* Modificaciones personalizadas para mejorar la apariencia y funcionalidad */
-.currency-selector {
-    @apply flex justify-center;
-    position: relative;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0.5rem;
-    background-color: #fff;
-    cursor: pointer;
-    pointer-events: auto;
-}
-
-.currency-selector img,
-.currency-selector span,
-.currency-selector svg {
-    display: inline-flex; 
-    align-items: center;
 }
 
 /* Contenedor de selección personalizado */
@@ -269,114 +183,8 @@ input[type="number"]::-moz-outer-spin-button {
     text-align: right; 
 }
 
-/* Dropdown */
-.dropdown-content {
-    position: absolute;
-    background-color: #fff;
-    top: 100%;
-    width: auto;
-    max-height: 150px;
-    max-width: 200px;
-    z-index: 10;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    overflow-y: auto;
-    transition: opacity 0.2s ease, visibility 0.2s ease;
-}
-
-.dropdown-content ul {
-    display: flex;
-    padding: 0;
-    margin: 0;
-}
-
-/* Modificación de los elementos de la lista */
-.dropdown-content div {
-    display: flex; /* Utiliza flex para apilar horizontalmente */
-    align-items: center; /* Alinea verticalmente */
-    cursor: pointer;
-    padding: 0.5rem;
-    transition: background-color 0.2s; /* Añade una transición suave */
-}
-
-.dropdown-content div:hover {
-    background-color: #f1f1f1;
-}
-
-.dropdown-content img {
-    width: 24px; /* Ajusta el tamaño del icono */
-    height: 24px; /* Ajusta el tamaño del icono */
-    margin-right: 0.5rem; /* Espaciado entre el icono y el texto */
-}
-
-.dropdown-content.show {
-    display: block;
-    opacity: 1;
-    visibility: visible;
-}
-
-.dropdown-content.hide {
-    opacity: 0; /* Hazlo invisible */
-    visibility: hidden; /* Oculta el dropdown */
-}
-
 .relative {
     position: relative;
-}
-
-/* Sección completa */
-.sending-money-section {
-    background-color: white;
-    width: 100%;
-    padding: 3rem 0;
-    display: flex;
-    justify-content: center;
-}
-
-/* Contenedor interno dividido en dos */
-.sending-money-container {
-    display: flex;
-    max-width: 1200px;
-    width: 80%; 
-    min-width: 600px; 
-    min-height: 300px; 
-    border-radius: 1rem;
-    overflow: hidden;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-/* Mitad de la Imagen */
-.sending-money-image {
-    flex: 1;
-    min-width: 300px; 
-}
-
-/* Mitad del Contenido */
-.sending-money-content {
-    flex: 1;
-    background-color: #1e293b; /* Color de fondo para el contenido */
-    padding: 2rem;
-    color: #ffffff;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    text-align: left;
-    min-width: 300px; /* Cuadrado para el lado de texto */
-    min-height: 300px;
-}
-
-/* Estilo del botón */
-.sending-money-button {
-    display: inline-block;
-    background-color: #3b82f6;
-    color: white;
-    padding: 0.75rem 1.5rem;
-    border-radius: 0.5rem;
-    text-align: center;
-    transition: background-color 0.3s ease;
-}
-
-.sending-money-button:hover {
-    background-color: #2563eb;
 }
 
 /* Contenedor de la tabla */
@@ -390,13 +198,6 @@ input[type="number"]::-moz-outer-spin-button {
 section .max-w-xl {
     border-radius: 12px;
     overflow: hidden; /* Para ocultar cualquier borde sobresaliente */
-}
-
-.content-table {
-    justify-content: center;
-    border-collapse: separate;
-    border-spacing: 0 8px; /* Espacio entre filas */
-    width: 100%;
 }
 
 /* Bordes redondeados para cada fila */
@@ -454,89 +255,6 @@ section .max-w-xl {
 #currency-table-body td:last-child:not(.hidden) {
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
-}
-
-/* Oculta la columna de edición por defecto */
-.edit-column {
-    display: none;
-}
-
-/* Muestra la columna de edición cuando el modo de edición está activado */
-.edit-column.show {
-    display: table-cell;
-}
-
-#add-currency-dropdown {
-    z-index: 10;
-    max-height: 200px;
-    overflow-y: auto;
-}
-
-.edit-column.hidden {
-    display: none;
-}
-
-.edit-btn {
-    background-color: rgba(231, 240, 250, 1);
-    color: rgba(0, 108, 224, 1);
-    font-size: 12px;
-    padding: 8px 15px;
-    right: 10px;
-    border-radius: 8px;
-    font-weight: bold;
-    border: none;
-    cursor: pointer;
-    text-align: center;
-    margin-right: 1rem;
-    margin-top: 0.5rem;
-    transition: background-color 0.3s ease;
-}
-
-.edit-btn:hover, .add-currency-btn:hover {
-    background-color: rgba(168, 200, 250, 1);
-}
-
-/* Estilo del botón "Agregar Divisa" */
-.add-currency-btn {
-    background-color: rgba(231, 240, 250, 1);
-    color: rgba(0, 108, 224, 1);
-    font-size: 12px;
-    padding: 8px 15px;
-    border-radius: 8px;
-    font-weight: bold;
-    border: none;
-    cursor: pointer;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    margin-top: 1rem;
-    transition: background-color 0.3s ease;
-}
-
-
-/* Estilo para el botón de eliminar */
-.delete-btn {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 20px;
-    height: 20px;
-    background-color: red;
-    border-radius: 50%;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.delete-btn:hover {
-    background-color: darkred; /* Cambia a un rojo más oscuro al pasar el mouse */
-}
-
-/* Estilo para los iconos dentro del botón */
-.delete-btn svg {
-    width: 10px;
-    height: 10px;
-    color: white; /* Blanco para el ícono */
 }
 
 p {
@@ -871,15 +589,6 @@ footer {
         width: 100%;
         height: 100%;
         object-fit: contain;
-    }
-
-    .converter-box {
-        flex: 1 1 100%; /* Cada columna ocupa el 100% del ancho en pantallas pequeñas */
-        position: relative;
-    }
-
-    .converter-section {
-        padding: 20px;
     }
 
     .footer-container {

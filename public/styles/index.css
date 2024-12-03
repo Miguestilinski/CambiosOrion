@@ -392,13 +392,6 @@ section .max-w-xl {
     overflow: hidden; /* Para ocultar cualquier borde sobresaliente */
 }
 
-.content-table {
-    justify-content: center;
-    border-collapse: separate;
-    border-spacing: 0 8px; /* Espacio entre filas */
-    width: 100%;
-}
-
 /* Bordes redondeados para cada fila */
 #currency-table-body tr {
     color: white;
