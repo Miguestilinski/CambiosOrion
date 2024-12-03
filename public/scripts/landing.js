@@ -65,43 +65,25 @@ function setActiveLink(menuId) {
     });
 }
 
-// Función para cargar las divisas
 function loadCurrencies() {
     const targetUrl = 'https://cambiosorion.cl/data/obtener_divisas.php';
 
     fetch(targetUrl)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.text(); // Cambiado a text()
-        })
+        .then(response => response.json())
         .then(data => {
-            console.log("Respuesta del servidor:", data); // Revisa el contenido real de la respuesta
 
-            try {
-                // Intentamos parsear el texto completo
-                const responseData = JSON.parse(data);
+            // Si los datos están en 'contents', intenta parsearlos
+            const responseData = data.contents ? JSON.parse(data.contents) : data;
 
-                // Verifica si 'contents' está presente en la respuesta
-                const currencies = responseData.contents ? JSON.parse(responseData.contents) : null;
-
-                if (!currencies) {
-                    console.error("No se pudo obtener el JSON de las divisas. La respuesta no contiene 'contents'");
-                    return;
-                }
-
-                // Procesa las divisas
-                console.log("Divisas obtenidas:", currencies);
-                exchangeRates = currencies;
-                fillCurrencyTable();
-            } catch (error) {
-                console.error('Error al parsear el JSON:', error);
+            // Asegurarse de que responseData es un array antes de usar forEach
+            if (!Array.isArray(responseData)) {
+                console.error("Formato de datos inesperado:", responseData);
+                return;
             }
+
+            fillCurrencyTable();
         })
-        .catch(error => {
-            console.error('Error al cargar las divisas:', error);
-        });
+        .catch(error => console.error('Error al cargar las divisas:', error));
 }
 
 function fillCurrencyTable() {
