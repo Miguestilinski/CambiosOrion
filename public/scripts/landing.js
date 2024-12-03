@@ -42,28 +42,28 @@ function loadCurrencies() {
     const proxyUrl = 'https://api.allorigins.win/get?url=';
     const targetUrl = 'https://cambiosorion.cl/data/obtener_divisas.php';
 
-    fetch(targetUrl)
+    fetch(proxyUrl + encodeURIComponent(targetUrl))
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
-            return response.text(); // Cambiado a text()
+            return response.json(); // Cambié text() a json() para obtener el JSON directamente
         })
         .then(data => {
             console.log(data); // Revisa el contenido real de la respuesta
 
             // Si la respuesta es válida, intenta parsearla
             try {
-                const responseData = JSON.parse(data); // Ahora se parsea el texto completo
-                const currencies = responseData.contents ? JSON.parse(responseData.contents) : null;
+                const responseData = data.contents ? JSON.parse(data.contents) : null;
 
-                if (!currencies) {
+                if (!responseData) {
                     console.error("No se pudo obtener el JSON de las divisas");
                     return;
                 }
 
                 // Procesa las divisas
-                console.log(currencies);
+                console.log(responseData);
+                const currencies = responseData; // Asumiendo que 'responseData' contiene las divisas
                 exchangeRates = currencies; // Suponiendo que 'currencies' contiene las divisas
                 fillCurrencyTable(); // Actualiza la tabla
             } catch (error) {
