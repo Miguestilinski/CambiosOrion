@@ -121,6 +121,7 @@ nav ul li.selected a {
     display: flex;
     gap: 20px;
     align-items: center;
+    color: white;
 }
 
 .hidden {
