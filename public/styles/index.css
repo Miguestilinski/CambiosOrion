@@ -123,10 +123,6 @@ nav ul li.selected a {
     color: white;
 }
 
-.hidden {
-    display: none !important;
-}
-
 #profile-menu-button {
     background-color: transparent;
     border: none;

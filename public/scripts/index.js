@@ -14,11 +14,9 @@ function initializePage() {
 document.addEventListener('DOMContentLoaded', () => {
     initializePage();
 
-    // Verificar el estado de autenticación
     const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
     console.log("Estado de autenticación al cargar la página:", isAuthenticated);
 
-    // Obtener los elementos 'user-actions' y 'guest-actions'
     const userActions = document.getElementById('user-actions');
     const guestActions = document.getElementById('guest-actions');
 
@@ -26,36 +24,31 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Elementos encontrados correctamente.');
         toggleSessionActions(isAuthenticated, userActions, guestActions);
     } else {
-        console.log('Los elementos user-actions o guest-actions no se encontraron en el DOM.');
-        if (!userActions) console.log("No se encontró user-actions");
-        if (!guestActions) console.log("No se encontró guest-actions");
+        console.log('No se encontraron los elementos necesarios en el DOM.');
     }
 
-    // Lógica para menús móviles y perfil
     setupMenus();
 });
 
 function toggleSessionActions(isAuthenticated, userActions, guestActions) {
     console.log("Ejecutando toggleSessionActions con isAuthenticated:", isAuthenticated);
 
-    if (!userActions || !guestActions) {
-        console.error('Error: No se encontraron los elementos necesarios.');
-        return;
-    }
+    if (userActions && guestActions) {
+        if (isAuthenticated) {
+            console.log("Mostrando user-actions y ocultando guest-actions.");
+            userActions.style.setProperty('display', 'block', 'important');
+            guestActions.style.setProperty('display', 'none', 'important');
+        } else {
+            console.log("Mostrando guest-actions y ocultando user-actions.");
+            userActions.style.setProperty('display', 'none', 'important');
+            guestActions.style.setProperty('display', 'block', 'important');
+        }
 
-    if (isAuthenticated) {
-        console.log("Mostrando user-actions y ocultando guest-actions.");
-        userActions.style.setProperty('display', 'block', 'important');
-        guestActions.style.setProperty('display', 'none', 'important');
+        console.log("Estado de display de user-actions:", window.getComputedStyle(userActions).display);
+        console.log("Estado de display de guest-actions:", window.getComputedStyle(guestActions).display);
     } else {
-        console.log("Mostrando guest-actions y ocultando user-actions.");
-        userActions.style.setProperty('display', 'none', 'important');
-        guestActions.style.setProperty('display', 'block', 'important');
+        console.error('Error: Los elementos user-actions o guest-actions no se encontraron.');
     }
-
-    // Mostrar estado final en consola
-    console.log("Estado de display de user-actions:", window.getComputedStyle(userActions).display);
-    console.log("Estado de display de guest-actions:", window.getComputedStyle(guestActions).display);
 }
 
 function setupMenus() {
@@ -66,7 +59,6 @@ function setupMenus() {
     const profileMenuButton = document.getElementById('profile-menu-button');
     const profileMenu = document.getElementById('profile-menu');
 
-    // Lógica para menús móviles
     if (navMenuButton) {
         navMenuButton.addEventListener('click', (event) => {
             toggleMenu(navMobileMenu, sessionMobileMenu);
@@ -81,13 +73,11 @@ function setupMenus() {
         });
     }
 
-    // Cerrar menús al hacer clic fuera
     document.addEventListener('click', () => {
         closeMenu(navMobileMenu);
         closeMenu(sessionMobileMenu);
     });
 
-    // Lógica del perfil
     if (profileMenuButton) {
         profileMenuButton.addEventListener('click', (event) => {
             toggleMenu(profileMenu);
@@ -102,7 +92,6 @@ function setupMenus() {
     }
 }
 
-// Función para alternar visibilidad del menú
 function toggleMenu(menuToOpen, menuToClose = null) {
     if (menuToClose) closeMenu(menuToClose);
 
