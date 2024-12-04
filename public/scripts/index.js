@@ -25,9 +25,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (userActions && guestActions) {
         toggleSessionActions(isAuthenticated, userActions, guestActions);
+    } else {
+        console.log('Los elementos user-actions o guest-actions no se encontraron en el DOM.');
     }
 
-    // Seleccionar elementos del DOM
+    // Lógica para menús móviles
     const navMenuButton = document.getElementById('nav-menu-button');
     const sessionMenuButton = document.getElementById('session-menu-button');
     const navMobileMenu = document.getElementById('nav-mobile-menu');
@@ -76,19 +78,14 @@ function toggleSessionActions(isAuthenticated, userActions, guestActions) {
 
     // Mostrar 'user-actions' si está autenticado, de lo contrario mostrar 'guest-actions'
     if (isAuthenticated) {
-        userActions.style.display = 'block'; // Cambiado a 'block' para evitar problemas con el menú
-        guestActions.style.display = 'none';
+        console.log("Mostrando user-actions y ocultando guest-actions.");
+        userActions.style.display = 'block'; // Mostrar si está autenticado
+        guestActions.style.display = 'none';  // Ocultar si está autenticado
     } else {
-        userActions.style.display = 'none';
-        guestActions.style.display = 'block'; // Cambiado a 'block' en lugar de 'flex'
+        console.log("Mostrando guest-actions y ocultando user-actions.");
+        userActions.style.display = 'none';  // Ocultar si no está autenticado
+        guestActions.style.display = 'block'; // Mostrar si no está autenticado
     }
-}
-
-function initializePage() {
-    loadCurrencies();
-    fillCurrencyTable();
-    setActiveLink('#nav-menu');
-    setActiveLink('#session-menu');
 }
 
 function setActiveLink(menuId) {
@@ -120,6 +117,7 @@ function closeMenu(menu) {
     }
 }
 
+console.log(localStorage.getItem('userAuthenticated'));
 
 function loadCurrencies() {
     const targetUrl = 'https://cambiosorion.cl/data/obtener_divisas.php';
