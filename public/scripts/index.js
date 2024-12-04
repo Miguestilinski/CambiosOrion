@@ -26,6 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
         toggleSessionActions(isAuthenticated, userActions, guestActions);
     } else {
         console.log('Los elementos user-actions o guest-actions no se encontraron en el DOM.');
+        if (!userActions) console.log("No se encontró user-actions");
+        if (!guestActions) console.log("No se encontró guest-actions");
     }
 
     // Resto de la lógica para menús móviles y perfil
@@ -85,6 +87,10 @@ function toggleSessionActions(isAuthenticated, userActions, guestActions) {
         userActions.style.display = 'none';  // Ocultar si no está autenticado
         guestActions.style.display = 'block'; // Mostrar si no está autenticado
     }
+
+    // Verificar los valores de display
+    console.log("Estado de display de user-actions:", userActions.style.display);
+    console.log("Estado de display de guest-actions:", guestActions.style.display);
 }
 
 function setActiveLink(menuId) {
@@ -115,8 +121,6 @@ function closeMenu(menu) {
         menu.classList.add('hidden');
     }
 }
-
-console.log(localStorage.getItem('userAuthenticated'));
 
 function loadCurrencies() {
     const targetUrl = 'https://cambiosorion.cl/data/obtener_divisas.php';
