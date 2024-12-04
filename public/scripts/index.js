@@ -122,6 +122,12 @@ function closeMenu(menu) {
     }
 }
 
+// Mostrar/ocultar el menú desplegable
+document.getElementById("profile-menu-button").addEventListener("click", function () {
+    const dropdownMenu = document.getElementById("dropdownInformation");
+    dropdownMenu.classList.toggle("hidden");
+});
+
 function loadCurrencies() {
     const targetUrl = 'https://cambiosorion.cl/data/obtener_divisas.php';
 
