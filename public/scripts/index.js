@@ -70,21 +70,49 @@ function toggleSessionActions(isAuthenticated) {
     const profileMenu = document.getElementById('profile-menu');
 
     console.log("Ejecutando toggleSessionActions con isAuthenticated:", isAuthenticated);
+    console.log("Elementos encontrados:",
+        {
+            userActionsExists: !!userActions,
+            guestActionsExists: !!guestActions,
+            profileMenuButtonExists: !!profileMenuButton,
+            profileMenuExists: !!profileMenu
+        });
 
     if (isAuthenticated) {
-        if (userActions) userActions.style.display = 'flex';
-        if (guestActions) guestActions.style.display = 'none';
-        if (profileMenuButton) profileMenuButton.classList.remove('hidden');
-        if (profileMenu) profileMenu.classList.remove('hidden');
+        if (userActions) {
+            userActions.style.display = 'flex';
+            console.log("Mostrando user-actions");
+        }
+        if (guestActions) {
+            guestActions.style.display = 'none';
+            console.log("Ocultando guest-actions");
+        }
+        if (profileMenuButton) {
+            profileMenuButton.classList.remove('hidden');
+            console.log("Mostrando profile-menu-button");
+        }
+        if (profileMenu) {
+            profileMenu.classList.remove('hidden');
+            console.log("Mostrando profile-menu");
+        }
     } else {
-        if (guestActions) guestActions.style.display = 'flex';
-        if (userActions) userActions.style.display = 'none';
-        if (profileMenuButton) profileMenuButton.classList.add('hidden');
-        if (profileMenu) profileMenu.classList.add('hidden');
+        if (guestActions) {
+            guestActions.style.display = 'flex';
+            console.log("Mostrando guest-actions");
+        }
+        if (userActions) {
+            userActions.style.display = 'none';
+            console.log("Ocultando user-actions");
+        }
+        if (profileMenuButton) {
+            profileMenuButton.classList.add('hidden');
+            console.log("Ocultando profile-menu-button");
+        }
+        if (profileMenu) {
+            profileMenu.classList.add('hidden');
+            console.log("Ocultando profile-menu");
+        }
     }
-
-    // Actualizar estado en localStorage
-    localStorage.setItem('userAuthenticated', isAuthenticated ? 'true' : 'false');
 }
 
 function setActiveLink(menuId) {

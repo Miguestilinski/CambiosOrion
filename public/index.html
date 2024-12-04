@@ -69,18 +69,17 @@
         <!-- Acciones para escritorio -->
         <div class="header-actions">
             <div id="guest-actions">
-                <a href="iniciar_sesion.html">Iniciar sesión</a>
-                <a href="registro.html" class="register-button">Registrarse</a>
+                <button id="login-button">Iniciar sesión</button>
+                <button id="register-button">Registrarse</button>
             </div>
-            <div id="user-actions" style="display:none;">
-                <button id="profile-menu-button" class="menu-button hidden">
-                    <img src="/orionapp/icons/profile-white.png" alt="Perfil">
-                </button>
+            
+            <div id="user-actions" style="display: none;">
+                <button id="profile-menu-button" class="hidden">Perfil</button>
                 <div id="profile-menu" class="hidden">
-                    <p id="user-name">Usuario</p>
-                    <p id="user-email">email@ejemplo.com</p>
-                    <a href="perfil">Perfil</a>
-                    <a href="#" id="logout-button">Cerrar sesión</a>
+                    <ul>
+                        <li><a href="/profile">Mi perfil</a></li>
+                        <li><a href="/logout" id="logout-button">Cerrar sesión</a></li>
+                    </ul>
                 </div>
             </div>
         </div>
