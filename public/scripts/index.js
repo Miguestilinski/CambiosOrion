@@ -61,6 +61,19 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // Eventos de simulación de inicio y cierre de sesión
+    document.getElementById('login-button')?.addEventListener('click', () => {
+        console.log("Simulando inicio de sesión...");
+        localStorage.setItem('userAuthenticated', 'true');
+        toggleSessionActions(true);
+    });
+
+    document.getElementById('logout-button')?.addEventListener('click', () => {
+        console.log("Simulando cierre de sesión...");
+        localStorage.setItem('userAuthenticated', 'false');
+        toggleSessionActions(false);
+    });
 });
 
 function toggleSessionActions(isAuthenticated) {
@@ -70,60 +83,18 @@ function toggleSessionActions(isAuthenticated) {
     const profileMenu = document.getElementById('profile-menu');
 
     console.log("Ejecutando toggleSessionActions con isAuthenticated:", isAuthenticated);
-    console.log("Elementos del DOM:", {
-        userActionsExists: !!userActions,
-        guestActionsExists: !!guestActions,
-        profileMenuButtonExists: !!profileMenuButton,
-        profileMenuExists: !!profileMenu
-    });
 
     if (isAuthenticated) {
-        if (userActions) {
-            userActions.style.display = 'flex';
-            userActions.classList.remove('hidden');
-            console.log("Mostrando user-actions:", userActions);
-        }
-        if (guestActions) {
-            guestActions.style.display = 'none';
-            guestActions.classList.add('hidden');
-            console.log("Ocultando guest-actions:", guestActions);
-        }
-        if (profileMenuButton) {
-            profileMenuButton.classList.remove('hidden');
-            console.log("Mostrando profile-menu-button:", profileMenuButton);
-        }
-        if (profileMenu) {
-            profileMenu.classList.remove('hidden');
-            console.log("Mostrando profile-menu:", profileMenu);
-        }
+        if (userActions) userActions.style.display = 'flex';
+        if (guestActions) guestActions.style.display = 'none';
+        if (profileMenuButton) profileMenuButton.classList.remove('hidden');
+        if (profileMenu) profileMenu.classList.remove('hidden');
     } else {
-        if (guestActions) {
-            guestActions.style.display = 'flex';
-            guestActions.classList.remove('hidden');
-            console.log("Mostrando guest-actions:", guestActions);
-        }
-        if (userActions) {
-            userActions.style.display = 'none';
-            userActions.classList.add('hidden');
-            console.log("Ocultando user-actions:", userActions);
-        }
-        if (profileMenuButton) {
-            profileMenuButton.classList.add('hidden');
-            console.log("Ocultando profile-menu-button:", profileMenuButton);
-        }
-        if (profileMenu) {
-            profileMenu.classList.add('hidden');
-            console.log("Ocultando profile-menu:", profileMenu);
-        }
+        if (guestActions) guestActions.style.display = 'flex';
+        if (userActions) userActions.style.display = 'none';
+        if (profileMenuButton) profileMenuButton.classList.add('hidden');
+        if (profileMenu) profileMenu.classList.add('hidden');
     }
-}
-
-if (isAuthenticated) {
-    userActions.classList.remove('hidden');
-    guestActions.classList.add('hidden');
-} else {
-    guestActions.classList.remove('hidden');
-    userActions.classList.add('hidden');
 }
 
 function setActiveLink(menuId) {
@@ -149,39 +120,11 @@ function toggleMenu(menuToOpen, menuToClose = null) {
     }
 }
 
-// Asegúrate de que `navMenuButton` esté declarado antes de usarlo
-const navMenuButton = document.getElementById('nav-menu-button');
-if (navMenuButton) {
-    navMenuButton.addEventListener('click', (event) => {
-        toggleMenu(navMobileMenu, sessionMobileMenu);
-        event.stopPropagation();
-    });
-}
-
 function closeMenu(menu) {
     if (menu && !menu.classList.contains('hidden')) {
         menu.classList.add('hidden');
     }
 }
-
-// Ejemplo: Simular inicio de sesión (esto debe integrarse con tu sistema real)
-document.getElementById('login-button')?.addEventListener('click', () => {
-    console.log("Simulando inicio de sesión...");
-    localStorage.setItem('userAuthenticated', 'true');
-    toggleSessionActions(true);
-});
-
-document.getElementById('logout-button')?.addEventListener('click', () => {
-    console.log("Simulando cierre de sesión...");
-    localStorage.setItem('userAuthenticated', 'false');
-    toggleSessionActions(false);
-});
-
-document.getElementById('guest-actions').style.display = 'none';
-document.getElementById('user-actions').style.display = 'flex';
-
-console.log("userActions.style:", userActions?.style.display);
-console.log("guestActions.style:", guestActions?.style.display);
 
 function loadCurrencies() {
     const targetUrl = 'https://cambiosorion.cl/data/obtener_divisas.php';
