@@ -18,13 +18,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
     console.log("Estado de autenticación al cargar la página:", isAuthenticated);
 
-    toggleSessionActions(isAuthenticated);
-
     // Obtener los elementos 'user-actions' y 'guest-actions'
     const userActions = document.getElementById('user-actions');
     const guestActions = document.getElementById('guest-actions');
 
-    // Verificar si los elementos están siendo seleccionados correctamente
     if (userActions && guestActions) {
         console.log('Elementos encontrados correctamente.');
         toggleSessionActions(isAuthenticated, userActions, guestActions);
@@ -34,7 +31,34 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!guestActions) console.log("No se encontró guest-actions");
     }
 
-    // Resto de la lógica para menús móviles y perfil
+    // Lógica para menús móviles y perfil
+    setupMenus();
+});
+
+function toggleSessionActions(isAuthenticated, userActions, guestActions) {
+    console.log("Ejecutando toggleSessionActions con isAuthenticated:", isAuthenticated);
+
+    if (!userActions || !guestActions) {
+        console.error('Error: No se encontraron los elementos necesarios.');
+        return;
+    }
+
+    if (isAuthenticated) {
+        console.log("Mostrando user-actions y ocultando guest-actions.");
+        userActions.style.setProperty('display', 'block', 'important');
+        guestActions.style.setProperty('display', 'none', 'important');
+    } else {
+        console.log("Mostrando guest-actions y ocultando user-actions.");
+        userActions.style.setProperty('display', 'none', 'important');
+        guestActions.style.setProperty('display', 'block', 'important');
+    }
+
+    // Mostrar estado final en consola
+    console.log("Estado de display de user-actions:", window.getComputedStyle(userActions).display);
+    console.log("Estado de display de guest-actions:", window.getComputedStyle(guestActions).display);
+}
+
+function setupMenus() {
     const navMenuButton = document.getElementById('nav-menu-button');
     const sessionMenuButton = document.getElementById('session-menu-button');
     const navMobileMenu = document.getElementById('nav-mobile-menu');
@@ -76,43 +100,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-});
-
-function toggleSessionActions(isAuthenticated) {
-    const userActions = document.getElementById('user-actions');
-    const guestActions = document.getElementById('guest-actions');
-
-    console.log("Ejecutando toggleSessionActions con isAuthenticated:", isAuthenticated);
-    console.log("user-actions encontrado:", userActions);
-    console.log("guest-actions encontrado:", guestActions);
-
-    if (userActions && guestActions) {
-        if (isAuthenticated) {
-            console.log("Mostrando user-actions y ocultando guest-actions.");
-            userActions.style.setProperty('display', 'block', 'important');
-            guestActions.style.setProperty('display', 'none', 'important');
-        } else {
-            console.log("Mostrando guest-actions y ocultando user-actions.");
-            userActions.style.setProperty('display', 'none', 'important');
-            guestActions.style.setProperty('display', 'block', 'important');
-        }
-    } else {
-        console.log('Error: No se encontraron los elementos.');
-    }
-    console.log("Estado de display de user-actions:", userActions.style.display);
-    console.log("Estado de display de guest-actions:", guestActions.style.display);
-}
-
-function setActiveLink(menuId) {
-    const links = document.querySelectorAll(`${menuId} a`);
-    const currentPath = window.location.pathname;
-    links.forEach(link => {
-        if (link.getAttribute('href') === currentPath) {
-            link.classList.add('selected');
-        } else {
-            link.classList.remove('selected');
-        }
-    });
 }
 
 // Función para alternar visibilidad del menú
@@ -132,11 +119,30 @@ function closeMenu(menu) {
     }
 }
 
-// Mostrar/ocultar el menú desplegable
-document.getElementById("profile-menu-button").addEventListener("click", function () {
-    const dropdownMenu = document.getElementById("dropdownInformation");
-    dropdownMenu.classList.toggle("hidden");
-});
+function setActiveLink(menuId) {
+    const links = document.querySelectorAll(`${menuId} a`);
+    const currentPath = window.location.pathname;
+    links.forEach(link => {
+        if (link.getAttribute('href') === currentPath) {
+            link.classList.add('selected');
+        } else {
+            link.classList.remove('selected');
+        }
+    });
+}
+
+// Mostrar/ocultar el menú desplegable del perfil
+const profileMenuButton = document.getElementById("profile-menu-button");
+if (profileMenuButton) {
+    profileMenuButton.addEventListener("click", () => {
+        const dropdownMenu = document.getElementById("dropdownInformation");
+        if (dropdownMenu) {
+            dropdownMenu.classList.toggle("hidden");
+        } else {
+            console.error("No se encontró el elemento dropdownInformation.");
+        }
+    });
+}
 
 function loadCurrencies() {
     const targetUrl = 'https://cambiosorion.cl/data/obtener_divisas.php';
