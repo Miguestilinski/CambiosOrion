@@ -70,44 +70,50 @@ function toggleSessionActions(isAuthenticated) {
     const profileMenu = document.getElementById('profile-menu');
 
     console.log("Ejecutando toggleSessionActions con isAuthenticated:", isAuthenticated);
+    console.log("Elementos del DOM:", {
+        userActionsExists: !!userActions,
+        guestActionsExists: !!guestActions,
+        profileMenuButtonExists: !!profileMenuButton,
+        profileMenuExists: !!profileMenu
+    });
 
     if (isAuthenticated) {
         if (userActions) {
             userActions.style.display = 'flex';
-            userActions.style.visibility = 'visible';
-            console.log("Mostrando user-actions");
+            userActions.classList.remove('hidden');
+            console.log("Mostrando user-actions:", userActions);
         }
         if (guestActions) {
             guestActions.style.display = 'none';
-            guestActions.style.visibility = 'hidden';
-            console.log("Ocultando guest-actions");
+            guestActions.classList.add('hidden');
+            console.log("Ocultando guest-actions:", guestActions);
         }
         if (profileMenuButton) {
             profileMenuButton.classList.remove('hidden');
-            console.log("Mostrando profile-menu-button");
+            console.log("Mostrando profile-menu-button:", profileMenuButton);
         }
         if (profileMenu) {
             profileMenu.classList.remove('hidden');
-            console.log("Mostrando profile-menu");
+            console.log("Mostrando profile-menu:", profileMenu);
         }
     } else {
         if (guestActions) {
             guestActions.style.display = 'flex';
-            guestActions.style.visibility = 'visible';
-            console.log("Mostrando guest-actions");
+            guestActions.classList.remove('hidden');
+            console.log("Mostrando guest-actions:", guestActions);
         }
         if (userActions) {
             userActions.style.display = 'none';
-            userActions.style.visibility = 'hidden';
-            console.log("Ocultando user-actions");
+            userActions.classList.add('hidden');
+            console.log("Ocultando user-actions:", userActions);
         }
         if (profileMenuButton) {
             profileMenuButton.classList.add('hidden');
-            console.log("Ocultando profile-menu-button");
+            console.log("Ocultando profile-menu-button:", profileMenuButton);
         }
         if (profileMenu) {
             profileMenu.classList.add('hidden');
-            console.log("Ocultando profile-menu");
+            console.log("Ocultando profile-menu:", profileMenu);
         }
     }
 }
