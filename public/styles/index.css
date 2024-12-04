@@ -111,13 +111,13 @@ nav ul li.selected a {
 }
 
 #user-actions {
-    display: none; /* Inicialmente oculto */
+    display: none !important;
     align-items: center; /* Alineación del contenido */
     gap: 10px; /* Espaciado entre elementos */
 }
 
 #guest-actions {
-    display: block; /* Visible cuando no está autenticado */
+    display: block !important;
     flex-direction: column;
     align-items: center;
     color: white;

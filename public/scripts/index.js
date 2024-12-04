@@ -81,21 +81,22 @@ function toggleSessionActions(isAuthenticated) {
     const guestActions = document.getElementById('guest-actions');
 
     console.log("Ejecutando toggleSessionActions con isAuthenticated:", isAuthenticated);
+    console.log("user-actions encontrado:", userActions);
+    console.log("guest-actions encontrado:", guestActions);
 
     if (userActions && guestActions) {
         if (isAuthenticated) {
             console.log("Mostrando user-actions y ocultando guest-actions.");
-            userActions.style.display = 'block';  // Cambiar a 'block'
-            guestActions.style.display = 'none';   // Cambiar a 'none'
+            userActions.style.display = 'block';
+            guestActions.style.display = 'none';
         } else {
             console.log("Mostrando guest-actions y ocultando user-actions.");
-            userActions.style.display = 'none';   // Cambiar a 'none'
-            guestActions.style.display = 'block'; // Cambiar a 'block'
+            userActions.style.display = 'none';
+            guestActions.style.display = 'block';
         }
     } else {
-        console.error('No se encontraron los elementos user-actions o guest-actions.');
+        console.log('Error: No se encontraron los elementos.');
     }
-
     console.log("Estado de display de user-actions:", userActions.style.display);
     console.log("Estado de display de guest-actions:", guestActions.style.display);
 }
