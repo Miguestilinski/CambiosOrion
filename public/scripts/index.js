@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Verificar el estado de autenticación
     const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
+    console.log("Estado de autenticación al cargar la página:", isAuthenticated);
     toggleSessionActions(isAuthenticated);
 
     // Seleccionar elementos del DOM
@@ -68,6 +69,8 @@ function toggleSessionActions(isAuthenticated) {
     const profileMenuButton = document.getElementById('profile-menu-button');
     const profileMenu = document.getElementById('profile-menu');
 
+    console.log("Ejecutando toggleSessionActions con isAuthenticated:", isAuthenticated);
+
     if (isAuthenticated) {
         if (userActions) userActions.style.display = 'flex';
         if (guestActions) guestActions.style.display = 'none';
@@ -112,6 +115,19 @@ function closeMenu(menu) {
         menu.classList.add('hidden');
     }
 }
+
+// Ejemplo: Simular inicio de sesión (esto debe integrarse con tu sistema real)
+document.getElementById('login-button')?.addEventListener('click', () => {
+    console.log("Simulando inicio de sesión...");
+    localStorage.setItem('userAuthenticated', 'true');
+    toggleSessionActions(true);
+});
+
+document.getElementById('logout-button')?.addEventListener('click', () => {
+    console.log("Simulando cierre de sesión...");
+    localStorage.setItem('userAuthenticated', 'false');
+    toggleSessionActions(false);
+});
 
 function loadCurrencies() {
     const targetUrl = 'https://cambiosorion.cl/data/obtener_divisas.php';
