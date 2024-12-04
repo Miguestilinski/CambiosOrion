@@ -112,13 +112,11 @@ nav ul li.selected a {
 }
 
 #user-actions {
-    display: none;
     align-items: center; /* Alineación del contenido */
     gap: 10px; /* Espaciado entre elementos */
 }
 
 #guest-actions {
-    display: none;
     flex-direction: column;
     align-items: center;
     color: white;
