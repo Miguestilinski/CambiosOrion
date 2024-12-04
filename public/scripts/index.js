@@ -80,12 +80,12 @@ function toggleSessionActions(isAuthenticated, userActions, guestActions) {
     // Si está autenticado, mostrar 'user-actions' y ocultar 'guest-actions'
     if (isAuthenticated) {
         console.log("Mostrando user-actions y ocultando guest-actions.");
-        userActions.style.display = 'block'; // Mostrar si está autenticado
-        guestActions.style.display = 'none';  // Ocultar si está autenticado
+        userActions.classList.remove('hidden'); // Mostrar si está autenticado
+        guestActions.classList.add('hidden');   // Ocultar si está autenticado
     } else {
         console.log("Mostrando guest-actions y ocultando user-actions.");
-        userActions.style.display = 'none';  // Ocultar si no está autenticado
-        guestActions.style.display = 'block'; // Mostrar si no está autenticado
+        userActions.classList.add('hidden');    // Ocultar si no está autenticado
+        guestActions.classList.remove('hidden'); // Mostrar si no está autenticado
     }
 
     // Verificar los valores de display
