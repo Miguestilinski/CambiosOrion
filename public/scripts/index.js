@@ -77,20 +77,20 @@ document.addEventListener('DOMContentLoaded', () => {
 function toggleSessionActions(isAuthenticated, userActions, guestActions) {
     console.log("Ejecutando toggleSessionActions con isAuthenticated:", isAuthenticated);
 
-    // Mostrar 'user-actions' si está autenticado, de lo contrario mostrar 'guest-actions'
+    // Usar la clase 'hidden' para controlar la visibilidad
     if (isAuthenticated) {
         console.log("Mostrando user-actions y ocultando guest-actions.");
-        userActions.style.display = 'block'; // Mostrar si está autenticado
-        guestActions.style.display = 'none';  // Ocultar si está autenticado
+        userActions.classList.remove('hidden'); // Mostrar si está autenticado
+        guestActions.classList.add('hidden');  // Ocultar si está autenticado
     } else {
         console.log("Mostrando guest-actions y ocultando user-actions.");
-        userActions.style.display = 'none';  // Ocultar si no está autenticado
-        guestActions.style.display = 'block'; // Mostrar si no está autenticado
+        userActions.classList.add('hidden');  // Ocultar si no está autenticado
+        guestActions.classList.remove('hidden'); // Mostrar si no está autenticado
     }
 
-    // Verificar los valores de display
-    console.log("Estado de display de user-actions:", userActions.style.display);
-    console.log("Estado de display de guest-actions:", guestActions.style.display);
+    // Verificar los valores de display utilizando la clase 'hidden'
+    console.log("Estado de 'user-actions' hidden:", userActions.classList.contains('hidden'));
+    console.log("Estado de 'guest-actions' hidden:", guestActions.classList.contains('hidden'));
 }
 
 function setActiveLink(menuId) {
