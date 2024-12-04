@@ -118,6 +118,7 @@ nav ul li.selected a {
 }
 
 #guest-actions {
+    display: none;
     flex-direction: column;
     align-items: center;
     color: white;
