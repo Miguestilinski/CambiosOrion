@@ -89,12 +89,12 @@ function toggleSessionActions(isAuthenticated) {
     if (userActions && guestActions) {
         if (isAuthenticated) {
             console.log("Mostrando user-actions y ocultando guest-actions.");
-            userActions.style.display = 'block';
-            guestActions.style.display = 'none';
+            userActions.style.setProperty('display', 'block', 'important');
+            guestActions.style.setProperty('display', 'none', 'important');
         } else {
             console.log("Mostrando guest-actions y ocultando user-actions.");
-            userActions.style.display = 'none';
-            guestActions.style.display = 'block';
+            userActions.style.setProperty('display', 'none', 'important');
+            guestActions.style.setProperty('display', 'block', 'important');
         }
     } else {
         console.log('Error: No se encontraron los elementos.');
