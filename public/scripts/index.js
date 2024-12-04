@@ -16,6 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
     console.log("Estado de autenticación al cargar la página:", isAuthenticated);
 
+    toggleSessionActions(isAuthenticated);
+
     // Obtener los elementos 'user-actions' y 'guest-actions'
     const userActions = document.getElementById('user-actions');
     const guestActions = document.getElementById('guest-actions');
@@ -74,21 +76,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-function toggleSessionActions(isAuthenticated, userActions, guestActions) {
+function toggleSessionActions(isAuthenticated) {
+    const userActions = document.getElementById('user-actions');
+    const guestActions = document.getElementById('guest-actions');
+    
     console.log("Ejecutando toggleSessionActions con isAuthenticated:", isAuthenticated);
 
-    // Si está autenticado, mostrar 'user-actions' y ocultar 'guest-actions'
-    if (isAuthenticated) {
-        console.log("Mostrando user-actions y ocultando guest-actions.");
-        userActions.style.display = 'block'; // Aseguramos que se muestre
-        guestActions.style.display = 'none';  // Ocultar guest-actions
+    if (userActions && guestActions) {
+        if (isAuthenticated) {
+            console.log("Mostrando user-actions y ocultando guest-actions.");
+            userActions.style.display = 'block'; // Asegurarse que se muestre el usuario
+            guestActions.style.display = 'none';  // Asegurarse que no se muestre el invitado
+        } else {
+            console.log("Mostrando guest-actions y ocultando user-actions.");
+            userActions.style.display = 'none';   // Asegurarse que no se muestre el usuario
+            guestActions.style.display = 'block'; // Asegurarse que se muestre el invitado
+        }
     } else {
-        console.log("Mostrando guest-actions y ocultando user-actions.");
-        userActions.style.display = 'none';   // Ocultar user-actions
-        guestActions.style.display = 'block'; // Aseguramos que se muestre
+        console.error('No se encontraron los elementos user-actions o guest-actions.');
     }
 
-    // Verificar los valores de display
     console.log("Estado de display de user-actions:", userActions.style.display);
     console.log("Estado de display de guest-actions:", guestActions.style.display);
 }
