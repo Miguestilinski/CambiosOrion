@@ -4,13 +4,6 @@ let isEditMode = false;
 let activeDropdown = null;
 let displayedCurrencies = ["CLP", "USD", "EUR", "ARS"];
 
-function initializePage() {
-    loadCurrencies();
-    fillCurrencyTable();
-    setActiveLink('#nav-menu');
-    setActiveLink('#session-menu');
-}
-
 document.addEventListener('DOMContentLoaded', () => {
     initializePage();
 
@@ -24,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Elementos encontrados correctamente.');
         toggleSessionActions(isAuthenticated, userActions, guestActions);
     } else {
-        console.log('No se encontraron los elementos necesarios en el DOM.');
+        console.error('Error: No se encontraron los elementos user-actions o guest-actions en el DOM.');
     }
 
     setupMenus();
@@ -33,24 +26,28 @@ document.addEventListener('DOMContentLoaded', () => {
 function toggleSessionActions(isAuthenticated, userActions, guestActions) {
     console.log("Ejecutando toggleSessionActions con isAuthenticated:", isAuthenticated);
 
-    if (userActions && guestActions) {
-        if (isAuthenticated) {
-            console.log("Mostrando user-actions y ocultando guest-actions.");
-            userActions.style.setProperty('display', 'block', 'important');
-            guestActions.style.setProperty('display', 'none', 'important');
-        } else {
-            console.log("Mostrando guest-actions y ocultando user-actions.");
-            userActions.style.setProperty('display', 'none', 'important');
-            guestActions.style.setProperty('display', 'block', 'important');
-        }
-
-        console.log("Estado de display de user-actions:", window.getComputedStyle(userActions).display);
-        console.log("Estado de display de guest-actions:", window.getComputedStyle(guestActions).display);
-    } else {
-        console.error('Error: Los elementos user-actions o guest-actions no se encontraron.');
+    if (!userActions || !guestActions) {
+        console.error('Error: Los elementos user-actions o guest-actions no están definidos.');
+        return;
     }
+
+    // Mostrar/ocultar elementos basados en autenticación
+    if (isAuthenticated) {
+        console.log("Mostrando user-actions y ocultando guest-actions.");
+        userActions.style.display = 'block'; // Sin "important"
+        guestActions.style.display = 'none';
+    } else {
+        console.log("Mostrando guest-actions y ocultando user-actions.");
+        userActions.style.display = 'none';
+        guestActions.style.display = 'block';
+    }
+
+    // Comprobación de estilos en consola
+    console.log("Estado de display de user-actions:", getComputedStyle(userActions).display);
+    console.log("Estado de display de guest-actions:", getComputedStyle(guestActions).display);
 }
 
+// Configuración de menús y enlaces activos
 function setupMenus() {
     const navMenuButton = document.getElementById('nav-menu-button');
     const sessionMenuButton = document.getElementById('session-menu-button');
