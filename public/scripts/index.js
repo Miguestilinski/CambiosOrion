@@ -26,6 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const sessionMobileMenu = document.getElementById('session-mobile-menu');
     const profileMenuButton = document.getElementById('profile-menu-button');
     const profileMenu = document.getElementById('profile-menu');
+    const userActions = document.getElementById('user-actions');
+    const guestActions = document.getElementById('guest-actions');
 
     // Lógica para menús móviles
     if (navMenuButton) {
@@ -61,26 +63,22 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // Verificar si los elementos existen antes de manipularlos
+    if (userActions && guestActions) {
+        toggleSessionActions(isAuthenticated, userActions, guestActions);
+    }
 });
 
-function toggleSessionActions(isAuthenticated) {
-    const userActions = document.getElementById('user-actions');
-    const guestActions = document.getElementById('guest-actions');
-    const profileMenuButton = document.getElementById('profile-menu-button');
-    const profileMenu = document.getElementById('profile-menu');
-
+function toggleSessionActions(isAuthenticated, userActions, guestActions) {
     console.log("Ejecutando toggleSessionActions con isAuthenticated:", isAuthenticated);
 
     if (isAuthenticated) {
         if (userActions) userActions.style.display = 'flex';
         if (guestActions) guestActions.style.display = 'none';
-        if (profileMenuButton) profileMenuButton.classList.remove('hidden');
-        if (profileMenu) profileMenu.classList.remove('hidden');
     } else {
         if (guestActions) guestActions.style.display = 'flex';
         if (userActions) userActions.style.display = 'none';
-        if (profileMenuButton) profileMenuButton.classList.add('hidden');
-        if (profileMenu) profileMenu.classList.add('hidden');
     }
 }
 
