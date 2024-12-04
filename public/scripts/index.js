@@ -128,6 +128,7 @@ document.getElementById("profile-menu-button").addEventListener("click", functio
     dropdownMenu.classList.toggle("hidden");
 });
 
+
 function loadCurrencies() {
     const targetUrl = 'https://cambiosorion.cl/data/obtener_divisas.php';
 
