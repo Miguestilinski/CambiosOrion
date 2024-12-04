@@ -70,21 +70,16 @@ function toggleSessionActions(isAuthenticated) {
     const profileMenu = document.getElementById('profile-menu');
 
     console.log("Ejecutando toggleSessionActions con isAuthenticated:", isAuthenticated);
-    console.log("Elementos encontrados:",
-        {
-            userActionsExists: !!userActions,
-            guestActionsExists: !!guestActions,
-            profileMenuButtonExists: !!profileMenuButton,
-            profileMenuExists: !!profileMenu
-        });
 
     if (isAuthenticated) {
         if (userActions) {
             userActions.style.display = 'flex';
+            userActions.style.visibility = 'visible';
             console.log("Mostrando user-actions");
         }
         if (guestActions) {
             guestActions.style.display = 'none';
+            guestActions.style.visibility = 'hidden';
             console.log("Ocultando guest-actions");
         }
         if (profileMenuButton) {
@@ -98,10 +93,12 @@ function toggleSessionActions(isAuthenticated) {
     } else {
         if (guestActions) {
             guestActions.style.display = 'flex';
+            guestActions.style.visibility = 'visible';
             console.log("Mostrando guest-actions");
         }
         if (userActions) {
             userActions.style.display = 'none';
+            userActions.style.visibility = 'hidden';
             console.log("Ocultando user-actions");
         }
         if (profileMenuButton) {
@@ -138,6 +135,16 @@ function toggleMenu(menuToOpen, menuToClose = null) {
     }
 }
 
+// Asegúrate de que `navMenuButton` esté declarado antes de usarlo
+const navMenuButton = document.getElementById('nav-menu-button');
+if (navMenuButton) {
+    navMenuButton.addEventListener('click', (event) => {
+        toggleMenu(navMobileMenu, sessionMobileMenu);
+        event.stopPropagation();
+    });
+}
+
+
 function closeMenu(menu) {
     if (menu && !menu.classList.contains('hidden')) {
         menu.classList.add('hidden');
@@ -156,6 +163,9 @@ document.getElementById('logout-button')?.addEventListener('click', () => {
     localStorage.setItem('userAuthenticated', 'false');
     toggleSessionActions(false);
 });
+
+console.log("userActions.style:", userActions?.style.display);
+console.log("guestActions.style:", guestActions?.style.display);
 
 function loadCurrencies() {
     const targetUrl = 'https://cambiosorion.cl/data/obtener_divisas.php';
