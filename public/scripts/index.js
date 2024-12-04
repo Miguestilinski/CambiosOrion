@@ -12,24 +12,23 @@ function initializePage() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Inicializar la página
-    initializePage();
-
     // Verificar el estado de autenticación
     const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
     console.log("Estado de autenticación al cargar la página:", isAuthenticated);
 
-    // Verificar si los elementos existen antes de intentar manipularlos
+    // Obtener los elementos 'user-actions' y 'guest-actions'
     const userActions = document.getElementById('user-actions');
     const guestActions = document.getElementById('guest-actions');
 
+    // Verificar si los elementos están siendo seleccionados correctamente
     if (userActions && guestActions) {
+        console.log('Elementos encontrados correctamente.');
         toggleSessionActions(isAuthenticated, userActions, guestActions);
     } else {
         console.log('Los elementos user-actions o guest-actions no se encontraron en el DOM.');
     }
 
-    // Lógica para menús móviles
+    // Resto de la lógica para menús móviles y perfil
     const navMenuButton = document.getElementById('nav-menu-button');
     const sessionMenuButton = document.getElementById('session-menu-button');
     const navMobileMenu = document.getElementById('nav-mobile-menu');
