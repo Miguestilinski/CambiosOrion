@@ -61,19 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-
-    // Eventos de simulación de inicio y cierre de sesión
-    document.getElementById('login-button')?.addEventListener('click', () => {
-        console.log("Simulando inicio de sesión...");
-        localStorage.setItem('userAuthenticated', 'true');
-        toggleSessionActions(true);
-    });
-
-    document.getElementById('logout-button')?.addEventListener('click', () => {
-        console.log("Simulando cierre de sesión...");
-        localStorage.setItem('userAuthenticated', 'false');
-        toggleSessionActions(false);
-    });
 });
 
 function toggleSessionActions(isAuthenticated) {
