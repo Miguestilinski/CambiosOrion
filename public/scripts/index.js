@@ -118,6 +118,14 @@ function toggleSessionActions(isAuthenticated) {
     }
 }
 
+if (isAuthenticated) {
+    userActions.classList.remove('hidden');
+    guestActions.classList.add('hidden');
+} else {
+    guestActions.classList.remove('hidden');
+    userActions.classList.add('hidden');
+}
+
 function setActiveLink(menuId) {
     const links = document.querySelectorAll(`${menuId} a`);
     const currentPath = window.location.pathname;
@@ -150,7 +158,6 @@ if (navMenuButton) {
     });
 }
 
-
 function closeMenu(menu) {
     if (menu && !menu.classList.contains('hidden')) {
         menu.classList.add('hidden');
@@ -169,6 +176,9 @@ document.getElementById('logout-button')?.addEventListener('click', () => {
     localStorage.setItem('userAuthenticated', 'false');
     toggleSessionActions(false);
 });
+
+document.getElementById('guest-actions').style.display = 'none';
+document.getElementById('user-actions').style.display = 'flex';
 
 console.log("userActions.style:", userActions?.style.display);
 console.log("guestActions.style:", guestActions?.style.display);
