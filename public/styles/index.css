@@ -118,8 +118,7 @@ nav ul li.selected a {
 }
 
 #guest-actions {
-    display: flex;
-    gap: 20px;
+    flex-direction: column;
     align-items: center;
     color: white;
 }
@@ -738,7 +737,6 @@ footer {
 
 .mobile-menu li {
     padding: 10px;
-    border-bottom: 1px solid #ccc;
     margin: 12px 0; /* Espacio entre los elementos */
 }
 
