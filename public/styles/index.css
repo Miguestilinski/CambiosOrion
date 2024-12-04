@@ -727,7 +727,17 @@ footer {
     list-style-type: none;
 }
 
+.mobile-menu {
+    display: none;
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ccc;
+    width: 100%;
+}
+
 .mobile-menu li {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
     margin: 12px 0; /* Espacio entre los elementos */
 }
 
@@ -748,6 +758,14 @@ footer {
 .desktop-nav,
 .desktop-actions {
     display: flex;
+}
+
+.mobile-buttons {
+    display: none;
+}
+
+nav {
+    display: block;
 }
 
 @media (max-width: 887px) {
@@ -833,6 +851,7 @@ footer {
 
     /* Menús desplegables en versión móvil */
     .mobile-menu {
+        display: block;
         position: absolute;
         right: 20px;
         top: 70px; /* Ajustar para que aparezca debajo del botón */

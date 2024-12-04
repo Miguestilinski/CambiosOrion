@@ -4,47 +4,55 @@ let isEditMode = false;
 let activeDropdown = null;
 let displayedCurrencies = ["CLP", "USD", "EUR", "ARS"];
 
-function initializePage() {
-    loadCurrencies();
-    fillCurrencyTable();
-    setActiveLink('#nav-menu');
-    setActiveLink('#session-menu');
-}
-
 document.addEventListener('DOMContentLoaded', () => {
     initializePage();
 
+    // Verificar el estado de autenticación
     const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
-    console.log('Estado de la sesión:', isAuthenticated);
-    toggleSessionActions(isAuthenticated); // Se asegura de que las acciones se muestren correctamente
+    toggleSessionActions(isAuthenticated);
 
+    // Seleccionar elementos del DOM
     const navMenuButton = document.getElementById('nav-menu-button');
     const sessionMenuButton = document.getElementById('session-menu-button');
     const navMobileMenu = document.getElementById('nav-mobile-menu');
     const sessionMobileMenu = document.getElementById('session-mobile-menu');
+    const profileMenuButton = document.getElementById('profile-menu-button');
+    const profileMenu = document.getElementById('profile-menu');
 
-    if (navMenuButton && sessionMenuButton && navMobileMenu && sessionMobileMenu) {
+    // Lógica para menús móviles
+    if (navMenuButton) {
         navMenuButton.addEventListener('click', (event) => {
-            toggleMenu(navMobileMenu); // Cambié la llamada para solo pasar un menú
+            toggleMenu(navMobileMenu, sessionMobileMenu);
             event.stopPropagation();
-        });
-
-        sessionMenuButton.addEventListener('click', (event) => {
-            toggleMenu(sessionMobileMenu); // Cambié la llamada para solo pasar un menú
-            event.stopPropagation();
-        });
-
-        document.addEventListener('click', () => {
-            closeMenu(navMobileMenu);
-            closeMenu(sessionMobileMenu);
         });
     }
-});
 
-document.addEventListener('DOMContentLoaded', () => {
-    const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
-    console.log('Estado de la sesión:', isAuthenticated);
-    toggleSessionActions(isAuthenticated);
+    if (sessionMenuButton) {
+        sessionMenuButton.addEventListener('click', (event) => {
+            toggleMenu(sessionMobileMenu, navMobileMenu);
+            event.stopPropagation();
+        });
+    }
+
+    // Cerrar menús al hacer clic fuera
+    document.addEventListener('click', () => {
+        closeMenu(navMobileMenu);
+        closeMenu(sessionMobileMenu);
+    });
+
+    // Lógica del perfil
+    if (profileMenuButton) {
+        profileMenuButton.addEventListener('click', (event) => {
+            toggleMenu(profileMenu);
+            event.stopPropagation();
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!profileMenu.contains(event.target)) {
+                closeMenu(profileMenu);
+            }
+        });
+    }
 });
 
 function toggleSessionActions(isAuthenticated) {
@@ -54,52 +62,21 @@ function toggleSessionActions(isAuthenticated) {
     const profileMenu = document.getElementById('profile-menu');
 
     if (isAuthenticated) {
-        console.log("Usuario autenticado, mostrando acciones");
-        // Mostrar las acciones para usuarios autenticados
-        userActions.style.display = 'flex'; // Asegúrate de usar 'flex' para contenedores flexibles
+        userActions.style.display = 'flex';
         guestActions.style.display = 'none';
-
-        // Asegurarse de que el botón de perfil sea visible
-        if (profileMenuButton) {
-            profileMenuButton.classList.remove('hidden');
-
-            // Agregar evento para alternar el menú del perfil
-            profileMenuButton.addEventListener('click', () => {
-                if (profileMenu) {
-                    profileMenu.classList.toggle('hidden');
-                }
-            });
-        }
+        profileMenuButton?.classList.remove('hidden');
     } else {
-        console.log("Usuario no autenticado, mostrando acciones de invitados");
-        // Mostrar las acciones para invitados
         guestActions.style.display = 'flex';
         userActions.style.display = 'none';
-
-        // Asegurarse de que el botón de perfil esté oculto
-        if (profileMenuButton) {
-            profileMenuButton.classList.add('hidden');
-        }
-
-        // Asegurarse de ocultar el menú del perfil
-        if (profileMenu) {
-            profileMenu.classList.add('hidden');
-        }
+        profileMenuButton?.classList.add('hidden');
+        profileMenu?.classList.add('hidden');
     }
 
-    // Guarda el estado de autenticación en localStorage
     localStorage.setItem('userAuthenticated', isAuthenticated ? 'true' : 'false');
 }
 
-// Cerrar sesión
-document.getElementById('logout-button')?.addEventListener('click', () => {
-    localStorage.setItem('userAuthenticated', 'false');
-    toggleSessionActions(false);
-});
-
-
 // Función para alternar visibilidad del menú
-function toggleMenu(menuToOpen, menuToClose) {
+function toggleMenu(menuToOpen, menuToClose = null) {
     if (menuToClose) closeMenu(menuToClose);
 
     if (menuToOpen.classList.contains('hidden')) {
@@ -113,73 +90,6 @@ function closeMenu(menu) {
     if (!menu.classList.contains('hidden')) {
         menu.classList.add('hidden');
     }
-}
-
-// Marcar la opción activa en el menú
-function setActiveLink(menuId) {
-    const links = document.querySelectorAll(`${menuId} a`);
-    const currentPath = window.location.pathname;
-    links.forEach(link => {
-        if (link.getAttribute('href') === currentPath) {
-            link.classList.add('selected');
-        } else {
-            link.classList.remove('selected');
-        }
-    });
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    const isLoggedIn = checkSession(); // Implementa esta función para determinar si hay sesión activa
-    const guestActions = document.getElementById('guest-actions');
-    const userActions = document.getElementById('user-actions');
-    const profileMenuButton = document.getElementById('profile-menu-button');
-    const profileMenu = document.getElementById('profile-menu');
-
-    if (isLoggedIn) {
-        // Mostrar menú de usuario
-        guestActions.classList.add('hidden');
-        userActions.classList.remove('hidden');
-
-        // Lógica para desplegar el menú
-        profileMenuButton.addEventListener('click', () => {
-            profileMenu.classList.toggle('hidden');
-        });
-
-        // Cerrar menú al hacer clic fuera
-        document.addEventListener('click', (event) => {
-            if (!userActions.contains(event.target)) {
-                profileMenu.classList.add('hidden');
-            }
-        });
-
-        // Rellenar datos de usuario
-        document.getElementById('user-name').textContent = 'Nombre Usuario'; // Cambia con los datos reales
-        document.getElementById('user-email').textContent = 'usuario@ejemplo.com';
-    } else {
-        // Mostrar botones de invitado
-        guestActions.classList.remove('hidden');
-        userActions.classList.add('hidden');
-    }
-
-    // Lógica para cerrar sesión
-    const logoutButton = document.getElementById('logout-button');
-    if (logoutButton) {
-        logoutButton.addEventListener('click', () => {
-            logout(); // Implementa la función para cerrar sesión
-        });
-    }
-});
-
-function checkSession() {
-    // Implementa la lógica para verificar si el usuario tiene sesión activa
-    // Retorna true si está autenticado, false si no
-    return false; // Placeholder
-}
-
-function logout() {
-    toggleSessionActions(false); // Cambiar el estado de la sesión a false
-    console.log('Cerrar sesión');
-    // Redirigir al usuario o eliminar datos de sesión
 }
 
 function loadCurrencies() {
