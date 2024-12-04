@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         document.addEventListener('click', (event) => {
-            if (!profileMenu.contains(event.target)) {
+            if (profileMenu && !profileMenu.contains(event.target)) {
                 closeMenu(profileMenu);
             }
         });
@@ -69,16 +69,18 @@ function toggleSessionActions(isAuthenticated) {
     const profileMenu = document.getElementById('profile-menu');
 
     if (isAuthenticated) {
-        userActions.style.display = 'flex';
-        guestActions.style.display = 'none';
-        profileMenuButton?.classList.remove('hidden');
+        if (userActions) userActions.style.display = 'flex';
+        if (guestActions) guestActions.style.display = 'none';
+        if (profileMenuButton) profileMenuButton.classList.remove('hidden');
+        if (profileMenu) profileMenu.classList.remove('hidden');
     } else {
-        guestActions.style.display = 'flex';
-        userActions.style.display = 'none';
-        profileMenuButton?.classList.add('hidden');
-        profileMenu?.classList.add('hidden');
+        if (guestActions) guestActions.style.display = 'flex';
+        if (userActions) userActions.style.display = 'none';
+        if (profileMenuButton) profileMenuButton.classList.add('hidden');
+        if (profileMenu) profileMenu.classList.add('hidden');
     }
 
+    // Actualizar estado en localStorage
     localStorage.setItem('userAuthenticated', isAuthenticated ? 'true' : 'false');
 }
 
@@ -98,15 +100,15 @@ function setActiveLink(menuId) {
 function toggleMenu(menuToOpen, menuToClose = null) {
     if (menuToClose) closeMenu(menuToClose);
 
-    if (menuToOpen.classList.contains('hidden')) {
+    if (menuToOpen && menuToOpen.classList.contains('hidden')) {
         menuToOpen.classList.remove('hidden');
-    } else {
+    } else if (menuToOpen) {
         menuToOpen.classList.add('hidden');
     }
 }
 
 function closeMenu(menu) {
-    if (!menu.classList.contains('hidden')) {
+    if (menu && !menu.classList.contains('hidden')) {
         menu.classList.add('hidden');
     }
 }
