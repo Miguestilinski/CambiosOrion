@@ -12,12 +12,20 @@ function initializePage() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Inicializar la página
     initializePage();
 
     // Verificar el estado de autenticación
     const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
     console.log("Estado de autenticación al cargar la página:", isAuthenticated);
-    toggleSessionActions(isAuthenticated);
+
+    // Verificar si los elementos existen antes de intentar manipularlos
+    const userActions = document.getElementById('user-actions');
+    const guestActions = document.getElementById('guest-actions');
+
+    if (userActions && guestActions) {
+        toggleSessionActions(isAuthenticated, userActions, guestActions);
+    }
 
     // Seleccionar elementos del DOM
     const navMenuButton = document.getElementById('nav-menu-button');
@@ -26,8 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const sessionMobileMenu = document.getElementById('session-mobile-menu');
     const profileMenuButton = document.getElementById('profile-menu-button');
     const profileMenu = document.getElementById('profile-menu');
-    const userActions = document.getElementById('user-actions');
-    const guestActions = document.getElementById('guest-actions');
 
     // Lógica para menús móviles
     if (navMenuButton) {
@@ -63,23 +69,26 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-
-    // Verificar si los elementos existen antes de manipularlos
-    if (userActions && guestActions) {
-        toggleSessionActions(isAuthenticated, userActions, guestActions);
-    }
 });
 
 function toggleSessionActions(isAuthenticated, userActions, guestActions) {
     console.log("Ejecutando toggleSessionActions con isAuthenticated:", isAuthenticated);
 
+    // Mostrar 'user-actions' si está autenticado, de lo contrario mostrar 'guest-actions'
     if (isAuthenticated) {
-        if (userActions) userActions.style.display = 'flex';
-        if (guestActions) guestActions.style.display = 'none';
+        userActions.style.display = 'block'; // Cambiado a 'block' para evitar problemas con el menú
+        guestActions.style.display = 'none';
     } else {
-        if (guestActions) guestActions.style.display = 'flex';
-        if (userActions) userActions.style.display = 'none';
+        userActions.style.display = 'none';
+        guestActions.style.display = 'block'; // Cambiado a 'block' en lugar de 'flex'
     }
+}
+
+function initializePage() {
+    loadCurrencies();
+    fillCurrencyTable();
+    setActiveLink('#nav-menu');
+    setActiveLink('#session-menu');
 }
 
 function setActiveLink(menuId) {
@@ -110,6 +119,7 @@ function closeMenu(menu) {
         menu.classList.add('hidden');
     }
 }
+
 
 function loadCurrencies() {
     const targetUrl = 'https://cambiosorion.cl/data/obtener_divisas.php';
