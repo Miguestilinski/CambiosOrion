@@ -80,12 +80,12 @@ function toggleSessionActions(isAuthenticated, userActions, guestActions) {
     // Si está autenticado, mostrar 'user-actions' y ocultar 'guest-actions'
     if (isAuthenticated) {
         console.log("Mostrando user-actions y ocultando guest-actions.");
-        userActions.classList.remove('hidden'); // Mostrar si está autenticado
-        guestActions.classList.add('hidden');   // Ocultar si está autenticado
+        userActions.style.display = 'block'; // Aseguramos que se muestre
+        guestActions.style.display = 'none';  // Ocultar guest-actions
     } else {
         console.log("Mostrando guest-actions y ocultando user-actions.");
-        userActions.classList.add('hidden');    // Ocultar si no está autenticado
-        guestActions.classList.remove('hidden'); // Mostrar si no está autenticado
+        userActions.style.display = 'none';   // Ocultar user-actions
+        guestActions.style.display = 'block'; // Aseguramos que se muestre
     }
 
     // Verificar los valores de display
@@ -127,7 +127,6 @@ document.getElementById("profile-menu-button").addEventListener("click", functio
     const dropdownMenu = document.getElementById("dropdownInformation");
     dropdownMenu.classList.toggle("hidden");
 });
-
 
 function loadCurrencies() {
     const targetUrl = 'https://cambiosorion.cl/data/obtener_divisas.php';
