@@ -101,10 +101,9 @@ nav ul li.selected a {
 }
 
 .header-actions .register-button {
-    @apply bg-blue-500 text-white p-2 rounded-md font-bold transition-transform duration-200;
     background-color: #3f83f8;
     border-radius: 8px;
-    padding: 8px
+    padding: 8px;
 }
 
 .header-actions .register-button:hover {
@@ -112,13 +111,13 @@ nav ul li.selected a {
 }
 
 #user-actions {
-    display: block !important;
-    align-items: center; /* Alineación del contenido */
-    gap: 10px; /* Espaciado entre elementos */
+    display: none; /* Por defecto está oculto */
+    align-items: center;
+    gap: 10px;
 }
 
 #guest-actions {
-    display: block !important;
+    display: block; /* Por defecto está visible */
     flex-direction: column;
     align-items: center;
     color: white;
