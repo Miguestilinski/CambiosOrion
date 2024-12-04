@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Verificar si los elementos están siendo seleccionados correctamente
     if (userActions && guestActions) {
         console.log('Elementos encontrados correctamente.');
-        toggleSessionActions(isAuthenticated, userActions, guestActions);
+        toggleSessionActions(isAuthenticated);
     } else {
         console.log('Los elementos user-actions o guest-actions no se encontraron en el DOM.');
         if (!userActions) console.log("No se encontró user-actions");
@@ -85,12 +85,12 @@ function toggleSessionActions(isAuthenticated) {
     if (userActions && guestActions) {
         if (isAuthenticated) {
             console.log("Mostrando user-actions y ocultando guest-actions.");
-            userActions.style.setProperty('display', 'block', 'important');  // Usar !important
-            guestActions.style.setProperty('display', 'none', 'important');   // Usar !important
+            userActions.style.display = 'block';  // Mostrar user-actions
+            guestActions.style.display = 'none';  // Ocultar guest-actions
         } else {
             console.log("Mostrando guest-actions y ocultando user-actions.");
-            userActions.style.setProperty('display', 'none', 'important');   // Usar !important
-            guestActions.style.setProperty('display', 'block', 'important'); // Usar !important
+            userActions.style.display = 'none';   // Ocultar user-actions
+            guestActions.style.display = 'block'; // Mostrar guest-actions
         }
     } else {
         console.error('No se encontraron los elementos user-actions o guest-actions.');
