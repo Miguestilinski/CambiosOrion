@@ -11,14 +11,14 @@ function initializePage() {
     setActiveLink('#session-menu');
 }
 
+var userActions = document.getElementById('user-actions');
+var guestActions = document.getElementById('guest-actions');
+
 document.addEventListener('DOMContentLoaded', () => {
     initializePage();
 
     const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
     console.log("Estado de autenticación al cargar la página:", isAuthenticated);
-
-    const userActions = document.getElementById('user-actions');
-    const guestActions = document.getElementById('guest-actions');
 
     if (userActions && guestActions) {
         console.log('Elementos encontrados correctamente.');
