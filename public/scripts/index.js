@@ -4,6 +4,13 @@ let isEditMode = false;
 let activeDropdown = null;
 let displayedCurrencies = ["CLP", "USD", "EUR", "ARS"];
 
+function initializePage() {
+    loadCurrencies();
+    fillCurrencyTable();
+    setActiveLink('#nav-menu');
+    setActiveLink('#session-menu');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     initializePage();
 
