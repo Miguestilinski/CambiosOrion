@@ -12,6 +12,8 @@ function initializePage() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    initializePage();
+
     // Verificar el estado de autenticación
     const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
     console.log("Estado de autenticación al cargar la página:", isAuthenticated);
@@ -215,28 +217,26 @@ function preloadIcon(iconUrl) {
 function setCurrency1(currency) {
     document.getElementById("currency1-text").textContent = currency;
 
-    // Si el usuario selecciona una divisa diferente a CLP, currency2 se convierte en CLP automáticamente
     if (currency !== "CLP") {
         document.getElementById("currency2-text").textContent = "CLP";
     }
 
     exchangeRates[currency] = exchangeRates[currency] || { compra: 0, venta: 0 };
     convertFromAmount1();
-    updateCurrencyIcon(); // Actualizar el ícono al seleccionar
+    updateCurrencyIcon();
 }
 
 // Función para establecer currency2
 function setCurrency2(currency) {
     document.getElementById("currency2-text").textContent = currency;
 
-    // Si el usuario selecciona una divisa diferente a CLP, currency1 se convierte en CLP automáticamente
     if (currency !== "CLP") {
         document.getElementById("currency1-text").textContent = "CLP";
     }
 
     exchangeRates[currency] = exchangeRates[currency] || { compra: 0, venta: 0 };
     convertFromAmount2();
-    updateCurrencyIcon(); // Actualizar el ícono al seleccionar
+    updateCurrencyIcon();
 }
 
 // Modificar los inputs para formatear y validar el contenido
