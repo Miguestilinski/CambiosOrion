@@ -82,6 +82,18 @@ function toggleSessionActions(isAuthenticated) {
     localStorage.setItem('userAuthenticated', isAuthenticated ? 'true' : 'false');
 }
 
+function setActiveLink(menuId) {
+    const links = document.querySelectorAll(`${menuId} a`);
+    const currentPath = window.location.pathname;
+    links.forEach(link => {
+        if (link.getAttribute('href') === currentPath) {
+            link.classList.add('selected');
+        } else {
+            link.classList.remove('selected');
+        }
+    });
+}
+
 // Función para alternar visibilidad del menú
 function toggleMenu(menuToOpen, menuToClose = null) {
     if (menuToClose) closeMenu(menuToClose);
