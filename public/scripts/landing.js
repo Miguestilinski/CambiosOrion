@@ -1,5 +1,7 @@
 let exchangeRates = {};
-let displayedCurrencies = ["USD", "EUR", "ARS", "BRL"];
+let displayedCurrencies = ["USD", "EUR", "ARS", "BRL", "PEN", "COP",
+"UYU", "BOB", "CAD", "GBP", "JPY", "GNY",
+"SEK", "AUD", "MXN", "NZD", "CHF", "DKK"];
 
 function initializePage() {
     loadCurrencies();
@@ -18,12 +20,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (navMenuButton && sessionMenuButton && navMobileMenu && sessionMobileMenu) {
         navMenuButton.addEventListener('click', (event) => {
-            toggleMenu(navMobileMenu); // Cambié la llamada para solo pasar un menú
+            toggleMenu(navMobileMenu);
             event.stopPropagation();
         });
 
         sessionMenuButton.addEventListener('click', (event) => {
-            toggleMenu(sessionMobileMenu); // Cambié la llamada para solo pasar un menú
+            toggleMenu(sessionMobileMenu);
             event.stopPropagation();
         });
 
@@ -38,17 +40,16 @@ document.addEventListener('DOMContentLoaded', () => {
 function toggleMenu(menuToOpen, menuToClose) {
     if (menuToClose) closeMenu(menuToClose);
 
-    // Alternamos la clase 'hidden' para mostrar o esconder el menú
     if (menuToOpen.classList.contains('hidden')) {
-        menuToOpen.classList.remove('hidden'); // Muestra el menú
+        menuToOpen.classList.remove('hidden'); 
     } else {
-        menuToOpen.classList.add('hidden'); // Oculta el menú
+        menuToOpen.classList.add('hidden');
     }
 }
 
 function closeMenu(menu) {
     if (!menu.classList.contains('hidden')) {
-        menu.classList.add('hidden'); // Asegúrate de ocultar el menú si está visible
+        menu.classList.add('hidden');
     }
 }
 
