@@ -126,7 +126,6 @@ nav ul li.selected a {
 #guest-actions {
     flex-direction: column;
     align-items: center;
-    gap: 10px;
     color: white;
 }
 
