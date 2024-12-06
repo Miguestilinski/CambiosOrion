@@ -89,6 +89,9 @@ document.addEventListener('DOMContentLoaded', async function () {
         toggleSessionActions();
     };
 
+    console.log("userActions en JS:", userActions);
+    console.log("guestActions en JS:", guestActions);
+
     toggleSessionActions();
     console.log("DOM completamente cargado.");
 
