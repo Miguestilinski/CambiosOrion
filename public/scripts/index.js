@@ -4,10 +4,109 @@ let isEditMode = false;
 let activeDropdown = null;
 let displayedCurrencies = ["CLP", "USD", "EUR", "ARS"];
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async function () {
     initializePage();
     setupMenus();
     toggleSessionActions();
+
+    function initializePage() {
+        loadCurrencies();
+        fillCurrencyTable();
+        setActiveLink('#nav-menu');
+        setActiveLink('#session-menu');
+        toggleSessionActions();
+    }
+
+    // Función principal para manejar la lógica de autenticación
+    function toggleSessionActions() {
+        const userActions = document.getElementById('user-actions');
+        const guestActions = document.getElementById('guest-actions');
+        const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
+
+        if (!userActions || !guestActions) {
+            console.error('No se encontraron los elementos en el DOM.');
+            return;
+        }
+
+        if (isAuthenticated) {
+            userActions.classList.remove('hidden');
+            guestActions.classList.add('hidden');
+        } else {
+            guestActions.classList.remove('hidden');
+            userActions.classList.add('hidden');
+        }
+
+        console.log("Sesión iniciada:", isAuthenticated);
+    }
+
+    // Configuración de menús y enlaces activos
+    function setupMenus() {
+        const profileMenuButton = document.getElementById('profile-menu-button');
+        const profileMenu = document.getElementById('dropdownInformation');
+
+        if (profileMenuButton) {
+            profileMenuButton.addEventListener("click", (event) => {
+                toggleMenu(profileMenu);
+                event.stopPropagation();
+            });
+        }
+
+        // Cerrar el menú al hacer clic fuera de él
+        document.addEventListener('click', (event) => {
+            if (profileMenu && !profileMenu.contains(event.target)) {
+                closeMenu(profileMenu);
+            }
+        });
+    }
+
+    function toggleMenu(menu) {
+        if (menu && menu.classList.contains('hidden')) {
+            menu.classList.remove('hidden');
+        } else if (menu) {
+            menu.classList.add('hidden');
+        }
+    }
+
+    function closeMenu(menu) {
+        if (menu && !menu.classList.contains('hidden')) {
+            menu.classList.add('hidden');
+        }
+    }
+
+    function setActiveLink(menuId) {
+        const links = document.querySelectorAll(`${menuId} a`);
+        const currentPath = window.location.pathname;
+        links.forEach(link => {
+            if (link.getAttribute('href') === currentPath) {
+                link.classList.add('selected');
+            } else {
+                link.classList.remove('selected');
+            }
+        });
+    }
+
+    function login() {
+        localStorage.setItem('userAuthenticated', 'true');
+        toggleSessionActions();
+    }
+
+    function logout() {
+        localStorage.removeItem('userAuthenticated');
+        toggleSessionActions();
+    }
+
+    // Mostrar/ocultar el menú desplegable del perfil
+    const profileMenuButton = document.getElementById("profile-menu-button");
+    if (profileMenuButton) {
+        profileMenuButton.addEventListener("click", () => {
+            const dropdownMenu = document.getElementById("dropdownInformation");
+            if (dropdownMenu) {
+                dropdownMenu.classList.toggle("hidden");
+            } else {
+                console.error("No se encontró el elemento dropdownInformation.");
+            }
+        });
+    }
 });
 
 function initializePage() {
@@ -16,97 +115,6 @@ function initializePage() {
     setActiveLink('#nav-menu');
     setActiveLink('#session-menu');
     toggleSessionActions();
-}
-
-// Función principal para manejar la lógica de autenticación
-function toggleSessionActions() {
-    const userActions = document.getElementById('user-actions');
-    const guestActions = document.getElementById('guest-actions');
-    const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
-
-    if (!userActions || !guestActions) {
-        console.error('No se encontraron los elementos en el DOM.');
-        return;
-    }
-
-    if (isAuthenticated) {
-        userActions.classList.remove('hidden');
-        guestActions.classList.add('hidden');
-    } else {
-        guestActions.classList.remove('hidden');
-        userActions.classList.add('hidden');
-    }
-
-    console.log("Sesión iniciada:", isAuthenticated);
-}
-
-// Configuración de menús y enlaces activos
-function setupMenus() {
-    const profileMenuButton = document.getElementById('profile-menu-button');
-    const profileMenu = document.getElementById('dropdownInformation');
-
-    if (profileMenuButton) {
-        profileMenuButton.addEventListener("click", (event) => {
-            toggleMenu(profileMenu);
-            event.stopPropagation();
-        });
-    }
-
-    // Cerrar el menú al hacer clic fuera de él
-    document.addEventListener('click', (event) => {
-        if (profileMenu && !profileMenu.contains(event.target)) {
-            closeMenu(profileMenu);
-        }
-    });
-}
-
-function toggleMenu(menu) {
-    if (menu && menu.classList.contains('hidden')) {
-        menu.classList.remove('hidden');
-    } else if (menu) {
-        menu.classList.add('hidden');
-    }
-}
-
-function closeMenu(menu) {
-    if (menu && !menu.classList.contains('hidden')) {
-        menu.classList.add('hidden');
-    }
-}
-
-function setActiveLink(menuId) {
-    const links = document.querySelectorAll(`${menuId} a`);
-    const currentPath = window.location.pathname;
-    links.forEach(link => {
-        if (link.getAttribute('href') === currentPath) {
-            link.classList.add('selected');
-        } else {
-            link.classList.remove('selected');
-        }
-    });
-}
-
-function login() {
-    localStorage.setItem('userAuthenticated', 'true');
-    toggleSessionActions();
-}
-
-function logout() {
-    localStorage.removeItem('userAuthenticated');
-    toggleSessionActions();
-}
-
-// Mostrar/ocultar el menú desplegable del perfil
-const profileMenuButton = document.getElementById("profile-menu-button");
-if (profileMenuButton) {
-    profileMenuButton.addEventListener("click", () => {
-        const dropdownMenu = document.getElementById("dropdownInformation");
-        if (dropdownMenu) {
-            dropdownMenu.classList.toggle("hidden");
-        } else {
-            console.error("No se encontró el elemento dropdownInformation.");
-        }
-    });
 }
 
 function loadCurrencies() {
