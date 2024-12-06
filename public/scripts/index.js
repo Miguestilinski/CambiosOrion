@@ -25,23 +25,20 @@ document.addEventListener('DOMContentLoaded', async function () {
         toggleSessionActions();
     }
 
-    // Función principal para manejar la lógica de autenticación
-    function toggleSessionActions() {
-        if (!userActions || !guestActions) {
-            console.error('No se encontraron los elementos en el DOM.');
-            return;
-        }
-
-        if (isAuthenticated) {
-            userActions.classList.remove('hidden');
-            guestActions.classList.add('hidden');
-        } else {
-            guestActions.classList.remove('hidden');
-            userActions.classList.add('hidden');
-        }
-
-        console.log("Sesión iniciada:", isAuthenticated);
+    if (!userActions || !guestActions) {
+        console.error('No se encontraron los elementos en el DOM.');
+        return;
     }
+
+    if (isAuthenticated) {
+        userActions.classList.remove('hidden');
+        guestActions.classList.add('hidden');
+    } else {
+        guestActions.classList.remove('hidden');
+        userActions.classList.add('hidden');
+    }
+
+    console.log("Sesión iniciada:", isAuthenticated);
 
     function toggleMenu(menu) {
         if (menu && menu.classList.contains('hidden')) {
