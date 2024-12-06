@@ -13,42 +13,47 @@ function initializePage() {
 
 document.addEventListener('DOMContentLoaded', () => {
     initializePage();
-
-    // Referencia a los elementos
+  
+    // Exponer variables globales
     window.userActions = document.getElementById('user-actions');
     window.guestActions = document.getElementById('guest-actions');
-
+  
     if (!window.userActions || !window.guestActions) {
-        console.error('Error: No se encontraron los elementos user-actions o guest-actions en el DOM.');
-        return;
+      console.error('No se encontraron los elementos user-actions o guest-actions en el DOM.');
+      return;
     }
-
+  
     const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
     console.log("Estado de autenticación al cargar la página:", isAuthenticated);
-
+  
     toggleSessionActions(isAuthenticated);
 });
-
+  
 function toggleSessionActions(isAuthenticated) {
-    if (window.userActions && window.guestActions) {
-        if (isAuthenticated) {
-            window.userActions.classList.add('visible');
-            window.userActions.classList.remove('hidden');
-            
-            window.guestActions.classList.add('hidden');
-            window.guestActions.classList.remove('visible');
-        } else {
-            window.userActions.classList.add('hidden');
-            window.userActions.classList.remove('visible');
-            
-            window.guestActions.classList.add('visible');
-            window.guestActions.classList.remove('hidden');
-        }
-
-        console.log('userActions.classList:', window.userActions.classList);
-        console.log('guestActions.classList:', window.guestActions.classList);
+    if (isAuthenticated) {
+    // Asegurarnos de que la lógica se aplica bien
+    window.userActions.classList.add('visible');
+    window.userActions.classList.remove('hidden');
+    
+    window.guestActions.classList.add('hidden');
+    window.guestActions.classList.remove('visible');
+    
+    window.userActions.style.display = 'block';
+    window.guestActions.style.display = 'none';
+    } else {
+    window.guestActions.classList.add('visible');
+    window.guestActions.classList.remove('hidden');
+    
+    window.userActions.classList.add('hidden');
+    window.userActions.classList.remove('visible');
+    
+    window.guestActions.style.display = 'block';
+    window.userActions.style.display = 'none';
     }
-}
+
+    console.log('userActions.classList:', window.userActions.classList);
+    console.log('guestActions.classList:', window.guestActions.classList);
+} 
 
 // Configuración de menús y enlaces activos
 function setupMenus() {
