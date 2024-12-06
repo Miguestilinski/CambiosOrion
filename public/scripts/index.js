@@ -12,42 +12,30 @@ function initializePage() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const userActions = document.getElementById('user-actions');
-    const guestActions = document.getElementById('guest-actions');
-  
-    if (!userActions || !guestActions) {
-      console.error('No se encontraron los elementos en el DOM.');
-      return;
-    }
-  
-    const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
-    console.log("Estado de autenticación al cargar la página:", isAuthenticated);
-  
-    toggleSessionActions(isAuthenticated);
+    toggleSessionActions();
 });
   
-function toggleSessionActions(isAuthenticated) {
+function toggleSessionActions() {
     const userActions = document.getElementById('user-actions');
     const guestActions = document.getElementById('guest-actions');
+    const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
+
+    if (!userActions || !guestActions) {
+        console.error('No se encontraron los elementos en el DOM.');
+        return;
+    }
 
     if (isAuthenticated) {
-        // Sesión iniciada: Mostrar user-actions, ocultar guest-actions
+        // Mostrar user-actions
         userActions.classList.remove('hidden');
-        userActions.classList.add('block');
-        
-        guestActions.classList.remove('block');
         guestActions.classList.add('hidden');
     } else {
-        // Sesión no iniciada: Mostrar guest-actions, ocultar user-actions
+        // Mostrar guest-actions
         guestActions.classList.remove('hidden');
-        guestActions.classList.add('block');
-
-        userActions.classList.remove('block');
         userActions.classList.add('hidden');
     }
 
-    console.log('userActions.classList:', userActions.classList);
-    console.log('guestActions.classList:', guestActions.classList);
+    console.log("Sesión iniciada:", isAuthenticated);
 }
 
 // Configuración de menús y enlaces activos
