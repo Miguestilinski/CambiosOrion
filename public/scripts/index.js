@@ -26,37 +26,28 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log("Estado de autenticación al cargar la página:", isAuthenticated);
 
     toggleSessionActions(isAuthenticated, userActions, guestActions);
-    setupMenus();
 });
 
 function toggleSessionActions(isAuthenticated, userActions, guestActions) {
     if (isAuthenticated) {
-        // Eliminar estilo en línea y ajustar clases
-        userActions.classList.remove('hidden');
+        // Si el usuario está autenticado
         userActions.classList.add('visible');
+        userActions.classList.remove('hidden');
         
-        guestActions.classList.remove('visible');
         guestActions.classList.add('hidden');
-
-        // Limpiar `style.display` si existe
-        userActions.style.display = '';
-        guestActions.style.display = '';
+        guestActions.classList.remove('visible');
     } else {
-        guestActions.classList.remove('hidden');
-        guestActions.classList.add('visible');
-        
-        userActions.classList.remove('visible');
+        // Si el usuario no está autenticado
         userActions.classList.add('hidden');
-
-        guestActions.style.display = '';
-        userActions.style.display = '';
+        userActions.classList.remove('visible');
+        
+        guestActions.classList.add('visible');
+        guestActions.classList.remove('hidden');
     }
 
-    console.log('Estado final de los elementos después de ajustar la visibilidad:');
-    console.log('userActions:', userActions.outerHTML);
-    console.log('guestActions:', guestActions.outerHTML);
+    console.log('userActions:', userActions.className);
+    console.log('guestActions:', guestActions.className);
 }
-
 
 // Configuración de menús y enlaces activos
 function setupMenus() {
