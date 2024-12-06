@@ -24,8 +24,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     
     initializePage();
 
-    async function initializePage() {
-        await updateSessionState();
+    function initializePage() {
         loadCurrencies();
         fillCurrencyTable();
         setActiveLink('#nav-menu');
@@ -108,15 +107,16 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 
     if (logoutButton) {
-        logoutButton.addEventListener("click", (event) => {
+        logoutButton.addEventListener("click", async (event) => {
             event.preventDefault();
-            logout();
+            await logout();
         });
     }
 
     console.log("userActions en JS:", userActions);
     console.log("guestActions en JS:", guestActions);
 
+    await updateSessionState();
     console.log("DOM completamente cargado.");
 
 });
