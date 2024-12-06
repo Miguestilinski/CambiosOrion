@@ -14,10 +14,11 @@ function initializePage() {
 document.addEventListener('DOMContentLoaded', () => {
     initializePage();
 
-    const userActions = document.getElementById('user-actions');
-    const guestActions = document.getElementById('guest-actions');
+    // Referencia a los elementos
+    window.userActions = document.getElementById('user-actions');
+    window.guestActions = document.getElementById('guest-actions');
 
-    if (!userActions || !guestActions) {
+    if (!window.userActions || !window.guestActions) {
         console.error('Error: No se encontraron los elementos user-actions o guest-actions en el DOM.');
         return;
     }
@@ -25,28 +26,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
     console.log("Estado de autenticación al cargar la página:", isAuthenticated);
 
-    toggleSessionActions(isAuthenticated, userActions, guestActions);
+    toggleSessionActions(isAuthenticated);
 });
 
-function toggleSessionActions(isAuthenticated, userActions, guestActions) {
-    if (isAuthenticated) {
-        // Si el usuario está autenticado
-        userActions.classList.add('visible');
-        userActions.classList.remove('hidden');
-        
-        guestActions.classList.add('hidden');
-        guestActions.classList.remove('visible');
-    } else {
-        // Si el usuario no está autenticado
-        userActions.classList.add('hidden');
-        userActions.classList.remove('visible');
-        
-        guestActions.classList.add('visible');
-        guestActions.classList.remove('hidden');
-    }
+function toggleSessionActions(isAuthenticated) {
+    if (window.userActions && window.guestActions) {
+        if (isAuthenticated) {
+            window.userActions.classList.add('visible');
+            window.userActions.classList.remove('hidden');
+            
+            window.guestActions.classList.add('hidden');
+            window.guestActions.classList.remove('visible');
+        } else {
+            window.userActions.classList.add('hidden');
+            window.userActions.classList.remove('visible');
+            
+            window.guestActions.classList.add('visible');
+            window.guestActions.classList.remove('hidden');
+        }
 
-    console.log('userActions:', userActions.className);
-    console.log('guestActions:', guestActions.className);
+        console.log('userActions.classList:', window.userActions.classList);
+        console.log('guestActions.classList:', window.guestActions.classList);
+    }
 }
 
 // Configuración de menús y enlaces activos
