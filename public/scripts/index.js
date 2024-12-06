@@ -5,6 +5,13 @@ let activeDropdown = null;
 let displayedCurrencies = ["CLP", "USD", "EUR", "ARS"];
 
 document.addEventListener('DOMContentLoaded', async function () {
+    const userActions = document.getElementById('user-actions');
+    const guestActions = document.getElementById('guest-actions');
+    const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
+
+    const profileMenuButton = document.getElementById('profile-menu-button');
+    const profileMenu = document.getElementById('dropdownInformation');
+
     initializePage();
     setupMenus();
     toggleSessionActions();
@@ -19,10 +26,6 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // Función principal para manejar la lógica de autenticación
     function toggleSessionActions() {
-        const userActions = document.getElementById('user-actions');
-        const guestActions = document.getElementById('guest-actions');
-        const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
-
         if (!userActions || !guestActions) {
             console.error('No se encontraron los elementos en el DOM.');
             return;
@@ -41,8 +44,6 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // Configuración de menús y enlaces activos
     function setupMenus() {
-        const profileMenuButton = document.getElementById('profile-menu-button');
-        const profileMenu = document.getElementById('dropdownInformation');
 
         if (profileMenuButton) {
             profileMenuButton.addEventListener("click", (event) => {
@@ -96,7 +97,6 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 
     // Mostrar/ocultar el menú desplegable del perfil
-    const profileMenuButton = document.getElementById("profile-menu-button");
     if (profileMenuButton) {
         profileMenuButton.addEventListener("click", () => {
             const dropdownMenu = document.getElementById("dropdownInformation");
