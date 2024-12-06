@@ -13,6 +13,9 @@ document.addEventListener('DOMContentLoaded', async function () {
     const sessionMenuButton = document.getElementById('session-menu-button');
     const navMobileMenu = document.getElementById('nav-mobile-menu');
     const sessionMobileMenu = document.getElementById('session-mobile-menu');
+
+    if (userActions) userActions.style.display = 'none';
+    if (guestActions) guestActions.style.display = 'none';
     
     initializePage();
 
