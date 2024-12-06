@@ -4,7 +4,9 @@ let isEditMode = false;
 let activeDropdown = null;
 let displayedCurrencies = ["CLP", "USD", "EUR", "ARS"];
 
+console.log("Script cargado, comprobando DOM...");
 document.addEventListener('DOMContentLoaded', async function () {
+    console.log("DOM cargando...");
     const userActions = document.getElementById('user-actions');
     const guestActions = document.getElementById('guest-actions');
     const navMenuButton = document.getElementById('nav-menu-button');
@@ -88,8 +90,17 @@ document.addEventListener('DOMContentLoaded', async function () {
     };
 
     toggleSessionActions();
+    console.log("DOM completamente cargado.");
 
 });
+
+window.onload = function () {
+    console.log("La página está completamente cargada con recursos.");
+    const userActions = document.getElementById('user-actions');
+    const guestActions = document.getElementById('guest-actions');
+    toggleSessionActions();
+};
+
 
 function loadCurrencies() {
     const targetUrl = 'https://cambiosorion.cl/data/obtener_divisas.php';
