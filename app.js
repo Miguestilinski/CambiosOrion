@@ -12,6 +12,7 @@ const port = process.env.PORT || 3000;
 require('dotenv').config();
 
 app.use(cors());
+app.use(express.json());
 
 // Crear conexión a la base de datos
 const db = mysql.createConnection({
@@ -33,6 +34,7 @@ db.connect((error) => {
 // Servir archivos estáticos desde el directorio "public"
 app.use(express.static(path.join(__dirname, 'public')));
 
+
 // Ruta principal que sirve el archivo index.html
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -52,11 +54,23 @@ app.get('/api/divisas', (req, res) => {
   });
 });
 
+// NUEVA RUTA: Simulación del estado de sesión
+app.get('/api/session-status', (req, res) => {
+  // Simular estado de autenticación (true para autenticado, false para invitado)
+  const isAuthenticated = true; // Cambia esto dinámicamente según tu lógica
+  res.json({ isAuthenticated });
+});
 
-// NUEVA RUTA: Proxy para la API de Google Places
+// NUEVA RUTA: Logout
+app.post('/api/logout', (req, res) => {
+  // Aquí puedes manejar la lógica de cierre de sesión, como eliminar cookies o tokens
+  res.status(200).json({ message: 'Sesión cerrada correctamente.' });
+});
+
+// Proxy para la API de Google Places
 app.get('/api/place-details', async (req, res) => {
   const placeId = req.query.place_id; // Obtén el Place ID desde el query parameter
-  const apiKey = "AIzaSyDNWdnOEsPOqlKvBHcg2AN7YY5AGlZ5fcM"; // Clave de la API de Google
+  const apiKey = process.env.GOOGLE_API_KEY; // Clave de la API de Google
 
   try {
       const response = await axios.get(

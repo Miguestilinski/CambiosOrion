@@ -12,11 +12,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^1.7.7",
+    "axios": "^1.7.9",
     "circle-flags": "github:HatScripts/circle-flags",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.21.1",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
     "flags": "github:tabler/tabler-flags",
     "flowbite": "^2.5.2",
     "mysql": "^2.18.1"

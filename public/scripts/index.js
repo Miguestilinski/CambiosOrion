@@ -24,7 +24,8 @@ document.addEventListener('DOMContentLoaded', async function () {
     
     initializePage();
 
-    function initializePage() {
+    async function initializePage() {
+        await updateSessionState();
         loadCurrencies();
         fillCurrencyTable();
         setActiveLink('#nav-menu');
@@ -68,66 +69,57 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     }
 
-    // Función principal para la visibilidad de acciones segun sesión
-    function toggleSessionActions() {
-        const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
+    async function updateSessionState() {
+        try {
+            // Llamar a la API para verificar el estado de sesión
+            const response = await fetch('/api/session-status');
+            const { isAuthenticated } = await response.json();
 
-        console.log("Verificando autenticación:", isAuthenticated);
-
-        if (isAuthenticated) {
-            // Mostrar user-actions y ocultar guest-actions
-            userActions.classList.remove('hidden');
-            guestActions.classList.add('hidden');
-            console.log("Sesión activa: mostrando user-actions.");
-        } else {
-            // Mostrar guest-actions y ocultar user-actions
-            guestActions.classList.remove('hidden');
-            userActions.classList.add('hidden');
-            console.log("Sesión no activa: mostrando guest-actions.");
+            if (isAuthenticated) {
+                userActions.classList.remove("hidden");
+                guestActions.classList.add("hidden");
+                console.log("Sesión iniciada: mostrando acciones de usuario.");
+            } else {
+                userActions.classList.add("hidden");
+                guestActions.classList.remove("hidden");
+                console.log("Sesión cerrada: mostrando acciones de invitado.");
+            }
+        } catch (error) {
+            console.error("Error al obtener el estado de sesión:", error);
         }
     }
 
-    window.logout = function () {
-        localStorage.removeItem('userAuthenticated');
-        toggleSessionActions();
-    };
+    async function logout() {
+        try {
+            const response = await fetch('/api/logout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            });
+
+            if (response.ok) {
+                console.log("Sesión cerrada correctamente.");
+                await updateSessionState(); // Actualizar el estado de sesión después del logout
+            } else {
+                console.error("Error al cerrar sesión:", await response.json());
+            }
+        } catch (error) {
+            console.error("Error al cerrar sesión:", error);
+        }
+    }
+
+    if (logoutButton) {
+        logoutButton.addEventListener("click", (event) => {
+            event.preventDefault();
+            logout();
+        });
+    }
 
     console.log("userActions en JS:", userActions);
     console.log("guestActions en JS:", guestActions);
 
-    toggleSessionActions();
     console.log("DOM completamente cargado.");
 
 });
-
-window.onload = function () {
-    console.log("La página está completamente cargada con recursos.");
-    const userActions = document.getElementById('user-actions');
-    const guestActions = document.getElementById('guest-actions');
-    if (!userActions || !guestActions) {
-        console.error('No se encontraron los elementos en el DOM.');
-        return;
-    }
-
-    function toggleSessionActions() {
-        const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
-    
-        console.log("Verificando autenticación:", isAuthenticated);
-    
-        if (isAuthenticated) {
-            // Mostrar user-actions y ocultar guest-actions
-            userActions.classList.remove('hidden');
-            guestActions.classList.add('hidden');
-            console.log("Sesión activa: mostrando user-actions.");
-        } else {
-            // Mostrar guest-actions y ocultar user-actions
-            guestActions.classList.remove('hidden');
-            userActions.classList.add('hidden');
-            console.log("Sesión no activa: mostrando guest-actions.");
-        }
-    }
-    toggleSessionActions();
-};
 
 
 function loadCurrencies() {
