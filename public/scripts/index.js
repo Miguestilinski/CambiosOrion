@@ -31,27 +31,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function toggleSessionActions(isAuthenticated, userActions, guestActions) {
     if (isAuthenticated) {
-        // Mostrar la sección de usuario
+        // Eliminar estilo en línea y ajustar clases
         userActions.classList.remove('hidden');
         userActions.classList.add('visible');
         
-        // Ocultar la sección de invitado
         guestActions.classList.remove('visible');
         guestActions.classList.add('hidden');
+
+        // Limpiar `style.display` si existe
+        userActions.style.display = '';
+        guestActions.style.display = '';
     } else {
-        // Mostrar la sección de invitado
         guestActions.classList.remove('hidden');
         guestActions.classList.add('visible');
         
-        // Ocultar la sección de usuario
         userActions.classList.remove('visible');
         userActions.classList.add('hidden');
+
+        guestActions.style.display = '';
+        userActions.style.display = '';
     }
 
     console.log('Estado final de los elementos después de ajustar la visibilidad:');
     console.log('userActions:', userActions.outerHTML);
     console.log('guestActions:', guestActions.outerHTML);
 }
+
 
 // Configuración de menús y enlaces activos
 function setupMenus() {
