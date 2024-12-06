@@ -31,9 +31,11 @@ document.addEventListener('DOMContentLoaded', async function () {
     if (isAuthenticated) {
         userActions.classList.remove('hidden');
         guestActions.classList.add('hidden');
+        console.log('Mostrando user-actions y Ocultando guest-actions');
     } else {
         guestActions.classList.remove('hidden');
         userActions.classList.add('hidden');
+        console.log('Mostrando guest-actions y Ocultando user-actions');
     }
 
     console.log("Sesión iniciada:", isAuthenticated);
