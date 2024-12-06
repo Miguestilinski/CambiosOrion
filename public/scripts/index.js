@@ -101,8 +101,31 @@ window.onload = function () {
     console.log("La página está completamente cargada con recursos.");
     const userActions = document.getElementById('user-actions');
     const guestActions = document.getElementById('guest-actions');
+    if (!userActions || !guestActions) {
+        console.error('No se encontraron los elementos en el DOM.');
+        return;
+    }
+
+    function toggleSessionActions() {
+        const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
+    
+        console.log("Verificando autenticación:", isAuthenticated);
+    
+        if (isAuthenticated) {
+            // Mostrar user-actions y ocultar guest-actions
+            userActions.classList.remove('hidden');
+            guestActions.classList.add('hidden');
+            console.log("Sesión activa: mostrando user-actions.");
+        } else {
+            // Mostrar guest-actions y ocultar user-actions
+            guestActions.classList.remove('hidden');
+            userActions.classList.add('hidden');
+            console.log("Sesión no activa: mostrando guest-actions.");
+        }
+    }
     toggleSessionActions();
 };
+
 
 
 function loadCurrencies() {
