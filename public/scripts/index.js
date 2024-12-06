@@ -21,9 +21,16 @@ document.addEventListener('DOMContentLoaded', async function () {
         setActiveLink('#session-menu');
     }
 
-    if (!userActions || !guestActions) {
-        console.error('No se encontraron los elementos en el DOM.');
-        return;
+    function setActiveLink(menuId) {
+        const links = document.querySelectorAll(`${menuId} a`);
+        const currentPath = window.location.pathname;
+        links.forEach(link => {
+            if (link.getAttribute('href') === currentPath) {
+                link.classList.add('selected');
+            } else {
+                link.classList.remove('selected');
+            }
+        });
     }
 
     // Lógica para el menú móvil
@@ -51,6 +58,11 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     }
 
+    if (!userActions || !guestActions) {
+        console.error('No se encontraron los elementos en el DOM.');
+        return;
+    }
+
     // Función principal para la visibilidad de acciones segun sesión
     function toggleSessionActions() {
         const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
@@ -68,18 +80,6 @@ document.addEventListener('DOMContentLoaded', async function () {
             userActions.classList.add('hidden');
             console.log("Sesión no activa: mostrando guest-actions.");
         }
-    }
-
-    function setActiveLink(menuId) {
-        const links = document.querySelectorAll(`${menuId} a`);
-        const currentPath = window.location.pathname;
-        links.forEach(link => {
-            if (link.getAttribute('href') === currentPath) {
-                link.classList.add('selected');
-            } else {
-                link.classList.remove('selected');
-            }
-        });
     }
 
     window.logout = function () {
