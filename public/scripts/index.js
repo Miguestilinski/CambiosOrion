@@ -15,7 +15,6 @@ document.addEventListener('DOMContentLoaded', async function () {
     const sessionMobileMenu = document.getElementById('session-mobile-menu');
 
     initializePage();
-    setupMenus();
     toggleSessionActions();
 
     function initializePage() {
@@ -42,26 +41,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
 
         console.log("Sesión iniciada:", isAuthenticated);
-    }
-
-    // Configuración de menús y enlaces activos
-    function setupMenus() {
-
-        if (navMenuButton && sessionMenuButton && navMobileMenu && sessionMobileMenu) {
-            navMenuButton.addEventListener('click', () => {
-                toggleMenu(navMobileMenu);
-                if (sessionMobileMenu && sessionMobileMenu.style && sessionMobileMenu.style.display === 'block') {
-                    sessionMobileMenu.style.display = 'none';
-                }            
-            });
-    
-            sessionMenuButton.addEventListener('click', () => {
-                toggleMenu(sessionMobileMenu);
-                if (navMobileMenu && navMobileMenu.style.display === 'block') {
-                    navMobileMenu.style.display = 'none';
-                }
-            });
-        }
     }
 
     function toggleMenu(menu) {
@@ -100,14 +79,18 @@ document.addEventListener('DOMContentLoaded', async function () {
         toggleSessionActions();
     }
 
-    // Mostrar/ocultar el menú desplegable del perfil
-    if (profileMenuButton) {
-        profileMenuButton.addEventListener("click", () => {
-            const dropdownMenu = document.getElementById("dropdownInformation");
-            if (dropdownMenu) {
-                dropdownMenu.classList.toggle("hidden");
-            } else {
-                console.error("No se encontró el elemento dropdownInformation.");
+    if (navMenuButton && sessionMenuButton && navMobileMenu && sessionMobileMenu) {
+        navMenuButton.addEventListener('click', () => {
+            toggleMenu(navMobileMenu);
+            if (sessionMobileMenu && sessionMobileMenu.style && sessionMobileMenu.style.display === 'block') {
+                sessionMobileMenu.style.display = 'none';
+            }            
+        });
+
+        sessionMenuButton.addEventListener('click', () => {
+            toggleMenu(sessionMobileMenu);
+            if (navMobileMenu && navMobileMenu.style.display === 'block') {
+                navMobileMenu.style.display = 'none';
             }
         });
     }
