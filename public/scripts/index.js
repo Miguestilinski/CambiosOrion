@@ -14,8 +14,13 @@ document.addEventListener('DOMContentLoaded', async function () {
     const navMobileMenu = document.getElementById('nav-mobile-menu');
     const sessionMobileMenu = document.getElementById('session-mobile-menu');
 
-    if (userActions) userActions.style.display = 'none';
-    if (guestActions) guestActions.style.display = 'none';
+    if (!userActions || !guestActions) {
+        console.error('No se encontraron los elementos en el DOM.');
+        return;
+    }
+
+    userActions.style.display = ''; // Quitar display en línea
+    guestActions.style.display = ''; // Quitar display en línea
     
     initializePage();
 
@@ -61,11 +66,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         } else if (menu) {
             menu.classList.add('hidden');
         }
-    }
-
-    if (!userActions || !guestActions) {
-        console.error('No se encontraron los elementos en el DOM.');
-        return;
     }
 
     // Función principal para la visibilidad de acciones segun sesión
@@ -128,7 +128,6 @@ window.onload = function () {
     }
     toggleSessionActions();
 };
-
 
 
 function loadCurrencies() {
