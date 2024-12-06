@@ -110,6 +110,10 @@ nav ul li.selected a {
     transform: scale(1.05);
 }
 
+.visible {
+    display: block !important;
+}
+
 #user-actions {
     display: none;
     align-items: center; /* Alineación del contenido */

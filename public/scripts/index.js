@@ -35,21 +35,17 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function toggleSessionActions(isAuthenticated, userActions, guestActions) {
-    console.log("isAuthenticated:", isAuthenticated);
-    console.log("userActions:", userActions);
-    console.log("guestActions:", guestActions);
-
     if (isAuthenticated) {
-        userActions.style.display = 'block';
-        guestActions.style.display = 'none';
+        userActions.classList.add('visible');
+        userActions.classList.remove('hidden');
+        guestActions.classList.add('hidden');
+        guestActions.classList.remove('visible');
     } else {
-        userActions.style.display = 'none';
-        guestActions.style.display = 'block';
+        userActions.classList.add('hidden');
+        userActions.classList.remove('visible');
+        guestActions.classList.add('visible');
+        guestActions.classList.remove('hidden');
     }
-
-    console.log("Estado final:");
-    console.log("userActions.style.display:", userActions.style.display);
-    console.log("guestActions.style.display:", guestActions.style.display);
 }
 
 
