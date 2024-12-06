@@ -7,13 +7,11 @@ let displayedCurrencies = ["CLP", "USD", "EUR", "ARS"];
 document.addEventListener('DOMContentLoaded', async function () {
     const userActions = document.getElementById('user-actions');
     const guestActions = document.getElementById('guest-actions');
-    const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
-
     const navMenuButton = document.getElementById('nav-menu-button');
     const sessionMenuButton = document.getElementById('session-menu-button');
     const navMobileMenu = document.getElementById('nav-mobile-menu');
     const sessionMobileMenu = document.getElementById('session-mobile-menu');
-
+    
     initializePage();
 
     function initializePage() {
@@ -21,6 +19,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         fillCurrencyTable();
         setActiveLink('#nav-menu');
         setActiveLink('#session-menu');
+        toggleSessionActions();
     }
 
     if (!userActions || !guestActions) {
@@ -28,17 +27,22 @@ document.addEventListener('DOMContentLoaded', async function () {
         return;
     }
 
-    if (isAuthenticated) {
-        userActions.classList.remove('hidden');
-        guestActions.classList.add('hidden');
-        console.log('Mostrando user-actions y Ocultando guest-actions');
-    } else {
-        guestActions.classList.remove('hidden');
-        userActions.classList.add('hidden');
-        console.log('Mostrando guest-actions y Ocultando user-actions');
-    }
+    // Lógica para el menú móvil
+    if (navMenuButton && sessionMenuButton && navMobileMenu && sessionMobileMenu) {
+        navMenuButton.addEventListener('click', () => {
+            toggleMenu(navMobileMenu);
+            if (sessionMobileMenu && sessionMobileMenu.style.display !== 'none') {
+                sessionMobileMenu.style.display = 'none';
+            }
+        });
 
-    console.log("Sesión iniciada:", isAuthenticated);
+        sessionMenuButton.addEventListener('click', () => {
+            toggleMenu(sessionMobileMenu);
+            if (navMobileMenu && navMobileMenu.style.display !== 'none') {
+                navMobileMenu.style.display = 'none';
+            }
+        });
+    }
 
     function toggleMenu(menu) {
         if (menu && menu.classList.contains('hidden')) {
@@ -48,11 +52,31 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     }
 
-    function closeMenu(menu) {
-        if (menu && !menu.classList.contains('hidden')) {
-            menu.classList.add('hidden');
+    // Función principal para la visibilidad de acciones segun sesión
+    function toggleSessionActions() {
+        const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
+        if (isAuthenticated) {
+            userActions.classList.remove('hidden');
+            guestActions.classList.add('hidden');
+            console.log('Sesión iniciada: Mostrando user-actions, ocultando guest-actions');
+        } else {
+            guestActions.classList.remove('hidden');
+            userActions.classList.add('hidden');
+            console.log('Sesión no iniciada: Mostrando guest-actions, ocultando user-actions');
         }
     }
+
+    // Funcionalidad Login
+    document.getElementById('login-button')?.addEventListener('click', () => {
+        localStorage.setItem('userAuthenticated', 'true');
+        toggleSessionActions();
+    });
+
+    // Funcionalidad Logout
+    document.getElementById('logout-button')?.addEventListener('click', () => {
+        localStorage.removeItem('userAuthenticated');
+        toggleSessionActions();
+    });
 
     function setActiveLink(menuId) {
         const links = document.querySelectorAll(`${menuId} a`);
@@ -66,97 +90,65 @@ document.addEventListener('DOMContentLoaded', async function () {
         });
     }
 
-    function login() {
-        localStorage.setItem('userAuthenticated', 'true');
-        toggleSessionActions();
-    }
-
-    function logout() {
-        localStorage.removeItem('userAuthenticated');
-        toggleSessionActions();
-    }
-
-    if (navMenuButton && sessionMenuButton && navMobileMenu && sessionMobileMenu) {
-        navMenuButton.addEventListener('click', () => {
-            toggleMenu(navMobileMenu);
-            if (sessionMobileMenu && sessionMobileMenu.style && sessionMobileMenu.style.display === 'block') {
-                sessionMobileMenu.style.display = 'none';
-            }            
-        });
-
-        sessionMenuButton.addEventListener('click', () => {
-            toggleMenu(sessionMobileMenu);
-            if (navMobileMenu && navMobileMenu.style.display === 'block') {
-                navMobileMenu.style.display = 'none';
-            }
-        });
+    // Función para cargar monedas
+    function loadCurrencies() {
+        const targetUrl = 'https://cambiosorion.cl/data/obtener_divisas.php';
+    
+        fetch(targetUrl)
+            .then(response => response.json())
+            .then(data => {
+    
+                // Si los datos están en 'contents', intenta parsearlos
+                const responseData = data.contents ? JSON.parse(data.contents) : data;
+    
+                // Asegurarse de que responseData es un array antes de usar forEach
+                if (!Array.isArray(responseData)) {
+                    console.error("Formato de datos inesperado:", responseData);
+                    return;
+                }
+    
+                const dropdown1 = document.getElementById("dropdown1");
+                const dropdown2 = document.getElementById("dropdown2");
+    
+                if (dropdown1) dropdown1.innerHTML = '';
+                if (dropdown2) dropdown2.innerHTML = '';
+    
+                responseData.forEach(divisa => {
+                    const circularIcon = divisa.icono_circular;
+                    exchangeRates[divisa.nombre] = {
+                        compra: parseFloat(divisa.compra),
+                        venta: parseFloat(divisa.venta),
+                        icono: circularIcon
+                    };
+    
+                    preloadIcon(circularIcon);
+    
+                    const option1 = document.createElement("div");
+                    option1.innerHTML = `<img src="${circularIcon}" alt="${divisa.nombre}" class="w-6 h-6 mr-2"> ${divisa.nombre}`;
+                    option1.className = "p-2 hover:bg-gray-100 cursor-pointer";
+                    option1.onclick = function () {
+                        setCurrency1(divisa.nombre);
+                        toggleDropdown('dropdown1', event);
+                    };
+                    dropdown1.appendChild(option1);
+    
+                    const option2 = document.createElement("div");
+                    option2.innerHTML = `<img src="${circularIcon}" alt="${divisa.nombre}" class="w-5 h-5 mr-2"> ${divisa.nombre}`;
+                    option2.className = "p-2 hover:bg-gray-100 cursor-pointer";
+                    option2.onclick = function () {
+                        setCurrency2(divisa.nombre);
+                        toggleDropdown('dropdown2', event);
+                    };
+                    dropdown2.appendChild(option2);
+                });
+    
+                updateAddCurrencyDropdown();
+                fillCurrencyTable();
+            })
+            .catch(error => console.error('Error al cargar las divisas:', error));
     }
 });
 
-function initializePage() {
-    loadCurrencies();
-    fillCurrencyTable();
-    setActiveLink('#nav-menu');
-    setActiveLink('#session-menu');
-    toggleSessionActions();
-}
-
-function loadCurrencies() {
-    const targetUrl = 'https://cambiosorion.cl/data/obtener_divisas.php';
-
-    fetch(targetUrl)
-        .then(response => response.json())
-        .then(data => {
-
-            // Si los datos están en 'contents', intenta parsearlos
-            const responseData = data.contents ? JSON.parse(data.contents) : data;
-
-            // Asegurarse de que responseData es un array antes de usar forEach
-            if (!Array.isArray(responseData)) {
-                console.error("Formato de datos inesperado:", responseData);
-                return;
-            }
-
-            const dropdown1 = document.getElementById("dropdown1");
-            const dropdown2 = document.getElementById("dropdown2");
-
-            if (dropdown1) dropdown1.innerHTML = '';
-            if (dropdown2) dropdown2.innerHTML = '';
-
-            responseData.forEach(divisa => {
-                const circularIcon = divisa.icono_circular;
-                exchangeRates[divisa.nombre] = {
-                    compra: parseFloat(divisa.compra),
-                    venta: parseFloat(divisa.venta),
-                    icono: circularIcon
-                };
-
-                preloadIcon(circularIcon);
-
-                const option1 = document.createElement("div");
-                option1.innerHTML = `<img src="${circularIcon}" alt="${divisa.nombre}" class="w-6 h-6 mr-2"> ${divisa.nombre}`;
-                option1.className = "p-2 hover:bg-gray-100 cursor-pointer";
-                option1.onclick = function () {
-                    setCurrency1(divisa.nombre);
-                    toggleDropdown('dropdown1', event);
-                };
-                dropdown1.appendChild(option1);
-
-                const option2 = document.createElement("div");
-                option2.innerHTML = `<img src="${circularIcon}" alt="${divisa.nombre}" class="w-5 h-5 mr-2"> ${divisa.nombre}`;
-                option2.className = "p-2 hover:bg-gray-100 cursor-pointer";
-                option2.onclick = function () {
-                    setCurrency2(divisa.nombre);
-                    toggleDropdown('dropdown2', event);
-                };
-                dropdown2.appendChild(option2);
-            });
-
-            updateAddCurrencyDropdown();
-            fillCurrencyTable();
-        })
-        .catch(error => console.error('Error al cargar las divisas:', error));
-}
 
 function preloadIcon(iconUrl) {
     if (!iconsLoaded[iconUrl]) {
