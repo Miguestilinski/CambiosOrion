@@ -15,18 +15,22 @@ var userActions = document.getElementById('user-actions');
 var guestActions = document.getElementById('guest-actions');
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Inicialización
     initializePage();
+
+    const userActions = document.getElementById('user-actions');
+    const guestActions = document.getElementById('guest-actions');
 
     const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
     console.log("Estado de autenticación al cargar la página:", isAuthenticated);
 
     if (userActions && guestActions) {
-        console.log('Elementos encontrados correctamente.');
         toggleSessionActions(isAuthenticated, userActions, guestActions);
     } else {
         console.error('Error: No se encontraron los elementos user-actions o guest-actions en el DOM.');
     }
 
+    // Configuración de menús
     setupMenus();
 });
 
@@ -38,20 +42,15 @@ function toggleSessionActions(isAuthenticated, userActions, guestActions) {
         return;
     }
 
-    // Mostrar/ocultar elementos basados en autenticación
     if (isAuthenticated) {
         console.log("Mostrando user-actions y ocultando guest-actions.");
-        userActions.style.display = 'block'; // Sin "important"
+        userActions.style.display = 'block';
         guestActions.style.display = 'none';
     } else {
         console.log("Mostrando guest-actions y ocultando user-actions.");
         userActions.style.display = 'none';
         guestActions.style.display = 'block';
     }
-
-    // Comprobación de estilos en consola
-    console.log("Estado de display de user-actions:", getComputedStyle(userActions).display);
-    console.log("Estado de display de guest-actions:", getComputedStyle(guestActions).display);
 }
 
 // Configuración de menús y enlaces activos
@@ -193,10 +192,6 @@ function loadCurrencies() {
         })
         .catch(error => console.error('Error al cargar las divisas:', error));
 }
-
-window.addEventListener('resize', function () {
-    const mobileButtons = document.querySelector('.md\\:hidden');
-});
 
 function preloadIcon(iconUrl) {
     if (!iconsLoaded[iconUrl]) {

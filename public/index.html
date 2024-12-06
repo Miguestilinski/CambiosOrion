@@ -68,7 +68,8 @@
     
         <!-- Acciones para escritorio -->
         <div class="header-actions">
-            <div id="user-actions">
+            <!-- User actions -->
+            <div id="user-actions" style="display: none;">
                 <button id="profile-menu-button" class="text-white bg-transparent hover:bg-gray-200 focus:outline-none">
                     <img src="/orionapp/icons/profile-white.png" alt="Profile" class="w-6 h-6">
                 </button>
@@ -79,20 +80,17 @@
                         <div class="font-medium truncate">name@flowbite.com</div>
                     </div>
                     <ul class="py-2 text-sm text-gray-700">
-                        <li>
-                            <a href="/profile" class="block px-4 py-2 hover:bg-gray-100">Mi perfil</a>
-                        </li>
-                        <li>
-                            <a href="/logout" id="logout-button" class="block px-4 py-2 hover:bg-gray-100">Cerrar sesión</a>
-                        </li>
+                        <li><a href="/profile" class="block px-4 py-2 hover:bg-gray-100">Mi perfil</a></li>
+                        <li><a href="/logout" id="logout-button" class="block px-4 py-2 hover:bg-gray-100">Cerrar sesión</a></li>
                     </ul>
                 </div>
             </div>
-            
+
+            <!-- Guest actions -->
             <div id="guest-actions" style="display: block;">
                 <button id="login-button">Iniciar sesión</button>
                 <button id="register-button" class="register-button">Registrarse</button>
-            </div>            
+            </div>
         </div>
     </header>
 
