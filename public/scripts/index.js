@@ -11,26 +11,21 @@ function initializePage() {
     setActiveLink('#session-menu');
 }
 
-var userActions = document.getElementById('user-actions');
-var guestActions = document.getElementById('guest-actions');
-
 document.addEventListener('DOMContentLoaded', () => {
-    // Inicialización
     initializePage();
 
     const userActions = document.getElementById('user-actions');
     const guestActions = document.getElementById('guest-actions');
 
+    if (!userActions || !guestActions) {
+        console.error('Error: No se encontraron los elementos user-actions o guest-actions en el DOM.');
+        return;
+    }
+
     const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
     console.log("Estado de autenticación al cargar la página:", isAuthenticated);
 
-    if (userActions && guestActions) {
-        toggleSessionActions(isAuthenticated, userActions, guestActions);
-    } else {
-        console.error('Error: No se encontraron los elementos user-actions o guest-actions en el DOM.');
-    }
-
-    // Configuración de menús
+    toggleSessionActions(isAuthenticated, userActions, guestActions);
     setupMenus();
 });
 
@@ -46,8 +41,12 @@ function toggleSessionActions(isAuthenticated, userActions, guestActions) {
         guestActions.classList.add('visible');
         guestActions.classList.remove('hidden');
     }
-}
 
+    // Verificar los cambios en el DOM
+    console.log('Estado final:');
+    console.log('userActions:', userActions.outerHTML);
+    console.log('guestActions:', guestActions.outerHTML);
+}
 
 // Configuración de menús y enlaces activos
 function setupMenus() {

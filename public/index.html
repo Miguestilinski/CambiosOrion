@@ -69,28 +69,32 @@
         <!-- Acciones para escritorio -->
         <div class="header-actions">
             <!-- User actions -->
-            <div id="user-actions" style="display: none;">
-                <button id="profile-menu-button" class="text-white bg-transparent hover:bg-gray-200 focus:outline-none">
-                    <img src="/orionapp/icons/profile-white.png" alt="Profile" class="w-6 h-6">
-                </button>
-                <!-- Menú desplegable -->
-                <div id="dropdownInformation" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
-                    <div class="px-4 py-3 text-sm text-gray-900">
-                        <div>Bonnie Green</div>
-                        <div class="font-medium truncate">name@flowbite.com</div>
+            <ul id="user-actions" class="hidden">
+                <li>
+                    <button id="profile-menu-button" class="text-white bg-transparent hover:bg-gray-200 focus:outline-none">
+                        <img src="/orionapp/icons/profile-white.png" alt="Profile" class="w-6 h-6">
+                    </button>
+                </li>
+                <li>
+                    <!-- Menú desplegable -->
+                    <div id="dropdownInformation" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
+                        <div class="px-4 py-3 text-sm text-gray-900">
+                            <div>Bonnie Green</div>
+                            <div class="font-medium truncate">name@flowbite.com</div>
+                        </div>
+                        <ul class="py-2 text-sm text-gray-700">
+                            <li><a href="/profile" class="block px-4 py-2 hover:bg-gray-100">Mi perfil</a></li>
+                            <li><a href="/logout" id="logout-button" class="block px-4 py-2 hover:bg-gray-100">Cerrar sesión</a></li>
+                        </ul>
                     </div>
-                    <ul class="py-2 text-sm text-gray-700">
-                        <li><a href="/profile" class="block px-4 py-2 hover:bg-gray-100">Mi perfil</a></li>
-                        <li><a href="/logout" id="logout-button" class="block px-4 py-2 hover:bg-gray-100">Cerrar sesión</a></li>
-                    </ul>
-                </div>
-            </div>
+                </li>
+            </ul>
 
             <!-- Guest actions -->
-            <div id="guest-actions" style="display: block;">
-                <button id="login-button" href="iniciar_sesion">Iniciar sesión</button>
-                <button id="register-button" href="registro" class="register-button">Registrarse</button>
-            </div>
+            <ul id="guest-actions" class="visible">
+                <li><button id="login-button" href="iniciar_sesion">Iniciar sesión</button></li>
+                <li><button id="register-button" href="registro" class="register-button">Registrarse</button></li>
+            </ul>
         </div>
     </header>
 

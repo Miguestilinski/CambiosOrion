@@ -110,20 +110,23 @@ nav ul li.selected a {
     transform: scale(1.05);
 }
 
+.hidden {
+    display: none !important;
+}
+
 .visible {
     display: block !important;
 }
 
 #user-actions {
-    display: none;
-    align-items: center; /* Alineación del contenido */
-    gap: 10px; /* Espaciado entre elementos */
+    align-items: center;
+    gap: 10px;
 }
 
 #guest-actions {
-    display: block;
     flex-direction: column;
     align-items: center;
+    gap: 10px;
     color: white;
 }
 
