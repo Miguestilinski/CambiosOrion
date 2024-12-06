@@ -9,11 +9,11 @@ function initializePage() {
     fillCurrencyTable();
     setActiveLink('#nav-menu');
     setActiveLink('#session-menu');
+    toggleSessionActions();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     initializePage();
-    toggleSessionActions();
 });
   
 function toggleSessionActions() {
