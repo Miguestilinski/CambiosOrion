@@ -54,19 +54,6 @@ app.get('/api/divisas', (req, res) => {
   });
 });
 
-// NUEVA RUTA: Simulación del estado de sesión
-app.get('/api/session-status', (req, res) => {
-  // Simular estado de autenticación (true para autenticado, false para invitado)
-  const isAuthenticated = true; // Cambia esto dinámicamente según tu lógica
-  res.json({ isAuthenticated });
-});
-
-// NUEVA RUTA: Logout
-app.post('/api/logout', (req, res) => {
-  // Aquí puedes manejar la lógica de cierre de sesión, como eliminar cookies o tokens
-  res.status(200).json({ message: 'Sesión cerrada correctamente.' });
-});
-
 // Proxy para la API de Google Places
 app.get('/api/place-details', async (req, res) => {
   const placeId = req.query.place_id; // Obtén el Place ID desde el query parameter

@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const sessionMenuButton = document.getElementById('session-menu-button');
     const navMobileMenu = document.getElementById('nav-mobile-menu');
     const sessionMobileMenu = document.getElementById('session-mobile-menu');
+    const logoutButton = document.getElementById('logout-button');
 
     if (!userActions || !guestActions) {
         console.error('No se encontraron los elementos en el DOM.');
@@ -92,14 +93,13 @@ document.addEventListener('DOMContentLoaded', async function () {
         try {
             const response = await fetch('/api/logout', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
             });
 
             if (response.ok) {
                 console.log("Sesión cerrada correctamente.");
-                await updateSessionState(); // Actualizar el estado de sesión después del logout
+                await updateSessionState();
             } else {
-                console.error("Error al cerrar sesión:", await response.json());
+                console.error("Error al cerrar sesión.");
             }
         } catch (error) {
             console.error("Error al cerrar sesión:", error);
@@ -107,8 +107,9 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 
     if (logoutButton) {
-        logoutButton.addEventListener("click", async (event) => {
-            event.preventDefault();
+        logoutButton.addEventListener('click', async (event) => {
+            event.preventDefault(); // Prevenir el comportamiento predeterminado del enlace
+            console.log("Cerrando sesión...");
             await logout();
         });
     }
