@@ -35,23 +35,23 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function toggleSessionActions(isAuthenticated, userActions, guestActions) {
-    console.log("Ejecutando toggleSessionActions con isAuthenticated:", isAuthenticated);
-
-    if (!userActions || !guestActions) {
-        console.error('Error: Los elementos user-actions o guest-actions no están definidos.');
-        return;
-    }
+    console.log("isAuthenticated:", isAuthenticated);
+    console.log("userActions:", userActions);
+    console.log("guestActions:", guestActions);
 
     if (isAuthenticated) {
-        console.log("Mostrando user-actions y ocultando guest-actions.");
         userActions.style.display = 'block';
         guestActions.style.display = 'none';
     } else {
-        console.log("Mostrando guest-actions y ocultando user-actions.");
         userActions.style.display = 'none';
         guestActions.style.display = 'block';
     }
+
+    console.log("Estado final:");
+    console.log("userActions.style.display:", userActions.style.display);
+    console.log("guestActions.style.display:", guestActions.style.display);
 }
+
 
 // Configuración de menús y enlaces activos
 function setupMenus() {
