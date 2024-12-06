@@ -12,14 +12,11 @@ function initializePage() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    initializePage();
+    const userActions = document.getElementById('user-actions');
+    const guestActions = document.getElementById('guest-actions');
   
-    // Exponer variables globales
-    window.userActions = document.getElementById('user-actions');
-    window.guestActions = document.getElementById('guest-actions');
-  
-    if (!window.userActions || !window.guestActions) {
-      console.error('No se encontraron los elementos user-actions o guest-actions en el DOM.');
+    if (!userActions || !guestActions) {
+      console.error('No se encontraron los elementos en el DOM.');
       return;
     }
   
@@ -30,30 +27,28 @@ document.addEventListener('DOMContentLoaded', () => {
 });
   
 function toggleSessionActions(isAuthenticated) {
+    const userActions = document.getElementById('user-actions');
+    const guestActions = document.getElementById('guest-actions');
+
     if (isAuthenticated) {
-    // Asegurarnos de que la lógica se aplica bien
-    window.userActions.classList.add('visible');
-    window.userActions.classList.remove('hidden');
-    
-    window.guestActions.classList.add('hidden');
-    window.guestActions.classList.remove('visible');
-    
-    window.userActions.style.display = 'block';
-    window.guestActions.style.display = 'none';
+        // Sesión iniciada: Mostrar user-actions, ocultar guest-actions
+        userActions.classList.remove('hidden');
+        userActions.classList.add('block');
+        
+        guestActions.classList.remove('block');
+        guestActions.classList.add('hidden');
     } else {
-    window.guestActions.classList.add('visible');
-    window.guestActions.classList.remove('hidden');
-    
-    window.userActions.classList.add('hidden');
-    window.userActions.classList.remove('visible');
-    
-    window.guestActions.style.display = 'block';
-    window.userActions.style.display = 'none';
+        // Sesión no iniciada: Mostrar guest-actions, ocultar user-actions
+        guestActions.classList.remove('hidden');
+        guestActions.classList.add('block');
+
+        userActions.classList.remove('block');
+        userActions.classList.add('hidden');
     }
 
-    console.log('userActions.classList:', window.userActions.classList);
-    console.log('guestActions.classList:', window.guestActions.classList);
-} 
+    console.log('userActions.classList:', userActions.classList);
+    console.log('guestActions.classList:', guestActions.classList);
+}
 
 // Configuración de menús y enlaces activos
 function setupMenus() {
