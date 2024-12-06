@@ -28,10 +28,14 @@ function toggleSessionActions() {
     if (isAuthenticated) {
         // Mostrar user-actions
         userActions.classList.remove('hidden');
+        userActions.classList.add('visible');
+        guestActions.classList.remove('visible');
         guestActions.classList.add('hidden');
     } else {
         // Mostrar guest-actions
         guestActions.classList.remove('hidden');
+        guestActions.classList.add('visible');
+        userActions.classList.remove('visible');
         userActions.classList.add('hidden');
     }
 
