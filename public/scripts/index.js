@@ -6,7 +6,10 @@ let displayedCurrencies = ["CLP", "USD", "EUR", "ARS"];
 
 
 console.log("Script cargado, comprobando DOM...");
+
 document.addEventListener('DOMContentLoaded', async function () {
+    const userActions = document.getElementById('user-actions');
+    const guestActions = document.getElementById('guest-actions');
     userActions.classList.remove('hidden');
     guestActions.classList.add('hidden');
     console.log("Cambio manual de visibilidad.");
