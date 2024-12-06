@@ -84,7 +84,7 @@
                         </div>
                         <ul class="py-2 text-sm text-gray-700">
                             <li><a href="/profile" class="block px-4 py-2 hover:bg-gray-100">Mi perfil</a></li>
-                            <li><a href="/logout" id="logout-button" class="block px-4 py-2 hover:bg-gray-100">Cerrar sesión</a></li>
+                            <li><a href="#" id="logout-button" class="block px-4 py-2 hover:bg-gray-100" onclick="logout()">Cerrar sesión</a></li>
                         </ul>
                     </div>
                 </li>
@@ -92,8 +92,8 @@
 
             <!-- Guest actions -->
             <ul id="guest-actions" class="hidden">
-                <li><button id="login-button" href="iniciar_sesion">Iniciar sesión</button></li>
-                <li><button id="register-button" href="registro" class="register-button">Registrarse</button></li>
+                <li><button id="login-button" class="text-blue-500" onclick="login()">Iniciar sesión</button></li>
+                <li><a href="registro" class="register-button">Registrarse</a></li>
             </ul>
         </div>
     </header>

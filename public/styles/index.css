@@ -87,7 +87,6 @@ nav ul li.selected a {
     border-bottom: 2px solid white;
 }
 
-/* Iniciar Sesión y Registrarse */
 .header-actions {
     display: flex;
     align-items: center;

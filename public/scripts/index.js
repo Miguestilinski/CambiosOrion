@@ -4,6 +4,12 @@ let isEditMode = false;
 let activeDropdown = null;
 let displayedCurrencies = ["CLP", "USD", "EUR", "ARS"];
 
+document.addEventListener('DOMContentLoaded', () => {
+    initializePage();
+    setupMenus();
+    toggleSessionActions();
+});
+
 function initializePage() {
     loadCurrencies();
     fillCurrencyTable();
@@ -12,10 +18,7 @@ function initializePage() {
     toggleSessionActions();
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    initializePage();
-});
-  
+// Función principal para manejar la lógica de autenticación
 function toggleSessionActions() {
     const userActions = document.getElementById('user-actions');
     const guestActions = document.getElementById('guest-actions');
@@ -28,13 +31,9 @@ function toggleSessionActions() {
 
     if (isAuthenticated) {
         userActions.classList.remove('hidden');
-        userActions.classList.add('visible');
-        guestActions.classList.remove('visible');
         guestActions.classList.add('hidden');
     } else {
         guestActions.classList.remove('hidden');
-        guestActions.classList.add('visible');
-        userActions.classList.remove('visible');
         userActions.classList.add('hidden');
     }
 
@@ -43,53 +42,29 @@ function toggleSessionActions() {
 
 // Configuración de menús y enlaces activos
 function setupMenus() {
-    const navMenuButton = document.getElementById('nav-menu-button');
-    const sessionMenuButton = document.getElementById('session-menu-button');
-    const navMobileMenu = document.getElementById('nav-mobile-menu');
-    const sessionMobileMenu = document.getElementById('session-mobile-menu');
     const profileMenuButton = document.getElementById('profile-menu-button');
-    const profileMenu = document.getElementById('profile-menu');
-
-    if (navMenuButton) {
-        navMenuButton.addEventListener('click', (event) => {
-            toggleMenu(navMobileMenu, sessionMobileMenu);
-            event.stopPropagation();
-        });
-    }
-
-    if (sessionMenuButton) {
-        sessionMenuButton.addEventListener('click', (event) => {
-            toggleMenu(sessionMobileMenu, navMobileMenu);
-            event.stopPropagation();
-        });
-    }
-
-    document.addEventListener('click', () => {
-        closeMenu(navMobileMenu);
-        closeMenu(sessionMobileMenu);
-    });
+    const profileMenu = document.getElementById('dropdownInformation');
 
     if (profileMenuButton) {
-        profileMenuButton.addEventListener('click', (event) => {
+        profileMenuButton.addEventListener("click", (event) => {
             toggleMenu(profileMenu);
             event.stopPropagation();
         });
-
-        document.addEventListener('click', (event) => {
-            if (profileMenu && !profileMenu.contains(event.target)) {
-                closeMenu(profileMenu);
-            }
-        });
     }
+
+    // Cerrar el menú al hacer clic fuera de él
+    document.addEventListener('click', (event) => {
+        if (profileMenu && !profileMenu.contains(event.target)) {
+            closeMenu(profileMenu);
+        }
+    });
 }
 
-function toggleMenu(menuToOpen, menuToClose = null) {
-    if (menuToClose) closeMenu(menuToClose);
-
-    if (menuToOpen && menuToOpen.classList.contains('hidden')) {
-        menuToOpen.classList.remove('hidden');
-    } else if (menuToOpen) {
-        menuToOpen.classList.add('hidden');
+function toggleMenu(menu) {
+    if (menu && menu.classList.contains('hidden')) {
+        menu.classList.remove('hidden');
+    } else if (menu) {
+        menu.classList.add('hidden');
     }
 }
 
@@ -109,6 +84,16 @@ function setActiveLink(menuId) {
             link.classList.remove('selected');
         }
     });
+}
+
+function login() {
+    localStorage.setItem('userAuthenticated', 'true');
+    toggleSessionActions();
+}
+
+function logout() {
+    localStorage.removeItem('userAuthenticated');
+    toggleSessionActions();
 }
 
 // Mostrar/ocultar el menú desplegable del perfil
