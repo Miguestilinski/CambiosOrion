@@ -9,8 +9,10 @@ document.addEventListener('DOMContentLoaded', async function () {
     const guestActions = document.getElementById('guest-actions');
     const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
 
-    const profileMenuButton = document.getElementById('profile-menu-button');
-    const profileMenu = document.getElementById('dropdownInformation');
+    const navMenuButton = document.getElementById('nav-menu-button');
+    const sessionMenuButton = document.getElementById('session-menu-button');
+    const navMobileMenu = document.getElementById('nav-mobile-menu');
+    const sessionMobileMenu = document.getElementById('session-mobile-menu');
 
     initializePage();
     setupMenus();
@@ -45,19 +47,21 @@ document.addEventListener('DOMContentLoaded', async function () {
     // Configuración de menús y enlaces activos
     function setupMenus() {
 
-        if (profileMenuButton) {
-            profileMenuButton.addEventListener("click", (event) => {
-                toggleMenu(profileMenu);
-                event.stopPropagation();
+        if (navMenuButton && sessionMenuButton && navMobileMenu && sessionMobileMenu) {
+            navMenuButton.addEventListener('click', () => {
+                toggleMenu(navMobileMenu);
+                if (sessionMobileMenu && sessionMobileMenu.style && sessionMobileMenu.style.display === 'block') {
+                    sessionMobileMenu.style.display = 'none';
+                }            
+            });
+    
+            sessionMenuButton.addEventListener('click', () => {
+                toggleMenu(sessionMobileMenu);
+                if (navMobileMenu && navMobileMenu.style.display === 'block') {
+                    navMobileMenu.style.display = 'none';
+                }
             });
         }
-
-        // Cerrar el menú al hacer clic fuera de él
-        document.addEventListener('click', (event) => {
-            if (profileMenu && !profileMenu.contains(event.target)) {
-                closeMenu(profileMenu);
-            }
-        });
     }
 
     function toggleMenu(menu) {
