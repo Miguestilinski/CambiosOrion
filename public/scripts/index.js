@@ -15,14 +15,12 @@ document.addEventListener('DOMContentLoaded', async function () {
     const sessionMobileMenu = document.getElementById('session-mobile-menu');
 
     initializePage();
-    toggleSessionActions();
 
     function initializePage() {
         loadCurrencies();
         fillCurrencyTable();
         setActiveLink('#nav-menu');
         setActiveLink('#session-menu');
-        toggleSessionActions();
     }
 
     if (!userActions || !guestActions) {
