@@ -4,7 +4,14 @@ let isEditMode = false;
 let activeDropdown = null;
 let displayedCurrencies = ["CLP", "USD", "EUR", "ARS"];
 
+
 console.log("Script cargado, comprobando DOM...");
+document.addEventListener('DOMContentLoaded', async function () {
+    userActions.classList.remove('hidden');
+    guestActions.classList.add('hidden');
+    console.log("Cambio manual de visibilidad.");
+  });
+  
 document.addEventListener('DOMContentLoaded', async function () {
     console.log("DOM cargando...");
     const userActions = document.getElementById('user-actions');
