@@ -19,7 +19,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         fillCurrencyTable();
         setActiveLink('#nav-menu');
         setActiveLink('#session-menu');
-        toggleSessionActions();
     }
 
     if (!userActions || !guestActions) {
@@ -55,28 +54,21 @@ document.addEventListener('DOMContentLoaded', async function () {
     // Función principal para la visibilidad de acciones segun sesión
     function toggleSessionActions() {
         const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
+
+        console.log("Verificando autenticación:", isAuthenticated);
+
         if (isAuthenticated) {
+            // Mostrar user-actions y ocultar guest-actions
             userActions.classList.remove('hidden');
             guestActions.classList.add('hidden');
-            console.log('Sesión iniciada: Mostrando user-actions, ocultando guest-actions');
+            console.log("Sesión activa: mostrando user-actions.");
         } else {
+            // Mostrar guest-actions y ocultar user-actions
             guestActions.classList.remove('hidden');
             userActions.classList.add('hidden');
-            console.log('Sesión no iniciada: Mostrando guest-actions, ocultando user-actions');
+            console.log("Sesión no activa: mostrando guest-actions.");
         }
     }
-
-    // Funcionalidad Login
-    document.getElementById('login-button')?.addEventListener('click', () => {
-        localStorage.setItem('userAuthenticated', 'true');
-        toggleSessionActions();
-    });
-
-    // Funcionalidad Logout
-    document.getElementById('logout-button')?.addEventListener('click', () => {
-        localStorage.removeItem('userAuthenticated');
-        toggleSessionActions();
-    });
 
     function setActiveLink(menuId) {
         const links = document.querySelectorAll(`${menuId} a`);
@@ -90,65 +82,71 @@ document.addEventListener('DOMContentLoaded', async function () {
         });
     }
 
-    // Función para cargar monedas
-    function loadCurrencies() {
-        const targetUrl = 'https://cambiosorion.cl/data/obtener_divisas.php';
-    
-        fetch(targetUrl)
-            .then(response => response.json())
-            .then(data => {
-    
-                // Si los datos están en 'contents', intenta parsearlos
-                const responseData = data.contents ? JSON.parse(data.contents) : data;
-    
-                // Asegurarse de que responseData es un array antes de usar forEach
-                if (!Array.isArray(responseData)) {
-                    console.error("Formato de datos inesperado:", responseData);
-                    return;
-                }
-    
-                const dropdown1 = document.getElementById("dropdown1");
-                const dropdown2 = document.getElementById("dropdown2");
-    
-                if (dropdown1) dropdown1.innerHTML = '';
-                if (dropdown2) dropdown2.innerHTML = '';
-    
-                responseData.forEach(divisa => {
-                    const circularIcon = divisa.icono_circular;
-                    exchangeRates[divisa.nombre] = {
-                        compra: parseFloat(divisa.compra),
-                        venta: parseFloat(divisa.venta),
-                        icono: circularIcon
-                    };
-    
-                    preloadIcon(circularIcon);
-    
-                    const option1 = document.createElement("div");
-                    option1.innerHTML = `<img src="${circularIcon}" alt="${divisa.nombre}" class="w-6 h-6 mr-2"> ${divisa.nombre}`;
-                    option1.className = "p-2 hover:bg-gray-100 cursor-pointer";
-                    option1.onclick = function () {
-                        setCurrency1(divisa.nombre);
-                        toggleDropdown('dropdown1', event);
-                    };
-                    dropdown1.appendChild(option1);
-    
-                    const option2 = document.createElement("div");
-                    option2.innerHTML = `<img src="${circularIcon}" alt="${divisa.nombre}" class="w-5 h-5 mr-2"> ${divisa.nombre}`;
-                    option2.className = "p-2 hover:bg-gray-100 cursor-pointer";
-                    option2.onclick = function () {
-                        setCurrency2(divisa.nombre);
-                        toggleDropdown('dropdown2', event);
-                    };
-                    dropdown2.appendChild(option2);
-                });
-    
-                updateAddCurrencyDropdown();
-                fillCurrencyTable();
-            })
-            .catch(error => console.error('Error al cargar las divisas:', error));
-    }
+    window.logout = function () {
+        localStorage.removeItem('userAuthenticated');
+        toggleSessionActions();
+    };
+
+    toggleSessionActions();
+
 });
 
+function loadCurrencies() {
+    const targetUrl = 'https://cambiosorion.cl/data/obtener_divisas.php';
+
+    fetch(targetUrl)
+        .then(response => response.json())
+        .then(data => {
+
+            // Si los datos están en 'contents', intenta parsearlos
+            const responseData = data.contents ? JSON.parse(data.contents) : data;
+
+            // Asegurarse de que responseData es un array antes de usar forEach
+            if (!Array.isArray(responseData)) {
+                console.error("Formato de datos inesperado:", responseData);
+                return;
+            }
+
+            const dropdown1 = document.getElementById("dropdown1");
+            const dropdown2 = document.getElementById("dropdown2");
+
+            if (dropdown1) dropdown1.innerHTML = '';
+            if (dropdown2) dropdown2.innerHTML = '';
+
+            responseData.forEach(divisa => {
+                const circularIcon = divisa.icono_circular;
+                exchangeRates[divisa.nombre] = {
+                    compra: parseFloat(divisa.compra),
+                    venta: parseFloat(divisa.venta),
+                    icono: circularIcon
+                };
+
+                preloadIcon(circularIcon);
+
+                const option1 = document.createElement("div");
+                option1.innerHTML = `<img src="${circularIcon}" alt="${divisa.nombre}" class="w-6 h-6 mr-2"> ${divisa.nombre}`;
+                option1.className = "p-2 hover:bg-gray-100 cursor-pointer";
+                option1.onclick = function () {
+                    setCurrency1(divisa.nombre);
+                    toggleDropdown('dropdown1', event);
+                };
+                dropdown1.appendChild(option1);
+
+                const option2 = document.createElement("div");
+                option2.innerHTML = `<img src="${circularIcon}" alt="${divisa.nombre}" class="w-5 h-5 mr-2"> ${divisa.nombre}`;
+                option2.className = "p-2 hover:bg-gray-100 cursor-pointer";
+                option2.onclick = function () {
+                    setCurrency2(divisa.nombre);
+                    toggleDropdown('dropdown2', event);
+                };
+                dropdown2.appendChild(option2);
+            });
+
+            updateAddCurrencyDropdown();
+            fillCurrencyTable();
+        })
+        .catch(error => console.error('Error al cargar las divisas:', error));
+}
 
 function preloadIcon(iconUrl) {
     if (!iconsLoaded[iconUrl]) {
