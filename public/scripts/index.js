@@ -31,29 +31,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function toggleSessionActions(isAuthenticated, userActions, guestActions) {
     if (isAuthenticated) {
-        // Aplicar clases
         userActions.classList.add('visible');
         userActions.classList.remove('hidden');
+
         guestActions.classList.add('hidden');
         guestActions.classList.remove('visible');
-        
-        // Eliminar el atributo style que puede causar conflictos
-        userActions.style.display = '';
-        guestActions.style.display = '';
     } else {
-        // Aplicar clases
-        userActions.classList.add('hidden');
-        userActions.classList.remove('visible');
         guestActions.classList.add('visible');
         guestActions.classList.remove('hidden');
-        
-        // Eliminar el atributo style que puede causar conflictos
-        userActions.style.display = '';
-        guestActions.style.display = '';
+
+        userActions.classList.add('hidden');
+        userActions.classList.remove('visible');
     }
 
-    // Verificar los cambios en el DOM
-    console.log('Estado final:');
+    console.log('Estado final de los elementos después de ajustar la visibilidad:');
     console.log('userActions:', userActions.outerHTML);
     console.log('guestActions:', guestActions.outerHTML);
 }

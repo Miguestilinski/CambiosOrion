@@ -111,11 +111,11 @@ nav ul li.selected a {
 }
 
 .hidden {
-    display: none !important;
+    display: none;
 }
 
 .visible {
-    display: block !important;
+    display: block;
 }
 
 #user-actions {
@@ -127,6 +127,21 @@ nav ul li.selected a {
     flex-direction: column;
     align-items: center;
     color: white;
+}
+
+#user-actions,
+#guest-actions {
+    display: none; /* Ocultar por defecto */
+}
+
+#user-actions.visible,
+#guest-actions.visible {
+    display: block; /* Mostrar elementos visibles */
+}
+
+#user-actions.hidden,
+#guest-actions.hidden {
+    display: none; /* Ocultar elementos ocultos */
 }
 
 #profile-menu-button {
