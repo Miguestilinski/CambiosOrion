@@ -84,7 +84,7 @@ function loadHighlightedCurrencies() {
 }
 
 // Llamar la función periódicamente cada 5 segundos para verificar los cambios
-setInterval(loadHighlightedCurrencies, 5000);
+setInterval(loadHighlightedCurrencies, 1000);
 
 function removeTrailingZeros(value) {
     if (value === null || value === undefined) return '';
