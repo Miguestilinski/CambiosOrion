@@ -1,90 +1,100 @@
 let preciosAnteriores = {};
 
-// Función para cargar las divisas desde el servidor PHP
-function loadHighlightedCurrencies() {
-    const targetUrl = 'https://cambiosorion.cl/data/obtener_divisas.php'; // URL de obtener_divisas.php
+// Crear la conexión WebSocket
+const socket = new WebSocket('ws://localhost:8080');
 
-    fetch(targetUrl)
-        .then(response => response.json()) // Suponemos que el servidor devuelve un JSON
-        .then(data => {
-            const responseData = data.contents ? JSON.parse(data.contents) : data;
+socket.onopen = () => {
+    console.log('Conectado al servidor WebSocket');
+};
 
-            if (!Array.isArray(responseData)) {
-                console.error("Formato de datos inesperado:", responseData);
-                return;
-            }
+socket.onmessage = (event) => {
+    try {
+        const responseData = JSON.parse(event.data);
+        processData(responseData);
+    } catch (error) {
+        console.error('Error al procesar datos desde el servidor WebSocket', error);
+    }
+};
 
-            const highlightedList = document.getElementById("highlighted-currencies");
-            const normalList = document.getElementById("normal-currencies");
+socket.onerror = (error) => {
+    console.error('Error en la conexión WebSocket:', error);
+};
 
-            // Limpiar las listas anteriores
-            highlightedList.innerHTML = '';
-            normalList.innerHTML = '';
+socket.onclose = () => {
+    console.log('Conexión cerrada con el servidor WebSocket');
+};
 
-            let cambiosDetectados = false;
+// Procesar los datos de divisas y actualizar la UI
+function processData(data) {
+    const highlightedList = document.getElementById("highlighted-currencies");
+    const normalList = document.getElementById("normal-currencies");
 
-            const divisasFiltradas = [
-                "USD", "EUR", "BRL", "ARS", "PEN", "MXN", "ORO 100"
-            ];
+    // Limpiar las listas anteriores para reconstruirlas
+    highlightedList.innerHTML = '';
+    normalList.innerHTML = '';
 
-            divisasFiltradas.forEach((key) => {
-                const divisa = responseData.find(d => d.nombre === key);
+    let cambiosDetectados = false;
 
-                if (divisa) {
-                    const { icono_circular, compra, venta } = divisa;
+    const divisasFiltradas = ["USD", "EUR", "BRL", "ARS", "PEN", "MXN", "ORO 100"];
 
-                    // Comparar con los precios anteriores
-                    if (preciosAnteriores[key]) {
-                        const { compra: compraAnterior, venta: ventaAnterior } = preciosAnteriores[key];
-                        if (compraAnterior !== compra || ventaAnterior !== venta) {
-                            cambiosDetectados = true;
-                        }
-                    }
+    divisasFiltradas.forEach((key) => {
+        const divisa = data.find(d => d.nombre === key);
 
-                    // Actualizar el estado con los nuevos precios
-                    preciosAnteriores[key] = { compra, venta };
+        if (divisa && divisa.compra && divisa.venta && divisa.icono_circular) {
+            const { icono_circular, compra, venta } = divisa;
 
-                    const row = document.createElement("tr");
-                    const formattedCompra = removeTrailingZeros(compra);
-                    const formattedVenta = removeTrailingZeros(venta);
-
-                    if (key === "USD" || key === "EUR") {
-                        row.classList.add('divisa-destacada');
-                        row.innerHTML = `
-                            <td class="icono">
-                                <span class="nombre">${key}</span>
-                                <img src="${icono_circular}" alt="${key} icon">
-                            </td>
-                            <td class="espacio"></td>
-                            <td class="compra">${formattedCompra}</td>
-                            <td class="venta">${formattedVenta}</td>
-                        `;
-                        highlightedList.appendChild(row);
-                    } else {
-                        row.classList.add('divisa-normal');
-                        row.innerHTML = `
-                            <td class="icono"><img src="${icono_circular}" alt="${key} icon"></td>
-                            <td class="nombre">${key}</td>
-                            <td class="compra">${formattedCompra}</td>
-                            <td class="venta">${formattedVenta}</td>
-                        `;
-                        normalList.appendChild(row);
-                    }
+            // Comparar con los precios anteriores
+            if (preciosAnteriores[key]) {
+                const { compra: compraAnterior, venta: ventaAnterior } = preciosAnteriores[key];
+                if (compraAnterior !== compra || ventaAnterior !== venta) {
+                    cambiosDetectados = true;
                 }
-            });
-
-            if (cambiosDetectados) {
-                const priceAlert = new Audio('/orionapp/sounds/alert.mp3');
-                priceAlert.play().catch(error => {
-                    console.error("Error reproduciendo el sonido de alerta:", error);
-                });
             }
-        })
-        .catch(error => console.error('Error al cargar las divisas:', error));
-}
 
-// Llamar la función periódicamente cada 5 segundos para verificar los cambios
-setInterval(loadHighlightedCurrencies, 1000);
+            // Actualizar el estado con los nuevos precios
+            preciosAnteriores[key] = { compra, venta };
+
+            const row = document.createElement("tr");
+            const formattedCompra = removeTrailingZeros(compra);
+            const formattedVenta = removeTrailingZeros(venta);
+
+            if (key === "USD" || key === "EUR") {
+                row.classList.add('divisa-destacada');
+                row.innerHTML = `
+                    <td class="icono">
+                        <span class="nombre">${key}</span>
+                        <img src="${icono_circular}" alt="${key} icon">
+                    </td>
+                    <td class="espacio"></td>
+                    <td class="compra">${formattedCompra}</td>
+                    <td class="venta">${formattedVenta}</td>
+                `;
+                highlightedList.appendChild(row);
+            } else {
+                row.classList.add('divisa-normal');
+                row.innerHTML = `
+                    <td class="icono"><img src="${icono_circular}" alt="${key} icon"></td>
+                    <td class="nombre">${key}</td>
+                    <td class="compra">${formattedCompra}</td>
+                    <td class="venta">${formattedVenta}</td>
+                `;
+                normalList.appendChild(row);
+            }
+        }
+    });
+
+    // Reproducir alerta solo si se detectaron cambios significativos en los datos
+    if (cambiosDetectados) {
+        try {
+            const priceAlert = new Audio('/orionapp/sounds/alert.mp3');
+            priceAlert.play().catch(error => {
+                console.error("Error al intentar reproducir el sonido de alerta:", error);
+            });
+        } catch (error) {
+            console.error("No se pudo reproducir el sonido de alerta:", error);
+        }
+    }
+}
 
 function removeTrailingZeros(value) {
     if (value === null || value === undefined) return '';

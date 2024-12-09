@@ -1,83 +1,37 @@
 <?php
 require 'vendor/autoload.php';
+require 'DivisasServer.php';
 
-use Ratchet\MessageComponentInterface;
-use Ratchet\ConnectionInterface;
-use Ratchet\Server\WebSocketServer;
+use Ratchet\WebSocket\WsServer;
+use Ratchet\Http\HttpServer;
+use React\EventLoop\Factory;
+use React\Socket\Server as ReactSocketServer;
 
-class DivisasServer implements MessageComponentInterface {
-    protected $clients = [];
-    private $lastPrices = [];
+// Configura el servidor WebSocket
+$loop = Factory::create();
+$socketServer = new ReactSocketServer('0.0.0.0:8080', $loop);
 
-    public function onOpen(ConnectionInterface $conn) {
-        $this->clients[$conn->resourceId] = $conn;
-    }
+$divisasServer = new DivisasServer();
+$wsServer = new HttpServer(new \Ratchet\WebSocket\WsServer($divisasServer));
 
-    public function onMessage(ConnectionInterface $from, $msg) {}
+$socketServer->on('connection', function ($conn) use ($divisasServer, $wsServer) {
+    $wsServer->onOpen($conn);
+    $conn->on('data', function ($msg) use ($conn, $divisasServer) {
+        $divisasServer->onMessage($conn, $msg);
+    });
+    $conn->on('close', function ($conn) use ($divisasServer) {
+        $divisasServer->onClose($conn);
+    });
+    $conn->on('error', function ($error) use ($conn, $divisasServer) {
+        $divisasServer->onError($conn, $error);
+    });
+});
 
-    public function onClose(ConnectionInterface $conn) {
-        unset($this->clients[$conn->resourceId]);
-    }
+// Ejecutar actualizaciones periódicas cada 5 segundos
+$loop->addPeriodicTimer(5, function () use ($divisasServer) {
+    $divisasServer->sendCurrencyUpdates();
+});
 
-    public function onError(ConnectionInterface $conn, \Exception $e) {
-        unset($this->clients[$conn->resourceId]);
-    }
+echo "Servidor WebSocket escuchando en el puerto 8080...\n";
 
-    private function checkAndSendUpdates() {
-        $db = new mysqli('localhost', 'usuario', 'contraseña', 'nombre_basedatos');
-
-        if ($db->connect_error) {
-            echo "Error en la conexión a la base de datos: " . $db->connect_error;
-            return;
-        }
-
-        $result = $db->query("SELECT nombre, compra, venta, icono_circular FROM Divisas");
-
-        if (!$result) return;
-
-        $currentPrices = [];
-        while ($row = $result->fetch_assoc()) {
-            $currentPrices[$row['nombre']] = [
-                'compra' => $row['compra'],
-                'venta' => $row['venta'],
-                'icono_circular' => $row['icono_circular']
-            ];
-        }
-
-        if ($this->hasChanges($currentPrices)) {
-            foreach ($this->clients as $client) {
-                $client->send(json_encode($currentPrices));
-            }
-        }
-
-        $this->lastPrices = $currentPrices;
-    }
-
-    private function hasChanges($currentPrices) {
-        foreach ($currentPrices as $key => $price) {
-            if (!isset($this->lastPrices[$key]) || 
-                $this->lastPrices[$key]['compra'] !== $price['compra'] ||
-                $this->lastPrices[$key]['venta'] !== $price['venta']) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public function start() {
-        $server = new \Ratchet\Server\IoServer(
-            new \Ratchet\WebSocket\WsServer(
-                new \Ratchet\Http\HttpServer(
-                    new \Ratchet\WebSocket\WsServer($this)
-                )
-            )
-        );
-
-        // Llamar periódicamente para enviar actualizaciones
-        swoole_timer_tick(1000, [$this, 'checkAndSendUpdates']);
-        $server->run();
-    }
-}
-
-$server = new DivisasServer();
-$server->start();
+$loop->run();
