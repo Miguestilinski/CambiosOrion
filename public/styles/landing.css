@@ -212,7 +212,7 @@ section .max-w-xl {
 /* Ajustes en celdas: espaciado interno y tamaño de fuente */
 #currency-table-body td {
     padding: 16px;
-    font-size: 14px;
+    font-size: 1rem;
 }
 
 #currency-table-body td:first-child img {
