@@ -83,7 +83,6 @@ function closeMenu(menu) {
 
 
 function loadCurrenciesForEdit() {
-    console.log('Llenando la Tabla para Editar');
     const targetUrl = 'https://cambiosorion.cl/data/divisas_api.php';
     
     fetch(targetUrl)
@@ -101,6 +100,7 @@ function loadCurrenciesForEdit() {
         .catch(error => {
             console.error('Error al obtener las divisas:', error);
         });
+        console.log('Llenando la Tabla para Editar');
 }
 
 function fillEditCurrencyTable(divisas) {
@@ -138,6 +138,7 @@ function fillEditCurrencyTable(divisas) {
             icono_circular: divisa.icono_circular,
             icono_cuadrado: divisa.icono_circular.replace('circular', 'cuadrado'),
         };
+        console.log('Agregando una divisa');
     });
 
     setupEditInputs();
