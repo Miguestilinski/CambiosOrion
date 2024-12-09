@@ -35,7 +35,7 @@ db.connect((error) => {
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-// Ruta principal que sirve el archivo index.html
+// Ruta principal
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'landing.html'));
 });

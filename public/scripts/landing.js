@@ -1,11 +1,10 @@
 let exchangeRates = {};
 let displayedCurrencies = ["USD", "EUR", "ARS", "BRL", "PEN", "COP",
-"UYU", "BOB", "CAD", "GBP", "JPY", "GNY",
-"SEK", "AUD", "MXN", "NZD", "CHF", "DKK"];
+    "UYU", "BOB", "CAD", "GBP", "JPY", "GNY",
+    "SEK", "AUD", "MXN", "NZD", "CHF", "DKK"];
 
 function initializePage() {
     loadCurrencies();
-    fillCurrencyTable();
     setActiveLink('#nav-menu');
     setActiveLink('#session-menu');
 }
@@ -41,7 +40,7 @@ function toggleMenu(menuToOpen, menuToClose) {
     if (menuToClose) closeMenu(menuToClose);
 
     if (menuToOpen.classList.contains('hidden')) {
-        menuToOpen.classList.remove('hidden'); 
+        menuToOpen.classList.remove('hidden');
     } else {
         menuToOpen.classList.add('hidden');
     }
@@ -72,17 +71,22 @@ function loadCurrencies() {
     fetch(targetUrl)
         .then(response => response.json())
         .then(data => {
-
-            // Si los datos están en 'contents', intenta parsearlos
-            const responseData = data.contents ? JSON.parse(data.contents) : data;
-
-            // Asegurarse de que responseData es un array antes de usar forEach
-            if (!Array.isArray(responseData)) {
-                console.error("Formato de datos inesperado:", responseData);
-                return;
+            if (Array.isArray(data)) {
+                data.forEach(currency => {
+                    if (currency.codigo && currency.compra && currency.venta) {
+                        exchangeRates[currency.codigo] = {
+                            compra: parseFloat(currency.compra),
+                            venta: parseFloat(currency.venta),
+                            icono: currency.icono || 'default-icon.png'
+                        };
+                    } else {
+                        console.warn(`Divisa con formato inesperado: ${JSON.stringify(currency)}`);
+                    }
+                });
+                fillCurrencyTable();
+            } else {
+                console.error("Datos recibidos no son un array:", data);
             }
-
-            fillCurrencyTable();
         })
         .catch(error => console.error('Error al cargar las divisas:', error));
 }
@@ -107,13 +111,6 @@ function fillCurrencyTable() {
                 </td>
                 <td class="px-4 py-2">${Math.round(exchangeRates[currency].compra)} CLP</td>
                 <td class="px-4 py-2">${Math.round(exchangeRates[currency].venta)} CLP</td>
-                <td class="px-4 py-2 edit-column ${isEditMode ? '' : 'hidden'}">
-                    <button onclick="deleteCurrency('${currency}')" class="delete-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6 text-white">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                        </svg>
-                    </button>
-                </td>
             `;
             if (index === 0) {
                 row.classList.add("first-row");
