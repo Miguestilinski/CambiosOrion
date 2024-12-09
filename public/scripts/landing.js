@@ -114,7 +114,7 @@ function fillCurrencyTable() {
     }
 
     tableBody.innerHTML = '';
-    displayedCurrencies.forEach((currency, index) => {
+    displayedCurrencies.forEach((currency) => {
         if (exchangeRates[currency]) {
             const row = document.createElement("tr");
             row.classList.add("currency-row");
@@ -124,8 +124,8 @@ function fillCurrencyTable() {
                 <td class="px-4 py-2 flex items-center justify-start space-x-2 sm:w-auto w-full">
                     <img src="${currencyIcon}" alt="${currencyName}" class="w-6 h-6 mr-2"> ${currencyName}
                 </td>
-                <td class="px-4 py-2">${Math.round(exchangeRates[currency].compra)} CLP</td>
-                <td class="px-4 py-2">${Math.round(exchangeRates[currency].venta)} CLP</td>
+                <td class="px-4 py-2">${exchangeRates[currency].compra} CLP</td>
+                <td class="px-4 py-2">${exchangeRates[currency].venta} CLP</td>
             `;
             tableBody.appendChild(row);
         } else {
