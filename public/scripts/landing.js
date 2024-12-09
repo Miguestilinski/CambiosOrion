@@ -89,8 +89,8 @@ function loadCurrencies() {
                     (currency.icono_circular || currency.icono_cuadrado)
                 ) {
                     exchangeRates[currency.nombre] = {
-                        compra: parseFloat(currency.compra.replace('.', '')), // Convertir a número
-                        venta: parseFloat(currency.venta.replace('.', '')),   // Convertir a número
+                        compra: removeTrailingZeros(currency.compra.replace('.', '')), // Eliminar ceros finales
+                        venta: removeTrailingZeros(currency.venta.replace('.', '')),   // Eliminar ceros finales
                         icono: currency.icono_circular || currency.icono_cuadrado, // Usar uno de los iconos disponibles
                     };
                 } else {
@@ -102,6 +102,12 @@ function loadCurrencies() {
             fillCurrencyTable();
         })
         .catch(error => console.error('Error al cargar las divisas:', error));
+}
+
+function removeTrailingZeros(value) {
+    if (value === null || value === undefined) return '';
+    const floatValue = parseFloat(value);
+    return floatValue.toString();
 }
 
 function fillCurrencyTable() {
