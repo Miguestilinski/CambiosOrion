@@ -189,7 +189,7 @@ section .max-w-xl {
 }
 
 #currency-table-body tr:nth-child(odd) {
-    background-color: #dadada;
+    background-color: white;
     color: black;
 }
 

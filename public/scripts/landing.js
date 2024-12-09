@@ -65,22 +65,25 @@ function setActiveLink(menuId) {
     });
 }
 
+function removeTrailingZeros(value) {
+    if (value === null || value === undefined) return '';
+    const floatValue = parseFloat(value);
+    return floatValue.toString();
+}
+
 function loadCurrencies() {
     const targetUrl = 'https://cambiosorion.cl/data/obtener_divisas.php';
 
     fetch(targetUrl)
         .then(response => response.json())
         .then(data => {
-            // Si los datos están en 'contents', intenta parsearlos
             const responseData = data.contents ? JSON.parse(data.contents) : data;
 
-            // Asegurarse de que responseData es un array antes de usar forEach
             if (!Array.isArray(responseData)) {
                 console.error("Formato de datos inesperado:", responseData);
                 return;
             }
 
-            // Mapear las divisas al objeto exchangeRates con formato esperado
             responseData.forEach(currency => {
                 if (
                     currency.nombre &&
@@ -89,25 +92,18 @@ function loadCurrencies() {
                     (currency.icono_circular || currency.icono_cuadrado)
                 ) {
                     exchangeRates[currency.nombre] = {
-                        compra: removeTrailingZeros(currency.compra.replace('.', '')), // Eliminar ceros finales
-                        venta: removeTrailingZeros(currency.venta.replace('.', '')),   // Eliminar ceros finales
-                        icono: currency.icono_circular || currency.icono_cuadrado, // Usar uno de los iconos disponibles
+                        compra: removeTrailingZeros(currency.compra), // Formatear compra
+                        venta: removeTrailingZeros(currency.venta),   // Formatear venta
+                        icono: currency.icono_circular || currency.icono_cuadrado,
                     };
                 } else {
                     console.error("Divisa con formato inesperado:", currency);
                 }
             });
 
-            // Llenar la tabla después de mapear las divisas
             fillCurrencyTable();
         })
         .catch(error => console.error('Error al cargar las divisas:', error));
-}
-
-function removeTrailingZeros(value) {
-    if (value === null || value === undefined) return '';
-    const floatValue = parseFloat(value);
-    return floatValue.toString();
 }
 
 function fillCurrencyTable() {
