@@ -265,6 +265,10 @@ input[type="number"] {
     font-size: 1.1em; /* Ajustar el tamaño de la fuente */
 }
 
+.mobile-buttons {
+    display: none;
+}
+
 /* Estilo para las opciones del menú */
 .mobile-menu ul {
     padding: 0;
