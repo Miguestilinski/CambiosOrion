@@ -755,6 +755,10 @@ footer {
     background-color: #f9f9f9;
 }
 
+.mobile-buttons {
+    display: none;
+}
+
 /* Estilo para las opciones del menú */
 .mobile-menu ul {
     padding: 0;
