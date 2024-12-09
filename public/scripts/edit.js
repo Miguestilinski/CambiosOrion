@@ -192,27 +192,27 @@ function saveEditedCurrencies() {
         nombre: divisa.nombre,
         compra: parseFloat(divisa.compra) || 0,
         venta: parseFloat(divisa.venta) || 0,
-        icono_circular: divisa.icono_circular,
-        icono_cuadrado: divisa.icono_cuadrado
     }));
 
-    fetch('https://cambiosorion.cl/data/divisas_api.php', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(validChanges),
-    })
-        .then(response => {
-            if (!response.ok) throw new Error('No se guardaron los cambios.');
-            return response.json();
+    // Enviar cada divisa individualmente usando el método PUT
+    validChanges.forEach(divisa => {
+        fetch('https://cambiosorion.cl/data/divisas_api.php', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(divisa),
         })
-        .then(data => {
-            alert("Cambios guardados exitosamente.");
-            console.log(data);
-        })
-        .catch(error => {
-            alert("Error al guardar cambios.");
-            console.error(error);
-        });
+            .then(response => {
+                if (!response.ok) throw new Error('No se guardaron los cambios para la divisa: ' + divisa.nombre);
+                return response.json();
+            })
+            .then(data => {
+                console.log("Actualización exitosa:", data);
+            })
+            .catch(error => {
+                alert("Error al guardar cambios.");
+                console.error(error);
+            });
+    });
 }
 
 
