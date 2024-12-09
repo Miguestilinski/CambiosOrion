@@ -197,7 +197,7 @@ function saveEditedCurrencies() {
     }));
 
     fetch('https://cambiosorion.cl/data/divisas_api.php', {
-        method: 'POST',
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(validChanges),
     })
