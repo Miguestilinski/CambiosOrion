@@ -36,6 +36,7 @@ function initializeEditPage() {
         editableCurrenciesLoaded = true; // Marca como cargado para evitar duplicar la llamada
         loadCurrenciesForEdit();
     }
+    console.log('Inicializando la Página');
 
     setActiveLink('#nav-menu');
     setActiveLink('#session-menu');
@@ -45,14 +46,9 @@ let editableCurrenciesLoaded = false;
 
 function setupEditEventListeners() {
     const saveButton = document.getElementById('save-button');
-    const cancelButton = document.getElementById('cancel-edit-button');
 
     if (saveButton) {
         saveButton.addEventListener('click', saveEditedCurrencies);
-    }
-
-    if (cancelButton) {
-        cancelButton.addEventListener('click', cancelEdit);
     }
 }
 
@@ -172,6 +168,7 @@ function setupEditInputs() {
 }
 
 function saveEditedCurrencies() {
+    console.log('Guardando la Tabla');
     const changesToSave = Object.values(editableCurrencies).filter(divisa =>
         divisa.compra !== undefined || divisa.venta !== undefined
     );
@@ -198,13 +195,6 @@ function saveEditedCurrencies() {
             alert("Error al guardar cambios.");
             console.error(error);
         });
-}
-
-function cancelEdit() {
-    if (confirm('¿Estás seguro de que deseas cancelar los cambios?')) {
-        loadCurrenciesForEdit();
-        editableCurrencies = {};
-    }
 }
 
 function setActiveLink(menuId) {
