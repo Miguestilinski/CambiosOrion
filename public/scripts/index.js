@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const navMenuButton = document.getElementById('nav-menu-button');
     const sessionMenuButton = document.getElementById('session-menu-button');
     const navMobileMenu = document.getElementById('nav-mobile-menu');
-    const sessionMobileMenu = document.getElementById('session-mobile-menu');
+    const sessionMobileMenu = document.getElementById('session-mobi¡le-menu');
     const logoutButton = document.getElementById('logout-button');
 
     if (!userActions || !guestActions) {

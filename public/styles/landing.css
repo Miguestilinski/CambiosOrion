@@ -527,7 +527,7 @@ footer {
 
     /* Contenedor para alinear los botones de menú en la versión móvil */
     .mobile-buttons {
-        display: flex;
+        display: none;
         justify-content: flex-end;
         gap: 8px;
         margin-right: 16px;
