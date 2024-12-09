@@ -83,6 +83,7 @@ function closeMenu(menu) {
 
 
 function loadCurrenciesForEdit() {
+    console.log('Llenando la Tabla para Editar');
     const targetUrl = 'https://cambiosorion.cl/data/divisas_api.php';
     
     fetch(targetUrl)
