@@ -1,5 +1,5 @@
 let editableCurrencies = {};
-let editMode = false;
+let editMode = true;
 
 document.addEventListener('DOMContentLoaded', () => {
     initializeEditPage();
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     setupEditEventListeners();
-    setupCatalogButtons();
+    setupCatalogButtons(); 
 });
 
 function initializeEditPage() {
@@ -55,6 +55,36 @@ function setupEditEventListeners() {
         cancelButton.addEventListener('click', cancelEdit);
     }
 }
+
+function setupCatalogButtons() {
+    const catalogButtonNormal = document.getElementById('catalog-button-normal');
+    const catalogButtonDestacadas = document.getElementById('catalog-button-destacadas');
+
+    if (catalogButtonNormal) {
+        catalogButtonNormal.addEventListener('click', () => {
+            window.open('catalogo.html', '_blank');
+        });
+    }
+
+    if (catalogButtonDestacadas) {
+        catalogButtonDestacadas.addEventListener('click', () => {
+            window.open('destacadas.html', '_blank');
+        });
+    }
+}
+
+function toggleMenu(menu) {
+    if (menu) {
+        menu.classList.toggle('visible');
+    }
+}
+
+function closeMenu(menu) {
+    if (menu && menu.classList.contains('visible')) {
+        menu.classList.remove('visible');
+    }
+}
+
 
 function loadCurrenciesForEdit() {
     const targetUrl = 'https://cambiosorion.cl/data/divisas_api.php';
@@ -117,7 +147,8 @@ function fillEditCurrencyTable(divisas) {
 
 function removeTrailingZeros(value) {
     if (value === null || value === undefined) return '';
-    return parseFloat(value).toString();
+    const floatValue = parseFloat(value);
+    return floatValue.toString();
 }
 
 function setupEditInputs() {
@@ -170,8 +201,8 @@ function saveEditedCurrencies() {
 
 function cancelEdit() {
     if (confirm('¿Estás seguro de que deseas cancelar los cambios?')) {
-        editableCurrencies = {};
         loadCurrenciesForEdit();
+        editableCurrencies = {};
     }
 }
 
