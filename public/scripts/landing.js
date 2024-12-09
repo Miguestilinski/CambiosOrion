@@ -131,9 +131,6 @@ function fillCurrencyTable() {
                 <td class="px-4 py-2">${Math.round(exchangeRates[currency].compra)} CLP</td>
                 <td class="px-4 py-2">${Math.round(exchangeRates[currency].venta)} CLP</td>
             `;
-            if (index === 0) {
-                row.classList.add("first-row");
-            }
             tableBody.appendChild(row);
         } else {
             console.log(`No se encontraron datos para la divisa: ${currency}`);

@@ -179,24 +179,18 @@ section .max-w-xl {
 
 /* Bordes redondeados para cada fila */
 #currency-table-body tr {
-    color: white;
+    color: black;
     overflow: hidden;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-/* Primera fila: fondo y color de texto */
-#currency-table-body tr:first-child {
-    font-weight: bold;
-}
-
 #currency-table-body tr:first-child td {
-    background-color: #1e3a8a;
-    color: #ffffff !important;
+    color: black;
 }
 
-#currency-table-body tr:nth-child(odd):not(:first-child) {
-    background-color: #ffffff;
-    color: #4b5563;
+#currency-table-body tr:nth-child(odd) {
+    background-color: #dadada;
+    color: black;
 }
 
 #currency-table-body td:last-child {
@@ -211,7 +205,7 @@ section .max-w-xl {
 }
 
 /* Alinear texto al centro en columnas que no son "Divisa" */
-#currency-table-body td:not(:first-child) {
+#currency-table-body td {
     text-align: center;
 }
 
