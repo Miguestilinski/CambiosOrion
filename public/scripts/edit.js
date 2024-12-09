@@ -31,10 +31,17 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initializeEditPage() {
-    loadCurrenciesForEdit();
+    // Evitar llamadas duplicadas
+    if (!editableCurrenciesLoaded) {
+        loadCurrenciesForEdit();
+        editableCurrenciesLoaded = true;
+    }
+
     setActiveLink('#nav-menu');
     setActiveLink('#session-menu');
 }
+
+let editableCurrenciesLoaded = false;
 
 function setupEditEventListeners() {
     const saveButton = document.getElementById('save-button');
@@ -97,7 +104,7 @@ function fillEditCurrencyTable(divisas) {
     const tableBody = document.querySelector('#currency-list');
 
     if (tableBody) {
-        tableBody.innerHTML = '';
+        tableBody.innerHTML = ''; // Limpiar tabla para evitar duplicación
 
         divisas.forEach(divisa => {
             if (divisa.nombre === 'CLP') return;
@@ -116,10 +123,10 @@ function fillEditCurrencyTable(divisas) {
 
             editableCurrencies[divisa.nombre] = {
                 nombre: divisa.nombre,
-                compra: divisa.compra,
-                venta: divisa.venta,
+                compra: parseFloat(formattedCompra),
+                venta: parseFloat(formattedVenta),
                 icono_circular: divisa.icono_circular,
-                icono_cuadrado: divisa.icono_cuadrado || divisa.icono_circular.replace('circular', 'cuadrado'),
+                icono_cuadrado: divisa.icono_circular.replace('circular', 'cuadrado'),
             };
         });
 
@@ -135,6 +142,35 @@ function removeTrailingZeros(value) {
     return floatValue.toString();
 }
 
+function saveEditedCurrencies() {
+    const changesToSave = Object.values(editableCurrencies).filter(divisa =>
+        divisa.compra !== undefined || divisa.venta !== undefined
+    );
+
+    if (!changesToSave.length) {
+        alert("No se encontraron cambios para guardar.");
+        return;
+    }
+
+    fetch('https://cambiosorion.cl/data/divisas_api.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(changesToSave),
+    })
+        .then(response => {
+            if (!response.ok) throw new Error('No se guardaron los cambios.');
+            return response.json();
+        })
+        .then(data => {
+            alert("Cambios guardados exitosamente.");
+            console.log(data);
+        })
+        .catch(error => {
+            alert("Error al guardar cambios.");
+            console.error(error);
+        });
+}
+
 function setupEditInputs() {
     const editInputs = document.querySelectorAll('.edit-input');
 
@@ -148,59 +184,11 @@ function setupEditInputs() {
                 return;
             }
 
-            if (!editableCurrencies[currency]) {
-                console.error(`No se encontró la divisa ${currency} en editableCurrencies.`);
-                return;
+            if (editableCurrencies[currency]) {
+                editableCurrencies[currency][field] = isNaN(newValue) ? 0 : newValue;
             }
-
-            editableCurrencies[currency][field] = isNaN(newValue) ? null : newValue;
         });
     });
-}
-
-async function saveEditedCurrencies() {
-    const data = Object.values(editableCurrencies);
-
-    if (!data.length) {
-        console.error("No hay datos para guardar.");
-        alert("No hay datos para guardar.");
-        return;
-    }
-
-    const isValidData = data.every(divisa =>
-        divisa.nombre &&
-        divisa.compra !== null &&
-        divisa.venta !== null &&
-        divisa.icono_circular &&
-        divisa.icono_cuadrado
-    );
-
-    if (!isValidData) {
-        console.error("Algunos datos están incompletos:", data);
-        alert("Hay datos incompletos. Por favor, verifica las divisas.");
-        return;
-    }
-
-    try {
-        const response = await fetch('https://cambiosorion.cl/data/divisas_api.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        });
-
-        if (!response.ok) {
-            const errorDetails = await response.json();
-            throw new Error(errorDetails.error || `HTTP error! Status: ${response.status}`);
-        }
-
-        const result = await response.json();
-        console.log("Cambios guardados:", result.message);
-    } catch (error) {
-        console.error("Error al guardar los cambios:", error);
-        alert(`Error al guardar los cambios: ${error.message}`);
-    }
 }
 
 function cancelEdit() {
