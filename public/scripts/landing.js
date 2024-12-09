@@ -71,22 +71,35 @@ function loadCurrencies() {
     fetch(targetUrl)
         .then(response => response.json())
         .then(data => {
-            if (Array.isArray(data)) {
-                data.forEach(currency => {
-                    if (currency.codigo && currency.compra && currency.venta) {
-                        exchangeRates[currency.codigo] = {
-                            compra: parseFloat(currency.compra),
-                            venta: parseFloat(currency.venta),
-                            icono: currency.icono || 'default-icon.png'
-                        };
-                    } else {
-                        console.warn(`Divisa con formato inesperado: ${JSON.stringify(currency)}`);
-                    }
-                });
-                fillCurrencyTable();
-            } else {
-                console.error("Datos recibidos no son un array:", data);
+            // Si los datos están en 'contents', intenta parsearlos
+            const responseData = data.contents ? JSON.parse(data.contents) : data;
+
+            // Asegurarse de que responseData es un array antes de usar forEach
+            if (!Array.isArray(responseData)) {
+                console.error("Formato de datos inesperado:", responseData);
+                return;
             }
+
+            // Mapear las divisas al objeto exchangeRates con formato esperado
+            responseData.forEach(currency => {
+                if (
+                    currency.nombre &&
+                    currency.compra &&
+                    currency.venta &&
+                    (currency.icono_circular || currency.icono_cuadrado)
+                ) {
+                    exchangeRates[currency.nombre] = {
+                        compra: parseFloat(currency.compra.replace('.', '')), // Convertir a número
+                        venta: parseFloat(currency.venta.replace('.', '')),   // Convertir a número
+                        icono: currency.icono_circular || currency.icono_cuadrado, // Usar uno de los iconos disponibles
+                    };
+                } else {
+                    console.error("Divisa con formato inesperado:", currency);
+                }
+            });
+
+            // Llenar la tabla después de mapear las divisas
+            fillCurrencyTable();
         })
         .catch(error => console.error('Error al cargar las divisas:', error));
 }
