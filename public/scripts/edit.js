@@ -107,6 +107,7 @@ function loadCurrenciesForEdit() {
 }
 
 function fillEditCurrencyTable(divisas) {
+    console.log('Llenando la Tabla');
     const tableBody = document.querySelector('#currency-list');
     if (!tableBody) {
         console.error('Tabla de edición no encontrada.');
