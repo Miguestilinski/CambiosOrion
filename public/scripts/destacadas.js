@@ -1,27 +1,27 @@
 let preciosAnteriores = {};
 
-// Crear la conexión WebSocket
-const socket = new WebSocket('ws://localhost:8080');
+// Crear la conexión al stream SSE
+const eventSource = new EventSource('/api/divisas/stream');
 
-socket.onopen = () => {
-    console.log('Conectado al servidor WebSocket');
+eventSource.onopen = () => {
+    console.log('Conectado al servidor SSE');
 };
 
-socket.onmessage = (event) => {
+eventSource.onmessage = (event) => {
     try {
         const responseData = JSON.parse(event.data);
         processData(responseData);
     } catch (error) {
-        console.error('Error al procesar datos desde el servidor WebSocket', error);
+        console.error('Error al procesar datos desde el servidor SSE:', error);
     }
 };
 
-socket.onerror = (error) => {
-    console.error('Error en la conexión WebSocket:', error);
-};
-
-socket.onclose = () => {
-    console.log('Conexión cerrada con el servidor WebSocket');
+eventSource.onerror = (error) => {
+    console.error('Error en la conexión SSE:', error);
+    // Puedes intentar reconectar en caso de error (opcional)
+    if (eventSource.readyState === EventSource.CLOSED) {
+        console.log('Intentando reconectar al servidor SSE...');
+    }
 };
 
 // Procesar los datos de divisas y actualizar la UI

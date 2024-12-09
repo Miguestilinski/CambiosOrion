@@ -4,7 +4,6 @@ const express = require('express');
 const path = require('path');
 const mysql = require('mysql');
 const axios = require('axios');
-const WebSocket = require('ws');
 const app = express();
 const cors = require('cors');
 const port = process.env.PORT || 3000;
@@ -41,51 +40,43 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'landing.html'));
 });
 
-// Configurar servidor WebSocket
-const wss = new WebSocket.Server({ port: 8080 }); // Crear servidor WebSocket en el puerto 8080
-console.log('Servidor WebSocket iniciado en el puerto 8080');
-
 // Ruta para obtener todas las divisas
-app.get('/api/divisas', (req, res) => {
-  console.log('Solicitando divisas...');
-  const query = 'SELECT nombre, icono, compra, venta, tasa FROM divisas'; // Ajusta esto según tu tabla
+app.get('/api/divisas/stream', (req, res) => {
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
 
-  db.query(query, (error, results) => {
+  const sendData = () => {
+    const query = 'SELECT nombre, icono, compra, venta, tasa FROM divisas';
+    db.query(query, (error, results) => {
       if (error) {
-          console.error('Error al consultar la base de datos:', error);
-          return res.status(500).json({ error: 'Error al consultar la base de datos', details: error });
+        console.error('Error al consultar la base de datos:', error);
+        res.write(`event: error\ndata: ${JSON.stringify({ error: 'Error al consultar la base de datos' })}\n\n`);
+        return;
       }
-      res.json(results); // Devuelve las divisas en formato JSON
+      res.write(`data: ${JSON.stringify(results)}\n\n`);
+    });
+  };
+
+  const intervalId = setInterval(sendData, 1000); // Envía datos cada segundo
+
+  // Maneja cierre de conexión
+  req.on('close', () => {
+    clearInterval(intervalId);
+    res.end();
   });
+
+  sendData(); // Envía datos inmediatamente al conectarse
 });
 
-// Ejecutar la consulta periódicamente cada 5 segundos
-setInterval(sendCurrencyData, 1000);
-
-// Conectar clientes WebSocket
-wss.on('connection', (ws) => {
-  console.log('Cliente conectado al servidor WebSocket.');
-
-  // Enviar datos inmediatamente después de conectar
-  sendCurrencyData();
-
-  ws.on('message', (message) => {
-    console.log('Mensaje recibido desde el cliente:', message);
-  });
-
-  ws.on('close', () => {
-    console.log('Cliente desconectado del servidor WebSocket.');
-  });
-});
-
-// Simulación del estado de sesión
+// NUEVA RUTA: Simulación del estado de sesión
 app.get('/api/session-status', (req, res) => {
   // Simular estado de autenticación (true para autenticado, false para invitado)
   const isAuthenticated = true; // Cambia esto dinámicamente según tu lógica
   res.json({ isAuthenticated });
 });
 
-// Logout
+// NUEVA RUTA: Logout
 app.post('/api/logout', (req, res) => {
   // Aquí puedes manejar la lógica de cierre de sesión, como eliminar cookies o tokens
   res.status(200).json({ message: 'Sesión cerrada correctamente.' });
