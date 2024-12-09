@@ -119,6 +119,12 @@ function fillEditCurrencyTable(divisas) {
     divisas.forEach(divisa => {
         if (divisa.nombre === 'CLP') return; // Excluir la divisa CLP
 
+        // Comprobar si la divisa ya está en editableCurrencies
+        if (editableCurrencies[divisa.nombre]) {
+            console.log(`Divisa duplicada detectada: ${divisa.nombre}`);
+            return; // Evitar duplicar divisas
+        }
+
         const formattedCompra = removeTrailingZeros(divisa.compra);
         const formattedVenta = removeTrailingZeros(divisa.venta);
 
@@ -171,6 +177,7 @@ function setupEditInputs() {
 
 function saveEditedCurrencies() {
     console.log('Guardando la Tabla');
+    
     const changesToSave = Object.values(editableCurrencies).filter(divisa =>
         divisa.compra !== undefined || divisa.venta !== undefined
     );
@@ -180,10 +187,19 @@ function saveEditedCurrencies() {
         return;
     }
 
+    // Enviar cambios al servidor asegurando no enviar campos vacíos
+    const validChanges = changesToSave.map(divisa => ({
+        nombre: divisa.nombre,
+        compra: parseFloat(divisa.compra) || 0,
+        venta: parseFloat(divisa.venta) || 0,
+        icono_circular: divisa.icono_circular,
+        icono_cuadrado: divisa.icono_cuadrado
+    }));
+
     fetch('https://cambiosorion.cl/data/divisas_api.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(changesToSave),
+        body: JSON.stringify(validChanges),
     })
         .then(response => {
             if (!response.ok) throw new Error('No se guardaron los cambios.');
@@ -198,6 +214,7 @@ function saveEditedCurrencies() {
             console.error(error);
         });
 }
+
 
 function setActiveLink(menuId) {
     const links = document.querySelectorAll(`${menuId} a`);
