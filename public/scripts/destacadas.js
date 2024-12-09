@@ -1,7 +1,7 @@
 let preciosAnteriores = {};
 
-// Crear la conexión al stream SSE
-const eventSource = new EventSource('/api/divisas/stream');
+// Crear la conexión al servidor SSE
+const eventSource = new EventSource('https://cambiosorion.cl/api/divisas/stream');
 
 eventSource.onopen = () => {
     console.log('Conectado al servidor SSE');
@@ -10,15 +10,15 @@ eventSource.onopen = () => {
 eventSource.onmessage = (event) => {
     try {
         const responseData = JSON.parse(event.data);
-        processData(responseData);
+        processData(responseData); // Llama a la función existente para procesar los datos
     } catch (error) {
-        console.error('Error al procesar datos desde el servidor SSE:', error);
+        console.error('Error al procesar los datos SSE:', error);
     }
 };
 
 eventSource.onerror = (error) => {
     console.error('Error en la conexión SSE:', error);
-    // Puedes intentar reconectar en caso de error (opcional)
+    // Manejo de reconexión (opcional)
     if (eventSource.readyState === EventSource.CLOSED) {
         console.log('Intentando reconectar al servidor SSE...');
     }
