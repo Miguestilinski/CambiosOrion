@@ -31,8 +31,8 @@ html, body {
 table {
     width: 100%;
     border-collapse: collapse;
-    /*table-layout: fixed; /* Mantiene el tamaño fijo de las columnas */
-    margin-bottom: 0; /* Eliminar el margen inferior de la tabla */
+    margin-top: 4rem;
+    margin-bottom: 1.5rem;
 }
 
 th {
@@ -40,7 +40,7 @@ th {
 }
 
 th.compra, th.venta {
-    font-size: 1.6em;
+    font-size: 3rem;
 }
 
 th.icono, th.nombre {
@@ -79,11 +79,11 @@ td.nombre {
 }
 
 .logo-image {
-    width: 140px; /* Ajusta según el tamaño deseado */
+    width: 10rem; /* Ajusta según el tamaño deseado */
 }
 
 .name-image { 
-    width: 140px; /* Ajusta según el tamaño deseado */
+    width: 10rem; /* Ajusta según el tamaño deseado */
     margin-bottom: 1rem;
     justify-self: center;
 }
@@ -97,7 +97,7 @@ tr.divisa-destacada td.icono {
 }
 
 .divisa-destacada .nombre {
-    font-size: 1.5em; /* Tamaño más grande del nombre */
+    font-size: 2rem; /* Tamaño más grande del nombre */
     text-align: center; /* Alinear el texto al centro */
     width: 100%; /* Asegurar que el nombre ocupe todo el ancho */
     margin-bottom: 5px; /* Espacio entre el nombre y el ícono */
@@ -105,8 +105,13 @@ tr.divisa-destacada td.icono {
 
 .divisa-destacada .icono img {
     margin-bottom: 5px; /* Espacio entre el nombre y el ícono */
-    width: 100px; /* Ajustar tamaño de los iconos */
-    height: 100px; /* Ajustar tamaño de los iconos */
+    width: 4rem; /* Ajustar tamaño de los iconos */
+    height: 4rem; /* Ajustar tamaño de los iconos */
+}
+
+.divisa-normal .icono img {
+    width: 3rem;
+    height: 3rem;
 }
 
 td.espacio {
@@ -115,7 +120,7 @@ td.espacio {
 
 /* Estilo para las filas de USD y EUR para hacerlas más grandes y eliminar las líneas */
 tr.divisa-destacada {
-    font-size: 1.3em; /* Tamaño de la fuente estándar para las filas destacadas */
+    font-size: 3rem; /* Tamaño de la fuente estándar para las filas destacadas */
     height: 120px; /* Aumenta la altura para mayor separación */
 }
 
@@ -129,13 +134,12 @@ tr.divisa-destacada td.compra {
     text-align: center; /* Alinear texto al centro debajo de Compra/Venta */
     font-weight: bold; /* Hacer el texto más grueso */
     font-size: 3em; /* Tamaño de fuente más grande */
-    padding-right: 40px;
 }
 
 tr.divisa-destacada td.venta {
     text-align: center; /* Alinear texto al centro debajo de Compra/Venta */
     font-weight: bold; /* Hacer el texto más grueso */
-    font-size: 3em; /* Tamaño de fuente más grande */
+    font-size: 3.3em; /* Tamaño de fuente más grande */
 }
 
 /* Oculta solo los encabezados de las divisas normales */
@@ -145,7 +149,7 @@ tr.divisa-normal th {
 
 /* Estilo para las filas de otras divisas para hacerlas más pequeñas */
 tr.divisa-normal {
-    font-size: 1.5em; /* Tamaño de fuente menor para estas filas */
+    font-size: 3rem; /* Tamaño de fuente menor para estas filas */
     text-align: center; /* Centrar el texto */
     border-bottom: 1px solid white;
 }
@@ -153,7 +157,7 @@ tr.divisa-normal {
 /* Estilo para el texto adicional */
 .info {
     text-align: center; /* Centrar el texto */
-    font-size: 1.2em; /* Tamaño de fuente adecuado */
+    font-size: 2rem; /* Tamaño de fuente adecuado */
     margin-top: 20px; /* Espacio superior */
 }
 
