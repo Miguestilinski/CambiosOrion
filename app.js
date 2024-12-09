@@ -4,6 +4,7 @@ const express = require('express');
 const path = require('path');
 const mysql = require('mysql');
 const axios = require('axios');
+const WebSocket = require('ws');
 const app = express();
 const cors = require('cors');
 const port = process.env.PORT || 3000;
@@ -40,6 +41,10 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'landing.html'));
 });
 
+// Configurar servidor WebSocket
+const wss = new WebSocket.Server({ port: 8080 }); // Crear servidor WebSocket en el puerto 8080
+console.log('Servidor WebSocket iniciado en el puerto 8080');
+
 // Ruta para obtener todas las divisas
 app.get('/api/divisas', (req, res) => {
   console.log('Solicitando divisas...');
@@ -54,14 +59,33 @@ app.get('/api/divisas', (req, res) => {
   });
 });
 
-// NUEVA RUTA: Simulación del estado de sesión
+// Ejecutar la consulta periódicamente cada 5 segundos
+setInterval(sendCurrencyData, 1000);
+
+// Conectar clientes WebSocket
+wss.on('connection', (ws) => {
+  console.log('Cliente conectado al servidor WebSocket.');
+
+  // Enviar datos inmediatamente después de conectar
+  sendCurrencyData();
+
+  ws.on('message', (message) => {
+    console.log('Mensaje recibido desde el cliente:', message);
+  });
+
+  ws.on('close', () => {
+    console.log('Cliente desconectado del servidor WebSocket.');
+  });
+});
+
+// Simulación del estado de sesión
 app.get('/api/session-status', (req, res) => {
   // Simular estado de autenticación (true para autenticado, false para invitado)
   const isAuthenticated = true; // Cambia esto dinámicamente según tu lógica
   res.json({ isAuthenticated });
 });
 
-// NUEVA RUTA: Logout
+// Logout
 app.post('/api/logout', (req, res) => {
   // Aquí puedes manejar la lógica de cierre de sesión, como eliminar cookies o tokens
   res.status(200).json({ message: 'Sesión cerrada correctamente.' });

@@ -19,7 +19,8 @@
     "express": "^4.21.2",
     "flags": "github:tabler/tabler-flags",
     "flowbite": "^2.5.2",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "ws": "^8.18.0"
   },
   "devDependencies": {
     "tailwindcss": "^3.4.14"
