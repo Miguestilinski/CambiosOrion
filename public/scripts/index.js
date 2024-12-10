@@ -4,6 +4,10 @@ let isEditMode = false;
 let activeDropdown = null;
 let displayedCurrencies = ["CLP", "USD", "EUR", "ARS"];
 
+function initializePage() {
+    loadCurrencies();
+    fillCurrencyTable();
+}
 
 function loadCurrencies() {
     const targetUrl = 'https://cambiosorion.cl/data/obtener_divisas.php';
@@ -104,6 +108,7 @@ function setCurrency2(currency) {
 
 // Modificar los inputs para formatear y validar el contenido
 document.addEventListener('DOMContentLoaded', () => {
+    initializePage();
     const amountInputs = [document.getElementById("amount1"), document.getElementById("amount2")];
 
     amountInputs.forEach(input => {
