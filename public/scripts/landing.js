@@ -1,10 +1,12 @@
 let exchangeRates = {};
-let displayedCurrencies = ["USD", "EUR", "ARS", "BRL", "PEN", "COP",
+let displayedCurrencies = [
+    "USD", "EUR", "ARS", "BRL", "PEN", "COP",
     "UYU", "BOB", "CAD", "GBP", "JPY", "GNY",
-    "SEK", "AUD", "MXN", "NZD", "CHF", "DKK"];
+    "SEK", "AUD", "MXN", "NZD", "CHF", "DKK"
+];
 
 function initializePage() {
-    loadCurrencies();
+    initializeSSE();
     setActiveLink('#nav-menu');
     setActiveLink('#session-menu');
 }
@@ -71,39 +73,42 @@ function removeTrailingZeros(value) {
     return floatValue.toString();
 }
 
-function loadCurrencies() {
-    const targetUrl = 'https://cambiosorion.cl/data/obtener_divisas.php';
+function initializeSSE() {
+    const eventSource = new EventSource('https://cambiosorion.cl/data/sse_endpoint.php');
 
-    fetch(targetUrl)
-        .then(response => response.json())
-        .then(data => {
-            const responseData = data.contents ? JSON.parse(data.contents) : data;
+    eventSource.onmessage = (event) => {
+        try {
+            const data = JSON.parse(event.data);
+            if (Array.isArray(data)) {
+                exchangeRates = {};
 
-            if (!Array.isArray(responseData)) {
-                console.error("Formato de datos inesperado:", responseData);
-                return;
+                data.forEach(currency => {
+                    if (
+                        currency.nombre &&
+                        currency.compra &&
+                        currency.venta &&
+                        (currency.icono_circular || currency.icono_cuadrado)
+                    ) {
+                        exchangeRates[currency.nombre] = {
+                            compra: removeTrailingZeros(currency.compra),
+                            venta: removeTrailingZeros(currency.venta),
+                            icono: currency.icono_circular || currency.icono_cuadrado,
+                        };
+                    }
+                });
+
+                fillCurrencyTable();
+            } else {
+                console.error('Formato inesperado en datos SSE:', data);
             }
+        } catch (error) {
+            console.error('Error al procesar los datos SSE:', error);
+        }
+    };
 
-            responseData.forEach(currency => {
-                if (
-                    currency.nombre &&
-                    currency.compra &&
-                    currency.venta &&
-                    (currency.icono_circular || currency.icono_cuadrado)
-                ) {
-                    exchangeRates[currency.nombre] = {
-                        compra: removeTrailingZeros(currency.compra), // Formatear compra
-                        venta: removeTrailingZeros(currency.venta),   // Formatear venta
-                        icono: currency.icono_circular || currency.icono_cuadrado,
-                    };
-                } else {
-                    console.error("Divisa con formato inesperado:", currency);
-                }
-            });
-
-            fillCurrencyTable();
-        })
-        .catch(error => console.error('Error al cargar las divisas:', error));
+    eventSource.onerror = (error) => {
+        console.error('Error con la conexión SSE:', error);
+    };
 }
 
 function fillCurrencyTable() {
