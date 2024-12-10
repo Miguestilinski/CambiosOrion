@@ -19,34 +19,31 @@ function checkSession() {
     }
 }
   
-
 // Alternar UI en función del estado de la sesión
 function toggleUI(isLoggedIn) {
-    const guestActions = document.getElementById('guest-actions');
-    const userActions = document.getElementById('user-actions');
-
-    console.log('toggleUI ejecutado con isLoggedIn =', isLoggedIn);
-
-    if (guestActions && userActions) {
-        if (isLoggedIn) {
-        guestActions.classList.add('hidden');
-        userActions.classList.remove('hidden');
-        console.log('UI: Sesión activa, mostrando usuario.');
-        } else {
-        guestActions.classList.remove('hidden');
-        userActions.classList.add('hidden');
-        console.log('UI: Sesión no activa, mostrando invitado.');
-        }
-
-        console.log('Estado de clases después de toggleUI:');
-        console.log('guestActions.classList:', guestActions.classList);
-        console.log('userActions.classList:', userActions.classList);
-    } else {
-        console.log('Elementos no encontrados en el DOM');
-    }
+    setTimeout(() => {
+      const guestActions = document.getElementById('guest-actions');
+      const userActions = document.getElementById('user-actions');
+  
+      console.log('toggleUI ejecutado con isLoggedIn =', isLoggedIn);
+      console.log('guestActions:', guestActions);
+      console.log('userActions:', userActions);
+  
+      if (isLoggedIn) {
+        guestActions?.classList.add('hidden');
+        userActions?.classList.remove('hidden');
+      } else {
+        guestActions?.classList.remove('hidden');
+        userActions?.classList.add('hidden');
+      }
+  
+      console.log('Estado después del timeout:', {
+        guestActions: guestActions?.classList,
+        userActions: userActions?.classList,
+      });
+    }, 0);
 }
-
-
+  
 // Configurar eventos de clic para la sesión
 function setupEventListeners() {
     const logoutButton = document.getElementById('logout-button');
