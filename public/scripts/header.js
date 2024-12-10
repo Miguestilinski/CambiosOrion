@@ -35,7 +35,7 @@ function toggleUI(isLoggedIn) {
     console.log('guestActions.classList:', guestActions.classList);
     console.log('userActions.classList:', userActions.classList);
   
-    // Asegurarse de eliminar estilos en línea
+    // Eliminar estilos en línea antes de modificar clases
     guestActions.style.display = '';
     userActions.style.display = '';
   
