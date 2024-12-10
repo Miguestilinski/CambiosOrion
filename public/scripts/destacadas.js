@@ -7,10 +7,6 @@ let eventSource;
 function initSSE() {
   eventSource = new EventSource('https://cambiosorion.cl/api/divisas/stream/stream_divisas.php');
 
-  eventSource.onopen = () => {
-    console.log('Conectado al servidor SSE');
-  };
-
   eventSource.onmessage = (event) => {
     try {
       const responseData = JSON.parse(event.data);
@@ -94,10 +90,6 @@ function processData(data) {
         console.warn(`Divisa no encontrada en los datos: ${key}`);
       }
     });
-  
-    if (!cambiosDetectados) {
-      console.log("Sin cambios en las divisas comparando con datos previos.");
-    }
 
   // Reproducir alerta solo si se detectaron cambios significativos en los datos
   if (cambiosDetectados) {
