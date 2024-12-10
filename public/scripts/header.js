@@ -13,9 +13,9 @@ function checkSession() {
     const userActions = document.getElementById('user-actions');
 
     if (sessionActive) {
-        // Si hay sesión activa, mostrar user-actions y ocultar guest-actions
-        guestActions?.classList.add('hidden');
-        userActions?.classList.remove('hidden');
+        // Ocultar guest-actions y mostrar user-actions
+        if (guestActions) guestActions.classList.add('hidden');
+        if (userActions) userActions.classList.remove('hidden');
         
         // Completar información del usuario en el DOM si es necesario
         const userNameElement = document.getElementById('user-name');
@@ -25,9 +25,9 @@ function checkSession() {
             userEmailElement.textContent = 'correo@ejemplo.com';
         }
     } else {
-        // Si no hay sesión activa, mostrar guest-actions y ocultar user-actions
-        guestActions?.classList.remove('hidden');
-        userActions?.classList.add('hidden');
+        // Mostrar guest-actions y ocultar user-actions
+        if (guestActions) guestActions.classList.remove('hidden');
+        if (userActions) userActions.classList.add('hidden');
     }
 }
 
