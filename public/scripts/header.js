@@ -1,6 +1,26 @@
 document.addEventListener('DOMContentLoaded', () => {
     console.log("Página cargada, iniciando verificación de sesión...");
-    checkSession();
+    console.log('Página cargada, iniciando verificación de sesión...');
+
+    const guestActions = document.getElementById('guest-actions');
+    const userActions = document.getElementById('user-actions');
+
+    const isLoggedIn = true; // Cambia esto según la lógica de tu aplicación
+    console.log('Sesión activa:', isLoggedIn);
+
+    if (isLoggedIn) {
+        console.log('Sesión activa, mostrando vista de usuario.');
+        guestActions.classList.add('hidden'); // Oculta el menú de invitados
+        userActions.classList.remove('hidden'); // Muestra el menú de usuario
+    } else {
+        console.log('Sesión inactiva, mostrando vista de invitados.');
+        guestActions.classList.remove('hidden'); // Muestra el menú de invitados
+        userActions.classList.add('hidden'); // Oculta el menú de usuario
+    }
+
+    console.log('Estado final:');
+    console.log('guestActions.classList:', guestActions.classList);
+    console.log('userActions.classList:', userActions.classList);
     setupEventListeners();
     initializePage();
 });  
