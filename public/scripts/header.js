@@ -31,27 +31,18 @@ function toggleUI(isLoggedIn) {
       return;
     }
   
-    console.log('Estado inicial:');
-    console.log('guestActions.classList:', guestActions.classList);
-    console.log('userActions.classList:', userActions.classList);
-  
-    // Eliminar estilos en línea antes de modificar clases
-    guestActions.style.display = '';
-    userActions.style.display = '';
-  
     if (isLoggedIn) {
       console.log('Sesión activa, mostrando usuario');
-      guestActions.classList.add('hidden');
-      userActions.classList.remove('hidden');
+      guestActions.style.display = 'none';
+      userActions.style.display = 'block';
     } else {
       console.log('Sesión inactiva, mostrando invitado');
-      guestActions.classList.remove('hidden');
-      userActions.classList.add('hidden');
+      guestActions.style.display = 'block';
+      userActions.style.display = 'none';
     }
   
-    console.log('Estado final:');
-    console.log('guestActions.classList:', guestActions.classList);
-    console.log('userActions.classList:', userActions.classList);
+    console.log('guestActions.style.display:', guestActions.style.display);
+    console.log('userActions.style.display:', userActions.style.display);
   }
   
   
