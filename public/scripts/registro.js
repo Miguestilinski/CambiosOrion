@@ -95,7 +95,7 @@ function initRegisterForm() {
     
             if (result.success) {
                 alert(result.success);
-                window.location.href = "iniciar_sesion.html";
+                window.location.href = "iniciar_sesion";
             } else {
                 alert(result.error || "Error al registrar el usuario.");
             }
