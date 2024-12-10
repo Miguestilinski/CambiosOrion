@@ -25,19 +25,24 @@ function toggleUI(isLoggedIn) {
     const userActions = document.getElementById('user-actions');
     
     if (!guestActions || !userActions) {
-        console.error("Error: Los elementos 'guest-actions' y/o 'user-actions' no existen en el DOM.");
+        console.error("Los elementos 'guest-actions' y/o 'user-actions' no están presentes en el DOM.");
         return;
     }
+
+    console.log("Cambiando la vista. Sesión activa:", isLoggedIn);
 
     if (isLoggedIn) {
         guestActions.classList.add('hidden');
         userActions.classList.remove('hidden');
     } else {
-        userActions.classList.add('hidden');
         guestActions.classList.remove('hidden');
+        userActions.classList.add('hidden');
     }
 
-    console.log("UI actualizada para sesión:", isLoggedIn);
+    console.log("Estado de clases actualizado:", {
+        guest: guestActions.className,
+        user: userActions.className,
+    });
 }
 
 // Configurar eventos de clic para la sesión
