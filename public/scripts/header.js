@@ -26,18 +26,22 @@ function toggleUI(isLoggedIn) {
       const userActions = document.getElementById('user-actions');
   
       console.log('toggleUI ejecutado con isLoggedIn =', isLoggedIn);
-      console.log('guestActions:', guestActions);
-      console.log('userActions:', userActions);
   
-      if (isLoggedIn) {
-        guestActions?.classList.add('hidden');
-        userActions?.classList.remove('hidden');
-      } else {
-        guestActions?.classList.remove('hidden');
-        userActions?.classList.add('hidden');
+      if (guestActions && userActions) {
+        // Eliminar el estilo en línea que fuerza el comportamiento de ocultar
+        guestActions.style.display = '';
+        userActions.style.display = '';
+  
+        if (isLoggedIn) {
+          guestActions.classList.add('hidden');
+          userActions.classList.remove('hidden');
+        } else {
+          guestActions.classList.remove('hidden');
+          userActions.classList.add('hidden');
+        }
       }
   
-      console.log('Estado después del timeout:', {
+      console.log('Estado de clases después de toggleUI:', {
         guestActions: guestActions?.classList,
         userActions: userActions?.classList,
       });
