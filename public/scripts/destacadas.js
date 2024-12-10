@@ -100,7 +100,6 @@ function processData(data) {
     if (!cambiosDetectados) {
       console.log("Sin cambios en las divisas comparando con datos previos.");
     }
-  }  
 
   // Reproducir alerta solo si se detectaron cambios significativos en los datos
   if (cambiosDetectados) {
