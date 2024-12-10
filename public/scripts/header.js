@@ -8,27 +8,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Comprueba si el usuario tiene una sesión activa
 function checkSession() {
-    const sessionActive = localStorage.getItem('sessionActive');
-    const guestActions = document.getElementById('guest-actions');
-    const userActions = document.getElementById('user-actions');
-
-    if (sessionActive) {
-        // Ocultar guest-actions y mostrar user-actions
-        if (guestActions) guestActions.classList.add('hidden');
-        if (userActions) userActions.classList.remove('hidden');
-        
-        // Completar información del usuario en el DOM si es necesario
-        const userNameElement = document.getElementById('user-name');
-        const userEmailElement = document.getElementById('user-email');
-        if (userNameElement && userEmailElement) {
-            userNameElement.textContent = 'Usuario';
-            userEmailElement.textContent = 'correo@ejemplo.com';
-        }
-    } else {
-        // Mostrar guest-actions y ocultar user-actions
-        if (guestActions) guestActions.classList.remove('hidden');
-        if (userActions) userActions.classList.add('hidden');
-    }
+    fetch('https://cambiosorion.cl/data/iniciar_sesion.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ checkSession: true }) })
+        .then(response => response.json())
+        .then(data => {
+            const guestActions = document.getElementById('guest-actions');
+            const userActions = document.getElementById('user-actions');
+            if (data.success) {
+                localStorage.setItem('sessionActive', 'true');
+                if (guestActions) guestActions.classList.add('hidden');
+                if (userActions) {
+                    userActions.classList.remove('hidden');
+                    const userNameElement = document.getElementById('user-name');
+                    const userEmailElement = document.getElementById('user-email');
+                    if (userNameElement) userNameElement.textContent = data.user || 'Usuario';
+                    if (userEmailElement) userEmailElement.textContent = data.email || 'correo@ejemplo.com';
+                }
+            } else {
+                localStorage.removeItem('sessionActive');
+                if (guestActions) guestActions.classList.remove('hidden');
+                if (userActions) userActions.classList.add('hidden');
+            }
+        })
+        .catch(error => console.error('Error al verificar la sesión:', error));
 }
 
 // Configurar eventos de clic para la sesión
@@ -36,13 +37,8 @@ function setupEventListeners() {
     const loginButton = document.getElementById('login-button');
     const logoutButton = document.getElementById('logout-button');
 
-    if (loginButton) {
-        loginButton.addEventListener('click', login);
-    }
-
-    if (logoutButton) {
-        logoutButton.addEventListener('click', logout);
-    }
+    if (loginButton) loginButton.addEventListener('click', login);
+    if (logoutButton) logoutButton.addEventListener('click', logout);
 
     // Eventos para el menú móvil
     const navMenuButton = document.getElementById('nav-menu-button');
@@ -96,16 +92,35 @@ function setActiveLink(menuId) {
 
 // Simulación de inicio de sesión
 function login() {
-    localStorage.setItem('sessionActive', 'true');
-    checkSession();
-    window.location.reload();
+    const rut = document.getElementById('input-rut').value;
+    const email = document.getElementById('input-email').value;
+    const password = document.getElementById('input-password').value;
+    const tipoUsuario = document.querySelector('input[name="tipoUsuario"]:checked').value;
+
+    fetch('/iniciar_sesion.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rut, email, password, tipoUsuario })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log('Inicio de sesión exitoso');
+            localStorage.setItem('sessionActive', 'true');
+            checkSession();
+            window.location.reload();
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(error => console.error('Error al enviar datos de inicio de sesión:', error));
 }
 
 // Cerrar sesión
 function logout() {
     localStorage.removeItem('sessionActive');
     checkSession();
-    window.location.href = '/';
+    window.location.reload();
 }
 
 // Función principal para configurar la inicialización de la página
