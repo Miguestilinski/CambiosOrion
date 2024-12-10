@@ -13,9 +13,7 @@ function initSSE() {
 
   eventSource.onmessage = (event) => {
     try {
-      console.log('Mensaje SSE recibido:', event.data); // Depurar el contenido
       const responseData = JSON.parse(event.data);
-      console.log('Datos parseados SSE:', responseData); // Depurar los datos parseados
       processData(responseData);
     } catch (error) {
       console.error('Error al procesar datos SSE:', error);
