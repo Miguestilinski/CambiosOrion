@@ -21,32 +21,18 @@ function checkSession() {
   
 // Alternar UI en función del estado de la sesión
 function toggleUI(isLoggedIn) {
-    setTimeout(() => {
-      const guestActions = document.getElementById('guest-actions');
-      const userActions = document.getElementById('user-actions');
+    const guestActions = document.getElementById('guest-actions');
+    const userActions = document.getElementById('user-actions');
   
-      console.log('toggleUI ejecutado con isLoggedIn =', isLoggedIn);
+    if (isLoggedIn) {
+      guestActions.style.display = 'none';
+      userActions.style.display = 'block';
+    } else {
+      guestActions.style.display = 'block';
+      userActions.style.display = 'none';
+    }
+  }
   
-      if (guestActions && userActions) {
-        // Eliminar el estilo en línea que fuerza el comportamiento de ocultar
-        guestActions.style.display = '';
-        userActions.style.display = '';
-  
-        if (isLoggedIn) {
-          guestActions.classList.add('hidden');
-          userActions.classList.remove('hidden');
-        } else {
-          guestActions.classList.remove('hidden');
-          userActions.classList.add('hidden');
-        }
-      }
-  
-      console.log('Estado de clases después de toggleUI:', {
-        guestActions: guestActions?.classList,
-        userActions: userActions?.classList,
-      });
-    }, 0);
-}
   
 // Configurar eventos de clic para la sesión
 function setupEventListeners() {
