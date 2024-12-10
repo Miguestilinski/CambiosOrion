@@ -6,7 +6,7 @@ const mysql = require('mysql');
 const axios = require('axios');
 const app = express();
 const cors = require('cors');
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3306;
 
 // Cargar las variables de entorno
 require('dotenv').config();
@@ -14,22 +14,57 @@ require('dotenv').config();
 app.use(cors());
 app.use(express.json());
 
+// Validar que las variables de entorno están configuradas
+const requiredEnv = ['DB_HOST', 'DB_USER', 'DB_PASS', 'DB_NAME'];
+requiredEnv.forEach((envVar) => {
+  if (!process.env[envVar]) {
+    console.error(`Error: La variable de entorno ${envVar} no está definida.`);
+    process.exit(1); // Salir si falta una variable importante
+  }
+});
+
 // Crear conexión a la base de datos
-const db = mysql.createConnection({
+const dbConfig = {
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASS,
-  database: process.env.DB_NAME
-});
+  database: process.env.DB_NAME,
+  connectTimeout: 10000,
+};
 
 // Conectar a la base de datos y manejar errores
-db.connect((error) => {
-  if (error) {
-    console.error('Error al conectar a la base de datos:', error.stack);
-    return process.exit(1);
-  }
-  console.log('Conectado a la base de datos.');
-});
+let db;
+function handleDatabaseConnection() {
+  db = mysql.createConnection(dbConfig);
+
+  db.connect((error) => {
+    if (error) {
+      console.error('Error al conectar a la base de datos:', error.message);
+      console.error('Detalles del error.stack:', error.stack);
+      console.error('Detalles del error:', error);
+      return process.exit(1);
+
+      // Intentar reconectar después de 5 segundos
+      setTimeout(handleDatabaseConnection, 5000);
+    } else {
+      console.log('Conectado a la base de datos.');
+    }
+  });
+
+  db.on('error', (error) => {
+    console.error('Error de base de datos:', error.message);
+
+    if (error.code === 'PROTOCOL_CONNECTION_LOST') {
+      console.warn('Conexión perdida. Reintentando...');
+      handleDatabaseConnection();
+    } else {
+      throw error;
+    }
+  });
+}
+
+// Iniciar la conexión a la base de datos
+handleDatabaseConnection();
 
 // Servir archivos estáticos desde el directorio "public"
 app.use(express.static(path.join(__dirname, 'public')));
@@ -40,7 +75,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'landing.html'));
 });
 
-// Ruta para obtener todas las divisas
+// Ruta SSE para enviar datos de divisas en tiempo real
 app.get('/api/divisas/stream', (req, res) => {
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
@@ -51,23 +86,24 @@ app.get('/api/divisas/stream', (req, res) => {
     db.query(query, (error, results) => {
       if (error) {
         console.error('Error al consultar la base de datos:', error);
-        res.write(`event: error\ndata: ${JSON.stringify({ error: 'Error al consultar la base de datos' })}\n\n`);
-        return;
+        res.write(`event: error\ndata: ${JSON.stringify({ error: 'Error' })}\n\n`);
+      } else {
+        res.write(`data: ${JSON.stringify(results)}\n\n`);
       }
-      res.write(`data: ${JSON.stringify(results)}\n\n`);
     });
   };
 
-  const intervalId = setInterval(sendData, 1000); // Envía datos cada segundo
+  const intervalId = setInterval(sendData, 1000); // Enviar datos cada 1 segundo
 
-  // Maneja cierre de conexión
   req.on('close', () => {
     clearInterval(intervalId);
     res.end();
+    console.log('Cliente desconectado, limpieza de intervalos');
   });
 
-  sendData(); // Envía datos inmediatamente al conectarse
+  sendData(); // Enviar datos inmediatamente al conectarse
 });
+
 
 // NUEVA RUTA: Simulación del estado de sesión
 app.get('/api/session-status', (req, res) => {
