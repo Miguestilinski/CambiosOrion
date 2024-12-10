@@ -13,13 +13,14 @@ function initSSE() {
 
   eventSource.onmessage = (event) => {
     try {
+      console.log('Mensaje SSE recibido:', event.data); // Depurar el contenido
       const responseData = JSON.parse(event.data);
-      console.log('Datos SSE recibidos:', responseData);
+      console.log('Datos parseados SSE:', responseData); // Depurar los datos parseados
       processData(responseData);
     } catch (error) {
-      console.error('Error al procesar los datos SSE:', error);
+      console.error('Error al procesar datos SSE:', error);
     }
-  };
+  };  
 
   eventSource.onerror = (error) => {
     console.error('Error en la conexión SSE:', error);
@@ -33,57 +34,73 @@ function initSSE() {
 
 // Procesar los datos de divisas y actualizar la UI
 function processData(data) {
-  const highlightedList = document.getElementById("highlighted-currencies");
-  const normalList = document.getElementById("normal-currencies");
-
-  // Limpiar las listas anteriores para reconstruirlas
-  highlightedList.innerHTML = '';
-  normalList.innerHTML = '';
-
-  let cambiosDetectados = false;
-
-  const divisasFiltradas = ["USD", "EUR", "BRL", "ARS", "PEN", "MXN", "ORO 100"];
-
-  divisasFiltradas.forEach((key) => {
-    const divisa = data.find(d => d.nombre === key);
-
-    if (divisa && divisa.compra && divisa.venta && divisa.icono_circular) {
-      const { icono_circular, compra, venta } = divisa;
-
-      if (preciosAnteriores[key] && (preciosAnteriores[key].compra !== compra || preciosAnteriores[key].venta !== venta)) {
-        cambiosDetectados = true;
-      }
-
-      preciosAnteriores[key] = { compra, venta };
-
-      const row = document.createElement("tr");
-      const formattedCompra = removeTrailingZeros(compra);
-      const formattedVenta = removeTrailingZeros(venta);
-
-      if (key === "USD" || key === "EUR") {
-        row.classList.add('divisa-destacada');
-        row.innerHTML = `
-          <td class="icono">
-            <span class="nombre">${key}</span>
-            <img src="${icono_circular}" alt="${key} icon">
-          </td>
-          <td class="espacio"></td>
-          <td class="compra">${formattedCompra}</td>
-          <td class="venta">${formattedVenta}</td>
-        `;
-        highlightedList.appendChild(row);
+    const highlightedList = document.getElementById("highlighted-currencies");
+    const normalList = document.getElementById("normal-currencies");
+  
+    // Limpiar las listas anteriores para reconstruirlas
+    highlightedList.innerHTML = '';
+    normalList.innerHTML = '';
+  
+    let cambiosDetectados = false;
+  
+    // Divisas de interés a mostrar
+    const divisasFiltradas = ["USD", "EUR", "BRL", "ARS", "PEN", "MXN", "ORO 100"];
+  
+    divisasFiltradas.forEach((key) => {
+      // Buscar el objeto de divisa en el array de datos
+      const divisa = data.find(d => d.nombre === key);
+  
+      if (divisa && divisa.compra && divisa.venta && divisa.icono_circular) {
+        const { icono_circular, compra, venta } = divisa;
+  
+        // Detectar cambios respecto a datos previos
+        if (preciosAnteriores[key] && (preciosAnteriores[key].compra !== compra || preciosAnteriores[key].venta !== venta)) {
+          cambiosDetectados = true;
+        }
+  
+        // Guardar datos actuales en precios anteriores para futuras comparaciones
+        preciosAnteriores[key] = { compra, venta };
+  
+        // Crear un nuevo elemento de fila
+        const row = document.createElement("tr");
+        const formattedCompra = removeTrailingZeros(compra);
+        const formattedVenta = removeTrailingZeros(venta);
+  
+        // Si la divisa es destacada, agregarla a la lista de destacadas
+        if (key === "USD" || key === "EUR") {
+          row.classList.add('divisa-destacada');
+          row.innerHTML = `
+            <td class="icono">
+              <span class="nombre">${key}</span>
+              <img src="${icono_circular}" alt="${key} icon">
+            </td>
+            <td class="espacio"></td>
+            <td class="compra">${formattedCompra}</td>
+            <td class="venta">${formattedVenta}</td>
+          `;
+          highlightedList.appendChild(row);
+        } else {
+          // Caso contrario, agregar a la lista normal
+          row.classList.add('divisa-normal');
+          row.innerHTML = `
+            <td class="icono">
+              <img src="${icono_circular}" alt="${key} icon">
+            </td>
+            <td class="nombre">${key}</td>
+            <td class="compra">${formattedCompra}</td>
+            <td class="venta">${formattedVenta}</td>
+          `;
+          normalList.appendChild(row);
+        }
       } else {
-        row.classList.add('divisa-normal');
-        row.innerHTML = `
-          <td class="icono"><img src="${icono_circular}" alt="${key} icon"></td>
-          <td class="nombre">${key}</td>
-          <td class="compra">${formattedCompra}</td>
-          <td class="venta">${formattedVenta}</td>
-        `;
-        normalList.appendChild(row);
+        console.warn(`Divisa no encontrada en los datos: ${key}`);
       }
+    });
+  
+    if (!cambiosDetectados) {
+      console.log("Sin cambios en las divisas comparando con datos previos.");
     }
-  });
+  }  
 
   // Reproducir alerta solo si se detectaron cambios significativos en los datos
   if (cambiosDetectados) {
