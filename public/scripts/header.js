@@ -29,20 +29,17 @@ function toggleUI(isLoggedIn) {
         return;
     }
 
-    console.log("Cambiando la vista. Sesión activa:", isLoggedIn);
-
     if (isLoggedIn) {
         guestActions.classList.add('hidden');
+        guestActions.style.display = 'none'; // Respaldo
         userActions.classList.remove('hidden');
+        userActions.style.display = 'block'; // Respaldo
     } else {
         guestActions.classList.remove('hidden');
+        guestActions.style.display = 'block'; // Respaldo
         userActions.classList.add('hidden');
+        userActions.style.display = 'none'; // Respaldo
     }
-
-    console.log("Estado de clases actualizado:", {
-        guest: guestActions.className,
-        user: userActions.className,
-    });
 }
 
 // Configurar eventos de clic para la sesión
