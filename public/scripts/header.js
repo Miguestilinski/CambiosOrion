@@ -8,38 +8,46 @@ document.addEventListener('DOMContentLoaded', () => {
 // Comprueba si el usuario tiene una sesión activa
 function checkSession() {
     const isLoggedIn = localStorage.getItem('sessionActive');
-    
-    if (isLoggedIn) {
-      console.log("Sesión activa, mostrando vista de usuario.");
-      toggleUI(true);
-    } else {
-      console.log("Sesión no activa, mostrando vista de invitado.");
-      toggleUI(false);
-    }
-  }
+    console.log("Sesión activa:", isLoggedIn);
 
-  function toggleUI(isLoggedIn) {
+    if (isLoggedIn) {
+        console.log("Sesión activa, mostrando vista de usuario.");
+        toggleUI(true);
+    } else {
+        console.log("Sesión no activa, mostrando vista de invitado.");
+        toggleUI(false);
+    }
+}
+
+// Alternar UI en función del estado de la sesión
+function toggleUI(isLoggedIn) {
     const guestActions = document.getElementById('guest-actions');
     const userActions = document.getElementById('user-actions');
     
-    if (isLoggedIn) {
-      guestActions?.classList.add('hidden');
-      userActions?.classList.remove('hidden');
-    } else {
-      userActions?.classList.add('hidden');
-      guestActions?.classList.remove('hidden');
+    if (!guestActions || !userActions) {
+        console.error("Error: Los elementos 'guest-actions' y/o 'user-actions' no existen en el DOM.");
+        return;
     }
-  }
+
+    if (isLoggedIn) {
+        guestActions.classList.add('hidden');
+        userActions.classList.remove('hidden');
+    } else {
+        userActions.classList.add('hidden');
+        guestActions.classList.remove('hidden');
+    }
+
+    console.log("UI actualizada para sesión:", isLoggedIn);
+}
 
 // Configurar eventos de clic para la sesión
 function setupEventListeners() {
     const logoutButton = document.getElementById('logout-button');
-  
+
     if (logoutButton) {
-      logoutButton.addEventListener('click', logout);
+        logoutButton.addEventListener('click', logout);
     }
 
-    // Eventos para el menú móvil
     const navMenuButton = document.getElementById('nav-menu-button');
     const sessionMenuButton = document.getElementById('session-menu-button');
     const navMobileMenu = document.getElementById('nav-mobile-menu');
@@ -66,9 +74,8 @@ function setupEventListeners() {
 function logout() {
     console.log("Cerrando sesión...");
     localStorage.removeItem('sessionActive');
-    location.reload();
-  }
-  
+    checkSession(); // Actualiza la interfaz después de cerrar sesión
+}
 
 // Alternar la visibilidad de los menús
 function toggleMenu(menu) {
