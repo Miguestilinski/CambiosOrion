@@ -83,9 +83,9 @@ document.addEventListener("DOMContentLoaded", function() {
             if (data.success) {
                 localStorage.setItem('userAuthenticated', 'true');
                 if (tipoUsuario === 'cliente') {
-                    window.location.href = "index.html";
+                    window.location.href = "index";
                 } else if (tipoUsuario === 'administrativo') {
-                    window.location.href = "edit.html";
+                    window.location.href = "edit";
                 }
             } else {
                 const { field, message } = data;
