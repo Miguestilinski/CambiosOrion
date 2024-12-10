@@ -13,9 +13,11 @@ function checkSession() {
     const userActions = document.getElementById('user-actions');
 
     if (sessionActive) {
+        // Si hay sesión activa, mostrar user-actions y ocultar guest-actions
         guestActions?.classList.add('hidden');
         userActions?.classList.remove('hidden');
-
+        
+        // Completar información del usuario en el DOM si es necesario
         const userNameElement = document.getElementById('user-name');
         const userEmailElement = document.getElementById('user-email');
         if (userNameElement && userEmailElement) {
@@ -23,6 +25,7 @@ function checkSession() {
             userEmailElement.textContent = 'correo@ejemplo.com';
         }
     } else {
+        // Si no hay sesión activa, mostrar guest-actions y ocultar user-actions
         guestActions?.classList.remove('hidden');
         userActions?.classList.add('hidden');
     }
@@ -41,7 +44,7 @@ function setupEventListeners() {
         logoutButton.addEventListener('click', logout);
     }
 
-    // Eventos de menú móvil
+    // Eventos para el menú móvil
     const navMenuButton = document.getElementById('nav-menu-button');
     const sessionMenuButton = document.getElementById('session-menu-button');
     const navMobileMenu = document.getElementById('nav-mobile-menu');
@@ -64,7 +67,7 @@ function setupEventListeners() {
     }
 }
 
-// Función para alternar la visibilidad de los menús móviles
+// Alternar la visibilidad de los menús
 function toggleMenu(menu) {
     if (menu) {
         menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
@@ -78,7 +81,7 @@ function closeMenu(menu) {
     }
 }
 
-// Función para marcar los enlaces activos
+// Marcar los enlaces activos
 function setActiveLink(menuId) {
     const links = document.querySelectorAll(`${menuId} a`);
     const currentPath = window.location.pathname;
