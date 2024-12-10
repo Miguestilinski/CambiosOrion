@@ -8,28 +8,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Comprueba si el usuario tiene una sesión activa
 function checkSession() {
-    fetch('https://cambiosorion.cl/data/iniciar_sesion.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ checkSession: true }) })
-        .then(response => response.json())
-        .then(data => {
-            const guestActions = document.getElementById('guest-actions');
-            const userActions = document.getElementById('user-actions');
-            if (data.success) {
-                localStorage.setItem('sessionActive', 'true');
-                if (guestActions) guestActions.classList.add('hidden');
-                if (userActions) {
-                    userActions.classList.remove('hidden');
-                    const userNameElement = document.getElementById('user-name');
-                    const userEmailElement = document.getElementById('user-email');
-                    if (userNameElement) userNameElement.textContent = data.user || 'Usuario';
-                    if (userEmailElement) userEmailElement.textContent = data.email || 'correo@ejemplo.com';
-                }
-            } else {
-                localStorage.removeItem('sessionActive');
-                if (guestActions) guestActions.classList.remove('hidden');
-                if (userActions) userActions.classList.add('hidden');
-            }
-        })
-        .catch(error => console.error('Error al verificar la sesión:', error));
+    fetch('https://cambiosorion.cl/data/iniciar_sesion.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ checkSession: true })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            localStorage.setItem('sessionActive', 'true');
+            toggleUI(true, data.user, data.email);
+        } else {
+            localStorage.removeItem('sessionActive');
+            toggleUI(false);
+        }
+    })
+    .catch(error => console.error("Error verificando la sesión", error));
+}
+
+function toggleUI(isLoggedIn, user = '', email = '') {
+    const guestActions = document.getElementById('guest-actions');
+    const userActions = document.getElementById('user-actions');
+    
+    if (isLoggedIn) {
+        guestActions?.classList.add('hidden');
+        userActions?.classList.remove('hidden');
+        document.getElementById('user-name').textContent = user;
+        document.getElementById('user-email').textContent = email;
+    } else {
+        userActions?.classList.add('hidden');
+        guestActions?.classList.remove('hidden');
+    }
 }
 
 // Configurar eventos de clic para la sesión
