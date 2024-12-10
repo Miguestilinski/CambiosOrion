@@ -82,6 +82,7 @@ document.addEventListener("DOMContentLoaded", function() {
             console.log("Respuesta del servidor:", data);
             if (data.success) {
                 localStorage.setItem('userAuthenticated', 'true');
+                console.log("Sesión iniciada");
                 if (tipoUsuario === 'cliente') {
                     window.location.href = "index";
                 } else if (tipoUsuario === 'administrativo') {

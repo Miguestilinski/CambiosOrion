@@ -7,55 +7,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Comprueba si el usuario tiene una sesión activa
 function checkSession() {
-    console.log("Enviando solicitud para verificar la sesión...");
+    const isLoggedIn = localStorage.getItem('sessionActive');
+    
+    if (isLoggedIn) {
+      console.log("Sesión activa, mostrando vista de usuario.");
+      toggleUI(true);
+    } else {
+      console.log("Sesión no activa, mostrando vista de invitado.");
+      toggleUI(false);
+    }
+  }
 
-    fetch('https://cambiosorion.cl/data/iniciar_sesion.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ verificar: true }) // Señal mínima para verificar la sesión
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log("Datos devueltos por el servidor:", data);
-
-        if (data.success) {
-            localStorage.setItem('sessionActive', 'true');
-            toggleUI(true, data.user?.name, data.user?.email);
-        } else {
-            localStorage.removeItem('sessionActive');
-            toggleUI(false);
-        }
-    })
-    .catch(error => console.error("Error al verificar la sesión", error));
-}
-
-// Función para alternar la visibilidad de la interfaz según el estado de la sesión
-function toggleUI(isLoggedIn, user = '', email = '') {
+  function toggleUI(isLoggedIn) {
     const guestActions = document.getElementById('guest-actions');
     const userActions = document.getElementById('user-actions');
-
+    
     if (isLoggedIn) {
-        guestActions?.classList.add('hidden');
-        userActions?.classList.remove('hidden');
-        document.getElementById('user-name').textContent = user || '';
-        document.getElementById('user-email').textContent = email || '';
+      guestActions?.classList.add('hidden');
+      userActions?.classList.remove('hidden');
     } else {
-        userActions?.classList.add('hidden');
-        guestActions?.classList.remove('hidden');
+      userActions?.classList.add('hidden');
+      guestActions?.classList.remove('hidden');
     }
-}
+  }
 
 // Configurar eventos de clic para la sesión
 function setupEventListeners() {
-    const loginButton = document.getElementById('login-button');
     const logoutButton = document.getElementById('logout-button');
-
-    if (loginButton) {
-        loginButton.addEventListener('click', login);
-    }
-
+  
     if (logoutButton) {
-        logoutButton.addEventListener('click', logout);
+      logoutButton.addEventListener('click', logout);
     }
 
     // Eventos para el menú móvil
@@ -80,6 +61,14 @@ function setupEventListeners() {
         });
     }
 }
+
+// Función de logout para cerrar sesión
+function logout() {
+    console.log("Cerrando sesión...");
+    localStorage.removeItem('sessionActive');
+    location.reload();
+  }
+  
 
 // Alternar la visibilidad de los menús
 function toggleMenu(menu) {
