@@ -3,44 +3,49 @@ document.addEventListener('DOMContentLoaded', () => {
     checkSession();
     setupEventListeners();
     initializePage();
-});
+});  
 
 // Comprueba si el usuario tiene una sesión activa
 function checkSession() {
     const isLoggedIn = localStorage.getItem('sessionActive');
-    console.log("Sesión activa:", isLoggedIn);
-
+    console.log('Sesión activa:', isLoggedIn);
+  
     if (isLoggedIn) {
-        console.log("Sesión activa, mostrando vista de usuario.");
-        toggleUI(true);
+      console.log("Sesión activa, mostrando vista de usuario.");
+      toggleUI(true);
     } else {
-        console.log("Sesión no activa, mostrando vista de invitado.");
-        toggleUI(false);
+      console.log("Sesión no activa, mostrando vista de invitado.");
+      toggleUI(false);
     }
 }
+  
 
 // Alternar UI en función del estado de la sesión
 function toggleUI(isLoggedIn) {
     const guestActions = document.getElementById('guest-actions');
     const userActions = document.getElementById('user-actions');
-    
-    if (!guestActions || !userActions) {
-        console.error("Los elementos 'guest-actions' y/o 'user-actions' no están presentes en el DOM.");
-        return;
-    }
 
-    if (isLoggedIn) {
+    console.log('toggleUI ejecutado con isLoggedIn =', isLoggedIn);
+
+    if (guestActions && userActions) {
+        if (isLoggedIn) {
         guestActions.classList.add('hidden');
-        guestActions.style.display = 'none'; // Respaldo
         userActions.classList.remove('hidden');
-        userActions.style.display = 'block'; // Respaldo
-    } else {
+        console.log('UI: Sesión activa, mostrando usuario.');
+        } else {
         guestActions.classList.remove('hidden');
-        guestActions.style.display = 'block'; // Respaldo
         userActions.classList.add('hidden');
-        userActions.style.display = 'none'; // Respaldo
+        console.log('UI: Sesión no activa, mostrando invitado.');
+        }
+
+        console.log('Estado de clases después de toggleUI:');
+        console.log('guestActions.classList:', guestActions.classList);
+        console.log('userActions.classList:', userActions.classList);
+    } else {
+        console.log('Elementos no encontrados en el DOM');
     }
 }
+
 
 // Configurar eventos de clic para la sesión
 function setupEventListeners() {

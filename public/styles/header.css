@@ -79,10 +79,6 @@ nav ul li.selected a {
     transform: scale(1.05);
 }
 
-.hidden {
-    display: none;
-}
-
 #user-actions {
     align-items: center;
     gap: 10px;
