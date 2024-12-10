@@ -53,13 +53,84 @@ function toggleUI(isLoggedIn, user = '', email = '') {
     }
 }
 
+// Configurar eventos de clic para la sesión
 function setupEventListeners() {
-    console.log("Configurando event listeners...");
+    console.log("Configurando los listeners de eventos...");
     const loginButton = document.getElementById('login-button');
     const logoutButton = document.getElementById('logout-button');
 
-    if (loginButton) loginButton.addEventListener('click', () => console.log('Botón de inicio de sesión presionado'));
-    if (logoutButton) logoutButton.addEventListener('click', () => console.log('Botón de cierre de sesión presionado'));
+    if (loginButton) {
+        console.log("Configurando evento para el botón de inicio de sesión...");
+        loginButton.addEventListener('click', login);
+    }
+
+    if (logoutButton) {
+        console.log("Configurando evento para el botón de cierre de sesión...");
+        logoutButton.addEventListener('click', logout);
+    }
+
+    const navMenuButton = document.getElementById('nav-menu-button');
+    const sessionMenuButton = document.getElementById('session-menu-button');
+    const navMobileMenu = document.getElementById('nav-mobile-menu');
+    const sessionMobileMenu = document.getElementById('session-mobile-menu');
+
+    if (navMenuButton && sessionMenuButton && navMobileMenu && sessionMobileMenu) {
+        console.log("Configurando eventos para el menú móvil...");
+        navMenuButton.addEventListener('click', () => {
+            console.log("Menú de navegación móvil abierto/cerrado...");
+            toggleMenu(navMobileMenu);
+            if (sessionMobileMenu && sessionMobileMenu.style.display === 'block') {
+                closeMenu(sessionMobileMenu);
+            }
+        });
+
+        sessionMenuButton.addEventListener('click', () => {
+            console.log("Menú de sesión móvil abierto/cerrado...");
+            toggleMenu(sessionMobileMenu);
+            if (navMobileMenu && navMobileMenu.style.display === 'block') {
+                closeMenu(navMobileMenu);
+            }
+        });
+    }
+}
+
+// Alternar la visibilidad de los menús
+function toggleMenu(menu) {
+    if (menu) {
+        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        console.log(`Menú ${menu.style.display}`);
+    }
+}
+
+
+// Cerrar un menú específico
+function closeMenu(menu) {
+    if (menu) {
+        menu.style.display = 'none';
+        console.log("Menú cerrado.");
+    }
+}
+
+function setActiveLink(menuId) {
+    console.log(`Configurando enlace activo para el menú: ${menuId}`);
+    const links = document.querySelectorAll(`${menuId} a`);
+    const currentPath = window.location.pathname;
+    links.forEach(link => {
+        if (link.getAttribute('href') === currentPath) {
+            link.classList.add('selected');
+            console.log(`Enlace seleccionado: ${link.getAttribute('href')}`);
+        } else {
+            link.classList.remove('selected');
+        }
+    });
+}
+
+// Cerrar sesión
+function logout() {
+    console.log("Cerrando sesión...");
+    localStorage.removeItem('sessionActive');
+    checkSession();
+    window.location.reload();
 }
 
 // Función principal para configurar la inicialización de la página
