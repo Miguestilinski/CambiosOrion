@@ -21,16 +21,37 @@ function checkSession() {
   
 // Alternar UI en función del estado de la sesión
 function toggleUI(isLoggedIn) {
+    console.log('toggleUI ejecutado con isLoggedIn =', isLoggedIn);
+  
     const guestActions = document.getElementById('guest-actions');
     const userActions = document.getElementById('user-actions');
   
-    if (isLoggedIn) {
-      guestActions.style.display = 'none';
-      userActions.style.display = 'block';
-    } else {
-      guestActions.style.display = 'block';
-      userActions.style.display = 'none';
+    if (!guestActions || !userActions) {
+      console.error('No se encontraron guestActions o userActions en el DOM');
+      return;
     }
+  
+    console.log('Estado inicial:');
+    console.log('guestActions.classList:', guestActions.classList);
+    console.log('userActions.classList:', userActions.classList);
+  
+    // Asegurarse de eliminar estilos en línea
+    guestActions.style.display = '';
+    userActions.style.display = '';
+  
+    if (isLoggedIn) {
+      console.log('Sesión activa, mostrando usuario');
+      guestActions.classList.add('hidden');
+      userActions.classList.remove('hidden');
+    } else {
+      console.log('Sesión inactiva, mostrando invitado');
+      guestActions.classList.remove('hidden');
+      userActions.classList.add('hidden');
+    }
+  
+    console.log('Estado final:');
+    console.log('guestActions.classList:', guestActions.classList);
+    console.log('userActions.classList:', userActions.classList);
   }
   
   
