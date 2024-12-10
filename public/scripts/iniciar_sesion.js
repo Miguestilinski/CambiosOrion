@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function() {
             console.log("Datos enviados:", Object.fromEntries(formData));
             console.log("Respuesta del servidor:", data);
             if (data.success) {
-                localStorage.setItem('userAuthenticated', 'true');
+                localStorage.setItem('sessionActive', 'true');
                 console.log("Sesión iniciada");
                 if (tipoUsuario === 'cliente') {
                     window.location.href = "index";
