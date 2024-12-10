@@ -1,104 +1,100 @@
-// Función para cargar las divisas desde el servidor PHP
-function loadCurrencies() {
-    const targetUrl = 'https://cambiosorion.cl/data/obtener_divisas.php';
+let preciosAnteriores = {};
 
-    fetch(targetUrl)
-        .then(response => response.json()) // Suponemos que el servidor devuelve un JSON
-        .then(data => {
-            // Si los datos están en 'contents', intenta parsearlos
-            const responseData = data.contents ? JSON.parse(data.contents) : data;
+// Crear la conexión al servidor SSE
+let eventSource;
 
-            // Verificar que los datos son un array de divisas
-            if (!Array.isArray(responseData)) {
-                console.error("Formato de datos inesperado:", responseData);
-                return;
-            }
+// Función para establecer la conexión
+function initSSE() {
+  eventSource = new EventSource('https://cambiosorion.cl/api/divisas/stream_divisas.php');
 
-            const list = document.getElementById("currency-list");
-            list.innerHTML = ''; // Limpiar la lista anterior
+  eventSource.onopen = () => {
+    console.log('Conectado al servidor SSE');
+  };
 
-            // Ordenar las divisas de acuerdo a la lista predefinida
-            const divisasOrdenadas = [
-                "USD", "EUR", "ARS", "BRL", "PEN", "COP",
-                "UYU", "BOB", "CAD", "GBP", "JPY", "GNY",
-                "SEK", "AUD", "MXN", "NZD", "CHF", "DKK",
-                "ORO 100"
-            ];
+  eventSource.onmessage = (event) => {
+    try {
+      console.log('Mensaje SSE recibido:', event.data);
+      const responseData = JSON.parse(event.data);
+      console.log('Datos parseados SSE:', responseData);
+      processData(responseData);
+    } catch (error) {
+      console.error('Error al procesar datos SSE:', error);
+    }
+  };
 
-            let cambiosDetectados = false;
-            let preciosAnteriores = {};
-            
+  eventSource.onerror = (error) => {
+    console.error('Error en la conexión SSE:', error);
 
-            // Recorrer las divisas y mostrar sus detalles
-            divisasOrdenadas.forEach((key) => {
-                const divisa = responseData.find(d => d.nombre === key); // Buscar la divisa en los datos
-
-                if (divisa) {
-                    if (divisa.nombre === 'CLP') return;
-
-                    const { icono_circular, compra, venta } = divisa;
-
-                    // Formatear los valores de compra y venta
-                    const formattedCompra = removeTrailingZeros(compra);
-                    const formattedVenta = removeTrailingZeros(venta);
-
-                    // Comparar con los precios anteriores
-                    if (preciosAnteriores[key]) {
-                        const { compra: compraAnterior, venta: ventaAnterior } = preciosAnteriores[key];
-                        if (compraAnterior !== compra || ventaAnterior !== venta) {
-                            cambiosDetectados = true; // Se detectaron cambios
-                        }
-                    }
-
-                    // Guardar los precios actuales
-                    preciosAnteriores[key] = { compra, venta };
-
-                    // Crear la fila de la divisa
-                    const row = document.createElement("tr");
-                    row.innerHTML = `
-                        <td class="icono"><img src="${icono_circular}" alt="${key} icon"></td>
-                        <td class="nombre">${key}</td>
-                        <td class="compra compra-${key}">${formattedCompra}</td>
-                        <td class="venta venta-${key}">${formattedVenta}</td>
-                    `;
-
-                    list.appendChild(row);
-                }
-            });
-
-            // Si se detectaron cambios, reproducir el sonido de alerta
-            if (cambiosDetectados) {
-                const priceAlert = new Audio('/orionapp/sounds/alert.mp3');
-                priceAlert.play().catch(error => {
-                    console.error("Error reproduciendo el sonido de alerta:", error);
-                });
-            }
-        })
-        .catch(error => console.error('Error al cargar las divisas:', error));
+    if (eventSource.readyState === EventSource.CLOSED) {
+      console.log('Conexión cerrada. Intentando reconectar...');
+      setTimeout(initSSE, 5000); // Intentar reconectar cada 5 segundos
+    }
+  };
 }
 
-// Llamar a la función para cargar las divisas cuando se cargue la página
-loadCurrencies();
+// Procesar los datos de divisas y actualizar la UI
+function processData(data) {
+  const currencyList = document.getElementById("currency-list");
+  currencyList.innerHTML = ''; // Limpiar la lista anterior para reconstruirla
 
-// Función para manejar el estado de conexión (offline/online)
-const offlinePopup = document.getElementById('offline-popup');
+  let cambiosDetectados = false;
 
-// Función para mostrar el pop-up si no hay conexión
-function updateOnlineStatus() {
-    if (!navigator.onLine) {
-        offlinePopup.style.display = 'block';
+  const divisasOrdenadas = [
+    "USD", "EUR", "ARS", "BRL", "PEN", "COP",
+    "UYU", "BOB", "CAD", "GBP", "JPY", "GNY",
+    "SEK", "AUD", "MXN", "NZD", "CHF", "DKK",
+    "ORO 100"
+  ];
+
+  divisasOrdenadas.forEach((key) => {
+    const divisa = data.find(d => d.nombre === key);
+
+    if (divisa && divisa.compra && divisa.venta && divisa.icono_circular) {
+      const { icono_circular, compra, venta } = divisa;
+
+      if (preciosAnteriores[key]) {
+        if (preciosAnteriores[key].compra !== compra || preciosAnteriores[key].venta !== venta) {
+          cambiosDetectados = true;
+        }
+      }
+
+      // Guardar los datos actuales para futuras comparaciones
+      preciosAnteriores[key] = { compra, venta };
+
+      const row = document.createElement("tr");
+      const formattedCompra = removeTrailingZeros(compra);
+      const formattedVenta = removeTrailingZeros(venta);
+
+      row.innerHTML = `
+        <td class="icono"><img src="${icono_circular}" alt="${key} icon"></td>
+        <td class="nombre">${key}</td>
+        <td class="compra">${formattedCompra}</td>
+        <td class="venta">${formattedVenta}</td>
+      `;
+
+      currencyList.appendChild(row);
     } else {
-        offlinePopup.style.display = 'none';
+      console.warn(`Divisa no encontrada en los datos: ${key}`);
     }
+  });
+
+  if (cambiosDetectados) {
+    try {
+      const priceAlert = new Audio('/orionapp/sounds/alert.mp3');
+      priceAlert.play().catch(error => console.error("Error al reproducir el sonido de alerta:", error));
+    } catch (error) {
+      console.error("No se pudo reproducir el sonido de alerta:", error);
+    }
+  }
 }
 
 function removeTrailingZeros(value) {
-    if (value === null || value === undefined) return '';
-    const floatValue = parseFloat(value);
-    return floatValue.toString();
+  if (value === null || value === undefined) return '';
+  const floatValue = parseFloat(value);
+  return floatValue.toString();
 }
 
-// Escuchar cambios en el estado de la conexión
-window.addEventListener('online', updateOnlineStatus);
-window.addEventListener('offline', updateOnlineStatus);
-updateOnlineStatus();
+// Iniciar la conexión SSE al cargar la página
+document.addEventListener('DOMContentLoaded', () => {
+  initSSE();
+});
