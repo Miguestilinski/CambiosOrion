@@ -5,7 +5,7 @@ let eventSource;
 
 // Función para establecer la conexión
 function initSSE() {
-  eventSource = new EventSource('https://cambiosorion.cl/api/divisas/stream');
+  eventSource = new EventSource('https://cambiosorion.cl/api/divisas/stream/stream_divisas.php');
 
   eventSource.onopen = () => {
     console.log('Conectado al servidor SSE');
