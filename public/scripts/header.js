@@ -10,10 +10,19 @@ document.addEventListener('DOMContentLoaded', () => {
 // Comprueba si el usuario tiene una sesión activa
 function checkSession() {
     console.log("Enviando solicitud para verificar la sesión...");
+    
+    // Capturar los datos de sesión desde el almacenamiento local si existen
+    const rut = localStorage.getItem('rut') || '';
+    const email = localStorage.getItem('email') || '';
+    const tipoUsuario = localStorage.getItem('tipoUsuario') || '';
+    const password = localStorage.getItem('password') || '';
+
+    console.log("Enviando con estos datos para verificar la sesión: ", { rut, email, tipoUsuario, password });
+
     fetch('https://cambiosorion.cl/data/iniciar_sesion.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ checkSession: true })
+        body: JSON.stringify({ rut, email, tipoUsuario, password, checkSession: true })
     })
     .then(response => {
         console.log("Respuesta recibida del servidor.");
@@ -68,47 +77,68 @@ function setupEventListeners() {
         console.log("Configurando evento para el botón de cierre de sesión...");
         logoutButton.addEventListener('click', logout);
     }
-
-    const navMenuButton = document.getElementById('nav-menu-button');
-    const sessionMenuButton = document.getElementById('session-menu-button');
-    const navMobileMenu = document.getElementById('nav-mobile-menu');
-    const sessionMobileMenu = document.getElementById('session-mobile-menu');
-
-    if (navMenuButton && sessionMenuButton && navMobileMenu && sessionMobileMenu) {
-        console.log("Configurando eventos para el menú móvil...");
-        navMenuButton.addEventListener('click', () => {
-            console.log("Menú de navegación móvil abierto/cerrado...");
-            toggleMenu(navMobileMenu);
-            if (sessionMobileMenu && sessionMobileMenu.style.display === 'block') {
-                closeMenu(sessionMobileMenu);
-            }
-        });
-
-        sessionMenuButton.addEventListener('click', () => {
-            console.log("Menú de sesión móvil abierto/cerrado...");
-            toggleMenu(sessionMobileMenu);
-            if (navMobileMenu && navMobileMenu.style.display === 'block') {
-                closeMenu(navMobileMenu);
-            }
-        });
-    }
 }
 
-// Alternar la visibilidad de los menús
-function toggleMenu(menu) {
-    if (menu) {
-        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-        console.log(`Menú ${menu.style.display}`);
+// Función para enviar la solicitud de inicio de sesión
+function login() {
+    console.log("Intentando iniciar sesión...");
+    
+    const rut = document.getElementById('rut').value || '';
+    const email = document.getElementById('email').value || '';
+    const password = document.getElementById('password').value || '';
+    const tipoUsuario = document.getElementById('tipoUsuario').value || '';
+
+    console.log("Datos capturados en el formulario: ", { rut, email, password, tipoUsuario });
+
+    if (!rut || !email || !password || !tipoUsuario) {
+        console.log("Por favor, completa todos los campos.");
+        alert("Por favor, completa todos los campos.");
+        return;
     }
+
+    fetch('https://cambiosorion.cl/data/iniciar_sesion.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rut, email, tipoUsuario, password, checkSession: false })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("Respuesta del servidor en el login:", data);
+
+        if (data.success) {
+            console.log("Inicio de sesión exitoso.");
+            localStorage.setItem('sessionActive', 'true');
+            localStorage.setItem('rut', rut);
+            localStorage.setItem('email', email);
+            localStorage.setItem('tipoUsuario', tipoUsuario);
+            localStorage.setItem('password', password);
+
+            toggleUI(true, data.user, email);
+        } else {
+            console.log("Error en el inicio de sesión.");
+            alert(data.message || "Error en el inicio de sesión.");
+        }
+    })
+    .catch(error => console.error("Error al enviar los datos de inicio de sesión", error));
 }
 
+// Cerrar sesión
+function logout() {
+    console.log("Cerrando sesión...");
+    localStorage.removeItem('sessionActive');
+    localStorage.removeItem('rut');
+    localStorage.removeItem('email');
+    localStorage.removeItem('tipoUsuario');
+    localStorage.removeItem('password');
+    checkSession();
+    window.location.reload();
+}
 
-// Cerrar un menú específico
-function closeMenu(menu) {
-    if (menu) {
-        menu.style.display = 'none';
-        console.log("Menú cerrado.");
-    }
+// Función principal para configurar la inicialización de la página
+function initializePage() {
+    console.log("Inicializando la configuración de navegación de la página.");
+    setActiveLink('#nav-menu');
+    setActiveLink('#session-menu');
 }
 
 function setActiveLink(menuId) {
@@ -123,19 +153,4 @@ function setActiveLink(menuId) {
             link.classList.remove('selected');
         }
     });
-}
-
-// Cerrar sesión
-function logout() {
-    console.log("Cerrando sesión...");
-    localStorage.removeItem('sessionActive');
-    checkSession();
-    window.location.reload();
-}
-
-// Función principal para configurar la inicialización de la página
-function initializePage() {
-    console.log("Inicializando la configuración de navegación de la página.");
-    setActiveLink('#nav-menu');
-    setActiveLink('#session-menu');
 }
