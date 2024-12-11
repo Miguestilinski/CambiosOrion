@@ -1,28 +1,37 @@
 document.addEventListener('DOMContentLoaded', function() {
-    console.log("Página cargada, iniciando verificación de sesión...");
+    console.log('Página cargada, iniciando verificación de sesión...');
 
     const guestActions = document.getElementById('guest-actions');
     const userActions = document.getElementById('user-actions');
 
-    const isLoggedIn = true;
+    const isLoggedIn = true; // Cambia este valor para probar
     console.log('Sesión activa:', isLoggedIn);
 
     if (isLoggedIn) {
-        console.log('Sesión activa, mostrando vista de usuario.');
-        guestActions.classList.add('hidden'); // Oculta el menú de invitados
-        userActions.classList.remove('hidden'); // Muestra el menú de usuario
+        guestActions.style.display = 'none';
+        userActions.style.display = 'block';
     } else {
-        console.log('Sesión inactiva, mostrando vista de invitados.');
-        guestActions.classList.remove('hidden'); // Muestra el menú de invitados
-        userActions.classList.add('hidden'); // Oculta el menú de usuario
+        guestActions.style.display = 'block';
+        userActions.style.display = 'none';
     }
 
-    console.log('Estado final:');
-    console.log('guestActions.classList:', guestActions.classList);
-    console.log('userActions.classList:', userActions.classList);
+    console.log('guest-actions visibility:', getComputedStyle(guestActions).display);
+    console.log('user-actions visibility:', getComputedStyle(userActions).display);
     setupEventListeners();
     initializePage();
 });  
+
+const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+        console.log('Cambio detectado:', mutation);
+    });
+});
+
+observer.observe(document.body, {
+    attributes: true,
+    subtree: true,
+});
+
 
 // Comprueba si el usuario tiene una sesión activa
 function checkSession() {

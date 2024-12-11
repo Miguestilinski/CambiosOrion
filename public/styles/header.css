@@ -1,4 +1,8 @@
-.hidden {
+#guest-actions, #user-actions {
+    display: none !important; /* Este tipo de regla podría estar causando conflictos */
+}
+
+div.hidden {
     display: none !important;
 }
 
