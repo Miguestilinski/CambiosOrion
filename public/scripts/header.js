@@ -8,11 +8,11 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Sesión activa:', isLoggedIn);
 
     if (isLoggedIn) {
-        guestActions.style.display = 'none';
-        userActions.style.display = 'block';
+        guestActions.style.setProperty('display', 'none', 'important');
+        userActions.style.setProperty('display', 'block', 'important');
     } else {
-        guestActions.style.display = 'block';
-        userActions.style.display = 'none';
+        guestActions.style.setProperty('display', 'block', 'important');
+        userActions.style.setProperty('display', 'none', 'important');
     }
 
     console.log('guest-actions visibility:', getComputedStyle(guestActions).display);
