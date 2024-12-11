@@ -57,24 +57,32 @@ function checkSession() {
 // Mostrar la interfaz de usuario para usuarios autenticados
 function showUserUI() {
     const userActions = document.getElementById('user-actions');
+    const userActionsMobile = document.getElementById('user-actions-mobile');
     const guestActions = document.getElementById('guest-actions');
+    const guestActionsMobile = document.getElementById('guest-actions-mobile');
   
     if (userActions && guestActions) {
       userActions.style.display = 'block';
+      userActionsMobile.style.display = 'block';
       guestActions.style.display = 'none';
+      guestActionsMobile.style.display = 'none';
     }
 }
   
-  // Mostrar la interfaz de usuario para invitados
-  function showGuestUI() {
+// Mostrar la interfaz de usuario para invitados
+function showGuestUI() {
     const userActions = document.getElementById('user-actions');
+    const userActionsMobile = document.getElementById('user-actions-mobile');
     const guestActions = document.getElementById('guest-actions');
+    const guestActionsMobile = document.getElementById('guest-actions-mobile');
   
     if (userActions && guestActions) {
       userActions.style.display = 'none';
+      userActionsMobile.style.display = 'none';
       guestActions.style.display = 'block';
+      guestActionsMobile.style.display = 'block';
     }
-}  
+}
   
 // Función para cerrar sesión con AJAX
 function logout() {
@@ -101,6 +109,14 @@ function toggleMenu(menu) {
 function closeMenu(menu) {
     if (menu) {
         menu.style.display = 'none';
+    }
+}
+
+// Mostrar el menú desplegable en escritorio
+function toggleDropdown() {
+    const dropdown = document.getElementById('dropdownInformation');
+    if (dropdown) {
+        dropdown.classList.toggle('hidden');
     }
 }
 

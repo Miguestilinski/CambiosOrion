@@ -1,4 +1,3 @@
-
 header {
     width: 100vw;
     display: flex;
@@ -100,6 +99,9 @@ nav ul li.selected a {
     background-color: transparent;
     border: none;
     padding: 0;
+    width: 30px;
+    height: 30px;
+    margin-right: 1.5rem;
 }
 
 #dropdownInformation {
