@@ -42,10 +42,15 @@ function toggleUI(isLoggedIn) {
         return;
     }
 
+    console.log('guestActions:', guestActions);
+    console.log('userActions:', userActions);
+
     if (isLoggedIn) {
+        console.log('Mostrando vista de usuario');
         guestActions.classList.add('hidden');
         userActions.classList.remove('hidden');
     } else {
+        console.log('Mostrando vista de invitado');
         guestActions.classList.remove('hidden');
         userActions.classList.add('hidden');
     }
