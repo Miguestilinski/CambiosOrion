@@ -33,6 +33,16 @@ function setupEventListeners() {
                 closeMenu(navMobileMenu);
             }
         });
+
+        document.addEventListener('click', () => {
+            closeMenu(navMobileMenu);
+            closeMenu(sessionMobileMenu);
+        });
+    }
+
+    const profileMenuButton = document.getElementById('profile-menu-button');
+    if (profileMenuButton) {
+        profileMenuButton.addEventListener('click', toggleDropdown);
     }
 }
 
@@ -40,7 +50,6 @@ function setupEventListeners() {
 function checkSession() {
     fetch('/data/session_status.php')
         .then(response => {
-            console.log('Response Status:', response.status);
             return response.json();
         })
         .then(data => {
