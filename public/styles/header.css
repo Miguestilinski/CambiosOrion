@@ -1,9 +1,5 @@
-#guest-actions, #user-actions {
-    display: none !important; /* Este tipo de regla podría estar causando conflictos */
-}
-
-div.hidden {
-    display: none !important;
+.hidden {
+    display: none;
 }
 
 header {
@@ -87,11 +83,13 @@ nav ul li.selected a {
 }
 
 #user-actions {
+    display: flex;
     align-items: center;
     gap: 10px;
 }
 
 #guest-actions {
+    display: flex;
     flex-direction: column;
     align-items: center;
     color: white;

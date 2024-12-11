@@ -1,37 +1,22 @@
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Página cargada, iniciando verificación de sesión...');
-
-    const guestActions = document.getElementById('guest-actions');
-    const userActions = document.getElementById('user-actions');
-
-    const isLoggedIn = true; // Cambia este valor para probar
-    console.log('Sesión activa:', isLoggedIn);
-
-    if (isLoggedIn) {
-        guestActions.style.setProperty('display', 'none', 'important');
-        userActions.style.setProperty('display', 'block', 'important');
-    } else {
-        guestActions.style.setProperty('display', 'block', 'important');
-        userActions.style.setProperty('display', 'none', 'important');
-    }
-
-    console.log('guest-actions visibility:', getComputedStyle(guestActions).display);
-    console.log('user-actions visibility:', getComputedStyle(userActions).display);
+    checkSession();
     setupEventListeners();
     initializePage();
 });  
 
 const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
-        console.log('Cambio detectado:', mutation);
+        if (mutation.type === 'attributes' && mutation.target.id) {
+            console.log(`Cambio detectado en ${mutation.target.id}:`, mutation);
+        }
     });
 });
 
 observer.observe(document.body, {
     attributes: true,
+    attributeFilter: ['class', 'style'], // Limitar los atributos observados
     subtree: true,
 });
-
 
 // Comprueba si el usuario tiene una sesión activa
 function checkSession() {
@@ -49,30 +34,22 @@ function checkSession() {
   
 // Alternar UI en función del estado de la sesión
 function toggleUI(isLoggedIn) {
-    console.log('toggleUI ejecutado con isLoggedIn =', isLoggedIn);
-  
     const guestActions = document.getElementById('guest-actions');
     const userActions = document.getElementById('user-actions');
-  
+
     if (!guestActions || !userActions) {
-      console.error('No se encontraron guestActions o userActions en el DOM');
-      return;
+        console.error('No se encontraron guestActions o userActions en el DOM');
+        return;
     }
-  
+
     if (isLoggedIn) {
-      console.log('Sesión activa, mostrando usuario');
-      guestActions.style.display = 'none';
-      userActions.style.display = 'block';
+        guestActions.classList.add('hidden');
+        userActions.classList.remove('hidden');
     } else {
-      console.log('Sesión inactiva, mostrando invitado');
-      guestActions.style.display = 'block';
-      userActions.style.display = 'none';
+        guestActions.classList.remove('hidden');
+        userActions.classList.add('hidden');
     }
-  
-    console.log('guestActions.style.display:', guestActions.style.display);
-    console.log('userActions.style.display:', userActions.style.display);
-  }
-  
+}
   
 // Configurar eventos de clic para la sesión
 function setupEventListeners() {
