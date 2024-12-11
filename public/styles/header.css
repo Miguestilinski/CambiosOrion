@@ -61,7 +61,6 @@ nav ul li.selected a {
 }
 
 .header-actions {
-    display: flex;
     align-items: center;
     justify-content: flex-end;
     gap: 20px;
@@ -83,7 +82,6 @@ nav ul li.selected a {
 }
 
 #user-actions {
-    display: flex;
     align-items: center;
     gap: 10px;
 }
