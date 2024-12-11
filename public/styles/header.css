@@ -1,6 +1,3 @@
-.hidden {
-    display: none;
-}
 
 header {
     width: 100vw;
@@ -82,11 +79,13 @@ nav ul li.selected a {
 }
 
 #user-actions {
+    display: none;
     align-items: center;
     gap: 10px;
 }
 
 #guest-actions {
+    display: none;
     flex-direction: column;
     align-items: center;
     color: white;
