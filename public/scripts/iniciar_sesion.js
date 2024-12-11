@@ -24,14 +24,14 @@ document.addEventListener("DOMContentLoaded", function() {
             clienteForm.classList.add('active');
             administrativoForm.classList.remove('active');
             document.getElementById('rut').setAttribute('required', 'required');
-            document.getElementById('correo').removeAttribute('required');
+            document.getElementById('email').removeAttribute('required');
             document.getElementById('tipoUsuario').value = 'cliente';
         } else {
             administrativoTab.classList.add('active');
             clienteTab.classList.remove('active');
             administrativoForm.classList.add('active');
             clienteForm.classList.remove('active');
-            document.getElementById('correo').setAttribute('required', 'required');
+            document.getElementById('email').setAttribute('required', 'required');
             document.getElementById('rut').removeAttribute('required');
             document.getElementById('tipoUsuario').value = 'administrativo';
         }
@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         const tipoUsuario = document.querySelector('.tab-button.active').dataset.tipoUsuario;
         const rut = document.getElementById("rut") ? document.getElementById("rut").value : '';
-        const correo = document.getElementById("correo") ? document.getElementById("correo").value : '';
+        const email = document.getElementById("email") ? document.getElementById("email").value : '';
         const password = document.getElementById("password").value;
 
         // Validación de RUT si es un cliente
@@ -120,10 +120,10 @@ function resetErrorStyles() {
     if (passwordError) passwordError.classList.add('hidden');
 
     const rutInput = document.getElementById('rut');
-    const correoInput = document.getElementById('correo');
+    const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
     if (rutInput) rutInput.classList.remove('bg-red-50', 'border-red-500', 'text-red-900');
-    if (correoInput) correoInput.classList.remove('bg-red-50', 'border-red-500', 'text-red-900');
+    if (emailInput) emailInput.classList.remove('bg-red-50', 'border-red-500', 'text-red-900');
     if (passwordInput) passwordInput.classList.remove('bg-red-50', 'border-red-500', 'text-red-900');
 }
 
@@ -134,11 +134,11 @@ function setErrorStyles(field) {
         const rutError = document.getElementById('rut-error');
         if (rutInput) rutInput.classList.add('bg-red-50', 'border-red-500', 'text-red-900');
         if (rutError) rutError.classList.remove('hidden');
-    } else if (field === 'correo') {
-        const correoInput = document.getElementById('correo');
-        const correoError = document.getElementById('correo-error');
-        if (correoInput) correoInput.classList.add('bg-red-50', 'border-red-500', 'text-red-900');
-        if (correoError) correoError.classList.remove('hidden');
+    } else if (field === 'email') {
+        const emailInput = document.getElementById('email');
+        const emailError = document.getElementById('email-error');
+        if (emailInput) emailInput.classList.add('bg-red-50', 'border-red-500', 'text-red-900');
+        if (emailError) emailError.classList.remove('hidden');
     } else if (field === 'password') {
         const passwordInput = document.getElementById('password');
         const passwordError = document.getElementById('password-error');
