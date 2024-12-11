@@ -4,42 +4,41 @@ document.addEventListener("DOMContentLoaded", function() {
     const clienteForm = document.getElementById('cliente-form');
     const administrativoForm = document.getElementById('administrativo-form');
     
-    // Establecer "Cliente" como seleccionado por defecto
+    // Establecer "Cliente" como la pestaña predeterminada
     clienteTab.classList.add('active');
     clienteForm.classList.add('active');
-
-    // Cambiar entre "Cliente" y "Administrativo" al hacer clic
+    
+    // Cambiar entre Cliente y Administrativo
     clienteTab.addEventListener('click', function() {
-        clienteTab.classList.add('active');
-        administrativoTab.classList.remove('active');
-        
-        clienteForm.classList.add('active');
-        administrativoForm.classList.remove('active');
-        
-        // Eliminar 'required' de campos no relevantes
-        document.getElementById('rut').setAttribute('required', 'required');
-        document.getElementById('email').removeAttribute('required');
-
-        document.getElementById('tipoUsuario').value = 'cliente';
+        cambiarVista('cliente');
     });
 
     administrativoTab.addEventListener('click', function() {
-        administrativoTab.classList.add('active');
-        clienteTab.classList.remove('active');
-        
-        administrativoForm.classList.add('active');
-        clienteForm.classList.remove('active');
-        
-        // Eliminar 'required' de campos no relevantes
-        document.getElementById('email').setAttribute('required', 'required');
-        document.getElementById('rut').removeAttribute('required');
-
-        document.getElementById('tipoUsuario').value = 'administrativo';
+        cambiarVista('administrativo');
     });
 
-    // Manejo de la validación y el envío del formulario
+    function cambiarVista(tipo) {
+        if (tipo === 'cliente') {
+            clienteTab.classList.add('active');
+            administrativoTab.classList.remove('active');
+            clienteForm.classList.add('active');
+            administrativoForm.classList.remove('active');
+            document.getElementById('rut').setAttribute('required', 'required');
+            document.getElementById('email').removeAttribute('required');
+            document.getElementById('tipoUsuario').value = 'cliente';
+        } else {
+            administrativoTab.classList.add('active');
+            clienteTab.classList.remove('active');
+            administrativoForm.classList.add('active');
+            clienteForm.classList.remove('active');
+            document.getElementById('email').setAttribute('required', 'required');
+            document.getElementById('rut').removeAttribute('required');
+            document.getElementById('tipoUsuario').value = 'administrativo';
+        }
+    }
+
     const loginForm = document.getElementById("loginForm");
-    loginForm.addEventListener("submit", function(event) {
+    loginForm.addEventListener("submit", async function(event) {
         event.preventDefault();
 
         const tipoUsuario = document.querySelector('.tab-button.active').dataset.tipoUsuario;
@@ -47,64 +46,45 @@ document.addEventListener("DOMContentLoaded", function() {
         const email = document.getElementById("email") ? document.getElementById("email").value : '';
         const password = document.getElementById("password").value;
 
-        // Validación para el formulario de "Cliente"
-        if (tipoUsuario === 'cliente') {
-            if (!validarRUT(rut)) {
-                document.getElementById('rut-error').textContent = "Escriba un RUT válido.";
-                document.getElementById('rut-error').classList.remove('hidden');
-                return;
-            } else {
-                document.getElementById('rut-error').classList.add('hidden');
-            }
+        // Validación de RUT si es un cliente
+        if (tipoUsuario === 'cliente' && !validarRUT(rut)) {
+            alert("RUT no es válido.");
+            return;
         }
 
         if (!password) {
-            document.getElementById('password-error').textContent = "Escriba una contraseña.";
-            document.getElementById('password-error').classList.remove('hidden');
+            alert("Por favor ingresa una contraseña.");
             return;
-        } else {
-            document.getElementById('password-error').classList.add('hidden');
         }
 
         const formData = new FormData(loginForm);
-        fetch('https://cambiosorion.cl/data/iniciar_sesion.php', {
-            method: 'POST',
-            body: formData,
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log("Datos enviados:", Object.fromEntries(formData));
-            console.log("Respuesta del servidor:", data);
-            if (data.success) {
+
+        try {
+            const response = await fetch('https://cambiosorion.cl/data/iniciar_sesion.php', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (!response.ok) throw new Error("Error en la conexión con el servidor");
+
+            const result = await response.json();
+            
+            if (result.success) {
                 localStorage.setItem('sessionActive', 'true');
-                console.log("Sesión iniciada");
                 if (tipoUsuario === 'cliente') {
                     window.location.href = "index";
                 } else if (tipoUsuario === 'administrativo') {
                     window.location.href = "edit";
                 }
             } else {
-                const { field, message } = data;
-                if (field === "rut") {
-                    document.getElementById('rut-error').textContent = message;
-                } else if (field === "email") {
-                    document.getElementById('email-error').textContent = message;
-                } else if (field === "password") {
-                    document.getElementById('password-error').textContent = message;
-                }
+                alert(result.message);
             }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert("Hubo un problema con la conexión al servidor. Inténtalo más tarde.");
-        });        
+
+        } catch (error) {
+            console.error("Error en la solicitud AJAX:", error);
+            alert("Hubo un problema al conectar con el servidor.");
+        }
     });
-    
 
     // Funciones de validación
     function validarRUT(rut) {

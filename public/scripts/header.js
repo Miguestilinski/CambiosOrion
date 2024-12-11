@@ -1,25 +1,10 @@
 let guestActions, userActions;
 
 document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(() => {
-        setupEventListeners();
-        initializePage();
-    }, 100);
+    checkSession();
+    setupEventListeners();
+    initializePage();
 });  
-
-const observer = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-        if (mutation.type === 'attributes' && mutation.target.id) {
-            console.log(`Cambio detectado en ${mutation.target.id}:`, mutation);
-        }
-    });
-});
-
-observer.observe(document.body, {
-    attributes: true,
-    attributeFilter: ['class', 'style'], // Limitar los atributos observados
-    subtree: true,
-});
   
 // Configurar eventos de clic para la sesión
 function setupEventListeners() {
@@ -51,11 +36,54 @@ function setupEventListeners() {
     }
 }
 
-// Función de logout para cerrar sesión
+// Función para comprobar el estado de sesión con AJAX
+function checkSession() {
+    fetch('/api/session-status')
+      .then(response => response.json())
+      .then(data => {
+        if (data.isAuthenticated) {
+          showUserUI();
+        } else {
+          showGuestUI();
+        }
+      })
+      .catch(error => console.error('Error al verificar la sesión:', error));
+}
+
+// Mostrar la interfaz de usuario para usuarios autenticados
+function showUserUI() {
+    const userActions = document.getElementById('user-actions');
+    const guestActions = document.getElementById('guest-actions');
+  
+    if (userActions && guestActions) {
+      userActions.style.display = 'block';
+      guestActions.style.display = 'none';
+    }
+}
+
+// Mostrar la interfaz de usuario para invitados
+function showGuestUI() {
+    const userActions = document.getElementById('user-actions');
+    const guestActions = document.getElementById('guest-actions');
+  
+    if (userActions && guestActions) {
+      userActions.style.display = 'none';
+      guestActions.style.display = 'block';
+    }
+}
+  
+// Función para cerrar sesión con AJAX
 function logout() {
-    console.log("Cerrando sesión...");
-    localStorage.removeItem('sessionActive');
-    checkSession(); // Actualiza la interfaz después de cerrar sesión
+    fetch('/api/logout', { method: 'POST' })
+      .then(response => response.json())
+      .then(data => {
+        if (data.message === 'Sesión cerrada') {
+          checkSession(); // Actualizar la UI después de cerrar sesión
+        } else {
+          console.error('No se pudo cerrar la sesión');
+        }
+      })
+      .catch(error => console.error('Error:', error));
 }
 
 // Alternar la visibilidad de los menús

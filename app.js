@@ -1,11 +1,11 @@
 // app.js
-
 const express = require('express');
 const path = require('path');
 const mysql = require('mysql');
 const axios = require('axios');
-const app = express();
+const session = require('express-session');
 const cors = require('cors');
+const app = express();
 const port = process.env.PORT || 3306;
 
 // Cargar las variables de entorno
@@ -13,6 +13,17 @@ require('dotenv').config();
 
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Configurar las sesiones
+app.use(
+  session({
+    secret: 'my_secret_key',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }, // Ajustar en producción a true con HTTPS
+  })
+);
 
 // Validar que las variables de entorno están configuradas
 const requiredEnv = ['DB_HOST', 'DB_USER', 'DB_PASS', 'DB_NAME'];
@@ -29,46 +40,17 @@ const dbConfig = {
   user: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
-  connectTimeout: 10000,
 };
 
-// Conectar a la base de datos y manejar errores
-let db;
-function handleDatabaseConnection() {
-  db = mysql.createConnection(dbConfig);
-
-  db.connect((error) => {
-    if (error) {
-      console.error('Error al conectar a la base de datos:', error.message);
-      console.error('Detalles del error.stack:', error.stack);
-      console.error('Detalles del error:', error);
-      return process.exit(1);
-
-      // Intentar reconectar después de 5 segundos
-      setTimeout(handleDatabaseConnection, 5000);
-    } else {
-      console.log('Conectado a la base de datos.');
-    }
-  });
-
-  db.on('error', (error) => {
-    console.error('Error de base de datos:', error.message);
-
-    if (error.code === 'PROTOCOL_CONNECTION_LOST') {
-      console.warn('Conexión perdida. Reintentando...');
-      handleDatabaseConnection();
-    } else {
-      throw error;
-    }
-  });
-}
-
-// Iniciar la conexión a la base de datos
-handleDatabaseConnection();
+// Conectar a la base de datos
+let db = mysql.createConnection(dbConfig);
+db.connect((error) => {
+  if (error) console.error('Error al conectar a la base de datos:', error);
+  else console.log('Conectado a la base de datos.');
+});
 
 // Servir archivos estáticos desde el directorio "public"
 app.use(express.static(path.join(__dirname, 'public')));
-
 
 // Ruta principal
 app.get('/', (req, res) => {
@@ -105,17 +87,36 @@ app.get('/api/divisas/stream', (req, res) => {
 });
 
 
-// NUEVA RUTA: Simulación del estado de sesión
+// Simulación del estado de sesión
 app.get('/api/session-status', (req, res) => {
   // Simular estado de autenticación (true para autenticado, false para invitado)
   const isAuthenticated = true; // Cambia esto dinámicamente según tu lógica
   res.json({ isAuthenticated });
 });
 
-// NUEVA RUTA: Logout
+// Ruta para iniciar sesión
+app.post('/api/login', (req, res) => {
+  const { username } = req.body;
+
+  if (username) {
+    req.session.user = { username }; // Guarda datos en la sesión
+    return res.status(200).json({ message: 'Sesión iniciada', username });
+  }
+
+  res.status(400).json({ message: 'Faltan credenciales' });
+});
+
+// Logout
 app.post('/api/logout', (req, res) => {
-  // Aquí puedes manejar la lógica de cierre de sesión, como eliminar cookies o tokens
-  res.status(200).json({ message: 'Sesión cerrada correctamente.' });
+  req.session.destroy((error) => {
+    if (error) {
+      console.error('Error al cerrar sesión:', error);
+      return res.status(500).json({ message: 'Error al cerrar sesión' });
+    }
+
+    res.clearCookie('connect.sid');
+    return res.status(200).json({ message: 'Sesión cerrada' });
+  });
 });
 
 // Proxy para la API de Google Places

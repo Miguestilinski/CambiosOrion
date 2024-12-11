@@ -279,32 +279,6 @@
           © 2024 Cambios Orion. Todos los derechos reservados.
       </div>
   </footer>
-    <script> 
-    function checkSession() {
-        const isLoggedIn = localStorage.getItem('sessionActive');
-        if (isLoggedIn) {
-        toggleUI(true);
-        } else {
-        toggleUI(false);
-        }
-    }
-    function toggleUI(isLoggedIn) {
-        const guestActions = document.getElementById('guest-actions');
-        const userActions = document.getElementById('user-actions');
-
-        if (!guestActions || !userActions) {
-        return;
-        }
-
-        if (isLoggedIn) {
-            guestActions.style.setProperty('display', 'none', 'important');
-            userActions.style.setProperty('display', 'block', 'important');
-        } else {
-            guestActions.style.setProperty('display', 'block', 'important');
-            userActions.style.setProperty('display', 'none', 'important');
-        }
-    }
-    </script>
     <script src="/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
     <script src="scripts/header.js"></script>
     <script src="scripts/index.js"></script>
