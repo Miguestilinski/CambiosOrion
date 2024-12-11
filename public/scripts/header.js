@@ -37,8 +37,20 @@ function setupEventListeners() {
 
     const profileMenuButton = document.getElementById('profile-menu-button');
     if (profileMenuButton) {
-        profileMenuButton.addEventListener('click', toggleDropdown);
+        profileMenuButton.addEventListener('click', toggleHeaderDropdown);
     }
+    document.addEventListener('click', function (event) {
+        const dropdown = document.getElementById('dropdownInformation');
+
+        // Cerrar si el clic está fuera del menú y del botón
+        if (
+            dropdown &&
+            !dropdown.contains(event.target) &&
+            !event.target.closest('#profile-menu-button')
+        ) {
+            dropdown.classList.add('hidden');
+        }
+    });
 }
 
 // Función para comprobar el estado de sesión con AJAX
@@ -117,8 +129,10 @@ function closeMenu(menu) {
 }
 
 // Mostrar el menú desplegable en escritorio
-function toggleDropdown() {
+function toggleHeaderDropdown(event) {
+    event.stopPropagation(); // Prevenir propagación del evento
     const dropdown = document.getElementById('dropdownInformation');
+
     if (dropdown) {
         dropdown.classList.toggle('hidden');
     }
