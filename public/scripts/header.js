@@ -38,8 +38,8 @@ function checkSession() {
   
 // Alternar UI en función del estado de la sesión
 function toggleUI(isLoggedIn) {
-    guestActions = document.getElementById('guest-actions');
-    userActions = document.getElementById('user-actions');
+    const guestActions = document.getElementById('guest-actions');
+    const userActions = document.getElementById('user-actions');
 
     if (!guestActions || !userActions) {
         console.error('No se encontraron guestActions o userActions en el DOM');
@@ -47,13 +47,18 @@ function toggleUI(isLoggedIn) {
     }
 
     if (isLoggedIn) {
+        console.log('Mostrando vista de usuario');
         guestActions.classList.add('hidden');
         userActions.classList.remove('hidden');
+        userActions.style.display = 'flex'; // Ajusta según el diseño esperado
     } else {
+        console.log('Mostrando vista de invitado');
         guestActions.classList.remove('hidden');
         userActions.classList.add('hidden');
+        guestActions.style.display = 'flex'; // Ajusta según el diseño esperado
     }
 }
+
   
 // Configurar eventos de clic para la sesión
 function setupEventListeners() {
