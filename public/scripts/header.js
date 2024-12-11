@@ -56,13 +56,11 @@ function setupEventListeners() {
 // Función para comprobar el estado de sesión con AJAX
 function checkSession() {
     fetch('/data/session_status.php')
-        .then(response => {
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
             console.log('Session Status Data:', data);
             if (data.isAuthenticated) {
-                showUserUI();
+                showUserUI(data); // Pasa los datos del usuario a la función
             } else {
                 showGuestUI();
             }
@@ -82,6 +80,15 @@ function showUserUI() {
       userActionsMobile.style.display = 'block';
       guestActions.style.display = 'none';
       guestActionsMobile.style.display = 'none';
+    }
+
+    // Actualiza el dropdown con los datos del usuario
+    const dropdownInformation = document.getElementById('dropdownInformation');
+    if (dropdownInformation) {
+        dropdownInformation.querySelector('div:first-child').innerHTML = `
+            <div>${data.name}</div>
+            <div class="font-medium truncate">${data.email}</div>
+        `;
     }
 }
   
