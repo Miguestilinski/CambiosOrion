@@ -1,131 +1,142 @@
-let guestActions, userActions;
-
-document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(() => {
-        checkSession();
-        setupEventListeners();
-        initializePage();
-    }, 100);
-});  
-
-const observer = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-        if (mutation.type === 'attributes' && mutation.target.id) {
+class HeaderManager {
+    constructor() {
+      this.guestActions = document.getElementById('guest-actions');
+      this.userActions = document.getElementById('user-actions');
+  
+      // Observador para manejar cambios en el DOM
+      this.observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.type === 'attributes' && mutation.target.id) {
             console.log(`Cambio detectado en ${mutation.target.id}:`, mutation);
-        }
-    });
-});
-
-observer.observe(document.body, {
-    attributes: true,
-    attributeFilter: ['class', 'style'], // Limitar los atributos observados
-    subtree: true,
-});
-
-// Comprueba si el usuario tiene una sesión activa
-function checkSession() {
-    const isLoggedIn = localStorage.getItem('sessionActive');
-    console.log('Sesión activa:', isLoggedIn);
+          }
+        });
+      });
   
-    if (isLoggedIn) {
-      console.log("Sesión activa, mostrando vista de usuario.");
-      toggleUI(true);
-    } else {
-      console.log("Sesión no activa, mostrando vista de invitado.");
-      toggleUI(false);
+      this.setupObserver();
+      this.init();
     }
-}
   
-// Alternar UI en función del estado de la sesión
-function toggleUI(isLoggedIn) {
-    const guestActions = document.getElementById('guest-actions');
-    const userActions = document.getElementById('user-actions');
-
-    if (!guestActions || !userActions) {
+    // Configurar el observador
+    setupObserver() {
+      this.observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style'],
+        subtree: true,
+      });
+    }
+  
+    // Lógica de inicialización
+    init() {
+      setTimeout(() => {
+        this.checkSession();
+        this.setupEventListeners();
+        this.initializePage();
+      }, 100);
+    }
+  
+    // Comprueba la sesión
+    checkSession() {
+      const isLoggedIn = localStorage.getItem('sessionActive');
+      console.log('Sesión activa:', isLoggedIn);
+  
+      if (isLoggedIn) {
+        console.log("Sesión activa, mostrando vista de usuario.");
+        this.renderUI(true);
+      } else {
+        console.log("Sesión no activa, mostrando vista de invitado.");
+        this.renderUI(false);
+      }
+    }
+  
+    // Cambia dinámicamente la UI
+    renderUI(isLoggedIn) {
+      if (!this.guestActions || !this.userActions) {
         console.error('No se encontraron guestActions o userActions en el DOM');
         return;
-    }
-
-    if (isLoggedIn) {
-        console.log('Mostrando vista de usuario');
-        guestActions.classList.add('hidden');
-        userActions.classList.remove('hidden');
-        userActions.style.display = 'flex'; // Ajusta según el diseño esperado
-    } else {
-        console.log('Mostrando vista de invitado');
-        guestActions.classList.remove('hidden');
-        userActions.classList.add('hidden');
-        guestActions.style.display = 'flex'; // Ajusta según el diseño esperado
-    }
-}
-
+      }
   
-// Configurar eventos de clic para la sesión
-function setupEventListeners() {
-    const logoutButton = document.getElementById('logout-button');
-
-    if (logoutButton) {
-        logoutButton.addEventListener('click', logout);
+      if (isLoggedIn) {
+        console.log('Mostrando vista de usuario');
+        this.guestActions.classList.add('hidden');
+        this.userActions.classList.remove('hidden');
+      } else {
+        console.log('Mostrando vista de invitado');
+        this.guestActions.classList.remove('hidden');
+        this.userActions.classList.add('hidden');
+      }
     }
-
-    const navMenuButton = document.getElementById('nav-menu-button');
-    const sessionMenuButton = document.getElementById('session-menu-button');
-    const navMobileMenu = document.getElementById('nav-mobile-menu');
-    const sessionMobileMenu = document.getElementById('session-mobile-menu');
-
-    if (navMenuButton && sessionMenuButton && navMobileMenu && sessionMobileMenu) {
+  
+    // Configurar los eventos de clic para logout y navegación
+    setupEventListeners() {
+      const logoutButton = document.getElementById('logout-button');
+      if (logoutButton) {
+        logoutButton.addEventListener('click', () => this.logout());
+      }
+  
+      const navMenuButton = document.getElementById('nav-menu-button');
+      const sessionMenuButton = document.getElementById('session-menu-button');
+      const navMobileMenu = document.getElementById('nav-mobile-menu');
+      const sessionMobileMenu = document.getElementById('session-mobile-menu');
+  
+      if (navMenuButton && sessionMenuButton && navMobileMenu && sessionMobileMenu) {
         navMenuButton.addEventListener('click', () => {
-            toggleMenu(navMobileMenu);
-            if (sessionMobileMenu && sessionMobileMenu.style.display === 'block') {
-                closeMenu(sessionMobileMenu);
-            }
+          this.toggleMenu(navMobileMenu);
+          if (sessionMobileMenu && sessionMobileMenu.style.display === 'block') {
+            this.closeMenu(sessionMobileMenu);
+          }
         });
-
+  
         sessionMenuButton.addEventListener('click', () => {
-            toggleMenu(sessionMobileMenu);
-            if (navMobileMenu && navMobileMenu.style.display === 'block') {
-                closeMenu(navMobileMenu);
-            }
+          this.toggleMenu(sessionMobileMenu);
+          if (navMobileMenu && navMobileMenu.style.display === 'block') {
+            this.closeMenu(navMobileMenu);
+          }
         });
+      }
     }
-}
-
-// Función de logout para cerrar sesión
-function logout() {
-    console.log("Cerrando sesión...");
-    localStorage.removeItem('sessionActive');
-    checkSession(); // Actualiza la interfaz después de cerrar sesión
-}
-
-// Alternar la visibilidad de los menús
-function toggleMenu(menu) {
-    if (menu) {
+  
+    // Funcionalidad logout
+    logout() {
+      console.log("Cerrando sesión...");
+      localStorage.removeItem('sessionActive');
+      this.checkSession();
+    }
+  
+    // Alternar visibilidad de menús
+    toggleMenu(menu) {
+      if (menu) {
         menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+      }
     }
-}
-
-// Cerrar un menú específico
-function closeMenu(menu) {
-    if (menu) {
+  
+    closeMenu(menu) {
+      if (menu) {
         menu.style.display = 'none';
+      }
     }
-}
-
-// Marcar los enlaces activos
-function setActiveLink(menuId) {
-    const links = document.querySelectorAll(`${menuId} a`);
-    const currentPath = window.location.pathname;
-    links.forEach(link => {
+  
+    initializePage() {
+      this.setActiveLink('#nav-menu');
+      this.setActiveLink('#session-menu');
+    }
+  
+    // Marca los enlaces activos
+    setActiveLink(menuId) {
+      const links = document.querySelectorAll(`${menuId} a`);
+      const currentPath = window.location.pathname;
+  
+      links.forEach(link => {
         if (link.getAttribute('href') === currentPath) {
-            link.classList.add('selected');
+          link.classList.add('selected');
         } else {
-            link.classList.remove('selected');
+          link.classList.remove('selected');
         }
-    });
-}
-
-// Función principal para configurar la inicialización de la página
-function initializePage() {
-    setActiveLink('#nav-menu');
-    setActiveLink('#session-menu');
-}
+      });
+    }
+  }
+  
+  // Iniciar el administrador de encabezado
+  document.addEventListener('DOMContentLoaded', () => {
+    new HeaderManager();
+  });
+  

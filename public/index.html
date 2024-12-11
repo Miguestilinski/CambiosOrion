@@ -71,7 +71,7 @@
         <!-- Acciones para escritorio -->
         <div class="header-actions">
             <!-- User actions -->
-            <ul id="user-actions">
+            <div id="user-actions" class="hidden">
                 <button id="profile-menu-button" class="text-white bg-transparent hover:bg-gray-200 focus:outline-none">
                     <img src="/orionapp/icons/profile-white.png" alt="Profile" class="w-6 h-6">
                 </button>
@@ -86,13 +86,13 @@
                         <li><a href="#" id="logout-button" class="block px-4 py-2 hover:bg-gray-100">Cerrar sesión</a></li>
                     </ul>
                 </div>
-            </ul>
+            </div>
 
             <!-- Guest actions -->
-            <ul id="guest-actions">
+            <div id="guest-actions" class="hidden">
                 <button id="login-button" href="iniciar_sesion">Iniciar sesión</button>
                 <a href="registro" class="register-button">Registrarse</a>
-            </ul>
+            </div>
         </div>
     </header>
 
