@@ -91,7 +91,7 @@ function showUserUI(data) {
     const dropdownInformation = document.getElementById('dropdownInformation');
     if (dropdownInformation) {
         dropdownInformation.querySelector('div:first-child').innerHTML = `
-            <div>${data.name}</div>
+            <div>${data.nombre}</div>
             <div class="font-medium truncate">${data.correo}</div>
         `;
     }
