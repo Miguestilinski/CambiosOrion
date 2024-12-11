@@ -74,7 +74,7 @@ function checkSession() {
 }
 
 // Mostrar la interfaz de usuario para usuarios autenticados
-function showUserUI() {
+function showUserUI(data) {
     const userActions = document.getElementById('user-actions');
     const userActionsMobile = document.getElementById('user-actions-mobile');
     const guestActions = document.getElementById('guest-actions');
