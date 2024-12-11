@@ -38,16 +38,16 @@ function setupEventListeners() {
 
 // Función para comprobar el estado de sesión con AJAX
 function checkSession() {
-    fetch('/api/session-status')
-      .then(response => response.json())
-      .then(data => {
-        if (data.isAuthenticated) {
-          showUserUI();
-        } else {
-          showGuestUI();
-        }
-      })
-      .catch(error => console.error('Error al verificar la sesión:', error));
+    fetch('/data/session_status.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.isAuthenticated) {
+                showUserUI();
+            } else {
+                showGuestUI();
+            }
+        })
+        .catch(error => console.error('Error al verificar la sesión:', error));
 }
 
 // Mostrar la interfaz de usuario para usuarios autenticados
@@ -74,16 +74,16 @@ function showGuestUI() {
   
 // Función para cerrar sesión con AJAX
 function logout() {
-    fetch('/api/logout', { method: 'POST' })
-      .then(response => response.json())
-      .then(data => {
-        if (data.message === 'Sesión cerrada') {
-          checkSession(); // Actualizar la UI después de cerrar sesión
-        } else {
-          console.error('No se pudo cerrar la sesión');
-        }
-      })
-      .catch(error => console.error('Error:', error));
+    fetch('/data/cerrar_sesion.php', { method: 'POST' })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message === 'Sesión cerrada') {
+                checkSession(); // Actualizar la UI después de cerrar sesión
+            } else {
+                console.error('No se pudo cerrar la sesión');
+            }
+        })
+        .catch(error => console.error('Error:', error));
 }
 
 // Alternar la visibilidad de los menús

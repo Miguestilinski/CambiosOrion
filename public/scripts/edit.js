@@ -36,7 +36,6 @@ function initializeEditPage() {
         editableCurrenciesLoaded = true; // Marca como cargado para evitar duplicar la llamada
         loadCurrenciesForEdit();
     }
-    console.log('Inicializando la Página');
 
     setActiveLink('#nav-menu');
     setActiveLink('#session-menu');
@@ -100,11 +99,9 @@ function loadCurrenciesForEdit() {
         .catch(error => {
             console.error('Error al obtener las divisas:', error);
         });
-        console.log('Llenando la Tabla para Editar');
 }
 
 function fillEditCurrencyTable(divisas) {
-    console.log('Llenando la Tabla');
     const tableBody = document.querySelector('#currency-list');
     if (!tableBody) {
         console.error('Tabla de edición no encontrada.');
@@ -144,7 +141,6 @@ function fillEditCurrencyTable(divisas) {
             icono_circular: divisa.icono_circular,
             icono_cuadrado: divisa.icono_circular.replace('circular', 'cuadrado'),
         };
-        console.log('Agregando una divisa');
     });
 
     setupEditInputs();
@@ -176,7 +172,6 @@ function setupEditInputs() {
 }
 
 function saveEditedCurrencies() {
-    console.log('Guardando la Tabla');
     
     const changesToSave = Object.values(editableCurrencies).filter(divisa =>
         divisa.compra !== undefined || divisa.venta !== undefined
