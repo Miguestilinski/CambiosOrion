@@ -42,18 +42,8 @@ function setupEventListeners() {
 
     const profileMenuButton = document.getElementById('profile-menu-button');
     if (profileMenuButton) {
-        profileMenuButton.addEventListener('click', (e) => {
-            e.stopPropagation();
-            toggleDropdown();
-        });
+        profileMenuButton.addEventListener('click', toggleDropdown);
     }
-
-    document.addEventListener('click', (e) => {
-        const dropdown = document.getElementById('dropdownInformation');
-        if (dropdown && !dropdown.contains(e.target)) {
-            dropdown.classList.add('hidden');
-        }
-    });
 }
 
 // Función para comprobar el estado de sesión con AJAX
@@ -136,8 +126,6 @@ function toggleDropdown() {
     const dropdown = document.getElementById('dropdownInformation');
     if (dropdown) {
         dropdown.classList.toggle('hidden');
-    } else {
-        console.error('No existe el elemento dropdownInformation');
     }
 }
 
