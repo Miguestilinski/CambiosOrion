@@ -56,11 +56,16 @@ function setupEventListeners() {
 // Función para comprobar el estado de sesión con AJAX
 function checkSession() {
     fetch('/data/session_status.php')
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             console.log('Session Status Data:', data);
             if (data.isAuthenticated) {
-                showUserUI(data); // Pasa los datos del usuario a la función
+                showUserUI(data);
             } else {
                 showGuestUI();
             }
