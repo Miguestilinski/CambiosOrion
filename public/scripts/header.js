@@ -33,11 +33,6 @@ function setupEventListeners() {
                 closeMenu(navMobileMenu);
             }
         });
-
-        document.addEventListener('click', () => {
-            closeMenu(navMobileMenu);
-            closeMenu(sessionMobileMenu);
-        });
     }
 
     const profileMenuButton = document.getElementById('profile-menu-button');
