@@ -1,11 +1,10 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
     console.log("Página cargada, iniciando verificación de sesión...");
-    console.log('Página cargada, iniciando verificación de sesión...');
 
     const guestActions = document.getElementById('guest-actions');
     const userActions = document.getElementById('user-actions');
 
-    const isLoggedIn = true; // Cambia esto según la lógica de tu aplicación
+    const isLoggedIn = true;
     console.log('Sesión activa:', isLoggedIn);
 
     if (isLoggedIn) {

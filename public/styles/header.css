@@ -1,4 +1,7 @@
-/* Header */
+.hidden {
+    display: none !important;
+}
+
 header {
     width: 100vw;
     display: flex;
