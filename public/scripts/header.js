@@ -64,9 +64,9 @@ function showUserUI() {
       guestActions.style.display = 'none';
     }
 }
-
-// Mostrar la interfaz de usuario para invitados
-function showGuestUI() {
+  
+  // Mostrar la interfaz de usuario para invitados
+  function showGuestUI() {
     const userActions = document.getElementById('user-actions');
     const guestActions = document.getElementById('guest-actions');
   
@@ -74,7 +74,7 @@ function showGuestUI() {
       userActions.style.display = 'none';
       guestActions.style.display = 'block';
     }
-}
+}  
   
 // Función para cerrar sesión con AJAX
 function logout() {
