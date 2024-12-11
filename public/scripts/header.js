@@ -92,7 +92,7 @@ function showUserUI() {
     if (dropdownInformation) {
         dropdownInformation.querySelector('div:first-child').innerHTML = `
             <div>${data.name}</div>
-            <div class="font-medium truncate">${data.email}</div>
+            <div class="font-medium truncate">${data.correo}</div>
         `;
     }
 }
