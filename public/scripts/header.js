@@ -1,7 +1,11 @@
+let guestActions, userActions;
+
 document.addEventListener('DOMContentLoaded', function() {
-    checkSession();
-    setupEventListeners();
-    initializePage();
+    setTimeout(() => {
+        checkSession();
+        setupEventListeners();
+        initializePage();
+    }, 100);
 });  
 
 const observer = new MutationObserver((mutations) => {
@@ -34,23 +38,18 @@ function checkSession() {
   
 // Alternar UI en función del estado de la sesión
 function toggleUI(isLoggedIn) {
-    const guestActions = document.getElementById('guest-actions');
-    const userActions = document.getElementById('user-actions');
+    guestActions = document.getElementById('guest-actions');
+    userActions = document.getElementById('user-actions');
 
     if (!guestActions || !userActions) {
         console.error('No se encontraron guestActions o userActions en el DOM');
         return;
     }
 
-    console.log('guestActions:', guestActions);
-    console.log('userActions:', userActions);
-
     if (isLoggedIn) {
-        console.log('Mostrando vista de usuario');
         guestActions.classList.add('hidden');
         userActions.classList.remove('hidden');
     } else {
-        console.log('Mostrando vista de invitado');
         guestActions.classList.remove('hidden');
         userActions.classList.add('hidden');
     }
