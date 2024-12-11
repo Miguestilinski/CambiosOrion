@@ -52,12 +52,19 @@ document.addEventListener("DOMContentLoaded", function() {
             return;
         }
 
+        if (!correo) {
+            alert("Por favor ingresa un correo.");
+            return;
+        }
+
         if (!password) {
             alert("Por favor ingresa una contraseña.");
             return;
         }
 
         const formData = new FormData(loginForm);
+
+        formData.append("correo", correo);
 
         try {
             const response = await fetch('https://cambiosorion.cl/data/iniciar_sesion.php', {
