@@ -98,7 +98,7 @@ function closeMenu(menu) {
     }
 }
 
-isFetchingCurrencies = false;
+let isFetchingCurrencies = false;
 
 function loadCurrenciesForEdit() {
     if (isFetchingCurrencies) return;
