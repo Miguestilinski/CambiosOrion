@@ -66,6 +66,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
         formData.append("correo", correo);
 
+        console.log("Correo recibido: " . $correo);
+        console.log("Campo correo en DB: " . $administrativo['correo']);
+
         try {
             const response = await fetch('https://cambiosorion.cl/data/iniciar_sesion.php', {
                 method: 'POST',
