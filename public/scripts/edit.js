@@ -100,6 +100,9 @@ function closeMenu(menu) {
 
 
 function loadCurrenciesForEdit() {
+    if (isFetchingCurrencies) return; // Evita que múltiples llamadas se hagan simultáneamente
+    isFetchingCurrencies = true;
+
     const targetUrl = 'https://cambiosorion.cl/data/divisas_api.php?_=' + new Date().getTime();
     
     fetch(targetUrl)
@@ -116,6 +119,9 @@ function loadCurrenciesForEdit() {
         })
         .catch(error => {
             console.error('Error al obtener las divisas:', error);
+        })
+        .finally(() => {
+            isFetchingCurrencies = false;
         });
 }
 
