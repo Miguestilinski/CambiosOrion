@@ -123,16 +123,24 @@ function showGuestUI() {
   
 // Función para cerrar sesión con AJAX
 function logout() {
-    fetch('/data/cerrar_sesion.php', { method: 'POST' })
-        .then(response => response.json())
-        .then(data => {
-            if (data.message === 'Sesión cerrada') {
-                checkSession(); // Actualizar la UI después de cerrar sesión
-            } else {
-                console.error('No se pudo cerrar la sesión');
-            }
-        })
-        .catch(error => console.error('Error:', error));
+    fetch('/data/cerrar_sesion.php', { 
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ logout: true }) // Enviando un parámetro si es necesario
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Respuesta del servidor:', data);
+        if (data.message === 'Sesión cerrada') {
+            // Redirigir a una página de inicio de sesión o actualización
+            window.location.href = '/login.php';
+        } else {
+            console.error('No se pudo cerrar la sesión');
+        }
+    })
+    .catch(error => console.error('Error:', error));
 }
 
 // Alternar la visibilidad de los menús
