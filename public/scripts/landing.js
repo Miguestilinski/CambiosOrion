@@ -79,10 +79,19 @@ function initializeSSE() {
     eventSource.onmessage = (event) => {
         try {
             const data = JSON.parse(event.data);
-            if (Array.isArray(data)) {
+
+            // Validar que los datos sean un objeto esperado
+            if (data.isAuthenticated) {
+                // Si estás autenticado, puedes procesar la información
+                console.log('Autenticado correctamente:', data);
+            } else {
+                console.warn('Usuario no autenticado o sesión inválida.');
+            }
+
+            if (data && Array.isArray(data.divisas)) { // Validar la estructura esperada
                 exchangeRates = {};
 
-                data.forEach(currency => {
+                data.divisas.forEach(currency => {
                     if (
                         currency.nombre &&
                         currency.compra &&
@@ -99,15 +108,16 @@ function initializeSSE() {
 
                 fillCurrencyTable();
             } else {
-                console.error('Formato inesperado en datos SSE:', data);
+                console.error('Formato de datos inesperado:', data);
             }
         } catch (error) {
-            console.error('Error al procesar los datos SSE:', error);
+            console.error('Error procesando los datos SSE:', error);
         }
     };
 
     eventSource.onerror = (error) => {
         console.error('Error con la conexión SSE:', error);
+        eventSource.close(); // Cerrar la conexión si algo sale mal
     };
 }
 
