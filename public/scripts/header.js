@@ -8,10 +8,15 @@ document.addEventListener('DOMContentLoaded', function() {
   
 // Configurar eventos de clic para la sesión
 function setupEventListeners() {
-    const logoutButton = document.getElementById('logout-button');
+    const logoutButtonMobile = document.getElementById('logout-button-mobile');
+    const logoutButtonMenu = document.getElementById('logout-button-menu');
 
-    if (logoutButton) {
-        logoutButton.addEventListener('click', logout);
+    if (logoutButtonMobile) {
+        logoutButtonMobile.addEventListener('click', logout);
+    }
+
+    if (logoutButtonMenu) {
+        logoutButtonMenu.addEventListener('click', logout);
     }
 
     const navMenuButton = document.getElementById('nav-menu-button');
