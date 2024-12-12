@@ -40,11 +40,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Función para mostrar el Skeleton Loader
 function showSkeletonLoader() {
-    const tableBody = document.getElementById("currency-table-body");
-    if (!tableBody) return;
+    const loaderContainer = document.getElementById("loader-container");
+    if (!loaderContainer) return;
 
     // Crear múltiples filas de carga con estilo skeleton
-    tableBody.innerHTML = `
+    loaderContainer.innerHTML = `
         <tr>
             <td class="px-4 py-2 animate-pulse bg-gray-200 h-6 w-1/2 rounded"></td>
             <td class="px-4 py-2 animate-pulse bg-gray-200 h-6 w-1/4 rounded"></td>
@@ -76,10 +76,10 @@ function showSkeletonLoader() {
 
 // Función para cerrar el Skeleton Loader después de cargar los datos
 function removeSkeletonLoader() {
-    const tableBody = document.getElementById("currency-table-body");
-    if (!tableBody) return;
+    const loaderContainer = document.getElementById("loader-container");
+    if (!loaderContainer) return;
 
-    tableBody.innerHTML = '';
+    loaderContainer.innerHTML = '';
     fillCurrencyTable(); // Llamar para poblar la tabla con datos reales
 }
 
