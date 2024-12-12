@@ -49,10 +49,16 @@
                 <li><a href="registro" class="register-button">Registrarse</a></li>
             </ul>
             <ul id="user-actions-mobile" style="display:none;">
-                <li id="user-name"></li>
-                <li id="user-email"></li>
-                <li><a href="perfil">Perfil</a></li>
-                <li><a href="#" id="logout-button">Cerrar sesión</a></li>
+                <div id="dropdownInformation" class="text-white">
+                    <div class="text-white">
+                        <div id="user-name">Nombre del usuario</div>
+                        <div id="user-email" class="font-medium truncate">Correo del usuario</div>
+                    </div>
+                    <ul class="text-white">
+                        <li><a href="/profile" class="block px-4 py-2 hover:bg-gray-100">Mi perfil</a></li>
+                        <li><a id="logout-button" class="block px-4 py-2 hover:bg-gray-100">Cerrar sesión</a></li>
+                    </ul>
+                </div>
             </ul>
         </div>
     
