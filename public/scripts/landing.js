@@ -9,6 +9,7 @@ function initializePage() {
     initializeSSE();
     setActiveLink('#nav-menu');
     setActiveLink('#session-menu');
+    showSkeletonLoader();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -36,6 +37,41 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// Función para mostrar el Skeleton Loader
+function showSkeletonLoader() {
+    const tableBody = document.getElementById("currency-table-body");
+    if (!tableBody) return;
+
+    // Insertar filas de carga en la tabla
+    tableBody.innerHTML = `
+        <tr>
+            <td class="px-4 py-2 animate-pulse bg-gray-200 h-6 w-1/2 rounded"></td>
+            <td class="px-4 py-2 animate-pulse bg-gray-200 h-6 w-1/4 rounded"></td>
+            <td class="px-4 py-2 animate-pulse bg-gray-200 h-6 w-1/4 rounded"></td>
+        </tr>
+        <tr>
+            <td class="px-4 py-2 animate-pulse bg-gray-200 h-6 w-1/2 rounded"></td>
+            <td class="px-4 py-2 animate-pulse bg-gray-200 h-6 w-1/4 rounded"></td>
+            <td class="px-4 py-2 animate-pulse bg-gray-200 h-6 w-1/4 rounded"></td>
+        </tr>
+        <tr>
+            <td class="px-4 py-2 animate-pulse bg-gray-200 h-6 w-1/2 rounded"></td>
+            <td class="px-4 py-2 animate-pulse bg-gray-200 h-6 w-1/4 rounded"></td>
+            <td class="px-4 py-2 animate-pulse bg-gray-200 h-6 w-1/4 rounded"></td>
+        </tr>
+    `;
+}
+
+
+// Función para cerrar el Skeleton Loader después de cargar los datos
+function removeSkeletonLoader() {
+    const tableBody = document.getElementById("currency-table-body");
+    if (!tableBody) return;
+
+    tableBody.innerHTML = '';
+    fillCurrencyTable(); // Llamar para poblar la tabla con datos reales
+}
 
 // Función para alternar visibilidad del menú
 function toggleMenu(menuToOpen, menuToClose) {
@@ -110,6 +146,8 @@ function initializeSSE() {
                         console.warn('Elemento inválido en los datos:', currency);
                     }
                 });
+
+                removeSkeletonLoader();
 
                 fillCurrencyTable();
             } else {
