@@ -74,51 +74,68 @@ function removeTrailingZeros(value) {
 }
 
 function initializeSSE() {
-    const eventSource = new EventSource('https://cambiosorion.cl/api/divisas/stream/stream_divisas.php');
+    const url = 'https://cambiosorion.cl/api/divisas/stream/stream_divisas.php';
 
-    eventSource.onmessage = (event) => {
-        try {
-            const data = JSON.parse(event.data);
+    try {
+        const eventSource = new EventSource(url);
 
-            // Validar que los datos sean un objeto esperado
-            if (data.isAuthenticated) {
-                // Si estás autenticado, puedes procesar la información
-                console.log('Autenticado correctamente:', data);
+        eventSource.onopen = () => {
+            console.log('Conexión SSE establecida correctamente.');
+        };
+
+        eventSource.onmessage = (event) => {
+            try {
+                const data = JSON.parse(event.data);
+
+                if (data.isAuthenticated) {
+                    console.log('Autenticado correctamente:', data);
+                } else {
+                    console.warn('Usuario no autenticado o sesión inválida.');
+                }
+
+                if (data && Array.isArray(data.divisas)) {
+                    exchangeRates = {};
+
+                    data.divisas.forEach(currency => {
+                        if (
+                            currency.nombre &&
+                            currency.compra &&
+                            currency.venta &&
+                            (currency.icono_circular || currency.icono_cuadrado)
+                        ) {
+                            exchangeRates[currency.nombre] = {
+                                compra: removeTrailingZeros(currency.compra),
+                                venta: removeTrailingZeros(currency.venta),
+                                icono: currency.icono_circular || currency.icono_cuadrado,
+                            };
+                        }
+                    });
+
+                    fillCurrencyTable();
+                } else {
+                    console.error('Formato de datos inesperado:', data);
+                }
+            } catch (error) {
+                console.error('Error procesando los datos SSE:', error);
+            }
+        };
+
+        eventSource.onerror = (error) => {
+            console.error('Error con la conexión SSE:', error);
+
+            // Safari a menudo no reintenta automáticamente.
+            if (eventSource.readyState === EventSource.CLOSED) {
+                console.warn('Conexión SSE cerrada, intentando reconectar...');
+                setTimeout(() => initializeSSE(), 5000); // Intentar reconectar después de 5 segundos
             } else {
-                console.warn('Usuario no autenticado o sesión inválida.');
+                console.error('Conexión SSE en estado:', eventSource.readyState);
             }
 
-            if (data && Array.isArray(data.divisas)) { // Validar la estructura esperada
-                exchangeRates = {};
-
-                data.divisas.forEach(currency => {
-                    if (
-                        currency.nombre &&
-                        currency.compra &&
-                        currency.venta &&
-                        (currency.icono_circular || currency.icono_cuadrado)
-                    ) {
-                        exchangeRates[currency.nombre] = {
-                            compra: removeTrailingZeros(currency.compra),
-                            venta: removeTrailingZeros(currency.venta),
-                            icono: currency.icono_circular || currency.icono_cuadrado,
-                        };
-                    }
-                });
-
-                fillCurrencyTable();
-            } else {
-                console.error('Formato de datos inesperado:', data);
-            }
-        } catch (error) {
-            console.error('Error procesando los datos SSE:', error);
-        }
-    };
-
-    eventSource.onerror = (error) => {
-        console.error('Error con la conexión SSE:', error);
-        eventSource.close(); // Cerrar la conexión si algo sale mal
-    };
+            eventSource.close();
+        };
+    } catch (e) {
+        console.error('Error inicializando SSE:', e);
+    }
 }
 
 function fillCurrencyTable() {
