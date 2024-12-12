@@ -46,9 +46,6 @@ document.addEventListener("DOMContentLoaded", function() {
         const correo = document.getElementById("correo") ? document.getElementById("correo").value : '';
         const password = document.getElementById("password").value;
 
-        // Convertir el correo a minúsculas automáticamente
-        correo = correo.toLowerCase();
-
         // Validación de RUT si es un cliente
         if (tipoUsuario === 'cliente' && !validarRUT(rut)) {
             alert("RUT no es válido.");
@@ -66,6 +63,8 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         const formData = new FormData(loginForm);
+        // Convertir el correo a minúsculas automáticamente
+        correo = correo.toLowerCase();
 
         formData.set("correo", correo);
 
