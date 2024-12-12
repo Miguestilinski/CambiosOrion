@@ -104,11 +104,11 @@ function showUserUI(data) {
         `;
     }
 
-    if (data.tipo === 'administrador') {
+    if (data.tipo === 'administrativo') {
         // Mostrar el menú administrativo
         menuCliente.style.display = 'none';
         menuAdmin.style.display = 'block';
-    } else {
+    } else if (data.tipo === 'cliente'){
         // Mostrar el menú cliente
         menuCliente.style.display = 'block';
         menuAdmin.style.display = 'none';
