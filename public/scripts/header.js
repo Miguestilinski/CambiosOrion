@@ -94,12 +94,24 @@ function showUserUI(data) {
 
     // Actualiza el dropdown con los datos del usuario
     const dropdownInformation = document.getElementById('dropdownInformation');
+    const menuCliente = document.getElementById('menu-cliente');
+    const menuAdmin = document.getElementById('menu-admin');
     if (dropdownInformation) {
         dropdownInformation.querySelector('div:first-child').innerHTML = `
             <div>${data.nombre}</div>
             <div class="font-medium truncate">${data.correo}</div>
             <div class="text-sm text-gray-500">${data.tipo}</div>
         `;
+    }
+
+    if (data.tipo === 'administrador') {
+        // Mostrar el menú administrativo
+        menuCliente.style.display = 'none';
+        menuAdmin.style.display = 'block';
+    } else {
+        // Mostrar el menú cliente
+        menuCliente.style.display = 'block';
+        menuAdmin.style.display = 'none';
     }
 
     // Actualiza la información en la versión móvil
