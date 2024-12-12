@@ -57,15 +57,33 @@ function setupCatalogButtons() {
 
     if (catalogButtonNormal) {
         catalogButtonNormal.addEventListener('click', () => {
-            window.open('catalogo.html', '_blank');
+            openPopupWindow('catalogo', 'Catálogo Normal', 1080, 1920);
         });
     }
 
     if (catalogButtonDestacadas) {
         catalogButtonDestacadas.addEventListener('click', () => {
-            window.open('destacadas.html', '_blank');
+            openPopupWindow('destacadas', 'Catálogo Destacadas', 1080, 1920);
         });
     }
+}
+
+/**
+ * Función para abrir una ventana emergente personalizada.
+ * @param {string} url - La URL que se abrirá en el pop-up.
+ * @param {string} title - El título de la ventana.
+ * @param {number} width - El ancho del pop-up.
+ * @param {number} height - El alto del pop-up.
+ */
+function openPopupWindow(url, title, width, height) {
+    const left = (screen.width - width) / 2; // Centrar la ventana horizontalmente
+    const top = (screen.height - height) / 2; // Centrar la ventana verticalmente
+
+    window.open(
+        url,
+        title,
+        `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=yes`
+    );
 }
 
 function toggleMenu(menu) {
@@ -82,7 +100,7 @@ function closeMenu(menu) {
 
 
 function loadCurrenciesForEdit() {
-    const targetUrl = 'https://cambiosorion.cl/data/divisas_api.php';
+    const targetUrl = 'https://cambiosorion.cl/data/divisas_api.php?_=' + new Date().getTime();
     
     fetch(targetUrl)
         .then(response => {
@@ -145,6 +163,11 @@ function fillEditCurrencyTable(divisas) {
 
     setupEditInputs();
 }
+
+// Prevenir que el evento de scroll modifique los datos
+document.querySelector('#currency-list')?.addEventListener('scroll', (e) => {
+    e.stopImmediatePropagation();
+});
 
 function removeTrailingZeros(value) {
     if (value === null || value === undefined) return '';
