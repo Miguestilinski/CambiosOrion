@@ -96,6 +96,14 @@ function showUserUI(data) {
             <div class="text-sm text-gray-500">${data.tipo}</div>
         `;
     }
+
+    // Actualiza la información en la versión móvil
+    const userNameMobile = document.querySelector('#user-actions-mobile #user-name');
+    const userEmailMobile = document.querySelector('#user-actions-mobile #user-email');
+    if (userNameMobile && userEmailMobile) {
+        userNameMobile.textContent = data.nombre;
+        userEmailMobile.textContent = data.correo;
+    }
 }
   
 // Mostrar la interfaz de usuario para invitados
