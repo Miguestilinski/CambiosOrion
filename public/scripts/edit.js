@@ -98,9 +98,10 @@ function closeMenu(menu) {
     }
 }
 
+isFetchingCurrencies = false;
 
 function loadCurrenciesForEdit() {
-    if (isFetchingCurrencies) return; // Evita que múltiples llamadas se hagan simultáneamente
+    if (isFetchingCurrencies) return;
     isFetchingCurrencies = true;
 
     const targetUrl = 'https://cambiosorion.cl/data/divisas_api.php?_=' + new Date().getTime();
