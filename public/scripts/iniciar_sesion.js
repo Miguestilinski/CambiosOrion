@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         const tipoUsuario = document.querySelector('.tab-button.active').dataset.tipoUsuario;
         const rut = document.getElementById("rut") ? document.getElementById("rut").value : '';
-        const correo = document.getElementById("correo") ? document.getElementById("correo").value : '';
+        let correo = document.getElementById("correo") ? document.getElementById("correo").value : '';
         const password = document.getElementById("password").value;
 
         // Convertir el correo a minúsculas automáticamente
@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         const formData = new FormData(loginForm);
 
-        formData.append("correo", correo);
+        formData.set("correo", correo);
 
         try {
             const response = await fetch('https://cambiosorion.cl/data/iniciar_sesion.php', {
