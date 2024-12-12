@@ -135,7 +135,7 @@ function logout() {
         console.log('Respuesta del servidor:', data);
         if (data.message === 'Sesión cerrada') {
             // Redirigir a una página de inicio de sesión o actualización
-            window.location.href = '/login.php';
+            window.location.href = '/index';
         } else {
             console.error('No se pudo cerrar la sesión');
         }
