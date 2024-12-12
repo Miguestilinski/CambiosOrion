@@ -43,8 +43,18 @@ function showSkeletonLoader() {
     const tableBody = document.getElementById("currency-table-body");
     if (!tableBody) return;
 
-    // Insertar filas de carga en la tabla
+    // Crear múltiples filas de carga con estilo skeleton
     tableBody.innerHTML = `
+        <tr>
+            <td class="px-4 py-2 animate-pulse bg-gray-200 h-6 w-1/2 rounded"></td>
+            <td class="px-4 py-2 animate-pulse bg-gray-200 h-6 w-1/4 rounded"></td>
+            <td class="px-4 py-2 animate-pulse bg-gray-200 h-6 w-1/4 rounded"></td>
+        </tr>
+        <tr>
+            <td class="px-4 py-2 animate-pulse bg-gray-200 h-6 w-1/2 rounded"></td>
+            <td class="px-4 py-2 animate-pulse bg-gray-200 h-6 w-1/4 rounded"></td>
+            <td class="px-4 py-2 animate-pulse bg-gray-200 h-6 w-1/4 rounded"></td>
+        </tr>
         <tr>
             <td class="px-4 py-2 animate-pulse bg-gray-200 h-6 w-1/2 rounded"></td>
             <td class="px-4 py-2 animate-pulse bg-gray-200 h-6 w-1/4 rounded"></td>
