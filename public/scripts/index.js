@@ -50,14 +50,6 @@ function loadCurrenciesWithSSE() {
                 console.log('Tasa de cambio agregada:', exchangeRates[divisa.nombre]);
                 preloadIcon(circularIcon);
 
-                // Asignar tasas de cierre solo una vez
-                if (!closingRates[divisa.nombre]) {
-                    closingRates[divisa.nombre] = {
-                        compra: parseFloat(divisa.compra),
-                        venta: parseFloat(divisa.venta)
-                    };
-                }     
-
                 const option1 = document.createElement("div");
                 option1.innerHTML = `<img src="${circularIcon}" alt="${divisa.nombre}" class="w-6 h-6 mr-2"> ${divisa.nombre}`;
                 option1.className = "p-2 hover:bg-gray-100 cursor-pointer";
@@ -101,11 +93,11 @@ async function fetchClosingRates() {
             return;
         }
 
-        // Mapear datos de cierre
+        // Llenar solo los datos de cierre correctamente
         data.forEach(item => {
             closingRates[item.nombre] = {
-                compra: item.compra,
-                venta: item.venta
+                compra: parseFloat(item.compra),
+                venta: parseFloat(item.venta)
             };
         });
 
