@@ -465,6 +465,14 @@ button:hover {
     background-color: #2563eb;
 }
 
+#last-updated {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    color: white;
+    font-size: 0.75rem; /* Tamaño de texto pequeño */
+}
+
 .forgot-password {
     display: block;
     text-align: center;
