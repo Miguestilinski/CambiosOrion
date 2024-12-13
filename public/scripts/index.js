@@ -169,9 +169,15 @@ function fillCurrencyTable() {
                 </td>
                 <td class="px-4 py-2">${compra ? Math.round(compra) + ' CLP' : ' '}</td>
                 <td class="px-4 py-2">
-                    <div style="${compraStyle.containerStyle}" class="variation-container">
-                        ${currency === 'CLP' ? ' ' : variationCompra !== 0 ? (variationCompra > 0 ? `+${variationCompra.toFixed(2)}% ${compraStyle.arrowHTML}` : `${variationCompra.toFixed(2)}% ${compraStyle.arrowHTML}`) : `${variationCompra.toFixed(2)}% ${compraStyle.arrowHTML}`}
-                    </div>
+                    ${currency === 'CLP' ? '' : `
+                        <div style="${compraStyle.containerStyle}" class="variation-container">
+                            ${variationCompra !== 0 ? 
+                                (variationCompra > 0 ? `+${variationCompra.toFixed(2)}%` : `${variationCompra.toFixed(2)}%`) 
+                                : `${variationCompra.toFixed(2)}%`
+                            }
+                            <img src="${compraStyle.arrowHTML}" alt="Flecha" class="arrow-icon">
+                        </div>
+                    `}
                 </td>
                 <td class="px-4 py-2 edit-column ${isEditMode ? '' : 'hidden'}">
                     <button onclick="deleteCurrency('${currency}')" class="delete-btn">
