@@ -9,6 +9,7 @@ function initializePage() {
     loadCurrenciesWithSSE();
     fetchClosingRates();
     fillCurrencyTable();
+    updateLastUpdatedTimestamp();
 }
 
 function loadCurrenciesWithSSE() {
@@ -194,6 +195,22 @@ function fillCurrencyTable() {
             tableBody.appendChild(row);
         }
     });
+}
+
+function updateLastUpdatedTimestamp() {
+    const lastUpdatedElement = document.getElementById("last-updated");
+    if (lastUpdatedElement) {
+        const now = new Date();
+        const formattedDate = now.toLocaleString('es-CL', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+        lastUpdatedElement.textContent = `Última actualización: ${formattedDate}`;
+    }
 }
 
 function preloadIcon(iconUrl) {
