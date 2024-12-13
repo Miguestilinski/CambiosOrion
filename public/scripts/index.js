@@ -106,6 +106,74 @@ async function fetchClosingRates() {
     }
 }
 
+// Calcula variación y determina si es positiva o negativa
+function calculateVariationPercentage(currentRate, closingRate) {
+    if (!closingRate || closingRate <= 0) return { variation: 0, isPositive: null };
+
+    const variation = ((currentRate - closingRate) / closingRate) * 100;
+    const isPositive = variation >= 0;
+
+    return { variation, isPositive };
+}
+
+function fillCurrencyTable() {
+    console.log('Llenando la tabla de divisas...');
+    const tableBody = document.getElementById("currency-table-body");
+    if (!tableBody) {
+        console.error("Error: 'currency-table-body' no se encuentra en el DOM.");
+        return; // Evita continuar si el elemento no existe
+    }
+    tableBody.innerHTML = '';
+    displayedCurrencies.forEach((currency, index) => {
+        console.log('Procesando divisa para la tabla:', currency);
+        if (exchangeRates[currency]) {
+            const row = document.createElement("tr");
+
+            const compra = exchangeRates[currency].compra;
+            const venta = exchangeRates[currency].venta;
+
+            // Obtener las tasas de cierre con validación
+            const closingCompra = closingRates[currency]?.compra || 0;
+            const closingVenta = closingRates[currency]?.venta || 0;
+
+            console.log(`Compra actual: ${compra}, Venta actual: ${venta}`);
+            console.log(`Compra de cierre: ${closingCompra}, Venta de cierre: ${closingVenta}`);
+
+            const compraVariation = calculateVariationPercentage(compra, closingCompra);
+            const ventaVariation = calculateVariationPercentage(venta, closingVenta);
+
+            console.log(`Compra variation: ${variationCompra}, Ventas variation: ${variationVenta}`);
+
+            row.classList.add("currency-row");
+            row.innerHTML = `
+                <td class="px-4 py-2 flex items-center justify-start space-x-2 sm:w-auto w-full">
+                    <img src="${exchangeRates[currency].icono}" alt="${currency}" class="w-6 h-6 mr-2"> ${currency}
+                </td>
+                <td class="px-4 py-2">${compra ? Math.round(compra) + ' CLP' : 'N/A'}</td>
+                <td class="px-4 py-2">
+                    ${currency === 'CLP' ? 'N/A' :
+                    compraVariation.isPositive === null
+                        ? 'N/A'
+                        : compraVariation.isPositive
+                            ? `+${compraVariation.variation.toFixed(2)}% ↑`
+                            : `-${Math.abs(compraVariation.variation).toFixed(2)}% ↓`}
+                </td>
+                <td class="px-4 py-2 edit-column ${isEditMode ? '' : 'hidden'}">
+                    <button onclick="deleteCurrency('${currency}')" class="delete-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6 text-white">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </td>
+            `;
+            if (index === 0) {
+                row.classList.add("first-row");
+            }
+            tableBody.appendChild(row);
+        }
+    });
+}
+
 function preloadIcon(iconUrl) {
     if (!iconsLoaded[iconUrl]) {
         const img = new Image();
@@ -235,65 +303,6 @@ function updateCurrencyIcon() {
     document.getElementById("icon-currency1").src = exchangeRates[currency1].icono;
     document.getElementById("icon-currency2").src = exchangeRates[currency2].icono;
 }   
-
-function calculateVariationPercentage(currentRate, closingRate) {
-    console.log(`Calculando variación. Tasa actual: ${currentRate}, Tasa de cierre: ${closingRate}`);
-    if (closingRate && closingRate > 0) {
-        return ((currentRate - closingRate) / closingRate) * 100;
-    }
-    return 'N/A'; // Si no hay datos de cierre válidos
-}
-
-function fillCurrencyTable() {
-    console.log('Llenando la tabla de divisas...');
-    const tableBody = document.getElementById("currency-table-body");
-    if (!tableBody) {
-        console.error("Error: 'currency-table-body' no se encuentra en el DOM.");
-        return; // Evita continuar si el elemento no existe
-    }
-    tableBody.innerHTML = '';
-    displayedCurrencies.forEach((currency, index) => {
-        console.log('Procesando divisa para la tabla:', currency);
-        if (exchangeRates[currency]) {
-            const row = document.createElement("tr");
-
-            const compra = exchangeRates[currency].compra;
-            const venta = exchangeRates[currency].venta;
-
-            // Obtener las tasas de cierre con validación
-            const closingCompra = closingRates[currency]?.compra || 0;
-            const closingVenta = closingRates[currency]?.venta || 0;
-
-            console.log(`Compra actual: ${compra}, Venta actual: ${venta}`);
-            console.log(`Compra de cierre: ${closingCompra}, Venta de cierre: ${closingVenta}`);
-
-            const variationCompra = calculateVariationPercentage(compra, closingCompra);
-            const variationVenta = calculateVariationPercentage(venta, closingVenta);
-
-            console.log(`Compra variation: ${variationCompra}, Ventas variation: ${variationVenta}`);
-
-            row.classList.add("currency-row");
-            row.innerHTML = `
-                <td class="px-4 py-2 flex items-center justify-start space-x-2 sm:w-auto w-full">
-                    <img src="${exchangeRates[currency].icono}" alt="${currency}" class="w-6 h-6 mr-2"> ${currency}
-                </td>
-                <td class="px-4 py-2">${compra ? Math.round(compra) + ' CLP' : 'N/A'}</td>
-                <td class="px-4 py-2">${variationCompra === 'N/A' ? 'N/A' : variationCompra.toFixed(2) + '%'}</td>
-                <td class="px-4 py-2 edit-column ${isEditMode ? '' : 'hidden'}">
-                    <button onclick="deleteCurrency('${currency}')" class="delete-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6 text-white">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                        </svg>
-                    </button>
-                </td>
-            `;
-            if (index === 0) {
-                row.classList.add("first-row");
-            }
-            tableBody.appendChild(row);
-        }
-    });
-}
 
 function updateAddCurrencyDropdown() {
     const dropdown = document.getElementById("add-currency-dropdown");
