@@ -13,19 +13,14 @@ function initializePage() {
 }
 
 function loadCurrenciesWithSSE() {
-    console.log('Conectando con el servidor SSE...');
     const eventSource = new EventSource('https://cambiosorion.cl/api/divisas/stream/stream_divisas.php');
 
     eventSource.onopen = () => {
-        console.log('Conexión SSE establecida correctamente.');
     };
 
     eventSource.onmessage = (event) => {
-        console.log('Mensaje SSE recibido:', event.data);
         try {
             const responseData = JSON.parse(event.data);
-
-            console.log('Datos SSE procesados:', responseData);
 
             // Validar si los datos son un array
             if (!Array.isArray(responseData)) {
@@ -40,7 +35,6 @@ function loadCurrenciesWithSSE() {
             if (dropdown2) dropdown2.innerHTML = '';
 
             responseData.forEach(divisa => {
-                console.log('Procesando divisa:', divisa);
                 const circularIcon = divisa.icono_circular;
                 exchangeRates[divisa.nombre] = {
                     compra: parseFloat(divisa.compra),
@@ -70,7 +64,6 @@ function loadCurrenciesWithSSE() {
                 dropdown2.appendChild(option2);
             });
 
-            console.log('Actualizando la lista de divisas en la tabla...');
             updateAddCurrencyDropdown();
             fillCurrencyTable();
         } catch (error) {
