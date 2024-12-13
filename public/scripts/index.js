@@ -42,7 +42,6 @@ function loadCurrenciesWithSSE() {
                     icono: circularIcon
                 };
 
-                console.log('Tasa de cambio agregada:', exchangeRates[divisa.nombre]);
                 preloadIcon(circularIcon);
 
                 const option1 = document.createElement("div");
@@ -139,7 +138,6 @@ function fillCurrencyTable() {
     }
     tableBody.innerHTML = '';
     displayedCurrencies.forEach((currency, index) => {
-        console.log('Procesando divisa para la tabla:', currency);
         if (exchangeRates[currency]) {
             const row = document.createElement("tr");
 
