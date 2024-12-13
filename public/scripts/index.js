@@ -139,8 +139,8 @@ function fillCurrencyTable() {
             console.log(`Compra actual: ${compra}, Venta actual: ${venta}`);
             console.log(`Compra de cierre: ${closingCompra}, Venta de cierre: ${closingVenta}`);
 
-            const compraVariation = calculateVariationPercentage(compra, closingCompra);
-            const ventaVariation = calculateVariationPercentage(venta, closingVenta);
+            const variationCompra = calculateVariationPercentage(compra, closingCompra);
+            const variationVenta = calculateVariationPercentage(venta, closingVenta);
 
             console.log(`Compra variation: ${variationCompra}, Ventas variation: ${variationVenta}`);
 
@@ -152,11 +152,11 @@ function fillCurrencyTable() {
                 <td class="px-4 py-2">${compra ? Math.round(compra) + ' CLP' : 'N/A'}</td>
                 <td class="px-4 py-2">
                     ${currency === 'CLP' ? 'N/A' :
-                    compraVariation.isPositive === null
+                    variationCompra.isPositive === null
                         ? 'N/A'
-                        : compraVariation.isPositive
-                            ? `+${compraVariation.variation.toFixed(2)}% ↑`
-                            : `-${Math.abs(compraVariation.variation).toFixed(2)}% ↓`}
+                        : variationCompra.isPositive
+                            ? `+${variationCompra.variation.toFixed(2)}% ↑`
+                            : `-${Math.abs(variationCompra.variation).toFixed(2)}% ↓`}
                 </td>
                 <td class="px-4 py-2 edit-column ${isEditMode ? '' : 'hidden'}">
                     <button onclick="deleteCurrency('${currency}')" class="delete-btn">
