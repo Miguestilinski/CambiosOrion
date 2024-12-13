@@ -118,23 +118,23 @@ function calculateVariationPercentage(currentRate, closingRate) {
 function getVariationStyle(variation) {
     let containerStyle = "";
     let textStyle = "";
-    let arrow = "";
+    let arrowHTML = "";
 
     if (variation > 0) {
         // Positiva
         containerStyle = "background-color: #DEF7E8; color: #215436;";
-        arrow = "⬆";
+        arrowHTML = `<img src="/orionapp/icons/arrow-up-green.svg" alt="Positivo" class="arrow-icon">`;
     } else if (variation < 0) {
         // Negativa
         containerStyle = "background-color: #F7DEDE; color: #591D1D;";
-        arrow = "⬇";
+        arrowHTML = `<img src="/orionapp/icons/arrow-down-red.svg" alt="Negativo" class="arrow-icon">`;
     } else {
         // Neutra
         containerStyle = "background-color: #E0E0E0; color: #555;";
-        arrow = "⬅";
+        arrowHTML = `<img src="/orionapp/icons/arrow-left-gray.svg" alt="Neutro" class="arrow-icon">`;
     }
 
-    return { containerStyle, textStyle, arrow };
+    return { containerStyle, arrowHTML };
 }
 
 function fillCurrencyTable() {
@@ -170,7 +170,7 @@ function fillCurrencyTable() {
                 <td class="px-4 py-2">${compra ? Math.round(compra) + ' CLP' : ' '}</td>
                 <td class="px-4 py-2">
                     <div style="${compraStyle.containerStyle}" class="variation-container">
-                        ${currency === 'CLP' ? ' ' : variationCompra !== 0 ? (variationCompra > 0 ? `+${variationCompra.toFixed(2)}% ${compraStyle.arrow}` : `${variationCompra.toFixed(2)}% ${compraStyle.arrow}`) : `${variationCompra.toFixed(2)}% ${compraStyle.arrow}`}
+                        ${currency === 'CLP' ? ' ' : variationCompra !== 0 ? (variationCompra > 0 ? `+${variationCompra.toFixed(2)}% ${compraStyle.arrowHTML}` : `${variationCompra.toFixed(2)}% ${compraStyle.arrowHTML}`) : `${variationCompra.toFixed(2)}% ${compraStyle.arrowHTML}`}
                     </div>
                 </td>
                 <td class="px-4 py-2 edit-column ${isEditMode ? '' : 'hidden'}">

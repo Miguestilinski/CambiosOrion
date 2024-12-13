@@ -341,6 +341,13 @@ section .max-w-xl {
     border-bottom-right-radius: 8px;
 }
 
+.arrow-icon {
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+    margin-left: 4px;
+}
+
 /* Oculta la columna de edición por defecto */
 .edit-column {
     display: none;
