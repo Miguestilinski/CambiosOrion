@@ -12,6 +12,7 @@ function initializePage() {
 }
 
 function loadCurrenciesWithSSE() {
+    console.log('Conectando con el servidor SSE...');
     const eventSource = new EventSource('https://cambiosorion.cl/api/divisas/stream/stream_divisas.php');
 
     eventSource.onopen = () => {
@@ -19,8 +20,11 @@ function loadCurrenciesWithSSE() {
     };
 
     eventSource.onmessage = (event) => {
+        console.log('Mensaje SSE recibido:', event.data);
         try {
             const responseData = JSON.parse(event.data);
+
+            console.log('Datos SSE procesados:', responseData);
 
             // Validar si los datos son un array
             if (!Array.isArray(responseData)) {
@@ -35,6 +39,7 @@ function loadCurrenciesWithSSE() {
             if (dropdown2) dropdown2.innerHTML = '';
 
             responseData.forEach(divisa => {
+                console.log('Procesando divisa:', divisa);
                 const circularIcon = divisa.icono_circular;
                 exchangeRates[divisa.nombre] = {
                     compra: parseFloat(divisa.compra),
@@ -42,6 +47,7 @@ function loadCurrenciesWithSSE() {
                     icono: circularIcon
                 };
 
+                console.log('Tasa de cambio agregada:', exchangeRates[divisa.nombre]);
                 preloadIcon(circularIcon);
 
                 // Actualizar las tasas de cierre periódicamente
@@ -69,6 +75,7 @@ function loadCurrenciesWithSSE() {
                 dropdown2.appendChild(option2);
             });
 
+            console.log('Actualizando la lista de divisas en la tabla...');
             updateAddCurrencyDropdown();
             fillCurrencyTable();
         } catch (error) {
@@ -213,13 +220,15 @@ function updateCurrencyIcon() {
 }   
 
 function calculateVariationPercentage(currentRate, closingRate) {
+    console.log(`Calculando variación. Tasa actual: ${currentRate}, Tasa de cierre: ${closingRate}`);
     if (closingRate && closingRate !== 0) {
         return ((currentRate - closingRate) / closingRate) * 100;
     }
-    return 0;
+    return '-';
 }
 
 function fillCurrencyTable() {
+    console.log('Llenando la tabla de divisas...');
     const tableBody = document.getElementById("currency-table-body");
     if (!tableBody) {
         console.error("Error: 'currency-table-body' no se encuentra en el DOM.");
@@ -227,6 +236,7 @@ function fillCurrencyTable() {
     }
     tableBody.innerHTML = '';
     displayedCurrencies.forEach((currency, index) => {
+        console.log('Procesando divisa para la tabla:', currency);
         if (exchangeRates[currency]) {
             const row = document.createElement("tr");
             const compra = exchangeRates[currency].compra;
@@ -236,6 +246,8 @@ function fillCurrencyTable() {
 
             const variationCompra = calculateVariationPercentage(compra, closingCompra).toFixed(2);
             const variationVenta = calculateVariationPercentage(venta, closingVenta).toFixed(2);
+
+            console.log(`Compra: ${compra}, Ventas: ${venta}, Variación compra: ${variationCompra}, Variación venta: ${variationVenta}`);
 
             row.classList.add("currency-row");
             row.innerHTML = `
