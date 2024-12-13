@@ -236,7 +236,7 @@ function fillCurrencyTable() {
 
             const variationCompra = calculateVariationPercentage(compra, closingCompra).toFixed(2);
             const variationVenta = calculateVariationPercentage(venta, closingVenta).toFixed(2);
-            
+
             row.classList.add("currency-row");
             row.innerHTML = `
                 <td class="px-4 py-2 flex items-center justify-start space-x-2 sm:w-auto w-full">
@@ -384,7 +384,6 @@ async function fetchClosingRates() {
             };
         });
 
-        calculateComparisons();
     } catch (error) {
         console.error('Error al obtener datos de cierre:', error);
     }
