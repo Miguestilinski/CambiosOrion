@@ -202,7 +202,6 @@ function setupEditInputs() {
 }
 
 function saveEditedCurrencies() {
-    
     const changesToSave = Object.values(editableCurrencies).filter(divisa =>
         divisa.compra !== undefined || divisa.venta !== undefined
     );
@@ -212,11 +211,14 @@ function saveEditedCurrencies() {
         return;
     }
 
+    const currentTimestamp = new Date().toISOString();
+
     // Enviar cambios al servidor asegurando no enviar campos vacíos
     const validChanges = changesToSave.map(divisa => ({
         nombre: divisa.nombre,
         compra: parseFloat(divisa.compra) || 0,
         venta: parseFloat(divisa.venta) || 0,
+        fecha_actualizacion: currentTimestamp,
     }));
 
     // Enviar cada divisa individualmente usando el método PUT
@@ -231,7 +233,7 @@ function saveEditedCurrencies() {
                 return response.json();
             })
             .then(data => {
-                console.log("Actualización exitosa:", data);
+                console.log("Actualización exitosa para", divisa.nombre, ":", data);
             })
             .catch(error => {
                 alert("Error al guardar cambios.");
@@ -239,7 +241,6 @@ function saveEditedCurrencies() {
             });
     });
 }
-
 
 function setActiveLink(menuId) {
     const links = document.querySelectorAll(`${menuId} a`);
