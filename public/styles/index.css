@@ -341,6 +341,17 @@ section .max-w-xl {
     border-bottom-right-radius: 8px;
 }
 
+
+.variation-container {
+    display: inline-flex; /* Cambiar a flex para alineación horizontal */
+    align-items: center; /* Alinear elementos verticalmente */
+    justify-content: center; /* Opcional: centrar elementos horizontalmente */
+    border-radius: 8px;
+    padding: 4px 8px; /* Ajustar espacio interno */
+    max-width: fit-content; /* Limitar el ancho al contenido */
+    font-size: 14px;
+}
+
 .arrow-icon {
     width: 16px;
     height: 16px;
