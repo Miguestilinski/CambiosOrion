@@ -1,4 +1,5 @@
 let exchangeRates = {};
+let closingRates = {};
 let iconsLoaded = {};
 let isEditMode = false;
 let activeDropdown = null;
@@ -6,6 +7,7 @@ let displayedCurrencies = ["CLP", "USD", "EUR", "ARS"];
 
 function initializePage() {
     loadCurrenciesWithSSE();
+    fetchClosingRates();
     fillCurrencyTable();
 }
 
@@ -41,6 +43,12 @@ function loadCurrenciesWithSSE() {
                 };
 
                 preloadIcon(circularIcon);
+
+                // Actualizar las tasas de cierre periódicamente
+                closingRates[divisa.nombre] = {
+                    compra: parseFloat(divisa.compra),
+                    venta: parseFloat(divisa.venta)
+                };                
 
                 const option1 = document.createElement("div");
                 option1.innerHTML = `<img src="${circularIcon}" alt="${divisa.nombre}" class="w-6 h-6 mr-2"> ${divisa.nombre}`;
@@ -204,6 +212,13 @@ function updateCurrencyIcon() {
     document.getElementById("icon-currency2").src = exchangeRates[currency2].icono;
 }   
 
+function calculateVariationPercentage(currentRate, closingRate) {
+    if (closingRate && closingRate !== 0) {
+        return ((currentRate - closingRate) / closingRate) * 100;
+    }
+    return 0;
+}
+
 function fillCurrencyTable() {
     const tableBody = document.getElementById("currency-table-body");
     if (!tableBody) {
@@ -214,15 +229,21 @@ function fillCurrencyTable() {
     displayedCurrencies.forEach((currency, index) => {
         if (exchangeRates[currency]) {
             const row = document.createElement("tr");
+            const compra = exchangeRates[currency].compra;
+            const venta = exchangeRates[currency].venta;
+            const closingCompra = closingRates[currency]?.compra || 0;
+            const closingVenta = closingRates[currency]?.venta || 0;
+
+            const variationCompra = calculateVariationPercentage(compra, closingCompra).toFixed(2);
+            const variationVenta = calculateVariationPercentage(venta, closingVenta).toFixed(2);
+            
             row.classList.add("currency-row");
-            const currencyIcon = exchangeRates[currency].icono;
-            const currencyName = currency;
             row.innerHTML = `
                 <td class="px-4 py-2 flex items-center justify-start space-x-2 sm:w-auto w-full">
-                    <img src="${currencyIcon}" alt="${currencyName}" class="w-6 h-6 mr-2"> ${currencyName}
+                    <img src="${exchangeRates[currency].icono}" alt="${currency}" class="w-6 h-6 mr-2"> ${currency}
                 </td>
-                <td class="px-4 py-2">${Math.round(exchangeRates[currency].compra)} CLP</td>
-                <td class="px-4 py-2">${Math.round(exchangeRates[currency].venta)} CLP</td>
+                <td class="px-4 py-2">${Math.round(compra)} CLP</td>
+                <td class="px-4 py-2">${variationCompra}%</td>
                 <td class="px-4 py-2 edit-column ${isEditMode ? '' : 'hidden'}">
                     <button onclick="deleteCurrency('${currency}')" class="delete-btn">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6 text-white">
@@ -344,3 +365,27 @@ function deleteCurrency(currency) {
     fillCurrencyTable();  // Refresca la tabla
 }
 window.deleteCurrency = deleteCurrency;
+
+async function fetchClosingRates() {
+    try {
+        const response = await fetch('https://cambiosorion.cl/data/obtener_divisas_cierre.php');
+        const data = await response.json();
+
+        if (data.error) {
+            console.error('Error al cargar datos de cierre:', data.error);
+            return;
+        }
+
+        // Mapear datos de cierre
+        data.forEach(item => {
+            closingRates[item.nombre] = {
+                compra: item.compra,
+                venta: item.venta
+            };
+        });
+
+        calculateComparisons();
+    } catch (error) {
+        console.error('Error al obtener datos de cierre:', error);
+    }
+}
