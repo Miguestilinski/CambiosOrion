@@ -238,10 +238,10 @@ function updateCurrencyIcon() {
 
 function calculateVariationPercentage(currentRate, closingRate) {
     console.log(`Calculando variación. Tasa actual: ${currentRate}, Tasa de cierre: ${closingRate}`);
-    if (closingRate && closingRate !== 0) {
+    if (closingRate && closingRate > 0) {
         return ((currentRate - closingRate) / closingRate) * 100;
     }
-    return '-';
+    return 'N/A'; // Si no hay datos de cierre válidos
 }
 
 function fillCurrencyTable() {
@@ -259,13 +259,17 @@ function fillCurrencyTable() {
 
             const compra = exchangeRates[currency].compra;
             const venta = exchangeRates[currency].venta;
+
+            // Obtener las tasas de cierre con validación
             const closingCompra = closingRates[currency]?.compra || 0;
             const closingVenta = closingRates[currency]?.venta || 0;
 
-            const variationCompra = calculateVariationPercentage(compra, closingCompra).toFixed(2);
-            const variationVenta = calculateVariationPercentage(venta, closingVenta).toFixed(2);
+            console.log(`Compra actual: ${compra}, Venta actual: ${venta}`);
+            console.log(`Compra de cierre: ${closingCompra}, Venta de cierre: ${closingVenta}`);
 
-            console.log(`Compra: ${compra}, Ventas: ${venta}`);
+            const variationCompra = calculateVariationPercentage(compra, closingCompra);
+            const variationVenta = calculateVariationPercentage(venta, closingVenta);
+
             console.log(`Compra variation: ${variationCompra}, Ventas variation: ${variationVenta}`);
 
             row.classList.add("currency-row");
@@ -273,8 +277,8 @@ function fillCurrencyTable() {
                 <td class="px-4 py-2 flex items-center justify-start space-x-2 sm:w-auto w-full">
                     <img src="${exchangeRates[currency].icono}" alt="${currency}" class="w-6 h-6 mr-2"> ${currency}
                 </td>
-                <td class="px-4 py-2">${Math.round(compra)} CLP</td>
-                <td class="px-4 py-2">${variationCompra}%</td>
+                <td class="px-4 py-2">${compra ? Math.round(compra) + ' CLP' : 'N/A'}</td>
+                <td class="px-4 py-2">${variationCompra === 'N/A' ? 'N/A' : variationCompra.toFixed(2) + '%'}</td>
                 <td class="px-4 py-2 edit-column ${isEditMode ? '' : 'hidden'}">
                     <button onclick="deleteCurrency('${currency}')" class="delete-btn">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6 text-white">
