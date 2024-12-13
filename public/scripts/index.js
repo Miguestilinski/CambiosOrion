@@ -163,44 +163,31 @@ function fillCurrencyTable() {
             const ventaStyle = getVariationStyle(variationVenta);
 
             row.classList.add("currency-row");
-           // Crear contenido dinámico para la variación
-           const variationCompraDiv = document.createElement("div");
-           if (currency !== 'CLP') {
-               variationCompraDiv.style.cssText = compraStyle.containerStyle;
-               variationCompraDiv.className = "variation-container";
+            row.innerHTML = `
+                <td class="px-4 py-2 flex items-center justify-start space-x-2 sm:w-auto w-full">
+                    <img src="${exchangeRates[currency].icono}" alt="${currency}" class="w-6 h-6 mr-2"> ${currency}
+                </td>
+                <td class="px-4 py-2">${compra ? Math.round(compra) + ' CLP' : ' '}</td>
+                <td class="px-4 py-2">
+                    ${currency === 'CLP' ? '' : `
+                        <div style="${compraStyle.containerStyle}" class="variation-container">
+                            ${variationCompra !== 0 ? 
+                                (variationCompra > 0 ? `+${variationCompra.toFixed(2)}%` : `${variationCompra.toFixed(2)}%`) 
+                                : `${variationCompra.toFixed(2)}%`
+                            }
+                            ${compraStyle.arrowHTML}
+                        </div>
+                    `}
+                </td>
+                <td class="px-4 py-2 edit-column ${isEditMode ? '' : 'hidden'}">
+                    <button onclick="deleteCurrency('${currency}')" class="delete-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6 text-white">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </td>
+            `;
 
-               const variationText = document.createElement("span");
-               variationText.textContent = variationCompra !== 0
-                   ? `${variationCompra > 0 ? "+" : ""}${variationCompra.toFixed(2)}%`
-                   : "0.00%";
-               variationCompraDiv.appendChild(variationText);
-
-               const arrowImg = document.createElement("img");
-               arrowImg.src = compraStyle.arrowHTML.match(/src="([^"]+)"/)[1];
-               arrowImg.alt = variationCompra > 0 ? "Positivo" : variationCompra < 0 ? "Negativo" : "Neutro";
-               arrowImg.className = "arrow-icon";
-               variationCompraDiv.appendChild(arrowImg);
-           }
-
-           row.innerHTML = `
-               <td class="px-4 py-2 flex items-center justify-start space-x-2 sm:w-auto w-full">
-                   <img src="${exchangeRates[currency].icono}" alt="${currency}" class="w-6 h-6 mr-2"> ${currency}
-               </td>
-               <td class="px-4 py-2">${compra ? Math.round(compra) + ' CLP' : ' '}</td>
-               <td class="px-4 py-2"></td>
-               <td class="px-4 py-2 edit-column ${isEditMode ? '' : 'hidden'}">
-                   <button onclick="deleteCurrency('${currency}')" class="delete-btn">
-                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6 text-white">
-                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                       </svg>
-                   </button>
-               </td>
-           `;
-
-           // Añadir el contenedor de variación dinámicamente
-           if (currency !== 'CLP') {
-               row.children[2].appendChild(variationCompraDiv);
-           }
             if (index === 0) {
                 row.classList.add("first-row");
             }
