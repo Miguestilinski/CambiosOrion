@@ -65,6 +65,7 @@ nav ul li.selected a {
 .header-actions a {
     font-size: 16px;
     text-decoration: none;
+    margin-right: 0.5rem;
 }
 
 .header-actions .register-button {

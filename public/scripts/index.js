@@ -5,23 +5,24 @@ let activeDropdown = null;
 let displayedCurrencies = ["CLP", "USD", "EUR", "ARS"];
 
 function initializePage() {
-    loadCurrencies();
+    loadCurrenciesWithSSE();
     fillCurrencyTable();
 }
 
-function loadCurrencies() {
-    const targetUrl = 'https://cambiosorion.cl/data/obtener_divisas.php';
+function loadCurrenciesWithSSE() {
+    const eventSource = new EventSource('https://cambiosorion.cl/api/divisas/stream/stream_divisas.php');
 
-    fetch(targetUrl)
-        .then(response => response.json())
-        .then(data => {
+    eventSource.onopen = () => {
+        console.log('Conexión SSE establecida correctamente.');
+    };
 
-            // Si los datos están en 'contents', intenta parsearlos
-            const responseData = data.contents ? JSON.parse(data.contents) : data;
+    eventSource.onmessage = (event) => {
+        try {
+            const responseData = JSON.parse(event.data);
 
-            // Asegurarse de que responseData es un array antes de usar forEach
+            // Validar si los datos son un array
             if (!Array.isArray(responseData)) {
-                console.error("Formato de datos inesperado:", responseData);
+                console.error('Formato de datos inesperado:', responseData);
                 return;
             }
 
@@ -62,8 +63,15 @@ function loadCurrencies() {
 
             updateAddCurrencyDropdown();
             fillCurrencyTable();
-        })
-        .catch(error => console.error('Error al cargar las divisas:', error));
+        } catch (error) {
+            console.error('Error procesando los datos SSE:', error);
+        }
+    };
+
+    eventSource.onerror = (error) => {
+        console.error('Error con la conexión SSE:', error);
+        eventSource.close(); // Cierra la conexión si ocurre un error persistente
+    };
 }
 
 function preloadIcon(iconUrl) {
