@@ -91,6 +91,29 @@ function loadCurrenciesWithSSE() {
     };
 }
 
+async function fetchClosingRates() {
+    try {
+        const response = await fetch('https://cambiosorion.cl/data/obtener_divisas_cierre.php');
+        const data = await response.json();
+
+        if (data.error) {
+            console.error('Error al cargar datos de cierre:', data.error);
+            return;
+        }
+
+        // Mapear datos de cierre
+        data.forEach(item => {
+            closingRates[item.nombre] = {
+                compra: item.compra,
+                venta: item.venta
+            };
+        });
+
+    } catch (error) {
+        console.error('Error al obtener datos de cierre:', error);
+    }
+}
+
 function preloadIcon(iconUrl) {
     if (!iconsLoaded[iconUrl]) {
         const img = new Image();
@@ -241,6 +264,7 @@ function fillCurrencyTable() {
         console.log('Procesando divisa para la tabla:', currency);
         if (exchangeRates[currency]) {
             const row = document.createElement("tr");
+
             const compra = exchangeRates[currency].compra;
             const venta = exchangeRates[currency].venta;
             const closingCompra = closingRates[currency]?.compra || 0;
@@ -249,7 +273,8 @@ function fillCurrencyTable() {
             const variationCompra = calculateVariationPercentage(compra, closingCompra).toFixed(2);
             const variationVenta = calculateVariationPercentage(venta, closingVenta).toFixed(2);
 
-            console.log(`Compra: ${compra}, Ventas: ${venta}, Variación compra: ${variationCompra}, Variación venta: ${variationVenta}`);
+            console.log(`Compra: ${compra}, Ventas: ${venta}`);
+            console.log(`Compra variation: ${variationCompra}, Ventas variation: ${variationVenta}`);
 
             row.classList.add("currency-row");
             row.innerHTML = `
@@ -379,26 +404,3 @@ function deleteCurrency(currency) {
     fillCurrencyTable();  // Refresca la tabla
 }
 window.deleteCurrency = deleteCurrency;
-
-async function fetchClosingRates() {
-    try {
-        const response = await fetch('https://cambiosorion.cl/data/obtener_divisas_cierre.php');
-        const data = await response.json();
-
-        if (data.error) {
-            console.error('Error al cargar datos de cierre:', data.error);
-            return;
-        }
-
-        // Mapear datos de cierre
-        data.forEach(item => {
-            closingRates[item.nombre] = {
-                compra: item.compra,
-                venta: item.venta
-            };
-        });
-
-    } catch (error) {
-        console.error('Error al obtener datos de cierre:', error);
-    }
-}
