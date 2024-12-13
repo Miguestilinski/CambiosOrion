@@ -108,16 +108,36 @@ async function fetchClosingRates() {
 
 // Calcula variación y determina si es positiva o negativa
 function calculateVariationPercentage(currentRate, closingRate) {
-    if (!closingRate || closingRate <= 0) return { variation: 0, isPositive: null };
+    if (closingRate && closingRate > 0) {
+        const variation = ((currentRate - closingRate) / closingRate) * 100;
+        return variation;
+    }
+    return 0; // Si no hay datos de cierre válidos, se considera neutro
+}
 
-    const variation = ((currentRate - closingRate) / closingRate) * 100;
-    const isPositive = variation >= 0;
+function getVariationStyle(variation) {
+    let containerStyle = "";
+    let textStyle = "";
+    let arrow = "";
 
-    return { variation, isPositive };
+    if (variation > 0) {
+        // Positiva
+        containerStyle = "background-color: #DEF7E8; color: #215436;";
+        arrow = "⬆";
+    } else if (variation < 0) {
+        // Negativa
+        containerStyle = "background-color: #F7DEDE; color: #591D1D;";
+        arrow = "⬇";
+    } else {
+        // Neutra
+        containerStyle = "background-color: #E0E0E0; color: #555;";
+        arrow = "⬅";
+    }
+
+    return { containerStyle, textStyle, arrow };
 }
 
 function fillCurrencyTable() {
-    console.log('Llenando la tabla de divisas...');
     const tableBody = document.getElementById("currency-table-body");
     if (!tableBody) {
         console.error("Error: 'currency-table-body' no se encuentra en el DOM.");
@@ -136,27 +156,22 @@ function fillCurrencyTable() {
             const closingCompra = closingRates[currency]?.compra || 0;
             const closingVenta = closingRates[currency]?.venta || 0;
 
-            console.log(`Compra actual: ${compra}, Venta actual: ${venta}`);
-            console.log(`Compra de cierre: ${closingCompra}, Venta de cierre: ${closingVenta}`);
-
             const variationCompra = calculateVariationPercentage(compra, closingCompra);
             const variationVenta = calculateVariationPercentage(venta, closingVenta);
-
-            console.log(`Compra variation: ${variationCompra}, Ventas variation: ${variationVenta}`);
+            
+            const compraStyle = getVariationStyle(variationCompra);
+            const ventaStyle = getVariationStyle(variationVenta);
 
             row.classList.add("currency-row");
             row.innerHTML = `
                 <td class="px-4 py-2 flex items-center justify-start space-x-2 sm:w-auto w-full">
                     <img src="${exchangeRates[currency].icono}" alt="${currency}" class="w-6 h-6 mr-2"> ${currency}
                 </td>
-                <td class="px-4 py-2">${compra ? Math.round(compra) + ' CLP' : 'N/A'}</td>
+                <td class="px-4 py-2">${compra ? Math.round(compra) + ' CLP' : ' '}</td>
                 <td class="px-4 py-2">
-                    ${currency === 'CLP' ? 'N/A' :
-                    variationCompra.isPositive === null
-                        ? 'N/A'
-                        : variationCompra.isPositive
-                            ? `+${variationCompra.variation.toFixed(2)}% ↑`
-                            : `-${Math.abs(variationCompra.variation).toFixed(2)}% ↓`}
+                    <div style="${compraStyle.containerStyle}" class="variation-container">
+                        ${currency === 'CLP' ? ' ' : variationCompra !== 0 ? (variationCompra > 0 ? `+${variationCompra.toFixed(2)}% ${compraStyle.arrow}` : `${variationCompra.toFixed(2)}% ${compraStyle.arrow}`) : `${variationCompra.toFixed(2)}% ${compraStyle.arrow}`}
+                    </div>
                 </td>
                 <td class="px-4 py-2 edit-column ${isEditMode ? '' : 'hidden'}">
                     <button onclick="deleteCurrency('${currency}')" class="delete-btn">
