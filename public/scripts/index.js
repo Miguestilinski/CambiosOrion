@@ -50,11 +50,13 @@ function loadCurrenciesWithSSE() {
                 console.log('Tasa de cambio agregada:', exchangeRates[divisa.nombre]);
                 preloadIcon(circularIcon);
 
-                // Actualizar las tasas de cierre periódicamente
-                closingRates[divisa.nombre] = {
-                    compra: parseFloat(divisa.compra),
-                    venta: parseFloat(divisa.venta)
-                };                
+                // Asignar tasas de cierre solo una vez
+                if (!closingRates[divisa.nombre]) {
+                    closingRates[divisa.nombre] = {
+                        compra: parseFloat(divisa.compra),
+                        venta: parseFloat(divisa.venta)
+                    };
+                }     
 
                 const option1 = document.createElement("div");
                 option1.innerHTML = `<img src="${circularIcon}" alt="${divisa.nombre}" class="w-6 h-6 mr-2"> ${divisa.nombre}`;
