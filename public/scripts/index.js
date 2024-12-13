@@ -65,6 +65,12 @@ function loadCurrenciesWithSSE() {
 
             updateAddCurrencyDropdown();
             fillCurrencyTable();
+
+            // Capturar la fecha de última actualización
+            if (responseData.length && responseData[0].fecha_actualizacion) {
+                updateLastUpdatedTimestamp(responseData[0].fecha_actualizacion);
+            }
+            
         } catch (error) {
             console.error('Error procesando los datos SSE:', error);
         }
@@ -188,11 +194,11 @@ function fillCurrencyTable() {
     });
 }
 
-function updateLastUpdatedTimestamp() {
+function updateLastUpdatedTimestamp(fecha) {
     const lastUpdatedElement = document.getElementById("last-updated");
     if (lastUpdatedElement) {
-        const now = new Date();
-        const formattedDate = now.toLocaleString('es-CL', {
+        const dateObject = new Date(fecha);
+        const formattedDate = dateObject.toLocaleString('es-CL', {
             day: '2-digit',
             month: '2-digit',
             year: 'numeric',
