@@ -7,13 +7,13 @@ const session = require('express-session');
 const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3306;
-const { GoogleAuth } = require('google-auth-library');
 
-// Middleware
+// Cargar las variables de entorno
+require('dotenv').config();
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-require('dotenv').config();
 
 // Configurar las sesiones
 app.use(
@@ -26,7 +26,7 @@ app.use(
 );
 
 // Validar que las variables de entorno están configuradas
-const requiredEnv = ['DB_HOST', 'DB_USER', 'DB_PASS', 'DB_NAME', 'GOOGLE_APPLICATION_CREDENTIALS'];
+const requiredEnv = ['DB_HOST', 'DB_USER', 'DB_PASS', 'DB_NAME'];
 requiredEnv.forEach((envVar) => {
   if (!process.env[envVar]) {
     console.error(`Error: La variable de entorno ${envVar} no está definida.`);
@@ -86,6 +86,7 @@ app.get('/api/divisas/stream', (req, res) => {
   sendData(); // Enviar datos inmediatamente al conectarse
 });
 
+
 // Simulación del estado de sesión
 app.get('/api/session-status', (req, res) => {
   // Simular estado de autenticación (true para autenticado, false para invitado)
@@ -118,35 +119,27 @@ app.post('/api/logout', (req, res) => {
   });
 });
 
-// Configurar autenticación con Google
-const auth = new GoogleAuth({
-  keyFile: process.env.GOOGLE_APPLICATION_CREDENTIALS,
-  scopes: 'https://www.googleapis.com/auth/cloud-platform',
-});
-
-// Proxy para Google Places
+// Proxy para la API de Google Places
 app.get('/api/place-details', async (req, res) => {
-  const placeId = req.query.place_id; // Obtener Place ID
-
-  if (!placeId) {
-    return res.status(400).json({ error: 'Falta el parámetro place_id' });
-  }
+  const placeId = req.query.place_id; // Obtén el Place ID desde el query parameter
+  const apiKey = process.env.GOOGLE_API_KEY; // Clave de la API de Google
 
   try {
-    const client = await auth.getClient();
-    const token = await client.getAccessToken(); // Obtener token de acceso
-    const response = await axios.get('https://maps.googleapis.com/maps/api/place/details/json', {
-      headers: { Authorization: `Bearer ${token.token}` },
-      params: {
-        place_id: placeId,
-        fields: 'name,rating,user_ratings_total,reviews',
-      },
-    });
+      const response = await axios.get(
+          `https://maps.googleapis.com/maps/api/place/details/json`,
+          {
+              params: {
+                  place_id: placeId,
+                  fields: "name,rating,user_ratings_total,reviews",
+                  key: apiKey,
+              },
+          }
+      );
 
-    res.json(response.data);
+      res.json(response.data); // Devuelve los datos de Google Places al cliente
   } catch (error) {
-    console.error('Error al obtener datos de Google Places:', error.message);
-    res.status(500).json({ error: 'Error al obtener datos de Google Places' });
+      console.error('Error al obtener datos de Google Places:', error.message);
+      res.status(500).json({ error: 'Error al obtener datos de Google Places' });
   }
 });
 
