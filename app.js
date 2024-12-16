@@ -1,4 +1,5 @@
 // app.js
+const { GoogleAuth } = require('google-auth-library');
 const express = require('express');
 const path = require('path');
 const mysql = require('mysql');
@@ -86,7 +87,6 @@ app.get('/api/divisas/stream', (req, res) => {
   sendData(); // Enviar datos inmediatamente al conectarse
 });
 
-
 // Simulación del estado de sesión
 app.get('/api/session-status', (req, res) => {
   // Simular estado de autenticación (true para autenticado, false para invitado)
@@ -119,22 +119,34 @@ app.post('/api/logout', (req, res) => {
   });
 });
 
+// Ruta del archivo JSON de la clave de servicio
+const serviceAccountKeyPath = path.join(__dirname, 'service-account-key.json');
+
+// Crear cliente autenticado
+const auth = new GoogleAuth({
+  keyFile: serviceAccountKeyPath,
+  scopes: ['https://www.googleapis.com/auth/maps-platform.places'],
+});
+
+// Función para realizar solicitudes autenticadas
+async function getAuthenticatedClient() {
+  return await auth.getClient();
+}
+
 // Proxy para la API de Google Places
 app.get('/api/place-details', async (req, res) => {
   const placeId = req.query.place_id; // Obtén el Place ID desde el query parameter
-  const apiKey = process.env.GOOGLE_API_KEY; // Clave de la API de Google
 
   try {
-      const response = await axios.get(
-          `https://maps.googleapis.com/maps/api/place/details/json`,
-          {
-              params: {
-                  place_id: placeId,
-                  fields: "name,rating,user_ratings_total,reviews",
-                  key: apiKey,
-              },
-          }
-      );
+      const client = await getAuthenticatedClient(); // Obtener cliente autenticado
+      const url = `https://maps.googleapis.com/maps/api/place/details/json`;
+      const response = await client.request({
+          url,
+          params: {
+              place_id: placeId,
+              fields: 'name,rating,user_ratings_total,reviews',
+          },
+      });
 
       res.json(response.data); // Devuelve los datos de Google Places al cliente
   } catch (error) {
