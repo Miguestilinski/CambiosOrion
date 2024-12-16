@@ -1,5 +1,4 @@
 // app.js
-const { GoogleAuth } = require('google-auth-library');
 const express = require('express');
 const path = require('path');
 const mysql = require('mysql');
@@ -8,13 +7,13 @@ const session = require('express-session');
 const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3306;
+const { GoogleAuth } = require('google-auth-library');
 
-// Cargar las variables de entorno
-require('dotenv').config();
-
+// Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+require('dotenv').config();
 
 // Configurar las sesiones
 app.use(
@@ -27,7 +26,7 @@ app.use(
 );
 
 // Validar que las variables de entorno están configuradas
-const requiredEnv = ['DB_HOST', 'DB_USER', 'DB_PASS', 'DB_NAME'];
+const requiredEnv = ['DB_HOST', 'DB_USER', 'DB_PASS', 'DB_NAME', 'GOOGLE_APPLICATION_CREDENTIALS'];
 requiredEnv.forEach((envVar) => {
   if (!process.env[envVar]) {
     console.error(`Error: La variable de entorno ${envVar} no está definida.`);
@@ -119,39 +118,35 @@ app.post('/api/logout', (req, res) => {
   });
 });
 
-// Ruta del archivo JSON de la clave de servicio
-const serviceAccountKeyPath = path.join(__dirname, 'cambiosorion1035-af40ead941fe.json');
-
-// Crear cliente autenticado
+// Configurar autenticación con Google
 const auth = new GoogleAuth({
-  keyFile: serviceAccountKeyPath,
-  scopes: ['https://www.googleapis.com/auth/maps-platform.places'],
+  keyFile: process.env.GOOGLE_APPLICATION_CREDENTIALS,
+  scopes: 'https://www.googleapis.com/auth/cloud-platform',
 });
 
-// Función para realizar solicitudes autenticadas
-async function getAuthenticatedClient() {
-  return await auth.getClient();
-}
-
-// Proxy para la API de Google Places
+// Proxy para Google Places
 app.get('/api/place-details', async (req, res) => {
-  const placeId = req.query.place_id; // Obtén el Place ID desde el query parameter
+  const placeId = req.query.place_id; // Obtener Place ID
+
+  if (!placeId) {
+    return res.status(400).json({ error: 'Falta el parámetro place_id' });
+  }
 
   try {
-      const client = await getAuthenticatedClient(); // Obtener cliente autenticado
-      const url = `https://maps.googleapis.com/maps/api/place/details/json`;
-      const response = await client.request({
-          url,
-          params: {
-              place_id: placeId,
-              fields: 'name,rating,user_ratings_total,reviews',
-          },
-      });
+    const client = await auth.getClient();
+    const token = await client.getAccessToken(); // Obtener token de acceso
+    const response = await axios.get('https://maps.googleapis.com/maps/api/place/details/json', {
+      headers: { Authorization: `Bearer ${token.token}` },
+      params: {
+        place_id: placeId,
+        fields: 'name,rating,user_ratings_total,reviews',
+      },
+    });
 
-      res.json(response.data); // Devuelve los datos de Google Places al cliente
+    res.json(response.data);
   } catch (error) {
-      console.error('Error al obtener datos de Google Places:', error.message);
-      res.status(500).json({ error: 'Error al obtener datos de Google Places' });
+    console.error('Error al obtener datos de Google Places:', error.message);
+    res.status(500).json({ error: 'Error al obtener datos de Google Places' });
   }
 });
 
@@ -159,3 +154,5 @@ app.get('/api/place-details', async (req, res) => {
 app.listen(port, () => {
   console.log(`Servidor escuchando en http://localhost:${port}`);
 });
+
+console.log('Aplicación inicializada con éxito.');
