@@ -53,27 +53,27 @@ function showSkeletonLoader() {
     `).join('');
 
     loaderContainer.innerHTML = skeletonRows;
+
+    // Asegurarse de que sea visible
+    loaderContainer.style.display = "block";
+    loaderContainer.style.opacity = "1";
 }
 
-// Función para cerrar el Skeleton Loader y mostrar la tabla
-function removeSkeletonLoader(data) {
+// Función para ocultar el Skeleton Loader y mostrar la tabla
+function removeSkeletonLoader() {
     const loaderContainer = document.getElementById("loader-container");
-    const currencyTable = document.getElementById("currency-table");
-    const tableBody = document.getElementById("currency-table-body");
+    const table = document.querySelector(".content-table"); // Tabla que debe mostrarse
 
-    if (!loaderContainer || !currencyTable || !tableBody) {
+    if (!loaderContainer || !table) {
         console.error("Error: Elementos del DOM no encontrados.");
         return;
     }
 
-    // Ocultar el Skeleton Loader
+    // Ocultar el loader
     loaderContainer.style.display = "none";
 
     // Mostrar la tabla
-    currencyTable.style.display = "table";
-
-    // Poblar la tabla con los datos
-    fillCurrencyTable(data);
+    table.style.display = "table";
 }
 
 // Función para alternar visibilidad del menú
@@ -151,7 +151,6 @@ function initializeSSE() {
                 });
 
                 removeSkeletonLoader();
-
                 fillCurrencyTable();
             } else {
                 console.error('Formato de datos inesperado:', data);
