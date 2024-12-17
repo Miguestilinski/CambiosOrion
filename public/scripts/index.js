@@ -257,13 +257,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     amountInputs.forEach(input => {
         if (input) {
-            // Restringir la entrada a solo números y formato con separador de miles
+            // Actualizar el valor interno al escribir
             input.addEventListener('input', (event) => {
                 const rawValue = event.target.value.replace(/\./g, ''); // Quitar puntos existentes
                 const numericValue = rawValue.replace(/\D/g, ''); // Quitar caracteres no numéricos
-
-                event.target.value = formatWithThousandsSeparator(numericValue);
-
+                input.dataset.rawValue = numericValue; // Guardar el valor sin formatear en un atributo personalizado
+                input.value = formatWithThousandsSeparator(numericValue); // Mostrar el valor con separadores
             });
 
             // Evitar caracteres no permitidos
@@ -276,11 +275,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
-            // Actualizar el valor al salir del campo
+            // Al salir del campo, asegurar el formato
             input.addEventListener('blur', () => {
-                const rawValue = input.value.replace(/\./g, '');
-                const numericValue = rawValue.replace(/\D/g, '');
-                input.value = formatWithThousandsSeparator(numericValue);
+                const rawValue = input.dataset.rawValue || ''; // Obtener el valor sin puntos
+                input.value = formatWithThousandsSeparator(rawValue); // Mostrar el valor formateado
+            });
+
+            // Al entrar al campo, mostrar sin formato
+            input.addEventListener('focus', () => {
+                const rawValue = input.dataset.rawValue || '';
+                input.value = rawValue; // Mostrar el valor sin puntos para edición
             });
         }
     });
