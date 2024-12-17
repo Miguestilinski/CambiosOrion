@@ -358,7 +358,7 @@ section .max-w-xl {
     border-radius: 8px;
     padding: 4px 8px; /* Ajustar espacio interno */
     max-width: fit-content; /* Limitar el ancho al contenido */
-    font-size: 1.1rem;
+    font-size: 1rem;
 }
 
 .arrow-icon {
