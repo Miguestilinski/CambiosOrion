@@ -44,25 +44,24 @@ function loadCurrenciesWithSSE() {
 
                 preloadIcon(circularIcon);
 
-                const option1 = document.createElement("div");
-                option1.innerHTML = `<img src="${circularIcon}" alt="${divisa.nombre}" class="w-6 h-6 mr-2"> ${divisa.nombre}`;
-                option1.className = "p-2 hover:bg-gray-100 cursor-pointer";
-                option1.onclick = function () {
+                // Crear opciones para dropdown1
+                const option1 = createDropdownOption(divisa.nombre, circularIcon, function () {
                     setCurrency1(divisa.nombre);
+                    filterDropdownCurrencies();
                     toggleDropdown('dropdown1', event);
-                };
+                });
                 dropdown1.appendChild(option1);
 
-                const option2 = document.createElement("div");
-                option2.innerHTML = `<img src="${circularIcon}" alt="${divisa.nombre}" class="w-5 h-5 mr-2"> ${divisa.nombre}`;
-                option2.className = "p-2 hover:bg-gray-100 cursor-pointer";
-                option2.onclick = function () {
+                // Crear opciones para dropdown2
+                const option2 = createDropdownOption(divisa.nombre, circularIcon, function () {
                     setCurrency2(divisa.nombre);
+                    filterDropdownCurrencies();
                     toggleDropdown('dropdown2', event);
-                };
+                });
                 dropdown2.appendChild(option2);
             });
 
+            filterDropdownCurrencies();
             updateAddCurrencyDropdown();
             fillCurrencyTable();
 
@@ -150,29 +149,62 @@ function preloadIcon(iconUrl) {
     }
 }
 
+// Función para crear opciones reutilizables
+function createDropdownOption(currency, icon, onClickHandler) {
+    const option = document.createElement("div");
+    option.innerHTML = `<img src="${icon}" alt="${currency}" class="w-6 h-6 mr-2"> ${currency}`;
+    option.className = "p-2 hover:bg-gray-100 cursor-pointer";
+    option.onclick = onClickHandler;
+    return option;
+}
+
+// Función para filtrar las opciones de divisas
+function filterDropdownCurrencies() {
+    const dropdown1 = document.getElementById("dropdown1");
+    const dropdown2 = document.getElementById("dropdown2");
+
+    const currency1 = document.getElementById("currency1-text").textContent;
+    const currency2 = document.getElementById("currency2-text").textContent;
+
+    // Actualizar dropdown1
+    Array.from(dropdown1.children).forEach(option => {
+        const divisa = option.textContent.trim();
+        if (divisa === 'CLP' || divisa === currency2) {
+            option.style.display = 'none';
+        } else {
+            option.style.display = 'block';
+        }
+    });
+
+    // Actualizar dropdown2
+    Array.from(dropdown2.children).forEach(option => {
+        const divisa = option.textContent.trim();
+        if (divisa === 'CLP' || divisa === currency1) {
+            option.style.display = 'none';
+        } else {
+            option.style.display = 'block';
+        }
+    });
+}
+
 // Función para establecer currency1
 function setCurrency1(currency) {
     const currency2 = document.getElementById("currency2-text").textContent;
     if (currency === currency2) {
-        setCurrency2("CLP");
+        document.getElementById("currency2-text").textContent = "CLP";
     }
-    document.getElementById("currency1-text").textContent = currency;
 
-    exchangeRates[currency] = exchangeRates[currency] || { compra: 0, venta: 0 };
-    convertFromAmount1();
+    document.getElementById("currency1-text").textContent = currency;
     updateCurrencyIcon();
 }
 
-// Función para establecer currency2
 function setCurrency2(currency) {
     const currency1 = document.getElementById("currency1-text").textContent;
     if (currency === currency1) {
-        setCurrency1("CLP");
+        document.getElementById("currency1-text").textContent = "CLP";
     }
-    document.getElementById("currency2-text").textContent = currency;
 
-    exchangeRates[currency] = exchangeRates[currency] || { compra: 0, venta: 0 };
-    convertFromAmount1();
+    document.getElementById("currency2-text").textContent = currency;
     updateCurrencyIcon();
 }
 
