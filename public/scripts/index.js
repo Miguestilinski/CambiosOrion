@@ -297,7 +297,8 @@ function formatWithThousandsSeparator(value) {
 
 // Mantener las conversiones funcionales
 function convertFromAmount1() {
-    const amount1 = parseFloat(document.getElementById("amount1").value.replace(/\./g, ''));
+    const amount1Raw = document.getElementById("amount1").dataset.rawValue || '0'; // Obtener el valor sin formato
+    const amount1 = parseFloat(amount1Raw); // Convertir a número
     const currency1 = document.getElementById("currency1-text").textContent;
     const currency2 = document.getElementById("currency2-text").textContent;
 
@@ -310,12 +311,14 @@ function convertFromAmount1() {
             result = amount1 * exchangeRates[currency1].compra;
         }
 
-        document.getElementById("amount2").value = formatWithThousandsSeparator(result.toFixed(0));
+        document.getElementById("amount2").dataset.rawValue = result.toFixed(0); // Guardar sin formato
+        document.getElementById("amount2").value = formatWithThousandsSeparator(result.toFixed(0)); // Mostrar formateado
     }
 }
 
 function convertFromAmount2() {
-    const amount2 = parseFloat(document.getElementById("amount2").value.replace(/\./g, ''));
+    const amount2Raw = document.getElementById("amount2").dataset.rawValue || '0'; // Obtener el valor sin formato
+    const amount2 = parseFloat(amount2Raw); // Convertir a número
     const currency1 = document.getElementById("currency1-text").textContent;
     const currency2 = document.getElementById("currency2-text").textContent;
 
@@ -328,7 +331,8 @@ function convertFromAmount2() {
             result = amount2 / exchangeRates[currency2].compra;
         }
 
-        document.getElementById("amount1").value = formatWithThousandsSeparator(result.toFixed(0));
+        document.getElementById("amount1").dataset.rawValue = result.toFixed(0); // Guardar sin formato
+        document.getElementById("amount1").value = formatWithThousandsSeparator(result.toFixed(0)); // Mostrar formateado
     }
 }
 
