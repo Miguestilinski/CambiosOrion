@@ -40,23 +40,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Función para mostrar el Skeleton Loader
 function showSkeletonLoader() {
-    const tableBody = document.getElementById("currency-table-body");
-    if (!tableBody) {
-        console.error("Error: 'currency-table-body' no se encuentra en el DOM.");
-        return;
-    }
+    const loaderContainer = document.getElementById("loader-container");
+    if (!loaderContainer) return;
 
-    // Crear múltiples filas de carga con estilo skeleton
-    tableBody.innerHTML = `
-        ${[...Array(5)].map(() => `
-            <tr class="animate-pulse">
-                <td class="px-4 py-2 bg-gray-200 h-6 w-1/2 rounded"></td>
-                <td class="px-4 py-2 bg-gray-200 h-6 w-1/4 rounded"></td>
-                <td class="px-4 py-2 bg-gray-200 h-6 w-1/4 rounded"></td>
-            </tr>
-        `).join('')}
-    `;
+    // Crear múltiples filas con animación de pulso
+    const skeletonRows = Array.from({ length: 5 }).map(() => `
+        <div class="flex space-x-4">
+            <div class="flex-1 h-6 bg-gray-200 rounded animate-pulse"></div>
+            <div class="w-1/4 h-6 bg-gray-200 rounded animate-pulse"></div>
+            <div class="w-1/4 h-6 bg-gray-200 rounded animate-pulse"></div>
+        </div>
+    `).join('');
+
+    loaderContainer.innerHTML = skeletonRows;
 }
+
 
 // Función para cerrar el Skeleton Loader después de cargar los datos
 function removeSkeletonLoader() {
