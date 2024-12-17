@@ -294,22 +294,22 @@ function convertFromAmount1() {
     if (amount1 && exchangeRates[currency1] && exchangeRates[currency2]) {
         let result;
 
-        if (currency1 === "CLP") {
-            // CLP está en currency1, usar el precio de venta de la divisa seleccionada (currency2)
+        if (currency1 === "CLP" && currency2 !== "CLP") {
+            // Si la moneda base es CLP, usar el precio de venta de la moneda objetivo
             result = amount1 / exchangeRates[currency2].venta;
-        } else if (currency2 === "CLP") {
-            // CLP está en currency2, usar el precio de compra de la divisa seleccionada (currency1)
+        } else if (currency2 === "CLP" && currency1 !== "CLP") {
+            // Si la moneda objetivo es CLP, usar el precio de compra de la moneda base
             result = amount1 * exchangeRates[currency1].compra;
         } else {
-            // Conversión entre dos divisas distintas a CLP
+            // Conversión estándar entre dos divisas que no son CLP
             result = amount1 * exchangeRates[currency1].compra / exchangeRates[currency2].venta;
         }
 
-        // Mostrar el resultado en amount2 con formato
-        document.getElementById("amount2").textContent = formatWithThousandsSeparator(result.toFixed(0));
+        // Mostrar el resultado en el campo amount2 con formato
+        document.getElementById("amount2").value = formatWithThousandsSeparator(result.toFixed(2));
     } else {
         // Limpiar el campo si no hay datos válidos
-        document.getElementById("amount2").textContent = '';
+        document.getElementById("amount2").value = '';
     }
 }
 
