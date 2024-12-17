@@ -159,7 +159,7 @@ function setCurrency1(currency) {
     }
 
     if (currency === currency2) {
-        setCurrency2("CLP");
+        document.getElementById("currency2-text").textContent = "CLP";
     }
 
     exchangeRates[currency] = exchangeRates[currency] || { compra: 0, venta: 0 };
@@ -176,7 +176,7 @@ function setCurrency2(currency) {
     }
 
     if (currency === currency1) {
-        setCurrency1("CLP");
+        document.getElementById("currency1-text").textContent = "CLP";
     }
 
     exchangeRates[currency] = exchangeRates[currency] || { compra: 0, venta: 0 };
