@@ -9,6 +9,7 @@ function initializePage() {
     initializeSSE();
     setActiveLink('#nav-menu');
     setActiveLink('#session-menu');
+    showSkeletonLoader();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -110,7 +111,6 @@ function initializeSSE() {
 
     eventSource.onopen = () => {
         console.log('Conexión SSE establecida correctamente.');
-        showSkeletonLoader();
     };
 
     eventSource.onmessage = (event) => {
