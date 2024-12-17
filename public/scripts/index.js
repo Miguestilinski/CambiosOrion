@@ -12,11 +12,11 @@ function initializePage() {
     updateLastUpdatedTimestamp();
 }
 
-
 function loadCurrenciesWithSSE() {
     const eventSource = new EventSource('https://cambiosorion.cl/api/divisas/stream/stream_divisas.php');
 
-    eventSource.onopen = () => {};
+    eventSource.onopen = () => {
+    };
 
     eventSource.onmessage = (event) => {
         try {
@@ -34,18 +34,7 @@ function loadCurrenciesWithSSE() {
             if (dropdown1) dropdown1.innerHTML = '';
             if (dropdown2) dropdown2.innerHTML = '';
 
-            const selectedCurrency1 = document.getElementById("currency1-text").textContent;
-            const selectedCurrency2 = document.getElementById("currency2-text").textContent;
-
-            // Primero filtrar CLP y asegurarse de no mostrarla en los dropdowns ya seleccionada
-            const currencies = responseData.filter(divisa => divisa.nombre !== selectedCurrency1 && divisa.nombre !== selectedCurrency2);
-
-            // Insertar CLP primero, si no está seleccionada
-            if (selectedCurrency1 !== "CLP" && selectedCurrency2 !== "CLP") {
-                currencies.unshift({ nombre: "CLP", icono_circular: "/path/to/clp-icon.png" }); // Ruta del ícono CLP
-            }
-
-            currencies.forEach(divisa => {
+            responseData.forEach(divisa => {
                 const circularIcon = divisa.icono_circular;
                 exchangeRates[divisa.nombre] = {
                     compra: parseFloat(divisa.compra),
@@ -81,7 +70,7 @@ function loadCurrenciesWithSSE() {
             if (responseData.length && responseData[0].fecha_actualizacion) {
                 updateLastUpdatedTimestamp(responseData[0].fecha_actualizacion);
             }
-
+            
         } catch (error) {
             console.error('Error procesando los datos SSE:', error);
         }
