@@ -34,33 +34,48 @@ function loadCurrenciesWithSSE() {
             if (dropdown1) dropdown1.innerHTML = '';
             if (dropdown2) dropdown2.innerHTML = '';
 
-            responseData.forEach(divisa => {
-                const circularIcon = divisa.icono_circular;
-                exchangeRates[divisa.nombre] = {
-                    compra: parseFloat(divisa.compra),
-                    venta: parseFloat(divisa.venta),
-                    icono: circularIcon
-                };
+            // Crear listas filtradas
+            const selectedCurrency1 = document.getElementById("currency1-text").textContent;
+            const selectedCurrency2 = document.getElementById("currency2-text").textContent;
 
-                preloadIcon(circularIcon);
+            const createDropdownOptions = (responseData, excludeCurrency) => {
+                const filteredCurrencies = responseData.filter(
+                    currency => currency.nombre !== excludeCurrency
+                );
 
-                const option1 = document.createElement("div");
-                option1.innerHTML = `<img src="${circularIcon}" alt="${divisa.nombre}" class="w-6 h-6 mr-2"> ${divisa.nombre}`;
-                option1.className = "p-2 hover:bg-gray-100 cursor-pointer";
-                option1.onclick = function () {
+                // Asegurar que CLP esté al inicio
+                const sortedCurrencies = [responseData.find(c => c.nombre === "CLP"), ...filteredCurrencies.filter(c => c.nombre !== "CLP")];
+
+                return sortedCurrencies;
+            }
+
+            preloadIcon(circularIcon);
+
+            const options1 = createDropdownOptions(responseData, selectedCurrency2);
+            const options2 = createDropdownOptions(responseData, selectedCurrency1);
+
+            // Llenar Dropdown1
+            options1.forEach(divisa => {
+                const optionDiv = document.createElement("div");
+                optionDiv.innerHTML = `<img src="${divisa.icono_circular}" alt="${divisa.nombre}" class="w-6 h-6 mr-2"> ${divisa.nombre}`;
+                optionDiv.className = "p-2 hover:bg-gray-100 cursor-pointer";
+                optionDiv.onclick = () => {
                     setCurrency1(divisa.nombre);
-                    toggleDropdown('dropdown1', event);
+                    toggleDropdown('dropdown1');
                 };
-                dropdown1.appendChild(option1);
+                dropdown1.appendChild(optionDiv);
+            });
 
-                const option2 = document.createElement("div");
-                option2.innerHTML = `<img src="${circularIcon}" alt="${divisa.nombre}" class="w-5 h-5 mr-2"> ${divisa.nombre}`;
-                option2.className = "p-2 hover:bg-gray-100 cursor-pointer";
-                option2.onclick = function () {
+            // Llenar Dropdown2
+            options2.forEach(divisa => {
+                const optionDiv = document.createElement("div");
+                optionDiv.innerHTML = `<img src="${divisa.icono_circular}" alt="${divisa.nombre}" class="w-6 h-6 mr-2"> ${divisa.nombre}`;
+                optionDiv.className = "p-2 hover:bg-gray-100 cursor-pointer";
+                optionDiv.onclick = () => {
                     setCurrency2(divisa.nombre);
-                    toggleDropdown('dropdown2', event);
+                    toggleDropdown('dropdown2');
                 };
-                dropdown2.appendChild(option2);
+                dropdown2.appendChild(optionDiv);
             });
 
             updateAddCurrencyDropdown();
