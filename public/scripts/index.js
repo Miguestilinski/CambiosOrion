@@ -192,12 +192,16 @@ function setCurrency1(currency) {
     const currency2 = document.getElementById("currency2-text").textContent;
 
     if (currency === currency2) {
+        // Si la nueva selección es igual a la divisa en currency2, intercambiar
+        document.getElementById("currency2-text").textContent = "CLP";
+    } else if (currency !== "CLP" && currency2 !== "CLP") {
+        // Si ninguna de las divisas es CLP, establecer currency2 a CLP
         document.getElementById("currency2-text").textContent = "CLP";
     }
 
     document.getElementById("currency1-text").textContent = currency;
     updateCurrencyIcon();
-    filterDropdownCurrencies(); // Llama nuevamente para actualizar las opciones
+    filterDropdownCurrencies(); // Actualizar opciones visibles
 }
 
 // Función para establecer currency2
@@ -205,12 +209,16 @@ function setCurrency2(currency) {
     const currency1 = document.getElementById("currency1-text").textContent;
 
     if (currency === currency1) {
+        // Si la nueva selección es igual a la divisa en currency1, intercambiar
+        document.getElementById("currency1-text").textContent = "CLP";
+    } else if (currency !== "CLP" && currency1 !== "CLP") {
+        // Si ninguna de las divisas es CLP, establecer currency1 a CLP
         document.getElementById("currency1-text").textContent = "CLP";
     }
 
     document.getElementById("currency2-text").textContent = currency;
     updateCurrencyIcon();
-    filterDropdownCurrencies(); // Llama nuevamente para actualizar las opciones
+    filterDropdownCurrencies(); // Actualizar opciones visibles
 }
 
 // Modificar los inputs para formatear y validar el contenido
@@ -287,8 +295,8 @@ function updateCurrencyIcon() {
     const currency1 = document.getElementById("currency1-text").textContent;
     const currency2 = document.getElementById("currency2-text").textContent;
 
-    document.getElementById("icon-currency1").src = exchangeRates[currency1]?.icono || '';
-    document.getElementById("icon-currency2").src = exchangeRates[currency2]?.icono || '';
+    document.getElementById("icon-currency1").src = exchangeRates[currency1].icono;
+    document.getElementById("icon-currency2").src = exchangeRates[currency2].icono;
 }
 
 function updateAddCurrencyDropdown() {
