@@ -166,16 +166,24 @@ function filterDropdownCurrencies() {
     const currency1 = document.getElementById("currency1-text").textContent;
     const currency2 = document.getElementById("currency2-text").textContent;
 
-    // Actualizar opciones de dropdown1
+    // Actualizar dropdown1
     Array.from(dropdown1.children).forEach(option => {
         const divisa = option.textContent.trim();
-        option.style.display = (divisa === 'CLP' || divisa === currency2) ? 'none' : 'block';
+        if (divisa === currency1 || divisa === currency2) {
+            option.style.display = 'none';
+        } else {
+            option.style.display = 'block';
+        }
     });
 
-    // Actualizar opciones de dropdown2
+    // Actualizar dropdown2
     Array.from(dropdown2.children).forEach(option => {
         const divisa = option.textContent.trim();
-        option.style.display = (divisa === 'CLP' || divisa === currency1) ? 'none' : 'block';
+        if (divisa === currency1 || divisa === currency2) {
+            option.style.display = 'none';
+        } else {
+            option.style.display = 'block';
+        }
     });
 }
 
@@ -183,40 +191,26 @@ function filterDropdownCurrencies() {
 function setCurrency1(currency) {
     const currency2 = document.getElementById("currency2-text").textContent;
 
-    // Si currency1 es igual a CLP, intercambiar las divisas
-    if (currency === 'CLP') {
-        document.getElementById("currency1-text").textContent = currency2;
-        document.getElementById("currency2-text").textContent = 'CLP';
-    } else {
-        // Si currency1 no es CLP y currency2 es igual a currency1, establecer currency2 como CLP
-        if (currency === currency2) {
-            document.getElementById("currency2-text").textContent = 'CLP';
-        }
-        document.getElementById("currency1-text").textContent = currency;
+    if (currency === currency2) {
+        document.getElementById("currency2-text").textContent = "CLP";
     }
 
+    document.getElementById("currency1-text").textContent = currency;
     updateCurrencyIcon();
-    filterDropdownCurrencies();
+    filterDropdownCurrencies(); // Llama nuevamente para actualizar las opciones
 }
 
 // Función para establecer currency2
 function setCurrency2(currency) {
     const currency1 = document.getElementById("currency1-text").textContent;
 
-    // Si currency2 es igual a CLP, intercambiar las divisas
-    if (currency === 'CLP') {
-        document.getElementById("currency2-text").textContent = currency1;
-        document.getElementById("currency1-text").textContent = 'CLP';
-    } else {
-        // Si currency2 no es CLP y currency1 es igual a currency2, establecer currency1 como CLP
-        if (currency === currency1) {
-            document.getElementById("currency1-text").textContent = 'CLP';
-        }
-        document.getElementById("currency2-text").textContent = currency;
+    if (currency === currency1) {
+        document.getElementById("currency1-text").textContent = "CLP";
     }
 
+    document.getElementById("currency2-text").textContent = currency;
     updateCurrencyIcon();
-    filterDropdownCurrencies();
+    filterDropdownCurrencies(); // Llama nuevamente para actualizar las opciones
 }
 
 // Modificar los inputs para formatear y validar el contenido
