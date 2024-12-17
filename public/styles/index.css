@@ -334,7 +334,7 @@ section .max-w-xl {
 /* Ajustes en celdas: espaciado interno y tamaño de fuente */
 #currency-table-body td {
     padding: 16px;
-    font-size: 14px;
+    font-size: 1.1rem;
 }
 
 #currency-table-body td:first-child img {
@@ -358,7 +358,7 @@ section .max-w-xl {
     border-radius: 8px;
     padding: 4px 8px; /* Ajustar espacio interno */
     max-width: fit-content; /* Limitar el ancho al contenido */
-    font-size: 14px;
+    font-size: 1.1rem;
 }
 
 .arrow-icon {
