@@ -265,26 +265,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 input.value = formatWithThousandsSeparator(numericValue); // Mostrar el valor con separadores
             });
 
-            // Evitar caracteres no permitidos
-            input.addEventListener('keydown', (event) => {
-                const allowedKeys = ["Backspace", "ArrowLeft", "ArrowRight", "Delete", "Tab"];
-                const isNumber = /^[0-9]$/.test(event.key);
-
-                if (!isNumber && !allowedKeys.includes(event.key)) {
-                    event.preventDefault();
-                }
-            });
-
-            // Al salir del campo, asegurar el formato
-            input.addEventListener('blur', () => {
-                const rawValue = input.dataset.rawValue || ''; // Obtener el valor sin puntos
-                input.value = formatWithThousandsSeparator(rawValue); // Mostrar el valor formateado
-            });
-
             // Al entrar al campo, mostrar sin formato
             input.addEventListener('focus', () => {
                 const rawValue = input.dataset.rawValue || '';
                 input.value = rawValue; // Mostrar el valor sin puntos para edición
+            });
+
+            // Al salir del campo, asegurar el formato
+            input.addEventListener('blur', () => {
+                const rawValue = input.dataset.rawValue || '';
+                input.value = formatWithThousandsSeparator(rawValue); // Mostrar el valor formateado
             });
         }
     });
@@ -292,7 +282,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Formatear números con separador de miles
 function formatWithThousandsSeparator(value) {
-    return value.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Inserta puntos como separadores de miles
+    return value.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Insertar puntos como separadores de miles
 }
 
 // Mantener las conversiones funcionales
