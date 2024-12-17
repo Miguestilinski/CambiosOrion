@@ -152,11 +152,11 @@ function preloadIcon(iconUrl) {
 
 // Función para establecer currency1
 function setCurrency1(currency) {
-    document.getElementById("currency1-text").textContent = currency;
-
-    if (currency !== "CLP") {
-        document.getElementById("currency2-text").textContent = "CLP";
+    const currency2 = document.getElementById("currency2-text").textContent;
+    if (currency === currency2) {
+        setCurrency2("CLP");
     }
+    document.getElementById("currency1-text").textContent = currency;
 
     exchangeRates[currency] = exchangeRates[currency] || { compra: 0, venta: 0 };
     convertFromAmount1();
@@ -165,11 +165,11 @@ function setCurrency1(currency) {
 
 // Función para establecer currency2
 function setCurrency2(currency) {
-    document.getElementById("currency2-text").textContent = currency;
-
-    if (currency !== "CLP") {
-        document.getElementById("currency1-text").textContent = "CLP";
+    const currency1 = document.getElementById("currency1-text").textContent;
+    if (currency === currency1) {
+        setCurrency1("CLP");
     }
+    document.getElementById("currency2-text").textContent = currency;
 
     exchangeRates[currency] = exchangeRates[currency] || { compra: 0, venta: 0 };
     convertFromAmount1();
