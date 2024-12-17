@@ -262,11 +262,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const rawValue = event.target.value.replace(/\./g, ''); // Quitar puntos existentes
                 const numericValue = rawValue.replace(/\D/g, ''); // Quitar caracteres no numéricos
 
-                if (numericValue.length > 9) {
-                    event.target.value = formatWithThousandsSeparator(numericValue.slice(0, 9));
-                } else {
-                    event.target.value = formatWithThousandsSeparator(numericValue);
-                }
+                event.target.value = formatWithThousandsSeparator(numericValue);
+
             });
 
             // Evitar caracteres no permitidos
