@@ -15,8 +15,7 @@ function initializePage() {
 function loadCurrenciesWithSSE() {
     const eventSource = new EventSource('https://cambiosorion.cl/api/divisas/stream/stream_divisas.php');
 
-    eventSource.onopen = () => {
-    };
+    eventSource.onopen = () => {};
 
     eventSource.onmessage = (event) => {
         try {
@@ -36,9 +35,11 @@ function loadCurrenciesWithSSE() {
 
             responseData.forEach(divisa => {
                 const circularIcon = divisa.icono_circular;
+
+                // Redondear tasas de cambio a enteros
                 exchangeRates[divisa.nombre] = {
-                    compra: parseFloat(divisa.compra),
-                    venta: parseFloat(divisa.venta),
+                    compra: Math.round(parseFloat(divisa.compra)),
+                    venta: Math.round(parseFloat(divisa.venta)),
                     icono: circularIcon
                 };
 
@@ -69,7 +70,6 @@ function loadCurrenciesWithSSE() {
             if (responseData.length && responseData[0].fecha_actualizacion) {
                 updateLastUpdatedTimestamp(responseData[0].fecha_actualizacion);
             }
-            
         } catch (error) {
             console.error('Error procesando los datos SSE:', error);
         }
@@ -257,27 +257,19 @@ function formatWithThousandsSeparator(value) {
 
 // Mantener las conversiones funcionales
 function convertFromAmount1() {
-    const amount1Raw = document.getElementById("amount1").dataset.rawValue || '0'; // Obtener valor sin formato
-    const amount1 = parseFloat(amount1Raw); // Convertir a número
+    const amount1Input = document.getElementById("amount1");
+    const amount2Input = document.getElementById("amount2");
     const currency1 = document.getElementById("currency1-text").textContent;
     const currency2 = document.getElementById("currency2-text").textContent;
 
-    if (amount1 && exchangeRates[currency1] && exchangeRates[currency2]) {
-        let result;
+    const amount1 = parseInt(amount1Input.dataset.rawValue || "0", 10); // Leer el valor sin formatear
+    const rate = exchangeRates[currency2]?.venta / exchangeRates[currency1]?.compra;
 
-        if (currency1 === "CLP" && currency2 !== "CLP") {
-            // Si la moneda base es CLP, usar el precio de venta de la moneda objetivo
-            result = amount1 / exchangeRates[currency2].venta;
-        } else if (currency2 === "CLP" && currency1 !== "CLP") {
-            // Si la moneda objetivo es CLP, usar el precio de compra de la moneda base
-            result = amount1 * exchangeRates[currency1].compra;
-        }
-
-        // Mostrar el resultado en el campo amount2 con formato
-        document.getElementById("amount2").value = formatWithThousandsSeparator(result.toFixed(2));
+    if (!isNaN(rate)) {
+        const convertedAmount = Math.round(amount1 * rate); // Redondear a entero
+        amount2Input.value = formatWithThousandsSeparator(convertedAmount.toString());
     } else {
-        // Limpiar el campo si no hay datos válidos
-        document.getElementById("amount2").value = '';
+        amount2Input.value = '';
     }
 }
 
