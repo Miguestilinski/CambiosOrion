@@ -15,14 +15,10 @@ function initializePage() {
 function loadCurrenciesWithSSE() {
     const eventSource = new EventSource('https://cambiosorion.cl/api/divisas/stream/stream_divisas.php');
 
-    eventSource.onopen = () => {
-    };
-
     eventSource.onmessage = (event) => {
         try {
             const responseData = JSON.parse(event.data);
 
-            // Validar si los datos son un array
             if (!Array.isArray(responseData)) {
                 console.error('Formato de datos inesperado:', responseData);
                 return;
@@ -34,67 +30,64 @@ function loadCurrenciesWithSSE() {
             if (dropdown1) dropdown1.innerHTML = '';
             if (dropdown2) dropdown2.innerHTML = '';
 
-            // Crear listas filtradas
-            const selectedCurrency1 = document.getElementById("currency1-text").textContent;
-            const selectedCurrency2 = document.getElementById("currency2-text").textContent;
-
-            const createDropdownOptions = (responseData, excludeCurrency) => {
-                const filteredCurrencies = responseData.filter(
-                    currency => currency.nombre !== excludeCurrency
-                );
-
-                // Asegurar que CLP esté al inicio
-                const sortedCurrencies = [responseData.find(c => c.nombre === "CLP"), ...filteredCurrencies.filter(c => c.nombre !== "CLP")];
-
-                return sortedCurrencies;
-            }
-
-            preloadIcon(circularIcon);
-
-            const options1 = createDropdownOptions(responseData, selectedCurrency2);
-            const options2 = createDropdownOptions(responseData, selectedCurrency1);
-
-            // Llenar Dropdown1
-            options1.forEach(divisa => {
-                const optionDiv = document.createElement("div");
-                optionDiv.innerHTML = `<img src="${divisa.icono_circular}" alt="${divisa.nombre}" class="w-6 h-6 mr-2"> ${divisa.nombre}`;
-                optionDiv.className = "p-2 hover:bg-gray-100 cursor-pointer";
-                optionDiv.onclick = () => {
-                    setCurrency1(divisa.nombre);
-                    toggleDropdown('dropdown1');
+            responseData.forEach(divisa => {
+                const { nombre, icono_circular, compra, venta } = divisa;
+                exchangeRates[nombre] = {
+                    compra: parseFloat(compra),
+                    venta: parseFloat(venta),
+                    icono: icono_circular
                 };
-                dropdown1.appendChild(optionDiv);
-            });
 
-            // Llenar Dropdown2
-            options2.forEach(divisa => {
-                const optionDiv = document.createElement("div");
-                optionDiv.innerHTML = `<img src="${divisa.icono_circular}" alt="${divisa.nombre}" class="w-6 h-6 mr-2"> ${divisa.nombre}`;
-                optionDiv.className = "p-2 hover:bg-gray-100 cursor-pointer";
-                optionDiv.onclick = () => {
-                    setCurrency2(divisa.nombre);
-                    toggleDropdown('dropdown2');
-                };
-                dropdown2.appendChild(optionDiv);
+                preloadIcon(icono_circular);
+
+                const option1 = createDropdownOption(nombre, icono_circular, 'dropdown1', setCurrency1);
+                const option2 = createDropdownOption(nombre, icono_circular, 'dropdown2', setCurrency2);
+
+                dropdown1.appendChild(option1);
+                dropdown2.appendChild(option2);
             });
 
             updateAddCurrencyDropdown();
             fillCurrencyTable();
 
-            // Capturar la fecha de última actualización
             if (responseData.length && responseData[0].fecha_actualizacion) {
                 updateLastUpdatedTimestamp(responseData[0].fecha_actualizacion);
             }
-            
+
         } catch (error) {
             console.error('Error procesando los datos SSE:', error);
         }
     };
 
     eventSource.onerror = (error) => {
-        console.error('Error con la conexión SSE:', error);
-        eventSource.close(); // Cierra la conexión si ocurre un error persistente
+        console.error('Error SSE:', error);
+        eventSource.close();
     };
+}
+
+function preloadIcon(iconUrl) {
+    if (!iconsLoaded[iconUrl]) {
+        const img = new Image();
+        img.onload = () => {
+            iconsLoaded[iconUrl] = true;
+        };
+        img.onerror = () => {
+            iconsLoaded[iconUrl] = false;
+            console.error(`No se pudo cargar el ícono: ${iconUrl}`);
+        };
+        img.src = iconUrl; // Carga la imagen en el navegador
+    }
+}
+
+function createDropdownOption(name, iconUrl, dropdownId, callback) {
+    const option = document.createElement("div");
+    option.innerHTML = `<img src="${iconUrl}" alt="${name}" class="w-6 h-6 mr-2"> ${name}`;
+    option.className = "p-2 hover:bg-gray-100 cursor-pointer";
+    option.onclick = () => {
+        callback(name);
+        toggleDropdown(dropdownId);
+    };
+    return option;
 }
 
 async function fetchClosingRates() {
@@ -149,94 +142,6 @@ function getVariationStyle(variation) {
     }
 
     return { containerStyle, arrowHTML };
-}
-
-function fillCurrencyTable() {
-    const tableBody = document.getElementById("currency-table-body");
-    if (!tableBody) {
-        console.error("Error: 'currency-table-body' no se encuentra en el DOM.");
-        return; // Evita continuar si el elemento no existe
-    }
-    tableBody.innerHTML = '';
-    displayedCurrencies.forEach((currency, index) => {
-        if (exchangeRates[currency]) {
-            const row = document.createElement("tr");
-
-            const compra = exchangeRates[currency].compra;
-            const venta = exchangeRates[currency].venta;
-
-            // Obtener las tasas de cierre con validación
-            const closingCompra = closingRates[currency]?.compra || 0;
-            const closingVenta = closingRates[currency]?.venta || 0;
-
-            const variationCompra = calculateVariationPercentage(compra, closingCompra);
-            const variationVenta = calculateVariationPercentage(venta, closingVenta);
-            
-            const compraStyle = getVariationStyle(variationCompra);
-            const ventaStyle = getVariationStyle(variationVenta);
-
-            row.classList.add("currency-row");
-            row.innerHTML = `
-                <td class="px-4 py-2 flex items-center justify-start space-x-2 sm:w-auto w-full">
-                    <img src="${exchangeRates[currency].icono}" alt="${currency}" class="w-6 h-6 mr-2"> ${currency}
-                </td>
-                <td class="px-4 py-2">${compra ? Math.round(compra) + ' CLP' : ' '}</td>
-                <td class="px-4 py-2">
-                    ${currency === 'CLP' ? '' : `
-                        <div style="${compraStyle.containerStyle}" class="variation-container">
-                            ${variationCompra !== 0 ? 
-                                (variationCompra > 0 ? `+${variationCompra.toFixed(2)}%` : `${variationCompra.toFixed(2)}%`) 
-                                : `${variationCompra.toFixed(2)}%`
-                            }
-                            ${compraStyle.arrowHTML}
-                        </div>
-                    `}
-                </td>
-                <td class="px-4 py-2 edit-column ${isEditMode ? '' : 'hidden'}">
-                    <button onclick="deleteCurrency('${currency}')" class="delete-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6 text-white">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                        </svg>
-                    </button>
-                </td>
-            `;
-
-            if (index === 0) {
-                row.classList.add("first-row");
-            }
-            tableBody.appendChild(row);
-        }
-    });
-}
-
-function updateLastUpdatedTimestamp(fecha) {
-    const lastUpdatedElement = document.getElementById("last-updated");
-    if (lastUpdatedElement) {
-        const dateObject = new Date(fecha);
-        const formattedDate = dateObject.toLocaleString('es-CL', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
-        });
-        lastUpdatedElement.textContent = `Última actualización: ${formattedDate}`;
-    }
-}
-
-function preloadIcon(iconUrl) {
-    if (!iconsLoaded[iconUrl]) {
-        const img = new Image();
-        img.onload = () => {
-            iconsLoaded[iconUrl] = true;
-        };
-        img.onerror = () => {
-            iconsLoaded[iconUrl] = false;
-            console.error(`No se pudo cargar el ícono: ${iconUrl}`);
-        };
-        img.src = iconUrl; // Carga la imagen en el navegador
-    }
 }
 
 // Función para establecer currency1
@@ -373,6 +278,80 @@ function updateAddCurrencyDropdown() {
             dropdown.appendChild(option);
         }
     });
+}
+
+function fillCurrencyTable() {
+    const tableBody = document.getElementById("currency-table-body");
+    if (!tableBody) {
+        console.error("Error: 'currency-table-body' no se encuentra en el DOM.");
+        return; // Evita continuar si el elemento no existe
+    }
+    tableBody.innerHTML = '';
+    displayedCurrencies.forEach((currency, index) => {
+        if (exchangeRates[currency]) {
+            const row = document.createElement("tr");
+
+            const compra = exchangeRates[currency].compra;
+            const venta = exchangeRates[currency].venta;
+
+            // Obtener las tasas de cierre con validación
+            const closingCompra = closingRates[currency]?.compra || 0;
+            const closingVenta = closingRates[currency]?.venta || 0;
+
+            const variationCompra = calculateVariationPercentage(compra, closingCompra);
+            const variationVenta = calculateVariationPercentage(venta, closingVenta);
+            
+            const compraStyle = getVariationStyle(variationCompra);
+            const ventaStyle = getVariationStyle(variationVenta);
+
+            row.classList.add("currency-row");
+            row.innerHTML = `
+                <td class="px-4 py-2 flex items-center justify-start space-x-2 sm:w-auto w-full">
+                    <img src="${exchangeRates[currency].icono}" alt="${currency}" class="w-6 h-6 mr-2"> ${currency}
+                </td>
+                <td class="px-4 py-2">${compra ? Math.round(compra) + ' CLP' : ' '}</td>
+                <td class="px-4 py-2">
+                    ${currency === 'CLP' ? '' : `
+                        <div style="${compraStyle.containerStyle}" class="variation-container">
+                            ${variationCompra !== 0 ? 
+                                (variationCompra > 0 ? `+${variationCompra.toFixed(2)}%` : `${variationCompra.toFixed(2)}%`) 
+                                : `${variationCompra.toFixed(2)}%`
+                            }
+                            ${compraStyle.arrowHTML}
+                        </div>
+                    `}
+                </td>
+                <td class="px-4 py-2 edit-column ${isEditMode ? '' : 'hidden'}">
+                    <button onclick="deleteCurrency('${currency}')" class="delete-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6 text-white">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </td>
+            `;
+
+            if (index === 0) {
+                row.classList.add("first-row");
+            }
+            tableBody.appendChild(row);
+        }
+    });
+}
+
+function updateLastUpdatedTimestamp(fecha) {
+    const lastUpdatedElement = document.getElementById("last-updated");
+    if (lastUpdatedElement) {
+        const dateObject = new Date(fecha);
+        const formattedDate = dateObject.toLocaleString('es-CL', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+        lastUpdatedElement.textContent = `Última actualización: ${formattedDate}`;
+    }
 }
 
 function toggleDropdown(dropdownId, event) {
