@@ -283,7 +283,6 @@ input[type="number"]::-moz-outer-spin-button {
 /* Contenedor de la tabla */
 .content-table {
     justify-content: center;
-    border-collapse: separate;
     border-spacing: 0 8px; /* Espacio entre filas */
     width: 100%;
 }
@@ -333,23 +332,19 @@ section .max-w-xl {
 
 /* Ajustes en celdas: espaciado interno y tamaño de fuente */
 #currency-table-body td {
-    padding: 16px;
+    padding: 1.2rem;
     font-size: 1.1rem;
+    border: none;
 }
 
 #currency-table-body td:first-child img {
     border-radius: 8px;
 }
 
-#currency-table-body td {
-    border: none;
-}
-
 #currency-table-body td:last-child:not(.hidden) {
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
 }
-
 
 .variation-container {
     display: inline-flex; /* Cambiar a flex para alineación horizontal */
@@ -391,7 +386,7 @@ section .max-w-xl {
 .edit-btn {
     background-color: rgba(231, 240, 250, 1);
     color: rgba(0, 108, 224, 1);
-    font-size: 12px;
+    font-size: 0.95rem;
     padding: 8px 15px;
     right: 10px;
     border-radius: 8px;
@@ -412,7 +407,7 @@ section .max-w-xl {
 .add-currency-btn {
     background-color: rgba(231, 240, 250, 1);
     color: rgba(0, 108, 224, 1);
-    font-size: 12px;
+    font-size: 0.95rem;
     padding: 8px 15px;
     border-radius: 8px;
     font-weight: bold;
@@ -479,7 +474,7 @@ button:hover {
     bottom: 8px;
     right: 8px;
     color: white;
-    font-size: 0.75rem; /* Tamaño de texto pequeño */
+    font-size: 0.85rem;
 }
 
 .forgot-password {
