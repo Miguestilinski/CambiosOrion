@@ -71,21 +71,35 @@ h2 {
     position: relative;
 }
 
+/* Estilando las filas del Skeleton Loader dentro de la tabla */
+.skeleton-row {
+    border-radius: 8px; 
+    background: #e0e0e0;
+    height: 40px;
+    margin-bottom: 8px;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Contenedor con espaciado */
 #loader-container {
     display: block;
-    opacity: 1;
+    margin: 8px 0;
 }
 
 .animate-pulse {
     animation: pulse 1.5s ease-in-out infinite;
 }
 
+/* Espaciado y estilo de pulso */
 @keyframes pulse {
-    0%, 100% {
+    0% {
         opacity: 1;
     }
     50% {
-        opacity: 0.4;
+        opacity: 0.6;
+    }
+    100% {
+        opacity: 1;
     }
 }
 

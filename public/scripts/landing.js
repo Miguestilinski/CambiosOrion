@@ -9,7 +9,6 @@ function initializePage() {
     initializeSSE();
     setActiveLink('#nav-menu');
     setActiveLink('#session-menu');
-    showSkeletonLoader();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -40,40 +39,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Función para mostrar el Skeleton Loader
 function showSkeletonLoader() {
-    const loaderContainer = document.getElementById("loader-container");
-    if (!loaderContainer) return;
+    const tableBody = document.getElementById("currency-table-body");
 
-    // Crear múltiples filas con animación de pulso
+    if (!tableBody) return;
+
+    // Crear 5 filas como el diseño de la tabla con animación
     const skeletonRows = Array.from({ length: 5 }).map(() => `
-        <div class="flex space-x-4">
-            <div class="flex-1 h-6 bg-gray-200 rounded animate-pulse"></div>
-            <div class="w-1/4 h-6 bg-gray-200 rounded animate-pulse"></div>
-            <div class="w-1/4 h-6 bg-gray-200 rounded animate-pulse"></div>
-        </div>
+        <tr class="skeleton-row">
+            <td class="px-4 py-2">&nbsp;</td>
+            <td class="px-4 py-2">&nbsp;</td>
+            <td class="px-4 py-2">&nbsp;</td>
+        </tr>
     `).join('');
 
-    loaderContainer.innerHTML = skeletonRows;
-
-    // Asegurarse de que sea visible
-    loaderContainer.style.display = "block";
-    loaderContainer.style.opacity = "1";
+    tableBody.innerHTML = skeletonRows;
 }
 
 // Función para ocultar el Skeleton Loader y mostrar la tabla
 function removeSkeletonLoader() {
-    const loaderContainer = document.getElementById("loader-container");
-    const table = document.querySelector(".content-table"); // Tabla que debe mostrarse
+    const tableBody = document.getElementById("currency-table-body");
 
-    if (!loaderContainer || !table) {
-        console.error("Error: Elementos del DOM no encontrados.");
+    if (!tableBody) {
+        console.error("Error: 'currency-table-body' no se encuentra en el DOM.");
         return;
     }
 
-    // Ocultar el loader
-    loaderContainer.style.display = "none";
-
-    // Mostrar la tabla
-    table.style.display = "table";
+    // Limpiar el Skeleton Loader
+    tableBody.innerHTML = '';
+    fillCurrencyTable();
 }
 
 // Función para alternar visibilidad del menú
@@ -117,6 +110,7 @@ function initializeSSE() {
 
     eventSource.onopen = () => {
         console.log('Conexión SSE establecida correctamente.');
+        showSkeletonLoader();
     };
 
     eventSource.onmessage = (event) => {
@@ -151,7 +145,6 @@ function initializeSSE() {
                 });
 
                 removeSkeletonLoader();
-                fillCurrencyTable();
             } else {
                 console.error('Formato de datos inesperado:', data);
             }
