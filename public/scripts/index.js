@@ -295,45 +295,30 @@ function convertFromAmount1() {
         let result;
 
         if (currency1 === "CLP") {
-            // CLP está en currency1, usar el precio de venta de la divisa seleccionada
+            // CLP está en currency1, usar el precio de venta de la divisa seleccionada (currency2)
             result = amount1 / exchangeRates[currency2].venta;
         } else if (currency2 === "CLP") {
-            // CLP está en currency2, usar el precio de compra de la divisa seleccionada
+            // CLP está en currency2, usar el precio de compra de la divisa seleccionada (currency1)
             result = amount1 * exchangeRates[currency1].compra;
         } else {
             // Conversión entre dos divisas distintas a CLP
             result = amount1 * exchangeRates[currency1].compra / exchangeRates[currency2].venta;
         }
 
-        document.getElementById("amount2").textContent = formatWithThousandsSeparator(result.toFixed(0)); // Mostrar formateado
+        // Mostrar el resultado en amount2 con formato
+        document.getElementById("amount2").textContent = formatWithThousandsSeparator(result.toFixed(0));
     } else {
-        document.getElementById("amount2").textContent = ''; // Limpiar si no hay datos válidos
+        // Limpiar el campo si no hay datos válidos
+        document.getElementById("amount2").textContent = '';
     }
 }
 
 // Asegurar que el segundo campo de entrada sea de solo lectura
 document.addEventListener('DOMContentLoaded', () => {
-    const amount2Raw = document.getElementById("amount2").dataset.rawValue || '0'; // Obtener valor sin formato
-    const amount2 = parseFloat(amount2Raw); // Convertir a número
-    const currency1 = document.getElementById("currency1-text").textContent;
-    const currency2 = document.getElementById("currency2-text").textContent;
+    const amount2Input = document.getElementById("amount2");
 
-    if (amount2 && exchangeRates[currency1] && exchangeRates[currency2]) {
-        let result;
-
-        if (currency2 === "CLP") {
-            // CLP está en currency2, usar el precio de compra de la divisa seleccionada
-            result = amount2 / exchangeRates[currency1].compra;
-        } else if (currency1 === "CLP") {
-            // CLP está en currency1, usar el precio de venta de la divisa seleccionada
-            result = amount2 * exchangeRates[currency2].venta;
-        } else {
-            // Conversión entre dos divisas distintas a CLP
-            result = amount2 * exchangeRates[currency2].venta / exchangeRates[currency1].compra;
-        }
-
-        document.getElementById("amount1").dataset.rawValue = result.toFixed(0); // Guardar sin formato
-        document.getElementById("amount1").value = formatWithThousandsSeparator(result.toFixed(0)); // Mostrar formateado
+    if (amount2Input) {
+        amount2Input.setAttribute('readonly', true); // Hacerlo de solo lectura
     }
 });
 
