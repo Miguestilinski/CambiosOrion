@@ -246,38 +246,37 @@ function setCurrency2(currency) {
     }
 
     exchangeRates[currency] = exchangeRates[currency] || { compra: 0, venta: 0 };
-    convertFromAmount2();
+    convertFromAmount1();
     updateCurrencyIcon();
 }
 
 // Modificar los inputs para formatear y validar el contenido
 document.addEventListener('DOMContentLoaded', () => {
     initializePage();
-    const amountInputs = [document.getElementById("amount1"), document.getElementById("amount2")];
+    const amount1Input = document.getElementById("amount1");
 
-    amountInputs.forEach(input => {
-        if (input) {
-            // Actualizar el valor interno al escribir
-            input.addEventListener('input', (event) => {
-                const rawValue = event.target.value.replace(/\./g, ''); // Quitar puntos existentes
-                const numericValue = rawValue.replace(/\D/g, ''); // Quitar caracteres no numéricos
-                input.dataset.rawValue = numericValue; // Guardar el valor sin formatear en un atributo personalizado
-                input.value = formatWithThousandsSeparator(numericValue); // Mostrar el valor con separadores
-            });
+    if (amount1Input) {
+        // Actualizar el valor interno al escribir
+        amount1Input.addEventListener('input', (event) => {
+            const rawValue = event.target.value.replace(/\./g, ''); // Quitar puntos existentes
+            const numericValue = rawValue.replace(/\D/g, ''); // Quitar caracteres no numéricos
+            amount1Input.dataset.rawValue = numericValue; // Guardar el valor sin formatear en un atributo personalizado
+            amount1Input.value = formatWithThousandsSeparator(numericValue); // Mostrar el valor con separadores
+            convertFromAmount1(); // Realizar conversión en tiempo real
+        });
 
-            // Al entrar al campo, mostrar sin formato
-            input.addEventListener('focus', () => {
-                const rawValue = input.dataset.rawValue || '';
-                input.value = rawValue; // Mostrar el valor sin puntos para edición
-            });
+        // Al entrar al campo, mostrar sin formato
+        amount1Input.addEventListener('focus', () => {
+            const rawValue = amount1Input.dataset.rawValue || '';
+            amount1Input.value = rawValue; // Mostrar el valor sin puntos para edición
+        });
 
-            // Al salir del campo, asegurar el formato
-            input.addEventListener('blur', () => {
-                const rawValue = input.dataset.rawValue || '';
-                input.value = formatWithThousandsSeparator(rawValue); // Mostrar el valor formateado
-            });
-        }
-    });
+        // Al salir del campo, asegurar el formato
+        amount1Input.addEventListener('blur', () => {
+            const rawValue = amount1Input.dataset.rawValue || '';
+            amount1Input.value = formatWithThousandsSeparator(rawValue); // Mostrar el valor formateado
+        });
+    }
 });
 
 // Formatear números con separador de miles
@@ -287,7 +286,7 @@ function formatWithThousandsSeparator(value) {
 
 // Mantener las conversiones funcionales
 function convertFromAmount1() {
-    const amount1Raw = document.getElementById("amount1").dataset.rawValue || '0'; // Obtener el valor sin formato
+    const amount1Raw = document.getElementById("amount1").dataset.rawValue || '0'; // Obtener valor sin formato
     const amount1 = parseFloat(amount1Raw); // Convertir a número
     const currency1 = document.getElementById("currency1-text").textContent;
     const currency2 = document.getElementById("currency2-text").textContent;
@@ -301,30 +300,22 @@ function convertFromAmount1() {
             result = amount1 * exchangeRates[currency1].compra;
         }
 
-        document.getElementById("amount2").dataset.rawValue = result.toFixed(0); // Guardar sin formato
-        document.getElementById("amount2").value = formatWithThousandsSeparator(result.toFixed(0)); // Mostrar formateado
+        const amount2 = document.getElementById("amount2");
+        amount2.dataset.rawValue = result.toFixed(0); // Guardar sin formato
+        amount2.value = formatWithThousandsSeparator(result.toFixed(0)); // Mostrar formateado
+    } else {
+        document.getElementById("amount2").value = ''; // Limpiar si no hay datos válidos
     }
 }
 
-function convertFromAmount2() {
-    const amount2Raw = document.getElementById("amount2").dataset.rawValue || '0'; // Obtener el valor sin formato
-    const amount2 = parseFloat(amount2Raw); // Convertir a número
-    const currency1 = document.getElementById("currency1-text").textContent;
-    const currency2 = document.getElementById("currency2-text").textContent;
+// Asegurar que el segundo campo de entrada sea de solo lectura
+document.addEventListener('DOMContentLoaded', () => {
+    const amount2Input = document.getElementById("amount2");
 
-    if (amount2 && exchangeRates[currency1] && exchangeRates[currency2]) {
-        let result;
-
-        if (currency2 === "CLP") {
-            result = amount2 * exchangeRates[currency1].venta;
-        } else {
-            result = amount2 / exchangeRates[currency2].compra;
-        }
-
-        document.getElementById("amount1").dataset.rawValue = result.toFixed(0); // Guardar sin formato
-        document.getElementById("amount1").value = formatWithThousandsSeparator(result.toFixed(0)); // Mostrar formateado
+    if (amount2Input) {
+        amount2Input.setAttribute('readonly', true); // Hacerlo de solo lectura
     }
-}
+});
 
 // Función para actualizar el ícono de divisa seleccionado
 function updateCurrencyIcon() {
