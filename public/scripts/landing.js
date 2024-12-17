@@ -55,19 +55,26 @@ function showSkeletonLoader() {
     loaderContainer.innerHTML = skeletonRows;
 }
 
-
-// Función para cerrar el Skeleton Loader después de cargar los datos
-function removeSkeletonLoader() {
+// Función para cerrar el Skeleton Loader y mostrar la tabla
+function removeSkeletonLoader(data) {
+    const loaderContainer = document.getElementById("loader-container");
+    const currencyTable = document.getElementById("currency-table");
     const tableBody = document.getElementById("currency-table-body");
-    if (!tableBody) {
-        console.error("Error: 'currency-table-body' no se encuentra en el DOM.");
+
+    if (!loaderContainer || !currencyTable || !tableBody) {
+        console.error("Error: Elementos del DOM no encontrados.");
         return;
     }
 
-    tableBody.innerHTML = ''; // Limpiar el Skeleton Loader
-    fillCurrencyTable();      // Poblar la tabla con datos reales
-}
+    // Ocultar el Skeleton Loader
+    loaderContainer.style.display = "none";
 
+    // Mostrar la tabla
+    currencyTable.style.display = "table";
+
+    // Poblar la tabla con los datos
+    fillCurrencyTable(data);
+}
 
 // Función para alternar visibilidad del menú
 function toggleMenu(menuToOpen, menuToClose) {
