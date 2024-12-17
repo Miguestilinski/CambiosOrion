@@ -15,14 +15,12 @@ function initializePage() {
 function loadCurrenciesWithSSE() {
     const eventSource = new EventSource('https://cambiosorion.cl/api/divisas/stream/stream_divisas.php');
 
-    eventSource.onopen = () => {
-    };
+    eventSource.onopen = () => {};
 
     eventSource.onmessage = (event) => {
         try {
             const responseData = JSON.parse(event.data);
 
-            // Validar si los datos son un array
             if (!Array.isArray(responseData)) {
                 console.error('Formato de datos inesperado:', responseData);
                 return;
@@ -34,6 +32,7 @@ function loadCurrenciesWithSSE() {
             if (dropdown1) dropdown1.innerHTML = '';
             if (dropdown2) dropdown2.innerHTML = '';
 
+            // Crear las opciones para los dropdowns dinámicamente
             responseData.forEach(divisa => {
                 const circularIcon = divisa.icono_circular;
                 exchangeRates[divisa.nombre] = {
@@ -49,6 +48,7 @@ function loadCurrenciesWithSSE() {
                 option1.className = "p-2 hover:bg-gray-100 cursor-pointer";
                 option1.onclick = function () {
                     setCurrency1(divisa.nombre);
+                    updateDropdowns();
                     toggleDropdown('dropdown1', event);
                 };
                 dropdown1.appendChild(option1);
@@ -58,15 +58,16 @@ function loadCurrenciesWithSSE() {
                 option2.className = "p-2 hover:bg-gray-100 cursor-pointer";
                 option2.onclick = function () {
                     setCurrency2(divisa.nombre);
+                    updateDropdowns();
                     toggleDropdown('dropdown2', event);
                 };
                 dropdown2.appendChild(option2);
             });
 
-            updateAddCurrencyDropdown();
+            // Actualizar el dropdown para que CLP se muestra correctamente
+            updateDropdowns();
             fillCurrencyTable();
-
-            // Capturar la fecha de última actualización
+            
             if (responseData.length && responseData[0].fecha_actualizacion) {
                 updateLastUpdatedTimestamp(responseData[0].fecha_actualizacion);
             }
@@ -78,7 +79,7 @@ function loadCurrenciesWithSSE() {
 
     eventSource.onerror = (error) => {
         console.error('Error con la conexión SSE:', error);
-        eventSource.close(); // Cierra la conexión si ocurre un error persistente
+        eventSource.close();
     };
 }
 
@@ -158,6 +159,10 @@ function setCurrency1(currency) {
         document.getElementById("currency2-text").textContent = "CLP";
     }
 
+    if (currency === currency2) {
+        setCurrency2("CLP");
+    }
+
     exchangeRates[currency] = exchangeRates[currency] || { compra: 0, venta: 0 };
     convertFromAmount1();
     updateCurrencyIcon();
@@ -169,6 +174,10 @@ function setCurrency2(currency) {
 
     if (currency !== "CLP") {
         document.getElementById("currency1-text").textContent = "CLP";
+    }
+
+    if (currency === currency1) {
+        setCurrency1("CLP");
     }
 
     exchangeRates[currency] = exchangeRates[currency] || { compra: 0, venta: 0 };
@@ -226,9 +235,6 @@ function convertFromAmount1() {
         } else if (currency2 === "CLP" && currency1 !== "CLP") {
             // Si la moneda objetivo es CLP, usar el precio de compra de la moneda base
             result = amount1 * exchangeRates[currency1].compra;
-        } else {
-            // Conversión estándar entre dos divisas que no son CLP
-            result = amount1 * exchangeRates[currency1].compra / exchangeRates[currency2].venta;
         }
 
         // Mostrar el resultado en el campo amount2 con formato
@@ -257,33 +263,43 @@ function updateCurrencyIcon() {
     document.getElementById("icon-currency2").src = exchangeRates[currency2].icono;
 }   
 
-function updateAddCurrencyDropdown() {
-    const dropdown = document.getElementById("add-currency-dropdown");
-    dropdown.innerHTML = '';  // Limpiar el dropdown actual
+function updateDropdowns() {
+    const dropdown1 = document.getElementById("dropdown1");
+    const dropdown2 = document.getElementById("dropdown2");
 
-    // Agregar divisas que no están en displayedCurrencies
-    Object.keys(exchangeRates).forEach(currency => {
-        // Solo mostrar divisas que no están en displayedCurrencies
-        if (!displayedCurrencies.includes(currency)) {
-            const option = document.createElement("div");
-            option.innerHTML = `<img src="${exchangeRates[currency].icono}" alt="${currency}" class="w-6 h-6 mr-2"> ${currency}`;
-            option.className = "p-2 hover:bg-gray-100 cursor-pointer";
-            option.onclick = function () {
-                if (isEditMode) {
-                    isEditMode = false;
-                    document.querySelectorAll(".edit-column").forEach(col => {
-                        col.classList.add("hidden");
-                        col.style.display = "none"; // Ocultar columnas de edición
-                    });
-                }
-                displayedCurrencies.push(currency);
-                toggleDropdown('add-currency-dropdown', event);  // Pasa el evento aquí
-                fillCurrencyTable();  // Actualiza la tabla con la nueva divisa
-                updateAddCurrencyDropdown();  // Actualiza el dropdown
-            };
-            dropdown.appendChild(option);
+    const selectedCurrency1 = document.getElementById("currency1-text").textContent;
+    const selectedCurrency2 = document.getElementById("currency2-text").textContent;
+
+    // Limpiar y reconstruir la lista de opciones
+    dropdown1.innerHTML = '';
+    dropdown2.innerHTML = '';
+
+    for (const divisa in exchangeRates) {
+        if (divisa === "CLP") {
+            if (selectedCurrency1 !== "CLP") {
+                const option1 = createDropdownOption(divisa, dropdown1, setCurrency1);
+            }
+            if (selectedCurrency2 !== "CLP") {
+                const option2 = createDropdownOption(divisa, dropdown2, setCurrency2);
+            }
+        } else {
+            const option1 = createDropdownOption(divisa, dropdown1, setCurrency1);
+            const option2 = createDropdownOption(divisa, dropdown2, setCurrency2);
         }
-    });
+    }
+}
+
+// Función para crear las opciones dinámicamente con sus eventos
+function createDropdownOption(currency, dropdown, clickHandler) {
+    const circularIcon = exchangeRates[currency].icono;
+    const option = document.createElement("div");
+    option.innerHTML = `<img src="${circularIcon}" alt="${currency}" class="w-6 h-6 mr-2"> ${currency}`;
+    option.className = "p-2 hover:bg-gray-100 cursor-pointer";
+    option.onclick = function () {
+        clickHandler(currency);
+        toggleDropdown(dropdown.id, event);
+    };
+    dropdown.appendChild(option);
 }
 
 function fillCurrencyTable() {
