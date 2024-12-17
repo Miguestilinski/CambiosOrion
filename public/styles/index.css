@@ -394,8 +394,7 @@ section .max-w-xl {
     border: none;
     cursor: pointer;
     text-align: center;
-    margin-right: 1rem;
-    margin-top: 0.5rem;
+    margin-right: 1.4rem;
     transition: background-color 0.3s ease;
 }
 
@@ -471,10 +470,9 @@ button:hover {
 
 #last-updated {
     position: absolute;
-    bottom: 8px;
-    right: 8px;
+    right: 1.4rem;
     color: white;
-    font-size: 0.85rem;
+    font-size: 0.75rem;
 }
 
 .forgot-password {
