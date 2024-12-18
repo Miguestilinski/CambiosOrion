@@ -140,7 +140,20 @@ footer {
     }
 
     .footer-navigation {
+        margin-top: 1.2rem;
+        margin-bottom: 1.2rem;
         width: 100%;
         justify-content: center;
+    }
+
+    .footer-contact {
+        margin-bottom: 0;
+        margin-left: 0;
+    }
+
+    .social-media {
+        flex-direction: row;
+        margin-top: 1.2rem;
+        margin-bottom: 1rem;
     }
 }

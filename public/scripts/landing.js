@@ -2,7 +2,7 @@ let exchangeRates = {};
 let displayedCurrencies = [
     "USD", "EUR", "ARS", "BRL", "PEN", "COP",
     "UYU", "BOB", "CAD", "GBP", "JPY", "GNY",
-    "SEK", "AUD", "MXN", "NZD", "CHF", "DKK"
+    "SEK", "AUD", "MXN", "NZD", "CHF", "DKK", "ORO 100"
 ];
 
 function initializePage() {

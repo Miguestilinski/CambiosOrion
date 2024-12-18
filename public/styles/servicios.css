@@ -122,7 +122,15 @@ h2 {
 /* Estilos para la versión móvil */
 @media (max-width: 887px) {
     .sending-money-container {
-        flex-direction: column; /* Cambia la dirección de los elementos a columna en pantallas pequeñas */
+        flex-direction: column;
+        padding: 0;
+        margin-bottom: 1.2rem;
+    }
+
+    .sending-money-container.flex.rounded-lg.overflow-hidden.flex-row-reverse {
+        flex-direction: column;
+        padding: 0;
+        margin-bottom: 1.2rem;
     }
 
     .sending-money-image,
