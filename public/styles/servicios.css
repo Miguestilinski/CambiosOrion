@@ -127,6 +127,12 @@ h2 {
         margin-bottom: 1.2rem;
     }
 
+    .sending-money-content.w-1\/2.p-6.flex.flex-col.justify-center{
+        flex-direction: column;
+        padding: 0;
+        margin-bottom: 1.2rem;
+    }
+
     .sending-money-container.flex.rounded-lg.overflow-hidden.flex-row-reverse {
         flex-direction: column;
         padding: 0;
