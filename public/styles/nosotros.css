@@ -53,6 +53,10 @@ p.hidden {
     display: none;
 }
 
+.myv {
+    display: flex;
+}
+
 button {
     padding: 12px;
     background-color: #3b82f6;
@@ -100,6 +104,11 @@ button:hover {
 
 .WidgetTitle__Header-sc-ruy1gu-2.eWlnOb {
     color: white;
+}
+
+h2.text-2xl.font-bold.text-center.text-white {
+    margin-top: 1.2rem;
+    margin-bottom: 1.2rem;
 }
 
 /* Contenedor principal de las opiniones */
