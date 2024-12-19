@@ -98,6 +98,10 @@ button:hover {
     text-decoration: underline;
 }
 
+.WidgetTitle__Header-sc-ruy1gu-2.eWlnOb {
+    color: white;
+}
+
 /* Contenedor principal de las opiniones */
 .opinions-container {
     margin-top: 4rem;
