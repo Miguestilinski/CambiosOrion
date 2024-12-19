@@ -139,7 +139,7 @@ h2 {
         width:80%;
     }
 
-    .sending-money-container.flex.rounded-lg.overflow-hidden.flex-row-reverse {
+    .sending-money-container.flex.overflow-hidden.flex-row-reverse {
         flex-direction: column;
         padding: 0;
         margin-bottom: 1.2rem;
