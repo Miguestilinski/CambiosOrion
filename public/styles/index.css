@@ -236,10 +236,6 @@ input[type="number"]::-moz-outer-spin-button {
 /* Contenedor interno dividido en dos */
 .sending-money-container {
     display: flex;
-    max-width: 1200px;
-    width: 80%; 
-    min-width: 600px; 
-    min-height: 300px; 
     border-radius: 1rem;
     overflow: hidden;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
@@ -261,7 +257,6 @@ input[type="number"]::-moz-outer-spin-button {
     flex-direction: column;
     justify-content: center;
     text-align: left;
-    min-width: 300px; /* Cuadrado para el lado de texto */
     min-height: 300px;
 }
 
