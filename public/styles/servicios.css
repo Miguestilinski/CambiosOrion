@@ -112,6 +112,11 @@ h2 {
     color: #1e293b;
 }
 
+.sending-money-image {
+    width: 50%;
+    padding: 1.2rem;
+}
+
 /* Imagen dentro del recuadro */
 .service-image img {
     width: 100%;
@@ -140,12 +145,16 @@ h2 {
         margin-bottom: 1.2rem;
     }
 
-    .sending-money-image,
+    .sending-money-image {
+        width: 100%;
+        padding: 0;
+    }
+
     .sending-money-content {
-        width: 100%; /* Asegura que ambos elementos ocupen todo el ancho disponible */
+        width: 100%;
     }
 
     .sending-money-image img {
-        height: auto; /* Ajusta la imagen para que conserve su proporción en pantallas pequeñas */
+        height: auto; 
     }
 }
