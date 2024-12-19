@@ -53,10 +53,6 @@ p.hidden {
     display: none;
 }
 
-.myv {
-    display: flex;
-}
-
 button {
     padding: 12px;
     background-color: #3b82f6;
