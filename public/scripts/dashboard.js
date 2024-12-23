@@ -14,17 +14,19 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(response => response.json())
             .then(data => {
                 if (data.isAuthenticated) {
-                    const { tipo, nombre, correo, rut } = data;
+                    const { tipo, nombre, correo, rut, tipo_cliente, rol } = data;
                     userTypeElement.textContent = tipo;
                     userNameElement.textContent = nombre;
                     emailElement.value = correo;
 
+                    // Mostrar RUT solo si el tipo es Cliente
                     if (tipo === 'Cliente') {
                         rutGroupElement.classList.remove('hidden');
                         document.getElementById('rut').value = rut; // Asume que el RUT viene en los datos
-                        additionalInfoElement.textContent = 'Persona';
+                        additionalInfoElement.textContent = tipo_cliente === 'Persona' ? 'Persona' : 'Empresa';
                     } else {
-                        additionalInfoElement.textContent = 'Rol del Usuario';
+                        rutGroupElement.classList.add('hidden');
+                        additionalInfoElement.textContent = rol === 'Caja' ? 'Caja' : 'Admin';
                     }
                 } else {
                     // Redirigir a la página de login si no está autenticado
@@ -47,4 +49,3 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
-  
