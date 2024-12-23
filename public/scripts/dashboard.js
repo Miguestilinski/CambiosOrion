@@ -1,4 +1,3 @@
-// JavaScript for Dashboard functionality
 document.addEventListener('DOMContentLoaded', () => {
     const menuItems = document.querySelectorAll('.menu-item');
     const sections = document.querySelectorAll('.content-section');
@@ -14,34 +13,28 @@ document.addEventListener('DOMContentLoaded', () => {
             method: 'GET',
             credentials: 'include' // Asegura que la sesión se envíe correctamente
         })
-            .then(response => response.text()) // Obtener la respuesta como texto
+            .then(response => response.json()) // Obtener la respuesta como JSON
             .then(data => {
-                // Intentar convertir la respuesta a JSON
-                try {
-                    const jsonData = JSON.parse(data); // Convertir a JSON
+                if (data.success) { // Verificar que los datos sean correctos
+                    const { tipo, nombre, correo, rut, tipo_cliente, rol } = data.user;
 
-                    if (jsonData.success) { // Cambiar para verificar éxito
-                        const { tipo, nombre, correo, rut, tipo_cliente, rol } = jsonData.user;
-                        userTypeElement.textContent = tipo;
-                        userNameElement.textContent = nombre;
-                        emailElement.value = correo;
+                    // Asignar los datos a los elementos correspondientes
+                    userTypeElement.textContent = tipo === 'cliente' ? 'Cliente' : 'Administrativo';
+                    userNameElement.textContent = nombre;
+                    emailElement.value = correo;
 
-                        // Mostrar RUT solo si el tipo es Cliente
-                        if (tipo === 'cliente') {
-                            rutGroupElement.classList.remove('hidden');
-                            document.getElementById('rut').value = rut; // Asume que el RUT viene en los datos
-                            additionalInfoElement.textContent = tipo_cliente === 'Persona' ? 'Persona' : 'Empresa';
-                        } else {
-                            rutGroupElement.classList.add('hidden');
-                            additionalInfoElement.textContent = rol === 'Caja' ? 'Caja' : 'Admin';
-                        }
+                    // Mostrar RUT solo si el tipo es Cliente
+                    if (tipo === 'cliente') {
+                        rutGroupElement.classList.remove('hidden');
+                        document.getElementById('rut').value = rut; // Asume que el RUT viene en los datos
+                        additionalInfoElement.textContent = tipo_cliente === 'Persona' ? 'Persona' : 'Empresa';
                     } else {
-                        // Manejo de error si la respuesta es incorrecta
-                        console.error('Error: ', jsonData.message);
-                        window.location.href = '/login';
+                        rutGroupElement.classList.add('hidden');
+                        additionalInfoElement.textContent = rol === 'Caja' ? 'Caja' : 'Admin';
                     }
-                } catch (error) {
-                    console.error('Error al procesar la respuesta del servidor:', error);
+                } else {
+                    console.error('Error: ', data.message);
+                    window.location.href = '/login'; // Redirigir a login si no hay éxito
                 }
             })
             .catch(error => {
