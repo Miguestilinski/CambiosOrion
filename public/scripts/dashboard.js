@@ -9,6 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const rutGroupElement = document.getElementById('rut-group');
     const rutElement = document.getElementById('rut');
 
+    const documentationForm = document.getElementById('documentation-form');
+    const uploadStatus = document.getElementById('upload-status');
+
     // Función para obtener los datos del usuario
     function getUserData() {
         fetch('/data/get_user_data.php', {
@@ -24,12 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     userNameElement.textContent = nombre || "Usuario desconocido";
                     emailElement.placeholder = correo || "Correo no disponible";
                     rutElement.textContent = rut || "RUT no disponible";
-                    emailElement.value = "";     
-
-                    console.log('Nombre:', nombre);
-                    console.log('Tipo de cliente:', tipo_cliente);
-                    console.log('Rol:', rol);
-                    
+                    emailElement.value = "";
 
                     if (tipo_cliente === 'persona') {
                         userTypeElement.textContent = "Cliente";
@@ -50,8 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         rutGroupElement.classList.add('hidden');
                     }
 
-
-                    console.log('Datos del usuario:', { nombre, correo, rut, tipo_cliente, rol });
                 } else {
                     console.error('Error: ', data.message);
                     window.location.href = '/iniciar_sesion';
@@ -63,6 +59,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     getUserData();
+
+    documentationForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(documentationForm);
+
+        fetch('/data/upload_documents.php', {
+            method: 'POST',
+            body: formData,
+            credentials: 'include',
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                uploadStatus.textContent = "¡Documentos subidos exitosamente!";
+                uploadStatus.style.color = "lime";
+            } else {
+                uploadStatus.textContent = "Error al subir los documentos: " + data.message;
+                uploadStatus.style.color = "red";
+            }
+        })
+        .catch(error => {
+            console.error('Error al subir los documentos:', error);
+            uploadStatus.textContent = "Ocurrió un error inesperado.";
+            uploadStatus.style.color = "red";
+        });
+    });
 
     // Funcionalidad de menú para mostrar las secciones correspondientes
     menuItems.forEach(item => {
