@@ -10,17 +10,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Función para obtener los datos del usuario
     function getUserData() {
-        fetch('/data/get_user_data.php')
+        fetch('/data/get_user_data.php', {
+            method: 'GET',
+            credentials: 'include' // Asegura que la sesión se envíe correctamente
+        })
             .then(response => response.json())
             .then(data => {
-                if (data.isAuthenticated) {
-                    const { tipo, nombre, correo, rut, tipo_cliente, rol } = data;
+                if (data.success) { // Cambiar para verificar éxito
+                    const { tipo, nombre, correo, rut, tipo_cliente, rol } = data.user;
+
                     userTypeElement.textContent = tipo;
                     userNameElement.textContent = nombre;
                     emailElement.value = correo;
 
                     // Mostrar RUT solo si el tipo es Cliente
-                    if (tipo === 'Cliente') {
+                    if (tipo === 'cliente') {
                         rutGroupElement.classList.remove('hidden');
                         document.getElementById('rut').value = rut; // Asume que el RUT viene en los datos
                         additionalInfoElement.textContent = tipo_cliente === 'Persona' ? 'Persona' : 'Empresa';
@@ -30,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 } else {
                     // Redirigir a la página de login si no está autenticado
-                    window.location.href = '/login.html';
+                    window.location.href = '/login';
                 }
             })
             .catch(error => console.error('Error al cargar los datos del usuario:', error));
