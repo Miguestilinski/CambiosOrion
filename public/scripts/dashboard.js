@@ -3,9 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const menuItems = document.querySelectorAll('.menu-item');
     const sections = document.querySelectorAll('.content-section');
 
-    const userType = "Cliente"; // Cambiar según el usuario actual ("Cliente" o "Administrativo")
-    const roleGroup = document.getElementById("role-group");
-    const rutGroup = document.getElementById("rut-group");
+    const userType = 'Cliente'; // O 'Administrativo'
+    const isClient = userType === 'Cliente';
   
     menuItems.forEach(item => {
       item.addEventListener('click', () => {
@@ -20,10 +19,15 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    if (userType === "Administrativo") {
-        roleGroup.style.display = "block";
-    } else if (userType === "Cliente") {
-        rutGroup.style.display = "block";
+
+    document.getElementById('user-type').textContent = userType;
+
+    if (isClient) {
+        document.getElementById('rut-group').classList.remove('hidden');
+        document.getElementById('email').removeAttribute('readonly');
+        document.getElementById('additional-info').textContent = 'Persona';
+    } else {
+        document.getElementById('additional-info').textContent = 'Rol del Usuario';
     }
   });
   
