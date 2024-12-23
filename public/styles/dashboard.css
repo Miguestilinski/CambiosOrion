@@ -92,4 +92,6 @@ display: none;
 .content-section.active {
 display: block;
 }
-  
+
+@media (max-width: 887px) {
+}
