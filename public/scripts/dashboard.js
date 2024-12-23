@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const sections = document.querySelectorAll('.content-section');
 
     const userTypeElement = document.getElementById('user-type');
-    const userNameElement = document.getElementById('user-name');
+    const userNameElement = document.getElementById('user-name-dashboard');
     const roleTypeElement = document.getElementById('role-type');
     const emailElement = document.getElementById('email');
     const rutGroupElement = document.getElementById('rut-group');
@@ -19,13 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(data => {
                 if (data.success) {
                     const { nombre, correo, rut, tipo_cliente, rol } = data.user;
-
-                    if (nombre) {
-                        userNameElement.textContent = nombre;
-                    } else {
-                        console.error('El nombre no está definido:', nombre);
-                        userNameElement.textContent = "Usuario desconocido";
-                    }
 
                     // Actualiza la UI
                     userNameElement.textContent = nombre || "Usuario desconocido";
@@ -58,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
 
 
-                    console.log({ nombre, correo, rut, tipo_cliente, rol });
+                    console.log('Datos del usuario:', { nombre, correo, rut, tipo_cliente, rol });
                 } else {
                     console.error('Error: ', data.message);
                     window.location.href = '/iniciar_sesion';
