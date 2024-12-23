@@ -98,7 +98,7 @@ label {
     display: block;
 }
 
-input{
+input#email{
     width: 70%;
     justify-self: center;
 }

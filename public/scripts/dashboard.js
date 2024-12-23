@@ -14,32 +14,34 @@ document.addEventListener('DOMContentLoaded', () => {
             method: 'GET',
             credentials: 'include' // Asegura que la sesión se envíe correctamente
         })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Error en la respuesta del servidor');
-                }
-                return response.json();
-            })
+            .then(response => response.text()) // Obtener la respuesta como texto
             .then(data => {
-                if (data.success) { // Cambiar para verificar éxito
-                    const { tipo, nombre, correo, rut, tipo_cliente, rol } = data.user;
-                    userTypeElement.textContent = tipo;
-                    userNameElement.textContent = nombre;
-                    emailElement.value = correo;
+                // Intentar convertir la respuesta a JSON
+                try {
+                    const jsonData = JSON.parse(data); // Convertir a JSON
 
-                    // Mostrar RUT solo si el tipo es Cliente
-                    if (tipo === 'cliente') {
-                        rutGroupElement.classList.remove('hidden');
-                        document.getElementById('rut').value = rut; // Asume que el RUT viene en los datos
-                        additionalInfoElement.textContent = tipo_cliente === 'Persona' ? 'Persona' : 'Empresa';
+                    if (jsonData.success) { // Cambiar para verificar éxito
+                        const { tipo, nombre, correo, rut, tipo_cliente, rol } = jsonData.user;
+                        userTypeElement.textContent = tipo;
+                        userNameElement.textContent = nombre;
+                        emailElement.value = correo;
+
+                        // Mostrar RUT solo si el tipo es Cliente
+                        if (tipo === 'cliente') {
+                            rutGroupElement.classList.remove('hidden');
+                            document.getElementById('rut').value = rut; // Asume que el RUT viene en los datos
+                            additionalInfoElement.textContent = tipo_cliente === 'Persona' ? 'Persona' : 'Empresa';
+                        } else {
+                            rutGroupElement.classList.add('hidden');
+                            additionalInfoElement.textContent = rol === 'Caja' ? 'Caja' : 'Admin';
+                        }
                     } else {
-                        rutGroupElement.classList.add('hidden');
-                        additionalInfoElement.textContent = rol === 'Caja' ? 'Caja' : 'Admin';
+                        // Manejo de error si la respuesta es incorrecta
+                        console.error('Error: ', jsonData.message);
+                        window.location.href = '/login';
                     }
-                } else {
-                    // Manejo de error si la respuesta es incorrecta
-                    console.error('Error: ', data.message);
-                    window.location.href = '/login';
+                } catch (error) {
+                    console.error('Error al procesar la respuesta del servidor:', error);
                 }
             })
             .catch(error => {
