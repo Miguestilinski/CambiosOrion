@@ -239,6 +239,8 @@ input[type="number"]::-moz-outer-spin-button {
     border-radius: 1rem;
     overflow: hidden;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 55rem;
+    height: 25rem;
 }
 
 /* Mitad de la Imagen */
