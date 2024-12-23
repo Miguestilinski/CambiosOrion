@@ -20,21 +20,25 @@ document.addEventListener('DOMContentLoaded', () => {
                     const { nombre, correo, rut, tipo_cliente, rol } = data.user;
 
                     // Actualiza la UI
-                    userNameElement.textContent = nombre || "Usuario desconocido";
-                    emailElement.placeholder = correo || "Correo no disponible";
+                    userNameElement.textContent = nombre;
+                    emailElement.placeholder = correo;
                     emailElement.value = "";
+
+                    if (rut) {
+                        rutElement.value = rut;
+                    } else {
+                        rutElement.value = "RUT no disponible";
+                    }                    
 
                     // Define el tipo de usuario y visualización del RUT
                     if (tipo_cliente === 'persona') {
                         userTypeElement.textContent = "Cliente";
                         roleTypeElement.textContent = "Persona";
                         rutGroupElement.classList.remove('hidden');
-                        rutElement.value = rut || "RUT no disponible";
                     } else if (tipo_cliente === 'empresa') {
                         userTypeElement.textContent = "Cliente";
                         roleTypeElement.textContent = "Empresa";
                         rutGroupElement.classList.add('hidden');
-                        rutElement.value = rut || "RUT no disponible";
                     } else if (rol === 'caja'){
                         userTypeElement.textContent = "Administrativo";
                         roleTypeElement.textContent = "Caja";
