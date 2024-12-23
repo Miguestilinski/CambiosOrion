@@ -102,33 +102,31 @@
     </header>
     <div class="header-divider"></div>
     <div class="main-content">
-  <div class="dashboard-container">
-    <aside id="sidebar" class="sidebar">
-      <div class="sidebar-header">
-        <h2>Mi Perfil</h2>
-      </div>
-      <ul class="menu">
-        <li class="menu-item" data-section="personal-info">Información Personal</li>
-        <li class="menu-item" data-section="boletas">Boletas</li>
-        <li class="menu-item" data-section="documentacion">Documentación</li>
-      </ul>
-    </aside>
-    <main id="main-content" class="main-content">
-      <section id="personal-info" class="content-section active">
-        <h1>Información Personal</h1>
-        <p>Edita tus datos personales aquí.</p>
-      </section>
-      <section id="boletas" class="content-section">
-        <h1>Boletas</h1>
-        <p>Consulta tu historial de boletas y transacciones.</p>
-      </section>
-      <section id="documentacion" class="content-section">
-        <h1>Documentación</h1>
-        <p>Sube documentos para generar facturas u otros procesos.</p>
-      </section>
-    </main>
-  </div>
-</div>
+        <aside id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h2>Mi Perfil</h2>
+        </div>
+        <ul class="menu">
+            <li class="menu-item" data-section="personal-info">Información Personal</li>
+            <li class="menu-item" data-section="boletas">Boletas</li>
+            <li class="menu-item" data-section="documentacion">Documentación</li>
+        </ul>
+        </aside>
+        <main id="dashboard-content" class="dashboard-content">
+        <section id="personal-info" class="content-section active">
+            <h1>Información Personal</h1>
+            <p>Edita tus datos personales aquí.</p>
+        </section>
+        <section id="boletas" class="content-section">
+            <h1>Boletas</h1>
+            <p>Consulta tu historial de boletas y transacciones.</p>
+        </section>
+        <section id="documentacion" class="content-section">
+            <h1>Documentación</h1>
+            <p>Sube documentos para generar facturas u otros procesos.</p>
+        </section>
+        </main>
+    </div>
   <footer>
     <div class="footer-container">
         <!-- Sección del logo -->
@@ -199,9 +197,9 @@
     <div class="footer-bottom text-center p-4">
         © 2024 Cambios Orion. Todos los derechos reservados.
     </div>
-</footer>
-  <script src="/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
-  <script src="scripts/header.js"></script>
-  <script src="scripts/dashboard.js"></script>
-</body>
+    </footer>
+        <script src="/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
+        <script src="scripts/header.js"></script>
+        <script src="scripts/dashboard.js"></script>
+    </body>
 </html>
