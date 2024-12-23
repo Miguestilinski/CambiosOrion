@@ -2,6 +2,10 @@
 document.addEventListener('DOMContentLoaded', () => {
     const menuItems = document.querySelectorAll('.menu-item');
     const sections = document.querySelectorAll('.content-section');
+
+    const userType = "Cliente"; // Cambiar según el usuario actual ("Cliente" o "Administrativo")
+    const roleGroup = document.getElementById("role-group");
+    const rutGroup = document.getElementById("rut-group");
   
     menuItems.forEach(item => {
       item.addEventListener('click', () => {
@@ -15,5 +19,11 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById(sectionId).classList.add('active');
       });
     });
+
+    if (userType === "Administrativo") {
+        roleGroup.style.display = "block";
+    } else if (userType === "Cliente") {
+        rutGroup.style.display = "block";
+    }
   });
   
