@@ -42,26 +42,24 @@ document.addEventListener("DOMContentLoaded", function() {
         event.preventDefault();
 
         const tipoUsuario = document.querySelector('.tab-button.active').dataset.tipoUsuario;
-        const rut = document.getElementById("rut") ? document.getElementById("rut").value : '';
-        let correo = document.getElementById("correo") ? document.getElementById("correo").value : '';
-        const password = document.getElementById("password").value;
+        const rut = document.getElementById("rut").value.trim();
+        const correo = document.getElementById("correo").value.trim().toLowerCase();
+        const password = document.getElementById("password").value.trim();
 
         // Convertir el correo a minúsculas automáticamente
         correo = correo.toLowerCase();
 
         // Validación de RUT si es un cliente
         if (tipoUsuario === 'cliente' && !validarRUT(rut)) {
-            alert("RUT no es válido.");
+            alert("El RUT no es válido.");
+            return;
+        } else if (tipoUsuario === 'administrativo' && correo === "") {
+            alert("Por favor, ingresa un correo válido.");
             return;
         }
-
-        if (!correo) {
-            alert("Por favor ingresa un correo.");
-            return;
-        }
-
-        if (!password) {
-            alert("Por favor ingresa una contraseña.");
+    
+        if (password === "") {
+            alert("Por favor, ingresa tu contraseña.");
             return;
         }
 
