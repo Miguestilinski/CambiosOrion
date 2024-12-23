@@ -114,47 +114,49 @@
         </aside>
         <main id="dashboard-content" class="dashboard-content">
             <section id="personal-info" class="content-section active">
-                <h1>Información Personal</h1>
-                <form id="personal-info-form">
+                <h1 class="mb-4 text-lg font-medium leading-none text-gray-900 dark:text-white">Información Personal</h1>
+                <form id="personal-info-form" class="grid gap-4 mb-4 sm:grid-cols-2">
                     <!-- Nombre (No editable) -->
-                    <div class="form-group">
-                        <label for="name">Nombre:</label>
-                        <input type="text" id="name" name="name" value="Nombre del Usuario" readonly>
+                    <div>
+                        <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre:</label>
+                        <input type="text" id="name" name="name" value="Nombre del Usuario" readonly class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                     </div>
     
-                    <!-- Rol (Solo Administrativos, No editable) -->
-                    <div class="form-group" id="role-group" style="display: none;">
-                        <label for="role">Rol:</label>
-                        <input type="text" id="role" name="role" value="Rol del Usuario" readonly>
+                    <!-- RUT (No editable, solo Clientes) -->
+                    <div id="rut-group" style="display: none;">
+                        <label for="rut" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">RUT:</label>
+                        <input type="text" id="rut" name="rut" value="12345678-9" readonly class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                     </div>
     
-                    <!-- RUT (Solo Clientes, No editable) -->
-                    <div class="form-group" id="rut-group" style="display: none;">
-                        <label for="rut">RUT:</label>
-                        <input type="text" id="rut" name="rut" value="12345678-9" readonly>
+                    <!-- Rol (No editable, solo Administrativos) -->
+                    <div id="role-group" style="display: none;">
+                        <label for="role" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Rol:</label>
+                        <input type="text" id="role" name="role" value="Rol del Usuario" readonly class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                     </div>
     
-                    <!-- Correo (Editable) -->
-                    <div class="form-group">
-                        <label for="email">Correo:</label>
-                        <input type="email" id="email" name="email" placeholder="Ingresa tu correo" required>
+                    <!-- Correo (Editable solo para Clientes) -->
+                    <div>
+                        <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Correo:</label>
+                        <input type="email" id="email" name="email" placeholder="Ingresa tu correo" required class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                     </div>
     
-                    <!-- Contraseña (Editable) -->
-                    <div class="form-group">
-                        <label for="password">Nueva Contraseña:</label>
-                        <input type="password" id="password" name="password" placeholder="Ingresa tu nueva contraseña" required>
+                    <!-- Contraseña (Editable para ambos roles) -->
+                    <div>
+                        <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nueva Contraseña:</label>
+                        <input type="password" id="password" name="password" placeholder="•••••••••" required class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                     </div>
     
                     <!-- Confirmar Contraseña -->
-                    <div class="form-group">
-                        <label for="confirm-password">Confirmar Contraseña:</label>
-                        <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirma tu nueva contraseña" required>
+                    <div>
+                        <label for="confirm-password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirmar Contraseña:</label>
+                        <input type="password" id="confirm-password" name="confirm-password" placeholder="•••••••••" required class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                     </div>
     
-                    <!-- Botón de guardar -->
-                    <div class="form-group">
-                        <button type="submit">Guardar Cambios</button>
+                    <!-- Botón Guardar Cambios -->
+                    <div class="sm:col-span-2">
+                        <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                            Guardar Cambios
+                        </button>
                     </div>
                 </form>
             </section>
