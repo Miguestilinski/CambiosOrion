@@ -5,53 +5,45 @@ document.addEventListener('DOMContentLoaded', () => {
     const userNameElement = document.getElementById('user-name');
     const emailElement = document.getElementById('email');
     const rutGroupElement = document.getElementById('rut-group');
-    const additionalInfoElement = document.getElementById('additional-info');
 
     // Función para obtener los datos del usuario
     function getUserData() {
         fetch('/data/get_user_data.php', {
             method: 'GET',
-            credentials: 'include' // Asegura que la sesión se envíe correctamente
+            credentials: 'include' // Asegura que se envíen las cookies de sesión
         })
-        .then(response => {
-            console.log(response); // Imprime la respuesta completa
-            return response.text(); // Obtener el cuerpo de la respuesta como texto
-        })
-        .then(text => {
-            console.log(text); // Ver el contenido de la respuesta antes de convertirlo
-            try {
-                const data = JSON.parse(text); // Intentar parsear el JSON
+            .then(response => response.json()) // Parsear directamente como JSON
+            .then(data => {
                 if (data.success) {
-                    const { nombre, correo, rut, tipo_cliente, tipo, rol } = data.user;
-                    // Asigna los valores al HTML como antes
-                    userNameElement.textContent = nombre;
-                    emailElement.value = correo;
-                    if (tipo === 'persona' || tipo === 'empresa') {
-                        userTypeElement.textContent = tipo_cliente === 'Persona' ? 'Cliente Persona' : 'Cliente Empresa';
-                        additionalInfoElement.textContent = tipo_cliente === 'Persona' ? 'Persona' : 'Empresa';
-                        if (tipo_cliente === 'Persona') {
-                            rutGroupElement.classList.remove('hidden');
-                            document.getElementById('rut').value = rut;
-                        } else {
-                            rutGroupElement.classList.add('hidden');
-                        }
-                    } else if (tipo === 'administrativo') {
-                        userTypeElement.textContent = 'Administrativo';
-                        additionalInfoElement.textContent = rol === 'Caja' ? 'Caja' : 'Admin';
+                    const { nombre, correo, rut, tipo_cliente } = data.user;
+        
+                    // Actualiza la UI
+                    userNameElement.textContent = nombre || "Usuario desconocido";
+                    emailElement.value = correo || "Correo no disponible";
+        
+                    // Define el tipo de usuario
+                    if (tipo_cliente === 'persona') {
+                        userTypeElement.textContent = "Cliente Persona";
+                        rutGroupElement.classList.remove('hidden');
+                        document.getElementById('rut').value = rut || "RUT no disponible";
+                    } else if (tipo_cliente === 'empresa') {
+                        userTypeElement.textContent = "Cliente Empresa";
+                        rutGroupElement.classList.add('hidden');
+                    } else {
+                        userTypeElement.textContent = "Tipo desconocido";
                         rutGroupElement.classList.add('hidden');
                     }
+
+                    console.log({ nombre, correo, rut, tipo_cliente });
+
                 } else {
                     console.error('Error: ', data.message);
-                    window.location.href = '/login';
+                    window.location.href = '/login'; // Redirige si falla la autenticación
                 }
-            } catch (error) {
-                console.error('Error al parsear JSON:', error);
-            }
-        })
-        .catch(error => {
-            console.error('Error al cargar los datos del usuario:', error);
-        });
-        
+            })
+            .catch(error => {
+                console.error('Error al cargar los datos del usuario:', error);
+            });        
     }
 
     getUserData(); // Llamada para cargar los datos del usuario al cargar la página
