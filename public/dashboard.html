@@ -114,42 +114,42 @@
         </aside>
         <main id="dashboard-content" class="dashboard-content">
             <section id="personal-info" class="content-section active">
-                <h1 class="mb-4 text-lg font-medium leading-none text-gray-900 dark:text-white">Información Personal</h1>
+                <h1 class="mb-4 text-lg font-medium leading-none text-white">Información Personal</h1>
                 <form id="personal-info-form" class="grid gap-4 mb-4 sm:grid-cols-2">
                     <!-- Nombre (No editable) -->
                     <div>
-                        <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre:</label>
-                        <input type="text" id="name" name="name" value="Nombre del Usuario" readonly class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        <label for="name" class="block mb-2 text-sm font-medium text-white">Nombre:</label>
+                        <input type="text" id="name" name="name" value="Nombre del Usuario" readonly class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5">
                     </div>
     
                     <!-- RUT (No editable, solo Clientes) -->
                     <div id="rut-group" style="display: none;">
-                        <label for="rut" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">RUT:</label>
-                        <input type="text" id="rut" name="rut" value="12345678-9" readonly class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        <label for="rut" class="block mb-2 text-sm font-medium text-white">RUT:</label>
+                        <input type="text" id="rut" name="rut" value="12345678-9" readonly class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5">
                     </div>
     
                     <!-- Rol (No editable, solo Administrativos) -->
                     <div id="role-group" style="display: none;">
-                        <label for="role" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Rol:</label>
-                        <input type="text" id="role" name="role" value="Rol del Usuario" readonly class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        <label for="role" class="block mb-2 text-sm font-medium text-white">Rol:</label>
+                        <input type="text" id="role" name="role" value="Rol del Usuario" readonly class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5">
                     </div>
     
                     <!-- Correo (Editable solo para Clientes) -->
                     <div>
-                        <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Correo:</label>
-                        <input type="email" id="email" name="email" placeholder="Ingresa tu correo" required class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        <label for="email" class="block mb-2 text-sm font-medium text-white">Correo:</label>
+                        <input type="email" id="email" name="email" placeholder="Ingresa tu correo" required class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5">
                     </div>
     
                     <!-- Contraseña (Editable para ambos roles) -->
                     <div>
-                        <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nueva Contraseña:</label>
-                        <input type="password" id="password" name="password" placeholder="•••••••••" required class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        <label for="password" class="block mb-2 text-sm font-medium text-white">Nueva Contraseña:</label>
+                        <input type="password" id="password" name="password" placeholder="•••••••••" required class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5">
                     </div>
     
                     <!-- Confirmar Contraseña -->
                     <div>
-                        <label for="confirm-password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirmar Contraseña:</label>
-                        <input type="password" id="confirm-password" name="confirm-password" placeholder="•••••••••" required class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        <label for="confirm-password" class="block mb-2 text-sm font-medium text-white">Confirmar Contraseña:</label>
+                        <input type="password" id="confirm-password" name="confirm-password" placeholder="•••••••••" required class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5">
                     </div>
     
                     <!-- Botón Guardar Cambios -->
