@@ -53,7 +53,7 @@ label {
     flex-direction: column;
     padding: 1rem;
     background: transparent;
-    border-right: 2px solid white;
+    border-right: 0.5px solid white;
 }
 
 .sidebar-header {
@@ -96,6 +96,19 @@ label {
 
 .content-section.active {
     display: block;
+}
+
+input{
+    width: 70%;
+    justify-self: center;
+}
+
+input#password{
+    width: 50%;
+}
+
+input#confirm-password{
+    width: 50%;
 }
 
 @media (max-width: 887px) {
