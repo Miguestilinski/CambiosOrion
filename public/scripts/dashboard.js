@@ -3,9 +3,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const sections = document.querySelectorAll('.content-section');
     const userTypeElement = document.getElementById('user-type');
     const userNameElement = document.getElementById('user-name');
+    const roleTypeElement = document.getElementById('role-type');
     const emailElement = document.getElementById('email');
     const rutGroupElement = document.getElementById('rut-group');
-    const rutElement = document.getElementById('rut'); // Input del RUT
+    const rutElement = document.getElementById('rut');
 
     // Función para obtener los datos del usuario
     function getUserData() {
@@ -20,17 +21,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     // Actualiza la UI
                     userNameElement.textContent = nombre || "Usuario desconocido";
-                    emailElement.placeholder = correo || "Correo no disponible"; // Usa placeholder
-                    emailElement.value = ""; // Limpia el valor para mostrar placeholder
+                    emailElement.placeholder = correo || "Correo no disponible";
+                    emailElement.value = "";
 
                     // Define el tipo de usuario y visualización del RUT
                     if (tipo_cliente === 'persona') {
-                        userTypeElement.textContent = "Cliente Persona";
+                        userTypeElement.textContent = "Cliente";
+                        roleTypeElement.textContent = "Persona";
                         rutGroupElement.classList.remove('hidden');
-                        rutElement.value = rut || "RUT no disponible"; // Muestra el RUT
+                        rutElement.value = rut || "RUT no disponible";
                     } else if (tipo_cliente === 'empresa') {
-                        userTypeElement.textContent = "Cliente Empresa";
+                        userTypeElement.textContent = "Cliente";
+                        roleTypeElement.textContent = "Empresa";
                         rutGroupElement.classList.add('hidden');
+                        rutElement.value = rut || "RUT no disponible";
+                    } else if (rol === 'caja'){
+                        userTypeElement.textContent = "Administrativo";
+                        roleTypeElement.textContent = "Caja";
+                    } else if (rol === 'admin'){
+                        userTypeElement.textContent = "Administrativo";
+                        roleTypeElement.textContent = "Admin";
                     } else {
                         userTypeElement.textContent = "Tipo desconocido";
                         rutGroupElement.classList.add('hidden');
