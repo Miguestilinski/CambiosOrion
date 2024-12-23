@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const menuItems = document.querySelectorAll('.menu-item');
     const sections = document.querySelectorAll('.content-section');
-    
+
     const userTypeElement = document.getElementById('user-type');
     const userNameElement = document.getElementById('user-name');
     const roleTypeElement = document.getElementById('role-type');
@@ -18,14 +18,15 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(response => response.json()) // Parsear directamente como JSON
             .then(data => {
                 if (data.success) {
-                    const { nombre, correo, rut, tipo_cliente, rol, tipo } = data.user;
+                    const { nombre, correo, rut, tipo_cliente, rol } = data.user;
 
                     // Actualiza la UI
                     userNameElement.textContent = nombre || "Usuario desconocido";
                     emailElement.placeholder = correo || "Correo no disponible";
                     rutElement.textContent = rut || "RUT no disponible";
-                    emailElement.value = "";               
+                    emailElement.value = "";     
 
+                    console.log('Nombre:', nombre);
                     console.log('Tipo de cliente:', tipo_cliente);
                     console.log('Rol:', rol);
 
