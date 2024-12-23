@@ -14,11 +14,15 @@ document.addEventListener('DOMContentLoaded', () => {
             method: 'GET',
             credentials: 'include' // Asegura que la sesión se envíe correctamente
         })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta del servidor');
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.success) { // Cambiar para verificar éxito
                     const { tipo, nombre, correo, rut, tipo_cliente, rol } = data.user;
-
                     userTypeElement.textContent = tipo;
                     userNameElement.textContent = nombre;
                     emailElement.value = correo;
@@ -33,11 +37,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         additionalInfoElement.textContent = rol === 'Caja' ? 'Caja' : 'Admin';
                     }
                 } else {
-                    // Redirigir a la página de login si no está autenticado
+                    // Manejo de error si la respuesta es incorrecta
+                    console.error('Error: ', data.message);
                     window.location.href = '/login';
                 }
             })
-            .catch(error => console.error('Error al cargar los datos del usuario:', error));
+            .catch(error => {
+                console.error('Error al cargar los datos del usuario:', error);
+            });
     }
 
     getUserData(); // Llamada para cargar los datos del usuario al cargar la página
