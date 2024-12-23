@@ -103,30 +103,71 @@
     <div class="header-divider"></div>
     <div class="main-content">
         <aside id="sidebar" class="sidebar">
-        <div class="sidebar-header">
-            <h2>Mi Perfil</h2>
-        </div>
-        <ul class="menu">
-            <li class="menu-item" data-section="personal-info">Información Personal</li>
-            <li class="menu-item" data-section="boletas">Boletas</li>
-            <li class="menu-item" data-section="documentacion">Documentación</li>
-        </ul>
+            <div class="sidebar-header">
+                <h2>Mi Perfil</h2>
+            </div>
+            <ul class="menu">
+                <li class="menu-item active" data-section="personal-info">Información Personal</li>
+                <li class="menu-item" data-section="boletas">Boletas</li>
+                <li class="menu-item" data-section="documentacion">Documentación</li>
+            </ul>
         </aside>
         <main id="dashboard-content" class="dashboard-content">
-        <section id="personal-info" class="content-section active">
-            <h1>Información Personal</h1>
-            <p>Edita tus datos personales aquí.</p>
-        </section>
-        <section id="boletas" class="content-section">
-            <h1>Boletas</h1>
-            <p>Consulta tu historial de boletas y transacciones.</p>
-        </section>
-        <section id="documentacion" class="content-section">
-            <h1>Documentación</h1>
-            <p>Sube documentos para generar facturas u otros procesos.</p>
-        </section>
+            <section id="personal-info" class="content-section active">
+                <h1>Información Personal</h1>
+                <form id="personal-info-form">
+                    <!-- Nombre (No editable) -->
+                    <div class="form-group">
+                        <label for="name">Nombre:</label>
+                        <input type="text" id="name" name="name" value="Nombre del Usuario" readonly>
+                    </div>
+    
+                    <!-- Rol (Solo Administrativos, No editable) -->
+                    <div class="form-group" id="role-group" style="display: none;">
+                        <label for="role">Rol:</label>
+                        <input type="text" id="role" name="role" value="Rol del Usuario" readonly>
+                    </div>
+    
+                    <!-- RUT (Solo Clientes, No editable) -->
+                    <div class="form-group" id="rut-group" style="display: none;">
+                        <label for="rut">RUT:</label>
+                        <input type="text" id="rut" name="rut" value="12345678-9" readonly>
+                    </div>
+    
+                    <!-- Correo (Editable) -->
+                    <div class="form-group">
+                        <label for="email">Correo:</label>
+                        <input type="email" id="email" name="email" placeholder="Ingresa tu correo" required>
+                    </div>
+    
+                    <!-- Contraseña (Editable) -->
+                    <div class="form-group">
+                        <label for="password">Nueva Contraseña:</label>
+                        <input type="password" id="password" name="password" placeholder="Ingresa tu nueva contraseña" required>
+                    </div>
+    
+                    <!-- Confirmar Contraseña -->
+                    <div class="form-group">
+                        <label for="confirm-password">Confirmar Contraseña:</label>
+                        <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirma tu nueva contraseña" required>
+                    </div>
+    
+                    <!-- Botón de guardar -->
+                    <div class="form-group">
+                        <button type="submit">Guardar Cambios</button>
+                    </div>
+                </form>
+            </section>
+            <section id="boletas" class="content-section">
+                <h1>Boletas</h1>
+                <p>Consulta tu historial de boletas y transacciones.</p>
+            </section>
+            <section id="documentacion" class="content-section">
+                <h1>Documentación</h1>
+                <p>Sube documentos para generar facturas u otros procesos.</p>
+            </section>
         </main>
-    </div>
+    </div>    
   <footer>
     <div class="footer-container">
         <!-- Sección del logo -->
