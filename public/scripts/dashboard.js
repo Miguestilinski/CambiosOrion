@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(response => response.json()) // Parsear directamente como JSON
             .then(data => {
                 if (data.success) {
-                    const { nombre, correo, rut, tipo_cliente } = data.user;
+                    const { nombre, correo, rut, tipo_cliente, rol } = data.user;
 
                     // Actualiza la UI
                     userNameElement.textContent = nombre || "Usuario desconocido";
