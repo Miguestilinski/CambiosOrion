@@ -13,28 +13,35 @@ document.addEventListener('DOMContentLoaded', () => {
             method: 'GET',
             credentials: 'include' // Asegura que la sesión se envíe correctamente
         })
-            .then(response => response.json()) // Obtener la respuesta como JSON
+            .then(response => response.json()) // Obtener la respuesta como JSON directamente
             .then(data => {
-                if (data.success) { // Verificar que los datos sean correctos
-                    const { tipo, nombre, correo, rut, tipo_cliente, rol } = data.user;
+                // Verificar si la respuesta es exitosa
+                if (data.success) {
+                    const { nombre, correo, rut, tipo_cliente, tipo, rol } = data.user;
 
-                    // Asignar los datos a los elementos correspondientes
-                    userTypeElement.textContent = tipo === 'cliente' ? 'Cliente' : 'Administrativo';
-                    userNameElement.textContent = nombre;
-                    emailElement.value = correo;
+                    // Asignar los valores al HTML
+                    userNameElement.textContent = nombre; // Mostrar el nombre del usuario
+                    emailElement.value = correo; // Mostrar el correo
 
-                    // Mostrar RUT solo si el tipo es Cliente
-                    if (tipo === 'cliente') {
-                        rutGroupElement.classList.remove('hidden');
-                        document.getElementById('rut').value = rut; // Asume que el RUT viene en los datos
+                    // Determinar si el tipo de usuario es cliente o administrativo
+                    if (tipo === 'persona' || tipo === 'empresa') {
+                        userTypeElement.textContent = tipo_cliente === 'Persona' ? 'Cliente Persona' : 'Cliente Empresa';
                         additionalInfoElement.textContent = tipo_cliente === 'Persona' ? 'Persona' : 'Empresa';
-                    } else {
-                        rutGroupElement.classList.add('hidden');
+                        if (tipo_cliente === 'Persona') {
+                            rutGroupElement.classList.remove('hidden');
+                            document.getElementById('rut').value = rut; // Mostrar RUT si es Cliente Persona
+                        } else {
+                            rutGroupElement.classList.add('hidden');
+                        }
+                    } else if (tipo === 'administrativo') {
+                        userTypeElement.textContent = 'Administrativo';
                         additionalInfoElement.textContent = rol === 'Caja' ? 'Caja' : 'Admin';
+                        rutGroupElement.classList.add('hidden'); // No mostrar RUT si es Administrativo
                     }
                 } else {
+                    // Manejo de error si la respuesta es incorrecta
                     console.error('Error: ', data.message);
-                    window.location.href = '/login'; // Redirigir a login si no hay éxito
+                    window.location.href = '/login'; // Redirigir al login si la sesión es inválida
                 }
             })
             .catch(error => {
@@ -44,6 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     getUserData(); // Llamada para cargar los datos del usuario al cargar la página
 
+    // Funcionalidad de menú para mostrar las secciones correspondientes
     menuItems.forEach(item => {
         item.addEventListener('click', () => {
             menuItems.forEach(menu => menu.classList.remove('active'));
