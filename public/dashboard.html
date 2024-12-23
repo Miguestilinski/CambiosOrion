@@ -115,44 +115,44 @@
         <main id="dashboard-content" class="dashboard-content">
             <section id="personal-info" class="content-section active">
                 <!-- Título de la sección -->
-                <h1 class="mb-6 text-lg font-medium leading-none text-white">Información Personal</h1>
+                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Información Personal</h1>
             
                 <!-- Tipo de Usuario -->
-                <h2 id="user-type" class="mb-4 text-md font-semibold leading-none text-white">Cliente</h2>
+                <h2 id="user-type" class="mb-6 text-md font-semibold leading-none text-white">Cliente</h2>
             
                 <!-- Nombre del Usuario -->
                 <div class="text-center mb-4">
-                    <p class="text-xl font-bold text-white">Nombre del Usuario</p>
+                    <p id="user-name" class="text-3xl font-bold text-white">Nombre del Usuario</p>
                 </div>
             
                 <!-- Persona/Empresa o Rol -->
                 <div class="text-center mb-4">
-                    <p id="additional-info" class="text-sm font-medium text-white">Persona</p>
+                    <p id="additional-info" class="text-lg font-medium text-white">Persona</p>
                 </div>
             
                 <form id="personal-info-form" class="grid gap-4 mb-4 sm:grid-cols-2">
                     <!-- RUT (Visible solo para Clientes) -->
                     <div id="rut-group" class="hidden">
-                        <label for="rut" class="block mb-2 text-sm font-medium text-white">RUT:</label>
+                        <label for="rut" class="block mb-2 text-lg font-medium text-white">RUT:</label>
                         <input type="text" id="rut" name="rut" value="12345678-9" readonly class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg block w-full p-2.5">
                     </div>
             
                     <!-- Correo -->
                     <div>
-                        <label for="email" class="block mb-2 text-sm font-medium text-white">Correo:</label>
+                        <label for="email" class="block mb-2 text-lg font-medium text-white">Correo:</label>
                         <input type="email" id="email" name="email" placeholder="Ingresa tu correo" readonly class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg block w-full p-2.5">
                     </div>
             
                     <!-- Contraseña -->
                     <div>
-                        <label for="password" class="block mb-2 text-sm font-medium text-white">Nueva Contraseña:</label>
-                        <input type="password" id="password" name="password" placeholder="•••••••••" required class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg block w-full p-2.5">
+                        <label for="password" class="block mb-2 text-lg font-medium text-white">Nueva Contraseña:</label>
+                        <input type="password" id="password" name="password" placeholder="•••••••••" class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg block w-full p-2.5">
                     </div>
             
                     <!-- Confirmar Contraseña -->
                     <div>
-                        <label for="confirm-password" class="block mb-2 text-sm font-medium text-white">Confirmar Contraseña:</label>
-                        <input type="password" id="confirm-password" name="confirm-password" placeholder="•••••••••" required class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg block w-full p-2.5">
+                        <label for="confirm-password" class="block mb-2 text-lg font-medium text-white">Confirmar Contraseña:</label>
+                        <input type="password" id="confirm-password" name="confirm-password" placeholder="•••••••••" class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg block w-full p-2.5">
                     </div>
             
                     <!-- Botón Guardar Cambios -->
@@ -162,7 +162,7 @@
                         </button>
                     </div>
                 </form>
-            </section>            
+            </section>                      
             <section id="boletas" class="content-section">
                 <h1>Boletas</h1>
                 <p>Consulta tu historial de boletas y transacciones.</p>
