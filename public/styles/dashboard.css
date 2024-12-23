@@ -103,14 +103,6 @@ input#email{
     justify-self: center;
 }
 
-input#password{
-    width: 50%;
-}
-
-input#confirm-password{
-    width: 50%;
-}
-
 @media (max-width: 887px) {
     .main-content {
         flex-direction: column; /* Ajusta a diseño vertical en pantallas pequeñas */

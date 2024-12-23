@@ -20,6 +20,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (data.success) {
                     const { nombre, correo, rut, tipo_cliente, rol } = data.user;
 
+                    if (nombre) {
+                        userNameElement.textContent = nombre;
+                    } else {
+                        console.error('El nombre no está definido:', nombre);
+                        userNameElement.textContent = "Usuario desconocido";
+                    }
+
                     // Actualiza la UI
                     userNameElement.textContent = nombre || "Usuario desconocido";
                     emailElement.placeholder = correo || "Correo no disponible";
@@ -29,6 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.log('Nombre:', nombre);
                     console.log('Tipo de cliente:', tipo_cliente);
                     console.log('Rol:', rol);
+                    
 
                     if (tipo_cliente === 'persona') {
                         userTypeElement.textContent = "Cliente";
