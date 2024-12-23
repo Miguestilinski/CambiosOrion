@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         const tipoUsuario = document.querySelector('.tab-button.active').dataset.tipoUsuario;
         const rut = document.getElementById("rut").value.trim();
-        const correo = document.getElementById("correo").value.trim().toLowerCase();
+        let correo = document.getElementById("correo").value.trim().toLowerCase();
         const password = document.getElementById("password").value.trim();
 
         // Convertir el correo a minúsculas automáticamente
