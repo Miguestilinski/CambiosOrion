@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.log({ nombre, correo, rut, tipo_cliente });
                 } else {
                     console.error('Error: ', data.message);
-                    window.location.href = '/login'; // Redirige si falla la autenticación
+                    window.location.href = '/iniciar_sesion';
                 }
             })
             .catch(error => {
