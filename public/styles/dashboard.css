@@ -87,7 +87,6 @@ label {
 .dashboard-content {
     flex-grow: 1; /* Ocupa el espacio restante */
     padding: 2rem;
-    color: white;
 }
   
 .content-section {
