@@ -8,12 +8,12 @@ document.addEventListener('DOMContentLoaded', () => {
     menuItems.forEach(item => {
         console.log(item);
         item.addEventListener('click', () => {
-            console.log(sectionId);
             menuItems.forEach(menu => menu.classList.remove('active'));
             sections.forEach(section => section.classList.remove('active'));
             item.classList.add('active');
-            
+
             const sectionId = item.getAttribute('data-section');
+            console.log(sectionId);
             const targetSection = document.getElementById(sectionId);
             if (targetSection) {
                 targetSection.classList.add('active');
