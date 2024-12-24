@@ -60,6 +60,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     getUserData();
 
+    // Funcionalidad de menú para mostrar las secciones correspondientes
+    menuItems.forEach(item => {
+        item.addEventListener('click', () => {
+            menuItems.forEach(menu => menu.classList.remove('active'));
+            sections.forEach(section => section.classList.remove('active'));
+
+            item.classList.add('active');
+            const sectionId = item.getAttribute('data-section');
+            document.getElementById(sectionId).classList.add('active');
+        });
+    });
+
     documentationForm.addEventListener('submit', (event) => {
         event.preventDefault();
 
@@ -84,18 +96,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error al subir los documentos:', error);
             uploadStatus.textContent = "Ocurrió un error inesperado.";
             uploadStatus.style.color = "red";
-        });
-    });
-
-    // Funcionalidad de menú para mostrar las secciones correspondientes
-    menuItems.forEach(item => {
-        item.addEventListener('click', () => {
-            menuItems.forEach(menu => menu.classList.remove('active'));
-            sections.forEach(section => section.classList.remove('active'));
-
-            item.classList.add('active');
-            const sectionId = item.getAttribute('data-section');
-            document.getElementById(sectionId).classList.add('active');
         });
     });
 });
