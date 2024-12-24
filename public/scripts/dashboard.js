@@ -2,8 +2,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const menuItems = document.querySelectorAll('.menu-item');
     const sections = document.querySelectorAll('.content-section');
 
-    console.log(menuItems);
-    console.log(sections);
     // Funcionalidad de menú para mostrar las secciones correspondientes
     menuItems.forEach(item => {
         console.log(item);
@@ -13,14 +11,12 @@ document.addEventListener('DOMContentLoaded', () => {
             item.classList.add('active');
 
             const sectionId = item.getAttribute('data-section');
-            console.log(sectionId);
             const targetSection = document.getElementById(sectionId);
             if (targetSection) {
                 targetSection.classList.add('active');
             } else {
                 console.error(`No se encontró la sección con id: ${sectionId}`);
             }
-            console.log(document.getElementById(sectionId));
         });
     });
 
@@ -111,36 +107,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.querySelectorAll('input[type="file"]').forEach(input => {
         const fileListContainer = document.getElementById(`${input.id}-file-list`);
+        const dataTransfer = new DataTransfer(); // Para mantener los archivos acumulados
     
         input.addEventListener('change', event => {
-            const files = Array.from(event.target.files);
+            const newFiles = Array.from(event.target.files);
     
-            // Limpia la lista actual
-            fileListContainer.innerHTML = '';
+            // Añadir los nuevos archivos al DataTransfer
+            newFiles.forEach(file => {
+                dataTransfer.items.add(file);
+            });
     
-            // Agrega cada archivo a la lista
-            files.forEach((file, index) => {
+            // Actualizar el objeto FileList del input
+            input.files = dataTransfer.files;
+    
+            // Actualizar la lista visual
+            fileListContainer.innerHTML = ''; // Limpia la lista visual
+            Array.from(dataTransfer.files).forEach((file, index) => {
                 const listItem = document.createElement('li');
                 listItem.textContent = file.name;
     
                 const removeButton = document.createElement('button');
                 removeButton.textContent = 'x';
                 removeButton.addEventListener('click', () => {
-                    // Elimina el archivo de la lista
-                    files.splice(index, 1);
+                    // Eliminar el archivo del DataTransfer
+                    dataTransfer.items.remove(index);
     
-                    // Crea un nuevo objeto FileList para reflejar los cambios
-                    const newFileList = new DataTransfer();
-                    files.forEach(f => newFileList.items.add(f));
-                    input.files = newFileList.files;
+                    // Actualizar el objeto FileList del input
+                    input.files = dataTransfer.files;
     
-                    // Actualiza la lista visual
+                    // Actualizar la lista visual
                     listItem.remove();
                 });
     
                 listItem.appendChild(removeButton);
                 fileListContainer.appendChild(listItem);
             });
+    
+            // Limpiar el valor del input después de procesar los nuevos archivos
+            input.value = '';
         });
-    });    
+    });      
 });
