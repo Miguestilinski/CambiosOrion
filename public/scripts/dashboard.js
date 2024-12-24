@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Funcionalidad de menú para mostrar las secciones correspondientes
     menuItems.forEach(item => {
-        console.log(item);
         item.addEventListener('click', () => {
             menuItems.forEach(menu => menu.classList.remove('active'));
             sections.forEach(section => section.classList.remove('active'));
@@ -77,12 +76,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const documentationForm = document.getElementById('documentation-form');
     const uploadStatus = document.getElementById('upload-status');
-
+    
+    // Validar inputs de archivo antes de enviar el formulario
     documentationForm.addEventListener('submit', (event) => {
         event.preventDefault();
-
+    
+        let isValid = true;
+        const inputs = document.querySelectorAll('input[type="file"]');
+    
+        inputs.forEach(input => {
+            if (!input.files.length) {
+                isValid = false;
+                const label = input.previousElementSibling.textContent.trim();
+                alert(`Por favor, sube al menos un archivo para el campo: "${label}"`);
+            }
+        });
+    
+        if (!isValid) return;
+    
         const formData = new FormData(documentationForm);
-
+    
         fetch('/data/upload_documents.php', {
             method: 'POST',
             body: formData,
@@ -104,7 +117,8 @@ document.addEventListener('DOMContentLoaded', () => {
             uploadStatus.style.color = "red";
         });
     });
-
+    
+    // Manejar la selección y eliminación de archivos
     document.querySelectorAll('input[type="file"]').forEach(input => {
         const fileListContainer = document.getElementById(`${input.id}-file-list`);
         const dataTransfer = new DataTransfer(); // Para mantener los archivos acumulados
@@ -146,5 +160,5 @@ document.addEventListener('DOMContentLoaded', () => {
             // Limpiar el valor del input después de procesar los nuevos archivos
             input.value = '';
         });
-    });      
+    });        
 });
