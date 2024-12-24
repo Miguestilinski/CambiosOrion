@@ -85,10 +85,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const inputs = document.querySelectorAll('input[type="file"]');
     
         inputs.forEach(input => {
+            const errorElement = document.getElementById(`${input.id}-error`);
             if (!input.files.length) {
                 isValid = false;
-                const label = input.previousElementSibling.textContent.trim();
-                alert(`Por favor, sube al menos un archivo para el campo: "${label}"`);
+                errorElement.textContent = `Por favor, sube al menos un archivo para este campo.`;
+                errorElement.classList.remove('hidden');
+            } else {
+                errorElement.textContent = '';
+                errorElement.classList.add('hidden');
             }
         });
     
@@ -160,5 +164,5 @@ document.addEventListener('DOMContentLoaded', () => {
             // Limpiar el valor del input después de procesar los nuevos archivos
             input.value = '';
         });
-    });        
+    });           
 });

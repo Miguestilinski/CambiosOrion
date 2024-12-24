@@ -177,6 +177,8 @@
                     <div class="mb-6">
                         <label for="doc1" class="block text-lg font-medium text-white">1. Copia de la cédula de identidad del representante legal y socios</label>
                         <input type="file" id="doc1" name="doc1[]" multiple class="block w-full text-sm text-white bg-gray-50 rounded-lg border border-gray-300 cursor-pointer">
+                        <p class="mt-1 text-sm text-gray-500 " id="file_input_help">PDF, DOCX, JPG o PNG.</p>
+                        <p id="doc1-error" class="text-sm text-red-500 hidden"></p>
                         <ul id="doc1-file-list" class="file-list mt-2"></ul>
                     </div>                    
                     <div class="mb-6">
@@ -184,35 +186,44 @@
                             2. Copia del RUT de la empresa
                         </label>
                         <input type="file" id="doc2" name="doc2[]" multiple class="block w-full text-sm text-white bg-gray-50 rounded-lg border border-gray-300 cursor-pointer">
+                        <p class="mt-1 text-sm text-gray-500 " id="file_input_help">PDF, DOCX, JPG o PNG.</p>
+                        <p id="doc2-error" class="text-sm text-red-500 hidden"></p>
                         <ul id="doc2-file-list" class="file-list mt-2"></ul>
                     </div>
                     <div class="mb-6">
                         <label for="doc3" class="block text-lg font-medium text-white">3. Copia de la Constitución de la Sociedad y todas sus modificaciones</label>
                         <input type="file" id="doc3" name="doc3[]" multiple class="block w-full text-sm text-white bg-gray-50 rounded-lg border border-gray-300 cursor-pointer">
+                        <p class="mt-1 text-sm text-gray-500 " id="file_input_help">PDF, DOCX, JPG o PNG.</p>
+                        <p id="doc3-error" class="text-sm text-red-500 hidden"></p>
                         <ul id="doc3-file-list" class="file-list mt-2"></ul>
                     </div>
                     <div class="mb-6">
                         <label for="doc4" class="block text-lg font-medium text-white">4. Ficha Cliente debidamente llenada y firmada</label>
                         <input type="file" id="doc4" name="doc4[]" multiple class="block w-full text-sm text-white bg-gray-50 rounded-lg border border-gray-300 cursor-pointer">
+                        <p class="mt-1 text-sm text-gray-500 " id="file_input_help">PDF, DOCX, JPG o PNG.</p>
+                        <p id="doc4-error" class="text-sm text-red-500 hidden"></p>
                         <ul id="doc4-file-list" class="file-list mt-2"></ul>
                     </div>
                     <div class="mb-6">
                         <label for="doc5" class="block text-lg font-medium text-white">5. Formulario de beneficiarios finales completado y firmado</label>
                         <input type="file" id="doc5" name="doc5[]" multiple class="block w-full text-sm text-white bg-gray-50 rounded-lg border border-gray-300 cursor-pointer">
+                        <p class="mt-1 text-sm text-gray-500 " id="file_input_help">PDF, DOCX, JPG o PNG.</p>
+                        <p id="doc5-error" class="text-sm text-red-500 hidden"></p>
                         <ul id="doc5-file-list" class="file-list mt-2"></ul>
                     </div>
                     <div class="mb-6">
                         <label for="doc6" class="block text-lg font-medium text-white">6. Formas globales llenas y firmadas</label>
                         <input type="file" id="doc6" name="doc6[]" multiple class="block w-full text-sm text-white bg-gray-50 rounded-lg border border-gray-300 cursor-pointer">
+                        <p class="mt-1 text-sm text-gray-500 " id="file_input_help">PDF, DOCX, JPG o PNG.</p>
+                        <p id="doc6-error" class="text-sm text-red-500 hidden"></p>
                         <ul id="doc6-file-list" class="file-list mt-2"></ul>
                     </div>
             
                     <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                         Subir Documentos
                     </button>
+                    <p id="upload-status" class="ml-4 text-md text-red-500"></p>
                 </form>
-            
-                <p id="upload-status" class="mt-4 text-md text-white"></p>
             </section>            
         </main>
     </div>    
