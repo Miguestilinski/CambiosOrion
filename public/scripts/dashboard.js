@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
             uploadStatus.style.color = "red";
         });
     });
-    
+
     // Manejar la selección y eliminación de archivos
     document.querySelectorAll('input[type="file"]').forEach(input => {
         const fileListContainer = document.getElementById(`${input.id}-file-list`);
@@ -129,40 +129,48 @@ document.addEventListener('DOMContentLoaded', () => {
     
         input.addEventListener('change', event => {
             const newFiles = Array.from(event.target.files);
-    
+
             // Añadir los nuevos archivos al DataTransfer
             newFiles.forEach(file => {
                 dataTransfer.items.add(file);
             });
-    
+
             // Actualizar el objeto FileList del input
             input.files = dataTransfer.files;
-    
+
             // Actualizar la lista visual
             fileListContainer.innerHTML = ''; // Limpia la lista visual
             Array.from(dataTransfer.files).forEach((file, index) => {
                 const listItem = document.createElement('li');
                 listItem.textContent = file.name;
-    
+
                 const removeButton = document.createElement('button');
                 removeButton.textContent = 'x';
                 removeButton.addEventListener('click', () => {
                     // Eliminar el archivo del DataTransfer
                     dataTransfer.items.remove(index);
-    
+
                     // Actualizar el objeto FileList del input
                     input.files = dataTransfer.files;
-    
+
                     // Actualizar la lista visual
                     listItem.remove();
                 });
-    
+
                 listItem.appendChild(removeButton);
                 fileListContainer.appendChild(listItem);
             });
-    
+
             // Limpiar el valor del input después de procesar los nuevos archivos
             input.value = '';
+
+            // Actualizar el texto del input al seleccionar archivos
+            if (newFiles.length > 0) {
+                const fileNames = newFiles.map(file => file.name).join(', ');
+                input.previousElementSibling.textContent = `Archivos seleccionados: ${fileNames}`;
+            } else {
+                input.previousElementSibling.textContent = "Sin Archivos Seleccionados";
+            }
         });
-    });           
+    });          
 });
