@@ -86,6 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
         inputs.forEach(input => {
             const errorElement = document.getElementById(`${input.id}-error`);
+            console.log(`Validando input: ${input.id}, archivos: ${input.files.length}`);
             if (!input.files.length) {
                 isValid = false;
                 errorElement.textContent = `Por favor, sube al menos un archivo para este campo.`;
@@ -129,6 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         input.addEventListener('change', event => {
             const newFiles = Array.from(event.target.files);
+            console.log(`Archivos seleccionados: ${newFiles.length}`, newFiles);
 
             // Añadir los nuevos archivos al DataTransfer
             newFiles.forEach(file => {
@@ -137,6 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Actualizar el objeto FileList del input
             input.files = dataTransfer.files;
+            console.log(`Archivos en input después de agregar: ${input.files.length}`);
 
             // Llamar a la función para actualizar la lista visual
             updateFileList(input.id); // Actualiza la lista de archivos al cambiar el input
@@ -149,6 +152,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const fileListContainer = document.getElementById(`${inputId}-file-list`);
         const fileList = inputElement.files;
         
+        console.log(`Actualizando lista de archivos para ${inputId}. Archivos: ${fileList.length}`);
+
         // Limpiar la lista visual
         fileListContainer.innerHTML = "";
 
