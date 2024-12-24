@@ -121,12 +121,12 @@ document.addEventListener('DOMContentLoaded', () => {
             uploadStatus.style.color = "red";
         });
     });
-
+    
     // Manejar la selección y eliminación de archivos
     document.querySelectorAll('input[type="file"]').forEach(input => {
         const fileListContainer = document.getElementById(`${input.id}-file-list`);
         const dataTransfer = new DataTransfer(); // Para mantener los archivos acumulados
-    
+
         input.addEventListener('change', event => {
             const newFiles = Array.from(event.target.files);
 
@@ -138,9 +138,23 @@ document.addEventListener('DOMContentLoaded', () => {
             // Actualizar el objeto FileList del input
             input.files = dataTransfer.files;
 
-            // Actualizar la lista visual
-            fileListContainer.innerHTML = ''; // Limpia la lista visual
-            Array.from(dataTransfer.files).forEach((file, index) => {
+            // Llamar a la función para actualizar la lista visual
+            updateFileList(input.id); // Actualiza la lista de archivos al cambiar el input
+        });
+    });           
+
+    // Función para actualizar la lista visual de archivos seleccionados
+    window.updateFileList = function(inputId) {
+        const inputElement = document.getElementById(inputId);
+        const fileListContainer = document.getElementById(`${inputId}-file-list`);
+        const fileList = inputElement.files;
+        
+        // Limpiar la lista visual
+        fileListContainer.innerHTML = "";
+
+        // Si hay archivos seleccionados, mostrarlos
+        if (fileList.length > 0) {
+            Array.from(fileList).forEach((file, index) => {
                 const listItem = document.createElement('li');
                 listItem.textContent = file.name;
 
@@ -148,29 +162,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 removeButton.textContent = 'x';
                 removeButton.addEventListener('click', () => {
                     // Eliminar el archivo del DataTransfer
-                    dataTransfer.items.remove(index);
+                    const dataTransfer = new DataTransfer();
+                    Array.from(fileList).forEach((item, idx) => {
+                        if (idx !== index) dataTransfer.items.add(item);
+                    });
 
                     // Actualizar el objeto FileList del input
-                    input.files = dataTransfer.files;
+                    inputElement.files = dataTransfer.files;
 
                     // Actualizar la lista visual
-                    listItem.remove();
+                    updateFileList(inputId);
                 });
 
                 listItem.appendChild(removeButton);
                 fileListContainer.appendChild(listItem);
             });
-
-            // Limpiar el valor del input después de procesar los nuevos archivos
-            input.value = '';
-
-            // Actualizar el texto del input al seleccionar archivos
-            if (newFiles.length > 0) {
-                const fileNames = newFiles.map(file => file.name).join(', ');
-                input.previousElementSibling.textContent = `Archivos seleccionados: ${fileNames}`;
-            } else {
-                input.previousElementSibling.textContent = "Sin Archivos Seleccionados";
-            }
-        });
-    });          
+        } else {
+            fileListContainer.innerHTML = "<li>No se han seleccionado archivos.</li>";
+        }
+    }
 });
