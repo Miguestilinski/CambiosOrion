@@ -108,4 +108,39 @@ document.addEventListener('DOMContentLoaded', () => {
             uploadStatus.style.color = "red";
         });
     });
+
+    document.querySelectorAll('input[type="file"]').forEach(input => {
+        const fileListContainer = document.getElementById(`${input.id}-file-list`);
+    
+        input.addEventListener('change', event => {
+            const files = Array.from(event.target.files);
+    
+            // Limpia la lista actual
+            fileListContainer.innerHTML = '';
+    
+            // Agrega cada archivo a la lista
+            files.forEach((file, index) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = file.name;
+    
+                const removeButton = document.createElement('button');
+                removeButton.textContent = 'x';
+                removeButton.addEventListener('click', () => {
+                    // Elimina el archivo de la lista
+                    files.splice(index, 1);
+    
+                    // Crea un nuevo objeto FileList para reflejar los cambios
+                    const newFileList = new DataTransfer();
+                    files.forEach(f => newFileList.items.add(f));
+                    input.files = newFileList.files;
+    
+                    // Actualiza la lista visual
+                    listItem.remove();
+                });
+    
+                listItem.appendChild(removeButton);
+                fileListContainer.appendChild(listItem);
+            });
+        });
+    });    
 });
