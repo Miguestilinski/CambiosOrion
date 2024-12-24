@@ -2,15 +2,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const menuItems = document.querySelectorAll('.menu-item');
     const sections = document.querySelectorAll('.content-section');
 
+    console.log(menuItems);
+    console.log(sections);
+    // Funcionalidad de menú para mostrar las secciones correspondientes
+    menuItems.forEach(item => {
+        console.log(item);
+        item.addEventListener('click', () => {
+            console.log(sectionId);
+            menuItems.forEach(menu => menu.classList.remove('active'));
+            sections.forEach(section => section.classList.remove('active'));
+            item.classList.add('active');
+            
+            const sectionId = item.getAttribute('data-section');
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            } else {
+                console.error(`No se encontró la sección con id: ${sectionId}`);
+            }
+            console.log(document.getElementById(sectionId));
+        });
+    });
+
     const userTypeElement = document.getElementById('user-type');
     const userNameElement = document.getElementById('user-name-dashboard');
     const roleTypeElement = document.getElementById('role-type');
     const emailElement = document.getElementById('email');
     const rutGroupElement = document.getElementById('rut-group');
     const rutElement = document.getElementById('rut');
-
-    const documentationForm = document.getElementById('documentation-form');
-    const uploadStatus = document.getElementById('upload-status');
 
     // Función para obtener los datos del usuario
     function getUserData() {
@@ -60,17 +79,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     getUserData();
 
-    // Funcionalidad de menú para mostrar las secciones correspondientes
-    menuItems.forEach(item => {
-        item.addEventListener('click', () => {
-            menuItems.forEach(menu => menu.classList.remove('active'));
-            sections.forEach(section => section.classList.remove('active'));
-
-            item.classList.add('active');
-            const sectionId = item.getAttribute('data-section');
-            document.getElementById(sectionId).classList.add('active');
-        });
-    });
+    const documentationForm = document.getElementById('documentation-form');
+    const uploadStatus = document.getElementById('upload-status');
 
     documentationForm.addEventListener('submit', (event) => {
         event.preventDefault();
