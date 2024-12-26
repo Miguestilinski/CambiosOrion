@@ -74,20 +74,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
     getUserData();
 
+    async function checkIfSignatureReady() {
+        // Simulación de la espera a que el celular termine la firma
+        // Esto puede estar basado en un endpoint del servidor
+        const signatureResponse = await fetch('/check-signature-status', {
+            method: 'GET',
+            credentials: 'include'
+        });
+
+        const signatureStatus = await signatureResponse.json();
+        return signatureStatus.signed; // true o false
+    }
+
     const documentationForm = document.getElementById('documentation-form');
     const uploadStatus = document.getElementById('upload-status');
     
     // Validar inputs de archivo antes de enviar el formulario
     documentationForm.addEventListener('submit', async (event) => {
         event.preventDefault();
-    
+
+        // Simular espera de firma
+        const isSigned = await checkIfSignatureReady();
+        if (!isSigned) {
+            alert('Debe firmar el formulario desde su celular antes de continuar.');
+            return;
+        }
+
         let isValid = true;
         const inputs = document.querySelectorAll('input[type="file"]');
     
         // Validación de archivos subidos
         inputs.forEach(input => {
             const errorElement = document.getElementById(`${input.id}-error`);
-            console.log(`Validando input: ${input.id}, archivos: ${input.files.length}`);
             if (!input.files.length) {
                 isValid = false;
                 errorElement.textContent = `Por favor, sube al menos un archivo para este campo.`;
@@ -102,35 +120,37 @@ document.addEventListener('DOMContentLoaded', () => {
     
         // Agregar id del cliente a los datos del formulario
         const formData = new FormData(documentationForm);
-    
+
         try {
             // Obtener datos del usuario activo
             const userDataResponse = await fetch('/data/get_user_data.php', {
                 method: 'GET',
                 credentials: 'include',
             });
-    
+
             const userData = await userDataResponse.json();
-    
+
             if (!userData.success || !userData.user?.id) {
                 throw new Error('No se pudo obtener el identificador del cliente.');
             }
-    
+
             const userId = userData.user.id;
             formData.append('id', userId); // Agregar id al FormData
-    
+
             // Subir los documentos
             const uploadResponse = await fetch('/data/upload_documents.php', {
                 method: 'POST',
                 body: formData,
                 credentials: 'include',
             });
-    
+
             const uploadData = await uploadResponse.json();
-    
+
             if (uploadData.success) {
                 uploadStatus.textContent = "¡Documentos subidos exitosamente!";
                 uploadStatus.style.color = "lime";
+                // Redirigir al listado de documentos
+                window.location.href = '/dashboard';  // Aquí deberías poner la URL de la página que muestra el listado de documentos
             } else {
                 uploadStatus.textContent = "Error al subir los documentos: " + uploadData.message;
                 uploadStatus.style.color = "red";
