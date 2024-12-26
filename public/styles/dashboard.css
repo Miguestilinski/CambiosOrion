@@ -126,6 +126,12 @@ input#email{
     border-radius: 3px;
 }
 
+.form-button{
+    background-color: #3b82f6;
+    color:white;
+}
+
+
 @media (max-width: 887px) {
     .main-content {
         flex-direction: column; /* Ajusta a diseño vertical en pantallas pequeñas */
