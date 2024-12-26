@@ -78,12 +78,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const uploadStatus = document.getElementById('upload-status');
     
     // Validar inputs de archivo antes de enviar el formulario
-    documentationForm.addEventListener('submit', (event) => {
+    documentationForm.addEventListener('submit', async (event) => {
         event.preventDefault();
     
         let isValid = true;
         const inputs = document.querySelectorAll('input[type="file"]');
     
+        // Validación de archivos subidos
         inputs.forEach(input => {
             const errorElement = document.getElementById(`${input.id}-error`);
             console.log(`Validando input: ${input.id}, archivos: ${input.files.length}`);
@@ -99,29 +100,48 @@ document.addEventListener('DOMContentLoaded', () => {
     
         if (!isValid) return;
     
+        // Agregar id del cliente a los datos del formulario
         const formData = new FormData(documentationForm);
     
-        fetch('/data/upload_documents.php', {
-            method: 'POST',
-            body: formData,
-            credentials: 'include',
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
+        try {
+            // Obtener datos del usuario activo
+            const userDataResponse = await fetch('/data/get_user_data.php', {
+                method: 'GET',
+                credentials: 'include',
+            });
+    
+            const userData = await userDataResponse.json();
+    
+            if (!userData.success || !userData.user?.id) {
+                throw new Error('No se pudo obtener el identificador del cliente.');
+            }
+    
+            const userId = userData.user.id;
+            formData.append('id', userId); // Agregar id al FormData
+    
+            // Subir los documentos
+            const uploadResponse = await fetch('/data/upload_documents.php', {
+                method: 'POST',
+                body: formData,
+                credentials: 'include',
+            });
+    
+            const uploadData = await uploadResponse.json();
+    
+            if (uploadData.success) {
                 uploadStatus.textContent = "¡Documentos subidos exitosamente!";
                 uploadStatus.style.color = "lime";
             } else {
-                uploadStatus.textContent = "Error al subir los documentos: " + data.message;
+                uploadStatus.textContent = "Error al subir los documentos: " + uploadData.message;
                 uploadStatus.style.color = "red";
             }
-        })
-        .catch(error => {
-            console.error('Error al subir los documentos:', error);
-            uploadStatus.textContent = "Ocurrió un error inesperado.";
+        } catch (error) {
+            console.error('Error durante el proceso de subida:', error);
+            uploadStatus.textContent = "Ocurrió un error inesperado. Intenta nuevamente.";
             uploadStatus.style.color = "red";
-        });
+        }
     });
+    
     
     // Manejar la selección y eliminación de archivos
     document.querySelectorAll('input[type="file"]').forEach(input => {
