@@ -20,7 +20,7 @@ const formularioData = [
         ]
     },
     {
-        title: "REPRESENTANTE LEGAL Y/O GERENTE GENERAL Nº 1",
+        title: "REPRESENTANTE LEGAL Y/O GERENTE GENERAL",
         fields: [
             { label: "Nombre", type: "text", name: "rep_nombre" },
             { label: "Nº Doc. Identidad", type: "text", name: "rep_doc_identidad" },
