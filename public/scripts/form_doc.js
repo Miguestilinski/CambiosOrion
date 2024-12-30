@@ -21,7 +21,7 @@ const formularioData = [
         ]
     },
     {
-        title: "REPRESENTANTE LEGAL Y/O GERENTE GENERAL No 1",
+        title: "REPRESENTANTE LEGAL Y/O GERENTE GENERAL Nº 1",
         fields: [
             { label: "Nombre", type: "text", name: "rep_nombre" },
             { label: "Nº Doc. Identidad", type: "text", name: "rep_doc_identidad" },
@@ -73,25 +73,45 @@ function renderForm() {
             sectionDiv.appendChild(fieldDiv);
         });
 
-        // Si la sección permite múltiples entradas
         if (section.multiple) {
             const addButton = document.createElement('button');
             addButton.type = "button";
             addButton.textContent = "Añadir más";
-            addButton.classList.add('btn', 'btn-secondary');
-            addButton.addEventListener('click', () => {
-                const clonedFields = sectionDiv.querySelectorAll('.form-group');
-                clonedFields.forEach(field => {
-                    const clone = field.cloneNode(true);
-                    sectionDiv.insertBefore(clone, addButton);
-                });
-            });
+            addButton.classList.add('btn', 'btn-secondary', 'add-more');
+            addButton.addEventListener('click', () => addMoreFields(section.fields, sectionDiv, addButton));
 
             sectionDiv.appendChild(addButton);
         }
 
         formContent.appendChild(sectionDiv);
     });
+}
+
+// Función para añadir más campos dinámicamente
+function addMoreFields(fields, container, addButton) {
+    const newFieldsDiv = document.createElement('div');
+    newFieldsDiv.classList.add('form-group-multiple');
+
+    fields.forEach(field => {
+        const fieldDiv = document.createElement('div');
+        fieldDiv.classList.add('form-group');
+
+        const label = document.createElement('label');
+        label.textContent = field.label;
+        label.htmlFor = field.name;
+
+        const input = document.createElement('input');
+        input.type = field.type;
+        input.name = field.name;
+        input.id = `${field.name}-${Date.now()}`;
+        input.classList.add('form-control');
+
+        fieldDiv.appendChild(label);
+        fieldDiv.appendChild(input);
+        newFieldsDiv.appendChild(fieldDiv);
+    });
+
+    container.insertBefore(newFieldsDiv, addButton);
 }
 
 // Renderizar el formulario al cargar la página
@@ -104,6 +124,7 @@ const startSignatureButton = document.getElementById("start-signature");
 startSignatureButton.addEventListener('click', function() {
     if (window.innerWidth <= 768) {
         signaturePadContainer.style.display = "block";
+        signaturePadContainer.scrollIntoView({ behavior: 'smooth' });
     }
 });
 
