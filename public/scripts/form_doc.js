@@ -4,7 +4,7 @@ const formContent = document.getElementById("form-content");
 // Datos del formulario según las páginas
 const formularioData = [
     {
-        title: "FICHA CLIENTE PERSONA JURÍDICA",
+        title: "DATOS EMPRESA",
         fields: [
             { label: "Fecha (Día, Mes, Año)", type: "date", name: "fecha" },
             { label: "RUT/Tax ID", type: "text", name: "rut_tax_id" },
@@ -20,7 +20,7 @@ const formularioData = [
         ]
     },
     {
-        title: "REPRESENTANTE LEGAL Y/O GERENTE GENERAL",
+        title: "DATOS REPRESENTANTE LEGAL Y/O GERENTE GENERAL",
         fields: [
             { label: "Nombre", type: "text", name: "rep_nombre" },
             { label: "Nº Doc. Identidad", type: "text", name: "rep_doc_identidad" },
@@ -37,6 +37,15 @@ const formularioData = [
             { label: "Nº Doc. Identidad", type: "text", name: "aut_doc_identidad[]" },
             { label: "Cargo", type: "text", name: "aut_cargo[]" },
             { label: "E-Mail", type: "email", name: "aut_email[]" }
+        ],
+        multiple: true
+    },
+    {
+        title: "DECLARACIÓN DE ORIGEN DE FONDOS",
+        fields: [
+            { label: "Actividad o Profesión", type: "text", name: "actividad" },
+            { label: "Origen de los Fondos", type: "text", name: "origen_fondos" },
+            { label: "Destino de los Fondos", type: "text", name: "destino_fondos" }
         ],
         multiple: true
     },
@@ -131,6 +140,14 @@ startSignatureButton.addEventListener('click', function() {
 const dynamicForm = document.getElementById('dynamic-form');
 dynamicForm.addEventListener('submit', function(event) {
     event.preventDefault();
+
+    // Verificar si la firma fue realizada
+    const signaturePad = document.getElementById("signature-pad");
+    if (!signaturePad || signaturePad.value === "") {
+        alert("Por favor, firme el formulario.");
+        return;
+    }
+
     alert("Formulario enviado correctamente. Validando firma electrónica.");
     // Aquí puedes integrar la lógica para manejar los datos del formulario
 });
