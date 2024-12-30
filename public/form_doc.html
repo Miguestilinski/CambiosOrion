@@ -101,22 +101,98 @@
     </header>
     <div class="header-divider"></div>
     <div class="main-content">
-
         <section id="form-section">
             <h1>Formulario Dinámico</h1>
-            <form id="dynamic-form" action="#">
-                <!-- Aquí se van a cargar los documentos dinámicamente -->
-                <div id="form-content"></div>
+            <form id="dynamic-form" action="/submit_form" method="post">
+                <!-- Página 1: Ficha Cliente Persona Jurídica -->
+                <div class="form-page" id="page-1">
+                    <h2>Ficha Cliente Persona Jurídica</h2>
+                    <label for="fecha">Fecha:</label>
+                    <input type="date" id="fecha" name="fecha" required>
+                    
+                    <h3>Datos Básicos</h3>
+                    <label for="empresa">Empresa Nacional o Extranjera:</label>
+                    <input type="text" id="empresa" name="empresa" required>
+    
+                    <label for="rut">RUT/Tax ID:</label>
+                    <input type="text" id="rut" name="rut" required>
+    
+                    <label for="rubro">Rubro Empresa:</label>
+                    <input type="text" id="rubro" name="rubro">
+    
+                    <label for="razon-social">Razón Social:</label>
+                    <input type="text" id="razon-social" name="razon_social" required>
+    
+                    <label for="nombre-fantasia">Nombre Fantasía:</label>
+                    <input type="text" id="nombre-fantasia" name="nombre_fantasia">
+    
+                    <label for="tipo-sociedad">Tipo Sociedad:</label>
+                    <input type="text" id="tipo-sociedad" name="tipo_sociedad">
+    
+                    <label for="direccion">Dirección:</label>
+                    <input type="text" id="direccion" name="direccion">
+    
+                    <label for="ciudad">Ciudad:</label>
+                    <input type="text" id="ciudad" name="ciudad">
+    
+                    <label for="pais">País:</label>
+                    <input type="text" id="pais" name="pais">
+    
+                    <label for="email">E-Mail:</label>
+                    <input type="email" id="email" name="email">
+    
+                    <label for="telefono">Teléfono:</label>
+                    <input type="tel" id="telefono" name="telefono">
+    
+                    <h3>Representante Legal y/o Gerente General No 1</h3>
+                    <label for="nombre-representante">Nombre:</label>
+                    <input type="text" id="nombre-representante" name="nombre_representante">
+    
+                    <label for="doc-identidad">Nº Doc. Identidad:</label>
+                    <input type="text" id="doc-identidad" name="doc_identidad">
+    
+                    <label for="nacionalidad">Nacionalidad:</label>
+                    <input type="text" id="nacionalidad" name="nacionalidad">
+    
+                    <label for="estado-civil">Estado Civil:</label>
+                    <input type="text" id="estado-civil" name="estado_civil">
+    
+                    <label for="email-representante">E-Mail:</label>
+                    <input type="email" id="email-representante" name="email_representante">
+    
+                    <label for="direccion-particular">Dirección Particular:</label>
+                    <input type="text" id="direccion-particular" name="direccion_particular">
+    
+                    <h3>Personas Autorizadas para dar Órdenes</h3>
+                    <div id="autorizados-container">
+                        <!-- Aquí se añadirán dinámicamente los campos -->
+                    </div>
+                    <button type="button" id="add-autorizado">Agregar Persona Autorizada</button>
+    
+                    <h3>Tipo de Órdenes a Recibir</h3>
+                    <label><input type="radio" name="tipo_ordenes" value="verbales_sin_confirmacion" required> Órdenes verbales sin confirmación por escrito o electrónico</label><br>
+                    <label><input type="radio" name="tipo_ordenes" value="verbales_con_confirmacion"> Órdenes verbales con confirmación por escrito o electrónico</label><br>
+                    <label><input type="radio" name="tipo_ordenes" value="escritas"> Órdenes escritas</label>
+    
+                    <h3>Uso Interno</h3>
+                    <label><input type="radio" name="uso_interno" value="listas_control" required> Verificación en listas de control</label><br>
+                    <label><input type="radio" name="uso_interno" value="situacion_tributaria"> Situación tributaria SII</label><br>
+                    <label><input type="radio" name="uso_interno" value="licitud_bienes"> Licitud de Bienes</label><br>
+                    <label><input type="radio" name="uso_interno" value="otros"> Otros antecedentes</label>
+                    <input type="text" name="otros_antecedentes" placeholder="Indicar detalles">
+                </div>
+    
+                <!-- Similar structure for other pages -->
+    
                 <button type="submit">Enviar</button>
             </form>
         </section>
-
+    
         <!-- Pop-up para la firma -->
         <div id="signature-pad-container" class="signature-pad-container">
             <h2>Por favor, firme en su celular</h2>
             <button id="start-signature">Iniciar firma</button>
         </div>
-        
     </div>
 
 </body>
