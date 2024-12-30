@@ -104,191 +104,189 @@
         <section id="form-section" >
             <h1 class="text-2xl font-bold text-white text-center mb-6">Formulario Dinámico</h1>
             <form id="dynamic-form" action="/submit_form" method="post">
-                <div class="form-page" id="page-1">
-                    <h2 class="text-xl font-semibold text-white mb-4">Ficha Cliente Persona Jurídica</h2>
-        
-                    <!-- Campo Fecha -->
+                <h2 class="text-xl font-semibold text-white mb-4">Ficha Cliente Persona Jurídica</h2>
+    
+                <!-- Campo Fecha -->
+                <div class="mb-5">
+                    <label for="fecha" class="block mt-2 mb-2 text-sm font-medium text-white">Fecha:</label>
+                    <input type="date" id="fecha" name="fecha" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                </div>
+    
+                <!-- Contenedor de Datos de la Empresa -->
+                <div class="max-w-md w-full mx-auto my-10 mb-10 bg-gray-700 p-5 rounded-lg shadow-md">
+                    <h2 class="text-xl font-semibold text-white mb-4">Datos de la Empresa</h2>
+
+                    <!-- Tipo Empresa -->
                     <div class="mb-5">
-                        <label for="fecha" class="block mt-2 mb-2 text-sm font-medium text-white">Fecha:</label>
-                        <input type="date" id="fecha" name="fecha" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
-                    </div>
-        
-                    <!-- Contenedor de Datos de la Empresa -->
-                    <div class="max-w-md w-full mx-auto my-10 mb-10 bg-gray-700 p-5 rounded-lg shadow-md">
-                        <h2 class="text-xl font-semibold text-white mb-4">Datos de la Empresa</h2>
-
-                        <!-- Tipo Empresa -->
-                        <div class="mb-5">
-                            <label class="block mt-2 mb-2 text-sm font-medium text-white">Tipo de Empresa:</label>
-                            <div class="flex gap-4">
-                                <label class="flex items-center">
-                                    <input type="radio" name="tipo_empresa" value="nacional" class="form-radio text-blue-600" required>
-                                    <span class="ml-2 text-gray-100">Empresa Nacional</span>
-                                </label>
-                                <label class="flex items-center">
-                                    <input type="radio" name="tipo_empresa" value="extranjera" class="form-radio text-blue-600">
-                                    <span class="ml-2 text-gray-100">Empresa Extranjera</span>
-                                </label>
-                            </div>
-                        </div>
-        
-                        <!-- Campo RUT/Tax ID -->
-                        <div class="mb-5">
-                            <label for="rut" class="block mt-2 mb-2 text-sm font-medium text-white">RUT/Tax ID:</label>
-                            <input type="text" id="rut" name="rut" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
-                        </div>
-        
-                        <!-- Rubro Empresa -->
-                        <div class="mb-5">
-                            <label for="rubro" class="block mt-2 mb-2 text-sm font-medium text-white">Rubro Empresa:</label>
-                            <input type="text" id="rubro" name="rubro" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                        </div>
-
-                        <!-- Razón Social -->
-                        <div class="mb-5">
-                            <label for="razon-social" class="block mt-2 mb-2 text-sm font-medium text-white">Razón Social:</label>
-                            <input type="text" id="razon-social" name="razon_social" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
-                        </div>
-
-                        <!-- Razón Social -->
-                        <div class="mb-5">
-                            <label for="nombre-fantasia" class="block mt-2 mb-2 text-sm font-medium text-white">Nombre Fantasía:</label>
-                            <input type="text" id="nombre-fantasia" name="nombre_fantasia" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                        </div>
-
-                        <!-- Tipo Sociedad -->
-                        <div class="mb-5">
-                            <label for="tipo-sociedad" class="block mt-2 mb-2 text-sm font-medium text-white">Tipo Sociedad:</label>
-                            <input type="text" id="tipo-sociedad" name="tipo_sociedad" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                        </div>
-
-                        <!-- Dirección-->
-                        <div class="mb-5">
-                            <label for="direccion" class="block mt-2 mb-2 text-sm font-medium text-white">Dirección:</label>
-                            <input type="text" id="direccion" name="direccion" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                        </div>
-
-                        <!-- Ciudad-->
-                        <div class="mb-5">
-                            <label for="ciudad" class="block mt-2 mb-2 text-sm font-medium text-white">Ciudad:</label>
-                            <input type="text" id="ciudad" name="ciudad" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                        </div>
-
-                        <!-- País-->
-                        <div class="mb-5">
-                            <label for="pais" class="block mt-2 mb-2 text-sm font-medium text-white">País:</label>
-                            <input type="text" id="pais" name="pais" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                        </div>
-
-                        <!-- E-mail-->
-                        <div class="mb-5">
-                            <label for="email" class="block mt-2 mb-2 text-sm font-medium text-white">E-Mail:</label>
-                            <input type="email" id="email" name="email" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                        </div>
-
-                        <!-- Telefono-->
-                        <div class="mb-5">
-                            <label for="telefono" class="block mt-2 mb-2 text-sm font-medium text-white">Teléfono:</label>
-                            <input type="tel" id="telefono" name="telefono" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        <label class="block mt-2 mb-2 text-sm font-medium text-white">Tipo de Empresa:</label>
+                        <div class="flex gap-4">
+                            <label class="flex items-center">
+                                <input type="radio" name="tipo_empresa" value="nacional" class="form-radio text-blue-600" required>
+                                <span class="ml-2 text-gray-100">Empresa Nacional</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="tipo_empresa" value="extranjera" class="form-radio text-blue-600">
+                                <span class="ml-2 text-gray-100">Empresa Extranjera</span>
+                            </label>
                         </div>
                     </div>
+    
+                    <!-- Campo RUT/Tax ID -->
+                    <div class="mb-5">
+                        <label for="rut" class="block mt-2 mb-2 text-sm font-medium text-white">RUT/Tax ID:</label>
+                        <input type="text" id="rut" name="rut" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                    </div>
+    
+                    <!-- Rubro Empresa -->
+                    <div class="mb-5">
+                        <label for="rubro" class="block mt-2 mb-2 text-sm font-medium text-white">Rubro Empresa:</label>
+                        <input type="text" id="rubro" name="rubro" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    </div>
 
-                    <div class="max-w-md w-full mx-auto my-10 mb-10 bg-gray-700 p-5 rounded-lg shadow-md">
-                        <h2 class="text-xl font-semibold text-white mb-4">Datos Representante Legal y/o Gerente General Nº 1</h2>
+                    <!-- Razón Social -->
+                    <div class="mb-5">
+                        <label for="razon-social" class="block mt-2 mb-2 text-sm font-medium text-white">Razón Social:</label>
+                        <input type="text" id="razon-social" name="razon_social" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                    </div>
 
-                        <!-- Nombre-->
-                        <div class="mb-5">
-                            <label for="nombre-representante" class="block mt-2 mb-2 text-sm font-medium text-white">Nombre:</label>
-                            <input type="text" id="nombre-representante" name="nombre_representante" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                        </div>
+                    <!-- Razón Social -->
+                    <div class="mb-5">
+                        <label for="nombre-fantasia" class="block mt-2 mb-2 text-sm font-medium text-white">Nombre Fantasía:</label>
+                        <input type="text" id="nombre-fantasia" name="nombre_fantasia" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    </div>
 
-                        <!-- Nº Doc Identidad-->
-                        <div class="mb-5">
-                            <label for="doc-identidad" class="block mt-2 mb-2 text-sm font-medium text-white">Nº Doc. Identidad:</label>
-                            <input type="text" id="doc-identidad" name="doc_identidad" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                        </div>
+                    <!-- Tipo Sociedad -->
+                    <div class="mb-5">
+                        <label for="tipo-sociedad" class="block mt-2 mb-2 text-sm font-medium text-white">Tipo Sociedad:</label>
+                        <input type="text" id="tipo-sociedad" name="tipo_sociedad" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    </div>
 
-                        <!-- Nacionalidad-->
-                        <div class="mb-5">
-                            <label for="nacionalidad" class="block mt-2 mb-2 text-sm font-medium text-white">Nº Doc. Identidad:</label>
-                            <input type="text" id="nacionalidad" name="nacionalidad" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                        </div>
+                    <!-- Dirección-->
+                    <div class="mb-5">
+                        <label for="direccion" class="block mt-2 mb-2 text-sm font-medium text-white">Dirección:</label>
+                        <input type="text" id="direccion" name="direccion" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    </div>
 
-                        <!-- Estado Civil-->
-                        <div class="mb-5">
-                            <label for="estado-civil" class="block mt-2 mb-2 text-sm font-medium text-white">Estado Civil:</label>
-                            <input type="text" id="estado-civil" name="estado_civil" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                        </div>
+                    <!-- Ciudad-->
+                    <div class="mb-5">
+                        <label for="ciudad" class="block mt-2 mb-2 text-sm font-medium text-white">Ciudad:</label>
+                        <input type="text" id="ciudad" name="ciudad" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    </div>
 
-                        <!-- E-mail-->
-                        <div class="mb-5">
-                            <label for="email-representante" class="block mt-2 mb-2 text-sm font-medium text-white">E-Mail:</label>
-                            <input type="text" id="email-representante" name="email_representante" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                        </div>
+                    <!-- País-->
+                    <div class="mb-5">
+                        <label for="pais" class="block mt-2 mb-2 text-sm font-medium text-white">País:</label>
+                        <input type="text" id="pais" name="pais" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    </div>
 
-                        <!-- Dirección-->
-                        <div class="mb-5">
-                            <label for="direccion-particular" class="block mt-2 mb-2 text-sm font-medium text-white">Dirección Particular:</label>
-                            <input type="text" id="direccion-particular" name="direccion_particular" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    <!-- E-mail-->
+                    <div class="mb-5">
+                        <label for="email" class="block mt-2 mb-2 text-sm font-medium text-white">E-Mail:</label>
+                        <input type="email" id="email" name="email" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    </div>
+
+                    <!-- Telefono-->
+                    <div class="mb-5">
+                        <label for="telefono" class="block mt-2 mb-2 text-sm font-medium text-white">Teléfono:</label>
+                        <input type="tel" id="telefono" name="telefono" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    </div>
+                </div>
+
+                <div class="max-w-md w-full mx-auto my-10 mb-10 bg-gray-700 p-5 rounded-lg shadow-md">
+                    <h2 class="text-xl font-semibold text-white mb-4">Datos Representante Legal y/o Gerente General Nº 1</h2>
+
+                    <!-- Nombre-->
+                    <div class="mb-5">
+                        <label for="nombre-representante" class="block mt-2 mb-2 text-sm font-medium text-white">Nombre:</label>
+                        <input type="text" id="nombre-representante" name="nombre_representante" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    </div>
+
+                    <!-- Nº Doc Identidad-->
+                    <div class="mb-5">
+                        <label for="doc-identidad" class="block mt-2 mb-2 text-sm font-medium text-white">Nº Doc. Identidad:</label>
+                        <input type="text" id="doc-identidad" name="doc_identidad" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    </div>
+
+                    <!-- Nacionalidad-->
+                    <div class="mb-5">
+                        <label for="nacionalidad" class="block mt-2 mb-2 text-sm font-medium text-white">Nº Doc. Identidad:</label>
+                        <input type="text" id="nacionalidad" name="nacionalidad" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    </div>
+
+                    <!-- Estado Civil-->
+                    <div class="mb-5">
+                        <label for="estado-civil" class="block mt-2 mb-2 text-sm font-medium text-white">Estado Civil:</label>
+                        <input type="text" id="estado-civil" name="estado_civil" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    </div>
+
+                    <!-- E-mail-->
+                    <div class="mb-5">
+                        <label for="email-representante" class="block mt-2 mb-2 text-sm font-medium text-white">E-Mail:</label>
+                        <input type="text" id="email-representante" name="email_representante" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    </div>
+
+                    <!-- Dirección-->
+                    <div class="mb-5">
+                        <label for="direccion-particular" class="block mt-2 mb-2 text-sm font-medium text-white">Dirección Particular:</label>
+                        <input type="text" id="direccion-particular" name="direccion_particular" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    </div>
+                </div>
+
+                <div class="max-w-md w-full mx-auto my-10 mb-10 bg-gray-700 p-5 rounded-lg shadow-md">
+                    <h3 class="text-lg font-semibold text-white mb-4">Personas Autorizadas para dar Órdenes</h3>
+                        
+                    <div id="autorizados-container">
+                        <!-- Aquí se añadirán dinámicamente los campos -->
+                    </div>
+
+                    <!-- Botón Agregar Persona Autorizada -->
+                    <button type="button" id="add-autorizado" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Agregar Persona Autorizada</button>
+
+                </div>
+
+                <div class="max-w-md w-full mx-auto my-10 mb-10 bg-gray-700 p-5 rounded-lg shadow-md">
+                    <h3 class="text-lg font-semibold text-white mb-4">Otros</h3>
+
+                    <!-- Tipo de Órdenes a Recibir -->
+                    <div class="mb-5">
+                        <label class="block mt-2 mb-2 text-sm font-medium text-white">Tipo de Órdenes a Recibir:</label>
+                        <div class="flex gap-4">
+                            <label class="flex items-center">
+                                <input type="radio" name="tipo_ordenes" value="verbales_sin_confirmacion" class="form-radio text-blue-600" required>
+                                <span class="ml-2 text-gray-100">Órdenes verbales sin confirmación por escrito o electrónico</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="tipo_ordenes" value="verbales_con_confirmacion" class="form-radio text-blue-600">
+                                <span class="ml-2 text-gray-100">Órdenes verbales con confirmación por escrito o electrónico</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="tipo_ordenes" value="escritas" class="form-radio text-blue-600">
+                                <span class="ml-2 text-gray-100">Órdenes escritas</span>
+                            </label>
                         </div>
                     </div>
 
-                    <div class="max-w-md w-full mx-auto my-10 mb-10 bg-gray-700 p-5 rounded-lg shadow-md">
-                        <h3 class="text-lg font-semibold text-white mb-4">Personas Autorizadas para dar Órdenes</h3>
-                            
-                        <div id="autorizados-container">
-                            <!-- Aquí se añadirán dinámicamente los campos -->
-                        </div>
-
-                        <!-- Botón Agregar Persona Autorizada -->
-                        <button type="button" id="add-autorizado" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Agregar Persona Autorizada</button>
-
-                    </div>
-
-                    <div class="max-w-md w-full mx-auto my-10 mb-10 bg-gray-700 p-5 rounded-lg shadow-md">
-                        <h3 class="text-lg font-semibold text-white mb-4">Otros</h3>
-
-                        <!-- Tipo de Órdenes a Recibir -->
-                        <div class="mb-5">
-                            <label class="block mt-2 mb-2 text-sm font-medium text-white">Tipo de Órdenes a Recibir:</label>
-                            <div class="flex gap-4">
-                                <label class="flex items-center">
-                                    <input type="radio" name="tipo_ordenes" value="verbales_sin_confirmacion" class="form-radio text-blue-600" required>
-                                    <span class="ml-2 text-gray-100">Órdenes verbales sin confirmación por escrito o electrónico</span>
-                                </label>
-                                <label class="flex items-center">
-                                    <input type="radio" name="tipo_ordenes" value="verbales_con_confirmacion" class="form-radio text-blue-600">
-                                    <span class="ml-2 text-gray-100">Órdenes verbales con confirmación por escrito o electrónico</span>
-                                </label>
-                                <label class="flex items-center">
-                                    <input type="radio" name="tipo_ordenes" value="escritas" class="form-radio text-blue-600">
-                                    <span class="ml-2 text-gray-100">Órdenes escritas</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Uso Interno -->
-                        <div class="mb-5">
-                            <label class="block mt-2 mb-2 text-sm font-medium text-white">Uso Interno:</label>
-                            <div class="flex gap-4">
-                                <label class="flex items-center">
-                                    <input type="radio" name="uso_interno" value="listas_control" class="form-radio text-blue-600" required>
-                                    <span class="ml-2 text-gray-100">Verificación en listas de control</span>
-                                </label>
-                                <label class="flex items-center">
-                                    <input type="radio" name="uso_interno" value="situacion_tributaria" class="form-radio text-blue-600">
-                                    <span class="ml-2 text-gray-100">Situación tributaria SII</span>
-                                </label>
-                                <label class="flex items-center">
-                                    <input type="radio" name="uso_interno" value="licitud_bienes" class="form-radio text-blue-600">
-                                    <span class="ml-2 text-gray-100">Licitud de Bienes</span>
-                                </label>
-                                <label class="flex items-center">
-                                    <input type="radio" name="uso_interno" value="otros" class="form-radio text-blue-600">
-                                    <span class="ml-2 text-gray-100">Otros antecedentes</span>
-                                    <input type="text" name="otros_antecedentes" placeholder="Indicar detalles" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                                </label>
-                            </div>
+                    <!-- Uso Interno -->
+                    <div class="mb-5">
+                        <label class="block mt-2 mb-2 text-sm font-medium text-white">Uso Interno:</label>
+                        <div class="flex gap-4">
+                            <label class="flex items-center">
+                                <input type="radio" name="uso_interno" value="listas_control" class="form-radio text-blue-600" required>
+                                <span class="ml-2 text-gray-100">Verificación en listas de control</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="uso_interno" value="situacion_tributaria" class="form-radio text-blue-600">
+                                <span class="ml-2 text-gray-100">Situación tributaria SII</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="uso_interno" value="licitud_bienes" class="form-radio text-blue-600">
+                                <span class="ml-2 text-gray-100">Licitud de Bienes</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="uso_interno" value="otros" class="form-radio text-blue-600">
+                                <span class="ml-2 text-gray-100">Otros antecedentes</span>
+                                <input type="text" name="otros_antecedentes" placeholder="Indicar detalles" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                            </label>
                         </div>
                     </div>
                 </div>
