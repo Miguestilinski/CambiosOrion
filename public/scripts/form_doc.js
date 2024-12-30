@@ -7,7 +7,6 @@ const formularioData = [
         title: "FICHA CLIENTE PERSONA JURÍDICA",
         fields: [
             { label: "Fecha (Día, Mes, Año)", type: "date", name: "fecha" },
-            { label: "Empresa Nacional o Empresa Extranjera", type: "text", name: "empresa_tipo" },
             { label: "RUT/Tax ID", type: "text", name: "rut_tax_id" },
             { label: "Rubro Empresa", type: "text", name: "rubro_empresa" },
             { label: "Razón Social", type: "text", name: "razon_social" },
