@@ -10,7 +10,7 @@ const formularioData = [
             { label: "RUT/Tax ID", type: "text", name: "rut_tax_id" },
             { label: "Rubro Empresa", type: "text", name: "rubro_empresa" },
             { label: "Razón Social", type: "text", name: "razon_social" },
-            { label: "Nombre Fantasía", type: "text", name: "nombre_fantasia" },
+            { label: "Nombre Empresa", type: "text", name: "nombre_empresa" },
             { label: "Tipo Sociedad", type: "text", name: "tipo_sociedad" },
             { label: "Dirección", type: "text", name: "direccion" },
             { label: "Ciudad", type: "text", name: "ciudad" },
