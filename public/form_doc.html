@@ -106,13 +106,13 @@
             <form id="dynamic-form" action="/submit_form" method="post">
     
                 <!-- Campo Fecha -->
-                <div class="mb-5">
+                <div class="date mb-5 max-w-xs">
                     <label for="fecha" class="block mt-2 mb-2 text-sm font-medium text-white">Fecha:</label>
                     <input type="date" id="fecha" name="fecha" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
                 </div>
 
                 <div class="mt-6 mb-6">
-                    <h2 class="text-xl font-semibold text-white mb-4">Ficha Cliente Persona Jurídica</h2>
+                    <h2 class="text-xl text-center font-semibold text-white mb-4">Ficha Cliente Persona Jurídica</h2>
 
                     <!-- Contenedor de Datos de la Empresa -->
                     <div class="max-w-lg w-full mx-auto my-10 mb-10 bg-gray-700 p-5 rounded-lg shadow-md">
@@ -253,7 +253,7 @@
                         <div class="mb-5">
                             <label class="block mt-2 mb-2 text-sm font-medium text-white">Tipo de Órdenes a Recibir:</label>
                             <div class="flex gap-4">
-                                <label class="flex items-center">
+                                <label class="flex items-center flex-col">
                                     <input type="radio" name="tipo_ordenes" value="verbales_sin_confirmacion" class="form-radio text-blue-600" required>
                                     <span class="ml-2 text-gray-100">Órdenes verbales sin confirmación por escrito o electrónico</span>
                                 </label>
@@ -272,7 +272,7 @@
                         <div class="mb-5">
                             <label class="block mt-2 mb-2 text-sm font-medium text-white">Uso Interno:</label>
                             <div class="flex gap-4">
-                                <label class="flex items-center">
+                                <label class="flex items-center flex-col">
                                     <input type="radio" name="uso_interno" value="listas_control" class="form-radio text-blue-600" required>
                                     <span class="ml-2 text-gray-100">Verificación en listas de control</span>
                                 </label>

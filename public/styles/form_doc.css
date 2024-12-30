@@ -44,6 +44,11 @@ label {
 h3 {
     color: white;
 }
+
+.date {
+    justify-self: right;
+    margin-right: 6rem;
+}
       
 /* Estilos básicos */
 .signature-pad-container {
