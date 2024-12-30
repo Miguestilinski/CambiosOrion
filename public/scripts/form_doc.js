@@ -1,153 +1,87 @@
-// Lógica para cargar el formulario dinámicamente
-const formContent = document.getElementById("form-content");
+document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("dynamic-form");
+    const autorizadosContainer = document.getElementById("autorizados-container");
+    const addAutorizadoButton = document.getElementById("add-autorizado");
 
-// Datos del formulario según las páginas
-const formularioData = [
-    {
-        title: "DATOS EMPRESA",
-        fields: [
-            { label: "Fecha (Día, Mes, Año)", type: "date", name: "fecha" },
-            { label: "RUT/Tax ID", type: "text", name: "rut_tax_id" },
-            { label: "Rubro Empresa", type: "text", name: "rubro_empresa" },
-            { label: "Razón Social", type: "text", name: "razon_social" },
-            { label: "Nombre Empresa", type: "text", name: "nombre_empresa" },
-            { label: "Tipo Sociedad", type: "text", name: "tipo_sociedad" },
-            { label: "Dirección", type: "text", name: "direccion" },
-            { label: "Ciudad", type: "text", name: "ciudad" },
-            { label: "País", type: "text", name: "pais" },
-            { label: "E-Mail", type: "email", name: "email" },
-            { label: "Teléfono", type: "tel", name: "telefono" }
-        ]
-    },
-    {
-        title: "DATOS REPRESENTANTE LEGAL Y/O GERENTE GENERAL",
-        fields: [
-            { label: "Nombre", type: "text", name: "rep_nombre" },
-            { label: "Nº Doc. Identidad", type: "text", name: "rep_doc_identidad" },
-            { label: "Nacionalidad", type: "text", name: "rep_nacionalidad" },
-            { label: "Estado Civil", type: "text", name: "rep_estado_civil" },
-            { label: "E-Mail", type: "email", name: "rep_email" },
-            { label: "Dirección Particular", type: "text", name: "rep_direccion" }
-        ]
-    },
-    {
-        title: "PERSONAS AUTORIZADAS PARA DAR ÓRDENES",
-        fields: [
-            { label: "Nombre", type: "text", name: "aut_nombre[]" },
-            { label: "Nº Doc. Identidad", type: "text", name: "aut_doc_identidad[]" },
-            { label: "Cargo", type: "text", name: "aut_cargo[]" },
-            { label: "E-Mail", type: "email", name: "aut_email[]" }
-        ],
-        multiple: true
-    },
-    {
-        title: "DECLARACIÓN DE ORIGEN DE FONDOS",
-        fields: [
-            { label: "Actividad o Profesión", type: "text", name: "actividad" },
-            { label: "Origen de los Fondos", type: "text", name: "origen_fondos" },
-            { label: "Destino de los Fondos", type: "text", name: "destino_fondos" }
-        ],
-        multiple: true
-    },
-    // Continúa con otras páginas como "DECLARACIÓN DE VÍNCULO CON PERSONAS EXPUESTAS POLÍTICAMENTE (PEP)", etc.
-];
+    // Array para almacenar los datos del formulario
+    let formularioData = [];
 
-// Función para generar los campos dinámicos
-function renderForm() {
-    formularioData.forEach(section => {
-        const sectionDiv = document.createElement('div');
-        sectionDiv.classList.add('form-section');
+    // Función para agregar un nuevo campo de persona autorizada
+    const agregarPersonaAutorizada = () => {
+        const autorizadoDiv = document.createElement("div");
+        autorizadoDiv.classList.add("mb-6", "autorizado-item");
 
-        const sectionTitle = document.createElement('h2');
-        sectionTitle.textContent = section.title;
-        sectionDiv.appendChild(sectionTitle);
+        autorizadoDiv.innerHTML = `
+            <div class="mb-6">
+                <label class="block mt-2 mb-2 text-sm font-medium text-white">Nombre:</label>
+                <input type="text" name="autorizado_nombre[]" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+            </div>
+            <div class="mb-6">
+                <label class="block mt-2 mb-2 text-sm font-medium text-white">Teléfono:</label>
+                <input type="tel" name="autorizado_telefono[]" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+            </div>
+            <div class="mb-6">
+                <label class="block mt-2 mb-2 text-sm font-medium text-white">Email:</label>
+                <input type="email" name="autorizado_email[]" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+            </div>
+            <button type="button" class="remove-autorizado text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2">Eliminar</button>
+        `;
 
-        section.fields.forEach(field => {
-            const fieldDiv = document.createElement('div');
-            fieldDiv.classList.add('form-group');
+        autorizadosContainer.appendChild(autorizadoDiv);
 
-            const label = document.createElement('label');
-            label.textContent = field.label;
-            label.htmlFor = field.name;
+        // Agregar funcionalidad para eliminar el campo
+        autorizadoDiv.querySelector(".remove-autorizado").addEventListener("click", () => {
+            autorizadoDiv.remove();
+        });
+    };
 
-            const input = document.createElement('input');
-            input.type = field.type;
-            input.name = field.name;
-            input.id = field.name;
-            input.classList.add('form-control');
+    // Evento para agregar persona autorizada
+    addAutorizadoButton.addEventListener("click", agregarPersonaAutorizada);
 
-            fieldDiv.appendChild(label);
-            fieldDiv.appendChild(input);
-            sectionDiv.appendChild(fieldDiv);
+    // Evento para manejar el envío del formulario
+    form.addEventListener("submit", (event) => {
+        event.preventDefault(); // Evitar envío normal del formulario
+
+        // Recopilar todos los datos del formulario
+        const formData = new FormData(form);
+
+        formularioData = [];
+        formData.forEach((value, key) => {
+            formularioData.push({ [key]: value });
         });
 
-        if (section.multiple) {
-            const addButton = document.createElement('button');
-            addButton.type = "button";
-            addButton.textContent = "Añadir más";
-            addButton.classList.add('btn', 'btn-secondary', 'add-more');
-            addButton.addEventListener('click', () => addMoreFields(section.fields, sectionDiv, addButton));
+        console.log("Datos recopilados:", formularioData);
 
-            sectionDiv.appendChild(addButton);
-        }
+        // Lógica para la firma en celular
+        const signaturePadContainer = document.getElementById("signature-pad-container");
+        const startSignatureButton = document.getElementById("start-signature");
 
-        formContent.appendChild(sectionDiv);
+        startSignatureButton.addEventListener('click', function() {
+            if (window.innerWidth <= 768) {
+                signaturePadContainer.style.display = "block";
+                signaturePadContainer.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+
+        // Enviar formulario (simulación de flujo)
+        const dynamicForm = document.getElementById('dynamic-form');
+        dynamicForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Verificar si la firma fue realizada
+            const signaturePad = document.getElementById("signature-pad");
+            if (!signaturePad || signaturePad.value === "") {
+                alert("Por favor, firme el formulario.");
+                return;
+            }
+
+            alert("Formulario enviado correctamente. Validando firma electrónica.");
+            // Aquí puedes integrar la lógica para manejar los datos del formulario
+        });
+
+        // fetch("/submit_form", { method: "POST", body: JSON.stringify(formularioData) });
+
+        alert("Formulario enviado exitosamente.");
     });
-}
-
-// Función para añadir más campos dinámicamente
-function addMoreFields(fields, container, addButton) {
-    const newFieldsDiv = document.createElement('div');
-    newFieldsDiv.classList.add('form-group-multiple');
-
-    fields.forEach(field => {
-        const fieldDiv = document.createElement('div');
-        fieldDiv.classList.add('form-group');
-
-        const label = document.createElement('label');
-        label.textContent = field.label;
-        label.htmlFor = field.name;
-
-        const input = document.createElement('input');
-        input.type = field.type;
-        input.name = field.name;
-        input.id = `${field.name}-${Date.now()}`;
-        input.classList.add('form-control');
-
-        fieldDiv.appendChild(label);
-        fieldDiv.appendChild(input);
-        newFieldsDiv.appendChild(fieldDiv);
-    });
-
-    container.insertBefore(newFieldsDiv, addButton);
-}
-
-// Renderizar el formulario al cargar la página
-renderForm();
-
-// Lógica para la firma en celular
-const signaturePadContainer = document.getElementById("signature-pad-container");
-const startSignatureButton = document.getElementById("start-signature");
-
-startSignatureButton.addEventListener('click', function() {
-    if (window.innerWidth <= 768) {
-        signaturePadContainer.style.display = "block";
-        signaturePadContainer.scrollIntoView({ behavior: 'smooth' });
-    }
 });
 
-// Enviar formulario (simulación de flujo)
-const dynamicForm = document.getElementById('dynamic-form');
-dynamicForm.addEventListener('submit', function(event) {
-    event.preventDefault();
-
-    // Verificar si la firma fue realizada
-    const signaturePad = document.getElementById("signature-pad");
-    if (!signaturePad || signaturePad.value === "") {
-        alert("Por favor, firme el formulario.");
-        return;
-    }
-
-    alert("Formulario enviado correctamente. Validando firma electrónica.");
-    // Aquí puedes integrar la lógica para manejar los datos del formulario
-});
