@@ -56,7 +56,7 @@ h3 {
 
 @media (max-width: 887px) {
     .main-content {
-        max-width: 25rem;
+        max-width: 20rem;
         align-self: center;
     }
 }
