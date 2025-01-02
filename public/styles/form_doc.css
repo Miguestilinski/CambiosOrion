@@ -53,3 +53,9 @@ h3 {
 .signature-pad-container {
     display: none; /* Ocultar inicialmente */
 }
+
+@media (max-width: 887px) {
+    .main-content {
+        max-width: 30rem;
+    }
+}
