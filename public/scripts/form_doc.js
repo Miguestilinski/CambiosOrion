@@ -3,11 +3,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const autorizadosContainer = document.getElementById("autorizados-container");
     const addAutorizadoButton = document.getElementById("add-autorizado");
 
-    if (!autorizadosContainer || !addAutorizadoButton) {
-        console.error("Elementos no encontrados en el DOM.");
-        return;
-    }
-
     // Array para almacenar los datos del formulario
     let formularioData = [];
 
@@ -31,7 +26,6 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
             <button type="button" class="remove-autorizado text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2">Eliminar</button>
         `;
-
 
         autorizadosContainer.appendChild(autorizadoDiv);
 
