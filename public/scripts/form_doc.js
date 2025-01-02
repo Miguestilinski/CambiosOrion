@@ -43,26 +43,25 @@ document.addEventListener("DOMContentLoaded", () => {
     if (fechaInput) {
         const today = new Date();
 
-        // Formatear la fecha como dd/mm/aaaa
+        // Formatear la fecha como yyyy-MM-dd para el campo
+        const isoDate = [
+            today.getFullYear(),
+            String(today.getMonth() + 1).padStart(2, '0'),
+            String(today.getDate()).padStart(2, '0')
+        ].join('-');
+
+        // Establecer el valor ISO en el campo de fecha
+        fechaInput.value = isoDate;
+
+        // Opcional: Mostrar el formato dd/mm/yyyy en un elemento de texto si lo necesitas
         const formattedDate = [
             String(today.getDate()).padStart(2, '0'),
             String(today.getMonth() + 1).padStart(2, '0'),
             today.getFullYear()
         ].join('/');
 
-        // Establecer el valor en el campo de fecha
-        fechaInput.value = formattedDate;
-
-        // Opcional: si quieres evitar que el formato se sobrescriba al enviar el formulario
-        fechaInput.addEventListener("change", (event) => {
-            const selectedDate = new Date(event.target.value);
-            const formattedSelectedDate = [
-                String(selectedDate.getDate()).padStart(2, '0'),
-                String(selectedDate.getMonth() + 1).padStart(2, '0'),
-                selectedDate.getFullYear()
-            ].join('/');
-            fechaInput.value = formattedSelectedDate;
-        });
+        console.log(`Fecha asignada al campo: ${isoDate}`);
+        console.log(`Fecha mostrada como: ${formattedDate}`);
     } else {
         console.error("No se encontró el campo con ID 'fecha'");
     }
