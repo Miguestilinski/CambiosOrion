@@ -1,3 +1,5 @@
+import { Country, State, City } from "country-state-city";
+
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("dynamic-form");
     const autorizadosContainer = document.getElementById("autorizados-container");
@@ -109,85 +111,84 @@ document.addEventListener("DOMContentLoaded", () => {
 
         alert("Formulario enviado exitosamente.");
     });
+
+    // Referencias a elementos del DOM
+    const pais = document.getElementById("pais");
+    const region = document.getElementById("region");
+    const ciudad = document.getElementById("ciudad");
+
+    const paisParticular = document.getElementById("pais-particular");
+    const regionParticular = document.getElementById("region-particular");
+    const ciudadParticular = document.getElementById("ciudad-particular");
+    
+    // Helper function to populate a select dropdown
+    const populateSelect = (selectElement, items, placeholder) => {
+        selectElement.innerHTML = ""; // Clear previous options
+        const defaultOption = document.createElement("option");
+        defaultOption.value = "";
+        defaultOption.textContent = placeholder;
+        defaultOption.disabled = true;
+        defaultOption.selected = true;
+        selectElement.appendChild(defaultOption);
+
+        items.forEach(item => {
+            const option = document.createElement("option");
+            option.value = item.isoCode || item.name; // Use isoCode or name as value
+            option.textContent = item.name;
+            selectElement.appendChild(option);
+        });
+    };
+
+    // Load countries for both sections
+    const loadCountries = () => {
+        const countries = Country.getAllCountries();
+        populateSelect(pais, countries, "Selecciona un país");
+        populateSelect(paisParticular, countries, "Selecciona un país");
+    };
+
+    // Load regions based on selected country
+    const loadRegions = (countryCode, targetRegionSelect) => {
+        const states = State.getStatesOfCountry(countryCode);
+        populateSelect(targetRegionSelect, states, "Selecciona una región");
+        targetRegionSelect.disabled = states.length === 0;
+    };
+
+    // Load cities based on selected region
+    const loadCities = (countryCode, stateCode, targetCitySelect) => {
+        const cities = City.getCitiesOfState(countryCode, stateCode);
+        populateSelect(targetCitySelect, cities, "Selecciona una ciudad");
+        targetCitySelect.disabled = cities.length === 0;
+    };
+
+    // Event listeners for 'pais' and 'pais-particular'
+    pais.addEventListener("change", () => {
+        const selectedCountry = pais.value;
+        loadRegions(selectedCountry, region);
+        ciudad.disabled = true; // Disable city until region is selected
+        ciudad.innerHTML = "<option disabled selected>Selecciona una ciudad</option>";
+    });
+
+    paisParticular.addEventListener("change", () => {
+        const selectedCountry = paisParticular.value;
+        loadRegions(selectedCountry, regionParticular);
+        ciudadParticular.disabled = true; // Disable city until region is selected
+        ciudadParticular.innerHTML = "<option disabled selected>Selecciona una ciudad</option>";
+    });
+
+    // Event listeners for 'region' and 'region-particular'
+    region.addEventListener("change", () => {
+        const selectedRegion = region.value;
+        const selectedCountry = pais.value;
+        loadCities(selectedCountry, selectedRegion, ciudad);
+    });
+
+    regionParticular.addEventListener("change", () => {
+        const selectedRegion = regionParticular.value;
+        const selectedCountry = paisParticular.value;
+        loadCities(selectedCountry, selectedRegion, ciudadParticular);
+    });
+
+    // Initialize the form with countries
+    loadCountries();
 });
 
-
-document.addEventListener('DOMContentLoaded', function () {
-    // Datos de regiones y ciudades por país
-    const regionesPorPais = {
-        'Chile': [
-            { nombre: 'Región Metropolitana', ciudades: ['Santiago', 'Maipú', 'Las Condes'] },
-            { nombre: 'Valparaíso', ciudades: ['Valparaíso', 'Viña del Mar'] },
-        ],
-    };
-
-    // Cargar las regiones según el país seleccionado
-    window.cargarRegiones = function () {
-        const pais = document.getElementById('pais-particular').value;
-        const regionSelect = document.getElementById('region-particular');
-        const ciudadSelect = document.getElementById('ciudad-particular');
-
-        // Limpiar las opciones de región y ciudad
-        regionSelect.innerHTML = '<option value="" disabled selected>Selecciona una región</option>';
-        ciudadSelect.innerHTML = '<option value="" disabled selected>Selecciona una ciudad</option>';
-
-        if (pais) {
-            // Habilitar la lista de regiones
-            regionSelect.disabled = false;
-
-            // Agregar las regiones del país seleccionado
-            const regiones = regionesPorPais[pais] || [];
-            regiones.forEach(region => {
-                const option = document.createElement('option');
-                option.value = region.nombre;
-                option.textContent = region.nombre;
-                regionSelect.appendChild(option);
-            });
-
-            // Si Chile es el país seleccionado, seleccionar Región Metropolitana por defecto
-            if (pais === 'Chile') {
-                regionSelect.value = 'Región Metropolitana';
-                cargarCiudades(); // Llamar para cargar las ciudades de la Región Metropolitana
-            }
-        } else {
-            regionSelect.disabled = true;
-            ciudadSelect.disabled = true;
-        }
-    };
-
-    // Cargar las ciudades según la región seleccionada
-    window.cargarCiudades = function () {
-        const pais = document.getElementById('pais-particular').value;
-        const region = document.getElementById('region-particular').value;
-        const ciudadSelect = document.getElementById('ciudad-particular');
-
-        // Limpiar las opciones de ciudad
-        ciudadSelect.innerHTML = '<option value="" disabled selected>Selecciona una ciudad</option>';
-
-        if (pais && region) {
-            // Habilitar la lista de ciudades
-            ciudadSelect.disabled = false;
-
-            // Buscar la región seleccionada y cargar sus ciudades
-            const regiones = regionesPorPais[pais] || [];
-            const regionSeleccionada = regiones.find(r => r.nombre === region);
-            const ciudades = regionSeleccionada ? regionSeleccionada.ciudades : [];
-
-            // Agregar las ciudades a la lista
-            ciudades.forEach(ciudad => {
-                const option = document.createElement('option');
-                option.value = ciudad;
-                option.textContent = ciudad;
-                ciudadSelect.appendChild(option);
-            });
-
-            // Si la región es Región Metropolitana, seleccionar Santiago por defecto
-            if (region === 'Región Metropolitana') {
-                ciudadSelect.value = 'Santiago';
-            }
-        } else {
-            ciudadSelect.disabled = true;
-        }
-    };
-
-});

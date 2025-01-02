@@ -15,6 +15,7 @@
     "axios": "^1.7.9",
     "circle-flags": "github:HatScripts/circle-flags",
     "cors": "^2.8.5",
+    "country-state-city": "^3.2.1",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "express-session": "^1.18.1",
