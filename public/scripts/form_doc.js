@@ -40,7 +40,10 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     };
 
-    addAutorizadoButton.addEventListener("click", agregarPersonaAutorizada);
+    addAutorizadoButton.addEventListener("click", () => {
+        console.log("El botón 'Agregar Persona Autorizada' fue presionado");
+        agregarPersonaAutorizada();
+    });    
 
     // Evento para manejar el envío del formulario
     form.addEventListener("submit", (event) => {
