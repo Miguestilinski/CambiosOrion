@@ -64,6 +64,85 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("No se encontró el campo con ID 'fecha'");
     }
 
+    // Datos de regiones y ciudades por país
+    const regionesPorPais = {
+        'Chile': [
+            { nombre: 'Región Metropolitana', ciudades: ['Santiago', 'Maipú', 'Las Condes'] },
+            { nombre: 'Valparaíso', ciudades: ['Valparaíso', 'Viña del Mar'] },
+            // Agrega más regiones de Chile según sea necesario
+        ],
+        // Agrega más países y sus regiones y ciudades
+    };
+
+    // Cargar las regiones según el país seleccionado
+    function cargarRegiones() {
+        const pais = document.getElementById('pais-particular').value;
+        const regionSelect = document.getElementById('region-particular');
+        const ciudadSelect = document.getElementById('ciudad-particular');
+
+        // Limpiar las opciones de región y ciudad
+        regionSelect.innerHTML = '<option value="" disabled selected>Selecciona una región</option>';
+        ciudadSelect.innerHTML = '<option value="" disabled selected>Selecciona una ciudad</option>';
+
+        if (pais) {
+            // Habilitar la lista de regiones
+            regionSelect.disabled = false;
+
+            // Agregar las regiones del país seleccionado
+            const regiones = regionesPorPais[pais] || [];
+            regiones.forEach(region => {
+                const option = document.createElement('option');
+                option.value = region.nombre;
+                option.textContent = region.nombre;
+                regionSelect.appendChild(option);
+            });
+
+            // Si Chile es el país seleccionado, seleccionar Región Metropolitana por defecto
+            if (pais === 'Chile') {
+                regionSelect.value = 'Región Metropolitana';
+                cargarCiudades(); // Llamar para cargar las ciudades de la Región Metropolitana
+            }
+        } else {
+            regionSelect.disabled = true;
+            ciudadSelect.disabled = true;
+        }
+    }
+
+    // Cargar las ciudades según la región seleccionada
+    function cargarCiudades() {
+        const pais = document.getElementById('pais-particular').value;
+        const region = document.getElementById('region-particular').value;
+        const ciudadSelect = document.getElementById('ciudad-particular');
+
+        // Limpiar las opciones de ciudad
+        ciudadSelect.innerHTML = '<option value="" disabled selected>Selecciona una ciudad</option>';
+
+        if (pais && region) {
+            // Habilitar la lista de ciudades
+            ciudadSelect.disabled = false;
+
+            // Buscar la región seleccionada y cargar sus ciudades
+            const regiones = regionesPorPais[pais] || [];
+            const regionSeleccionada = regiones.find(r => r.nombre === region);
+            const ciudades = regionSeleccionada ? regionSeleccionada.ciudades : [];
+
+            // Agregar las ciudades a la lista
+            ciudades.forEach(ciudad => {
+                const option = document.createElement('option');
+                option.value = ciudad;
+                option.textContent = ciudad;
+                ciudadSelect.appendChild(option);
+            });
+
+            // Si la región es Región Metropolitana, seleccionar Santiago por defecto
+            if (region === 'Región Metropolitana') {
+                ciudadSelect.value = 'Santiago';
+            }
+        } else {
+            ciudadSelect.disabled = true;
+        }
+    }
+
     // Evento para manejar el envío del formulario
     form.addEventListener("submit", (event) => {
         event.preventDefault(); // Evitar envío normal del formulario
