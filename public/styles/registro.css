@@ -82,7 +82,9 @@ h2 {
 }
 
 input[type="text"],
-input[type="password"] {
+input[type="password"],
+input[type="email"],
+select[name="tipo_cliente"]{
     width: 100%;
     padding: 12px;
     margin: 10px 0;
