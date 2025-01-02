@@ -35,9 +35,37 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     addAutorizadoButton.addEventListener("click", () => {
-        console.log("El botón 'Agregar Persona Autorizada' fue presionado");
         agregarPersonaAutorizada();
-    });    
+    }); 
+
+    const fechaInput = document.getElementById("fecha");
+
+    if (fechaInput) {
+        const today = new Date();
+
+        // Formatear la fecha como dd/mm/aaaa
+        const formattedDate = [
+            String(today.getDate()).padStart(2, '0'),
+            String(today.getMonth() + 1).padStart(2, '0'),
+            today.getFullYear()
+        ].join('/');
+
+        // Establecer el valor en el campo de fecha
+        fechaInput.value = formattedDate;
+
+        // Opcional: si quieres evitar que el formato se sobrescriba al enviar el formulario
+        fechaInput.addEventListener("change", (event) => {
+            const selectedDate = new Date(event.target.value);
+            const formattedSelectedDate = [
+                String(selectedDate.getDate()).padStart(2, '0'),
+                String(selectedDate.getMonth() + 1).padStart(2, '0'),
+                selectedDate.getFullYear()
+            ].join('/');
+            fechaInput.value = formattedSelectedDate;
+        });
+    } else {
+        console.error("No se encontró el campo con ID 'fecha'");
+    }
 
     // Evento para manejar el envío del formulario
     form.addEventListener("submit", (event) => {
