@@ -60,8 +60,6 @@ document.addEventListener("DOMContentLoaded", () => {
             today.getFullYear()
         ].join('/');
 
-        console.log(`Fecha asignada al campo: ${isoDate}`);
-        console.log(`Fecha mostrada como: ${formattedDate}`);
     } else {
         console.error("No se encontró el campo con ID 'fecha'");
     }
@@ -85,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const startSignatureButton = document.getElementById("start-signature");
 
         startSignatureButton.addEventListener('click', function() {
-            if (window.innerWidth <= 768) {
+            if (window.innerWidth <= 887) {
                 signaturePadContainer.style.display = "block";
                 signaturePadContainer.scrollIntoView({ behavior: 'smooth' });
             }

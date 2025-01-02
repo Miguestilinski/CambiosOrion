@@ -134,9 +134,9 @@
                             </div>
                         </div>
         
-                        <!-- Campo RUT/Tax ID -->
+                        <!-- Campo RUT -->
                         <div class="mb-6">
-                            <label for="rut" class="block mt-2 mb-2 text-sm font-medium text-white">RUT/Tax ID:</label>
+                            <label for="rut" class="block mt-2 mb-2 text-sm font-medium text-white">RUT:</label>
                             <input type="text" id="rut" name="rut" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
                         </div>
         
@@ -161,7 +161,17 @@
                         <!-- Tipo Sociedad -->
                         <div class="mb-6">
                             <label for="tipo-sociedad" class="block mt-2 mb-2 text-sm font-medium text-white">Tipo Sociedad:</label>
-                            <input type="text" id="tipo-sociedad" name="tipo_sociedad" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                            <select id="tipo-sociedad" name="tipo_sociedad" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                                <option value="" disabled selected>Seleccione una opción</option>
+                                <option value="SA">Sociedad Anónima (SA)</option>
+                                <option value="LTDA">Sociedad de Responsabilidad Limitada (LTDA)</option>
+                                <option value="SpA">Sociedad por Acciones (SpA)</option>
+                                <option value="EIRL">Empresa Individual de Responsabilidad Limitada (EIRL)</option>
+                                <option value="Sociedad Colectiva">Sociedad Colectiva</option>
+                                <option value="Sociedad en Comandita">Sociedad en Comandita</option>
+                                <option value="SA Cerradas">Sociedad Anónimas Cerradas (SA)</option>
+                                <option value="SAGR">Sociedades Anónimas de Garantía Recíproca (SAGR)</option>
+                            </select>
                         </div>
 
                         <!-- Dirección-->
@@ -225,13 +235,25 @@
                         <!-- E-mail-->
                         <div class="mb-6">
                             <label for="email-representante" class="block mt-2 mb-2 text-sm font-medium text-white">E-Mail:</label>
-                            <input type="text" id="email-representante" name="email_representante" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                            <input type="email" id="email-representante" name="email_representante" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                         </div>
 
                         <!-- Dirección-->
                         <div class="mb-6">
                             <label for="direccion-particular" class="block mt-2 mb-2 text-sm font-medium text-white">Dirección Particular:</label>
                             <input type="text" id="direccion-particular" name="direccion_particular" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        </div>
+
+                        <!-- Ciudad-->
+                        <div class="mb-6">
+                            <label for="ciudad" class="block mt-2 mb-2 text-sm font-medium text-white">Ciudad:</label>
+                            <input type="text" id="ciudad-particular" name="ciudad-particular" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        </div>
+
+                        <!-- País-->
+                        <div class="mb-6">
+                            <label for="pais" class="block mt-2 mb-2 text-sm font-medium text-white">País:</label>
+                            <input type="text" id="pais-particular" name="pais-particular" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                         </div>
                     </div>
 
