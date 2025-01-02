@@ -118,13 +118,11 @@ document.addEventListener('DOMContentLoaded', function () {
         'Chile': [
             { nombre: 'Región Metropolitana', ciudades: ['Santiago', 'Maipú', 'Las Condes'] },
             { nombre: 'Valparaíso', ciudades: ['Valparaíso', 'Viña del Mar'] },
-            // Agrega más regiones de Chile según sea necesario
         ],
-        // Agrega más países y sus regiones y ciudades
     };
 
     // Cargar las regiones según el país seleccionado
-    function cargarRegiones() {
+    window.cargarRegiones = function () {
         const pais = document.getElementById('pais-particular').value;
         const regionSelect = document.getElementById('region-particular');
         const ciudadSelect = document.getElementById('ciudad-particular');
@@ -155,10 +153,10 @@ document.addEventListener('DOMContentLoaded', function () {
             regionSelect.disabled = true;
             ciudadSelect.disabled = true;
         }
-    }
+    };
 
     // Cargar las ciudades según la región seleccionada
-    function cargarCiudades() {
+    window.cargarCiudades = function () {
         const pais = document.getElementById('pais-particular').value;
         const region = document.getElementById('region-particular').value;
         const ciudadSelect = document.getElementById('ciudad-particular');
@@ -190,5 +188,6 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             ciudadSelect.disabled = true;
         }
-    }
+    };
+
 });
