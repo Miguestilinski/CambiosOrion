@@ -64,6 +64,55 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("No se encontró el campo con ID 'fecha'");
     }
 
+    // Evento para manejar el envío del formulario
+    form.addEventListener("submit", (event) => {
+        event.preventDefault(); // Evitar envío normal del formulario
+
+        // Recopilar todos los datos del formulario
+        const formData = new FormData(form);
+
+        formularioData = [];
+        formData.forEach((value, key) => {
+            formularioData.push({ [key]: value });
+        });
+
+        console.log("Datos recopilados:", formularioData);
+
+        // Lógica para la firma en celular
+        const signaturePadContainer = document.getElementById("signature-pad-container");
+        const startSignatureButton = document.getElementById("start-signature");
+
+        startSignatureButton.addEventListener('click', function() {
+            if (window.innerWidth <= 887) {
+                signaturePadContainer.style.display = "block";
+                signaturePadContainer.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+
+        // Enviar formulario (simulación de flujo)
+        const dynamicForm = document.getElementById('dynamic-form');
+        dynamicForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Verificar si la firma fue realizada
+            const signaturePad = document.getElementById("signature-pad");
+            if (!signaturePad || signaturePad.value === "") {
+                alert("Por favor, firme el formulario.");
+                return;
+            }
+
+            alert("Formulario enviado correctamente. Validando firma electrónica.");
+            // Aquí puedes integrar la lógica para manejar los datos del formulario
+        });
+
+        // fetch("/submit_form", { method: "POST", body: JSON.stringify(formularioData) });
+
+        alert("Formulario enviado exitosamente.");
+    });
+});
+
+
+document.addEventListener('DOMContentLoaded', function () {
     // Datos de regiones y ciudades por país
     const regionesPorPais = {
         'Chile': [
@@ -142,51 +191,4 @@ document.addEventListener("DOMContentLoaded", () => {
             ciudadSelect.disabled = true;
         }
     }
-
-    // Evento para manejar el envío del formulario
-    form.addEventListener("submit", (event) => {
-        event.preventDefault(); // Evitar envío normal del formulario
-
-        // Recopilar todos los datos del formulario
-        const formData = new FormData(form);
-
-        formularioData = [];
-        formData.forEach((value, key) => {
-            formularioData.push({ [key]: value });
-        });
-
-        console.log("Datos recopilados:", formularioData);
-
-        // Lógica para la firma en celular
-        const signaturePadContainer = document.getElementById("signature-pad-container");
-        const startSignatureButton = document.getElementById("start-signature");
-
-        startSignatureButton.addEventListener('click', function() {
-            if (window.innerWidth <= 887) {
-                signaturePadContainer.style.display = "block";
-                signaturePadContainer.scrollIntoView({ behavior: 'smooth' });
-            }
-        });
-
-        // Enviar formulario (simulación de flujo)
-        const dynamicForm = document.getElementById('dynamic-form');
-        dynamicForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            // Verificar si la firma fue realizada
-            const signaturePad = document.getElementById("signature-pad");
-            if (!signaturePad || signaturePad.value === "") {
-                alert("Por favor, firme el formulario.");
-                return;
-            }
-
-            alert("Formulario enviado correctamente. Validando firma electrónica.");
-            // Aquí puedes integrar la lógica para manejar los datos del formulario
-        });
-
-        // fetch("/submit_form", { method: "POST", body: JSON.stringify(formularioData) });
-
-        alert("Formulario enviado exitosamente.");
-    });
 });
-
