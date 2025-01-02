@@ -1,4 +1,4 @@
-import { Country, State, City } from "country-state-city";
+import { Country, State, City } from "/orionapp/mode-modules/country-state-city";
 
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("dynamic-form");
