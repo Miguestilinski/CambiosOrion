@@ -1,5 +1,5 @@
 // Tu API Key
-const API_KEY = "TU_API_KEY_AQUÍ";
+const API_KEY = "VGxiNkY4OTUzb3FPamxZWlNmb3Iwd3V5Z0NFdVVNd082NXJTdWR4OQ==";
 
 // Configuración de los headers para la solicitud
 const headers = new Headers();
