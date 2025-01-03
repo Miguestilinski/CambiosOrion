@@ -124,20 +124,26 @@
                             <label class="block mt-2 mb-2 text-sm font-medium text-white">Tipo de Empresa:</label>
                             <div class="flex gap-4">
                                 <label class="flex items-center">
-                                    <input type="radio" name="tipo_empresa" value="nacional" class="form-radio text-blue-600" required>
+                                    <input type="radio" name="tipo_empresa" value="nacional" class="form-radio text-blue-600" required onchange="toggleEmpresaTipo()">
                                     <span class="ml-2 text-gray-100">Empresa Nacional</span>
                                 </label>
                                 <label class="flex items-center">
-                                    <input type="radio" name="tipo_empresa" value="extranjera" class="form-radio text-blue-600">
+                                    <input type="radio" name="tipo_empresa" value="extranjera" class="form-radio text-blue-600" onchange="toggleEmpresaTipo()">
                                     <span class="ml-2 text-gray-100">Empresa Extranjera</span>
                                 </label>
                             </div>
                         </div>
-        
+
                         <!-- Campo RUT -->
-                        <div class="mb-6">
+                        <div class="mb-6" id="rut-container">
                             <label for="rut" class="block mt-2 mb-2 text-sm font-medium text-white">RUT:</label>
                             <input type="text" id="rut" name="rut" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                        </div>
+
+                        <!-- Campo Tax ID -->
+                        <div class="mb-6 hidden" id="tax-id-container">
+                            <label for="tax-id" class="block mt-2 mb-2 text-sm font-medium text-white">Tax ID:</label>
+                            <input type="text" id="tax-id" name="tax_id" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                         </div>
         
                         <!-- Rubro Empresa -->
