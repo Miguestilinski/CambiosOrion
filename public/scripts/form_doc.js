@@ -76,6 +76,44 @@ const resetCitySelect = (citySelectId) => {
     citySelect.disabled = true;
 };
 
+const toggleEmpresaTipo = () => {
+    const tipoEmpresa = document.querySelector('input[name="tipo_empresa"]:checked').value;
+    const rutContainer = document.getElementById("rut-container");
+    const taxIdContainer = document.getElementById("tax-id-container");
+    const rutInput = document.getElementById("rut");
+    const taxIdInput = document.getElementById("tax-id");
+
+    if (tipoEmpresa === "nacional") {
+        rutContainer.classList.remove("hidden");
+        taxIdContainer.classList.add("hidden");
+        rutInput.required = true;
+        taxIdInput.required = false;
+        rutInput.value = ""; // Limpia el campo al cambiar
+    } else if (tipoEmpresa === "extranjera") {
+        rutContainer.classList.add("hidden");
+        taxIdContainer.classList.remove("hidden");
+        rutInput.required = false;
+        taxIdInput.required = true;
+        taxIdInput.value = ""; // Limpia el campo al cambiar
+    }
+};
+
+// Formatear el RUT automáticamente
+document.getElementById("rut").addEventListener("input", (event) => {
+    const input = event.target;
+    input.value = formatRUT(input.value);
+});
+
+const formatRUT = (rut) => {
+    rut = rut.replace(/[^0-9kK]/g, ""); // Elimina caracteres no válidos
+    if (rut.length > 1) {
+        rut = rut.slice(0, -1).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.") + "-" + rut.slice(-1);
+    }
+    return rut.toUpperCase();
+};
+
+window.toggleEmpresaTipo = toggleEmpresaTipo;
+
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("dynamic-form");
     const autorizadosContainer = document.getElementById("autorizados-container");
@@ -141,42 +179,6 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
         console.error("No se encontró el campo con ID 'fecha'");
     }
-
-    const toggleEmpresaTipo = () => {
-        const tipoEmpresa = document.querySelector('input[name="tipo_empresa"]:checked').value;
-        const rutContainer = document.getElementById("rut-container");
-        const taxIdContainer = document.getElementById("tax-id-container");
-        const rutInput = document.getElementById("rut");
-        const taxIdInput = document.getElementById("tax-id");
-    
-        if (tipoEmpresa === "nacional") {
-            rutContainer.classList.remove("hidden");
-            taxIdContainer.classList.add("hidden");
-            rutInput.required = true;
-            taxIdInput.required = false;
-            rutInput.value = ""; // Limpia el campo al cambiar
-        } else if (tipoEmpresa === "extranjera") {
-            rutContainer.classList.add("hidden");
-            taxIdContainer.classList.remove("hidden");
-            rutInput.required = false;
-            taxIdInput.required = true;
-            taxIdInput.value = ""; // Limpia el campo al cambiar
-        }
-    };
-    
-    // Formatear el RUT automáticamente
-    document.getElementById("rut").addEventListener("input", (event) => {
-        const input = event.target;
-        input.value = formatRUT(input.value);
-    });
-    
-    const formatRUT = (rut) => {
-        rut = rut.replace(/[^0-9kK]/g, ""); // Elimina caracteres no válidos
-        if (rut.length > 1) {
-            rut = rut.slice(0, -1).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.") + "-" + rut.slice(-1);
-        }
-        return rut.toUpperCase();
-    };
 
     // Evento para manejar el envío del formulario
     form.addEventListener("submit", (event) => {
