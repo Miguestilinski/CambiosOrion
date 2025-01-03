@@ -1,4 +1,80 @@
-import { Country, State, City } from "/orionapp/node-modules/country-state-city";
+// Tu API Key
+const API_KEY = "TU_API_KEY_AQUÍ";
+
+// Configuración de los headers para la solicitud
+const headers = new Headers();
+headers.append("X-CSCAPI-KEY", API_KEY);
+
+const requestOptions = {
+    method: "GET",
+    headers: headers,
+    redirect: "follow",
+};
+
+// Función genérica para cargar países
+const cargarPaises = async (selectId) => {
+    try {
+        const response = await fetch("https://api.countrystatecity.in/v1/countries", requestOptions);
+        const countries = await response.json();
+        populateSelect(document.getElementById(selectId), countries, "Selecciona un país");
+    } catch (error) {
+        console.error("Error al cargar países:", error);
+    }
+};
+
+// Función genérica para cargar regiones
+const cargarRegiones = async (countryCode, regionSelectId, citySelectId) => {
+    try {
+        const response = await fetch(`https://api.countrystatecity.in/v1/countries/${countryCode}/states`, requestOptions);
+        const states = await response.json();
+        const regionSelect = document.getElementById(regionSelectId);
+        populateSelect(regionSelect, states, "Selecciona una región");
+        regionSelect.disabled = states.length === 0;
+
+        // Reiniciar la lista de ciudades
+        resetCitySelect(citySelectId);
+    } catch (error) {
+        console.error("Error al cargar regiones:", error);
+    }
+};
+
+// Función genérica para cargar ciudades
+const cargarCiudades = async (countryCode, stateCode, citySelectId) => {
+    try {
+        const response = await fetch(`https://api.countrystatecity.in/v1/countries/${countryCode}/states/${stateCode}/cities`, requestOptions);
+        const cities = await response.json();
+        const citySelect = document.getElementById(citySelectId);
+        populateSelect(citySelect, cities, "Selecciona una ciudad");
+        citySelect.disabled = cities.length === 0;
+    } catch (error) {
+        console.error("Error al cargar ciudades:", error);
+    }
+};
+
+// Helper para llenar un select
+const populateSelect = (selectElement, items, placeholder) => {
+    selectElement.innerHTML = "";
+    const defaultOption = document.createElement("option");
+    defaultOption.value = "";
+    defaultOption.textContent = placeholder;
+    defaultOption.disabled = true;
+    defaultOption.selected = true;
+    selectElement.appendChild(defaultOption);
+
+    items.forEach((item) => {
+        const option = document.createElement("option");
+        option.value = item.iso2 || item.name;
+        option.textContent = item.name;
+        selectElement.appendChild(option);
+    });
+};
+
+// Helper para reiniciar un select de ciudades
+const resetCitySelect = (citySelectId) => {
+    const citySelect = document.getElementById(citySelectId);
+    citySelect.innerHTML = "<option value='' disabled selected>Selecciona una ciudad</option>";
+    citySelect.disabled = true;
+};
 
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("dynamic-form");
@@ -112,83 +188,33 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("Formulario enviado exitosamente.");
     });
 
-    // Referencias a elementos del DOM
-    const pais = document.getElementById("pais");
-    const region = document.getElementById("region");
-    const ciudad = document.getElementById("ciudad");
+    // Cargar países para ambos conjuntos
+    cargarPaises("pais");
+    cargarPaises("pais-particular");
 
-    const paisParticular = document.getElementById("pais-particular");
-    const regionParticular = document.getElementById("region-particular");
-    const ciudadParticular = document.getElementById("ciudad-particular");
-    
-    // Helper function to populate a select dropdown
-    const populateSelect = (selectElement, items, placeholder) => {
-        selectElement.innerHTML = ""; // Clear previous options
-        const defaultOption = document.createElement("option");
-        defaultOption.value = "";
-        defaultOption.textContent = placeholder;
-        defaultOption.disabled = true;
-        defaultOption.selected = true;
-        selectElement.appendChild(defaultOption);
-
-        items.forEach(item => {
-            const option = document.createElement("option");
-            option.value = item.isoCode || item.name; // Use isoCode or name as value
-            option.textContent = item.name;
-            selectElement.appendChild(option);
-        });
-    };
-
-    // Load countries for both sections
-    const loadCountries = () => {
-        const countries = Country.getAllCountries();
-        populateSelect(pais, countries, "Selecciona un país");
-        populateSelect(paisParticular, countries, "Selecciona un país");
-    };
-
-    // Load regions based on selected country
-    const loadRegions = (countryCode, targetRegionSelect) => {
-        const states = State.getStatesOfCountry(countryCode);
-        populateSelect(targetRegionSelect, states, "Selecciona una región");
-        targetRegionSelect.disabled = states.length === 0;
-    };
-
-    // Load cities based on selected region
-    const loadCities = (countryCode, stateCode, targetCitySelect) => {
-        const cities = City.getCitiesOfState(countryCode, stateCode);
-        populateSelect(targetCitySelect, cities, "Selecciona una ciudad");
-        targetCitySelect.disabled = cities.length === 0;
-    };
-
-    // Event listeners for 'pais' and 'pais-particular'
-    pais.addEventListener("change", () => {
-        const selectedCountry = pais.value;
-        loadRegions(selectedCountry, region);
-        ciudad.disabled = true; // Disable city until region is selected
-        ciudad.innerHTML = "<option disabled selected>Selecciona una ciudad</option>";
+    // Listener para el primer conjunto
+    document.getElementById("pais").addEventListener("change", (e) => {
+        const countryCode = e.target.value;
+        cargarRegiones(countryCode, "region", "ciudad");
     });
 
-    paisParticular.addEventListener("change", () => {
-        const selectedCountry = paisParticular.value;
-        loadRegions(selectedCountry, regionParticular);
-        ciudadParticular.disabled = true; // Disable city until region is selected
-        ciudadParticular.innerHTML = "<option disabled selected>Selecciona una ciudad</option>";
+    document.getElementById("region").addEventListener("change", (e) => {
+        const stateCode = e.target.value;
+        const countryCode = document.getElementById("pais").value;
+        cargarCiudades(countryCode, stateCode, "ciudad");
     });
 
-    // Event listeners for 'region' and 'region-particular'
-    region.addEventListener("change", () => {
-        const selectedRegion = region.value;
-        const selectedCountry = pais.value;
-        loadCities(selectedCountry, selectedRegion, ciudad);
+    // Listener para el segundo conjunto
+    document.getElementById("pais-particular").addEventListener("change", (e) => {
+        const countryCode = e.target.value;
+        cargarRegiones(countryCode, "region-particular", "ciudad-particular");
     });
 
-    regionParticular.addEventListener("change", () => {
-        const selectedRegion = regionParticular.value;
-        const selectedCountry = paisParticular.value;
-        loadCities(selectedCountry, selectedRegion, ciudadParticular);
+    document.getElementById("region-particular").addEventListener("change", (e) => {
+        const stateCode = e.target.value;
+        const countryCode = document.getElementById("pais-particular").value;
+        cargarCiudades(countryCode, stateCode, "ciudad-particular");
     });
 
-    // Initialize the form with countries
-    loadCountries();
 });
 
