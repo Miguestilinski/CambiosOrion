@@ -1,3 +1,5 @@
+import { PDFDocument } from 'pdf-lib';
+
 // Tu API Key
 const API_KEY = "VGxiNkY4OTUzb3FPamxZWlNmb3Iwd3V5Z0NFdVVNd082NXJTdWR4OQ==";
 
@@ -77,7 +79,7 @@ const resetCitySelect = (citySelectId) => {
 };
 
 const toggleEmpresaTipo = () => {
-    const tipoEmpresa = document.querySelector('input[name="tipo_empresa"]:checked').value;
+    const tipoEmpresa = document.querySelector('input[name="tipo-empresa"]:checked').value;
     const rutContainer = document.getElementById("rut-container");
     const taxIdContainer = document.getElementById("tax-id-container");
     const rutInput = document.getElementById("rut");
