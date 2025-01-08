@@ -125,16 +125,22 @@ async function completarPDF(formularioData) {
 
         const fechaField = form.getTextField('fecha:date');
 
-        const dia = document.querySelector('#fecha-dia').value;
-        const mes = document.querySelector('#fecha-mes').value;
-        const año = document.querySelector('#fecha-año').value;
+        const fechaInput = document.querySelector('#fecha');
+        const fecha = new Date(fechaInput.value); 
 
-        const fecha = new Date(`${año}-${mes}-${dia}`);
+        const dia = fecha.getDate().toString().padStart(2, '0');
+        const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+        const año = fecha.getFullYear();
+
         fechaField.setText(fecha.toLocaleDateString());
 
         const diaField = form.getTextField('dia');
         const mesField = form.getTextField('mes');
         const añoField = form.getTextField('año');
+
+        diaField.setText(dia);
+        mesField.setText(mes);
+        añoField.setText(año);
 
         const tipoEmpresa = form.getChechbox('tipo-empresa');
         const docIdEmpresaField = form.getTextField('doc-id-empresa');
