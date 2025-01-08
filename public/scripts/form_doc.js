@@ -1,4 +1,4 @@
-// import { PDFDocument } from "/orionapp/node_modules/pdf-lib/dist/pdf-lib.min.js";
+import { PDFDocument } from 'pdf-lib';
 
 // Tu API Key
 const API_KEY = "VGxiNkY4OTUzb3FPamxZWlNmb3Iwd3V5Z0NFdVVNd082NXJTdWR4OQ==";
@@ -116,34 +116,23 @@ const formatRUT = (rut) => {
 
 window.toggleEmpresaTipo = toggleEmpresaTipo;
 
-// Función para cargar y completar el PDF
-async function completarPDF (formularioData) {
+async function completarPDF(formularioData) {
     try {
-        // Cargar el PDF base
         const pdfUrl = "/orionapp/assets/Formulario_Estandar_Orion.pdf";
         const existingPdfBytes = await fetch(pdfUrl).then(res => res.arrayBuffer());
-
-        // Cargar el documento PDF
         const pdfDoc = await PDFDocument.load(existingPdfBytes);
-
-        // Obtener el formulario del PDF
         const form = pdfDoc.getForm();
-
-        // Mapear campos del formulario
+        
         formularioData.forEach(field => {
             const fieldName = Object.keys(field)[0];
             const fieldValue = field[fieldName];
-
             const pdfField = form.getTextField(fieldName);
             if (pdfField) {
                 pdfField.setText(fieldValue);
             }
         });
 
-        // Serializar el PDF completado
         const pdfBytes = await pdfDoc.save();
-
-        // Crear un enlace para descargar el PDF
         const blob = new Blob([pdfBytes], { type: "application/pdf" });
         const link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
@@ -152,7 +141,7 @@ async function completarPDF (formularioData) {
     } catch (error) {
         console.error("Error al completar el PDF:", error);
     }
-};
+}
 
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("dynamic-form");
