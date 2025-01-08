@@ -1,3 +1,5 @@
+import { PDFDocument } from 'pdf-lib'
+
 // Tu API Key
 const API_KEY = "VGxiNkY4OTUzb3FPamxZWlNmb3Iwd3V5Z0NFdVVNd082NXJTdWR4OQ==";
 
@@ -115,7 +117,7 @@ const formatRUT = (rut) => {
 window.toggleEmpresaTipo = toggleEmpresaTipo;
 
 // Función para cargar y completar el PDF
-const completarPDF = async (formularioData) => {
+async function completarPDF (formularioData) {
     try {
         // Cargar el PDF base
         const pdfUrl = "/orionapp/assets/Formulario_Estandar_Orion.pdf";
@@ -284,5 +286,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const countryCode = document.getElementById("pais-rlegal").value;
         cargarCiudades(countryCode, stateCode, "ciudad-rlegal");
     });
+
+    window.cargarRegiones = cargarRegiones;
+    window.cargarCiudades = cargarCiudades;
 
 });
