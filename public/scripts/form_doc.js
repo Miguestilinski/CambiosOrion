@@ -136,10 +136,16 @@ async function completarPDF(formularioData) {
 
         // Tipo de empresa
         const tipoEmpresaValue = document.querySelector('input[name="tipo-empresa"]:checked')?.value;
+
+        // Comprobar cuál radio button está seleccionado
         if (tipoEmpresaValue === 'nacional') {
-            form.getCheckBox('tipo-empresa-nacional').check();
+            // Si "nacional" está seleccionado, marcar el checkbox correspondiente en el PDF
+            const tipoEmpresaNacional = form.getCheckBox('tipo-empresa-nacional');
+            tipoEmpresaNacional.check();
         } else if (tipoEmpresaValue === 'extranjera') {
-            form.getCheckBox('tipo-empresa-extranjera').check();
+            // Si "extranjera" está seleccionado, marcar el checkbox correspondiente en el PDF
+            const tipoEmpresaExtranjera = form.getCheckBox('tipo-empresa-extranjera');
+            tipoEmpresaExtranjera.check();
         }
 
         // Asignar valores de texto del formulario web
@@ -151,11 +157,14 @@ async function completarPDF(formularioData) {
             }
         };
 
+        asignarCampoTexto('dia', 'dia');
+        asignarCampoTexto('mes', 'mes');
+        asignarCampoTexto('año', 'año');
         asignarCampoTexto('doc-id-empresa', 'rut');
         asignarCampoTexto('razon-social-empresa', 'razon-social-empresa');
         asignarCampoTexto('rubro-empresa', 'rubro-empresa');
         asignarCampoTexto('nombre-empresa', 'nombre-empresa');
-        asignarCampoTexto('direccion-empresa', 'direccional-empresa');
+        asignarCampoTexto('direccion-empresa', 'direccion-empresa');
         asignarCampoTexto('ciudad-empresa', 'ciudad-empresa');
         asignarCampoTexto('pais-empresa', 'pais-empresa');
         asignarCampoTexto('email-empresa', 'email-empresa');
@@ -168,7 +177,7 @@ async function completarPDF(formularioData) {
         const blob = new Blob([pdfBytes], { type: "application/pdf" });
         const link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
-        link.download = "Formulario_Completado.pdf";
+        link.download = "Documentacion Orion.pdf";
         link.click();
     } catch (error) {
         console.error("Error al completar el PDF:", error);
