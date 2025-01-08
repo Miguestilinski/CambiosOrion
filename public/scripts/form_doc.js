@@ -123,8 +123,8 @@ async function completarPDF(formularioData) {
         const pdfDoc = await PDFDocument.load(existingPdfBytes);
         const form = pdfDoc.getForm();
 
+        // Fecha
         const fechaField = form.getTextField('fecha:date');
-
         const fechaInput = document.querySelector('#fecha');
         const fecha = new Date(fechaInput.value); 
 
@@ -132,54 +132,38 @@ async function completarPDF(formularioData) {
         const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
         const año = fecha.getFullYear();
 
-        fechaField.setText(fecha.toLocaleDateString());
+        fechaField.setText(`${dia}/${mes}/${año}`);
 
-        const diaField = form.getTextField('dia');
-        const mesField = form.getTextField('mes');
-        const añoField = form.getTextField('año');
-
-        diaField.setText(dia);
-        mesField.setText(mes);
-        añoField.setText(año.toString());
-
+        // Tipo de empresa
         const tipoEmpresaValue = document.querySelector('input[name="tipo-empresa"]:checked')?.value;
-
-        // Comprobar cuál radio button está seleccionado
         if (tipoEmpresaValue === 'nacional') {
-            // Si "nacional" está seleccionado, marcar el checkbox correspondiente en el PDF
-            const tipoEmpresaNacional = form.getCheckBox('tipo-empresa-nacional');
-            tipoEmpresaNacional.check();
+            form.getCheckBox('tipo-empresa-nacional').check();
         } else if (tipoEmpresaValue === 'extranjera') {
-            // Si "extranjera" está seleccionado, marcar el checkbox correspondiente en el PDF
-            const tipoEmpresaExtranjera = form.getCheckBox('tipo-empresa-extranjera');
-            tipoEmpresaExtranjera.check();
+            form.getCheckBox('tipo-empresa-extranjera').check();
         }
 
-        const docIdEmpresaField = form.getTextField('doc-id-empresa');
-        const razonSocialEmpresaField = form.getTextField('razon-social-empresa');
-        const rubroEmpresaField = form.getTextField('rubro-empresa');
-        const nombreEmpresaField = form.getTextField('nombre-empresa');
-        const direccionEmpresaField = form.getTextField('direccion-empresa');
-        const ciudadEmpresaField = form.getTextField('ciudad-empresa');
-        const paisEmpresaField = form.getTextField('pais-empresa');
-        const emailEmpresaField = form.getTextField('email-empresa');
-        const telefonoEmpresaField = form.getTextField('telefono-empresa');
+        // Asignar valores de texto del formulario web
+        const asignarCampoTexto = (campoId, nombreVariable) => {
+            const valor = document.querySelector(`#${nombreVariable}`)?.value || "";
+            const campoPdf = form.getTextField(campoId);
+            if (campoPdf) {
+                campoPdf.setText(valor);
+            }
+        };
 
-        fechaField.setText('fecha');
-        diaField.setText('dia');
-        mesField.setText('dia');
-        añoField.setText('año');
+        asignarCampoTexto('doc-id-empresa', 'rut');
+        asignarCampoTexto('razon-social-empresa', 'razon-social-empresa');
+        asignarCampoTexto('rubro-empresa', 'rubro-empresa');
+        asignarCampoTexto('nombre-empresa', 'nombre-empresa');
+        asignarCampoTexto('direccion-empresa', 'direccional-empresa');
+        asignarCampoTexto('ciudad-empresa', 'ciudad-empresa');
+        asignarCampoTexto('pais-empresa', 'pais-empresa');
+        asignarCampoTexto('email-empresa', 'email-empresa');
+        asignarCampoTexto('telefono-empresa', 'telefono-empresa');
 
-        docIdEmpresaField.setText('doc-id-empresa');
-        razonSocialEmpresaField.setText('razon-social-empresa');
-        rubroEmpresaField.setText('rubro-empresa');
-        nombreEmpresaField.setText('nombre-empresa');
-        direccionEmpresaField.setText('direccion-empresa');
-        ciudadEmpresaField.setText('ciudad-empresa');
-        paisEmpresaField.setText('pais-empresa');
-        emailEmpresaField.setText('email-empresa');
-        telefonoEmpresaField.setText('telefono-empresa');
+        // Otros campos similares pueden ser mapeados aquí siguiendo el mismo patrón
 
+        // Generar y descargar el PDF
         const pdfBytes = await pdfDoc.save();
         const blob = new Blob([pdfBytes], { type: "application/pdf" });
         const link = document.createElement("a");
