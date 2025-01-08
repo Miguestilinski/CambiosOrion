@@ -122,6 +122,49 @@ async function completarPDF(formularioData) {
         const existingPdfBytes = await fetch(pdfUrl).then(res => res.arrayBuffer());
         const pdfDoc = await PDFDocument.load(existingPdfBytes);
         const form = pdfDoc.getForm();
+
+        const fechaField = form.getTextField('fecha:date');
+
+        const dia = document.querySelector('#fecha-dia').value;
+        const mes = document.querySelector('#fecha-mes').value;
+        const año = document.querySelector('#fecha-año').value;
+
+        const fecha = new Date(`${año}-${mes}-${dia}`);
+        fechaField.setText(fecha.toLocaleDateString());
+
+        const diaField = form.getTextField('dia');
+        const mesField = form.getTextField('mes');
+        const añoField = form.getTextField('año');
+
+        const tipoEmpresa = form.getChechbox('tipo-empresa');
+        const docIdEmpresaField = form.getTextField('doc-id-empresa');
+        const razonSocialEmpresaField = form.getTextField('razon-social-empresa');
+        const rubroEmpresaField = form.getTextField('rubro-empresa');
+        const nombreEmpresaField = form.getTextField('nombre-empresa');
+        const direccionEmpresaField = form.getTextField('direccion-empresa');
+        const ciudadEmpresaField = form.getTextField('ciudad-empresa');
+        const regionEmpresaField = form.getTextField('region-empresa');
+        const paisEmpresaField = form.getTextField('pais-empresa');
+        const emailEmpresaField = form.getTextField('email-empresa');
+        const telefonoEmpresaField = form.getTextField('telefono-empresa');
+
+        fechaField.setText('fecha');
+        diaField.setText('dia');
+        mesField.setText('dia');
+        añoField.setText('año');
+
+        tipoEmpresa.check();
+        docIdEmpresaField.setText('doc-id-empresa');
+        razonSocialEmpresaField.setText('razon-social-empresa');
+        rubroEmpresaField.setText('rubro-empresa');
+        nombreEmpresaField.setText('nombre-empresa');
+        direccionEmpresaField.setText('direccion-empresa');
+        ciudadEmpresaField.setText('ciudad-empresa');
+        regionEmpresaField.setText('region-empresa');
+        paisEmpresaField.setText('pais-empresa');
+        emailEmpresaField.setText('email-empresa');
+        telefonoEmpresaField.setText('telefono-empresa');
+
         
         formularioData.forEach(field => {
             const fieldName = Object.keys(field)[0];
