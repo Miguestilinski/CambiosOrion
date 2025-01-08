@@ -142,7 +142,7 @@ async function completarPDF(formularioData) {
         mesField.setText(mes);
         añoField.setText(año.toString());
 
-        const tipoEmpresa = form.getCheckbox('tipo-empresa');
+        const tipoEmpresa = form.getCheckBox('tipo-empresa');
         const docIdEmpresaField = form.getTextField('doc-id-empresa');
         const razonSocialEmpresaField = form.getTextField('razon-social-empresa');
         const rubroEmpresaField = form.getTextField('rubro-empresa');
