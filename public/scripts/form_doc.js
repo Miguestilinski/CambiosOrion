@@ -180,16 +180,6 @@ async function completarPDF(formularioData) {
         emailEmpresaField.setText('email-empresa');
         telefonoEmpresaField.setText('telefono-empresa');
 
-        
-        formularioData.forEach(field => {
-            const fieldName = Object.keys(field)[0];
-            const fieldValue = field[fieldName];
-            const pdfField = form.getTextField(fieldName);
-            if (pdfField) {
-                pdfField.setText(fieldValue);
-            }
-        });
-
         const pdfBytes = await pdfDoc.save();
         const blob = new Blob([pdfBytes], { type: "application/pdf" });
         const link = document.createElement("a");
