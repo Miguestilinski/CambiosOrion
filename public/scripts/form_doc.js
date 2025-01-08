@@ -1,5 +1,3 @@
-import { PDFDocument } from '/orionapp/node_modules/pdf-lib';
-
 // Tu API Key
 const API_KEY = "VGxiNkY4OTUzb3FPamxZWlNmb3Iwd3V5Z0NFdVVNd082NXJTdWR4OQ==";
 
