@@ -1,4 +1,4 @@
-import { PDFDocument } from "./node_modules/pdf-lib/dist/pdf-lib.min.js";
+import { PDFDocument } from "/orionapp/node_modules/pdf-lib/dist/pdf-lib.min.js";
 
 // Tu API Key
 const API_KEY = "VGxiNkY4OTUzb3FPamxZWlNmb3Iwd3V5Z0NFdVVNd082NXJTdWR4OQ==";
