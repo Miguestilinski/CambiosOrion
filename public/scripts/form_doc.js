@@ -258,31 +258,31 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Cargar países para ambos conjuntos
-    cargarPaises("pais");
-    cargarPaises("pais-particular");
+    cargarPaises("pais-empresa");
+    cargarPaises("pais-rlegal");
 
     // Listener para el primer conjunto
-    document.getElementById("pais").addEventListener("change", (e) => {
+    document.getElementById("pais-empresa").addEventListener("change", (e) => {
         const countryCode = e.target.value;
-        cargarRegiones(countryCode, "region", "ciudad");
+        cargarRegiones(countryCode, "region-empresa", "ciudad-empresa");
     });
 
-    document.getElementById("region").addEventListener("change", (e) => {
+    document.getElementById("region-empresa").addEventListener("change", (e) => {
         const stateCode = e.target.value;
-        const countryCode = document.getElementById("pais").value;
-        cargarCiudades(countryCode, stateCode, "ciudad");
+        const countryCode = document.getElementById("pais-empresa").value;
+        cargarCiudades(countryCode, stateCode, "ciudad-empresa");
     });
 
     // Listener para el segundo conjunto
-    document.getElementById("pais-particular").addEventListener("change", (e) => {
+    document.getElementById("pais-rlegal").addEventListener("change", (e) => {
         const countryCode = e.target.value;
-        cargarRegiones(countryCode, "region-particular", "ciudad-particular");
+        cargarRegiones(countryCode, "region-rlegal", "ciudad-rlegal");
     });
 
-    document.getElementById("region-particular").addEventListener("change", (e) => {
+    document.getElementById("region-rlegal").addEventListener("change", (e) => {
         const stateCode = e.target.value;
-        const countryCode = document.getElementById("pais-particular").value;
-        cargarCiudades(countryCode, stateCode, "ciudad-particular");
+        const countryCode = document.getElementById("pais-rlegal").value;
+        cargarCiudades(countryCode, stateCode, "ciudad-rlegal");
     });
 
 });
