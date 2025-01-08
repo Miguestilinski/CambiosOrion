@@ -161,7 +161,6 @@ async function completarPDF(formularioData) {
         const nombreEmpresaField = form.getTextField('nombre-empresa');
         const direccionEmpresaField = form.getTextField('direccion-empresa');
         const ciudadEmpresaField = form.getTextField('ciudad-empresa');
-        const regionEmpresaField = form.getTextField('region-empresa');
         const paisEmpresaField = form.getTextField('pais-empresa');
         const emailEmpresaField = form.getTextField('email-empresa');
         const telefonoEmpresaField = form.getTextField('telefono-empresa');
@@ -178,7 +177,6 @@ async function completarPDF(formularioData) {
         nombreEmpresaField.setText('nombre-empresa');
         direccionEmpresaField.setText('direccion-empresa');
         ciudadEmpresaField.setText('ciudad-empresa');
-        regionEmpresaField.setText('region-empresa');
         paisEmpresaField.setText('pais-empresa');
         emailEmpresaField.setText('email-empresa');
         telefonoEmpresaField.setText('telefono-empresa');
