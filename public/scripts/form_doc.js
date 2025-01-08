@@ -142,7 +142,19 @@ async function completarPDF(formularioData) {
         mesField.setText(mes);
         añoField.setText(año.toString());
 
-        const tipoEmpresa = form.getCheckBox('tipo-empresa');
+        const tipoEmpresaValue = document.querySelector('input[name="tipo-empresa"]:checked')?.value;
+
+        // Comprobar cuál radio button está seleccionado
+        if (tipoEmpresaValue === 'nacional') {
+            // Si "nacional" está seleccionado, marcar el checkbox correspondiente en el PDF
+            const tipoEmpresaNacional = form.getCheckBox('tipo-empresa-nacional');
+            tipoEmpresaNacional.check();
+        } else if (tipoEmpresaValue === 'extranjera') {
+            // Si "extranjera" está seleccionado, marcar el checkbox correspondiente en el PDF
+            const tipoEmpresaExtranjera = form.getCheckBox('tipo-empresa-extranjera');
+            tipoEmpresaExtranjera.check();
+        }
+
         const docIdEmpresaField = form.getTextField('doc-id-empresa');
         const razonSocialEmpresaField = form.getTextField('razon-social-empresa');
         const rubroEmpresaField = form.getTextField('rubro-empresa');
