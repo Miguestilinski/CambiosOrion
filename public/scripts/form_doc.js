@@ -170,7 +170,6 @@ async function completarPDF(formularioData) {
         mesField.setText('dia');
         añoField.setText('año');
 
-        tipoEmpresa.check();
         docIdEmpresaField.setText('doc-id-empresa');
         razonSocialEmpresaField.setText('razon-social-empresa');
         rubroEmpresaField.setText('rubro-empresa');
