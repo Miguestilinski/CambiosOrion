@@ -114,6 +114,44 @@ const formatRUT = (rut) => {
 
 window.toggleEmpresaTipo = toggleEmpresaTipo;
 
+// Función para cargar y completar el PDF
+const completarPDF = async (formularioData) => {
+    try {
+        // Cargar el PDF base
+        const pdfUrl = "/path/to/Formulario Estandar Orion.pdf"; // Cambia esta ruta según corresponda
+        const existingPdfBytes = await fetch(pdfUrl).then(res => res.arrayBuffer());
+
+        // Cargar el documento PDF
+        const pdfDoc = await PDFDocument.load(existingPdfBytes);
+
+        // Obtener el formulario del PDF
+        const form = pdfDoc.getForm();
+
+        // Mapear campos del formulario
+        formularioData.forEach(field => {
+            const fieldName = Object.keys(field)[0];
+            const fieldValue = field[fieldName];
+
+            const pdfField = form.getTextField(fieldName);
+            if (pdfField) {
+                pdfField.setText(fieldValue);
+            }
+        });
+
+        // Serializar el PDF completado
+        const pdfBytes = await pdfDoc.save();
+
+        // Crear un enlace para descargar el PDF
+        const blob = new Blob([pdfBytes], { type: "application/pdf" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "Formulario_Completado.pdf";
+        link.click();
+    } catch (error) {
+        console.error("Error al completar el PDF:", error);
+    }
+};
+
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("dynamic-form");
     const autorizadosContainer = document.getElementById("autorizados-container");
@@ -185,7 +223,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Evento para manejar el envío del formulario
-    form.addEventListener("submit", (event) => {
+    form.addEventListener("submit", async (event) => {
         event.preventDefault(); // Evitar envío normal del formulario
 
         // Recopilar todos los datos del formulario
@@ -209,21 +247,10 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        // Enviar formulario (simulación de flujo)
-        const dynamicForm = document.getElementById('dynamic-form');
-        dynamicForm.addEventListener('submit', function(event) {
-            event.preventDefault();
+        // Completar y descargar el PDF
+        await completarPDF(formularioData);
 
-            // Verificar si la firma fue realizada
-            const signaturePad = document.getElementById("signature-pad");
-            if (!signaturePad || signaturePad.value === "") {
-                alert("Por favor, firme el formulario.");
-                return;
-            }
-
-            alert("Formulario enviado correctamente. Validando firma electrónica.");
-            // Aquí puedes integrar la lógica para manejar los datos del formulario
-        });
+        alert("PDF generado y descargado exitosamente.");
 
         // fetch("/submit_form", { method: "POST", body: JSON.stringify(formularioData) });
 
