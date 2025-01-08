@@ -118,7 +118,7 @@ window.toggleEmpresaTipo = toggleEmpresaTipo;
 const completarPDF = async (formularioData) => {
     try {
         // Cargar el PDF base
-        const pdfUrl = "/path/to/Formulario Estandar Orion.pdf"; // Cambia esta ruta según corresponda
+        const pdfUrl = "/orionapp/assets/Formulario_Estandar_Orion.pdf";
         const existingPdfBytes = await fetch(pdfUrl).then(res => res.arrayBuffer());
 
         // Cargar el documento PDF
