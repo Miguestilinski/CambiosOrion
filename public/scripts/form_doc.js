@@ -174,8 +174,9 @@ window.toggleNacionalidadRlegal = toggleNacionalidadRlegal;
 
 // Contador de personas autorizadas
 let autorizadosCount = 0;
+let beneficiariosCount = 0;
 
-async function completarPDF(formularioData, autorizadosCount) {
+async function completarPDF(formularioData, autorizadosCount, beneficiariosCount) {
     try {
         const pdfUrl = "/orionapp/assets/Formulario_Estandar_Orion.pdf";
         const existingPdfBytes = await fetch(pdfUrl).then(res => res.arrayBuffer());
@@ -198,11 +199,9 @@ async function completarPDF(formularioData, autorizadosCount) {
 
         // Comprobar cuál radio button está seleccionado
         if (tipoEmpresaValue === 'nacional') {
-            // Si "nacional" está seleccionado, marcar el checkbox correspondiente en el PDF
             const tipoEmpresaNacional = form.getCheckBox('tipo-empresa-nacional');
             tipoEmpresaNacional.check();
         } else if (tipoEmpresaValue === 'extranjera') {
-            // Si "extranjera" está seleccionado, marcar el checkbox correspondiente en el PDF
             const tipoEmpresaExtranjera = form.getCheckBox('tipo-empresa-extranjera');
             tipoEmpresaExtranjera.check();
         }
@@ -299,50 +298,75 @@ async function completarPDF(formularioData, autorizadosCount) {
             asignarCampoTexto(`doc-id-autorizado${i}`, `doc-id-autorizado${i}`);
             asignarCampoTexto(`cargo-autorizado${i}`, `cargo-autorizado${i}`);
             asignarCampoTexto(`email-autorizado${i}`, `email-autorizado${i}`);
-            console.log("autorizado: ", i);
+            console.log("autorizados:", i);
         }
 
         asignarCampoTexto('nombre-dec', 'nombre-dec');
         asignarCampoTexto('nacionalidad-dec', 'nacionalidad-dec');
 
+        for (let i = 1; i <= beneficiariosCount; i++) {
+            asignarCampoTexto(`nombre-ben${i}`, `nombre-ben${i}`);
+            asignarCampoTexto(`doc-id-ben{i}`, `doc-id-ben${i}`);
+            asignarCampoTexto(`cargo-ben${i}`, `cargo-ben${i}`);
+            asignarCampoTexto(`email-ben${i}`, `email-ben${i}`);
+            console.log("beneficiarios:", i);
+        }
+
         asignarCampoTexto('actividad', 'actividad');
         asignarCampoTexto('origen-fondos', 'origen-fondos');
         asignarCampoTexto('destino-fondos', 'destino-fondos');
 
+        // Función para completar la sección PEP
+        const completarPEP = (tipo, index, nombre, docId, nacionalidad, pep) => {
+            const pepPrefix = tipo === 'rlegal' ? '' : `${tipo}${index}`;
+            form.getTextField(`nombre-${pepPrefix}`).setText(nombre);
+            form.getTextField(`doc-id-${pepPrefix}`).setText(docId);
+            form.getTextField(`nacionalidad-${pepPrefix}`).setText(nacionalidad);
+            form.getCheckBox(`pep-${pep}-ser-${pepPrefix}`).check();
+        };
 
-        // Filtrar las personas que deben firmar (autorizados, socios y representante legal)
-        const personasParaFirmar = formularioData.filter(persona => persona.pep); // Solo PEP
+        // Obtener datos del formulario
+        const rlegal = {
+            nombre: formularioData['nombre-rlegal'],
+            docId: formularioData['doc-id-rlegal'],
+            nacionalidad: formularioData['nacionalidad-rlegal'],
+            pep: formularioData['pep-rlegal'],
+        };
 
-        // Duplicar la segunda página según el número de personas que necesitan firmar
-        const secondPage = pdfDoc.getPages()[1]; // Segunda página que contiene la declaración PEP
-
-        for (let i = 0; i < personasParaFirmar.length - 1; i++) {
-            const copiedPage = await pdfDoc.copyPages(pdfDoc, [1]);
-            pdfDoc.addPage(copiedPage[0]);
-        }
-
-        // Rellenar la segunda página para cada persona que necesita firmar
-        let currentPageIndex = 1;
-        for (let i = 0; i < personasParaFirmar.length; i++) {
-            const page = pdfDoc.getPages()[currentPageIndex];
-            const form = pdfDoc.getForm();
-
-            // Rellenar los campos de cada persona
-            form.getTextField(`nombre-${i + 1}`).setText(personasParaFirmar[i].nombre);
-            form.getTextField(`documento-${i + 1}`).setText(personasParaFirmar[i].documento);
-            form.getTextField(`nacionalidad-${i + 1}`).setText(personasParaFirmar[i].nacionalidad);
-
-            // Configurar la firma (simulada aquí, podrías integrar una herramienta de firma electrónica si es necesario)
-            const firmaField = form.getTextField(`firma-${i + 1}`);
-            firmaField.setText("Firma Aquí"); // Esto sería reemplazado por la firma real si tienes un sistema para eso
-
-            // Si es el último, no hay más páginas por agregar
-            if (i + 1 === personasParaFirmar.length) {
-                break;
-            } else {
-                currentPageIndex++;
+        const autorizados = [];
+        for (let i = 1; i <= 2; i++) {
+            if (formularioData[`nombre-autorizado${i}`]) {
+                autorizados.push({
+                    nombre: formularioData[`nombre-autorizado${i}`],
+                    docId: formularioData[`doc-id-autorizado${i}`],
+                    nacionalidad: formularioData[`nacionalidad-autorizado${i}`],
+                    pep: formularioData[`pep-autorizado${i}`],
+                });
             }
         }
+
+        const beneficiarios = [];
+        for (let i = 1; i <= 9; i++) {
+            if (formularioData[`nombre-ben${i}`]) {
+                beneficiarios.push({
+                    nombre: formularioData[`nombre-ben${i}`],
+                    docId: formularioData[`doc-id-ben${i}`],
+                    nacionalidad: formularioData[`nacionalidad-ben${i}`],
+                    pep: formularioData[`pep-ben${i}`],
+                });
+            }
+        }
+
+        // Completar datos de la sección PEP
+        completarPEP('rlegal', '', rlegal.nombre, rlegal.docId, rlegal.nacionalidad, rlegal.pep);
+        
+        autorizados.forEach((aut, index) => {
+            completarPEP('autorizado', index + 1, aut.nombre, aut.docId, aut.nacionalidad, aut.pep);
+        });
+
+        beneficiarios.forEach((ben, index) => {
+            completarPEP('ben', index + 1, ben.nombre, ben.docId, ben.nacionalidad, ben.pep);
+        });
 
         // Generar y descargar el PDF
         const pdfBytes = await pdfDoc.save();
@@ -354,32 +378,7 @@ async function completarPDF(formularioData, autorizadosCount) {
     } catch (error) {
         console.error("Error al completar el PDF:", error);
     }
-};
-
-// Manejar la carga dinámica de datos
-document.getElementById('formularioPEP').addEventListener('submit', function (event) {
-    event.preventDefault();
-
-    const nombre = document.getElementById('nombre').value;
-    const documento = document.getElementById('documento').value;
-    const nacionalidad = document.getElementById('nacionalidad').value;
-    const pep = document.getElementById('pep').checked;
-
-    // Agregar la persona a la lista
-    const persona = { nombre, documento, nacionalidad, pep };
-    formularioData.push(persona);
-
-    // Mostrar la lista de personas
-    const listaPersonas = document.getElementById('personas-lista');
-    const li = document.createElement('li');
-    li.textContent = `${nombre} - ${pep ? 'PEP' : 'No PEP'}`;
-    listaPersonas.appendChild(li);
-
-    // Limpiar el formulario
-    document.getElementById('formularioPEP').reset();
-});
-
-let formularioData = [];
+}
 
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("dynamic-form");
@@ -431,6 +430,52 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     addAutorizadoButton.addEventListener("click", agregarPersonaAutorizada);
+
+    const beneficiariosContainer = document.getElementById("bens-container");
+    const addBeneficiarioButton = document.getElementById("add-ben");
+
+    // Función para agregar una persona autorizada
+    const agregarBen = () => {
+        if (beneficiariosCount >= 2) {
+            alert("Solo puedes agregar un máximo de 2 personas autorizadas.");
+            return;
+        }
+
+        beneficiariosCount++;
+
+        const beneficiarioDiv = document.createElement("div");
+        beneficiarioDiv.classList.add("mb-6", "ben-item");
+        beneficiarioDiv.dataset.index = beneficiariosCount;
+
+        beneficiarioDiv.innerHTML = `
+            <div class="mb-6">
+                <label class="block mt-2 mb-2 text-sm font-medium text-white">Nombre:</label>
+                <input type="text" name="nombre-ben${beneficiariosCount}" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+            </div>
+            <div class="mb-6">
+                <label class="block mt-2 mb-2 text-sm font-medium text-white">Nº Doc. Identidad:</label>
+                <input type="text" name="doc-id-ben${beneficiariosCount}" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+            </div>
+            <div class="mb-6">
+                <label class="block mt-2 mb-2 text-sm font-medium text-white">Cargo:</label>
+                <input type="text" name="cargo-ben${beneficiariosCount}" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+            </div>
+            <div class="mb-6">
+                <label class="block mt-2 mb-2 text-sm font-medium text-white">Email:</label>
+                <input type="email" name="email-ben${beneficiariosCount}" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+            </div>
+            <button type="button" class="remove-autorizado text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2">Eliminar</button>
+        `;
+
+        beneficiariosContainer.appendChild(beneficiarioDiv);
+
+        beneficiarioDiv.querySelector(".remove-ben").addEventListener("click", () => {
+            beneficiarioDiv.remove();
+            beneficiariosCount--;
+        });
+    };
+
+    addBeneficiarioButton.addEventListener("click", agregarBen);
 
     const fechaInput = document.getElementById("fecha");
 
