@@ -123,7 +123,12 @@ const toggleNacionalidad = () => {
 };
 
 // Formatear el RUT automáticamente
-document.getElementById("rut").addEventListener("input", (event) => {
+document.getElementById("rut-empresa").addEventListener("input", (event) => {
+    const input = event.target;
+    input.value = formatRUT(input.value);
+});
+
+document.getElementById("rut-rlegal").addEventListener("input", (event) => {
     const input = event.target;
     input.value = formatRUT(input.value);
 });
