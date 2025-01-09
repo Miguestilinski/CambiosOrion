@@ -309,7 +309,40 @@ async function completarPDF(formularioData, autorizadosCount) {
         asignarCampoTexto('destino-fondos', 'destino-fondos');
 
 
-        // Otros campos similares pueden ser mapeados aquí siguiendo el mismo patrón
+        // Contar las personas que necesitan firmar
+        const nombreAutorizados = formularioData.filter(persona => persona.tipo === 'autorizado');
+        const nombreSocios = formularioData.filter(persona => persona.tipo === 'socio');
+        const nombreRepresentantes = formularioData.filter(persona => persona.tipo === 'representante');
+
+        const totalFirmantes = nombreAutorizados.length + nombreSocios.length + nombreRepresentantes.length;
+
+        // Obtener la segunda página (declaración de vínculo)
+        const secondPage = pdfDoc.getPages()[1]; // La segunda página tiene el índice 1
+
+        // Duplica la segunda página según el número de firmantes
+        for (let i = 0; i < totalFirmantes - 1; i++) {
+            const copiedPage = await pdfDoc.copyPages(pdfDoc, [1]);
+            pdfDoc.addPage(copiedPage[0]);
+        }
+
+        // Aquí agregas los campos de las personas que deben firmar, como la firma del representante legal, socios, etc.
+        let currentPageIndex = 1;
+        // Asignar firmas a cada firmante
+        for (let i = 0; i < totalFirmantes; i++) {
+            const page = pdfDoc.getPages()[currentPageIndex];
+            const form = pdfDoc.getForm();
+
+            // Ajustar el campo de firma en la página actual
+            const firmaField = form.getTextField(`firma-${i + 1}`);
+            firmaField.setText(formularioData[i].nombre);
+
+            // Si ya hemos llenado las páginas necesarias, vamos a la siguiente
+            if (i + 1 === totalFirmantes) {
+                break;
+            } else {
+                currentPageIndex++;
+            }
+        }
 
         // Generar y descargar el PDF
         const pdfBytes = await pdfDoc.save();
