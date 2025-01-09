@@ -185,7 +185,7 @@ async function completarPDF(formularioData, autorizadosCount) {
         // Fecha
         const fechaField = form.getTextField('fecha:date');
         const fechaInput = document.querySelector('#fecha');
-        const fecha = new Date(fechaInput.value); 
+        const fecha = new Date(fechaInput.value);
 
         const dia = (fecha.getDate() + 1).toString().padStart(2, '0');
         const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
@@ -205,6 +205,28 @@ async function completarPDF(formularioData, autorizadosCount) {
             // Si "extranjera" está seleccionado, marcar el checkbox correspondiente en el PDF
             const tipoEmpresaExtranjera = form.getCheckBox('tipo-empresa-extranjera');
             tipoEmpresaExtranjera.check();
+        }
+
+        // Tipo de Órdenes a Recibir
+        const tipoOrdenesField = form.getTextField('tipo-ordenes'); // Confirma el nombre en el PDF
+        const tipoOrdenSeleccionado = document.querySelector('input[name="tipo-ordenes"]:checked')?.value;
+        if (tipoOrdenSeleccionado) {
+            tipoOrdenesField.setText(tipoOrdenSeleccionado);
+        }
+
+        // Uso Interno
+        const usoIntField = form.getTextField('uso-int'); // Confirma el nombre en el PDF
+        const usoIntSeleccionado = document.querySelector('input[name="uso-int"]:checked')?.value;
+        let usoIntValor = usoIntSeleccionado;
+
+        // Si es "otros", toma el valor del texto adicional
+        if (usoIntSeleccionado === "otros") {
+            const otrosInput = document.querySelector('input[name="otros-ant"]').value;
+            usoIntValor = `Otros: ${otrosInput}`;
+        }
+
+        if (usoIntValor) {
+            usoIntField.setText(usoIntValor);
         }
 
         // Función para asignar un campo basado en la lógica de nacionalidad/tipo
@@ -268,7 +290,6 @@ async function completarPDF(formularioData, autorizadosCount) {
         asignarCampoTexto('nombre-dec', 'nombre-dec');
         asignarCampoTexto('nacionalidad-dec', 'nacionalidad-dec');
 
-        asignarCampoTexto('tipo-ordenes', 'tipo-ordenes');
         asignarCampoTexto('uso-int', 'uso-int');
 
         asignarCampoTexto('pep', 'pep');
