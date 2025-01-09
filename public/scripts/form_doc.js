@@ -299,7 +299,8 @@ async function completarPDF(formularioData, autorizadosCount) {
             asignarCampoTexto(`doc-id-autorizado${i}`, `doc-id-autorizado${i}`);
             asignarCampoTexto(`cargo-autorizado${i}`, `cargo-autorizado${i}`);
             asignarCampoTexto(`email-autorizado${i}`, `email-autorizado${i}`);
-        }        
+            console.log("autorizado: ", i);
+        }
 
         asignarCampoTexto('nombre-dec', 'nombre-dec');
         asignarCampoTexto('nacionalidad-dec', 'nacionalidad-dec');
@@ -309,35 +310,34 @@ async function completarPDF(formularioData, autorizadosCount) {
         asignarCampoTexto('destino-fondos', 'destino-fondos');
 
 
-        // Contar las personas que necesitan firmar
-        const nombreAutorizados = formularioData.filter(persona => persona.tipo === 'autorizado');
-        const nombreSocios = formularioData.filter(persona => persona.tipo === 'socio');
-        const nombreRepresentantes = formularioData.filter(persona => persona.tipo === 'representante');
+        // Filtrar las personas que deben firmar (autorizados, socios y representante legal)
+        const personasParaFirmar = formularioData.filter(persona => persona.pep); // Solo PEP
 
-        const totalFirmantes = nombreAutorizados.length + nombreSocios.length + nombreRepresentantes.length;
+        // Duplicar la segunda página según el número de personas que necesitan firmar
+        const secondPage = pdfDoc.getPages()[1]; // Segunda página que contiene la declaración PEP
 
-        // Obtener la segunda página (declaración de vínculo)
-        const secondPage = pdfDoc.getPages()[1]; // La segunda página tiene el índice 1
-
-        // Duplica la segunda página según el número de firmantes
-        for (let i = 0; i < totalFirmantes - 1; i++) {
+        for (let i = 0; i < personasParaFirmar.length - 1; i++) {
             const copiedPage = await pdfDoc.copyPages(pdfDoc, [1]);
             pdfDoc.addPage(copiedPage[0]);
         }
 
-        // Aquí agregas los campos de las personas que deben firmar, como la firma del representante legal, socios, etc.
+        // Rellenar la segunda página para cada persona que necesita firmar
         let currentPageIndex = 1;
-        // Asignar firmas a cada firmante
-        for (let i = 0; i < totalFirmantes; i++) {
+        for (let i = 0; i < personasParaFirmar.length; i++) {
             const page = pdfDoc.getPages()[currentPageIndex];
             const form = pdfDoc.getForm();
 
-            // Ajustar el campo de firma en la página actual
-            const firmaField = form.getTextField(`firma-${i + 1}`);
-            firmaField.setText(formularioData[i].nombre);
+            // Rellenar los campos de cada persona
+            form.getTextField(`nombre-${i + 1}`).setText(personasParaFirmar[i].nombre);
+            form.getTextField(`documento-${i + 1}`).setText(personasParaFirmar[i].documento);
+            form.getTextField(`nacionalidad-${i + 1}`).setText(personasParaFirmar[i].nacionalidad);
 
-            // Si ya hemos llenado las páginas necesarias, vamos a la siguiente
-            if (i + 1 === totalFirmantes) {
+            // Configurar la firma (simulada aquí, podrías integrar una herramienta de firma electrónica si es necesario)
+            const firmaField = form.getTextField(`firma-${i + 1}`);
+            firmaField.setText("Firma Aquí"); // Esto sería reemplazado por la firma real si tienes un sistema para eso
+
+            // Si es el último, no hay más páginas por agregar
+            if (i + 1 === personasParaFirmar.length) {
                 break;
             } else {
                 currentPageIndex++;
@@ -354,7 +354,32 @@ async function completarPDF(formularioData, autorizadosCount) {
     } catch (error) {
         console.error("Error al completar el PDF:", error);
     }
-}
+};
+
+// Manejar la carga dinámica de datos
+document.getElementById('formularioPEP').addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    const nombre = document.getElementById('nombre').value;
+    const documento = document.getElementById('documento').value;
+    const nacionalidad = document.getElementById('nacionalidad').value;
+    const pep = document.getElementById('pep').checked;
+
+    // Agregar la persona a la lista
+    const persona = { nombre, documento, nacionalidad, pep };
+    formularioData.push(persona);
+
+    // Mostrar la lista de personas
+    const listaPersonas = document.getElementById('personas-lista');
+    const li = document.createElement('li');
+    li.textContent = `${nombre} - ${pep ? 'PEP' : 'No PEP'}`;
+    listaPersonas.appendChild(li);
+
+    // Limpiar el formulario
+    document.getElementById('formularioPEP').reset();
+});
+
+let formularioData = [];
 
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("dynamic-form");
