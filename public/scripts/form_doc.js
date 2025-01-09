@@ -170,6 +170,7 @@ const formatRUT = (rut) => {
 
 window.toggleEmpresaTipo = toggleEmpresaTipo;
 window.toggleEmpresaTipo = toggleNacionalidadRlegal;
+window.toggleEmpresaTipo = toggleNacionalidadDec;
 
 async function completarPDF(formularioData) {
     try {
