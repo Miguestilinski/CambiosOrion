@@ -187,7 +187,7 @@ async function completarPDF(formularioData, autorizadosCount) {
         const fechaInput = document.querySelector('#fecha');
         const fecha = new Date(fechaInput.value); 
 
-        const dia = fecha.getDate().toString().padStart(2, '0');
+        const dia = (fecha.getDate() + 1).toString().padStart(2, '0');
         const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
         const año = fecha.getFullYear();
 
@@ -207,6 +207,28 @@ async function completarPDF(formularioData, autorizadosCount) {
             tipoEmpresaExtranjera.check();
         }
 
+        // Función para asignar un campo basado en la lógica de nacionalidad/tipo
+        const asignarCampoSegunTipo = (campoPDF, tipoCampo, idNacional, idExtranjero) => {
+            const tipoSeleccionado = document.querySelector(`input[name="${tipoCampo}"]:checked`)?.value;
+            let valor = "";
+
+            if (tipoSeleccionado === "chilena" || tipoSeleccionado === "nacional") {
+                valor = document.getElementById(idNacional)?.value || "";
+            } else if (tipoSeleccionado === "extranjera") {
+                valor = document.getElementById(idExtranjero)?.value || "";
+            }
+
+            const campoPdf = form.getTextField(campoPDF);
+            if (campoPdf) {
+                campoPdf.setText(valor);
+            }
+        };
+
+        // Asignar valores al PDF para cada caso
+        asignarCampoSegunTipo("doc-id-empresa", "tipo-empresa", "rut-empresa", "tax-id");
+        asignarCampoSegunTipo("doc-id-rlegal", "nacionalidad-rlegal", "rut-rlegal", "doc-id-rlegal");
+        asignarCampoSegunTipo("doc-id-dec", "nacionalidad-dec", "rut-dec", "doc-id-dec");
+
         // Asignar valores de texto del formulario web
         const asignarCampoTexto = (campoId, nombreVariable) => {
             const valor = document.querySelector(`#${nombreVariable}`)?.value || "";
@@ -219,7 +241,7 @@ async function completarPDF(formularioData, autorizadosCount) {
         asignarCampoTexto('dia', 'dia');
         asignarCampoTexto('mes', 'mes');
         asignarCampoTexto('año', 'año');
-        asignarCampoTexto('doc-id-empresa', 'rut-empresa');
+
         asignarCampoTexto('razon-social-empresa', 'razon-social-empresa');
         asignarCampoTexto('rubro-empresa', 'rubro-empresa');
         asignarCampoTexto('nombre-empresa', 'nombre-empresa');
@@ -230,7 +252,6 @@ async function completarPDF(formularioData, autorizadosCount) {
         asignarCampoTexto('email-empresa', 'email-empresa');
         asignarCampoTexto('telefono-empresa', 'telefono-empresa');
 
-        asignarCampoTexto('doc-id-rlegal', 'rut-rlegal');
         asignarCampoTexto('estado-civil-rlegal', 'estado-civil-rlegal');
         asignarCampoTexto('nombre-rlegal', 'nombre-rlegal');
         asignarCampoTexto('nacionalidad-rlegal', 'nacionalidad-rlegal');
@@ -244,9 +265,17 @@ async function completarPDF(formularioData, autorizadosCount) {
             asignarCampoTexto(`email-autorizado${i}`, `email-autorizado${i}`);
         }        
 
-        asignarCampoTexto('doc-id-dec', 'rut-dec');
         asignarCampoTexto('nombre-dec', 'nombre-dec');
         asignarCampoTexto('nacionalidad-dec', 'nacionalidad-dec');
+
+        asignarCampoTexto('tipo-ordenes', 'tipo-ordenes');
+        asignarCampoTexto('uso-int', 'uso-int');
+
+        asignarCampoTexto('pep', 'pep');
+
+        asignarCampoTexto('actividad', 'actividad');
+        asignarCampoTexto('origen-fondos', 'origen-fondos');
+        asignarCampoTexto('destino-fondos', 'destino-fondos');
 
 
         // Otros campos similares pueden ser mapeados aquí siguiendo el mismo patrón
