@@ -100,25 +100,47 @@ const toggleEmpresaTipo = () => {
     }
 };
 
-const toggleNacionalidad = () => {
+const toggleNacionalidadRlegal = () => {
     const nacionalidad = document.querySelector('input[name="nacionalidad-rlegal"]:checked').value;
     const rutRlegalContainer = document.getElementById("rut-rlegal-container");
-    const docIdContainer = document.getElementById("doc-id-container");
+    const docIdRlegalContainer = document.getElementById("doc-id-rlegal-container");
     const rutRlegalInput = document.getElementById("rut-rlegal");
-    const docIdInput = document.getElementById("doc-id-rlegal");
+    const docIdRlegalInput = document.getElementById("doc-id-rlegal");
 
     if (nacionalidad === "chilena") {
         rutRlegalContainer.classList.remove("hidden");
-        docIdContainer.classList.add("hidden");
+        docIdRlegalContainer.classList.add("hidden");
         rutRlegalInput.required = true;
-        docIdInput.required = false;
-        rutInput.value = ""; // Limpia el campo al cambiar
+        docIdRlegalInput.required = false;
+        rutRlegalInput.value = ""; // Limpia el campo al cambiar
     } else if (nacionalidad === "extranjera") {
         rutRlegalContainer.classList.add("hidden");
-        docIdContainer.classList.remove("hidden");
+        docIdRlegalContainer.classList.remove("hidden");
         rutRlegalInput.required = false;
-        docIdInput.required = true;
-        docIdInput.value = ""; // Limpia el campo al cambiar
+        docIdRlegalInput.required = true;
+        docIdRlegalInput.value = ""; // Limpia el campo al cambiar
+    }
+};
+
+const toggleNacionalidadDec = () => {
+    const nacionalidad = document.querySelector('input[name="nacionalidad-dec"]:checked').value;
+    const rutDecContainer = document.getElementById("rut-dec-container");
+    const docIdDecContainer = document.getElementById("doc-id-dec-container");
+    const rutDecInput = document.getElementById("rut-dec");
+    const docIdDecInput = document.getElementById("doc-id-dec");
+
+    if (nacionalidad === "chilena") {
+        rutDecContainer.classList.remove("hidden");
+        docIdDecContainer.classList.add("hidden");
+        rutDecInput.required = true;
+        docIdDecInput.required = false;
+        rutDecInput.value = ""; // Limpia el campo al cambiar
+    } else if (nacionalidad === "extranjera") {
+        rutDecContainer.classList.add("hidden");
+        docIdDecContainer.classList.remove("hidden");
+        rutDecInput.required = false;
+        docIdDecInput.required = true;
+        docIdDecInput.value = ""; // Limpia el campo al cambiar
     }
 };
 
@@ -133,6 +155,11 @@ document.getElementById("rut-rlegal").addEventListener("input", (event) => {
     input.value = formatRUT(input.value);
 });
 
+document.getElementById("rut-dec").addEventListener("input", (event) => {
+    const input = event.target;
+    input.value = formatRUT(input.value);
+});
+
 const formatRUT = (rut) => {
     rut = rut.replace(/[^0-9kK]/g, ""); // Elimina caracteres no válidos
     if (rut.length > 1) {
@@ -142,7 +169,7 @@ const formatRUT = (rut) => {
 };
 
 window.toggleEmpresaTipo = toggleEmpresaTipo;
-window.toggleEmpresaTipo = toggleNacionalidad;
+window.toggleEmpresaTipo = toggleNacionalidadRlegal;
 
 async function completarPDF(formularioData) {
     try {
@@ -211,6 +238,10 @@ async function completarPDF(formularioData) {
         asignarCampoTexto('nombre-autorizado', 'nombre-autorizado');
         asignarCampoTexto('cargo-autorizado', 'cargo-autorizado');
         asignarCampoTexto('email-autorizado', 'email-autorizado');
+
+        asignarCampoTexto('doc-id-dec', 'rut-dec');
+        asignarCampoTexto('nombre-dec', 'nombre-dec');
+        asignarCampoTexto('nacionalidad-dec', 'nacionalidad-dec');
 
 
         // Otros campos similares pueden ser mapeados aquí siguiendo el mismo patrón
