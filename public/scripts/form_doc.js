@@ -172,8 +172,10 @@ window.toggleEmpresaTipo = toggleEmpresaTipo;
 window.toggleNacionalidadDec = toggleNacionalidadDec;
 window.toggleNacionalidadRlegal = toggleNacionalidadRlegal;
 
+// Contador de personas autorizadas
+let autorizadosCount = 0;
 
-async function completarPDF(formularioData) {
+async function completarPDF(formularioData, autorizadosCount) {
     try {
         const pdfUrl = "/orionapp/assets/Formulario_Estandar_Orion.pdf";
         const existingPdfBytes = await fetch(pdfUrl).then(res => res.arrayBuffer());
@@ -268,9 +270,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Array para almacenar los datos del formulario
     let formularioData = [];
-
-    // Contador de personas autorizadas
-    let autorizadosCount = 0;
 
     // Función para agregar una persona autorizada
     const agregarPersonaAutorizada = () => {
@@ -367,7 +366,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         // Completar y descargar el PDF
-        await completarPDF(formularioData);
+        await completarPDF(formularioData, autorizadosCount);
 
         // fetch("/submit_form", { method: "POST", body: JSON.stringify(formularioData) });
 
