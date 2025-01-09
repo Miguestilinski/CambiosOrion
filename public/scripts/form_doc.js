@@ -290,8 +290,6 @@ async function completarPDF(formularioData, autorizadosCount) {
         asignarCampoTexto('nombre-dec', 'nombre-dec');
         asignarCampoTexto('nacionalidad-dec', 'nacionalidad-dec');
 
-        asignarCampoTexto('uso-int', 'uso-int');
-
         asignarCampoTexto('pep', 'pep');
 
         asignarCampoTexto('actividad', 'actividad');
