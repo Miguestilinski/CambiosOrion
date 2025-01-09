@@ -136,9 +136,9 @@
                         </div>
 
                         <!-- Campo RUT -->
-                        <div class="mb-6" id="rut-container">
-                            <label for="rut" class="block mt-2 mb-2 text-sm font-medium text-white">RUT:</label>
-                            <input type="text" id="rut" name="rut" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                        <div class="mb-6" id="rut-empresa-container">
+                            <label for="rut-empresa" class="block mt-2 mb-2 text-sm font-medium text-white">RUT:</label>
+                            <input type="text" id="rut-empresa" name="rut-empresa" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
                         </div>
 
                         <!-- Campo Tax ID -->
@@ -159,7 +159,7 @@
                             <input type="text" id="razon-social-empresa" name="razon-social-empresa" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
                         </div>
 
-                        <!-- Nombre Fantasía -->
+                        <!-- Nombre Empresa -->
                         <div class="mb-6">
                             <label for="nombre-empresa" class="block mt-2 mb-2 text-sm font-medium text-white">Nombre Fantasía:</label>
                             <input type="text" id="nombre-empresa" name="nombre-empresa" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
@@ -232,16 +232,32 @@
                             <input type="text" id="nombre-rlegal" name="nombre-rlegal" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                         </div>
 
-                        <!-- Nº Doc Identidad-->
+                        <!-- Nacionalidad -->
                         <div class="mb-6">
-                            <label for="doc-id-rlegal" class="block mt-2 mb-2 text-sm font-medium text-white">Nº Doc. Identidad:</label>
-                            <input type="text" id="doc-id-rlegal" name="doc-id-rlegal" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                            <label class="block mt-2 mb-2 text-sm font-medium text-white">Nacionalidad:</label>
+                            <div class="flex gap-4">
+                                <label class="flex items-center">
+                                    <input type="radio" name="nacionalidad-rlegal" value="chilena" class="form-radio text-blue-600" required onchange="toggleNacionalidad()">
+                                    <span class="ml-2 text-gray-100">Chilena</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="nacionalidad-rlegal" value="extranjera" class="form-radio text-blue-600" onchange="toggleNacionalidad()">
+                                    <span class="ml-2 text-gray-100">Extranjera</span>
+                                    <input type="text" name="nacionalidad-rlegal-ext" placeholder="Indicar" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-64 p-2.5">
+                                </label>
+                            </div>
                         </div>
 
-                        <!-- Nacionalidad-->
-                        <div class="mb-6">
-                            <label for="nacionalidad-rlegal" class="block mt-2 mb-2 text-sm font-medium text-white">Nacionalidad:</label>
-                            <input type="text" id="nacionalidad-rlegal" name="nacionalidad-rlegal" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        <!-- Campo RUT -->
+                        <div class="mb-6" id="rut-rlegal-container">
+                            <label for="rut-rlegal" class="block mt-2 mb-2 text-sm font-medium text-white">RUT:</label>
+                            <input type="text" id="rut-rlegal" name="rut-rlegal" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                        </div>
+
+                        <!-- Nº Doc Identidad-->
+                        <div class="mb-6 hidden" id="doc-id-container">
+                            <label for="doc-id-rlegal" class="block mt-2 mb-2 text-sm font-medium text-white">Nº Doc. Identidad:</label>
+                            <input type="text" id="doc-id-rlegal" name="doc-id-rlegal" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                         </div>
 
                         <!-- Estado Civil-->

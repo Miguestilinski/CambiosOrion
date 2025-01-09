@@ -80,12 +80,34 @@ const resetCitySelect = (citySelectId) => {
 
 const toggleEmpresaTipo = () => {
     const tipoEmpresa = document.querySelector('input[name="tipo-empresa"]:checked').value;
-    const rutContainer = document.getElementById("rut-container");
+    const rutContainer = document.getElementById("rut-empresa-container");
     const taxIdContainer = document.getElementById("tax-id-container");
-    const rutInput = document.getElementById("rut");
+    const rutInput = document.getElementById("rut-empresa");
     const taxIdInput = document.getElementById("tax-id");
 
     if (tipoEmpresa === "nacional") {
+        rutContainer.classList.remove("hidden");
+        taxIdContainer.classList.add("hidden");
+        rutInput.required = true;
+        taxIdInput.required = false;
+        rutInput.value = ""; // Limpia el campo al cambiar
+    } else if (tipoEmpresa === "extranjera") {
+        rutContainer.classList.add("hidden");
+        taxIdContainer.classList.remove("hidden");
+        rutInput.required = false;
+        taxIdInput.required = true;
+        taxIdInput.value = ""; // Limpia el campo al cambiar
+    }
+};
+
+const toggleNacionalidad = () => {
+    const tipoEmpresa = document.querySelector('input[name="nacionalidad-rlegal"]:checked').value;
+    const rutContainer = document.getElementById("rut-rlegal-container");
+    const taxIdContainer = document.getElementById("doc-id-container");
+    const rutInput = document.getElementById("rut-rlegal");
+    const taxIdInput = document.getElementById("doc-id-rlegal");
+
+    if (tipoEmpresa === "chilena") {
         rutContainer.classList.remove("hidden");
         taxIdContainer.classList.add("hidden");
         rutInput.required = true;
@@ -115,6 +137,7 @@ const formatRUT = (rut) => {
 };
 
 window.toggleEmpresaTipo = toggleEmpresaTipo;
+window.toggleEmpresaTipo = toggleNacionalidad;
 
 async function completarPDF(formularioData) {
     try {
@@ -160,15 +183,30 @@ async function completarPDF(formularioData) {
         asignarCampoTexto('dia', 'dia');
         asignarCampoTexto('mes', 'mes');
         asignarCampoTexto('año', 'año');
-        asignarCampoTexto('doc-id-empresa', 'rut');
+        asignarCampoTexto('doc-id-empresa', 'rut-empresa');
         asignarCampoTexto('razon-social-empresa', 'razon-social-empresa');
         asignarCampoTexto('rubro-empresa', 'rubro-empresa');
         asignarCampoTexto('nombre-empresa', 'nombre-empresa');
+        asignarCampoTexto('tipo-sociedad', 'tipo-sociedad');
         asignarCampoTexto('direccion-empresa', 'direccion-empresa');
         asignarCampoTexto('ciudad-empresa', 'ciudad-empresa');
         asignarCampoTexto('pais-empresa', 'pais-empresa');
         asignarCampoTexto('email-empresa', 'email-empresa');
         asignarCampoTexto('telefono-empresa', 'telefono-empresa');
+
+        asignarCampoTexto('doc-id-rlegal', 'rut-rlegal');
+        asignarCampoTexto('estado-civil-rlegal', 'estado-civil-rlegal');
+        asignarCampoTexto('nombre-rlegal', 'nombre-rlegal');
+        asignarCampoTexto('nacionalidad-rlegal', 'nacionalidad-rlegal');
+        asignarCampoTexto('direccion-rlegal', 'direccion-rlegal');
+        asignarCampoTexto('email-rlegal', 'email-rlegal');
+
+        asignarCampoTexto('doc-id-autorizado', 'rut-autorizado');
+        asignarCampoTexto('estado-civil-autorizado', 'estado-civil-autorizado');
+        asignarCampoTexto('nombre-autorizado', 'nombre-autorizado');
+        asignarCampoTexto('cargo-autorizado', 'cargo-autorizado');
+        asignarCampoTexto('email-autorizado', 'email-autorizado');
+
 
         // Otros campos similares pueden ser mapeados aquí siguiendo el mismo patrón
 
