@@ -208,25 +208,30 @@ async function completarPDF(formularioData, autorizadosCount) {
         }
 
         // Tipo de Órdenes a Recibir
-        const tipoOrdenesField = form.getTextField('tipo-ordenes'); // Confirma el nombre en el PDF
-        const tipoOrdenSeleccionado = document.querySelector('input[name="tipo-ordenes"]:checked')?.value;
-        if (tipoOrdenSeleccionado) {
-            tipoOrdenesField.setText(tipoOrdenSeleccionado);
+        const tipoOrdenesValue = document.querySelector('input[name="tipo-ordenes"]:checked')?.value;
+        if (tipoOrdenesValue) {
+            const tipoOrdenesField = form.getCheckBox(`tipo-ordenes-${tipoOrdenesValue}`);
+            if (tipoOrdenesField) {
+                tipoOrdenesField.check();
+            }
         }
 
         // Uso Interno
-        const usoIntField = form.getTextField('uso-int'); // Confirma el nombre en el PDF
-        const usoIntSeleccionado = document.querySelector('input[name="uso-int"]:checked')?.value;
-        let usoIntValor = usoIntSeleccionado;
+        const usoIntValue = document.querySelector('input[name="uso-int"]:checked')?.value;
+        if (usoIntValue) {
+            const usoIntField = form.getCheckBox(`uso-int-${usoIntValue}`);
+            if (usoIntField) {
+                usoIntField.check();
+            }
 
-        // Si es "otros", toma el valor del texto adicional
-        if (usoIntSeleccionado === "otros") {
-            const otrosInput = document.querySelector('input[name="otros-ant"]').value;
-            usoIntValor = `Otros: ${otrosInput}`;
-        }
-
-        if (usoIntValor) {
-            usoIntField.setText(usoIntValor);
+            // Campo de texto adicional para "otros antecedentes"
+            if (usoIntValue === 'otros') {
+                const otrosAntValue = document.querySelector('input[name="otros-ant"]')?.value || '';
+                const otrosAntField = form.getTextField('uso-int-otros-ant');
+                if (otrosAntField) {
+                    otrosAntField.setText(otrosAntValue);
+                }
+            }
         }
 
         // Función para asignar un campo basado en la lógica de nacionalidad/tipo
