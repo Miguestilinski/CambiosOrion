@@ -169,8 +169,9 @@ const formatRUT = (rut) => {
 };
 
 window.toggleEmpresaTipo = toggleEmpresaTipo;
-window.toggleEmpresaTipo = toggleNacionalidadRlegal;
-window.toggleEmpresaTipo = toggleNacionalidadDec;
+window.toggleNacionalidadDec = toggleNacionalidadDec;
+window.toggleNacionalidadRlegal = toggleNacionalidadRlegal;
+
 
 async function completarPDF(formularioData) {
     try {
@@ -368,11 +369,9 @@ document.addEventListener("DOMContentLoaded", () => {
         // Completar y descargar el PDF
         await completarPDF(formularioData);
 
-        alert("PDF generado y descargado exitosamente.");
-
         // fetch("/submit_form", { method: "POST", body: JSON.stringify(formularioData) });
 
-        alert("Formulario enviado exitosamente.");
+        alert("Formulario enviado, PDF generado y descargado exitosamente.");
     });
 
     // Cargar países para ambos conjuntos
