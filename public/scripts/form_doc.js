@@ -101,19 +101,19 @@ const toggleEmpresaTipo = () => {
 };
 
 const toggleNacionalidadRlegal = () => {
-    const nacionalidad = document.querySelector('input[name="nacionalidad-rlegal"]:checked').value;
+    const nacionalidadRlegal = document.querySelector('input[name="nacionalidad-rlegal"]:checked').value;
     const rutRlegalContainer = document.getElementById("rut-rlegal-container");
     const docIdRlegalContainer = document.getElementById("doc-id-rlegal-container");
     const rutRlegalInput = document.getElementById("rut-rlegal");
     const docIdRlegalInput = document.getElementById("doc-id-rlegal");
 
-    if (nacionalidad === "chilena") {
+    if (nacionalidadRlegal === "chilena") {
         rutRlegalContainer.classList.remove("hidden");
         docIdRlegalContainer.classList.add("hidden");
         rutRlegalInput.required = true;
         docIdRlegalInput.required = false;
         rutRlegalInput.value = ""; // Limpia el campo al cambiar
-    } else if (nacionalidad === "extranjera") {
+    } else if (nacionalidadRlegal === "extranjera") {
         rutRlegalContainer.classList.add("hidden");
         docIdRlegalContainer.classList.remove("hidden");
         rutRlegalInput.required = false;
@@ -123,19 +123,19 @@ const toggleNacionalidadRlegal = () => {
 };
 
 const toggleNacionalidadDec = () => {
-    const nacionalidad = document.querySelector('input[name="nacionalidad-dec"]:checked').value;
+    const nacionalidadDec = document.querySelector('input[name="nacionalidad-dec"]:checked').value;
     const rutDecContainer = document.getElementById("rut-dec-container");
     const docIdDecContainer = document.getElementById("doc-id-dec-container");
     const rutDecInput = document.getElementById("rut-dec");
     const docIdDecInput = document.getElementById("doc-id-dec");
 
-    if (nacionalidad === "chilena") {
+    if (nacionalidadDec === "chilena") {
         rutDecContainer.classList.remove("hidden");
         docIdDecContainer.classList.add("hidden");
         rutDecInput.required = true;
         docIdDecInput.required = false;
         rutDecInput.value = ""; // Limpia el campo al cambiar
-    } else if (nacionalidad === "extranjera") {
+    } else if (nacionalidadDec === "extranjera") {
         rutDecContainer.classList.add("hidden");
         docIdDecContainer.classList.remove("hidden");
         rutDecInput.required = false;
@@ -234,11 +234,12 @@ async function completarPDF(formularioData) {
         asignarCampoTexto('direccion-rlegal', 'direccion-rlegal');
         asignarCampoTexto('email-rlegal', 'email-rlegal');
 
-        asignarCampoTexto('doc-id-autorizado', 'rut-autorizado');
-        asignarCampoTexto('estado-civil-autorizado', 'estado-civil-autorizado');
-        asignarCampoTexto('nombre-autorizado', 'nombre-autorizado');
-        asignarCampoTexto('cargo-autorizado', 'cargo-autorizado');
-        asignarCampoTexto('email-autorizado', 'email-autorizado');
+        for (let i = 1; i <= autorizadosCount; i++) {
+            asignarCampoTexto(`nombre-autorizado${i}`, `nombre-autorizado${i}`);
+            asignarCampoTexto(`doc-id-autorizado${i}`, `doc-id-autorizado${i}`);
+            asignarCampoTexto(`cargo-autorizado${i}`, `cargo-autorizado${i}`);
+            asignarCampoTexto(`email-autorizado${i}`, `email-autorizado${i}`);
+        }        
 
         asignarCampoTexto('doc-id-dec', 'rut-dec');
         asignarCampoTexto('nombre-dec', 'nombre-dec');
@@ -267,27 +268,38 @@ document.addEventListener("DOMContentLoaded", () => {
     // Array para almacenar los datos del formulario
     let formularioData = [];
 
-    // Función para agregar un nuevo campo de persona autorizada
+    // Contador de personas autorizadas
+    let autorizadosCount = 0;
+
+    // Función para agregar una persona autorizada
     const agregarPersonaAutorizada = () => {
+        if (autorizadosCount >= 2) {
+            alert("Solo puedes agregar un máximo de 2 personas autorizadas.");
+            return;
+        }
+
+        autorizadosCount++;
+
         const autorizadoDiv = document.createElement("div");
         autorizadoDiv.classList.add("mb-6", "autorizado-item");
+        autorizadoDiv.dataset.index = autorizadosCount;
 
         autorizadoDiv.innerHTML = `
             <div class="mb-6">
                 <label class="block mt-2 mb-2 text-sm font-medium text-white">Nombre:</label>
-                <input type="text" name="nombre-autorizado[]" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                <input type="text" name="nombre-autorizado${autorizadosCount}" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
             </div>
             <div class="mb-6">
                 <label class="block mt-2 mb-2 text-sm font-medium text-white">Nº Doc. Identidad:</label>
-                <input type="text" name="doc-id-autorizado[]" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                <input type="text" name="doc-id-autorizado${autorizadosCount}" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
             </div>
             <div class="mb-6">
                 <label class="block mt-2 mb-2 text-sm font-medium text-white">Cargo:</label>
-                <input type="text" name="cargo-autorizado[]" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                <input type="text" name="cargo-autorizado${autorizadosCount}" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
             </div>
             <div class="mb-6">
                 <label class="block mt-2 mb-2 text-sm font-medium text-white">Email:</label>
-                <input type="email" name="email-autorizado[]" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                <input type="email" name="email-autorizado${autorizadosCount}" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
             </div>
             <button type="button" class="remove-autorizado text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2">Eliminar</button>
         `;
@@ -296,12 +308,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         autorizadoDiv.querySelector(".remove-autorizado").addEventListener("click", () => {
             autorizadoDiv.remove();
+            autorizadosCount--;
         });
     };
 
-    addAutorizadoButton.addEventListener("click", () => {
-        agregarPersonaAutorizada();
-    }); 
+    addAutorizadoButton.addEventListener("click", agregarPersonaAutorizada);
 
     const fechaInput = document.getElementById("fecha");
 
