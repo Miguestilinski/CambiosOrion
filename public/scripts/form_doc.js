@@ -234,6 +234,15 @@ async function completarPDF(formularioData, autorizadosCount) {
             }
         }
 
+        // PEP
+        const pepValue = document.querySelector('input[name="pep"]:checked')?.value;
+        if (pepValue) {
+            const pepField = form.getCheckBox(`pep-${pepValue}`);
+            if (pepField) {
+                pepField.check();
+            }
+        }
+
         // Función para asignar un campo basado en la lógica de nacionalidad/tipo
         const asignarCampoSegunTipo = (campoPDF, tipoCampo, idNacional, idExtranjero) => {
             const tipoSeleccionado = document.querySelector(`input[name="${tipoCampo}"]:checked`)?.value;
@@ -294,8 +303,6 @@ async function completarPDF(formularioData, autorizadosCount) {
 
         asignarCampoTexto('nombre-dec', 'nombre-dec');
         asignarCampoTexto('nacionalidad-dec', 'nacionalidad-dec');
-
-        asignarCampoTexto('pep', 'pep');
 
         asignarCampoTexto('actividad', 'actividad');
         asignarCampoTexto('origen-fondos', 'origen-fondos');
