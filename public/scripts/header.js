@@ -104,6 +104,16 @@ function showUserUI(data) {
         `;
     }
 
+    const sessionMobileMenu = document.getElementById('session-mobile-menu');
+
+    if (sessionMobileMenu) {
+        sessionMobileMenu.querySelector('div:first-child').innerHTML = `
+            <div>${data.nombre}</div>
+            <div class="font-medium truncate">${data.correo}</div>
+            <div class="text-sm text-gray-500">${data.tipo}</div>
+        `;
+    }
+
     if (data.tipo === 'administrativo') {
         // Mostrar el menú administrativo
         menuCliente.style.display = 'none';
