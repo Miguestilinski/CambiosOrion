@@ -187,7 +187,6 @@ function fillCurrencyTable() {
 }
 
 function updateLastUpdatedTimestamp(fecha) {
-    console.log("Actualizando la fecha de última actualización:", fecha);
     const lastUpdatedElement = document.getElementById("last-updated");
     if (lastUpdatedElement) {
         const dateObject = new Date(fecha);
@@ -199,7 +198,6 @@ function updateLastUpdatedTimestamp(fecha) {
             minute: '2-digit',
             second: '2-digit'
         });
-        console.log("Fecha formateada:", formattedDate);
         lastUpdatedElement.textContent = `Última actualización: ${formattedDate}`;
     }
 }
