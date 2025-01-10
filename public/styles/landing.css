@@ -167,6 +167,13 @@ section .max-w-xl {
     border-bottom-right-radius: 8px;
 }
 
+#last-updated {
+    position: absolute;
+    right: 1.4rem;
+    color: white;
+    font-size: 0.75rem;
+}
+
 p {
     transition: all 0.3s ease-in-out;
 }

@@ -117,13 +117,12 @@ function initializeSSE() {
         try {
             const data = JSON.parse(event.data);
 
-            // Si el objeto recibido tiene la propiedad 'isAuthenticated', procesar la autenticación
-            if ('isAuthenticated' in data && !data.isAuthenticated) {
-                console.warn('Usuario no autenticado o sesión inválida.');
-                return;
+            // Actualizar la última actualización
+            if (data.timestamp) {
+                updateLastUpdatedTimestamp(data.timestamp);
             }
 
-            // Validar si el contenido es un array directamente
+            // Procesar datos de las divisas
             if (Array.isArray(data)) {
                 exchangeRates = {};
 
@@ -185,4 +184,20 @@ function fillCurrencyTable() {
             console.log(`No se encontraron datos para la divisa: ${currency}`);
         }
     });
+}
+
+function updateLastUpdatedTimestamp(fecha) {
+    const lastUpdatedElement = document.getElementById("last-updated");
+    if (lastUpdatedElement) {
+        const dateObject = new Date(fecha);
+        const formattedDate = dateObject.toLocaleString('es-CL', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+        lastUpdatedElement.textContent = `Última actualización: ${formattedDate}`;
+    }
 }
