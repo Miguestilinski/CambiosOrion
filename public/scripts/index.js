@@ -278,7 +278,8 @@ function convertCurrency() {
         }
 
         // Mostrar el resultado en el campo amount2 con formato
-        document.getElementById("amount2").value = formatWithThousandsSeparator(Math.round(result));;
+        document.getElementById("amount2").value = formatWithThousandsSeparator(result.toFixed(2));
+        document.getElementById("amount2").value = formatWithThousandsSeparator(Math.round(result));
     } else {
         // Limpiar el campo si no hay datos válidos
         document.getElementById("amount2").value = '';
