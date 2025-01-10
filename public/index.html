@@ -52,17 +52,29 @@
         </div>
     
         <div class="mobile-menu hidden" id="session-mobile-menu">
-            <ul id="guest-actions-mobile" style="display:none;">
-                <li><a href="iniciar_sesion">Iniciar Sesión</a></li>
-                <li><a href="registro" class="register-button">Registrarse</a></li>
-            </ul>
-            <ul id="user-actions-mobile" style="display:none;">
-                <div id="user-name" class="px-2 py-3 text-white">Nombre del usuario</div>
-                <div id="user-email" class="px-2 py-3 text-white font-medium truncate">Correo del usuario</div>
-                <li><a href="dashboard">Mi Perfil</a></li>
-                <li><a href="edit" style="display: none;" class="block px-4 py-2 hover:bg-gray-100">Pizarra</a></li>
-                <li><a href="#" id="logout-button-mobile">Cerrar sesión</a></li>
-            </ul>
+            <div id="guest-actions-mobile" class=" bg-white divide-y divide-gray-100 rounded-lg shadow w-44" style="display:none;">
+                <ul class="py-2 text-sm text-gray-700">
+                    <li><a href="iniciar_sesion" class="block px-4 py-2 hover:bg-gray-100">Iniciar Sesión</a></li>
+                </ul>
+                <ul class="py-2 text-sm text-gray-700">
+                    <li><a href="regsitro" class="block px-4 py-2 hover:bg-gray-100">Registro</a></li>
+                </ul>
+            </div>
+            <div id="user-actions-mobile"  style="display:none;">
+                <div class="px-4 py-3 text-sm text-gray-900">
+                    <div id="user-name">Nombre del usuario</div>
+                    <div id="user-email" class="font-medium truncate">Correo del usuario</div>
+                </div>
+                <ul class="py-2 text-sm text-gray-700">
+                    <li><a href="dashboard" class="block px-4 py-2 hover:bg-gray-100">Mi perfil</a></li>
+                </ul>
+                <ul class="py-2 text-sm text-gray-700" id="menu-admin-mobile" style="display: none;">
+                    <li><a href="edit" class="block px-4 py-2 hover:bg-gray-100">Pizarra</a></li>
+                </ul>
+                <ul class="py-2 text-sm text-gray-700">
+                    <li><a href="#" class="block px-4 py-2 hover:bg-gray-100" id="logout-button-mobile">Cerrar sesión</a></li>
+                </ul>
+            </div>
         </div>
     
         <!-- Menú de navegación para escritorio -->
