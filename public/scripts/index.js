@@ -253,7 +253,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 // Formatear números con separador de miles
 function formatWithThousandsSeparator(value) {
-    return value.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Insertar puntos como separadores de miles
+    // Asegurarse de que `value` sea una cadena antes de aplicar `replace`
+    const stringValue = String(value); // Convertir a cadena si no lo es
+    return stringValue.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Insertar puntos como separadores de miles
 }
 
 // Mantener las conversiones funcionales
