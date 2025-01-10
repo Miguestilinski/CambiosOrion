@@ -169,7 +169,8 @@ section .max-w-xl {
 
 #last-updated {
     position: absolute;
-    right: 1.4rem;
+    margin-top:3rem;
+    right: 4rem;
     color: white;
     font-size: 0.75rem;
 }
