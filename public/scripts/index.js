@@ -202,6 +202,7 @@ function setCurrency1(currency) {
     document.getElementById("currency1-text").textContent = currency;
     updateCurrencyIcon();
     filterDropdownCurrencies(); // Actualizar opciones visibles
+    convertCurrency(); // Realizar la conversión después de actualizar la divisa
 }
 
 // Función para establecer currency2
@@ -219,6 +220,7 @@ function setCurrency2(currency) {
     document.getElementById("currency2-text").textContent = currency;
     updateCurrencyIcon();
     filterDropdownCurrencies(); // Actualizar opciones visibles
+    convertCurrency(); // Realizar la conversión después de actualizar la divisa
 }
 
 // Modificar los inputs para formatear y validar el contenido
@@ -233,7 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const numericValue = rawValue.replace(/\D/g, ''); // Quitar caracteres no numéricos
             amount1Input.dataset.rawValue = numericValue; // Guardar el valor sin formatear en un atributo personalizado
             amount1Input.value = formatWithThousandsSeparator(numericValue); // Mostrar el valor con separadores
-            convertFromAmount1(); // Realizar conversión en tiempo real
+            convertCurrency(); // Realizar conversión en tiempo real
         });
 
         // Al entrar al campo, mostrar sin formato
@@ -249,14 +251,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
-
 // Formatear números con separador de miles
 function formatWithThousandsSeparator(value) {
     return value.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Insertar puntos como separadores de miles
 }
 
 // Mantener las conversiones funcionales
-function convertFromAmount1() {
+function convertCurrency() {
     const amount1Raw = document.getElementById("amount1").dataset.rawValue || '0'; // Obtener valor sin formato
     const amount1 = parseFloat(amount1Raw); // Convertir a número
     const currency1 = document.getElementById("currency1-text").textContent;
@@ -271,6 +272,9 @@ function convertFromAmount1() {
         } else if (currency2 === "CLP" && currency1 !== "CLP") {
             // Si la moneda objetivo es CLP, usar el precio de compra de la moneda base
             result = amount1 * exchangeRates[currency1].compra;
+        } else {
+            // Para otras conversiones, usar el valor de la venta o compra
+            result = amount1 * exchangeRates[currency1].compra / exchangeRates[currency2].venta;
         }
 
         // Mostrar el resultado en el campo amount2 con formato
