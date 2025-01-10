@@ -118,8 +118,8 @@ function initializeSSE() {
             const data = JSON.parse(event.data);
 
             // Capturar la fecha de última actualización
-            if (responseData.length && responseData[0].fecha_actualizacion) {
-                updateLastUpdatedTimestamp(responseData[0].fecha_actualizacion);
+            if (data.length && data[0].fecha_actualizacion) {
+                updateLastUpdatedTimestamp(data[0].fecha_actualizacion);
             }
 
             // Procesar datos de las divisas
