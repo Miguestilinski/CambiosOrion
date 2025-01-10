@@ -104,10 +104,8 @@ function showUserUI(data) {
         `;
     }
 
-    const sessionMobileMenu = document.getElementById('session-mobile-menu');
-
-    if (sessionMobileMenu) {
-        sessionMobileMenu.querySelector('div:first-child').innerHTML = `
+    if (userActionsMobile) {
+        userActionsMobile.querySelector('div:first-child').innerHTML = `
             <div>${data.nombre}</div>
             <div class="font-medium truncate">${data.correo}</div>
             <div class="text-sm text-gray-500">${data.tipo}</div>
