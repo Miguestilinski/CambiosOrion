@@ -223,6 +223,26 @@ function setCurrency2(currency) {
     convertCurrency(); // Realizar la conversión después de actualizar la divisa
 }
 
+// Nueva función para intercambiar divisas entre dropdown1 y dropdown2
+function swapCurrencies() {
+    const currency1 = document.getElementById("currency1-text").textContent;
+    const currency2 = document.getElementById("currency2-text").textContent;
+
+    // Asegurarse de que siempre haya al menos una divisa CLP
+    if (currency1 !== "CLP" && currency2 !== "CLP") {
+        // Si ambas divisas son diferentes de CLP, uno de los dropdown debe ser CLP
+        document.getElementById("currency2-text").textContent = "CLP";
+    }
+
+    // Intercambiar las divisas
+    document.getElementById("currency1-text").textContent = currency2;
+    document.getElementById("currency2-text").textContent = currency1;
+
+    updateCurrencyIcon();
+    filterDropdownCurrencies(); // Actualizar opciones visibles
+    convertCurrency(); // Realizar la conversión después del intercambio
+}
+
 // Modificar los inputs para formatear y validar el contenido
 document.addEventListener('DOMContentLoaded', () => {
     initializePage();
