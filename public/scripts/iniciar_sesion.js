@@ -37,12 +37,34 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
+    const rutInput = document.getElementById("rut");
+
+    rutInput.addEventListener("blur", function() {
+        // Eliminar puntos, guiones y espacios del RUT ingresado
+        let rut = rutInput.value.replace(/[^\dKk]/g, "").toUpperCase();
+
+        // Si el RUT tiene menos de 2 caracteres, no es válido para formatear
+        if (rut.length < 2) {
+            rutInput.value = rut; // Mostrarlo tal cual si no es formateable
+            return;
+        }
+
+        const cuerpo = rut.slice(0, -1);
+        const dv = rut.slice(-1);
+
+        // Formatear el cuerpo del RUT con puntos cada tres dígitos
+        const cuerpoFormateado = cuerpo.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+        // Actualizar el campo con el formato completo
+        rutInput.value = `${cuerpoFormateado}-${dv}`;
+    });
+
     const loginForm = document.getElementById("loginForm");
     loginForm.addEventListener("submit", async function(event) {
         event.preventDefault();
 
         const tipoUsuario = document.querySelector('.tab-button.active').dataset.tipoUsuario;
-        const rut = document.getElementById("rut").value.trim();
+        let rut = rutInput.value.trim().replace(/[^\dKk]/g, '').toUpperCase(); // Limpieza final del RUT
         let correo = document.getElementById("correo").value.trim().toLowerCase();
         const password = document.getElementById("password").value.trim();
 
@@ -64,7 +86,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         const formData = new FormData(loginForm);
-
         formData.set("correo", correo);
 
         try {
@@ -87,7 +108,6 @@ document.addEventListener("DOMContentLoaded", function() {
             } else {
                 alert(result.message);
             }
-
         } catch (error) {
             console.error("Error en la solicitud AJAX:", error);
             alert("Hubo un problema al conectar con el servidor.");
