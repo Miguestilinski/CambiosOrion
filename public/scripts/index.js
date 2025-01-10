@@ -166,7 +166,7 @@ function filterDropdownCurrencies() {
     const currency1 = document.getElementById("currency1-text").textContent;
     const currency2 = document.getElementById("currency2-text").textContent;
 
-    // Actualizar dropdown1
+    // Actualizar dropdown1 (asegurando que CLP esté primero si corresponde)
     Array.from(dropdown1.children).forEach(option => {
         const divisa = option.textContent.trim();
         if (divisa === currency1 || divisa === currency2) {
@@ -176,7 +176,7 @@ function filterDropdownCurrencies() {
         }
     });
 
-    // Actualizar dropdown2
+    // Asegurar que CLP esté primero en dropdown2 si es necesario
     Array.from(dropdown2.children).forEach(option => {
         const divisa = option.textContent.trim();
         if (divisa === currency1 || divisa === currency2) {
@@ -193,7 +193,7 @@ function setCurrency1(currency) {
 
     if (currency === currency2) {
         // Si la nueva selección es igual a la divisa en currency2, intercambiar
-        document.getElementById("currency2-text").textContent = "CLP";
+        swapCurrencies();
     } else if (currency !== "CLP" && currency2 !== "CLP") {
         // Si ninguna de las divisas es CLP, establecer currency2 a CLP
         document.getElementById("currency2-text").textContent = "CLP";
@@ -211,7 +211,7 @@ function setCurrency2(currency) {
 
     if (currency === currency1) {
         // Si la nueva selección es igual a la divisa en currency1, intercambiar
-        document.getElementById("currency1-text").textContent = "CLP";
+        swapCurrencies();
     } else if (currency !== "CLP" && currency1 !== "CLP") {
         // Si ninguna de las divisas es CLP, establecer currency1 a CLP
         document.getElementById("currency1-text").textContent = "CLP";
@@ -223,7 +223,7 @@ function setCurrency2(currency) {
     convertCurrency(); // Realizar la conversión después de actualizar la divisa
 }
 
-// Nueva función para intercambiar divisas entre dropdown1 y dropdown2
+// Función para intercambiar las divisas entre currency1 y currency2
 function swapCurrencies() {
     const currency1 = document.getElementById("currency1-text").textContent;
     const currency2 = document.getElementById("currency2-text").textContent;
@@ -233,7 +233,7 @@ function swapCurrencies() {
 
     updateCurrencyIcon();
     filterDropdownCurrencies(); // Actualizar opciones visibles
-    convertCurrency(); // Realizar la conversión después de intercambiar
+    convertCurrency(); // Realizar la conversión después de actualizar las divisas
 }
 
 // Modificar los inputs para formatear y validar el contenido
@@ -346,8 +346,6 @@ function updateAddCurrencyDropdown() {
         }
     });
 }
-
-document.getElementById("swap-currencies").addEventListener("click", swapCurrencies);
 
 function fillCurrencyTable() {
     const tableBody = document.getElementById("currency-table-body");
