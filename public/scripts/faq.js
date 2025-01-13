@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const faqContainer = document.getElementById("faq-accordion");
 
+
     faqData.forEach((faq, index) => {
         const faqItem = document.createElement("div");
         faqItem.classList.add("accordion-item", "mb-4", "border", "border-gray-300", "rounded-xl");
@@ -32,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                 </svg>
             </button>
-            <div class="accordion-body hidden p-4 text-sm text-gray-600">
+            <div class="accordion-body hidden p-4 text-sm text-gray-600 bg-gray-50">
                 ${faq.answer}
             </div>
         `;
@@ -44,9 +45,25 @@ document.addEventListener("DOMContentLoaded", () => {
     faqContainer.addEventListener("click", (e) => {
         const button = e.target.closest(".accordion-header");
         if (button) {
+            const faqItem = button.parentElement;
             const body = button.nextElementSibling;
-            body.classList.toggle("hidden");
-            button.querySelector("svg").classList.toggle("rotate-180");
+            const isHidden = body.classList.contains("hidden");
+
+            // Reset styles for all items
+            faqContainer.querySelectorAll(".accordion-item").forEach(item => {
+                item.classList.remove("rounded-t-xl");
+                item.classList.add("rounded-xl");
+                item.querySelector(".accordion-body").classList.add("hidden");
+                item.querySelector(".accordion-header svg").classList.remove("rotate-180");
+            });
+
+            // Apply styles to the active item
+            if (isHidden) {
+                faqItem.classList.remove("rounded-xl");
+                faqItem.classList.add("rounded-t-xl");
+                body.classList.remove("hidden");
+                button.querySelector("svg").classList.add("rotate-180");
+            }
         }
     });
 });
