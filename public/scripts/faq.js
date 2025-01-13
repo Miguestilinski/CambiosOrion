@@ -53,9 +53,9 @@ document.addEventListener("DOMContentLoaded", () => {
     faqContainer.addEventListener("click", (e) => {
         const button = e.target.closest(".accordion-header");
         if (button) {
-            const faqItem = button.parentElement; // El contenedor principal del acordeón
+            const faqItem = button.parentElement; 
             const body = button.nextElementSibling; // El cuerpo del acordeón
-            const isHidden = body.classList.contains("hidden"); // Verifica si está oculto
+            const isHidden = body.classList.contains("hidden");
 
             // Reset styles for todos los acordeones
             faqContainer.querySelectorAll(".accordion-item").forEach(item => {
