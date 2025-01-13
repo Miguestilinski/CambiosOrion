@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         try {
             // Realizar la solicitud para restablecer la contraseña
-            const response = await fetch('https://cambiosorion.cl/data/forgotPassword.php', {
+            const response = await fetch('https://cambiosorion.cl/data/forgot.php', {
                 method: 'POST',
                 body: JSON.stringify({ correo: email }),
                 headers: { 'Content-Type': 'application/json' }
