@@ -2,14 +2,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     const faqData = [
         {
-            question: "¿Cómo puedo registrarme?",
-            answer: "Puedes registrarte haciendo clic en el botón 'Registrarse' en la esquina superior derecha y siguiendo las instrucciones."
-        },
-        {
-            question: "¿Cómo restablezco mi contraseña?",
-            answer: "Haz clic en '¿Olvidaste tu contraseña?' en la página de inicio de sesión y sigue los pasos para restablecerla."
-        },
-        {
             question: "¿Qué métodos de pago aceptan?",
             answer: "Aceptamos efectivo y transferencias bancarias."
         },
