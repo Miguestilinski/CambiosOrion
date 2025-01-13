@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                 </svg>
             </button>
-            <div class="accordion-body hidden p-4 text-sm text-gray-600 bg-gray-50">
+            <div class="accordion-body hidden p-4 text-sm text-white bg-gray-50">
                 ${faq.answer}
             </div>
         `;
