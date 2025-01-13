@@ -13,6 +13,22 @@ document.addEventListener("DOMContentLoaded", () => {
             question: "¿Qué métodos de pago aceptan?",
             answer: "Aceptamos efectivo y transferencias bancarias."
         },
+        {
+            question: "¿Cuáles son los horarios de atención de Orion?",
+            answer: "Nuestras sucursales están abiertas de lunes a viernes de 9:00 a.m. a 6:00 p.m., y los sábados de 9:00 a.m. a 1:00 p.m. Consulta los horarios específicos en línea."
+        },
+        {
+            question: "¿Cómo puedo contactar al servicio al cliente?",
+            answer: "Puedes escribirnos a nuestro correo electrónico, usar nuestro chat en línea o llamarnos al número de atención disponible en nuestro sitio web."
+        },
+        {
+            question: "¿Hay límites en el monto de cambio de divisas?",
+            answer: "Sí, para montos mayores a $5.000 USD o equivalentes, es posible que se requiera documentación adicional."
+        },
+        {
+            question: "¿Cómo se calculan los tipos de cambio?",
+            answer: "Los tipos de cambio se actualizan en tiempo real y se basan en el mercado internacional de divisas. Puedes consultar el tipo actual antes de realizar tu operación."
+        },
     ];
 
     const faqContainer = document.getElementById("faq-accordion");
