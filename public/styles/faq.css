@@ -48,7 +48,6 @@ h2 {
 }
 
 .accordion-header {
-    border-radius: 0.75rem 0.75rem 0 0; /* Solo bordes superiores redondeados */
     transition: background-color 0.2s ease;
 }
 
