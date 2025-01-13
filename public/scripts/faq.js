@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
             question: "¿Cuáles son los horarios de atención de Orion?",
-            answer: "Nuestras sucursales están abiertas de lunes a viernes de 9:00 a.m. a 6:00 p.m., y los sábados de 9:00 a.m. a 1:00 p.m. Consulta los horarios específicos en línea."
+            answer: "Nuestra sucursal está abierta de lunes a viernes de 9:00 a.m. a 5:00 p.m. Consulta los horarios específicos en línea."
         },
         {
             question: "¿Cómo puedo contactar al servicio al cliente?",
