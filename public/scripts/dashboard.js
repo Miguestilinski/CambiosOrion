@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 } else {
                     console.error('Error: ', data.message);
-                    window.location.href = '/iniciar_sesion';
+                    window.location.href = '/login';
                 }
             })
             .catch(error => {

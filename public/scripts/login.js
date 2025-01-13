@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", function() {
         formData.set("correo", correo);
 
         try {
-            const response = await fetch('https://cambiosorion.cl/data/iniciar_sesion.php', {
+            const response = await fetch('https://cambiosorion.cl/data/login.php', {
                 method: 'POST',
                 body: formData,
             });
