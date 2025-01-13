@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
             question: "¿Qué métodos de pago aceptan?",
-            answer: "Aceptamos tarjetas de crédito, débito y pagos por PayPal."
+            answer: "Aceptamos efectivo y transferencias bancarias."
         },
     ];
 
