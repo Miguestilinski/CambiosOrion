@@ -42,8 +42,15 @@ h2 {
     @apply text-2xl font-semibold text-white text-center mb-6;
 }
 
+.accordion {
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+}
+
 .accordion-header {
     transition: background-color 0.2s ease;
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
 }
 
 .accordion-header:hover {
