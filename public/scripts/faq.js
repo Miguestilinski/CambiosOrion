@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
             question: "¿Cómo puedo contactar al servicio al cliente?",
-            answer: "Puedes escribirnos a nuestro correo electrónico, a través de whatsapp o llamarnos al número de atención disponible en nuestro sitio web. Responderemos dentro del horario de atención"
+            answer: "Puedes escribirnos a nuestro correo electrónico, a través de whatsapp o llamarnos al número de atención disponible en nuestro sitio web. Responderemos dentro del horario de atención."
         },
         {
             question: "¿Hay límites en el monto de cambio de divisas?",
@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     faqData.forEach((faq, index) => {
         const faqItem = document.createElement("div");
-        faqItem.classList.add("accordion-item", "mb-4", "border", "border-gray-300", "rounded-xl");
+        faqItem.classList.add("accordion-item", "mb-4", "border", "border-gray-300", "rounded-t-xl");
 
         faqItem.innerHTML = `
             <button
@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                 </svg>
             </button>
-            <div class="accordion-body hidden p-4 text-sm text-white bg-gray-50">
+            <div class="accordion-body rounded-b-xl hidden p-4 text-sm text-white bg-gray-50">
                 ${faq.answer}
             </div>
         `;
@@ -53,23 +53,27 @@ document.addEventListener("DOMContentLoaded", () => {
     faqContainer.addEventListener("click", (e) => {
         const button = e.target.closest(".accordion-header");
         if (button) {
-            const faqItem = button.parentElement;
-            const body = button.nextElementSibling;
-            const isHidden = body.classList.contains("hidden");
+            const faqItem = button.parentElement; // El contenedor principal del acordeón
+            const body = button.nextElementSibling; // El cuerpo del acordeón
+            const isHidden = body.classList.contains("hidden"); // Verifica si está oculto
 
-            // Reset styles for all items
+            // Reset styles for todos los acordeones
             faqContainer.querySelectorAll(".accordion-item").forEach(item => {
                 item.classList.remove("rounded-t-xl");
                 item.classList.add("rounded-xl");
-                item.querySelector(".accordion-body").classList.add("hidden");
-                item.querySelector(".accordion-header svg").classList.remove("rotate-180");
+                const itemBody = item.querySelector(".accordion-body");
+                itemBody.classList.add("hidden");
+                itemBody.classList.remove("rounded-b-xl"); // Quitar bordes inferiores redondeados
+                const itemHeader = item.querySelector(".accordion-header svg");
+                itemHeader.classList.remove("rotate-180");
             });
 
-            // Apply styles to the active item
+            // Aplicar estilos al acordeón activo
             if (isHidden) {
                 faqItem.classList.remove("rounded-xl");
                 faqItem.classList.add("rounded-t-xl");
                 body.classList.remove("hidden");
+                body.classList.add("rounded-b-xl"); // Añadir bordes inferiores redondeados al cuerpo
                 button.querySelector("svg").classList.add("rotate-180");
             }
         }
