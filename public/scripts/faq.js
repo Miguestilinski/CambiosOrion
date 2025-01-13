@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
             question: "¿Cómo puedo contactar al servicio al cliente?",
-            answer: "Puedes escribirnos a nuestro correo electrónico, usar nuestro chat en línea o llamarnos al número de atención disponible en nuestro sitio web."
+            answer: "Puedes escribirnos a nuestro correo electrónico, a través de whatsapp o llamarnos al número de atención disponible en nuestro sitio web. Responderemos dentro del horario de atención"
         },
         {
             question: "¿Hay límites en el monto de cambio de divisas?",
