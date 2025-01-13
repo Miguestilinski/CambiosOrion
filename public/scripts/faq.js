@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     faqData.forEach((faq, index) => {
         const faqItem = document.createElement("div");
-        faqItem.classList.add("accordion-item", "mb-4", "border", "border-gray-300");
+        faqItem.classList.add("accordion-item", "mb-4", "border", "border-gray-300", "rounded-xl");
 
         faqItem.innerHTML = `
             <button
