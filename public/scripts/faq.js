@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
         faqItem.innerHTML = `
             <button
                 type="button"
-                class="accordion-header flex justify-between items-center p-4 w-full text-left bg-white text-gray-800 border-b focus:outline-none"
+                class="accordion-header rounded-xl flex justify-between items-center p-4 w-full text-left bg-white text-gray-800 border-b focus:outline-none"
                 data-index="${index}"
             >
                 <span>${faq.question}</span>
