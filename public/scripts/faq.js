@@ -59,21 +59,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Reset styles for todos los acordeones
             faqContainer.querySelectorAll(".accordion-item").forEach(item => {
-                item.classList.remove("rounded-t-xl");
-                item.classList.add("rounded-xl");
+                button.classList.remove("rounded-t-xl");
+                button.classList.add("rounded-xl");
                 const itemBody = item.querySelector(".accordion-body");
                 itemBody.classList.add("hidden");
-                itemBody.classList.remove("rounded-b-xl"); // Quitar bordes inferiores redondeados
                 const itemHeader = item.querySelector(".accordion-header svg");
                 itemHeader.classList.remove("rotate-180");
             });
 
             // Aplicar estilos al acordeón activo
             if (isHidden) {
-                faqItem.classList.remove("rounded-xl");
-                faqItem.classList.add("rounded-t-xl");
+                button.classList.remove("rounded-xl");
+                button.classList.add("rounded-t-xl");
                 body.classList.remove("hidden");
-                body.classList.add("rounded-b-xl"); // Añadir bordes inferiores redondeados al cuerpo
                 button.querySelector("svg").classList.add("rotate-180");
             }
         }
