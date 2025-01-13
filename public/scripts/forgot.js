@@ -1,18 +1,12 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     // Variables
-    const forgotPasswordLink = document.getElementById('forgotPasswordLink');
     const forgotPasswordForm = document.getElementById('forgotPasswordForm');
     const forgotPasswordFormElement = document.getElementById('forgotPasswordFormElement');
     const forgotEmailInput = document.getElementById('forgotEmail');
     const forgotPasswordError = document.getElementById('forgotPasswordError');
 
-    // Mostrar el formulario de recuperación de contraseña
-    forgotPasswordLink.addEventListener('click', function() {
-        forgotPasswordForm.classList.remove('hidden');
-    });
-
     // Enviar el formulario de recuperación de contraseña
-    forgotPasswordFormElement.addEventListener('submit', async function(event) {
+    forgotPasswordFormElement.addEventListener('submit', async function (event) {
         event.preventDefault();
 
         const email = forgotEmailInput.value.trim();
