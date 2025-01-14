@@ -34,21 +34,20 @@ document.addEventListener("DOMContentLoaded", function () {
             const contentType = response.headers.get("Content-Type");
 
             let result;
+            let responseText = await response.text(); // Leemos la respuesta como texto primero
+
+            console.log("Respuesta cruda del servidor:", responseText); // Imprimimos la respuesta cruda
 
             // Verificamos si la respuesta es JSON
             if (contentType && contentType.includes("application/json")) {
-                result = await response.json(); // Si es JSON, lo parseamos directamente
-            } else {
-                // Si no es JSON, obtenemos el texto como respuesta
-                const textResponse = await response.text();
-                console.log("Respuesta en texto:", textResponse);
-
-                // Intentamos convertir a JSON manualmente, si es posible
                 try {
-                    result = JSON.parse(textResponse);
+                    result = JSON.parse(responseText); // Intentamos parsear la respuesta como JSON
                 } catch (error) {
-                    throw new Error("La respuesta del servidor no es un JSON válido");
+                    throw new Error("La respuesta no es un JSON válido");
                 }
+            } else {
+                // Si la respuesta no es JSON, lanzamos un error
+                throw new Error("La respuesta del servidor no es JSON");
             }
 
             // Verificar si la respuesta fue exitosa
