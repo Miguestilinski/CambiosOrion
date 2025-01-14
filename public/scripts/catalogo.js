@@ -39,7 +39,7 @@ function processData(data) {
 
   const divisasOrdenadas = [
     "USD", "EUR", "ARS", "BRL", "PEN", "COP",
-    "UYU", "BOB", "CAD", "GBP", "JPY", "GNY",
+    "UYU", "BOB", "CAD", "GBP", "JPY", "CNY",
     "SEK", "AUD", "MXN", "NZD", "CHF", "DKK",
     "ORO 100"
   ];
