@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const forgotPasswordFormElement = document.getElementById('forgotPasswordFormElement');
     const forgotEmailInput = document.getElementById('forgotEmail');
     const forgotPasswordError = document.getElementById('forgotPasswordError');
+    const submitButton = forgotPasswordFormElement.querySelector('button[type="submit"]');
 
     // Enviar el formulario de recuperación de contraseña
     forgotPasswordFormElement.addEventListener('submit', async function (event) {
@@ -16,6 +17,9 @@ document.addEventListener("DOMContentLoaded", function () {
             forgotPasswordError.classList.remove('hidden');
             return;
         }
+
+        // Deshabilitar el botón de envío mientras se procesa la solicitud
+        submitButton.disabled = true;
 
         try {
             // Realizar la solicitud para restablecer la contraseña
@@ -62,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
             alert("Hubo un problema al procesar tu solicitud.");
         } finally {
             // Habilitar el botón nuevamente después de la solicitud
-            forgotPasswordFormElement.querySelector('button[type="submit"]').disabled = false;
+            submitButton.disabled = false;
         }
     });
 
