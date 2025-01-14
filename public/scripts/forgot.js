@@ -25,6 +25,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 headers: { 'Content-Type': 'application/json' }
             });
 
+            // Verificar si la respuesta es exitosa
+            if (!response.ok) {
+                throw new Error('Error en la respuesta del servidor');
+            }
+
             const result = await response.json();
             if (result.success) {
                 alert('Te hemos enviado un correo para restablecer tu contraseña.');
