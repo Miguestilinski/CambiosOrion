@@ -25,6 +25,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 headers: { 'Content-Type': 'application/json' }
             });
 
+            // Verificamos si la respuesta es exitosa
+            if (!response.ok) {
+                throw new Error('Error en la respuesta del servidor');
+            }
+
+            // Obtenemos el tipo de contenido
             const contentType = response.headers.get("Content-Type");
 
             let result;
@@ -45,20 +51,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
 
-            // Verificar si la respuesta es exitosa
-            if (!response.ok) {
-                throw new Error('Error en la respuesta del servidor');
-            }
-
+            // Verificar si la respuesta fue exitosa
             if (result.success) {
                 alert('Te hemos enviado un correo para restablecer tu contraseña.');
                 forgotPasswordForm.classList.add('hidden'); // Ocultar el formulario
             } else {
-                alert(result.message);
+                alert(result.message); // Mensaje de error del servidor
             }
         } catch (error) {
             console.error("Error al procesar la solicitud:", error);
             alert("Hubo un problema al procesar tu solicitud.");
+        } finally {
+            // Habilitar el botón nuevamente después de la solicitud
+            forgotPasswordFormElement.querySelector('button[type="submit"]').disabled = false;
         }
     });
 
