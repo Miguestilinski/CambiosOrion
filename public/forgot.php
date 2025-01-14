@@ -133,7 +133,7 @@ try {
                 .container {
                     width: 100%;
                     max-width: 600px;
-                    margin: 3.5rem auto;
+                    margin: 5rem auto;
                     background-color: #ffffff;
                     border-radius: 0.75rem;
                     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
