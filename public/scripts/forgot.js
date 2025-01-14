@@ -4,7 +4,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const forgotPasswordFormElement = document.getElementById('forgotPasswordFormElement');
     const forgotEmailInput = document.getElementById('forgotEmail');
     const forgotPasswordError = document.getElementById('forgotPasswordError');
-    const submitButton = forgotPasswordFormElement.querySelector('button[type="submit"]');
 
     // Enviar el formulario de recuperación de contraseña
     forgotPasswordFormElement.addEventListener('submit', async function (event) {
@@ -17,9 +16,6 @@ document.addEventListener("DOMContentLoaded", function () {
             forgotPasswordError.classList.remove('hidden');
             return;
         }
-
-        // Deshabilitar el botón de envío mientras se procesa la solicitud
-        submitButton.disabled = true;
 
         try {
             // Realizar la solicitud para restablecer la contraseña
@@ -42,16 +38,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
             console.log("Respuesta cruda del servidor:", responseText); // Imprimimos la respuesta cruda
 
-            // Verificamos si la respuesta es JSON
-            if (contentType && contentType.includes("application/json")) {
-                try {
-                    result = JSON.parse(responseText); // Intentamos parsear la respuesta como JSON
-                } catch (error) {
-                    throw new Error("La respuesta no es un JSON válido");
-                }
-            } else {
-                // Si la respuesta no es JSON, lanzamos un error
-                throw new Error("La respuesta del servidor no es JSON");
+            // Filtramos solo la parte JSON de la respuesta
+            const jsonStart = responseText.indexOf("{");
+            const jsonEnd = responseText.lastIndexOf("}");
+            const jsonResponse = responseText.slice(jsonStart, jsonEnd + 1);
+
+            // Intentamos parsear la parte JSON
+            try {
+                result = JSON.parse(jsonResponse);
+            } catch (error) {
+                throw new Error("La respuesta no es un JSON válido");
             }
 
             // Verificar si la respuesta fue exitosa
@@ -66,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
             alert("Hubo un problema al procesar tu solicitud.");
         } finally {
             // Habilitar el botón nuevamente después de la solicitud
-            submitButton.disabled = false;
+            forgotPasswordFormElement.querySelector('button[type="submit"]').disabled = false;
         }
     });
 
