@@ -75,9 +75,9 @@ document.addEventListener("DOMContentLoaded", function () {
     // Función para mostrar el mensaje de éxito o error
     function showMessage(message, type) {
         if (type === 'success') {
-            messageDiv.innerHTML = `<p class="mt-2 text-sm text-green-600">${message}</p>`;
+            messageDiv.innerHTML = `<p class="mt-4 text-sm text-center text-green-600">${message}</p>`;
         } else if (type === 'error') {
-            messageDiv.innerHTML = `<p class="mt-2 text-sm text-red-600">${message}</p>`;
+            messageDiv.innerHTML = `<p class="mt-4 text-sm text-center text-red-600">${message}</p>`;
         } else {
             messageDiv.innerHTML = ''; // Limpiar el mensaje
         }
