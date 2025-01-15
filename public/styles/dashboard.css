@@ -197,5 +197,10 @@ input#email{
         width: 70%;
         justify-self: center;
     }
+
+    button#save_changes {
+        width: 70%;
+        justify-self: center;
+    }
     
 }
