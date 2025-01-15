@@ -137,11 +137,15 @@ input#email{
         flex-direction: column; /* Ajusta a diseño vertical en pantallas pequeñas */
     }
 
+    .sidebar-header{
+        margin-top: 1rem;
+    }
+
     /* Sidebar como pestañas */
     .sidebar {
         width: 100%; /* Sidebar ocupa toda la anchura */
         border-right: none; /* Elimina la línea divisoria en diseño vertical */
-        border-bottom: 2px solid white; /* Línea divisora horizontal */
+        border-bottom: 0.5px solid white; /* Línea divisora horizontal */
         display: flex; /* Mostrar barra horizontal */
         justify-content: space-around; /* Centrado de pestañas */
         padding: 0; /* Eliminar padding */
@@ -168,6 +172,30 @@ input#email{
     }
 
     .dashboard-content {
+        margin-top: 1rem;
         padding: 1rem;
     }
+
+    div#password-group {
+        flex-direction: column;
+    }
+
+    div#new_pass {
+        padding: 0;
+    }
+
+    div#confirm_pass {
+        padding: 0;
+    }
+
+    input#password {
+        width: 70%;
+        justify-self: center;
+    }
+
+    input#confirm-password {
+        width: 70%;
+        justify-self: center;
+    }
+    
 }
