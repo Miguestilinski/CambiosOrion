@@ -13,6 +13,8 @@ function initializePage() {
 }
 
 function loadCurrenciesWithSSE() {
+    showDropdownSkeleton("dropdown1");
+    showDropdownSkeleton("dropdown2");
     const eventSource = new EventSource('https://cambiosorion.cl/api/divisas/stream/stream_divisas.php');
 
     eventSource.onopen = () => {};
@@ -153,6 +155,19 @@ function showSkeleton() {
         tableBody.offsetHeight; // Esto fuerza el reflujo del DOM
     }
 }
+
+function showDropdownSkeleton(dropdownId) {
+    const dropdown = document.getElementById(dropdownId);
+    if (dropdown) {
+        dropdown.innerHTML = ''; // Limpia el contenido existente
+        for (let i = 0; i < 4; i++) { // Mostrar 4 loaders como ejemplo
+            const skeleton = document.createElement('div');
+            skeleton.className = 'skeleton-loader-dropdown';
+            dropdown.appendChild(skeleton);
+        }
+    }
+}
+
 
 function hideSkeleton() {
     const tableBody = document.getElementById("currency-table-body");
@@ -479,10 +494,15 @@ function toggleDropdown(dropdownId, event) {
         activeDropdown.classList.add("hidden");
     }
 
-    // Alternar la visibilidad del dropdown actual
+    // Verificar si se debe mostrar el skeleton loader
     if (dropdown.classList.contains("hidden")) {
         dropdown.classList.remove("hidden");
         activeDropdown = dropdown;
+
+        // Si el dropdown está vacío, mostrar los skeleton loaders
+        if (dropdown.children.length === 0 || dropdown.innerHTML.trim() === '') {
+            showDropdownSkeleton(dropdownId); // Mostrar skeleton
+        }
     } else {
         dropdown.classList.add("hidden");
         activeDropdown = null;

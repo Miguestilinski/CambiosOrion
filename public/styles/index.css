@@ -286,7 +286,7 @@ input[type="number"]::-moz-outer-spin-button {
     width: 100%;
     height: 100%;
     border-radius: 0.5rem;
-    animation: pulse 0.5s infinite ease-in-out;
+    animation: pulse 1s infinite ease-in-out;
 }
 
 @keyframes pulse {
@@ -299,6 +299,15 @@ input[type="number"]::-moz-outer-spin-button {
     100% {
         background-color: #d4d4d4;
     }
+}
+
+.skeleton-loader-dropdown {
+    background-color: #d4d4d4;
+    height: 24px; /* Altura de las opciones */
+    width: 100%;
+    border-radius: 4px;
+    animation: pulse 1s infinite ease-in-out;
+    margin-bottom: 8px; /* Espacio entre los loaders */
 }
 
 /* Contenedor de la tabla */
