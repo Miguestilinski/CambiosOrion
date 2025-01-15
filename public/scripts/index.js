@@ -147,7 +147,7 @@ function showSkeleton() {
                 </td>
             </tr>
         `;
-        tableBody.innerHTML = skeletonRow.repeat(5); // Mostrar 5 filas como placeholder
+        tableBody.innerHTML = skeletonRow.repeat(4);
     }
 }
 
