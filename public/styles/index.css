@@ -515,4 +515,39 @@ button:hover {
     .converter-section {
         padding: 20px;
     }
+
+    /* Ajustar el contenedor para que se apile verticalmente en móviles */
+    .sending-money-container {
+        flex-direction: column;
+        height: auto;
+    }
+
+    /* La imagen ocupa toda la parte superior */
+    .sending-money-image {
+        width: 100%;
+        height: 200px; /* Ajustar el tamaño de la imagen */
+    }
+
+    /* El contenido se ajusta a la parte inferior de la imagen */
+    .sending-money-content {
+        width: 100%;
+        padding: 1rem;
+        text-align: center; /* Centrar el texto en dispositivos móviles */
+    }
+
+    /* Ajustar el tamaño del texto */
+    .sending-money-content h2 {
+        font-size: 1.5rem;
+    }
+
+    .sending-money-content p {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Estilo del botón */
+    .sending-money-button {
+        padding: 0.75rem 1.2rem;
+        font-size: 1rem;
+    }
 }
