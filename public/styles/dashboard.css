@@ -182,10 +182,12 @@ input#email{
 
     div#new_pass {
         padding: 0;
+        width: 100%;
     }
 
     div#confirm_pass {
         padding: 0;
+        width: 100%;
     }
 
     input#password {
@@ -199,7 +201,6 @@ input#email{
     }
 
     button#save_changes {
-        width: 70%;
         justify-self: center;
     }
     
