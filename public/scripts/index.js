@@ -439,7 +439,7 @@ function fillCurrencyTable() {
             tableBody.appendChild(row);
         }
     });
-    }, 1000);
+    }, 500);
 }
 
 function updateLastUpdatedTimestamp(fecha) {
