@@ -192,8 +192,8 @@ function preloadIcon(iconUrl) {
 // Función para crear opciones reutilizables
 function createDropdownOption(currency, icon, onClickHandler) {
     const option = document.createElement("div");
-    option.innerHTML = `<img src="${icon}" alt="${currency}" class="w-6 h-6 mr-3"> <span>${currency}</span>`;  // Aseguramos que el texto esté dentro de un <span> para mejor control
-    option.className = "p-2 hover:bg-gray-100 cursor-pointer flex items-center"; // Añadimos `flex` a la clase
+    option.innerHTML = `<img src="${icon}" alt="${currency}" class="w-6 h-6 mr-3"> <span>${currency}</span>`;
+    option.className = "p-2 hover:bg-gray-100 cursor-pointer flex items-center";
     option.onclick = onClickHandler;
     return option;
 }
