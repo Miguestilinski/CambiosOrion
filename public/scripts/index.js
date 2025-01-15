@@ -376,13 +376,15 @@ function fillCurrencyTable() {
         return; // Evita continuar si el elemento no existe
     }
 
-    // Ocultar el skeleton mientras se llena la tabla
+    // Eliminar el skeleton al comenzar a llenar la tabla
     const skeletonRow = tableBody.querySelector(".skeleton-row");
     if (skeletonRow) {
-        skeletonRow.style.display = "none";
+        skeletonRow.style.display = "none"; // Ocultar skeleton mientras llenamos con datos
     }
 
     tableBody.innerHTML = '';
+    // Aquí puedes simular un pequeño retraso para mostrar el skeleton
+    setTimeout(() => {
     displayedCurrencies.forEach((currency, index) => {
         if (exchangeRates[currency]) {
             const row = document.createElement("tr");
@@ -432,9 +434,7 @@ function fillCurrencyTable() {
             tableBody.appendChild(row);
         }
     });
-
-    // Una vez que los datos están cargados, ocultar el skeleton
-    skeletonRows.forEach(row => row.classList.add("loaded"));
+    }, 500);
 }
 
 function updateLastUpdatedTimestamp(fecha) {
