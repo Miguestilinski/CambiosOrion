@@ -194,6 +194,10 @@ nav {
     display: block;
 }
 
+.mail {
+    font-size: 0.6rem;
+}
+
 @media (max-width: 887px) {
     /* Menú de navegación y botones de sesión ocultos en móvil */
     nav {
@@ -310,5 +314,4 @@ nav {
         object-fit: contain;
     }
 
-    
 }
