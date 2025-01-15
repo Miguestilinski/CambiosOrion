@@ -41,7 +41,7 @@ label {
 }
 
 .main-content {
-    display: flex; /* Flexbox para alinear el sidebar y el contenido principal */
+    display: flex;
     height: 100%;
 }
 
@@ -137,9 +137,37 @@ input#email{
         flex-direction: column; /* Ajusta a diseño vertical en pantallas pequeñas */
     }
 
+    /* Sidebar como pestañas */
     .sidebar {
         width: 100%; /* Sidebar ocupa toda la anchura */
         border-right: none; /* Elimina la línea divisoria en diseño vertical */
         border-bottom: 2px solid white; /* Línea divisora horizontal */
+        display: flex; /* Mostrar barra horizontal */
+        justify-content: space-around; /* Centrado de pestañas */
+        padding: 0; /* Eliminar padding */
+    }
+
+    .menu {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        padding: 0;
+    }
+
+    .menu-item {
+        padding: 0.75rem;
+        font-size: 0.875rem;
+        flex: 1;
+        text-align: center;
+        border-radius: 0;
+        background-color: transparent;
+    }
+
+    .menu-item.active {
+        background-color: #76767676;
+    }
+
+    .dashboard-content {
+        padding: 1rem;
     }
 }
