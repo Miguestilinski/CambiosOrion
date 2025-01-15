@@ -40,6 +40,19 @@ function setupEventListeners() {
         });
     }
 
+    // Añadir el cierre de los menús móviles si se hace clic fuera de ellos
+    document.addEventListener('click', function (event) {
+        const isClickInsideNavMenu = navMobileMenu && navMobileMenu.contains(event.target);
+        const isClickInsideSessionMenu = sessionMobileMenu && sessionMobileMenu.contains(event.target);
+        const isClickInsideMenuButton = navMenuButton && navMenuButton.contains(event.target) || sessionMenuButton && sessionMenuButton.contains(event.target);
+
+        // Si el clic no está dentro de los menús ni de los botones de menú, cerramos los menús
+        if (!isClickInsideNavMenu && !isClickInsideSessionMenu && !isClickInsideMenuButton) {
+            closeMenu(navMobileMenu);
+            closeMenu(sessionMobileMenu);
+        }
+    });
+
     const profileMenuButton = document.getElementById('profile-menu-button');
     if (profileMenuButton) {
         profileMenuButton.addEventListener('click', toggleHeaderDropdown);
