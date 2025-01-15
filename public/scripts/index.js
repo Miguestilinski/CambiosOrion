@@ -375,6 +375,11 @@ function fillCurrencyTable() {
         console.error("Error: 'currency-table-body' no se encuentra en el DOM.");
         return; // Evita continuar si el elemento no existe
     }
+
+    // Mostrar skeleton antes de cargar los datos
+    const skeletonRows = tableBody.querySelectorAll(".skeleton-row");
+    skeletonRows.forEach(row => row.classList.remove("loaded"));
+
     tableBody.innerHTML = '';
     displayedCurrencies.forEach((currency, index) => {
         if (exchangeRates[currency]) {
@@ -425,6 +430,9 @@ function fillCurrencyTable() {
             tableBody.appendChild(row);
         }
     });
+    
+    // Una vez que los datos están cargados, ocultar el skeleton
+    skeletonRows.forEach(row => row.classList.add("loaded"));
 }
 
 function updateLastUpdatedTimestamp(fecha) {

@@ -281,6 +281,43 @@ input[type="number"]::-moz-outer-spin-button {
     background-color: #2563eb;
 }
 
+/* Estilo para el Skeleton */
+.skeleton-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+.skeleton-cell {
+    background-color: #e0e0e0;
+    height: 20px;
+    border-radius: 4px;
+    margin-right: 10px;
+    flex: 1;
+    animation: skeleton-loading 1.5s infinite ease-in-out;
+}
+
+/* Animación de carga */
+@keyframes skeleton-loading {
+    0% {
+        background-color: #e0e0e0;
+    }
+    50% {
+        background-color: #f4f4f4;
+    }
+    100% {
+        background-color: #e0e0e0;
+    }
+}
+
+/* Hacer invisible el skeleton cuando los datos están cargados */
+.skeleton-row.loaded .skeleton-cell {
+    animation: none;
+    background-color: transparent;
+}
+
 /* Contenedor de la tabla */
 .content-table {
     justify-content: center;
