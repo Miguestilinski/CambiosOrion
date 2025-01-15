@@ -139,15 +139,18 @@ function getVariationStyle(variation) {
 function showSkeleton() {
     const tableBody = document.getElementById("currency-table-body");
     if (tableBody) {
-        tableBody.innerHTML = ''; // Asegurarse de que el cuerpo esté limpio
+        tableBody.innerHTML = ''; // Asegúrate de que el cuerpo esté limpio
         const skeletonRow = `
             <tr>
                 <td class="px-4 py-2" colspan="4">
-                    <div class="skeleton-loader w-full h-6"></div>
+                    <div class="skeleton-loader" style="width: 100%; height: 24px;"></div>
                 </td>
             </tr>
         `;
         tableBody.innerHTML = skeletonRow.repeat(4);
+
+        // Forzar renderizado
+        tableBody.offsetHeight; // Esto fuerza el reflujo del DOM
     }
 }
 
