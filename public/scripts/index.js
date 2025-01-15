@@ -189,19 +189,12 @@ function preloadIcon(iconUrl) {
     }
 }
 
+// Función para crear opciones reutilizables
 function createDropdownOption(currency, icon, onClickHandler) {
     const option = document.createElement("div");
-    option.className = "p-2 hover:bg-gray-100 cursor-pointer flex items-center"; // Flex para alinear icono y texto
-
-    // Estructura del HTML con el icono y el texto
-    option.innerHTML = `
-        <img src="${icon}" alt="${currency}" class="w-6 h-6 mr-2"> 
-        <span>${currency}</span>
-    `;
-
-    // Asignar el controlador de clic al contenedor
+    option.innerHTML = `<img src="${icon}" alt="${currency}" class="w-6 h-6 mr-3"> <span>${currency}</span>`;  // Aseguramos que el texto esté dentro de un <span> para mejor control
+    option.className = "p-2 hover:bg-gray-100 cursor-pointer flex items-center"; // Añadimos `flex` a la clase
     option.onclick = onClickHandler;
-    
     return option;
 }
 

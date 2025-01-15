@@ -196,11 +196,11 @@ input[type="number"]::-moz-outer-spin-button {
 
 /* Modificación de los elementos de la lista */
 .dropdown-content div {
-    display: flex; /* Utiliza flex para apilar horizontalmente */
-    align-items: center; /* Alinea verticalmente */
+    display: flex;
+    align-items: center;
     cursor: pointer;
     padding: 0.5rem;
-    transition: background-color 0.2s; /* Añade una transición suave */
+    transition: background-color 0.2s;
 }
 
 .dropdown-content div:hover {
@@ -208,9 +208,13 @@ input[type="number"]::-moz-outer-spin-button {
 }
 
 .dropdown-content img {
-    width: 24px; /* Ajusta el tamaño del icono */
-    height: 24px; /* Ajusta el tamaño del icono */
-    margin-right: 0.5rem; /* Espaciado entre el icono y el texto */
+    width: 24px;
+    height: 24px;
+    margin-right: 0.5rem;
+}
+
+.dropdown-content span {
+    font-size: 14px; /* Ajuste opcional al tamaño del texto */
 }
 
 .dropdown-content.show {
