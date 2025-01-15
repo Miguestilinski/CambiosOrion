@@ -286,6 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
 // Formatear números con separador de miles
 function formatWithThousandsSeparator(value) {
     // Asegurarse de que `value` sea una cadena antes de aplicar `replace`
@@ -376,15 +377,19 @@ function fillCurrencyTable() {
         return; // Evita continuar si el elemento no existe
     }
 
-    // Eliminar el skeleton al comenzar a llenar la tabla
-    const skeletonRow = tableBody.querySelector(".skeleton-row");
-    if (skeletonRow) {
-        skeletonRow.style.display = "none"; // Ocultar skeleton mientras llenamos con datos
-    }
+    // Muestra el skeleton mientras los datos se cargan
+    tableBody.innerHTML = `
+        <tr class="skeleton-row">
+            <td colspan="4">
+                <div class="skeleton"></div>
+            </td>
+        </tr>
+    `;
+
+    // Esperar a que los datos estén disponibles
+    setTimeout(() => {
 
     tableBody.innerHTML = '';
-    // Aquí puedes simular un pequeño retraso para mostrar el skeleton
-    setTimeout(() => {
     displayedCurrencies.forEach((currency, index) => {
         if (exchangeRates[currency]) {
             const row = document.createElement("tr");
@@ -434,7 +439,7 @@ function fillCurrencyTable() {
             tableBody.appendChild(row);
         }
     });
-    }, 500);
+    }, 1000);
 }
 
 function updateLastUpdatedTimestamp(fecha) {

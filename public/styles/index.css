@@ -281,32 +281,6 @@ input[type="number"]::-moz-outer-spin-button {
     background-color: #2563eb;
 }
 
-/* Estilo de skeleton */
-.skeleton {
-    background-color: #E0E0E0;
-    animation: skeleton-loading 1.5s infinite ease-in-out;
-    height: 20px;
-    border-radius: 4px;
-    margin: 4px 0;
-}
-
-.skeleton-row td {
-    padding: 12px 20px;
-}
-
-/* Animación de carga */
-@keyframes skeleton-loading {
-    0% {
-        background-color: #e0e0e0;
-    }
-    50% {
-        background-color: #f4f4f4;
-    }
-    100% {
-        background-color: #e0e0e0;
-    }
-}
-
 /* Contenedor de la tabla */
 .content-table {
     justify-content: center;
