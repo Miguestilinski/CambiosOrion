@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const forgotPasswordFormElement = document.getElementById('forgotPasswordFormElement');
     const forgotEmailInput = document.getElementById('forgotEmail');
     const forgotPasswordError = document.getElementById('forgotPasswordError');
+    const messageDiv = document.getElementById('messageDiv');
 
     // Enviar el formulario de recuperación de contraseña
     forgotPasswordFormElement.addEventListener('submit', async function (event) {
@@ -52,13 +53,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Verificar si la respuesta fue exitosa
             if (result.success) {
-                alert('Te hemos enviado un correo para restablecer tu contraseña.');
+                showMessage('Te hemos enviado un correo para restablecer tu contraseña.', 'success');
             } else {
-                alert(result.message); // Mensaje de error del servidor
+                showMessage(result.message, 'error'); // Mensaje de error del servidor
             }
         } catch (error) {
             console.error("Error al procesar la solicitud:", error);
-            alert("Hubo un problema al procesar tu solicitud.");
+            showMessage("Hubo un problema al procesar tu solicitud.", 'error');
         } finally {
             // Habilitar el botón nuevamente después de la solicitud
             forgotPasswordFormElement.querySelector('button[type="submit"]').disabled = false;
@@ -69,5 +70,16 @@ document.addEventListener("DOMContentLoaded", function () {
     function validateEmail(email) {
         const re = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
         return re.test(email);
+    }
+
+    // Función para mostrar el mensaje de éxito o error
+    function showMessage(message, type) {
+        if (type === 'success') {
+            messageDiv.innerHTML = `<p class="mt-2 text-sm text-green-600">${message}</p>`;
+        } else if (type === 'error') {
+            messageDiv.innerHTML = `<p class="mt-2 text-sm text-red-600">${message}</p>`;
+        } else {
+            messageDiv.innerHTML = ''; // Limpiar el mensaje
+        }
     }
 });
