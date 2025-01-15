@@ -376,9 +376,11 @@ function fillCurrencyTable() {
         return; // Evita continuar si el elemento no existe
     }
 
-    // Mostrar skeleton antes de cargar los datos
-    const skeletonRows = tableBody.querySelectorAll(".skeleton-row");
-    skeletonRows.forEach(row => row.classList.remove("loaded"));
+    // Ocultar el skeleton mientras se llena la tabla
+    const skeletonRow = tableBody.querySelector(".skeleton-row");
+    if (skeletonRow) {
+        skeletonRow.style.display = "none";
+    }
 
     tableBody.innerHTML = '';
     displayedCurrencies.forEach((currency, index) => {
@@ -430,7 +432,7 @@ function fillCurrencyTable() {
             tableBody.appendChild(row);
         }
     });
-    
+
     // Una vez que los datos están cargados, ocultar el skeleton
     skeletonRows.forEach(row => row.classList.add("loaded"));
 }
