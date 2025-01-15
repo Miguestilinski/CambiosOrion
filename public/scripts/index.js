@@ -143,8 +143,7 @@ function showSkeleton() {
         const skeletonRow = `
             <tr>
                 <td class="px-4 py-2" colspan="4">
-                    <div class="skeleton-loader w-full h-6 mb-2"></div>
-                    <div class="skeleton-loader w-3/4 h-6"></div>
+                    <div class="skeleton-loader w-full h-6"></div>
                 </td>
             </tr>
         `;
