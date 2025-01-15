@@ -28,6 +28,10 @@ html, body {
     flex-direction: column;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 /* Clase para el contenido principal */
 .main-content {
     flex: 1;
