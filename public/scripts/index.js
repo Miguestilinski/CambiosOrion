@@ -160,7 +160,7 @@ function showDropdownSkeleton(dropdownId) {
     const dropdown = document.getElementById(dropdownId);
     if (dropdown) {
         dropdown.innerHTML = ''; // Limpia el contenido existente
-        for (let i = 0; i < 4; i++) { // Mostrar 4 loaders como ejemplo
+        for (let i = 0; i < 3; i++) { // Mostrar 3 loaders como ejemplo
             const skeleton = document.createElement('div');
             skeleton.className = 'skeleton-loader-dropdown';
             dropdown.appendChild(skeleton);

@@ -306,12 +306,12 @@ input[type="number"]::-moz-outer-spin-button {
 }
 
 .skeleton-loader-dropdown {
+    margin: 0.3rem 0.5rem 0.3rem 0.5rem;
     background-color: #d4d4d4;
-    height: 24px; /* Altura de las opciones */
-    width: 200px;
+    height: 24px;
+    width: 80px;
     border-radius: 4px;
     animation: pulse 1s infinite ease-in-out;
-    margin-bottom: 8px; /* Espacio entre los loaders */
 }
 
 /* Contenedor de la tabla */
