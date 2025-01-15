@@ -53,7 +53,6 @@ document.addEventListener("DOMContentLoaded", function () {
             // Verificar si la respuesta fue exitosa
             if (result.success) {
                 alert('Te hemos enviado un correo para restablecer tu contraseña.');
-                forgotPasswordForm.classList.add('hidden'); // Ocultar el formulario
             } else {
                 alert(result.message); // Mensaje de error del servidor
             }
