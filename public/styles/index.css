@@ -282,7 +282,7 @@ input[type="number"]::-moz-outer-spin-button {
 }
 
 .skeleton-loader {
-    background-color: #e0e0e0;
+    background-color: #d4d4d4;
     width: 100%;
     height: 100%;
     border-radius: 4px;
@@ -291,13 +291,13 @@ input[type="number"]::-moz-outer-spin-button {
 
 @keyframes pulse {
     0% {
-        background-color: #e0e0e0;
+        background-color: #d4d4d4;
     }
     50% {
         background-color: #f0f0f0;
     }
     100% {
-        background-color: #e0e0e0;
+        background-color: #d4d4d4;
     }
 }
 
