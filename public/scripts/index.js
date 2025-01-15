@@ -377,17 +377,10 @@ function fillCurrencyTable() {
         return; // Evita continuar si el elemento no existe
     }
 
-    // Muestra el skeleton mientras los datos se cargan
-    tableBody.innerHTML = `
-        <tr class="skeleton-row">
-            <td colspan="4">
-                <div class="skeleton"></div>
-            </td>
-        </tr>
-    `;
-
-    // Esperar a que los datos estén disponibles
-    setTimeout(() => {
+    // Verificar si los datos ya están cargados para evitar recargar innecesariamente
+    if (tableBody.hasChildNodes()) {
+        return; // Si ya hay filas, no hacer nada
+    }
 
     tableBody.innerHTML = '';
     displayedCurrencies.forEach((currency, index) => {
@@ -439,7 +432,6 @@ function fillCurrencyTable() {
             tableBody.appendChild(row);
         }
     });
-    }, 500);
 }
 
 function updateLastUpdatedTimestamp(fecha) {
