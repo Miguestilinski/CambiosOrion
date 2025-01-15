@@ -470,8 +470,9 @@ function fillCurrencyTable() {
 }
 
 function updateLastUpdatedTimestamp(fecha) {
-    const lastUpdatedElement = document.getElementById("last-updated");
-    if (lastUpdatedElement) {
+    const lastUpdated1Element = document.getElementById("last-updated1");
+    const lastUpdated2Element = document.getElementById("last-updated2");
+    if (lastUpdated1Element) {
         const dateObject = new Date(fecha);
         const formattedDate = dateObject.toLocaleString('es-CL', {
             day: '2-digit',
@@ -481,7 +482,19 @@ function updateLastUpdatedTimestamp(fecha) {
             minute: '2-digit',
             second: '2-digit'
         });
-        lastUpdatedElement.textContent = `Última actualización: ${formattedDate}`;
+        lastUpdated1Element.textContent = `Última actualización: ${formattedDate}`;
+    }
+    if (lastUpdated2Element) {
+        const dateObject = new Date(fecha);
+        const formattedDate = dateObject.toLocaleString('es-CL', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+        lastUpdated2Element.textContent = `Última actualización: ${formattedDate}`;
     }
 }
 

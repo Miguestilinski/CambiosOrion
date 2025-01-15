@@ -305,14 +305,6 @@ input[type="number"]::-moz-outer-spin-button {
     }
 }
 
-.date-converter{
-    right: 12rem;
-    margin-top: 2.5rem;
-    font-size: 0.6rem;
-    position: absolute;
-    color: white;
-}
-
 .skeleton-loader-dropdown {
     margin: 0.3rem 0.5rem 0.3rem 0.5rem;
     background-color: #d4d4d4;
@@ -510,7 +502,15 @@ button:hover {
     background-color: #2563eb;
 }
 
-#last-updated {
+#last-updated1 {
+    right: 12rem;
+    margin-top: 2.5rem;
+    font-size: 0.6rem;
+    position: absolute;
+    color: white;
+}
+
+#last-updated2 {
     position: absolute;
     right: 1.4rem;
     color: white;
