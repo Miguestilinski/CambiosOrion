@@ -6,9 +6,9 @@ let activeDropdown = null;
 let displayedCurrencies = ["CLP", "USD", "EUR", "ARS"];
 
 function initializePage() {
+    showSkeleton();
     loadCurrenciesWithSSE();
     fetchClosingRates();
-    fillCurrencyTable();
     updateLastUpdatedTimestamp();
 }
 
@@ -64,6 +64,7 @@ function loadCurrenciesWithSSE() {
 
             filterDropdownCurrencies();
             updateAddCurrencyDropdown();
+            hideSkeleton();
             fillCurrencyTable();
 
             // Capturar la fecha de última actualización
@@ -133,6 +134,29 @@ function getVariationStyle(variation) {
     }
 
     return { containerStyle, arrowHTML };
+}
+
+function showSkeleton() {
+    const tableBody = document.getElementById("currency-table-body");
+    if (tableBody) {
+        tableBody.innerHTML = ''; // Asegurarse de que el cuerpo esté limpio
+        const skeletonRow = `
+            <tr>
+                <td class="px-4 py-2" colspan="4">
+                    <div class="skeleton-loader w-full h-6 mb-2"></div>
+                    <div class="skeleton-loader w-3/4 h-6"></div>
+                </td>
+            </tr>
+        `;
+        tableBody.innerHTML = skeletonRow.repeat(5); // Mostrar 5 filas como placeholder
+    }
+}
+
+function hideSkeleton() {
+    const tableBody = document.getElementById("currency-table-body");
+    if (tableBody) {
+        tableBody.innerHTML = ''; // Limpiar el contenido para permitir la carga de datos
+    }
 }
 
 function preloadIcon(iconUrl) {
@@ -375,11 +399,6 @@ function fillCurrencyTable() {
     if (!tableBody) {
         console.error("Error: 'currency-table-body' no se encuentra en el DOM.");
         return; // Evita continuar si el elemento no existe
-    }
-
-    // Verificar si los datos ya están cargados para evitar recargar innecesariamente
-    if (tableBody.hasChildNodes()) {
-        return; // Si ya hay filas, no hacer nada
     }
 
     tableBody.innerHTML = '';
