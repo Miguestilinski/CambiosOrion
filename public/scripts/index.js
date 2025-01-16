@@ -484,7 +484,7 @@ function fillCurrencyTable() {
             if (isEditMode) {
                 row.querySelector("td.edit-column").classList.add("last-visible-column");
             } else {
-                row.classList("last-column").classList.add("last-visible-column");
+                row.querySelector("last-column").classList.add("last-visible-column");
             }
 
 
