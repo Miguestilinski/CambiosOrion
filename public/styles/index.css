@@ -326,6 +326,26 @@ section .max-w-xl {
     overflow: hidden; /* Para ocultar cualquier borde sobresaliente */
 }
 
+#currency-table {
+    table-layout: fixed; /* Todas las columnas tendrán un ancho uniforme */
+    width: 100%; /* Para que ocupe todo el espacio */
+}
+
+#currency-table td:first-child img {
+    max-width: 40px; /* Ajusta según el tamaño del ícono */
+    height: auto;
+    vertical-align: middle; /* Centra el ícono verticalmente con el texto */
+    margin-right: 0.5rem; /* Espaciado entre ícono y texto */
+}
+
+#currency-table td:first-child,
+#currency-table th:first-child {
+    width: 150px; /* Ajusta según el diseño, este valor asegura consistencia */
+    text-align: left; /* Opcional: Alínea el texto a la izquierda */
+    vertical-align: middle; /* Centra verticalmente el contenido */
+    padding: 0.5rem; /* Espaciado interno consistente */
+}
+
 /* Bordes redondeados para cada fila */
 #currency-table-body tr {
     display: table-row;
@@ -522,22 +542,6 @@ button:hover {
     right: 1.4rem;
     color: white;
     font-size: 0.75rem;
-}
-
-.forgot-password {
-    display: block;
-    text-align: center;
-    margin-top: 10px;
-    font-size: 14px;
-}
-
-.forgot-password a {
-    color: #3b82f6;
-    text-decoration: none;
-}
-
-.forgot-password a:hover {
-    text-decoration: underline;
 }
 
 .register-link {
