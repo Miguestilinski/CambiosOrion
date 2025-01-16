@@ -486,34 +486,41 @@ function fillCurrencyTable() {
             const visibleColumns = row.querySelectorAll("td:not(.edit-column):not(.hidden)");
 
             if (isEditMode) {
-                const editColumn = row.querySelector("td.edit-column");
+                // En modo edición, asegurarse de que la columna de edición sea la última visible y tenga la clase
                 if (editColumn) {
                     editColumn.classList.add("last-visible-column");
-                    lastColumn.classList.remove("last-visible-column");
-                    lastVisibleColumn.classList.remove("last-visible-column");
                 } else {
                     console.warn("No se encontró la columna de edición");
                 }
+                // Quitar la clase de la última columna visible antes de la edición
+                if (lastColumn) {
+                    lastColumn.classList.remove("last-visible-column");
+                }
             } else {
-                
+                // En modo normal, asegurarse de que la última columna visible antes de la edición tenga la clase
                 if (lastColumn) {
                     lastColumn.classList.add("last-visible-column");
-                    editColumn.classList.remove("last-visible-column");
                 } else {
                     console.warn("No se encontró la última columna visible");
                 }
+                // Quitar la clase de la columna de edición
+                if (editColumn) {
+                    editColumn.classList.remove("last-visible-column");
+                }
             }
-            console.log(row);
 
+            // Validar la última columna visible para asegurarse de que siempre esté configurada correctamente
             if (visibleColumns.length > 0) {
                 const lastVisibleColumn = visibleColumns[visibleColumns.length - 1];
-                lastVisibleColumn.classList.add("last-visible-column");
-                editColumn.classList.remove("last-visible-column");
+                if (!isEditMode || lastVisibleColumn !== editColumn) {
+                    lastVisibleColumn.classList.add("last-visible-column");
+                }
             } else {
-                console.warn("No se encontró la última columna visible");
+                console.warn("No se encontró ninguna columna visible");
             }
 
             console.log(row.querySelectorAll("td"));
+
 
             if (index === 0) {
                 row.classList.add("first-row");
