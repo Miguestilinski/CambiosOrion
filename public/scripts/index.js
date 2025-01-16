@@ -496,6 +496,16 @@ function fillCurrencyTable() {
                     console.warn("No se encontró la última columna visible");
                 }
             }
+            console.log(row);  // Verifica si la fila tiene las celdas y clases correctas
+            const visibleColumns = row.querySelectorAll("td:not(.edit-column):not(.hidden)");
+            if (visibleColumns.length > 0) {
+                const lastVisibleColumn = visibleColumns[visibleColumns.length - 1];
+                lastVisibleColumn.classList.add("last-column");
+            } else {
+                console.warn("No se encontró la última columna visible");
+            }
+
+
 
             if (index === 0) {
                 row.classList.add("first-row");
