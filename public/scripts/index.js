@@ -486,7 +486,6 @@ function fillCurrencyTable() {
             tableBody.appendChild(row);
         }
     });
-    toggleEditModeState();
 }
 
 function updateLastUpdatedTimestamp(fecha) {
