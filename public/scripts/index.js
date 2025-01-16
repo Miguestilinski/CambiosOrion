@@ -484,7 +484,14 @@ function fillCurrencyTable() {
             if (isEditMode) {
                 const editColumn = row.querySelector("td.edit-column");
                 if (editColumn) {
-                    editColumn.classList.add("last-visible-column");
+                    // Solo añadir la clase 'last-visible-column' si la columna de edición no es la última
+                    const allColumns = row.querySelectorAll("td:not(.edit-column):not(.hidden)");
+                    const lastVisibleColumn = allColumns[allColumns.length - 1];
+                    if (lastVisibleColumn) {
+                        lastVisibleColumn.classList.add("last-visible-column");
+                    } else {
+                        console.warn("No se encontró la última columna visible");
+                    }
                 } else {
                     console.warn("No se encontró la columna de edición");
                 }
@@ -496,17 +503,15 @@ function fillCurrencyTable() {
                     console.warn("No se encontró la última columna visible");
                 }
             }
+            
             console.log(row);  // Verifica si la fila tiene las celdas y clases correctas
-
             const visibleColumns = row.querySelectorAll("td:not(.edit-column):not(.hidden)");
             if (visibleColumns.length > 0) {
                 const lastVisibleColumn = visibleColumns[visibleColumns.length - 1];
-                lastVisibleColumn.classList.add("last-visible-column");
+                lastVisibleColumn.classList.add("last-column");
             } else {
                 console.warn("No se encontró la última columna visible");
             }
-
-            console.log(row.querySelectorAll("td"));
 
             if (index === 0) {
                 row.classList.add("first-row");
