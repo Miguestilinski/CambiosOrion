@@ -482,20 +482,16 @@ function fillCurrencyTable() {
 
             // Después de crear la fila, ajustar la clase de la última columna visible
             if (isEditMode) {
-                const editColumn = row.querySelector("td.edit-column");
-                if (editColumn) {
-                    // Solo añadir la clase 'last-visible-column' si la columna de edición no es la última
-                    const allColumns = row.querySelectorAll("td:not(.edit-column):not(.hidden)");
-                    const lastVisibleColumn = allColumns[allColumns.length - 1];
-                    if (lastVisibleColumn) {
-                        lastVisibleColumn.classList.add("last-visible-column");
-                    } else {
-                        console.warn("No se encontró la última columna visible");
-                    }
+                // Si estamos en modo edición, solo la última columna visible debería recibir la clase 'last-visible-column'
+                const visibleColumns = row.querySelectorAll("td:not(.edit-column):not(.hidden)");
+                const lastVisibleColumn = visibleColumns[visibleColumns.length - 1];
+                if (lastVisibleColumn) {
+                    lastVisibleColumn.classList.add("last-visible-column");
                 } else {
-                    console.warn("No se encontró la columna de edición");
+                    console.warn("No se encontró la última columna visible");
                 }
             } else {
+                // Si no estamos en modo edición, la última columna visible debe recibir la clase 'last-visible-column'
                 const lastColumn = row.querySelector("td:not(.edit-column):nth-last-child(1)");
                 if (lastColumn) {
                     lastColumn.classList.add("last-visible-column");
@@ -504,14 +500,7 @@ function fillCurrencyTable() {
                 }
             }
             
-            console.log(row);  // Verifica si la fila tiene las celdas y clases correctas
-            const visibleColumns = row.querySelectorAll("td:not(.edit-column):not(.hidden)");
-            if (visibleColumns.length > 0) {
-                const lastVisibleColumn = visibleColumns[visibleColumns.length - 1];
-                lastVisibleColumn.classList.add("last-column");
-            } else {
-                console.warn("No se encontró la última columna visible");
-            }
+            console.log(row);
 
             if (index === 0) {
                 row.classList.add("first-row");
