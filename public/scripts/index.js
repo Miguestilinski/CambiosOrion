@@ -443,7 +443,9 @@ function fillCurrencyTable() {
                         <span>${currency}</span>
                     </div>
                 </td>
+
                 <td class="px-4 py-2">${compra ? Math.round(compra) + ' CLP' : ' '}</td>
+
                 <td class="px-4 py-2">
                     ${currency === 'CLP' ? '' : `
                         <div style="${compraStyle.containerStyle}" class="variation-container">
@@ -455,8 +457,10 @@ function fillCurrencyTable() {
                         </div>
                     `}
                 </td>
-                                <td class="px-4 py-2">${venta ? Math.round(venta) + ' CLP' : ' '}</td> <!-- Nueva columna -->
-                <td class="px-4 py-2">
+
+                <td class="px-4 py-2">${venta ? Math.round(venta) + ' CLP' : ' '}</td>
+
+                <td id="last-column" class="px-4 py-2">
                     ${currency === 'CLP' ? '' : `
                         <div style="${ventaStyle.containerStyle}" class="variation-container">
                             ${variationVenta !== 0 ? 
@@ -480,7 +484,7 @@ function fillCurrencyTable() {
             if (isEditMode) {
                 row.querySelector("td.edit-column").classList.add("last-visible-column");
             } else {
-                row.querySelector("td:last-child").classList.add("last-visible-column");
+                row.getElementById("last-column").classList.add("last-visible-column");
             }
 
 
