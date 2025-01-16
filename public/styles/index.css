@@ -396,6 +396,12 @@ section .max-w-xl {
     border-bottom-right-radius: 8px;
 }
 
+/* Bordes redondeados dinámicos para la última columna visible */
+#currency-table-body td.last-visible-column {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
 .variation-container {
     display: inline-flex; /* Cambiar a flex para alineación horizontal */
     align-items: center; /* Alinear elementos verticalmente */
