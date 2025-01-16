@@ -489,6 +489,7 @@ function fillCurrencyTable() {
                 // En modo edición, asegurarse de que la columna de edición sea la última visible y tenga la clase
                 if (editColumn) {
                     editColumn.classList.add("last-visible-column");
+                    lastColumn.classList.remove("last-visible-column");
                 } else {
                     console.warn("No se encontró la columna de edición");
                 }
@@ -500,6 +501,7 @@ function fillCurrencyTable() {
                 // En modo normal, asegurarse de que la última columna visible antes de la edición tenga la clase
                 if (lastColumn) {
                     lastColumn.classList.add("last-visible-column");
+                    editColumn.classList.remove("last-visible-column");
                 } else {
                     console.warn("No se encontró la última columna visible");
                 }
