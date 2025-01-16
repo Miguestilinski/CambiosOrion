@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cambios Orion</title>
+    <link rel="stylesheet" href="styles/header.css">
+    <link rel="stylesheet" href="styles/vacaciones.css">
+    <link rel="stylesheet" href="styles/footer.css">
+    <link href="./styles/output.css" rel="stylesheet">
+    <link rel="icon" href="/orionapp/icons/favicon.png" type="image/png">
+</head>
+
+<body class="font-sans">
+    <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js"></script>
+    <header>
+        <!-- Logo y Nombre -->
+        <div class="header-logo">
+            <a href="index">
+                <img src="/orionapp/assets/LogoOrion-silver.png" alt="Logo Cambios Orion" class="logo">
+            </a>
+            <a href="index">
+                <img src="/orionapp/assets/NombreOrion-white.png" alt="Nombre Cambios Orion" class="nombre">
+            </a>
+        </div>
+    
+        <!-- Botones para versión móvil -->
+        <div class="mobile-buttons">
+            <button class="menu-button" id="nav-menu-button">
+                <img src="/orionapp/icons/menu-white.svg" alt="Menú">
+            </button>
+            <button class="menu-button" id="session-menu-button">
+                <img src="/orionapp/icons/profile-white.png" alt="Sesión">
+            </button>
+        </div>
+    
+        <!-- Menús desplegables para móvil -->
+        <div id="nav-mobile-menu" class="mobile-menu hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
+            <ul class="py-2 text-sm text-gray-700">
+                <li><a href="index" class="block px-4 py-2 hover:bg-gray-100">Inicio</a></li>
+            </ul>
+            <ul class="py-2 text-sm text-gray-700">
+                <li><a href="servicios" class="block px-4 py-2 hover:bg-gray-100">Servicios</a></li>
+            </ul>
+            <ul class="py-2 text-sm text-gray-700">
+                <li><a href="nosotros" class="block px-4 py-2 hover:bg-gray-100">Nosotros</a></li>
+            </ul>
+            <ul class="py-2 text-sm text-gray-700">
+                <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Contacto</a></li>
+            </ul>
+        </div>
+    
+        <div class="mobile-menu hidden bg-white rounded-lg shadow w-44" id="session-mobile-menu">
+            <div id="guest-actions-mobile" class="divide-y divide-gray-100" style="display:none;">
+                <ul class="py-2 text-sm text-gray-700">
+                    <li><a href="login" class="block px-4 py-2 hover:bg-gray-100">Iniciar Sesión</a></li>
+                </ul>
+                <ul class="py-2 text-sm text-gray-700">
+                    <li><a href="registro" class="block px-4 py-2 hover:bg-gray-100">Registro</a></li>
+                </ul>
+            </div>
+            <div id="user-actions-mobile" class="divide-y divide-gray-100" style="display:none;">
+                <div class="px-2 py-2 text-sm text-gray-900">
+                    <div id="user-name">Nombre del usuario</div>
+                    <div id="user-email" class="mail font-medium truncate">Correo del usuario</div>
+                </div>
+                <ul class="py-2 text-sm text-gray-700">
+                    <li><a href="dashboard" class="block px-4 py-2 hover:bg-gray-100">Mi perfil</a></li>
+                </ul>
+                <ul class="py-2 text-sm text-gray-700" id="menu-admin-mobile" style="display: none;">
+                    <li><a href="edit" class="block px-4 py-2 hover:bg-gray-100">Pizarra</a></li>
+                </ul>
+                <ul class="py-2 text-sm text-gray-700">
+                    <li><a href="#" class="block px-4 py-2 hover:bg-gray-100" id="logout-button-mobile">Cerrar sesión</a></li>
+                </ul>
+            </div>
+        </div>
+    
+        <!-- Menú de navegación para escritorio -->
+        <nav>
+            <ul>
+                <li><a href="index">Inicio</a></li>
+                <li><a href="servicios">Servicios</a></li>
+                <li><a href="nosotros">Nosotros</a></li>
+                <li><a href="#">Contacto</a></li>
+            </ul>
+        </nav>
+    
+        <!-- Acciones para escritorio -->
+        <div class="header-actions">
+            <!-- User actions -->
+            <div id="user-actions" style="display:none;">
+                <button id="profile-menu-button" class="text-white bg-transparent hover:bg-gray-200 focus:outline-none">
+                    <img src="/orionapp/icons/profile-white.png" alt="Profile">
+                </button>
+                <!-- Menú desplegable -->
+                <div id="dropdownInformation" class="hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
+                    <div class="px-4 py-3 text-sm text-gray-900">
+                        <div id="user-name">Nombre del usuario</div>
+                        <div id="user-email" class="mail font-medium truncate">Correo del usuario</div>
+                    </div>
+                    <ul class="py-2 text-sm text-gray-700" id="menu-cliente">
+                        <li><a href="dashboard" class="block px-4 py-2 hover:bg-gray-100">Mi perfil</a></li>
+                    </ul>
+                    <ul class="py-2 text-sm text-gray-700" id="menu-admin" style="display: none;">
+                        <li><a href="edit" class="block px-4 py-2 hover:bg-gray-100">Pizarra</a></li>
+                    </ul>
+                    <ul class="py-2 text-sm text-gray-700">
+                        <li><a href="#" class="block px-4 py-2 hover:bg-gray-100" id="logout-button">Cerrar sesión</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Guest actions -->
+            <div id="guest-actions" style="display:none;">
+                <a href="login">Iniciar sesión</a>
+                <a href="registro" class="register-button">Registrarse</a>
+            </div>
+        </div>
+    </header>
+
+  <main class="container mx-auto p-6">
+    <form id="vacation-form" class="bg-white p-6 rounded shadow">
+      <h2 class="text-lg font-bold mb-4">Cálculo de Días de Vacaciones</h2>
+      <div class="mb-4">
+        <label for="start-date" class="block text-sm font-medium text-gray-700">Fecha de Inicio:</label>
+        <input type="date" id="start-date" class="mt-1 p-2 border rounded w-full">
+      </div>
+      <div class="mb-4">
+        <label for="days-off" class="block text-sm font-medium text-gray-700">Días de Vacaciones:</label>
+        <input type="number" id="days-off" class="mt-1 p-2 border rounded w-full">
+      </div>
+      <button type="button" id="calculate" class="bg-blue-500 text-white px-4 py-2 rounded">
+        Calcular
+      </button>
+    </form>
+
+    <div id="result" class="mt-6 p-4 bg-green-100 border border-green-400 rounded hidden">
+      <p class="text-green-700">Tus vacaciones terminan el <span id="end-date"></span>.</p>
+    </div>
+  </main>
+
+    <footer>
+        <div class="footer-container">
+            <!-- Sección del logo -->
+            <div class="footer-logo">
+                <img src="/orionapp/assets/LogoOrion-silver.png" alt="Logo Orion" class="logo">
+                <img src="/orionapp/assets/NombreOrion-white.png" alt="Nombre Orion" class="nombre">
+            </div>
+            <!-- Mapa de navegación -->
+            <div class="footer-navigation flex justify-between">
+                <div class="nav-section">
+                    <h3 class="font-bold text-lg">Servicios</h3>
+                    <ul class="list-none p-0">
+                        <li><a href="#" class="block py-1">Envíos</a></li>
+                        <li><a href="#" class="block py-1">Transferencias</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h3 href="nosotros" class="font-bold text-lg">Nosotros</h3>
+                    <ul class="list-none p-0">
+                        <li><a href="#" class="block py-1">Quienes Somos</a></li>
+                        <li><a href="nosotros#map" class="block py-1">Mapa</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h3 class="font-bold text-lg">Soporte</h3>
+                    <ul class="list-none p-0">
+                        <li><a href="faq" class="block py-1">Preguntas frecuentes</a></li>
+                        <li><a href="#" class="block py-1">Contacto</a></li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Información de contacto -->
+            <div class="footer-contact flex flex-wrap justify-between">
+                <div class="contact-info">
+                    <!-- Dirección -->
+                    <div class="contact-item">
+                        <a href="https://maps.app.goo.gl/6fQ31ySCJWSButxQ9" target="_blank">
+                            <img src="/orionapp/icons/location-white.png" alt="Icono de ubicación" class="icon">
+                        </a>
+                        <div>
+                            <a href="https://maps.app.goo.gl/6fQ31ySCJWSButxQ9" target="_blank"><p>Agustinas 1035 Of 13, Santiago</p></a>
+                            <small>Lunes a Viernes 09:00 a 17:00 hrs</small>
+                        </div>
+                    </div> 
+                    <!-- Teléfono -->
+                    <div class="contact-item">
+                        <img src="/orionapp/icons/phone-white.png" alt="Icono de teléfono" class="icon">
+                        <div>
+                            <p>+56 9 7184 6048</p>
+                        </div>
+                    </div>
+                    <!-- Correo -->
+                    <div class="contact-item">
+                        <img src="/orionapp/icons/email-white.png" alt="Icono de correo" class="icon">
+                        <div>
+                            <p>contacto@cambiosorion.cl</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Redes Sociales -->
+        <!-- Redes Sociales -->
+            <div class="social-media flex gap-4">
+                <a href="https://wa.me/+56971846048" target="_blank"><img src="/orionapp/icons/whatsapp-white.png" alt="WhatsApp" class="icon"></a>
+                <a href="https://www.facebook.com/CambiosOrion" target="_blank"><img src="/orionapp/icons/facebook-white.png" alt="Facebook" class="icon"></a>
+                <a href="https://www.instagram.com/CambiosOrion.cl" target="_blank"><img src="/orionapp/icons/instagram-white.png" alt="Instagram" class="icon"></a>
+                <a href="https://www.tiktok.com/@cambios.orion" target="_blank"><img src="/orionapp/icons/tik-tok-white.png" alt="TikTok" class="icon"></a>
+            </div>            
+        </div>
+        <div class="footer-bottom text-xs text-center p-4">
+            © 2025 Cambios Orion. Todos los derechos reservados.
+        </div>
+    </footer>
+
+    <script src="scripts/header.js"></script>
+    <script src="scripts/vacaciones.js"></script>
+</body>
+</html>

@@ -285,7 +285,6 @@ function setCurrency2(currency) {
     convertCurrency(); // Realizar la conversión después de actualizar la divisa
 }
 
-// Función para intercambiar las divisas entre currency1 y currency2
 function swapCurrencies() {
     const currency1 = document.getElementById("currency1-text").textContent;
     const currency2 = document.getElementById("currency2-text").textContent;
@@ -293,10 +292,15 @@ function swapCurrencies() {
     document.getElementById("currency1-text").textContent = currency2;
     document.getElementById("currency2-text").textContent = currency1;
 
-    updateCurrencyIcon();
-    filterDropdownCurrencies(); // Actualizar opciones visibles
-    convertCurrency(); // Realizar la conversión después de actualizar las divisas
+    const iconCurrency1 = document.getElementById("icon-currency1").src;
+    const iconCurrency2 = document.getElementById("icon-currency2").src;
+
+    document.getElementById("icon-currency1").src = iconCurrency2;
+    document.getElementById("icon-currency2").src = iconCurrency1;
+
+    convertCurrency(); // Realizar la conversión tras intercambiar divisas
 }
+
 
 // Modificar los inputs para formatear y validar el contenido
 document.addEventListener('DOMContentLoaded', () => {
