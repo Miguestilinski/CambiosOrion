@@ -489,7 +489,7 @@ function fillCurrencyTable() {
                     console.warn("No se encontró la columna de edición");
                 }
             } else {
-                const lastColumn = row.querySelector("td:last-child:not(.edit-column)");
+                const lastColumn = row.querySelector("td:nth-last-child(1):not(.edit-column)");
                 if (lastColumn) {
                     lastColumn.classList.add("last-visible-column");
                 } else {
