@@ -326,34 +326,28 @@ section .max-w-xl {
     overflow: hidden; /* Para ocultar cualquier borde sobresaliente */
 }
 
-#currency-table {
-    table-layout: fixed; /* Todas las columnas tendrán un ancho uniforme */
-    width: 100%; /* Para que ocupe todo el espacio */
-}
-
-#currency-table td:first-child img {
-    max-width: 40px; /* Ajusta según el tamaño del ícono */
-    height: auto;
-    vertical-align: middle; /* Centra el ícono verticalmente con el texto */
-    margin-right: 0.5rem; /* Espaciado entre ícono y texto */
-}
-
-#currency-table td:first-child,
-#currency-table th:first-child {
-    width: 150px; /* Ajusta según el diseño, este valor asegura consistencia */
-    text-align: left; /* Opcional: Alínea el texto a la izquierda */
-    vertical-align: middle; /* Centra verticalmente el contenido */
-    padding: 0.5rem; /* Espaciado interno consistente */
-}
-
 /* Bordes redondeados para cada fila */
 #currency-table-body tr {
-    display: table-row;
+    display: flex;
+    align-items: center;
     min-height: 65px;
-    height: auto; 
+    height: 65px; 
     color: white;
     overflow: hidden;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Ajustes en celdas: espaciado interno y tamaño de fuente */
+#currency-table-body td {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    vertical-align: middle;
+    padding: 1.2rem;
+    font-size: 1.1rem;
+    border: none;
 }
 
 /* Primera fila: fondo y color de texto */
@@ -379,6 +373,10 @@ section .max-w-xl {
 }
 
 #currency-table-body td:first-child {
+    justify-content: flex-start;
+    display: flex;
+    align-items: center;
+    height: 100%;
     border-top-left-radius: 8px;
     border-bottom-left-radius: 8px;
     overflow: hidden;
@@ -389,16 +387,9 @@ section .max-w-xl {
     text-align: center;
 }
 
-/* Ajustes en celdas: espaciado interno y tamaño de fuente */
-#currency-table-body td {
-    height: 100%;
-    vertical-align: middle;
-    padding: 1.2rem;
-    font-size: 1.1rem;
-    border: none;
-}
-
 #currency-table-body td:first-child img {
+    height: 100%;
+    flex-shrink: 0;
     border-radius: 8px;
 }
 
