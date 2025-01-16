@@ -480,39 +480,6 @@ function fillCurrencyTable() {
                 </td>
             `;
 
-            // Después de crear la fila, ajustar la clase de la última columna visible
-            const editColumn = row.querySelector("td.edit-column");
-            const lastColumn = row.querySelector("td.last-column");
-            //const lastColumn = row.querySelector("td:not(.edit-column):nth-last-child(1)");
-            const visibleColumns = row.querySelectorAll("td:not(.edit-column):not(.hidden)");
-
-            if (isEditMode) {
-                // En modo edición, asegurarse de que la columna de edición sea la última visible y tenga la clase
-                if (editColumn) {
-                    editColumn.classList.add("last-visible-column");
-                } else {
-                    console.warn("No se encontró la columna de edición");
-                }
-                // Quitar la clase de la última columna visible antes de la edición
-                if (lastColumn) {
-                    lastColumn.classList.remove("last-visible-column");
-                }
-            } else {
-                // En modo normal, asegurarse de que la última columna visible antes de la edición tenga la clase
-                if (lastColumn) {
-                    lastColumn.classList.add("last-visible-column");
-                } else {
-                    console.warn("No se encontró la última columna visible");
-                }
-                // Quitar la clase de la columna de edición
-                if (editColumn) {
-                    editColumn.classList.remove("last-visible-column");
-                }
-            }
-
-            console.log(row.querySelectorAll("td"));
-
-
             if (index === 0) {
                 row.classList.add("first-row");
             }
@@ -597,16 +564,35 @@ document.addEventListener("click", function (event) {
 });
 
 function toggleEditModeState() {
-    document.querySelectorAll(".edit-column").forEach(col => {
+    document.querySelectorAll(".currency-row").forEach(row => {
+        const editColumn = row.querySelector(".edit-column");
+        const lastColumn = row.querySelector("td.last-column");
+        const visibleColumns = Array.from(row.querySelectorAll("td:not(.hidden)"));
+
+        // Mostrar u ocultar la columna de edición según el modo
         if (isEditMode) {
-            col.classList.remove("hidden");
-            col.style.display = "table-cell";
+            if (editColumn) {
+                editColumn.classList.remove("hidden");
+                editColumn.style.display = "table-cell";
+            }
         } else {
-            col.classList.add("hidden");
-            col.style.display = "none";
+            if (editColumn) {
+                editColumn.classList.add("hidden");
+                editColumn.style.display = "none";
+            }
+        }
+
+        // Actualizar las clases de la última columna visible
+        if (lastColumn) {
+            lastColumn.classList.remove("last-visible-column");
+        }
+        if (visibleColumns.length > 0) {
+            const lastVisibleColumn = visibleColumns[visibleColumns.length - 1];
+            lastVisibleColumn.classList.add("last-visible-column");
         }
     });
 }
+
 
 function toggleEditMode() {
     isEditMode = !isEditMode;
