@@ -452,6 +452,18 @@ function fillCurrencyTable() {
                         </div>
                     `}
                 </td>
+                                <td class="px-4 py-2">${venta ? Math.round(venta) + ' CLP' : ' '}</td> <!-- Nueva columna -->
+                <td class="px-4 py-2">
+                    ${currency === 'CLP' ? '' : `
+                        <div style="${ventaStyle.containerStyle}" class="variation-container">
+                            ${variationVenta !== 0 ? 
+                                (variationVenta > 0 ? `+${variationVenta.toFixed(2)}%` : `${variationVenta.toFixed(2)}%`) 
+                                : `${variationVenta.toFixed(2)}%`
+                            }
+                            ${ventaStyle.arrowHTML}
+                        </div>
+                    `}
+                </td>
                 <td class="px-4 py-2 edit-column ${isEditMode ? '' : 'hidden'}">
                     <button onclick="deleteCurrency('${currency}')" class="delete-btn">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-9 h-9 text-white">
