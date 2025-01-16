@@ -338,9 +338,6 @@ section .max-w-xl {
 
 /* Ajustes en celdas: espaciado interno y tamaño de fuente */
 #currency-table-body td {
-    align-items: center;
-    text-align: center;
-    justify-content: center;
     height: 100%;
     vertical-align: middle;
     padding: 1.2rem;
@@ -396,7 +393,8 @@ section .max-w-xl {
     border-bottom-right-radius: 8px;
 }
 
-#currency-table-body td:last-child.hidden + td {
+/* Bordes redondeados dinámicos para la última columna visible */
+#currency-table-body td.last-visible-column {
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
 }
