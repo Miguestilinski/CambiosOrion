@@ -433,7 +433,7 @@ section .max-w-xl {
 }
 
 .edit-column.hidden {
-    display: none;
+    display: none !important;
 }
 
 .edit-btn {

@@ -497,15 +497,16 @@ function fillCurrencyTable() {
                 }
             }
             console.log(row);  // Verifica si la fila tiene las celdas y clases correctas
+
             const visibleColumns = row.querySelectorAll("td:not(.edit-column):not(.hidden)");
             if (visibleColumns.length > 0) {
                 const lastVisibleColumn = visibleColumns[visibleColumns.length - 1];
-                lastVisibleColumn.classList.add("last-column");
+                lastVisibleColumn.classList.add("last-visible-column");
             } else {
                 console.warn("No se encontró la última columna visible");
             }
 
-
+            console.log(row.querySelectorAll("td"));
 
             if (index === 0) {
                 row.classList.add("first-row");
