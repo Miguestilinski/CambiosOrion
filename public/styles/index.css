@@ -328,7 +328,6 @@ section .max-w-xl {
 
 /* Bordes redondeados para cada fila */
 #currency-table-body tr {
-    display: flex;
     align-items: center;
     min-height: 65px;
     height: 65px; 
@@ -339,21 +338,21 @@ section .max-w-xl {
 
 /* Ajustes en celdas: espaciado interno y tamaño de fuente */
 #currency-table-body td {
-    flex: 1;
-    display: flex;
     align-items: center;
+    text-align: center;
     justify-content: center;
     height: 100%;
     vertical-align: middle;
     padding: 1.2rem;
     font-size: 1.1rem;
     border: none;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 /* Primera fila: fondo y color de texto */
 #currency-table-body tr:first-child {
     font-weight: bold;
-    height: auto;
     min-height: 65px;
 }
 
@@ -374,7 +373,6 @@ section .max-w-xl {
 
 #currency-table-body td:first-child {
     justify-content: flex-start;
-    display: flex;
     align-items: center;
     height: 100%;
     border-top-left-radius: 8px;

@@ -437,8 +437,11 @@ function fillCurrencyTable() {
 
             row.classList.add("currency-row");
             row.innerHTML = `
-                <td class="px-4 py-2 flex items-center justify-start space-x-2 sm:w-auto w-full">
-                    <img src="${exchangeRates[currency].icono}" alt="${currency}" class="w-6 h-6 mr-2"> ${currency}
+                <td class="px-4 py-2">
+                    <div class="flex items-center justify-start space-x-2">
+                        <img src="${exchangeRates[currency].icono}" alt="${currency}" class="w-6 h-6">
+                        <span>${currency}</span>
+                    </div>
                 </td>
                 <td class="px-4 py-2">${compra ? Math.round(compra) + ' CLP' : ' '}</td>
                 <td class="px-4 py-2">
