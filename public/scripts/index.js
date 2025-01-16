@@ -482,14 +482,14 @@ function fillCurrencyTable() {
 
             // Después de crear la fila, ajustar la clase de la última columna visible
             const editColumn = row.querySelector("td.edit-column");
-            const lastColumn = row.querySelector("td:not(.edit-column):nth-last-child(1)");
+            const lastColumn = row.querySelector("td.last-column");
+            //const lastColumn = row.querySelector("td:not(.edit-column):nth-last-child(1)");
             const visibleColumns = row.querySelectorAll("td:not(.edit-column):not(.hidden)");
 
             if (isEditMode) {
                 // En modo edición, asegurarse de que la columna de edición sea la última visible y tenga la clase
                 if (editColumn) {
                     editColumn.classList.add("last-visible-column");
-                    lastColumn.classList.remove("last-visible-column");
                 } else {
                     console.warn("No se encontró la columna de edición");
                 }
@@ -501,7 +501,6 @@ function fillCurrencyTable() {
                 // En modo normal, asegurarse de que la última columna visible antes de la edición tenga la clase
                 if (lastColumn) {
                     lastColumn.classList.add("last-visible-column");
-                    editColumn.classList.remove("last-visible-column");
                 } else {
                     console.warn("No se encontró la última columna visible");
                 }
@@ -509,16 +508,6 @@ function fillCurrencyTable() {
                 if (editColumn) {
                     editColumn.classList.remove("last-visible-column");
                 }
-            }
-
-            // Validar la última columna visible para asegurarse de que siempre esté configurada correctamente
-            if (visibleColumns.length > 0) {
-                const lastVisibleColumn = visibleColumns[visibleColumns.length - 1];
-                if (!isEditMode || lastVisibleColumn !== editColumn) {
-                    lastVisibleColumn.classList.add("last-visible-column");
-                }
-            } else {
-                console.warn("No se encontró ninguna columna visible");
             }
 
             console.log(row.querySelectorAll("td"));
