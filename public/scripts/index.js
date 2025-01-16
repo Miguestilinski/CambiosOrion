@@ -482,16 +482,13 @@ function fillCurrencyTable() {
 
             // Después de crear la fila, ajustar la clase de la última columna visible
             if (isEditMode) {
-                // Si estamos en modo edición, solo la última columna visible debería recibir la clase 'last-visible-column'
-                const visibleColumns = row.querySelectorAll("td:not(.edit-column):not(.hidden)");
-                const lastVisibleColumn = visibleColumns[visibleColumns.length - 1];
-                if (lastVisibleColumn) {
-                    lastVisibleColumn.classList.add("last-visible-column");
+                const editColumn = row.querySelector("td.edit-column");
+                if (editColumn) {
+                    editColumn.classList.add("last-visible-column");
                 } else {
-                    console.warn("No se encontró la última columna visible");
+                    console.warn("No se encontró la columna de edición");
                 }
             } else {
-                // Si no estamos en modo edición, la última columna visible debe recibir la clase 'last-visible-column'
                 const lastColumn = row.querySelector("td:not(.edit-column):nth-last-child(1)");
                 if (lastColumn) {
                     lastColumn.classList.add("last-visible-column");
@@ -499,8 +496,17 @@ function fillCurrencyTable() {
                     console.warn("No se encontró la última columna visible");
                 }
             }
-            
-            console.log(row);
+            console.log(row);  // Verifica si la fila tiene las celdas y clases correctas
+
+            const visibleColumns = row.querySelectorAll("td:not(.edit-column):not(.hidden)");
+            if (visibleColumns.length > 0) {
+                const lastVisibleColumn = visibleColumns[visibleColumns.length - 1];
+                lastVisibleColumn.classList.add("last-visible-column");
+            } else {
+                console.warn("No se encontró la última columna visible");
+            }
+
+            console.log(row.querySelectorAll("td"));
 
             if (index === 0) {
                 row.classList.add("first-row");
