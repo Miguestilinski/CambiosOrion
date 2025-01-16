@@ -482,10 +482,19 @@ function fillCurrencyTable() {
 
             // Después de crear la fila, ajustar la clase de la última columna visible
             if (isEditMode) {
-                row.querySelector("td.edit-column").classList.add("last-visible-column");
+                const editColumn = row.querySelector("td.edit-column");
+                if (editColumn) {
+                    editColumn.classList.add("last-visible-column");
+                } else {
+                    console.warn("No se encontró la columna de edición");
+                }
             } else {
-                let lastColumn = row.querySelector("td:last-child:not(.edit-column)");
-                lastColumn.classList.add("last-visible-column");
+                const lastColumn = row.querySelector("td:last-child:not(.edit-column)");
+                if (lastColumn) {
+                    lastColumn.classList.add("last-visible-column");
+                } else {
+                    console.warn("No se encontró la última columna visible");
+                }
             }
 
             if (index === 0) {
