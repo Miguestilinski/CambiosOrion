@@ -490,6 +490,7 @@ function fillCurrencyTable() {
             tableBody.appendChild(row);
         }
     });
+    toggleEditModeState();
 }
 
 function updateLastUpdatedTimestamp(fecha) {
@@ -566,20 +567,24 @@ document.addEventListener("click", function (event) {
     }
 });
 
-function toggleEditMode() {
-    isEditMode = !isEditMode;
-
+function toggleEditModeState() {
     document.querySelectorAll(".edit-column").forEach(col => {
         if (isEditMode) {
             col.classList.remove("hidden");
-            col.style.display = "table-cell"; // Asegúrate de que se muestre como una celda de tabla
+            col.style.display = "table-cell";
         } else {
             col.classList.add("hidden");
-            col.style.display = "none"; // Asegúrate de que se oculte
+            col.style.display = "none";
         }
     });
 }
+
+function toggleEditMode() {
+    isEditMode = !isEditMode;
+    toggleEditModeState(); // Actualiza las columnas visibles
+}
 window.toggleEditMode = toggleEditMode;
+
 
 document.querySelectorAll(".edit-column").forEach(col => {
     if (isEditMode) {
