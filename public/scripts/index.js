@@ -486,6 +486,7 @@ function fillCurrencyTable() {
             tableBody.appendChild(row);
         }
     });
+    toggleEditModeState();
 }
 
 function updateLastUpdatedTimestamp(fecha) {
@@ -542,6 +543,48 @@ function toggleDropdown(dropdownId, event) {
 
 window.toggleDropdown = toggleDropdown;
 
+// Función para actualizar la clase de última columna visible
+function updateLastVisibleColumn() {
+    document.querySelectorAll(".currency-row").forEach(row => {
+        const visibleColumns = Array.from(row.querySelectorAll("td:not(.hidden)"));
+        const lastColumn = row.querySelector("td.last-column");
+
+        // Quitar clase de la columna anterior
+        if (lastColumn) {
+            lastColumn.classList.remove("last-visible-column");
+        }
+
+        // Añadir clase a la nueva última columna visible
+        if (visibleColumns.length > 0) {
+            const lastVisibleColumn = visibleColumns[visibleColumns.length - 1];
+            lastVisibleColumn.classList.add("last-visible-column");
+        }
+    });
+}
+
+// Configuración del MutationObserver
+function observeTableChanges() {
+    const tableBody = document.getElementById("currency-table-body");
+    if (!tableBody) {
+        console.error("Error: 'currency-table-body' no se encuentra en el DOM.");
+        return;
+    }
+
+    const observer = new MutationObserver(() => {
+        updateLastVisibleColumn(); // Actualiza cada vez que hay un cambio en el DOM
+    });
+
+    // Configuración del observador
+    observer.observe(tableBody, { childList: true, subtree: true });
+}
+
+// Inicializa el observador en la carga de la página
+document.addEventListener("DOMContentLoaded", () => {
+    observeTableChanges();
+    toggleEditModeState(); // Garantiza que el estado inicial sea correcto
+});
+
+
 document.addEventListener("click", function (event) {
     // Verifica si el clic está fuera del dropdown activo y del elemento de activación
     if (
@@ -565,33 +608,18 @@ document.addEventListener("click", function (event) {
 function toggleEditModeState() {
     document.querySelectorAll(".currency-row").forEach(row => {
         const editColumn = row.querySelector(".edit-column");
-        const lastColumn = row.querySelector("td.last-column");
-        const visibleColumns = Array.from(row.querySelectorAll("td:not(.hidden)"));
 
-        // Mostrar u ocultar la columna de edición según el modo
         if (isEditMode) {
-            if (editColumn) {
-                editColumn.classList.remove("hidden");
-                editColumn.style.display = "table-cell";
-            }
+            editColumn?.classList.remove("hidden");
+            editColumn.style.display = "table-cell";
         } else {
-            if (editColumn) {
-                editColumn.classList.add("hidden");
-                editColumn.style.display = "none";
-            }
-        }
-
-        // Actualizar las clases de la última columna visible
-        if (lastColumn) {
-            lastColumn.classList.remove("last-visible-column");
-        }
-        if (visibleColumns.length > 0) {
-            const lastVisibleColumn = visibleColumns[visibleColumns.length - 1];
-            lastVisibleColumn.classList.add("last-visible-column");
+            editColumn?.classList.add("hidden");
+            editColumn.style.display = "none";
         }
     });
-}
 
+    updateLastVisibleColumn(); // Asegúrate de actualizar siempre la última columna
+}
 
 function toggleEditMode() {
     isEditMode = !isEditMode;
