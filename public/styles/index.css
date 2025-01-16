@@ -396,8 +396,7 @@ section .max-w-xl {
     border-bottom-right-radius: 8px;
 }
 
-/* Bordes redondeados dinámicos para la última columna visible */
-#currency-table-body td.last-visible-column {
+#currency-table-body td:last-child.hidden + td {
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
 }
