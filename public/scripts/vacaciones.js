@@ -1,7 +1,13 @@
+function initializePage() {
+  fetchWorkerData();
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   const calendarContainer = document.getElementById('calendar-container');
   const saveButton = document.getElementById('save-dates');
   const simulationResult = document.getElementById('simulation-result');
+
+  initializePage();
 
   try {
     // Obtén información del trabajador autenticado
@@ -52,36 +58,25 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   async function fetchWorkerData() {
-    const response = await fetch(
-        "https://cambiosorion.cl/data/get_worker_data.php",
-        { credentials: "include" }
-    );
-
-    if (!response.ok) {
-        console.error("Error al obtener la información del trabajador. Código de estado:", response.status);
-        const errorText = await response.text();  // Obtener la respuesta como texto
-        console.error("Contenido de la respuesta de error:", errorText);
-        alert("Error en obtener los datos del trabajador, por favor inicie sesión.");
-        throw new Error("Error al obtener los datos del trabajador. Verifica la URL y el servidor.");
-    }
-
     try {
-        const contentType = response.headers.get('Content-Type');
-        if (!contentType || !contentType.includes('application/json')) {
-            const text = await response.text(); // Obtener el cuerpo como texto si no es JSON
-            console.error("Respuesta no es JSON, contenido recibido:", text);
-            throw new Error('La respuesta no es JSON. Contenido recibido: ' + text);
+        const response = await fetch('/data/get_worker_data.php', {
+            method: 'GET',
+            credentials: 'include'
+        });
+
+        const data = await response.json(); // Intentar parsear la respuesta como JSON
+
+        if (data.success) {
+            // Procesar los datos del trabajador aquí
+            console.log(data.worker);
+        } else {
+            console.error('Error al obtener los datos del trabajador:', data.message);
+            alert('Error al obtener los datos del trabajador. Por favor, inicie sesión.');
+            window.location.href = '/login'; // Redirigir al login si hay error
         }
-        
-        const data = await response.json();
-        if (!data.success) {
-            throw new Error(data.message || "Error desconocido al obtener datos.");
-        }
-        return data;
     } catch (error) {
-        console.error("Error al parsear JSON:", error);
-        alert("Hubo un problema al procesar la respuesta del servidor.");
-        return { success: false };
+        console.error('Error al parsear JSON:', error);
+        alert('Hubo un problema al procesar la respuesta. Por favor, intente de nuevo.');
     }
   }
 
