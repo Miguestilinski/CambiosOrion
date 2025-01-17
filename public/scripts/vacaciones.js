@@ -62,11 +62,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     try {
-        const data = await response.json();
-        if (!data.success) {
-            throw new Error(data.message || "Error desconocido al obtener datos.");
-        }
-        return data;
+      // Verificar si el contenido es JSON
+      const contentType = response.headers.get('Content-Type');
+      if (!contentType || !contentType.includes('application/json')) {
+          throw new Error('La respuesta no es JSON');
+      }
+      const data = await response.json();
+      if (!data.success) {
+          throw new Error(data.message || "Error desconocido al obtener datos.");
+      }
+      return data;
     } catch (error) {
         console.error("Error al parsear JSON:", error);
         alert("Hubo un problema al procesar la respuesta del servidor.");
