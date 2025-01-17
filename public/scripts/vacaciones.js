@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       calendarContainer.appendChild(dayElement);
     });
   }
-
+  
   async function generateCalendar(currentDate, availableDays) {
     const response = await fetch('https://cambiosorion.cl/data/vacaciones.php', {
         method: 'POST',
@@ -141,6 +141,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     const data = await response.json();
+    console.log('Respuesta de la API de vacaciones:', data);  // Agregado para inspeccionar la respuesta
+
     // Asegúrate de que `data.dates` sea un array
     if (!Array.isArray(data.dates)) {
         throw new Error('La respuesta de fechas no es un arreglo válido.');
