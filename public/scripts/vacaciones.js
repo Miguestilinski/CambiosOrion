@@ -78,13 +78,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         body: JSON.stringify({ accion: 'simulateVacationDays', startDate, endDate }),
         credentials: 'include',
     });
+
     if (!response.ok) {
         throw new Error('No se pudo simular los días de vacaciones.');
     }
+
     const data = await response.json();
     
     // Aquí puedes ajustar para excluir los fines de semana y feriados
     const dias_tomados = calculateWorkingDays(startDate, endDate, data.feriados); // Aquí necesitas una función de días laborales
+    if (data.success) {
+      simulationResult.textContent = `Días tomados: ${data.dias_tomados}`;
+    } else {
+        simulationResult.textContent = `Error: ${data.message}`;
+    }
     return {
         success: true,
         dias_tomados: dias_tomados
@@ -127,7 +134,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       calendarContainer.appendChild(dayElement);
     });
   }
-  
+
   async function generateCalendar(currentDate, availableDays) {
     // Verificar que 'availableDays' sea un arreglo
     if (!Array.isArray(availableDays)) {
@@ -135,6 +142,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         throw new Error('availableDays no es un arreglo válido.');
     }
 
+    // Enviar la solicitud a la API
     const response = await fetch('https://cambiosorion.cl/data/vacaciones.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -144,12 +152,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (!response.ok) {
         throw new Error('No se pudo generar el calendario.');
-    }
+      }
 
     const data = await response.json();
-    console.log('Respuesta de la API de vacaciones:', data);  // Loguea toda la respuesta
+    console.log('Respuesta de la API de vacaciones:', data);
 
-    // Verifica si el campo `data.dates` está presente y es un array
     if (!data || !Array.isArray(data.dates)) {
         console.error('Respuesta inesperada de la API, data.dates no es un arreglo válido:', data);
         throw new Error('La respuesta de fechas no es un arreglo válido.');
