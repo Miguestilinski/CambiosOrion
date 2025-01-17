@@ -11,7 +11,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
 
+    // Calcular días disponibles del trabajador
+    const availableDays = calculateAvailableDays(sessionInfo.fecha_ingreso);
+    if (!Array.isArray(availableDays)) {
+      throw new Error('availableDays no es un arreglo válido.');
+    }
+
     // Render calendario
+    console.log(availableDays); // Verifica que es un arreglo
     const calendarDates = await generateCalendar(new Date(), sessionInfo.dias_disponibles);
     renderCalendar(calendarDates);
 
@@ -47,6 +54,25 @@ document.addEventListener('DOMContentLoaded', async () => {
     alert('Ocurrió un error al cargar los datos. Intenta nuevamente más tarde.');
   }
 
+  // Función para calcular los días disponibles de un trabajador
+  function calculateAvailableDays(fechaIngreso) {
+    // Calcular la fecha de ingreso y los meses trabajados
+    const ingresoDate = new Date(fechaIngreso);
+    const currentDate = new Date();
+    const monthsWorked = (currentDate.getFullYear() - ingresoDate.getFullYear()) * 12 + currentDate.getMonth() - ingresoDate.getMonth();
+
+    // Cada mes trabajado equivale a 1.25 días disponibles
+    const totalDaysAvailable = monthsWorked * 1.25;
+
+    // Devolver los días disponibles como un arreglo
+    const availableDays = [];
+    for (let i = 0; i < totalDaysAvailable; i++) {
+      availableDays.push({ date: `2025-01-${i + 1}`, available: true, day: i + 1 });
+    }
+
+    return availableDays;
+  }
+
   async function fetchSessionInfo() {
     const response = await fetch('https://cambiosorion.cl/data/session_status.php', {
         credentials: 'include',
@@ -56,7 +82,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     return response.json();
   }
-
 
   async function saveSelectedDates(dates) {
     const response = await fetch('https://cambiosorion.cl/data/vacaciones.php', {
