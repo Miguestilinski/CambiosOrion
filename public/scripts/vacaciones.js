@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   async function fetchSessionInfo() {
-    const response = await fetch('https://cambiosorion.cl/session_status.php', {
+    const response = await fetch('https://cambiosorion.cl/data/session_status.php', {
       credentials: 'include',
     });
     if (!response.ok) {
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   async function saveSelectedDates(dates) {
-    const response = await fetch('https://cambiosorion.cl/vacaciones.php', {
+    const response = await fetch('https://cambiosorion.cl/data/vacaciones.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ accion: 'registrarDiasTomados', dates }),
