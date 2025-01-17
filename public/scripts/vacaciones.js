@@ -106,16 +106,25 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   async function generateCalendar(currentDate, availableDays) {
     const response = await fetch('https://cambiosorion.cl/data/vacaciones.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ accion: 'generateCalendar', currentDate, availableDays }),
-      credentials: 'include',
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ accion: 'generateCalendar', currentDate, availableDays }),
+        credentials: 'include',
     });
+
     if (!response.ok) {
-      throw new Error('No se pudo generar el calendario.');
+        throw new Error('No se pudo generar el calendario.');
     }
-    return response.json();
-  }
+
+    const data = await response.json();
+    // Asegúrate de que `data.dates` sea un array
+    if (!Array.isArray(data.dates)) {
+        throw new Error('La respuesta de fechas no es un arreglo válido.');
+    }
+
+    return data.dates;  // Aquí retornamos un arreglo de fechas
+}
+
 
   // Función para obtener feriados de un año específico
   const obtenerFeriados = (año, mes = '', dia = '') => {
@@ -127,7 +136,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         url += `/${dia}`;
     }
 
-    fetch(url)
+    // Usa un proxy si es necesario
+    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+    const fullUrl = proxyUrl + url;
+
+    fetch(fullUrl)
         .then(response => response.json())
         .then(data => mostrarFeriados(data))
         .catch(error => console.error('Error al obtener los feriados:', error));
