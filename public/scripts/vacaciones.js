@@ -62,10 +62,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     try {
-      // Verificar si el contenido es JSON
+      // Verificar si la respuesta es JSON
       const contentType = response.headers.get('Content-Type');
       if (!contentType || !contentType.includes('application/json')) {
-          throw new Error('La respuesta no es JSON');
+          const text = await response.text(); // Obtener el cuerpo como texto
+          throw new Error('La respuesta no es JSON. Contenido recibido: ' + text);
       }
       const data = await response.json();
       if (!data.success) {
@@ -96,7 +97,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     return availableDays;
   }
-  
+
   // Guardar días seleccionados
   async function saveSelectedDates(dates) {
     const response = await fetch("https://cambiosorion.cl/data/vacaciones.php", {
