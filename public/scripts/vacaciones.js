@@ -49,13 +49,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   async function fetchSessionInfo() {
     const response = await fetch('https://cambiosorion.cl/data/session_status.php', {
-      credentials: 'include',
+        credentials: 'include',
     });
     if (!response.ok) {
-      throw new Error('No se pudo obtener la información de la sesión.');
+        throw new Error('No se pudo obtener la información de la sesión.');
     }
     return response.json();
   }
+
 
   async function saveSelectedDates(dates) {
     const response = await fetch('https://cambiosorion.cl/data/vacaciones.php', {
@@ -72,15 +73,38 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   async function simulateVacationDays(startDate, endDate) {
     const response = await fetch('https://cambiosorion.cl/data/vacaciones.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ accion: 'simulateVacationDays', startDate, endDate }),
-      credentials: 'include',
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ accion: 'simulateVacationDays', startDate, endDate }),
+        credentials: 'include',
     });
     if (!response.ok) {
-      throw new Error('No se pudo simular los días de vacaciones.');
+        throw new Error('No se pudo simular los días de vacaciones.');
     }
-    return response.json();
+    const data = await response.json();
+    
+    // Aquí puedes ajustar para excluir los fines de semana y feriados
+    const dias_tomados = calculateWorkingDays(startDate, endDate, data.feriados); // Aquí necesitas una función de días laborales
+    return {
+        success: true,
+        dias_tomados: dias_tomados
+    };
+  }
+
+  function calculateWorkingDays(startDate, endDate, feriados) {
+    let dias = 0;
+    let currentDate = new Date(startDate);
+    while (currentDate <= new Date(endDate)) {
+        if (currentDate.getDay() !== 0 && currentDate.getDay() !== 6 && !isHoliday(currentDate, feriados)) {
+            dias++;
+        }
+        currentDate.setDate(currentDate.getDate() + 1);
+    }
+    return dias;
+  }
+
+  function isHoliday(date, feriados) {
+      return feriados.some(feriado => new Date(feriado.fecha).toDateString() === date.toDateString());
   }
 
   function displayWorkerInfo(info) {
@@ -123,28 +147,29 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     return data.dates;  // Aquí retornamos un arreglo de fechas
-}
-
+  }
 
   // Función para obtener feriados de un año específico
-  const obtenerFeriados = (año, mes = '', dia = '') => {
-    let url = `https://apis.digital.gob.cl/fl/feriados/${año}`;
-    if (mes) {
-        url += `/${mes}`;
-    }
-    if (dia) {
-        url += `/${dia}`;
-    }
+  async function obtenerFeriados() {
+    const options = {
+        method: 'GET',
+        headers: { 'accept': 'application/json' },
+    };
 
-    // Usa un proxy si es necesario
-    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-    const fullUrl = proxyUrl + url;
+    try {
+        const response = await fetch('https://api.boostr.cl/holidays.json', options);
+        const data = await response.json();
 
-    fetch(fullUrl)
-        .then(response => response.json())
-        .then(data => mostrarFeriados(data))
-        .catch(error => console.error('Error al obtener los feriados:', error));
-  };
+        if (!Array.isArray(data)) {
+            throw new Error('La respuesta de feriados no es un arreglo válido.');
+        }
+
+        await generateCalendar(new Date(), data); // Generar el calendario con los feriados
+    } catch (error) {
+        console.error('Error al obtener los feriados:', error);
+        alert('Hubo un error al obtener los feriados.');
+    }
+  }
 
   // Mostrar los feriados en el HTML
   const mostrarFeriados = (data) => {
