@@ -18,8 +18,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Render calendario
-    console.log(availableDays); // Verifica que es un arreglo
-    const calendarDates = await generateCalendar(new Date(), sessionInfo.dias_disponibles);
+    console.log('Días disponibles al generar el calendario:', availableDays);
+    const calendarDates = await generateCalendar(new Date(), availableDays);    
     renderCalendar(calendarDates);
 
     // Mostrar información del trabajador
@@ -70,6 +70,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       availableDays.push({ date: `2025-01-${i + 1}`, available: true, day: i + 1 });
     }
 
+    console.log('Días disponibles calculados:', availableDays); // Verifica el contenido de availableDays
     return availableDays;
   }
 

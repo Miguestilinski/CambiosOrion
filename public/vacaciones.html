@@ -131,6 +131,19 @@
           <p><strong>Días disponibles:</strong> <span id="dias-disponibles"></span></p>
           <p><strong>Días usados:</strong> <span id="dias-usados"></span></p>
         </div>
+
+        <!-- Simulador -->
+        <div id="simulator" class="my-4">
+            <h2 class="text-lg font-bold">Simulador de Vacaciones</h2>
+            <label for="start-date">Fecha de salida:</label>
+            <input type="date" id="start-date" class="border p-1 rounded">
+        
+            <label for="end-date">Fecha de regreso:</label>
+            <input type="date" id="end-date" class="border p-1 rounded">
+        
+            <button id="simulate" class="bg-green-500 text-white px-4 py-2 rounded">Calcular</button>
+            <p id="simulation-result" class="mt-2"></p>
+        </div>
     
         <!-- Calendario -->
         <div id="calendar" class="my-4">
@@ -138,19 +151,7 @@
           <div id="calendar-container" class="grid grid-cols-7 gap-2"></div>
           <button id="save-dates" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded">Guardar Días Seleccionados</button>
         </div>
-    
-        <!-- Simulador -->
-        <div id="simulator" class="my-4">
-          <h2 class="text-lg font-bold">Simulador de Vacaciones</h2>
-          <label for="start-date">Fecha de salida:</label>
-          <input type="date" id="start-date" class="border p-1 rounded">
-    
-          <label for="end-date">Fecha de regreso:</label>
-          <input type="date" id="end-date" class="border p-1 rounded">
-    
-          <button id="simulate" class="bg-green-500 text-white px-4 py-2 rounded">Calcular</button>
-          <p id="simulation-result" class="mt-2"></p>
-        </div>
+
       </div>
   </main>
 
