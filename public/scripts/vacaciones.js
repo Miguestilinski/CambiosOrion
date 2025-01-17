@@ -52,13 +52,25 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   async function fetchWorkerData() {
-    const response = await fetch('https://cambiosorion.cl/data/get_worker_data.php', {
-      credentials: 'include',
-    });
+    const response = await fetch(
+        "https://cambiosorion.cl/data/get_worker_data.php",
+        { credentials: "include" }
+    );
+
     if (!response.ok) {
-      throw new Error('No se pudo obtener la información del trabajador.');
+        throw new Error("Error al obtener la información del trabajador.");
     }
-    return response.json();
+
+    try {
+        const data = await response.json();
+        if (!data.success) {
+            throw new Error(data.message || "Error desconocido al obtener datos.");
+        }
+        return data;
+    } catch (error) {
+        console.error("Error al parsear JSON:", error);
+        alert("Hubo un problema al procesar la respuesta del servidor.");
+    }
   }
 
   // Función para calcular los días disponibles de un trabajador
