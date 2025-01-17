@@ -4,13 +4,19 @@ document.addEventListener('DOMContentLoaded', async () => {
   const simulationResult = document.getElementById('simulation-result');
 
   try {
-    // Fetch información inicial del trabajador desde la sesión
-    const workerInfo = await fetchWorkerInfo();
-    displayWorkerInfo(workerInfo);
+    // Obtén información de la sesión activa
+    const sessionInfo = await fetchSessionInfo();
+    if (!sessionInfo.isAuthenticated) {
+      alert('Usuario no autenticado. Por favor, inicia sesión.');
+      return;
+    }
 
     // Render calendario
-    const calendarDates = await generateCalendar(new Date(), workerInfo.dias_disponibles);
+    const calendarDates = await generateCalendar(new Date(), sessionInfo.dias_disponibles);
     renderCalendar(calendarDates);
+
+    // Mostrar información del trabajador
+    displayWorkerInfo(sessionInfo);
 
     // Guardar días seleccionados
     saveButton.addEventListener('click', async () => {
@@ -20,10 +26,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
       }
       const response = await saveSelectedDates(selectedDates);
-      alert(response.success ? 'Días guardados con éxito.' : response.message || 'Error al guardar días.');
+      alert(response.success ? 'Días guardados con éxito.' : response.error);
     });
 
-    // Simulación de días tomados
+    // Simulación
     document.getElementById('simulate').addEventListener('click', async () => {
       const startDate = document.getElementById('start-date').value;
       const endDate = document.getElementById('end-date').value;
@@ -34,39 +40,46 @@ document.addEventListener('DOMContentLoaded', async () => {
       const result = await simulateVacationDays(startDate, endDate);
       simulationResult.textContent = result.success
         ? `Días tomados: ${result.dias_tomados}`
-        : `Error: ${result.message || 'No se pudo realizar la simulación.'}`;
+        : `Error: ${result.error}`;
     });
   } catch (error) {
-    console.error('Error inicializando la aplicación:', error);
-    alert('Hubo un problema inicializando la aplicación. Inténtalo nuevamente.');
+    console.error('Error al inicializar la aplicación:', error);
+    alert('Ocurrió un error al cargar los datos. Intenta nuevamente más tarde.');
   }
 
-  async function fetchWorkerInfo() {
-    const response = await fetch('https://cambiosorion.cl/data/vacaciones.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ accion: 'obtenerDias' })
+  async function fetchSessionInfo() {
+    const response = await fetch('https://cambiosorion.cl/session_status.php', {
+      credentials: 'include',
     });
-    const data = await response.json();
-    if (!data.success) throw new Error(data.message || 'Error al obtener información del trabajador.');
-    return data.data;
+    if (!response.ok) {
+      throw new Error('No se pudo obtener la información de la sesión.');
+    }
+    return response.json();
   }
 
   async function saveSelectedDates(dates) {
-    const response = await fetch('https://cambiosorion.cl/data/vacaciones.php', {
+    const response = await fetch('https://cambiosorion.cl/vacaciones.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ accion: 'registrarDiasTomados', fechas: dates })
+      body: JSON.stringify({ accion: 'registrarDiasTomados', dates }),
+      credentials: 'include',
     });
+    if (!response.ok) {
+      throw new Error('No se pudieron guardar las fechas seleccionadas.');
+    }
     return response.json();
   }
 
   async function simulateVacationDays(startDate, endDate) {
-    const response = await fetch('https://cambiosorion.cl/data/vacaciones.php', {
+    const response = await fetch('https://cambiosorion.cl/vacaciones.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ accion: 'simularDias', fecha_inicio: startDate, fecha_fin: endDate })
+      body: JSON.stringify({ accion: 'simulateVacationDays', startDate, endDate }),
+      credentials: 'include',
     });
+    if (!response.ok) {
+      throw new Error('No se pudo simular los días de vacaciones.');
+    }
     return response.json();
   }
 
@@ -92,13 +105,54 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   async function generateCalendar(currentDate, availableDays) {
-    const response = await fetch('https://cambiosorion.cl/data/vacaciones.php', {
+    const response = await fetch('https://cambiosorion.cl/vacaciones.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ accion: 'generarCalendario', fecha_actual: currentDate, dias_disponibles: availableDays })
+      body: JSON.stringify({ accion: 'generateCalendar', currentDate, availableDays }),
+      credentials: 'include',
     });
-    const data = await response.json();
-    if (!data.success) throw new Error(data.message || 'Error al generar calendario.');
-    return data.dates;
+    if (!response.ok) {
+      throw new Error('No se pudo generar el calendario.');
+    }
+    return response.json();
   }
+
+  // Función para obtener feriados de un año específico
+  const obtenerFeriados = (año, mes = '', dia = '') => {
+    let url = `https://apis.digital.gob.cl/fl/feriados/${año}`;
+    if (mes) {
+        url += `/${mes}`;
+    }
+    if (dia) {
+        url += `/${dia}`;
+    }
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => mostrarFeriados(data))
+        .catch(error => console.error('Error al obtener los feriados:', error));
+  };
+
+  // Mostrar los feriados en el HTML
+  const mostrarFeriados = (data) => {
+      const feriadosContainer = document.getElementById('feriados-container');
+      feriadosContainer.innerHTML = ''; // Limpiar la lista de feriados
+
+      data.forEach(feriado => {
+          const div = document.createElement('div');
+          div.classList.add('feriado-item');
+          div.innerHTML = `
+              <h4>${feriado.nombre}</h4>
+              <p>Fecha: ${feriado.fecha}</p>
+              <p>Tipo: ${feriado.tipo}</p>
+              <p>Irrenunciable: ${feriado.irrenunciable ? 'Sí' : 'No'}</p>
+              <p>Comentarios: ${feriado.comentarios || 'Ninguno'}</p>
+          `;
+          feriadosContainer.appendChild(div);
+      });
+  };
+
+  // Llamada inicial para obtener los feriados del año actual (puedes modificar el año)
+  const añoActual = new Date().getFullYear();
+  obtenerFeriados(añoActual);
 });
