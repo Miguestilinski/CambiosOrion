@@ -61,6 +61,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error("Error al obtener la información del trabajador. Código de estado:", response.status);
         const errorText = await response.text();  // Obtener la respuesta como texto
         console.error("Contenido de la respuesta de error:", errorText);
+        alert("Error en obtener los datos del trabajador, por favor inicie sesión.");
         throw new Error("Error al obtener los datos del trabajador. Verifica la URL y el servidor.");
     }
 
