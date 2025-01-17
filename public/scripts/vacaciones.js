@@ -151,25 +151,31 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Función para obtener feriados de un año específico
   async function obtenerFeriados() {
-    const options = {
-        method: 'GET',
-        headers: { 'accept': 'application/json' },
-    };
-
     try {
-        const response = await fetch('https://api.boostr.cl/holidays.json', options);
+        const response = await fetch('https://api.boostr.cl/holidays.json');
         const data = await response.json();
+        console.log('Respuesta de la API de feriados:', data);
 
-        if (!Array.isArray(data)) {
-            throw new Error('La respuesta de feriados no es un arreglo válido.');
+        // Asegurarse de que la respuesta contiene el campo 'data' y es un arreglo válido
+        if (!data || !Array.isArray(data.data)) {
+            throw new Error('La respuesta de feriados no contiene un arreglo válido.');
         }
 
-        await generateCalendar(new Date(), data); // Generar el calendario con los feriados
+        // Extraer las fechas de los feriados
+        const feriados = data.data.map(feriado => feriado.date);
+
+        // Verificar si se encontraron feriados
+        if (feriados.length === 0) {
+            throw new Error('No se encontraron feriados.');
+        }
+
+        return feriados;
     } catch (error) {
         console.error('Error al obtener los feriados:', error);
-        alert('Hubo un error al obtener los feriados.');
+        throw new Error('Error al obtener los feriados: ' + error.message);
     }
   }
+
 
   // Mostrar los feriados en el HTML
   const mostrarFeriados = (data) => {
