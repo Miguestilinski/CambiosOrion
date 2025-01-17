@@ -51,26 +51,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     alert('Ocurrió un error al cargar los datos. Intenta nuevamente más tarde.');
   }
 
-  // Función para calcular los días disponibles de un trabajador
-  function calculateAvailableDays(fechaIngreso) {
-    // Calcular la fecha de ingreso y los meses trabajados
-    const ingresoDate = new Date(fechaIngreso);
-    const currentDate = new Date();
-    const monthsWorked = (currentDate.getFullYear() - ingresoDate.getFullYear()) * 12 + currentDate.getMonth() - ingresoDate.getMonth();
-
-    // Cada mes trabajado equivale a 1.25 días disponibles
-    const totalDaysAvailable = monthsWorked * 1.25;
-
-    // Devolver los días disponibles como un arreglo
-    const availableDays = [];
-    for (let i = 0; i < totalDaysAvailable; i++) {
-      availableDays.push({ date: `2025-01-${i + 1}`, available: true, day: i + 1 });
-    }
-
-    console.log('Días disponibles calculados:', availableDays);
-    return availableDays;
-  }
-
   async function fetchWorkerData() {
     const response = await fetch('https://cambiosorion.cl/data/get_worker_data.php', {
       credentials: 'include',
@@ -81,29 +61,48 @@ document.addEventListener('DOMContentLoaded', async () => {
     return response.json();
   }
 
+  // Función para calcular los días disponibles de un trabajador
+  function calculateAvailableDays(fechaIngreso) {
+    const ingresoDate = new Date(fechaIngreso);
+    const currentDate = new Date();
+    const monthsWorked =
+      (currentDate.getFullYear() - ingresoDate.getFullYear()) * 12 +
+      currentDate.getMonth() -
+      ingresoDate.getMonth();
+
+    const totalDaysAvailable = Math.floor(monthsWorked * 1.25);
+    const availableDays = [];
+    for (let i = 0; i < totalDaysAvailable; i++) {
+      const day = new Date();
+      day.setDate(day.getDate() + i);
+      availableDays.push({ date: day.toISOString().split("T")[0], available: true });
+    }
+    return availableDays;
+  }
+  
+  // Guardar días seleccionados
   async function saveSelectedDates(dates) {
-    const response = await fetch('https://cambiosorion.cl/data/vacaciones.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ accion: 'registrarDiasTomados', dates }),
-      credentials: 'include',
+    const response = await fetch("https://cambiosorion.cl/data/vacaciones.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ accion: "registrarDiasTomados", dates }),
+      credentials: "include",
     });
     if (!response.ok) {
-      throw new Error('No se pudieron guardar las fechas seleccionadas.');
+      throw new Error("No se pudieron guardar las fechas seleccionadas.");
     }
     return response.json();
   }
 
   async function simulateVacationDays(startDate, endDate) {
-    const response = await fetch('https://cambiosorion.cl/data/vacaciones.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ accion: 'simulateVacationDays', startDate, endDate }),
-        credentials: 'include',
+    const response = await fetch("https://cambiosorion.cl/data/vacaciones.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ accion: "simulateVacationDays", startDate, endDate }),
+      credentials: "include",
     });
-
     if (!response.ok) {
-        throw new Error('No se pudo simular los días de vacaciones.');
+      throw new Error("No se pudo simular los días de vacaciones.");
     }
 
     const data = await response.json();
@@ -144,16 +143,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('dias-usados').textContent = info.dias_usados;
   }
 
+  // Renderizar calendario
   function renderCalendar(dates) {
-    calendarContainer.innerHTML = '';
-    dates.forEach(date => {
-      const dayElement = document.createElement('div');
-      dayElement.className = `p-2 border rounded cursor-pointer ${date.available ? 'bg-white' : 'bg-gray-200'}`;
-      dayElement.textContent = date.day;
+    calendarContainer.innerHTML = "";
+    dates.forEach((date) => {
+      const dayElement = document.createElement("div");
+      dayElement.className = `day ${date.available ? "available" : "unavailable"}`;
+      dayElement.textContent = new Date(date.date).getDate();
       if (date.available) {
-        dayElement.addEventListener('click', () => dayElement.classList.toggle('selected'));
+        dayElement.addEventListener("click", () =>
+          dayElement.classList.toggle("selected")
+        );
       }
-      dayElement.dataset.date = date.date;
       calendarContainer.appendChild(dayElement);
     });
   }
