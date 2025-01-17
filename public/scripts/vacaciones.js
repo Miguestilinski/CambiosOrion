@@ -132,7 +132,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     const response = await fetch('https://cambiosorion.cl/data/vacaciones.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ accion: 'generateCalendar', currentDate, availableDays }),
+        body: JSON.stringify({ 
+            accion: 'generateCalendar', 
+            currentDate: currentDate, 
+            availableDays: availableDays 
+        }),
         credentials: 'include',
     });
 
