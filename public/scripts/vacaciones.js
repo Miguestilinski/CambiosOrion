@@ -127,16 +127,18 @@ document.addEventListener('DOMContentLoaded', async () => {
       calendarContainer.appendChild(dayElement);
     });
   }
-
+  
   async function generateCalendar(currentDate, availableDays) {
+    // Verificar que 'availableDays' sea un arreglo
+    if (!Array.isArray(availableDays)) {
+        console.error("availableDays no es un arreglo válido:", availableDays);
+        throw new Error('availableDays no es un arreglo válido.');
+    }
+
     const response = await fetch('https://cambiosorion.cl/data/vacaciones.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-            accion: 'generateCalendar', 
-            currentDate: currentDate, 
-            availableDays: availableDays 
-        }),
+        body: JSON.stringify({ accion: 'generateCalendar', currentDate, availableDays }),
         credentials: 'include',
     });
 
