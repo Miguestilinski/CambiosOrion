@@ -4,26 +4,23 @@ document.addEventListener('DOMContentLoaded', async () => {
   const simulationResult = document.getElementById('simulation-result');
 
   try {
-    // Obtén información de la sesión activa
-    const sessionInfo = await fetchSessionInfo();
-    if (!sessionInfo.isAuthenticated) {
-      alert('Usuario no autenticado. Por favor, inicia sesión.');
+    // Obtén información del trabajador autenticado
+    const workerData = await fetchWorkerData();
+    if (!workerData.success) {
+      alert('Error al obtener datos del trabajador. Por favor, inicia sesión.');
       return;
     }
 
+    const { fecha_ingreso, dias_disponibles, dias_usados, meses_trabajados } = workerData.data;
+
     // Calcular días disponibles del trabajador
-    const availableDays = calculateAvailableDays(sessionInfo.fecha_ingreso);
-    if (!Array.isArray(availableDays)) {
-      throw new Error('availableDays no es un arreglo válido.');
-    }
+    const availableDays = calculateAvailableDays(fecha_ingreso);
 
     // Render calendario
-    console.log('Días disponibles al generar el calendario:', availableDays);
-    const calendarDates = await generateCalendar(new Date(), availableDays);    
-    renderCalendar(calendarDates);
+    renderCalendar(await generateCalendar(new Date(), availableDays));
 
     // Mostrar información del trabajador
-    displayWorkerInfo(sessionInfo);
+    displayWorkerInfo({ fecha_ingreso, dias_disponibles, dias_usados, meses_trabajados });
 
     // Guardar días seleccionados
     saveButton.addEventListener('click', async () => {
@@ -70,16 +67,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       availableDays.push({ date: `2025-01-${i + 1}`, available: true, day: i + 1 });
     }
 
-    console.log('Días disponibles calculados:', availableDays); // Verifica el contenido de availableDays
+    console.log('Días disponibles calculados:', availableDays);
     return availableDays;
   }
 
-  async function fetchSessionInfo() {
-    const response = await fetch('https://cambiosorion.cl/data/session_status.php', {
-        credentials: 'include',
+  async function fetchWorkerData() {
+    const response = await fetch('https://cambiosorion.cl/data/get_worker_data.php', {
+      credentials: 'include',
     });
     if (!response.ok) {
-        throw new Error('No se pudo obtener la información de la sesión.');
+      throw new Error('No se pudo obtener la información del trabajador.');
     }
     return response.json();
   }
@@ -217,7 +214,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         throw new Error('Error al obtener los feriados: ' + error.message);
     }
   }
-
 
   // Mostrar los feriados en el HTML
   const mostrarFeriados = (data) => {
