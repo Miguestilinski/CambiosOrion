@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   async function simulateVacationDays(startDate, endDate) {
-    const response = await fetch('https://cambiosorion.cl/vacaciones.php', {
+    const response = await fetch('https://cambiosorion.cl/data/vacaciones.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ accion: 'simulateVacationDays', startDate, endDate }),
@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   async function generateCalendar(currentDate, availableDays) {
-    const response = await fetch('https://cambiosorion.cl/vacaciones.php', {
+    const response = await fetch('https://cambiosorion.cl/data/vacaciones.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ accion: 'generateCalendar', currentDate, availableDays }),
