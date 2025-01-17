@@ -58,24 +58,29 @@ document.addEventListener('DOMContentLoaded', async () => {
     );
 
     if (!response.ok) {
-        throw new Error("Error al obtener la información del trabajador.");
+        console.error("Error al obtener la información del trabajador. Código de estado:", response.status);
+        const errorText = await response.text();  // Obtener la respuesta como texto
+        console.error("Contenido de la respuesta de error:", errorText);
+        throw new Error("Error al obtener los datos del trabajador. Verifica la URL y el servidor.");
     }
 
     try {
-      // Verificar si la respuesta es JSON
-      const contentType = response.headers.get('Content-Type');
-      if (!contentType || !contentType.includes('application/json')) {
-          const text = await response.text(); // Obtener el cuerpo como texto
-          throw new Error('La respuesta no es JSON. Contenido recibido: ' + text);
-      }
-      const data = await response.json();
-      if (!data.success) {
-          throw new Error(data.message || "Error desconocido al obtener datos.");
-      }
-      return data;
+        const contentType = response.headers.get('Content-Type');
+        if (!contentType || !contentType.includes('application/json')) {
+            const text = await response.text(); // Obtener el cuerpo como texto si no es JSON
+            console.error("Respuesta no es JSON, contenido recibido:", text);
+            throw new Error('La respuesta no es JSON. Contenido recibido: ' + text);
+        }
+        
+        const data = await response.json();
+        if (!data.success) {
+            throw new Error(data.message || "Error desconocido al obtener datos.");
+        }
+        return data;
     } catch (error) {
         console.error("Error al parsear JSON:", error);
         alert("Hubo un problema al procesar la respuesta del servidor.");
+        return { success: false };
     }
   }
 
