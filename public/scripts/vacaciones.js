@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     const data = await response.json();
-    console.log('Respuesta de la API de vacaciones:', data);  // Agregado para inspeccionar la respuesta
+    console.log('Respuesta de la API de vacaciones:', data);  // Loguea toda la respuesta
 
     // Verifica si el campo `data.dates` está presente y es un array
     if (!data || !Array.isArray(data.dates)) {
