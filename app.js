@@ -11,14 +11,18 @@ const port = process.env.PORT || 3306;
 // Cargar las variables de entorno
 require('dotenv').config();
 
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 // Sirve los archivos estáticos desde /public_html/orionapp/assets
-app.use('/assets', express.static(path.join(__dirname, 'assets')));
+app.use('/assets', express.static(path.join(__dirname, 'orionapp/assets')));
 
 // Sirve los archivos estáticos desde /public_html/orionapp/icons
-app.use('/icons', express.static(path.join(__dirname, 'icons')));
+app.use('/icons', express.static(path.join(__dirname, 'orionapp/icons')));
 
 // Sirve los archivos estáticos desde /public_html/orionapp/sounds
-app.use('/sounds', express.static(path.join(__dirname, 'sounds')));
+app.use('/sounds', express.static(path.join(__dirname, 'orionapp/sounds')));
 
 // Dependiendo del subdominio, carga rutas y lógica específicas
 app.use((req, res, next) => {
@@ -40,7 +44,7 @@ app.get('/', (req, res) => {
       res.sendFile(path.join(__dirname, 'subdominios/admin/index.html'));
       break;
     default:
-      res.sendFile(path.join(__dirname, 'index.html')); // Página principal
+      res.sendFile(path.join(__dirname, 'landing.html')); // Página principal
   }
 });
 
@@ -48,10 +52,6 @@ app.get('/', (req, res) => {
 app.listen(3000, () => {
   console.log('Servidor corriendo en http://localhost:3000');
 });
-
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 // Configurar las sesiones
 app.use(
