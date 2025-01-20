@@ -11,6 +11,26 @@ const port = process.env.PORT || 3306;
 // Cargar las variables de entorno
 require('dotenv').config();
 
+app.use((req, res, next) => {
+  const subdomain = req.headers.host.split('.')[0];  // obtener subdominio
+  req.subdomain = subdomain;
+  next();
+});
+
+app.get('/', (req, res) => {
+  if (req.subdomain === 'pizarras') {
+    res.send('Bienvenido al sistema de pizarras');
+  } else if (req.subdomain === 'clientes') {
+    res.send('Bienvenido al portal de clientes');
+  } else {
+    res.send('Bienvenido a la página principal');
+  }
+});
+
+app.listen(3000, () => {
+  console.log('Servidor corriendo en http://localhost:3000');
+});
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
