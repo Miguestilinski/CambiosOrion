@@ -11,6 +11,14 @@ const port = process.env.PORT || 3306;
 // Cargar las variables de entorno
 require('dotenv').config();
 
+// Sirve los archivos estáticos desde /public_html/orionapp/assets
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
+
+// Sirve los archivos estáticos desde /public_html/orionapp/icons
+app.use('/icons', express.static(path.join(__dirname, 'icons')));
+
+// Sirve los archivos estáticos desde /public_html/orionapp/sounds
+app.use('/sounds', express.static(path.join(__dirname, 'sounds')));
 
 // Dependiendo del subdominio, carga rutas y lógica específicas
 app.use((req, res, next) => {
