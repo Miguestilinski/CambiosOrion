@@ -1,0 +1,180 @@
+body {
+    background: rgba(0, 0, 0, 0.45) url('/orionapp/assets/FondoOrion.jpg') no-repeat center top;
+    background-size: cover;
+    background-position: center;
+    color: white;
+    font-family: 'Helvetica', sans-serif;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7) 60%, black 100%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+html, body {
+    display: flex;
+    flex-direction: column;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 4rem;
+    margin-bottom: 1.5rem;
+}
+
+th {
+    background-color: transparent;
+}
+
+th.compra, th.venta {
+    font-size: 3rem;
+}
+
+th.icono, th.nombre {
+    visibility: hidden; /* Opcional: si deseas ocultar estos encabezados */
+}
+
+thead tr {
+    border-bottom: none; /* Sin borde para la fila del encabezado */
+}
+
+img {
+    width: 30px; /* Reduce el tamaño de los iconos */
+    height: 30px;
+    object-fit: cover; /* Ajustar el contenido dentro del círculo */
+}
+
+td.icono {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Cambiado a center para alinear mejor */
+    padding: 5px; /* Ajustar el padding */
+}
+
+td.nombre {
+    padding: 5px; /* Mantener un espaciado más pequeño */
+    text-align: center; /* Alinear el texto al centro */
+}
+
+.logo-container img {
+    height: auto;
+    display: flex;
+    flex-direction: column; /* Apilar elementos verticalmente */
+    align-items: center;    /* Centrar las imágenes horizontalmente */
+    justify-content: center; /* Centrar las imágenes verticalmente si es necesario */
+    gap: 10px; /* Reduce la distancia entre el logo y la tabla */
+}
+
+.logo-image {
+    width: 10rem; /* Ajusta según el tamaño deseado */
+}
+
+.name-image { 
+    width: 10rem; /* Ajusta según el tamaño deseado */
+    margin-bottom: 1rem;
+    justify-self: center;
+}
+
+/* CSS para que el nombre esté encima del ícono en las divisas destacadas */
+tr.divisa-destacada td.icono {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px; /* Aumentar el padding lateral (izquierda y derecha) */
+}
+
+.divisa-destacada .nombre {
+    font-size: 2rem; /* Tamaño más grande del nombre */
+    text-align: center; /* Alinear el texto al centro */
+    width: 100%; /* Asegurar que el nombre ocupe todo el ancho */
+    margin-bottom: 5px; /* Espacio entre el nombre y el ícono */
+}
+
+.divisa-destacada .icono img {
+    margin-bottom: 5px; /* Espacio entre el nombre y el ícono */
+    width: 4rem; /* Ajustar tamaño de los iconos */
+    height: 4rem; /* Ajustar tamaño de los iconos */
+}
+
+.divisa-normal .icono img {
+    width: 3rem;
+    height: 3rem;
+}
+
+td.espacio {
+    width: 5%; /* O ajusta este valor según sea necesario */
+}
+
+/* Estilo para las filas de USD y EUR para hacerlas más grandes y eliminar las líneas */
+tr.divisa-destacada {
+    font-size: 3rem; /* Tamaño de la fuente estándar para las filas destacadas */
+    height: 120px; /* Aumenta la altura para mayor separación */
+}
+
+/* Alineación y estilo de las celdas de precios en divisas destacadas */
+tr.divisa-destacada td {
+    border-bottom: none; /* Eliminar la línea inferior */
+    padding: 5px 0; /* Espaciado vertical para mantener la separación */
+}
+
+tr.divisa-destacada td.compra {
+    text-align: center; /* Alinear texto al centro debajo de Compra/Venta */
+    font-weight: bold; /* Hacer el texto más grueso */
+    font-size: 3em; /* Tamaño de fuente más grande */
+}
+
+tr.divisa-destacada td.venta {
+    text-align: center; /* Alinear texto al centro debajo de Compra/Venta */
+    font-weight: bold; /* Hacer el texto más grueso */
+    font-size: 3.3em; /* Tamaño de fuente más grande */
+}
+
+/* Oculta solo los encabezados de las divisas normales */
+tr.divisa-normal th {
+    display: none;
+}
+
+/* Estilo para las filas de otras divisas para hacerlas más pequeñas */
+tr.divisa-normal {
+    font-size: 3rem; /* Tamaño de fuente menor para estas filas */
+    text-align: center; /* Centrar el texto */
+    border-bottom: 1px solid white;
+}
+
+/* Estilo para el texto adicional */
+.info {
+    text-align: center; /* Centrar el texto */
+    font-size: 2rem; /* Tamaño de fuente adecuado */
+    margin-top: 20px; /* Espacio superior */
+}
+
+.offline-popup {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: red;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    font-size: 18px;
+    display: none; /* Oculto por defecto */
+    z-index: 1000; /* Asegúrate de que esté encima de otros elementos */
+}
