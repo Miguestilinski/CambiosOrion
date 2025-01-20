@@ -11,22 +11,32 @@ const port = process.env.PORT || 3306;
 // Cargar las variables de entorno
 require('dotenv').config();
 
+
+// Dependiendo del subdominio, carga rutas y lógica específicas
 app.use((req, res, next) => {
-  const subdomain = req.headers.host.split('.')[0];  // obtener subdominio
+  const subdomain = req.headers.host.split('.')[0];  // Obtener el subdominio
   req.subdomain = subdomain;
   next();
 });
 
+// Ruta principal para cada subdominio
 app.get('/', (req, res) => {
-  if (req.subdomain === 'pizarras') {
-    res.send('Bienvenido al sistema de pizarras');
-  } else if (req.subdomain === 'clientes') {
-    res.send('Bienvenido al portal de clientes');
-  } else {
-    res.send('Bienvenido a la página principal');
+  switch (req.subdomain) {
+    case 'pizarras':
+      res.sendFile(path.join(__dirname, 'subdominios/pizarras/index.html'));
+      break;
+    case 'clientes':
+      res.sendFile(path.join(__dirname, 'subdominios/clientes/index.html'));
+      break;
+    case 'admin':
+      res.sendFile(path.join(__dirname, 'subdominios/admin/index.html'));
+      break;
+    default:
+      res.sendFile(path.join(__dirname, 'index.html')); // Página principal
   }
 });
 
+// Otros middlewares y configuraciones
 app.listen(3000, () => {
   console.log('Servidor corriendo en http://localhost:3000');
 });

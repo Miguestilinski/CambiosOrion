@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor de Pizarras</title>
+    <link rel="stylesheet" href="/styles/header.css">
+    <link rel="stylesheet" href="/styles/index.css">
+    <link href="./styles/output.css" rel="stylesheet">
+    <link rel="icon" href="/orionapp/icons/favicon.png" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">  
+</head>
+<body>
+    <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js"></script>
+    <header>
+        <!-- Logo y Nombre -->
+        <div class="header-logo">
+            <a href="index">
+                <img src="/orionapp/assets/LogoOrion-silver.png" alt="Logo Cambios Orion" class="logo">
+            </a>
+            <a href="index">
+                <img src="/orionapp/assets/NombreOrion-white.png" alt="Nombre Cambios Orion" class="nombre">
+            </a>
+        </div>
+    
+        <!-- Botones para versión móvil -->
+        <div class="mobile-buttons">
+            <button class="menu-button" id="nav-menu-button">
+                <img src="/orionapp/icons/menu-white.svg" alt="Menú">
+            </button>
+            <button class="menu-button" id="session-menu-button">
+                <img src="/orionapp/icons/profile-white.png" alt="Sesión">
+            </button>
+        </div>
+    
+        <!-- Menús desplegables para móvil -->
+        <div id="nav-mobile-menu" class="mobile-menu hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
+            <ul class="py-2 text-sm text-gray-700">
+                <li><a href="index" class="block px-4 py-2 hover:bg-gray-100">Inicio</a></li>
+            </ul>
+            <ul class="py-2 text-sm text-gray-700">
+                <li><a href="servicios" class="block px-4 py-2 hover:bg-gray-100">Servicios</a></li>
+            </ul>
+            <ul class="py-2 text-sm text-gray-700">
+                <li><a href="nosotros" class="block px-4 py-2 hover:bg-gray-100">Nosotros</a></li>
+            </ul>
+            <ul class="py-2 text-sm text-gray-700">
+                <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Contacto</a></li>
+            </ul>
+        </div>
+    
+        <div class="mobile-menu hidden bg-white rounded-lg shadow w-44" id="session-mobile-menu">
+            <div id="guest-actions-mobile" class="divide-y divide-gray-100" style="display:none;">
+                <ul class="py-2 text-sm text-gray-700">
+                    <li><a href="login" class="block px-4 py-2 hover:bg-gray-100">Iniciar Sesión</a></li>
+                </ul>
+                <ul class="py-2 text-sm text-gray-700">
+                    <li><a href="registro" class="block px-4 py-2 hover:bg-gray-100">Registro</a></li>
+                </ul>
+            </div>
+            <div id="user-actions-mobile" class="divide-y divide-gray-100" style="display:none;">
+                <div class="px-2 py-2 text-sm text-gray-900">
+                    <div id="user-name">Nombre del usuario</div>
+                    <div id="user-email" class="mail font-medium truncate">Correo del usuario</div>
+                </div>
+                <ul class="py-2 text-sm text-gray-700">
+                    <li><a href="dashboard" class="block px-4 py-2 hover:bg-gray-100">Mi perfil</a></li>
+                </ul>
+                <ul class="py-2 text-sm text-gray-700" id="menu-admin-mobile" style="display: none;">
+                    <li><a href="edit" class="block px-4 py-2 hover:bg-gray-100">Pizarra</a></li>
+                </ul>
+                <ul class="py-2 text-sm text-gray-700">
+                    <li><a href="#" class="block px-4 py-2 hover:bg-gray-100" id="logout-button-mobile">Cerrar sesión</a></li>
+                </ul>
+            </div>
+        </div>
+    
+        <!-- Menú de navegación para escritorio -->
+        <nav>
+            <ul>
+                <li><a href="index">Inicio</a></li>
+                <li><a href="servicios">Servicios</a></li>
+                <li><a href="nosotros">Nosotros</a></li>
+                <li><a href="#">Contacto</a></li>
+            </ul>
+        </nav>
+    
+        <!-- Acciones para escritorio -->
+        <div class="header-actions">
+            <!-- User actions -->
+            <div id="user-actions" style="display:none;">
+                <button id="profile-menu-button" class="text-white bg-transparent hover:bg-gray-200 focus:outline-none">
+                    <img src="/orionapp/icons/profile-white.png" alt="Profile">
+                </button>
+                <!-- Menú desplegable -->
+                <div id="dropdownInformation" class="hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
+                    <div class="px-4 py-3 text-sm text-gray-900">
+                        <div id="user-name">Nombre del usuario</div>
+                        <div id="user-email" class="mail font-medium truncate">Correo del usuario</div>
+                    </div>
+                    <ul class="py-2 text-sm text-gray-700" id="menu-cliente">
+                        <li><a href="dashboard" class="block px-4 py-2 hover:bg-gray-100">Mi perfil</a></li>
+                    </ul>
+                    <ul class="py-2 text-sm text-gray-700" id="menu-admin" style="display: none;">
+                        <li><a href="edit" class="block px-4 py-2 hover:bg-gray-100">Pizarra</a></li>
+                    </ul>
+                    <ul class="py-2 text-sm text-gray-700">
+                        <li><a href="#" class="block px-4 py-2 hover:bg-gray-100" id="logout-button">Cerrar sesión</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Guest actions -->
+            <div id="guest-actions" style="display:none;">
+                <a href="login">Iniciar sesión</a>
+                <a href="registro" class="register-button">Registrarse</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="header-divider"></div>
+    <div class="editCurrencyTable">
+        <!-- Botón de guardar con estilo ajustado -->
+        <div class="save-button-container">
+            <button id="save-button">Guardar Cambios</button>
+        </div>
+
+        <!-- Contenedor para los botones de catálogo -->
+        <div class="catalog-button-container">
+            <button id="catalog-button-normal">Catálogo Normal</button>
+            <button id="catalog-button-destacadas">Catálogo Destacadas</button>
+        </div>
+        <!-- Contenedor con fondo semi-transparente -->
+        <div class="table-container max-w-xl mx-auto p-8 rounded-xl shadow-lg">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="icono">Ícono</th>
+                        <th class="nombre">Nombre</th>
+                        <th class="compra">Compra</th>
+                        <th class="venta">Venta</th>
+                    </tr>
+                </thead>
+                <tbody id="currency-list">
+                    <!-- Los datos se llenarán aquí con JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
+    <script type="module" src="/scripts/header.js"></script>
+    <script type="module" src="/scripts/index.js"></script>
+</body>
+</html>
