@@ -15,39 +15,6 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Sirve los archivos estáticos desde /public_html/orionapp/assets
-app.use('/assets', express.static(path.join(__dirname, 'orionapp/assets')));
-
-// Sirve los archivos estáticos desde /public_html/orionapp/icons
-app.use('/icons', express.static(path.join(__dirname, 'orionapp/icons')));
-
-// Sirve los archivos estáticos desde /public_html/orionapp/sounds
-app.use('/sounds', express.static(path.join(__dirname, 'orionapp/sounds')));
-
-// Dependiendo del subdominio, carga rutas y lógica específicas
-app.use((req, res, next) => {
-  const subdomain = req.headers.host.split('.')[0];  // Obtener el subdominio
-  req.subdomain = subdomain;
-  next();
-});
-
-// Ruta principal para cada subdominio
-app.get('/', (req, res) => {
-  switch (req.subdomain) {
-    case 'pizarras':
-      res.sendFile(path.join(__dirname, 'subdominios/pizarras/index.html'));
-      break;
-    case 'clientes':
-      res.sendFile(path.join(__dirname, 'subdominios/clientes/index.html'));
-      break;
-    case 'admin':
-      res.sendFile(path.join(__dirname, 'subdominios/admin/index.html'));
-      break;
-    default:
-      res.sendFile(path.join(__dirname, '/public/landing.html')); // Página principal
-  }
-});
-
 // Otros middlewares y configuraciones
 app.listen(3000, () => {
   console.log('Servidor corriendo en http://localhost:3000');
@@ -87,12 +54,45 @@ db.connect((error) => {
   else console.log('Conectado a la base de datos.');
 });
 
+// Sirve los archivos estáticos desde /public_html/orionapp/assets
+app.use('/assets', express.static(path.join(__dirname, 'orionapp/assets')));
+
+// Sirve los archivos estáticos desde /public_html/orionapp/icons
+app.use('/icons', express.static(path.join(__dirname, 'orionapp/icons')));
+
+// Sirve los archivos estáticos desde /public_html/orionapp/sounds
+app.use('/sounds', express.static(path.join(__dirname, 'orionapp/sounds')));
+
 // Servir archivos estáticos desde el directorio "public"
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Ruta principal
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'landing.html'));
+});
+
+// Dependiendo del subdominio, carga rutas y lógica específicas
+app.use((req, res, next) => {
+  const subdomain = req.headers.host.split('.')[0];  // Obtener el subdominio
+  req.subdomain = subdomain;
+  next();
+});
+
+// Ruta principal para cada subdominio
+app.get('/', (req, res) => {
+  switch (req.subdomain) {
+    case 'pizarras':
+      res.sendFile(path.join(__dirname, 'subdominios/pizarras/index.html'));
+      break;
+    case 'clientes':
+      res.sendFile(path.join(__dirname, 'subdominios/clientes/index.html'));
+      break;
+    case 'admin':
+      res.sendFile(path.join(__dirname, 'subdominios/admin/index.html'));
+      break;
+    default:
+      res.sendFile(path.join(__dirname, '/public/landing.html')); // Página principal
+  }
 });
 
 // Ruta SSE para enviar datos de divisas en tiempo real
