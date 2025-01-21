@@ -44,7 +44,7 @@ app.get('/', (req, res) => {
       res.sendFile(path.join(__dirname, 'subdominios/admin/index.html'));
       break;
     default:
-      res.sendFile(path.join(__dirname, 'landing.html')); // Página principal
+      res.sendFile(path.join(__dirname, '/public/landing.html')); // Página principal
   }
 });
 
