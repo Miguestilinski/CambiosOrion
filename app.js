@@ -124,14 +124,6 @@ app.get('/api/divisas/stream', (req, res) => {
   sendData(); // Enviar datos inmediatamente al conectarse
 });
 
-
-// Simulación del estado de sesión
-app.get('/api/session-status', (req, res) => {
-  // Simular estado de autenticación (true para autenticado, false para invitado)
-  const isAuthenticated = true; // Cambia esto dinámicamente según tu lógica
-  res.json({ isAuthenticated });
-});
-
 // Ruta para iniciar sesión
 app.post('/api/login', (req, res) => {
   const { username } = req.body;
