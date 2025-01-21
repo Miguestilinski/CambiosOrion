@@ -94,7 +94,7 @@ function processData(data) {
   // Reproducir alerta solo si se detectaron cambios significativos en los datos
   if (cambiosDetectados) {
     try {
-      const priceAlert = new Audio('/orionapp/sounds/alert.mp3');
+      const priceAlert = new Audio('https://cambiosorion.cl/orionapp/sounds/alert.mp3');
       priceAlert.play().catch(error => console.error("Error al reproducir la alerta:", error));
     } catch (error) {
       console.error("No se pudo reproducir el sonido de alerta:", error);
