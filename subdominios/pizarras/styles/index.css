@@ -110,6 +110,12 @@ td.nombre {
     margin-top: 2.5rem;
 }
 
+.swap-button{
+    height: 3rem;
+    align-self: flex-end;
+    margin-bottom: 0.75rem;
+}
+
 /* Estilo para los botones */
 #save-button {
     width: 100%;
