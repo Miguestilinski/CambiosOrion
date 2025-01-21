@@ -139,7 +139,7 @@ td.nombre {
 }
 
 /* Estilo para los botones de catálogo */
-#catalog-button-normal, #catalog-button-destacadas {
+#pizarra-button-normal, #pizarra-button-detacadas {
     max-width: 300px;
     padding: 0.6rem 1rem;
     font-size: 1.2em;
@@ -153,7 +153,7 @@ td.nombre {
     transition: background-color 0.3s; /* Transición suave para el hover */
 }
 
-#catalog-button-normal:hover, #catalog-button-destacadas:hover {
+#pizarra-button-normal:hover, #pizarra-button-detacadas:hover {
     background-color: #218838; /* Color de fondo al pasar el mouse */
 }
 

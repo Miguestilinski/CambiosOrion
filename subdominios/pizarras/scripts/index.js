@@ -52,8 +52,8 @@ function setupEditEventListeners() {
 }
 
 function setupCatalogButtons() {
-    const catalogButtonNormal = document.getElementById('catalog-button-normal');
-    const catalogButtonDestacadas = document.getElementById('catalog-button-destacadas');
+    const catalogButtonNormal = document.getElementById('pizarra-button-normal');
+    const catalogButtonDestacadas = document.getElementById('pizarra-button-detacadas');
 
     if (catalogButtonNormal) {
         catalogButtonNormal.addEventListener('click', () => {
