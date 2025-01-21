@@ -57,7 +57,7 @@ function setupCatalogButtons() {
 
     if (catalogButtonNormal) {
         catalogButtonNormal.addEventListener('click', () => {
-            openPopupWindow('catalogo', 'Catálogo Normal', 1080, 1920);
+            openPopupWindow('normal', 'Catálogo Normal', 1080, 1920);
         });
     }
 
