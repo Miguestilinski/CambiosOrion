@@ -57,13 +57,13 @@ function setupCatalogButtons() {
 
     if (catalogButtonNormal) {
         catalogButtonNormal.addEventListener('click', () => {
-            openPopupWindow('normal', 'Catálogo Normal', 1080, 1920);
+            openPopupWindow('normal', 'Pizarra Normal', 1080, 1920);
         });
     }
 
     if (catalogButtonDestacadas) {
         catalogButtonDestacadas.addEventListener('click', () => {
-            openPopupWindow('destacadas', 'Catálogo Destacadas', 1080, 1920);
+            openPopupWindow('destacadas', 'Pizarra Destacadas', 1080, 1920);
         });
     }
 }
