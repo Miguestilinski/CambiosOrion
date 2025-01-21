@@ -57,13 +57,13 @@ function setupCatalogButtons() {
 
     if (catalogButtonNormal) {
         catalogButtonNormal.addEventListener('click', () => {
-            openPopupWindow('normal', 'Pizarra Normal', 1080, 1920);
+            openPopupWindow('https://pizarras.cambiosorion.cl/normal', 'Pizarra Normal', 1080, 1920);
         });
     }
 
     if (catalogButtonDestacadas) {
         catalogButtonDestacadas.addEventListener('click', () => {
-            openPopupWindow('destacadas', 'Pizarra Destacadas', 1080, 1920);
+            openPopupWindow('https://pizarras.cambiosorion.cl/destacadas', 'Pizarra Destacadas', 1080, 1920);
         });
     }
 }
