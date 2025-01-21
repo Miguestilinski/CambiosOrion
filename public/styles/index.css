@@ -157,6 +157,13 @@ input[type="number"]::-moz-outer-spin-button {
     pointer-events: none
 }
 
+button.swap-button{
+    height: 3rem;
+    align-self: flex-end;
+    margin-bottom: 0.75rem;
+    background: 0;
+}
+
 /* Caja de selección */
 .select-box {
     @apply flex justify-center items-center cursor-pointer gap-8; 
