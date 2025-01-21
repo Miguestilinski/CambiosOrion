@@ -236,7 +236,7 @@ function saveEditedCurrencies() {
                 console.log("Actualización exitosa para", divisa.nombre, ":", data);
             })
             .catch(error => {
-                alert("Error al guardar cambios.");
+                console.log("Error al guardar cambios.");
                 console.error(error);
             });
     });
