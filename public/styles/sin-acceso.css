@@ -79,7 +79,7 @@ button:hover {
     background-color: #2563eb;
 }
 
-.button-inicio {
+a.button-inicio {
     justify-self: center;
     width: 50%;
     justify-content: center;
