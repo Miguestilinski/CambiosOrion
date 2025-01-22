@@ -66,13 +66,13 @@ app.use((req, res, next) => {
 app.get('/', (req, res) => {
   switch (req.subdomain) {
     case 'pizarras':
-      res.sendFile(path.join(__dirname, 'subdominios/pizarras/index.html'));
+      res.sendFile(path.join(__dirname, 'subdominios/pizarras', 'index.html'));
       break;
     case 'clientes':
-      res.sendFile(path.join(__dirname, 'subdominios/clientes/index.html'));
+      res.sendFile(path.join(__dirname, 'subdominios/clientes', 'index.html'));
       break;
     case 'admin':
-      res.sendFile(path.join(__dirname, 'subdominios/admin/index.html'));
+      res.sendFile(path.join(__dirname, 'subdominios/admin', 'index.html'));
       break;
     default:
       res.sendFile(path.join(__dirname, 'public', 'landing.html'));
