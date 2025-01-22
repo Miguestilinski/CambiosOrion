@@ -5,3 +5,9 @@ PassengerNodejs "/home/cambioso/nodevenv/public_html/orionapp/16/bin/node"
 PassengerAppType node
 PassengerStartupFile "app.js"
 # DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION END
+
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "https://pizarras.cambiosorion.cl https://admin.cambiosorion.cl"
+    Header set Access-Control-Allow-Methods "GET, POST, OPTIONS"
+    Header set Access-Control-Allow-Headers "Content-Type"
+</IfModule>
