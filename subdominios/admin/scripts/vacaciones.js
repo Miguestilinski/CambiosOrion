@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   async function fetchWorkerData() {
     try {
-        const response = await fetch('/data/get_worker_data.php', {
+        const response = await fetch('https://cambiosorion.cl/data/get_worker_data.php', {
             method: 'GET',
             credentials: 'include'
         });

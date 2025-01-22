@@ -5,11 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cambios Orion</title>
-    <link rel="stylesheet" href="styles/header.css">
-    <link rel="stylesheet" href="styles/vacaciones.css">
-    <link rel="stylesheet" href="styles/footer.css">
-    <link href="./styles/output.css" rel="stylesheet">
-    <link rel="icon" href="/orionapp/icons/favicon.png" type="image/png">
+    <link rel="stylesheet" href="./styles/header.css">
+    <link rel="stylesheet" href="./styles/vacaciones.css">
+    <link href="https://cambiosorion.cl/orionapp/public/styles/output.css" rel="stylesheet">
+    <link rel="icon" href="https://cambiosorion.cl/orionapp/icons/favicon.png" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">  
 </head>
 
 <body class="font-sans">
@@ -18,36 +18,36 @@
         <!-- Logo y Nombre -->
         <div class="header-logo">
             <a href="index">
-                <img src="/orionapp/assets/LogoOrion-silver.png" alt="Logo Cambios Orion" class="logo">
+                <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-silver.png" alt="Logo Cambios Orion" class="logo">
             </a>
             <a href="index">
-                <img src="/orionapp/assets/NombreOrion-white.png" alt="Nombre Cambios Orion" class="nombre">
+                <img src="https://cambiosorion.cl/orionapp/assets/NombreOrion-white.png" alt="Nombre Cambios Orion" class="nombre">
             </a>
         </div>
     
         <!-- Botones para versión móvil -->
         <div class="mobile-buttons">
             <button class="menu-button" id="nav-menu-button">
-                <img src="/orionapp/icons/menu-white.svg" alt="Menú">
+                <img src="https://cambiosorion.cl/orionapp/icons/menu-white.svg" alt="Menú">
             </button>
             <button class="menu-button" id="session-menu-button">
-                <img src="/orionapp/icons/profile-white.png" alt="Sesión">
+                <img src="https://cambiosorion.cl/orionapp/icons/profile-white.png" alt="Sesión">
             </button>
         </div>
     
         <!-- Menús desplegables para móvil -->
         <div id="nav-mobile-menu" class="mobile-menu hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
             <ul class="py-2 text-sm text-gray-700">
-                <li><a href="index" class="block px-4 py-2 hover:bg-gray-100">Inicio</a></li>
+                <li><a href="index" class="block px-4 py-2 hover:bg-gray-100">Admin</a></li>
             </ul>
             <ul class="py-2 text-sm text-gray-700">
-                <li><a href="servicios" class="block px-4 py-2 hover:bg-gray-100">Servicios</a></li>
+                <li><a href="https://pizarras.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Pizarras</a></li>
             </ul>
             <ul class="py-2 text-sm text-gray-700">
-                <li><a href="nosotros" class="block px-4 py-2 hover:bg-gray-100">Nosotros</a></li>
+                <li><a href="vacaciones" class="block px-4 py-2 hover:bg-gray-100">Vacaciones</a></li>
             </ul>
             <ul class="py-2 text-sm text-gray-700">
-                <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Contacto</a></li>
+                <li><a href="https://intranet.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Intranet</a></li>
             </ul>
         </div>
     
@@ -80,10 +80,10 @@
         <!-- Menú de navegación para escritorio -->
         <nav>
             <ul>
-                <li><a href="index">Inicio</a></li>
-                <li><a href="servicios">Servicios</a></li>
-                <li><a href="nosotros">Nosotros</a></li>
-                <li><a href="#">Contacto</a></li>
+                <li><a href="index">Admin</a></li>
+                <li><a href="vacaciones">Vacaciones</a></li>
+                <li><a href="https://pizarras.cambiosorion.cl/">Pizarras</a></li>
+                <li><a href="https://intranet.cambiosorion.cl/">Intranet</a></li>
             </ul>
         </nav>
     
@@ -92,7 +92,7 @@
             <!-- User actions -->
             <div id="user-actions" style="display:none;">
                 <button id="profile-menu-button" class="text-white bg-transparent hover:bg-gray-200 focus:outline-none">
-                    <img src="/orionapp/icons/profile-white.png" alt="Profile">
+                    <img src="https://cambiosorion.cl/orionapp/icons/profile-white.png" alt="Profile">
                 </button>
                 <!-- Menú desplegable -->
                 <div id="dropdownInformation" class="hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
@@ -159,8 +159,8 @@
         <div class="footer-container">
             <!-- Sección del logo -->
             <div class="footer-logo">
-                <img src="/orionapp/assets/LogoOrion-silver.png" alt="Logo Orion" class="logo">
-                <img src="/orionapp/assets/NombreOrion-white.png" alt="Nombre Orion" class="nombre">
+                <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-silver.png" alt="Logo Orion" class="logo">
+                <img src="https://cambiosorion.cl/orionapp/assets/NombreOrion-white.png" alt="Nombre Orion" class="nombre">
             </div>
             <!-- Mapa de navegación -->
             <div class="footer-navigation flex justify-between">
@@ -172,16 +172,16 @@
                     </ul>
                 </div>
                 <div class="nav-section">
-                    <h3 href="nosotros" class="font-bold text-lg">Nosotros</h3>
+                    <h3 href="https://cambiosorion.cl/nosotros" class="font-bold text-lg">Nosotros</h3>
                     <ul class="list-none p-0">
                         <li><a href="#" class="block py-1">Quienes Somos</a></li>
-                        <li><a href="nosotros#map" class="block py-1">Mapa</a></li>
+                        <li><a href="https://cambiosorion.cl/nosotros#map" class="block py-1">Mapa</a></li>
                     </ul>
                 </div>
                 <div class="nav-section">
                     <h3 class="font-bold text-lg">Soporte</h3>
                     <ul class="list-none p-0">
-                        <li><a href="faq" class="block py-1">Preguntas frecuentes</a></li>
+                        <li><a href="https://cambiosorion.cl/faq" class="block py-1">Preguntas frecuentes</a></li>
                         <li><a href="#" class="block py-1">Contacto</a></li>
                     </ul>
                 </div>
@@ -192,7 +192,7 @@
                     <!-- Dirección -->
                     <div class="contact-item">
                         <a href="https://maps.app.goo.gl/6fQ31ySCJWSButxQ9" target="_blank">
-                            <img src="/orionapp/icons/location-white.png" alt="Icono de ubicación" class="icon">
+                            <img src="https://cambiosorion.cl/orionapp/icons/location-white.png" alt="Icono de ubicación" class="icon">
                         </a>
                         <div>
                             <a href="https://maps.app.goo.gl/6fQ31ySCJWSButxQ9" target="_blank"><p>Agustinas 1035 Of 13, Santiago</p></a>
@@ -201,14 +201,14 @@
                     </div> 
                     <!-- Teléfono -->
                     <div class="contact-item">
-                        <img src="/orionapp/icons/phone-white.png" alt="Icono de teléfono" class="icon">
+                        <img src="https://cambiosorion.cl/orionapp/icons/phone-white.png" alt="Icono de teléfono" class="icon">
                         <div>
                             <p>+56 9 7184 6048</p>
                         </div>
                     </div>
                     <!-- Correo -->
                     <div class="contact-item">
-                        <img src="/orionapp/icons/email-white.png" alt="Icono de correo" class="icon">
+                        <img src="https://cambiosorion.cl/orionapp/icons/email-white.png" alt="Icono de correo" class="icon">
                         <div>
                             <p>contacto@cambiosorion.cl</p>
                         </div>
