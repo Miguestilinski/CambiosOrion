@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Función para obtener los datos del usuario
     function getUserData() {
-        fetch('/data/get_user_data.php', {
+        fetch('https://cambiosorion.cl/data/get_user_data.php', {
             method: 'GET',
             credentials: 'include' // Asegura que se envíen las cookies de sesión
         })
@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // Obtener datos del usuario activo
-            const userDataResponse = await fetch('/data/get_user_data.php', {
+            const userDataResponse = await fetch('https://cambiosorion.cl/data/get_user_data.php', {
                 method: 'GET',
                 credentials: 'include',
             });
@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
             formData.append('id', userId); // Agregar id al FormData
 
             // Subir los documentos
-            const uploadResponse = await fetch('/data/upload_documents.php', {
+            const uploadResponse = await fetch('https://cambiosorion.cl/data/upload_documents.php', {
                 method: 'POST',
                 body: formData,
                 credentials: 'include',
