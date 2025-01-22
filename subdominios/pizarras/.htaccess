@@ -1,15 +1,7 @@
-# Habilitar el motor de reescritura
+# Habilitar reescritura
 RewriteEngine On
 
-# Redirigir solicitudes no resueltas a index.html
+# Redirigir todas las solicitudes no existentes a index.html
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.html [L]
-
-# Proteger acceso a recursos estáticos
-<FilesMatch "\.(html|css|js|jpg|jpeg|png|gif|svg|woff|woff2|ttf|eot|ico)$">
-    RewriteCond %{HTTP_COOKIE} PHPSESSID=.+ [NC]
-    RewriteRule ^ - [L]
-    RewriteRule ^ - [F,L]
-</FilesMatch>
-
+RewriteRule ^ index.html [L]
