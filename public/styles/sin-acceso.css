@@ -64,6 +64,7 @@ p.hidden {
 }
 
 button {
+    width: 100%;
     padding: 12px;
     background-color: #3b82f6;
     color: white;
@@ -76,6 +77,13 @@ button {
 
 button:hover {
     background-color: #2563eb;
+}
+
+button.button-inicio {
+    justify-self: center;
+    width: 50%;
+    justify-content: center;
+    display: flex;
 }
 
 @media (max-width: 887px) {
