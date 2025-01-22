@@ -1,0 +1,13 @@
+# Habilitar el motor de reescritura
+RewriteEngine On
+
+# Redirigir a index.html si el archivo o directorio no existe
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.html [L]
+
+# Bloquear acceso directo a recursos estáticos (CSS, JS, etc.) si no hay una sesión válida
+<FilesMatch "\.(html|css|js|jpg|jpeg|png|gif|svg|woff|woff2|ttf|eot|ico)$">
+    RewriteCond %{HTTP:Cookie} !PHPSESSID=.+ [NC]
+    RewriteRule ^ - [F,L]
+</FilesMatch>

@@ -2,7 +2,27 @@ let editableCurrencies = {};
 let editMode = true;
 
 document.addEventListener('DOMContentLoaded', () => {
-    initializeEditPage();
+    // Validar sesión al cargar la página
+    fetch('https://pizarras.cambiosorion.cl/get_worker_data.php', {
+        method: 'GET',
+        credentials: 'include',
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success || data.worker.rol !== 'administrativo') {
+                // Redirigir si no es un usuario autorizado
+                alert('Acceso denegado. Redirigiendo...');
+                window.location.href = 'https://cambiosorion.cl/login';
+            } else {
+                console.log('Usuario autenticado:', data.worker);
+                // Continuar cargando la página
+                initializeEditPage();
+            }
+        })
+        .catch(error => {
+            console.error('Error al validar la sesión:', error);
+            window.location.href = 'https://cambiosorion.cl/login';
+        });
 
     const navMenuButton = document.getElementById('nav-menu-button');
     const sessionMenuButton = document.getElementById('session-menu-button');
