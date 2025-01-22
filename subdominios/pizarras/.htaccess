@@ -13,5 +13,3 @@ RewriteRule ^(.*)$ index.html [L]
     RewriteRule ^ - [F,L]
 </FilesMatch>
 
-# Mostrar errores detallados
-LogLevel alert rewrite:trace3
