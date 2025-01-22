@@ -3,7 +3,7 @@ let editMode = true;
 
 document.addEventListener('DOMContentLoaded', () => {
     // Validar sesión al cargar la página
-    fetch('https://pizarras.cambiosorion.cl/get_worker_data.php', {
+    fetch('https://cambiosorion.cl/data/get_worker_data.php', {
         method: 'GET',
         credentials: 'include',
     })
