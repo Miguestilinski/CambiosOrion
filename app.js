@@ -8,10 +8,26 @@ const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3306;
 
+const allowedOrigins = [
+  'https://pizarras.cambiosorion.cl',
+  'https://admin.cambiosorion.cl',
+  'https://cambiosorion.cl',
+];
+
 // Cargar las variables de entorno
 require('dotenv').config();
 
-app.use(cors());
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, origin); // Devuelve el origen permitido
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type'],
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
