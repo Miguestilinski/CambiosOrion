@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 } else {
                     console.error('Error: ', data.message);
-                    window.location.href = '/index';
+                    window.location.href = 'https://cambiosorion.cl/sin-acceso';
                 }
             })
             .catch(error => {

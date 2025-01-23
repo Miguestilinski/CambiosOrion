@@ -181,7 +181,7 @@ function logout() {
 
         if (data.message === 'Sesión cerrada') {
             console.log('Redirigiendo a index...');
-            window.location.href = '/index';
+            window.location.href = 'https://cambiosorion.cl/login';
         } else {
             console.error('No se pudo cerrar la sesión correctamente');
         }
