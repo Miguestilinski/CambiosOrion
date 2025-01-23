@@ -104,7 +104,7 @@ function loadCurrenciesForEdit() {
     if (isFetchingCurrencies) return;
     isFetchingCurrencies = true;
 
-    const targetUrl = './data/divisas_api.php?_=' + new Date().getTime();
+    const targetUrl = 'https://cambiosorion.cl/data/divisas_api.php?_=' + new Date().getTime();
     
     fetch(targetUrl)
         .then(response => {
@@ -223,8 +223,9 @@ function saveEditedCurrencies() {
 
     // Enviar cada divisa individualmente usando el método PUT
     validChanges.forEach(divisa => {
-        fetch('./data/divisas_api.php', {
+        fetch('https://cambiosorion.cl/data/divisas_api.php', {
             method: 'PUT',
+            mode: 'cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(divisa),
         })
