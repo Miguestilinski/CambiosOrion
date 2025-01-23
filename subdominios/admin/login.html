@@ -57,6 +57,9 @@
                 <ul class="py-2 text-sm text-gray-700">
                     <li><a href="login" class="block px-4 py-2 hover:bg-gray-100">Iniciar Sesión</a></li>
                 </ul>
+                <ul class="py-2 text-sm text-gray-700">
+                    <li><a href="registro" class="block px-4 py-2 hover:bg-gray-100">Registro</a></li>
+                </ul>
             </div>
             <div id="user-actions-mobile" class="divide-y divide-gray-100" style="display:none;">
                 <div class="px-2 py-2 text-sm text-gray-900">
@@ -70,7 +73,7 @@
                     <li><a href="edit" class="block px-4 py-2 hover:bg-gray-100">Pizarra</a></li>
                 </ul>
                 <ul class="py-2 text-sm text-gray-700">
-                    <li><a href="https://admin.cambiosorion.cl/login" class="block px-4 py-2 hover:bg-gray-100" id="logout-button-mobile">Cerrar sesión</a></li>
+                    <li><a href="#" class="block px-4 py-2 hover:bg-gray-100" id="logout-button-mobile">Cerrar sesión</a></li>
                 </ul>
             </div>
         </div>
@@ -112,6 +115,7 @@
             <!-- Guest actions -->
             <div id="guest-actions" style="display:none;">
                 <a href="login">Iniciar sesión</a>
+                <a href="registro" class="register-button">Registrarse</a>
             </div>
         </div>
     </header>
@@ -174,29 +178,29 @@
         <div class="footer-container">
             <!-- Sección del logo -->
             <div class="footer-logo">
-                <img src="/orionapp/assets/LogoOrion-silver.png" alt="Logo Orion" class="logo">
-                <img src="/orionapp/assets/NombreOrion-white.png" alt="Nombre Orion" class="nombre">
+                <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-silver.png" alt="Logo Orion" class="logo">
+                <img src="https://cambiosorion.cl/orionapp/assets/NombreOrion-white.png" alt="Nombre Orion" class="nombre">
             </div>
             <!-- Mapa de navegación -->
             <div class="footer-navigation flex justify-between">
                 <div class="nav-section">
-                    <h3 class="font-bold text-lg">Servicios</h3>
+                    <h3 href="https://admin.cambiosorion.cl/" class="font-bold text-lg">Admin</h3>
                     <ul class="list-none p-0">
-                        <li><a href="#" class="block py-1">Envíos</a></li>
-                        <li><a href="#" class="block py-1">Transferencias</a></li>
+                        <li><a href="https://admin.cambiosorion.cl/vacaciones" class="block py-1">Vacaciones</a></li>
+                        <li><a href="https://admin.cambiosorion.cl/" class="block py-1">Adelantos</a></li>
                     </ul>
                 </div>
                 <div class="nav-section">
-                    <h3 href="nosotros" class="font-bold text-lg">Nosotros</h3>
+                    <h3 href="https://pizarras.cambiosorion.cl/" class="font-bold text-lg">Pizarras</h3>
                     <ul class="list-none p-0">
-                        <li><a href="#" class="block py-1">Quienes Somos</a></li>
-                        <li><a href="nosotros#map" class="block py-1">Mapa</a></li>
+                        <li><a href="https://pizarras.cambiosorion.cl/normal" class="block py-1">Normal</a></li>
+                        <li><a href="https://pizarras.cambiosorion.cl/destacadas" class="block py-1">Destacadas</a></li>
                     </ul>
                 </div>
                 <div class="nav-section">
-                    <h3 class="font-bold text-lg">Soporte</h3>
+                    <h3 class="font-bold text-lg">Intranet</h3>
                     <ul class="list-none p-0">
-                        <li><a href="faq" class="block py-1">Preguntas frecuentes</a></li>
+                        <li><a href="https://intranet.cambiosorion.cl/" class="block py-1">Intranet</a></li>
                         <li><a href="#" class="block py-1">Contacto</a></li>
                     </ul>
                 </div>
@@ -231,20 +235,19 @@
                 </div>
             </div>
             <!-- Redes Sociales -->
-          <!-- Redes Sociales -->
             <div class="social-media flex gap-4">
-                <a href="https://wa.me/+56971846048" target="_blank"><img src="/orionapp/icons/whatsapp-white.png" alt="WhatsApp" class="icon"></a>
-                <a href="https://www.facebook.com/CambiosOrion" target="_blank"><img src="/orionapp/icons/facebook-white.png" alt="Facebook" class="icon"></a>
-                <a href="https://www.instagram.com/CambiosOrion.cl" target="_blank"><img src="/orionapp/icons/instagram-white.png" alt="Instagram" class="icon"></a>
-                <a href="https://www.tiktok.com/@cambios.orion" target="_blank"><img src="/orionapp/icons/tik-tok-white.png" alt="TikTok" class="icon"></a>
+                <a href="https://wa.me/+56971846048" target="_blank"><img src="https://cambiosorion.cl/orionapp/icons/whatsapp-white.png" alt="WhatsApp" class="icon"></a>
+                <a href="https://www.facebook.com/CambiosOrion" target="_blank"><img src="https://cambiosorion.cl/orionapp/icons/facebook-white.png" alt="Facebook" class="icon"></a>
+                <a href="https://www.instagram.com/CambiosOrion.cl" target="_blank"><img src="https://cambiosorion.cl/orionapp/icons/instagram-white.png" alt="Instagram" class="icon"></a>
+                <a href="https://www.tiktok.com/@cambios.orion" target="_blank"><img src="https://cambiosorion.cl/orionapp/icons/tik-tok-white.png" alt="TikTok" class="icon"></a>
             </div>            
         </div>
         <div class="footer-bottom text-xs text-center p-4">
             © 2025 Cambios Orion. Todos los derechos reservados.
         </div>
     </footer>
-    <script src="/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
-    <script src="scripts/header.js"></script>
-    <script src="scripts/login.js"></script>
+    <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
+    <script type="module" src="https://cambiosorion.cl/orionapp/public/scripts/header.js" crossorigin="anonymous"></script>
+    <script type="module" src="/.scripts/login.js"></script>
 </body>
 </html>
