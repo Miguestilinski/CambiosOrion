@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 } else {
                     console.error('Error: ', data.message);
-                    window.location.href = '/login';
+                    window.location.href = '/index';
                 }
             })
             .catch(error => {

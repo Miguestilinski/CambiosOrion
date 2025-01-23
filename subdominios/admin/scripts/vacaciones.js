@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else {
             console.error('Error al obtener los datos del trabajador:', data.message);
             alert('Error al obtener los datos del trabajador. Por favor, inicie sesión.');
-            window.location.href = '/login'; // Redirigir al login si hay error
+            window.location.href = '/index'; // Redirigir al login si hay error
         }
     } catch (error) {
         console.error('Error al parsear JSON:', error);
