@@ -129,19 +129,11 @@
     
         <form id="loginForm">
             <!-- Selector de tipo de usuario (Cliente o Administrativo) como tabs -->
-            <div class="tabs mb-6">
-                <button type="button" id="clienteTab" class="tab-button active" data-tipo-usuario="cliente">Cliente</button>
+            <div class="tabs mb-2 justify-center">
                 <button type="button" id="administrativoTab" class="tab-button" data-tipo-usuario="administrativo">Administrativo</button>
             </div>
 
             <input type="hidden" id="tipoUsuario" name="tipoUsuario" value="cliente">
-    
-            <!-- Formulario Cliente -->
-            <div id="cliente-form" class="form-section active">
-                <label for="rut" class="block mb-2 text-sm font-medium text-white">RUT:</label>
-                <input type="text" name="rut" id="rut" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="12.345.678-9" />
-                <p id="rut-error" class="mt-2 text-sm text-red-600 dark:text-red-500 hidden"></p>
-            </div>
     
             <!-- Formulario Administrativo -->
             <div id="administrativo-form" class="form-section hidden">
