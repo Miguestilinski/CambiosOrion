@@ -135,7 +135,6 @@ input#email{
     color:white;
 }
 
-
 @media (max-width: 887px) {
     .main-content {
         flex-direction: column; /* Ajusta a diseño vertical en pantallas pequeñas */
