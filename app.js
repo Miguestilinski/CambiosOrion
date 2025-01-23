@@ -8,10 +8,28 @@ const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3306;
 
+// Define orígenes permitidos
+const allowedOrigins = [
+  'https://pizarras.cambiosorion.cl',
+  'https://admin.cambiosorion.cl',
+  'https://cambiosorion.cl',
+];
+
 // Cargar las variables de entorno
 require('dotenv').config();
 
-app.use(cors());
+// Configura CORS dinámico
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true); // Permitir el origen
+    } else {
+      callback(new Error('Not allowed by CORS')); // Bloquear el origen
+    }
+  },
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type'],
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -64,6 +82,7 @@ app.use((req, res, next) => {
 
 // Ruta principal para cada subdominio
 app.get('/', (req, res) => {
+  res.send('CORS configurado correctamente.');
   switch (req.subdomain) {
     case 'pizarras':
       res.sendFile(path.join(__dirname, 'subdominios/pizarras', 'index.html'));
@@ -156,6 +175,8 @@ app.get('/api/place-details', async (req, res) => {
       res.status(500).json({ error: 'Error al obtener datos de Google Places' });
   }
 });
+
+module.exports = app;
 
 // Iniciar el servidor
 app.listen(port, () => {
