@@ -127,8 +127,8 @@
             </div>
             <ul class="menu">
                 <li class="menu-item mt-2 mb-2 rounded-lg active" data-section="personal-info">Información Personal</li>
-                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="transacciones">Transacciones</li>
-                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="documentacion">Documentación</li>
+                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="adelanto">Adelantos</li>
+                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="vacaciones">Vacaciones</li>
             </ul>
         </aside>
         <main id="dashboard-content" class="dashboard-content">
@@ -184,48 +184,42 @@
                     </div>
                 </form>
             </section>                                                 
-            <section id="transacciones" class="content-section">
-                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Transacciones</h1>
-                <p class="mb-6 text-md text-white">Consulta tu historial de transacciones.</p>
+            <section id="adelanto" class="content-section">
+                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Adelantos</h1>
+                <p class="mb-6 text-md text-white">Consulta tu sueldo restante para un adelanto.</p>
             </section>
-            <section id="documentacion" class="content-section">
-                <h1 class="mb-4 text-2xl font-medium leading-none text-white">Documentación Requerida</h1>
-                <p class="mb-6 text-md text-white">Por favor, complete y suba los siguientes documentos:</p>
-                
-                <form id="documentation-form" enctype="multipart/form-data">
-                    <div class="mb-6 p-6 bg-white rounded-lg">
-                        <label for="doc1" class="block mb-2 text-lg font-medium text-black">Formulario Documentación</label>
-                        <p class="mt-1 mb-4 text-sm text-gray-500 " id="file_input_help">Es necesario que complete y firme el formulario para generar su documentación.</p>
-                        <button class="mt-t px-4 py-2 form-button rounded-lg" onclick="window.location.href='/form_doc'">Ir al Formulario</button>
-                        <p id="doc1-error" class="text-sm text-red-500 hidden"></p>
-                        <ul id="doc1-file-list" class="file-list mt-2"></ul>
+            <section id="vacaciones" class="content-section">
+                <div class="container max-w-2xl mx-auto my-10 p-8 bg-white text-gray-900 rounded-xl shadow-md">
+                    <h1 class="text-xl font-bold">Calculadora de Vacaciones</h1>
+            
+                    <!-- Información del trabajador -->
+                    <div id="worker-info" class="my-4">
+                        <p><strong>Fecha de ingreso:</strong> <span id="fecha-ingreso"></span></p>
+                        <p><strong>Meses trabajados:</strong> <span id="meses-trabajados"></span></p>
+                        <p><strong>Días disponibles:</strong> <span id="dias-disponibles"></span></p>
+                        <p><strong>Días usados:</strong> <span id="dias-usados"></span></p>
                     </div>
-                    <div class="mb-6 p-6 bg-white rounded-lg">
-                        <label for="doc2" class="block mb-2 text-lg font-medium text-black">1. Copia de la cédula de identidad del representante legal y socios</label>
-                        <input type="file" id="doc2" name="doc2[]" multiple class="block mb-2 w-full text-sm text-black bg-gray-50 rounded-lg border border-gray-300 cursor-pointer" onchange="updateFileList('doc1')">
-                        <p class="mt-1 text-sm text-gray-500 " id="file_input_help">PDF, DOCX, JPG o PNG.</p>
-                        <p id="doc2-error" class="text-sm text-red-500 hidden"></p>
-                        <ul id="doc2-file-list" class="file-list mt-2"></ul>
-                    </div>                    
-                    <div class="mb-6 p-6 bg-white rounded-lg">
-                        <label for="doc3" class="block mb-2 text-lg font-medium text-black">2. Copia del RUT de la empresa</label>
-                        <input type="file" id="doc3" name="doc3[]" multiple class="block mb-2 w-full text-sm text-black bg-gray-50 rounded-lg border border-gray-300 cursor-pointer" onchange="updateFileList('doc2')">
-                        <p class="mt-1 text-sm text-gray-500 " id="file_input_help">PDF, DOCX, JPG o PNG.</p>
-                        <p id="doc3-error" class="text-sm text-red-500 hidden"></p>
-                        <ul id="doc3-file-list" class="file-list mt-2"></ul>
+            
+                    <!-- Simulador -->
+                    <div id="simulator" class="my-4">
+                        <h2 class="text-lg font-bold">Simulador de Vacaciones</h2>
+                        <label for="start-date">Fecha de salida:</label>
+                        <input type="date" id="start-date" class="border p-1 rounded">
+                    
+                        <label for="end-date">Fecha de regreso:</label>
+                        <input type="date" id="end-date" class="border p-1 rounded">
+                    
+                        <button id="simulate" class="bg-green-500 text-white px-4 py-2 rounded">Calcular</button>
+                        <p id="simulation-result" class="mt-2"></p>
                     </div>
-                    <div class="mb-6 p-6 bg-white rounded-lg">
-                        <label for="doc4" class="block mb-2 text-lg font-medium text-black">3. Copia de la Constitución de la Sociedad y todas sus modificaciones</label>
-                        <input type="file" id="doc4" name="doc4[]" multiple class="block mb-2 w-full text-sm text-black bg-gray-50 rounded-lg border border-gray-300 cursor-pointer" onchange="updateFileList('doc3')">
-                        <p class="mt-1 text-sm text-gray-500 " id="file_input_help">PDF, DOCX, JPG o PNG.</p>
-                        <p id="doc4-error" class="text-sm text-red-500 hidden"></p>
-                        <ul id="doc4-file-list" class="file-list mt-2"></ul>
+            
+                    <!-- Calendario -->
+                    <div id="calendar" class="my-4">
+                        <h2 class="text-lg font-bold">Calendario</h2>
+                        <div id="calendar-container" class="grid grid-cols-7 gap-2"></div>
+                        <button id="save-dates" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded">Guardar Días Seleccionados</button>
                     </div>
-                    <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-                        Subir Documentos
-                    </button>
-                    <p id="upload-status" class="mt-4 text-md text-red-500"></p>
-                </form>
+                </div>
             </section>
         </main>
     </div> 
