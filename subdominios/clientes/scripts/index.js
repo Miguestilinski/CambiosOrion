@@ -162,7 +162,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    
     // Manejar la selección y eliminación de archivos
     document.querySelectorAll('input[type="file"]').forEach(input => {
         const fileListContainer = document.getElementById(`${input.id}-file-list`);
