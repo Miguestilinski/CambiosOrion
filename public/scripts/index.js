@@ -510,13 +510,16 @@ function toggleTableColumns() {
 
     // Alternar visibilidad de las columnas solo en móvil
     if (isMobile) {
+        console.log('Versión Móvil');
         if (isChecked) {
+            console.log('Datos Venta');
             compraColumns.forEach((col) => col.classList.add("hidden"));
             ventaColumns.forEach((col) => col.classList.remove("hidden"));
             compraHeaders.forEach((header) => header.classList.add("hidden")); // Ocultar encabezados de compra
             ventaHeaders.forEach((header) => header.classList.remove("hidden")); // Mostrar encabezados de venta
             label.textContent = "Venta";
         } else {
+            console.log('Datos Compra')
             compraColumns.forEach((col) => col.classList.remove("hidden"));
             ventaColumns.forEach((col) => col.classList.add("hidden"));
             compraHeaders.forEach((header) => header.classList.remove("hidden")); // Mostrar encabezados de compra
@@ -524,6 +527,7 @@ function toggleTableColumns() {
             label.textContent = "Compra";
         }
     } else {
+        console.log('Versión Escritorio');
         // En escritorio, asegurarse de que ambas columnas estén visibles
         compraColumns.forEach((col) => col.classList.remove("hidden"));
         ventaColumns.forEach((col) => col.classList.remove("hidden"));
