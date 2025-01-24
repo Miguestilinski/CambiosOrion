@@ -501,24 +501,34 @@ function fillCurrencyTable() {
 
 function toggleTableColumns() {
     const isMobile = window.matchMedia('(max-width: 887px)').matches; // Verificar si es móvil
-    if (!isMobile) return; // No hacer nada en versión escritorio
-
     const isChecked = document.getElementById("toggle-switch").checked;
-    const compraColumns = document.querySelectorAll(".compra-column"); // Ajustar a datos y encabezados
-    const ventaColumns = document.querySelectorAll(".venta-column"); // Ajustar a datos y encabezados
+    const compraColumns = document.querySelectorAll(".compra-col");
+    const ventaColumns = document.querySelectorAll(".venta-col");
     const label = document.getElementById("toggle-label");
 
-    // Alternar visibilidad de las columnas
-    if (isChecked) {
-        compraColumns.forEach((col) => col.classList.add("hidden"));
-        ventaColumns.forEach((col) => col.classList.remove("hidden"));
-        label.textContent = "Venta";
+    // Alternar visibilidad de las columnas solo en móvil
+    if (isMobile) {
+        if (isChecked) {
+            compraColumns.forEach((col) => col.classList.add("hidden"));
+            ventaColumns.forEach((col) => col.classList.remove("hidden"));
+            label.textContent = "Venta";
+        } else {
+            compraColumns.forEach((col) => col.classList.remove("hidden"));
+            ventaColumns.forEach((col) => col.classList.add("hidden"));
+            label.textContent = "Compra";
+        }
     } else {
+        // En escritorio, asegurarse de que ambas columnas estén visibles
         compraColumns.forEach((col) => col.classList.remove("hidden"));
-        ventaColumns.forEach((col) => col.classList.add("hidden"));
-        label.textContent = "Compra";
+        ventaColumns.forEach((col) => col.classList.remove("hidden"));
+        label.textContent = "Compra y Venta"; // Cambia el texto del label si lo deseas
     }
 }
+
+// Asegurar que las columnas se muestren correctamente al cargar
+window.addEventListener("resize", toggleTableColumns);
+window.addEventListener("load", toggleTableColumns);
+
 
 function updateLastUpdatedTimestamp(fecha) {
     const lastUpdated1Element = document.getElementById("last-updated1");
