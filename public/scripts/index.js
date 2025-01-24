@@ -462,9 +462,9 @@ function fillCurrencyTable() {
                 `}
             </td>
         
-            <td class="px-4 py-2 venta-column hidden">${venta ? Math.round(venta) + ' CLP' : ' '}</td>
+            <td class="px-4 py-2 venta-column">${venta ? Math.round(venta) + ' CLP' : ' '}</td>
         
-            <td class="px-4 py-2 venta-column hidden">
+            <td class="px-4 py-2 venta-column">
                 ${currency === 'CLP' ? '' : `
                     <div style="${ventaStyle.containerStyle}" class="variation-container">
                         ${variationVenta !== 0 ? 
