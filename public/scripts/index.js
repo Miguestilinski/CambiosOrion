@@ -504,8 +504,8 @@ function toggleTableColumns() {
     if (!isMobile) return; // No hacer nada en versión escritorio
 
     const isChecked = document.getElementById("toggle-switch").checked;
-    const compraColumns = document.querySelectorAll(".compra-col");
-    const ventaColumns = document.querySelectorAll(".venta-col");
+    const compraColumns = document.querySelectorAll(".compra-column"); // Ajustar a datos y encabezados
+    const ventaColumns = document.querySelectorAll(".venta-column"); // Ajustar a datos y encabezados
     const label = document.getElementById("toggle-label");
 
     // Alternar visibilidad de las columnas
@@ -519,7 +519,6 @@ function toggleTableColumns() {
         label.textContent = "Compra";
     }
 }
-
 
 function updateLastUpdatedTimestamp(fecha) {
     const lastUpdated1Element = document.getElementById("last-updated1");
