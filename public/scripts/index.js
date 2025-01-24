@@ -503,37 +503,35 @@ function fillCurrencyTable() {
 function toggleTableColumns() {
     const isMobile = window.matchMedia('(max-width: 887px)').matches; // Verificar si es móvil
     const isChecked = document.getElementById("toggle-switch").checked;
-    const compraColumns = document.querySelectorAll("compra-column");
-    const ventaColumns = document.querySelectorAll("venta-column");
+    const compraColumns = document.querySelectorAll(".compra-column");
+    const ventaColumns = document.querySelectorAll(".venta-column");
     const compraHeaders = document.querySelectorAll(".compra-col th"); // Encabezados de las columnas de compra
     const ventaHeaders = document.querySelectorAll(".venta-col th"); // Encabezados de las columnas de venta
     const label = document.getElementById("toggle-label");
 
-    // Alternar visibilidad de las columnas solo en móvil
+    // Solo aplicar cambios en la versión móvil
     if (isMobile) {
-        console.log('Versión Móvil');
         if (isChecked) {
-            console.log('Datos Venta');
+            // Mostrar columnas de venta, ocultar de compra
             compraColumns.forEach((col) => col.classList.add("hidden"));
             ventaColumns.forEach((col) => col.classList.remove("hidden"));
-            compraHeaders.forEach((header) => header.classList.add("hidden")); // Ocultar encabezados de compra
-            ventaHeaders.forEach((header) => header.classList.remove("hidden")); // Mostrar encabezados de venta
+            compraHeaders.forEach((header) => header.classList.add("hidden"));
+            ventaHeaders.forEach((header) => header.classList.remove("hidden"));
             label.textContent = "Venta";
         } else {
-            console.log('Datos Compra')
+            // Mostrar columnas de compra, ocultar de venta
             compraColumns.forEach((col) => col.classList.remove("hidden"));
             ventaColumns.forEach((col) => col.classList.add("hidden"));
-            compraHeaders.forEach((header) => header.classList.remove("hidden")); // Mostrar encabezados de compra
-            ventaHeaders.forEach((header) => header.classList.add("hidden")); // Ocultar encabezados de venta
+            compraHeaders.forEach((header) => header.classList.remove("hidden"));
+            ventaHeaders.forEach((header) => header.classList.add("hidden"));
             label.textContent = "Compra";
         }
     } else {
-        console.log('Versión Escritorio');
-        // En escritorio, asegurarse de que ambas columnas estén visibles
+        // En escritorio, ambas columnas deben estar siempre visibles
         compraColumns.forEach((col) => col.classList.remove("hidden"));
         ventaColumns.forEach((col) => col.classList.remove("hidden"));
-        compraHeaders.forEach((header) => header.classList.remove("hidden")); // Mostrar todos los encabezados
-        ventaHeaders.forEach((header) => header.classList.remove("hidden")); // Mostrar todos los encabezados
+        compraHeaders.forEach((header) => header.classList.remove("hidden"));
+        ventaHeaders.forEach((header) => header.classList.remove("hidden"));
         label.textContent = "Compra y Venta"; // Cambia el texto del label si lo deseas
     }
 }

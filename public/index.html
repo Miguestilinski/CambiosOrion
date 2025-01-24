@@ -215,11 +215,13 @@
                 <div class="flex justify-center items-center mb-4 md:hidden">
                     <label class="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" id="toggle-switch" class="sr-only" onchange="toggleTableColumns()" />
-                        <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-blue-500"></div>
-                        <span class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow peer-checked:translate-x-5 transform transition"></span>
+                        <div class="w-32 h-10 bg-gray-200 rounded-full flex items-center transition-colors peer peer-checked:bg-blue-500">
+                            <span class="text-sm text-gray-700 ml-2">Compra</span>
+                            <span class="ml-auto text-sm text-gray-700 mr-2">Venta</span>
+                        </div>
+                        <span class="absolute left-1 top-1 w-6 h-6 bg-white rounded-full shadow peer-checked:translate-x-16 transform transition-all"></span>
                     </label>
-                    <span id="toggle-label" class="ml-2 text-sm font-medium text-gray-700">Compra</span>
-                </div>           
+                </div>    
                 <!-- Botón "Editar" fuera de la tabla -->
                 <button onclick="toggleEditMode()" class="edit-btn absolute">
                     Editar
