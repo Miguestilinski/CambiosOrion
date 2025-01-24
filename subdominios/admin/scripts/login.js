@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function() {
             if (result.success) {
                 localStorage.setItem('sessionActive', 'true');
                 if (tipoUsuario === 'administrativo') {
-                    window.location.href = "index";
+                    window.location.href = "https://admin.cambiosorion.cl/index";
                 } else if (tipoUsuario === 'cliente') {
                     window.location.href = "https://cambiosorion.cl/sin-acceso";
                 }
