@@ -340,8 +340,6 @@ input[type="checkbox"] + div {
     position: relative;
     background-color: #e5e7eb; /* Gris claro */
     border-radius: 9999px; /* Muy redondo */
-    width: 8rem; /* Ajustar tamaño */
-    height: 2.5rem;
 }
 
 input[type="checkbox"]:checked + div {
@@ -367,8 +365,6 @@ input[type="checkbox"] + div div {
     position: absolute;
     top: 0.25rem;
     left: 0.25rem;
-    width: 2rem; /* Tamaño del círculo */
-    height: 2rem;
     background-color: white;
     border-radius: 50%;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
