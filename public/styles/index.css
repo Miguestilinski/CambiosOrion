@@ -604,6 +604,10 @@ button:hover {
 }
 
 @media (max-width: 887px) {
+    #toggle-container {
+        display: none;
+    }
+
     .converter-box {
         flex: 1 1 100%; /* Cada columna ocupa el 100% del ancho en pantallas pequeñas */
         position: relative;
