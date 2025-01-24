@@ -500,6 +500,9 @@ function fillCurrencyTable() {
 }
 
 function toggleTableColumns() {
+    const isMobile = window.matchMedia('(max-width: 887px)').matches; // Verificar si es móvil
+    if (!isMobile) return; // No hacer nada en versión escritorio
+
     const isChecked = document.getElementById("toggle-switch").checked;
     const compraColumns = document.querySelectorAll(".compra-col");
     const ventaColumns = document.querySelectorAll(".venta-col");
