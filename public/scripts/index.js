@@ -448,9 +448,9 @@ function fillCurrencyTable() {
                 </div>
             </td>
         
-            <td class="px-4 py-2 compra-column">${compra ? Math.round(compra) + ' CLP' : ' '}</td>
+            <td id="compra-column" class="px-4 py-2 compra-column">${compra ? Math.round(compra) + ' CLP' : ' '}</td>
         
-            <td class="px-4 py-2 compra-column">
+            <td id="compra-column" class="px-4 py-2 compra-column">
                 ${currency === 'CLP' ? '' : `
                     <div style="${compraStyle.containerStyle}" class="variation-container">
                         ${variationCompra !== 0 ? 
@@ -462,9 +462,9 @@ function fillCurrencyTable() {
                 `}
             </td>
         
-            <td class="px-4 py-2 venta-column hidden">${venta ? Math.round(venta) + ' CLP' : ' '}</td>
+            <td id="venta-column" class="px-4 py-2 venta-column hidden">${venta ? Math.round(venta) + ' CLP' : ' '}</td>
         
-            <td class="px-4 py-2 venta-column hidden">
+            <td id="venta-column" class="px-4 py-2 venta-column hidden">
                 ${currency === 'CLP' ? '' : `
                     <div style="${ventaStyle.containerStyle}" class="variation-container">
                         ${variationVenta !== 0 ? 
