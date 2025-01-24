@@ -211,17 +211,15 @@
             </section>
             <!-- Tabla de cambio de divisas -->
             <section class="max-w-xxl mx-auto my-10 rounded-xl shadow-lg p-8 relative">
-                <div class="flex justify-center items-center mb-4">
-                    <label for="toggle-compra-venta" class="flex items-center cursor-pointer">
-                        <span class="text-sm font-medium text-gray-700 mr-2">Compra</span>
-                        <div class="relative">
-                            <input type="checkbox" id="toggle-compra-venta" class="sr-only" onchange="toggleCompraVenta()">
-                            <div class="block bg-gray-300 w-14 h-8 rounded-full"></div>
-                            <div class="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition"></div>
-                        </div>
-                        <span class="text-sm font-medium text-gray-700 ml-2">Venta</span>
+                <!-- Toggle para dispositivos móviles -->
+                <div class="flex justify-center items-center mb-4 md:hidden">
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="toggle-switch" class="sr-only" onchange="toggleTableColumns()" />
+                        <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-blue-500"></div>
+                        <span class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow peer-checked:translate-x-5 transform transition"></span>
                     </label>
-                </div>                
+                    <span id="toggle-label" class="ml-2 text-sm font-medium text-gray-700">Compra</span>
+                </div>            
                 <!-- Botón "Editar" fuera de la tabla -->
                 <button onclick="toggleEditMode()" class="edit-btn absolute">
                     Editar
@@ -230,10 +228,10 @@
                     <thead class="text-sm uppercase text-white">
                         <tr>
                             <th scope="col" class="px-6 py-3"></th>
-                            <th scope="col" class="px-6 py-3">Compra Actual (CLP)</th>
-                            <th scope="col" class="px-6 py-3">Variación 24hrs (%)</th>
-                            <th scope="col" class="px-6 py-3">Venta Actual (CLP)</th>
-                            <th scope="col" class="px-6 py-3 last-column">Variación 24hrs (%)</th> 
+                            <th scope="col" class="px-6 py-3 compra-col">Compra Actual (CLP)</th>
+                            <th scope="col" class="px-6 py-3 compra-col">Variación 24hrs (%)</th>
+                            <th scope="col" class="px-6 py-3 venta-col hidden">Venta Actual (CLP)</th>
+                            <th scope="col" class="px-6 py-3 venta-col hidden">Variación 24hrs (%)</th>
                             <th scope="col" class="px-6 py-3 edit-column hidden"></th>
                         </tr>
                     </thead>

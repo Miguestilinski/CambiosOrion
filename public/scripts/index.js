@@ -441,54 +441,54 @@ function fillCurrencyTable() {
 
             row.classList.add("currency-row");
             row.innerHTML = `
-                <td class="px-4 py-2">
-                    <div class="flex items-center justify-start space-x-2">
-                        <img src="${exchangeRates[currency].icono}" alt="${currency}" class="w-6 h-6">
-                        <span>${currency}</span>
+            <td class="px-4 py-2">
+                <div class="flex items-center justify-start space-x-2">
+                    <img src="${exchangeRates[currency].icono}" alt="${currency}" class="w-6 h-6">
+                    <span>${currency}</span>
+                </div>
+            </td>
+        
+            <td class="px-4 py-2 compra-column">${compra ? Math.round(compra) + ' CLP' : ' '}</td>
+        
+            <td class="px-4 py-2 compra-column">
+                ${currency === 'CLP' ? '' : `
+                    <div style="${compraStyle.containerStyle}" class="variation-container">
+                        ${variationCompra !== 0 ? 
+                            (variationCompra > 0 ? `+${variationCompra.toFixed(2)}%` : `${variationCompra.toFixed(2)}%`) 
+                            : `${variationCompra.toFixed(2)}%`
+                        }
+                        ${compraStyle.arrowHTML}
                     </div>
-                </td>
-            
-                <td class="px-4 py-2 compra-column">${compra ? Math.round(compra) + ' CLP' : ' '}</td>
-            
-                <td class="px-4 py-2 compra-column">
-                    ${currency === 'CLP' ? '' : `
-                        <div style="${compraStyle.containerStyle}" class="variation-container">
-                            ${variationCompra !== 0 ? 
-                                (variationCompra > 0 ? `+${variationCompra.toFixed(2)}%` : `${variationCompra.toFixed(2)}%`) 
-                                : `${variationCompra.toFixed(2)}%`
-                            }
-                            ${compraStyle.arrowHTML}
-                        </div>
-                    `}
-                </td>
-            
-                <td class="px-4 py-2 venta-column hidden">${venta ? Math.round(venta) + ' CLP' : ' '}</td>
-            
-                <td class="px-4 py-2 venta-column hidden">
-                    ${currency === 'CLP' ? '' : `
-                        <div style="${ventaStyle.containerStyle}" class="variation-container">
-                            ${variationVenta !== 0 ? 
-                                (variationVenta > 0 ? `+${variationVenta.toFixed(2)}%` : `${variationVenta.toFixed(2)}%`) 
-                                : `${variationVenta.toFixed(2)}%`
-                            }
-                            ${ventaStyle.arrowHTML}
-                        </div>
-                    `}
-                </td>
-                <td class="px-4 py-2 edit-column ${isEditMode ? '' : 'hidden'}">
-                    ${
-                        currency === 'CLP'
-                            ? '' 
-                            : `
-                        <button onclick="deleteCurrency('${currency}')" class="delete-btn">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-9 h-9 text-white">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                            </svg>
-                        </button>
-                            `
-                    }
-                </td>
-            `;        
+                `}
+            </td>
+        
+            <td class="px-4 py-2 venta-column hidden">${venta ? Math.round(venta) + ' CLP' : ' '}</td>
+        
+            <td class="px-4 py-2 venta-column hidden">
+                ${currency === 'CLP' ? '' : `
+                    <div style="${ventaStyle.containerStyle}" class="variation-container">
+                        ${variationVenta !== 0 ? 
+                            (variationVenta > 0 ? `+${variationVenta.toFixed(2)}%` : `${variationVenta.toFixed(2)}%`) 
+                            : `${variationVenta.toFixed(2)}%`
+                        }
+                        ${ventaStyle.arrowHTML}
+                    </div>
+                `}
+            </td>
+            <td class="px-4 py-2 edit-column ${isEditMode ? '' : 'hidden'}">
+                ${
+                    currency === 'CLP'
+                        ? '' 
+                        : `
+                    <button onclick="deleteCurrency('${currency}')" class="delete-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-9 h-9 text-white">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                        `
+                }
+            </td>
+        `;        
 
             if (index === 0) {
                 row.classList.add("first-row");
@@ -499,33 +499,24 @@ function fillCurrencyTable() {
     toggleEditModeState();
 }
 
-function toggleCompraVenta() {
-    const isCompra = document.getElementById('toggle-compra-venta').checked;
-    
-    // Obtener todas las filas de la tabla
-    const rows = document.querySelectorAll('#currency-table-body tr');
-    
-    rows.forEach(row => {
-        const compraColumn = row.children[1]; // Columna de "Compra Actual"
-        const compraVarColumn = row.children[2]; // Columna de "Variación 24hrs (Compra)"
-        const ventaColumn = row.children[3]; // Columna de "Venta Actual"
-        const ventaVarColumn = row.children[4]; // Columna de "Variación 24hrs (Venta)"
-        
-        if (isCompra) {
-            // Mostrar columnas de "Venta", ocultar "Compra"
-            compraColumn.classList.add('hidden');
-            compraVarColumn.classList.add('hidden');
-            ventaColumn.classList.remove('hidden');
-            ventaVarColumn.classList.remove('hidden');
-        } else {
-            // Mostrar columnas de "Compra", ocultar "Venta"
-            ventaColumn.classList.add('hidden');
-            ventaVarColumn.classList.add('hidden');
-            compraColumn.classList.remove('hidden');
-            compraVarColumn.classList.remove('hidden');
-        }
-    });
+function toggleTableColumns() {
+    const isChecked = document.getElementById("toggle-switch").checked;
+    const compraColumns = document.querySelectorAll(".compra-col");
+    const ventaColumns = document.querySelectorAll(".venta-col");
+    const label = document.getElementById("toggle-label");
+
+    // Alternar visibilidad de las columnas
+    if (isChecked) {
+        compraColumns.forEach((col) => col.classList.add("hidden"));
+        ventaColumns.forEach((col) => col.classList.remove("hidden"));
+        label.textContent = "Venta";
+    } else {
+        compraColumns.forEach((col) => col.classList.remove("hidden"));
+        ventaColumns.forEach((col) => col.classList.add("hidden"));
+        label.textContent = "Compra";
+    }
 }
+
 
 function updateLastUpdatedTimestamp(fecha) {
     const lastUpdated1Element = document.getElementById("last-updated1");
