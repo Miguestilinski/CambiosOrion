@@ -496,6 +496,7 @@ function fillCurrencyTable() {
             tableBody.appendChild(row);
         }
     });
+    toggleTableColumns()
     toggleEditModeState();
 }
 
@@ -540,7 +541,6 @@ function toggleTableColumns() {
 // Asegurar que las columnas se muestren correctamente al cargar
 window.addEventListener("resize", toggleTableColumns);
 window.addEventListener("load", toggleTableColumns);
-
 
 function updateLastUpdatedTimestamp(fecha) {
     const lastUpdated1Element = document.getElementById("last-updated1");
