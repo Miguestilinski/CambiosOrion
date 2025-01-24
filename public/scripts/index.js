@@ -502,8 +502,8 @@ function fillCurrencyTable() {
 function toggleTableColumns() {
     const isMobile = window.matchMedia('(max-width: 887px)').matches; // Verificar si es móvil
     const isChecked = document.getElementById("toggle-switch").checked;
-    const compraColumns = document.querySelectorAll(".compra-col");
-    const ventaColumns = document.querySelectorAll(".venta-col");
+    const compraColumns = document.querySelectorAll("compra-column");
+    const ventaColumns = document.querySelectorAll("venta-column");
     const compraHeaders = document.querySelectorAll(".compra-col th"); // Encabezados de las columnas de compra
     const ventaHeaders = document.querySelectorAll(".venta-col th"); // Encabezados de las columnas de venta
     const label = document.getElementById("toggle-label");
