@@ -496,7 +496,7 @@ function fillCurrencyTable() {
             tableBody.appendChild(row);
         }
     });
-    toggleTableColumns()
+    toggleTableColumns();
     toggleEditModeState();
 }
 
