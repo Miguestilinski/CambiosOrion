@@ -462,9 +462,9 @@ function fillCurrencyTable() {
                 `}
             </td>
         
-            <td class="px-4 py-2 venta-column">${venta ? Math.round(venta) + ' CLP' : ' '}</td>
+            <td class="px-4 py-2 venta-column hidden">${venta ? Math.round(venta) + ' CLP' : ' '}</td>
         
-            <td class="px-4 py-2 venta-column">
+            <td class="px-4 py-2 venta-column hidden">
                 ${currency === 'CLP' ? '' : `
                     <div style="${ventaStyle.containerStyle}" class="variation-container">
                         ${variationVenta !== 0 ? 
@@ -500,35 +500,35 @@ function fillCurrencyTable() {
 }
 
 function toggleTableColumns() {
-    const isMobile = window.matchMedia('(max-width: 887px)').matches; // Verificar si es móvil
+    const isMobile = window.matchMedia('(max-width: 887px)').matches;
     const isChecked = document.getElementById("toggle-switch").checked;
-    const compraColumns = document.querySelectorAll(".compra-col");
-    const ventaColumns = document.querySelectorAll(".venta-col");
+    const compraColumns = document.querySelectorAll(".compra-column");
+    const ventaColumns = document.querySelectorAll(".venta-column");
     const label = document.getElementById("toggle-label");
 
-    // Alternar visibilidad de las columnas solo en móvil
     if (isMobile) {
         if (isChecked) {
-            compraColumns.forEach((col) => col.classList.add("hidden"));
-            ventaColumns.forEach((col) => col.classList.remove("hidden"));
+            compraColumns.forEach(col => col.classList.add("hidden"));
+            ventaColumns.forEach(col => col.classList.remove("hidden"));
             label.textContent = "Venta";
         } else {
-            compraColumns.forEach((col) => col.classList.remove("hidden"));
-            ventaColumns.forEach((col) => col.classList.add("hidden"));
+            compraColumns.forEach(col => col.classList.remove("hidden"));
+            ventaColumns.forEach(col => col.classList.add("hidden"));
             label.textContent = "Compra";
         }
     } else {
-        // En escritorio, asegurarse de que ambas columnas estén visibles
-        compraColumns.forEach((col) => col.classList.remove("hidden"));
-        ventaColumns.forEach((col) => col.classList.remove("hidden"));
-        label.textContent = "Compra y Venta"; // Cambia el texto del label si lo deseas
+        compraColumns.forEach(col => col.classList.remove("hidden"));
+        ventaColumns.forEach(col => col.classList.remove("hidden"));
+        label.textContent = "Compra y Venta";
     }
 }
 
-// Asegurar que las columnas se muestren correctamente al cargar
+// Configurar columnas al cargar la página
 window.addEventListener("resize", toggleTableColumns);
-window.addEventListener("load", toggleTableColumns);
-
+window.addEventListener("load", () => {
+    document.getElementById("toggle-switch").checked = false;
+    toggleTableColumns();
+});
 
 function updateLastUpdatedTimestamp(fecha) {
     const lastUpdated1Element = document.getElementById("last-updated1");
