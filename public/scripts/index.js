@@ -503,7 +503,7 @@ function fillCurrencyTable() {
 function toggleTableColumns() {
     const isMobile = window.matchMedia('(max-width: 887px)').matches; // Verificar si es móvil
     const isChecked = document.getElementById("toggle-switch").checked;
-    const toggleTabla = document.querySelectorAll(".toggle-tabla");
+    const toggleTabla = document.querySelector(".toggle-tabla");
     const compraColumns = document.querySelectorAll(".compra-column");
     const ventaColumns = document.querySelectorAll(".venta-column");
     const compraHeaders = document.querySelectorAll(".compra-col th"); // Encabezados de las columnas de compra
@@ -512,7 +512,9 @@ function toggleTableColumns() {
 
     // Solo aplicar cambios en la versión móvil
     if (isMobile) {
-        toggleTabla.classList.remove("hidden");
+        toggleTabla.forEach((tabla) => {
+            tabla.classList.remove("hidden");
+        });
         if (isChecked) {
             // Mostrar columnas de venta, ocultar de compra
             compraColumns.forEach((col) => col.classList.add("hidden"));
@@ -529,7 +531,9 @@ function toggleTableColumns() {
             label.textContent = "Compra";
         }
     } else {
-        toggleTabla.classList.add("hidden");
+        toggleTabla.forEach((tabla) => {
+            tabla.classList.add("hidden");
+        });
         // En escritorio, ambas columnas deben estar siempre visibles
         compraColumns.forEach((col) => col.classList.remove("hidden"));
         ventaColumns.forEach((col) => col.classList.remove("hidden"));
