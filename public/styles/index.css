@@ -333,12 +333,50 @@ section .max-w-xl {
     overflow: hidden; /* Para ocultar cualquier borde sobresaliente */
 }
 
-input:checked + .block {
-    background-color: #34d399; /* Color verde */
+/* Para personalizar el toggle */
+input[type="checkbox"] + div {
+    display: flex;
+    align-items: center;
+    position: relative;
+    background-color: #e5e7eb; /* Gris claro */
+    border-radius: 9999px; /* Muy redondo */
+    width: 8rem; /* Ajustar tamaño */
+    height: 2.5rem;
 }
 
-input:checked + .block .dot {
-    transform: translateX(6rem); /* Ajusta según el ancho del toggle */
+input[type="checkbox"]:checked + div {
+    background-color: #3b82f6; /* Azul claro para "Venta" */
+}
+
+input[type="checkbox"] + div span {
+    position: absolute;
+    font-size: 0.875rem; /* Tamaño del texto */
+    font-weight: 500;
+    color: #4b5563; /* Gris oscuro */
+}
+
+input[type="checkbox"] + div span:first-of-type {
+    left: 0.75rem; /* Texto "Compra" */
+}
+
+input[type="checkbox"] + div span:last-of-type {
+    right: 0.75rem; /* Texto "Venta" */
+}
+
+input[type="checkbox"] + div div {
+    position: absolute;
+    top: 0.25rem;
+    left: 0.25rem;
+    width: 2rem; /* Tamaño del círculo */
+    height: 2rem;
+    background-color: white;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease; /* Suavizar movimiento */
+}
+
+input[type="checkbox"]:checked + div div {
+    transform: translateX(5rem); /* Mover el círculo */
 }
 
 /* Bordes redondeados para cada fila */

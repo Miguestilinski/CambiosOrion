@@ -212,16 +212,14 @@
             <!-- Tabla de cambio de divisas -->
             <section class="max-w-xxl mx-auto my-10 rounded-xl shadow-lg p-8 relative">
                 <!-- Toggle para dispositivos móviles -->
-                <div class="toggle-table flex justify-center items-center mb-4 md:hidden">
-                    <label class="relative inline-flex items-center cursor-pointer">
+                <div class="flex justify-center items-center mb-4 md:hidden">
+                    <div class="relative flex items-center w-32 h-10 bg-gray-200 rounded-full">
+                        <span class="absolute left-3 text-sm font-medium text-gray-700">Compra</span>
+                        <span class="absolute right-3 text-sm font-medium text-gray-700">Venta</span>
                         <input type="checkbox" id="toggle-switch" class="sr-only" onchange="toggleTableColumns()" />
-                        <div class="w-32 h-10 bg-gray-200 rounded-full flex items-center transition-colors peer peer-checked:bg-blue-500">
-                            <span class="text-sm text-gray-700 ml-2">Compra</span>
-                            <span class="ml-auto text-sm text-gray-700 mr-2">Venta</span>
-                        </div>
-                        <span class="absolute left-1 top-1 w-6 h-6 bg-white rounded-full shadow peer-checked:translate-x-16 transform transition-all"></span>
-                    </label>
-                </div>    
+                        <div class="w-8 h-8 bg-white rounded-full shadow absolute left-1 peer-checked:translate-x-20 transition-transform"></div>
+                    </div>
+                </div>
                 <!-- Botón "Editar" fuera de la tabla -->
                 <button onclick="toggleEditMode()" class="edit-btn absolute">
                     Editar
