@@ -101,7 +101,7 @@ app.get('/api/divisas/stream', (req, res) => {
         res.write(`data: ${JSON.stringify(results)}\n\n`);
       }
     });
-  };  
+  };
 
   const intervalId = setInterval(sendData, 5000); // Enviar datos cada 5 segundos
 
