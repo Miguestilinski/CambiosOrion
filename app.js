@@ -84,20 +84,26 @@ app.get('/api/divisas/stream', (req, res) => {
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');
+  res.setHeader('Keep-Alive', 'timeout=60, max=100');
+
+  const NodeCache = require('node-cache');
+  const cache = new NodeCache({ stdTTL: 60, checkperiod: 120 });
+
+  let lastData = null;
 
   const sendData = () => {
-    const query = 'SELECT nombre, icono, compra, venta, tasa FROM divisas';
-    db.query(query, (error, results) => {
+    db.query('SELECT nombre, icono, compra, venta, tasa FROM divisas', (error, results) => {
       if (error) {
         console.error('Error al consultar la base de datos:', error);
         res.write(`event: error\ndata: ${JSON.stringify({ error: 'Error' })}\n\n`);
-      } else {
+      } else if (JSON.stringify(results) !== JSON.stringify(lastData)) {
+        lastData = results;
         res.write(`data: ${JSON.stringify(results)}\n\n`);
       }
     });
-  };
+  };  
 
-  const intervalId = setInterval(sendData, 1000); // Enviar datos cada 1 segundo
+  const intervalId = setInterval(sendData, 5000); // Enviar datos cada 5 segundos
 
   req.on('close', () => {
     clearInterval(intervalId);
