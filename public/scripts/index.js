@@ -506,9 +506,8 @@ function toggleTableColumns() {
     const mobileToggle = document.getElementById("mobile-toggle"); // Contenedor del toggle
     const compraColumns = document.querySelectorAll(".compra-column");
     const ventaColumns = document.querySelectorAll(".venta-column");
-    const compraHeaders = document.querySelectorAll(".compra-col th"); // Encabezados de las columnas de compra
-    const ventaHeaders = document.querySelectorAll(".venta-col th"); // Encabezados de las columnas de venta
-    const label = document.getElementById("toggle-label");
+    const compraHeaders = document.querySelectorAll(".compra-col"); // Encabezados de las columnas de compra
+    const ventaHeaders = document.querySelectorAll(".venta-col"); // Encabezados de las columnas de venta
 
     // Solo aplicar cambios en la versión móvil
     if (isMobile) {
@@ -519,14 +518,12 @@ function toggleTableColumns() {
             ventaColumns.forEach((col) => col.classList.remove("hidden"));
             compraHeaders.forEach((header) => header.classList.add("hidden"));
             ventaHeaders.forEach((header) => header.classList.remove("hidden"));
-            label.textContent = "Venta";
         } else {
             // Mostrar columnas de compra, ocultar de venta
             compraColumns.forEach((col) => col.classList.remove("hidden"));
             ventaColumns.forEach((col) => col.classList.add("hidden"));
             compraHeaders.forEach((header) => header.classList.remove("hidden"));
             ventaHeaders.forEach((header) => header.classList.add("hidden"));
-            label.textContent = "Compra";
         }
     } else {
         mobileToggle.classList.add("hidden");
@@ -535,7 +532,6 @@ function toggleTableColumns() {
         ventaColumns.forEach((col) => col.classList.remove("hidden"));
         compraHeaders.forEach((header) => header.classList.remove("hidden"));
         ventaHeaders.forEach((header) => header.classList.remove("hidden"));
-        label.textContent = "Compra y Venta"; // Cambia el texto del label si lo deseas
     }
 }
 
