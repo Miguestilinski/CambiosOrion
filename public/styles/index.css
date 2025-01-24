@@ -333,6 +333,14 @@ section .max-w-xl {
     overflow: hidden; /* Para ocultar cualquier borde sobresaliente */
 }
 
+input:checked + .block {
+    background-color: #34d399; /* Color verde */
+}
+
+input:checked + .block .dot {
+    transform: translateX(6rem); /* Ajusta según el ancho del toggle */
+}
+
 /* Bordes redondeados para cada fila */
 #currency-table-body tr {
     align-items: center;
