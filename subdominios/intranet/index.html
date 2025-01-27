@@ -135,56 +135,8 @@
         </aside>
         <main id="dashboard-content" class="dashboard-content">
             <section id="info-personal" class="content-section active">
-                <!-- Título de la sección -->
-                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Datos Personales</h1>
-            
-                <!-- Tipo de Usuario -->
-                <h2 id="user-type" class="mb-4 text-md font-semibold leading-none text-white">Tipo Usuario</h2>
-            
-                <!-- Nombre del Usuario -->
-                <div class="text-center">
-                    <div id="user-name-dashboard" class="text-3xl font-bold text-white"></div>
-                </div>
-            
-                <!-- Persona/Empresa o Rol -->
-                <div class="text-center mb-4">
-                    <p id="role-type" class="text-lg font-medium text-white">Rol</p>
-                </div>
-            
-                <form id="personal-info-form" class="grid gap-4 mb-4 sm:grid-cols-2">
-                    <!-- RUT (Visible solo para Clientes) -->
-                    <div id="rut-group" class="hidden flex">
-                        <label for="rut" class="block mb-2 mr-2 text-lg font-medium text-white">RUT:</label>
-                        <div id="rut" class="ml-2 text-lg font-medium text-white"></div>
-                    </div>
-            
-                    <!-- Correo -->
-                    <div>
-                        <label for="email" class="block text-lg font-medium text-white">Correo:</label>
-                        <input type="email" id="email" name="email" placeholder="Ingresa tu correo" readonly class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg block w-full p-2.5">
-                    </div>
-
-                    <div id="password-group" class="flex mt-4">
-                        <!-- Contraseña -->
-                        <div id="new_pass" class="w-1/2 pr-4">
-                            <label for="password" class="block mb-2 text-lg font-medium text-white">Nueva Contraseña:</label>
-                            <input type="password" id="password" name="password" placeholder="•••••••••" class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg block w-full p-2.5">
-                        </div>
-                
-                        <!-- Confirmar Contraseña -->
-                        <div id="confirm_pass" class="w-1/2 pl-4">
-                            <label for="confirm-password" class="block mb-2 text-lg font-medium text-white">Confirmar Contraseña:</label>
-                            <input type="password" id="confirm-password" name="confirm-password" placeholder="•••••••••" class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg block w-full p-2.5">
-                        </div>
-                    </div>
-
-                    <!-- Botón Guardar Cambios -->
-                    <div class="sm:col-span-2">
-                        <button id="save_changes" type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-                            Guardar Cambios
-                        </button>
-                    </div>
-                </form>
+                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Info Personal</h1>
+                <p class="mb-6 text-md text-white">Consulta tu información personal.</p>
             </section>         
             <section id="liquidaciones" class="content-section">
                 <h1 class="mb-2 text-2xl font-medium leading-none text-white">Liquidaciones</h1>
@@ -195,37 +147,8 @@
                 <p class="mb-6 text-md text-white">Consulta tu sueldo restante para un anticipo.</p>
             </section>
             <section id="vacaciones" class="content-section">
-                <div class="container max-w-2xl mx-auto my-10 p-8 bg-white text-gray-900 rounded-xl shadow-md">
-                    <h1 class="text-xl font-bold">Calculadora de Vacaciones</h1>
-            
-                    <!-- Información del trabajador -->
-                    <div id="worker-info" class="my-4">
-                        <p><strong>Fecha de ingreso:</strong> <span id="fecha-ingreso"></span></p>
-                        <p><strong>Meses trabajados:</strong> <span id="meses-trabajados"></span></p>
-                        <p><strong>Días disponibles:</strong> <span id="dias-disponibles"></span></p>
-                        <p><strong>Días usados:</strong> <span id="dias-usados"></span></p>
-                    </div>
-            
-                    <!-- Simulador -->
-                    <div id="simulator" class="my-4">
-                        <h2 class="text-lg font-bold">Simulador de Vacaciones</h2>
-                        <label for="start-date">Fecha de salida:</label>
-                        <input type="date" id="start-date" class="border p-1 rounded">
-                    
-                        <label for="end-date">Fecha de regreso:</label>
-                        <input type="date" id="end-date" class="border p-1 rounded">
-                    
-                        <button id="simulate" class="bg-green-500 text-white px-4 py-2 rounded">Calcular</button>
-                        <p id="simulation-result" class="mt-2"></p>
-                    </div>
-            
-                    <!-- Calendario -->
-                    <div id="calendar" class="my-4">
-                        <h2 class="text-lg font-bold">Calendario</h2>
-                        <div id="calendar-container" class="grid grid-cols-7 gap-2"></div>
-                        <button id="save-dates" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded">Guardar Días Seleccionados</button>
-                    </div>
-                </div>
+                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Vacaciones</h1>
+                <p class="mb-6 text-md text-white">Consulta tus días disponibles para vacaiones.</p>
             </section>
             <section id="documentos" class="content-section">
                 <h1 class="mb-2 text-2xl font-medium leading-none text-white">Documentos</h1>
