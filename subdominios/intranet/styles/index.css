@@ -45,6 +45,14 @@ h2 {
     background-color: black;
 }
 
+.footer-logo .logo {
+    width: 100px;
+}
+
+.footer-logo .nombre {
+    width: 100px;
+}
+
 .relative {
     position: relative;
 }
