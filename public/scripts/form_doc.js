@@ -404,19 +404,19 @@ document.addEventListener("DOMContentLoaded", () => {
         autorizadoDiv.innerHTML = `
             <div class="mb-6">
                 <label class="block mt-2 mb-2 text-sm font-medium text-white">Nombre:</label>
-                <input type="text" name="nombre-autorizado${autorizadosCount}" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                <input type="text" name="nombre-autorizado${autorizadosCount}" class="bg-white border border-gray-600 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
             </div>
             <div class="mb-6">
                 <label class="block mt-2 mb-2 text-sm font-medium text-white">Nº Doc. Identidad:</label>
-                <input type="text" name="doc-id-autorizado${autorizadosCount}" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                <input type="text" name="doc-id-autorizado${autorizadosCount}" class="bg-white border border-gray-600 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
             </div>
             <div class="mb-6">
                 <label class="block mt-2 mb-2 text-sm font-medium text-white">Cargo:</label>
-                <input type="text" name="cargo-autorizado${autorizadosCount}" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                <input type="text" name="cargo-autorizado${autorizadosCount}" class="bg-white border border-gray-600 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
             </div>
             <div class="mb-6">
                 <label class="block mt-2 mb-2 text-sm font-medium text-white">Email:</label>
-                <input type="email" name="email-autorizado${autorizadosCount}" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                <input type="email" name="email-autorizado${autorizadosCount}" class="bg-white border border-gray-600 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
             </div>
             <button type="button" class="remove-autorizado text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2">Eliminar</button>
         `;
@@ -450,19 +450,19 @@ document.addEventListener("DOMContentLoaded", () => {
         beneficiarioDiv.innerHTML = `
             <div class="mb-6">
                 <label class="block mt-2 mb-2 text-sm font-medium text-white">Nombre:</label>
-                <input type="text" name="nombre-ben${beneficiariosCount}" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                <input type="text" name="nombre-ben${beneficiariosCount}" class="bg-white border border-gray-600 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
             </div>
             <div class="mb-6">
                 <label class="block mt-2 mb-2 text-sm font-medium text-white">Nº Doc. Identidad:</label>
-                <input type="text" name="doc-id-ben${beneficiariosCount}" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                <input type="text" name="doc-id-ben${beneficiariosCount}" class="bg-white border border-gray-600 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
             </div>
             <div class="mb-6">
                 <label class="block mt-2 mb-2 text-sm font-medium text-white">Direccion:</label>
-                <input type="text" name="direccion-ben${beneficiariosCount}" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                <input type="text" name="direccion-ben${beneficiariosCount}" class="bg-white border border-gray-600 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
             </div>
             <div class="mb-6">
                 <label class="block mt-2 mb-2 text-sm font-medium text-white">Porcentaje:</label>
-                <input type="text" name="porc-ben${beneficiariosCount}" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                <input type="text" name="porc-ben${beneficiariosCount}" class="bg-white border border-gray-600 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
             </div>
             <button type="button" class="remove-autorizado text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2">Eliminar</button>
         `;
