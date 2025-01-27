@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario PDF</title>
+    <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/header.css">
+    <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/footer.css">
+    <link rel="stylesheet" href="./styles/form_doc.css">
+    <link href="https://cambiosorion.cl/orionapp/public/styles/output.css" rel="stylesheet">
+    <link rel="icon" href="https://cambiosorion.cl/orionapp/icons/favicon.png" type="image/png">
+</head>
+<body class="font-sans">
+    <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js"></script>
+
+    <header>
+        <!-- Logo y Nombre -->
+        <div class="header-logo">
+            <a href="index">
+                <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-silver.png" alt="Logo Cambios Orion" class="logo">
+            </a>
+            <a href="index">
+                <img src="https://cambiosorion.cl/orionapp/assets/NombreOrion-white.png" alt="Nombre Cambios Orion" class="nombre">
+            </a>
+        </div>
+    
+        <!-- Botones para versión móvil -->
+        <div class="mobile-buttons">
+            <button class="menu-button" id="nav-menu-button">
+                <img src="https://cambiosorion.cl/orionapp/icons/menu-white.svg" alt="Menú">
+            </button>
+            <button class="menu-button" id="session-menu-button">
+                <img src="https://cambiosorion.cl/orionapp/icons/profile-white.png" alt="Sesión">
+            </button>
+        </div>
+    
+        <!-- Menús desplegables para móvil -->
+        <!-- Menús desplegables para móvil -->
+        <div id="nav-mobile-menu" class="mobile-menu hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
+            <ul class="py-2 text-sm text-gray-700">
+                <li><a href="index" class="block px-4 py-2 hover:bg-gray-100">Inicio</a></li>
+            </ul>
+            <ul class="py-2 text-sm text-gray-700">
+                <li><a href="servicios" class="block px-4 py-2 hover:bg-gray-100">Servicios</a></li>
+            </ul>
+            <ul class="py-2 text-sm text-gray-700">
+                <li><a href="nosotros" class="block px-4 py-2 hover:bg-gray-100">Nosotros</a></li>
+            </ul>
+            <ul class="py-2 text-sm text-gray-700">
+                <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Contacto</a></li>
+            </ul>
+        </div>
+    
+        <div class="mobile-menu hidden bg-white rounded-lg shadow w-44" id="session-mobile-menu">
+            <div id="guest-actions-mobile" class="divide-y divide-gray-100" style="display:none;">
+                <ul class="py-2 text-sm text-gray-700">
+                    <li><a href="login" class="block px-4 py-2 hover:bg-gray-100">Iniciar Sesión</a></li>
+                </ul>
+                <ul class="py-2 text-sm text-gray-700">
+                    <li><a href="registro" class="block px-4 py-2 hover:bg-gray-100">Registro</a></li>
+                </ul>
+            </div>
+            <div id="user-actions-mobile" class="divide-y divide-gray-100" style="display:none;">
+                <div class="px-2 py-2 text-sm text-gray-900">
+                    <div id="user-name">Nombre del usuario</div>
+                    <div id="user-email" class="mail font-medium truncate">Correo del usuario</div>
+                </div>
+                <ul class="py-2 text-sm text-gray-700">
+                    <li><a href="https://clientes.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Mi perfil</a></li>
+                </ul>
+                <ul class="py-2 text-sm text-gray-700" id="menu-admin-mobile" style="display: none;">
+                    <li><a href="edit" class="block px-4 py-2 hover:bg-gray-100">Pizarra</a></li>
+                </ul>
+                <ul class="py-2 text-sm text-gray-700">
+                    <li><a href="#" class="block px-4 py-2 hover:bg-gray-100" id="logout-button-mobile">Cerrar sesión</a></li>
+                </ul>
+            </div>
+        </div>
+    
+        <!-- Menú de navegación para escritorio -->
+        <nav>
+            <ul>
+                <li class="selected"><a href="index">Inicio</a></li>
+                <li><a href="servicios">Servicios</a></li>
+                <li><a href="nosotros">Nosotros</a></li>
+                <li><a href="#">Contacto</a></li>
+            </ul>
+        </nav>
+    
+        <!-- Acciones para escritorio -->
+        <div class="header-actions">
+            <!-- User actions -->
+            <div id="user-actions" style="display:none;">
+                <button id="profile-menu-button" class="text-white bg-transparent hover:bg-gray-200 focus:outline-none">
+                    <img src="https://cambiosorion.cl/orionapp/icons/profile-white.png" alt="Profile">
+                </button>
+                <!-- Menú desplegable -->
+                <div id="dropdownInformation" class="hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
+                    <div class="px-4 py-3 text-sm text-gray-900">
+                        <div id="user-name">Nombre del usuario</div>
+                        <div id="user-email" class="mail font-medium truncate">Correo del usuario</div>
+                    </div>
+                    <ul class="py-2 text-sm text-gray-700" id="menu-cliente">
+                        <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Mi perfil</a></li>
+                    </ul>
+                    <ul class="py-2 text-sm text-gray-700" id="menu-admin" style="display: none;">
+                        <li><a href="edit" class="block px-4 py-2 hover:bg-gray-100">Pizarra</a></li>
+                    </ul>
+                    <ul class="py-2 text-sm text-gray-700">
+                        <li><a href="#" class="block px-4 py-2 hover:bg-gray-100" id="logout-button">Cerrar sesión</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Guest actions -->
+            <div id="guest-actions" style="display:none;">
+                <a href="login">Iniciar sesión</a>
+                <a href="registro" class="register-button">Registrarse</a>
+            </div>
+        </div>
+    </header>
+    <div class="header-divider"></div>
+    <div class="main-content">
+        <section id="form-section" >
+            <h1 class="text-2xl font-bold text-white text-center mt-6 mb-6">Formulario Documentación</h1>
+            <form id="dynamic-form" action="/submit_form" method="post">
+
+                <div class="mt-6 mb-6">
+
+                    <!-- Contenedor de Datos de la Empresa -->
+                    <div class="max-w-lg w-full mx-auto my-10 mb-10 bg-gray-700 p-5 rounded-lg shadow-md">
+                        <!-- Campo Fecha -->
+                        <div class="date mb-4 max-w-xs">
+                            <label for="fecha" class="block mt-2 mb-2 text-sm font-medium text-white">Fecha:</label>
+                            <input type="date" id="fecha" name="fecha" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                        </div>
+
+                        <h3 class="text-lg font-semibold text-white mb-4">Datos Declarante</h3>
+                        <!-- Nombre-->
+                        <div class="mb-6">
+                            <label for="nombre-dec" class="block mt-2 mb-2 text-sm font-medium text-white">Nombre:</label>
+                            <input type="text" id="nombre-dec" name="nombre-dec" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        </div>
+
+                        <!-- Nacionalidad -->
+                        <div class="mb-6">
+                            <label class="block mt-2 mb-2 text-sm font-medium text-white">Nacionalidad:</label>
+                            <div class="flex gap-4 flex-col">
+                                <label class="flex items-center">
+                                    <input type="radio" name="nacionalidad-dec" value="chilena" class="form-radio text-blue-600" required onchange="toggleNacionalidadDec()">
+                                    <span class="ml-2 text-gray-100">Chilena</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="nacionalidad-dec" value="extranjera" class="form-radio text-blue-600" onchange="toggleNacionalidadDec()">
+                                    <span class="ml-2 mr-2 text-gray-100">Extranjera</span>
+                                    <input type="text" name="nacionalidad-dec-ext" placeholder="Indicar" class="bg-gray-700 border border-gray-600 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-64 p-2.5">
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Campo RUT -->
+                        <div class="mb-6" id="rut-dec-container">
+                            <label for="rut-dec" class="block mt-2 mb-2 text-sm font-medium text-white">RUT:</label>
+                            <input type="text" id="rut-dec" name="rut-dec" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                        </div>
+
+                        <!-- Nº Doc Identidad-->
+                        <div class="mb-6 hidden" id="doc-id-dec-container">
+                            <label for="doc-id-dec" class="block mt-2 mb-2 text-sm font-medium text-white">Nº Doc. Identidad:</label>
+                            <input type="text" id="doc-id-dec" name="doc-id-dec" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        </div>
+
+                        <h2 class="text-xl font-semibold text-white mb-4">1. Ficha Cliente Persona Jurídica</h2>
+
+                        <h3 class="text-lg font-semibold text-white mb-4">1.1. Datos de la Empresa</h3>
+
+                        <!-- Tipo Empresa -->
+                        <div class="mb-6">
+                            <label class="block mt-2 mb-2 text-sm font-medium text-white">Tipo de Empresa:</label>
+                            <div class="flex gap-4">
+                                <label class="flex items-center">
+                                    <input type="radio" name="tipo-empresa" value="nacional" class="form-radio text-blue-600" required onchange="toggleEmpresaTipo()">
+                                    <span class="ml-2 text-gray-100">Empresa Nacional</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="tipo-empresa" value="extranjera" class="form-radio text-blue-600" onchange="toggleEmpresaTipo()">
+                                    <span class="ml-2 text-gray-100">Empresa Extranjera</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Campo RUT -->
+                        <div class="mb-6" id="rut-empresa-container">
+                            <label for="rut-empresa" class="block mt-2 mb-2 text-sm font-medium text-white">RUT:</label>
+                            <input type="text" id="rut-empresa" name="rut-empresa" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                        </div>
+
+                        <!-- Campo Tax ID -->
+                        <div class="mb-6 hidden" id="tax-id-container">
+                            <label for="tax-id" class="block mt-2 mb-2 text-sm font-medium text-white">Tax ID:</label>
+                            <input type="text" id="tax-id" name="tax-id" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        </div>
+        
+                        <!-- Rubro Empresa -->
+                        <div class="mb-6">
+                            <label for="rubro-empresa" class="block mt-2 mb-2 text-sm font-medium text-white">Rubro Empresa:</label>
+                            <input type="text" id="rubro-empresa" name="rubro_empresa" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        </div>
+
+                        <!-- Razón Social -->
+                        <div class="mb-6">
+                            <label for="razon-social-empresa" class="block mt-2 mb-2 text-sm font-medium text-white">Razón Social:</label>
+                            <input type="text" id="razon-social-empresa" name="razon-social-empresa" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                        </div>
+
+                        <!-- Nombre Empresa -->
+                        <div class="mb-6">
+                            <label for="nombre-empresa" class="block mt-2 mb-2 text-sm font-medium text-white">Nombre Empresa:</label>
+                            <input type="text" id="nombre-empresa" name="nombre-empresa" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        </div>
+
+                        <!-- Tipo Sociedad -->
+                        <div class="mb-6">
+                            <label for="tipo-sociedad" class="block mt-2 mb-2 text-sm font-medium text-white">Tipo Sociedad:</label>
+                            <select id="tipo-sociedad" name="tipo-sociedad" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                                <option value="" disabled selected>Seleccione una opción</option>
+                                <option value="spa">Sociedad por Acciones (SpA)</option>
+                                <option value="sa">Sociedad Anónima (SA)</option>
+                                <option value="colectiva">Sociedad Colectiva</option>
+                                <option value="comandita">Sociedad en Comandita</option>
+                                <option value="ldta">Sociedad de Responsabilidad Limitada (LTDA)</option>
+                                <option value="eril">Empresa Individual de Responsabilidad Limitada (EIRL)</option>
+                                <option value="otra">Otra</option>
+                            </select>
+                        </div>
+
+                        <!-- Dirección-->
+                        <div class="mb-6">
+                            <label for="direccion-empresa" class="block mt-2 mb-2 text-sm font-medium text-white">Dirección:</label>
+                            <input type="text" id="direccion-empresa" name="direccion-empresa" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        </div>
+
+                        <!-- Ciudad-->
+                        <div class="mb-6">
+                            <label for="ciudad-empresa" class="block mt-2 mb-2 text-sm font-medium text-white">Ciudad:</label>
+                            <select id="ciudad-empresa" name="ciudad-empresa" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" disabled>
+                                <option value="" disabled selected>Selecciona una ciudad</option>
+                            </select>
+                        </div>
+
+                        <!-- Región-->
+                        <div class="mb-6">
+                            <label for="region-empresa" class="block mt-2 mb-2 text-sm font-medium text-white">Región:</label>
+                            <select id="region-empresa" name="region-empresa" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" onchange="cargarCiudades()" disabled>
+                                <option value="" disabled selected>Selecciona una región</option>
+                            </select>
+                        </div>
+
+                        <!-- País-->
+                        <div class="mb-6">
+                            <label for="pais-empresa" class="block mt-2 mb-2 text-sm font-medium text-white">País:</label>
+                            <select id="pais-empresa" name="pais-empresa" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" onchange="cargarRegiones()">
+                                <option value="" disabled selected>Selecciona un país</option>
+                            </select>
+                        </div>
+
+                        <!-- E-mail-->
+                        <div class="mb-6">
+                            <label for="email-empresa" class="block mt-2 mb-2 text-sm font-medium text-white">E-Mail:</label>
+                            <input type="email" id="email-empresa" name="email-empresa" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        </div>
+
+                        <!-- Telefono-->
+                        <div class="mb-6">
+                            <label for="telefono-empresa" class="block mt-2 mb-2 text-sm font-medium text-white">Teléfono:</label>
+                            <input type="tel" id="telefono-empresa" name="telefono-empresa" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        </div>
+                    </div>
+
+                    <div class="max-w-lg w-full mx-auto my-10 mb-10 bg-gray-700 p-5 rounded-lg shadow-md">
+                        <h3 class="text-lg font-semibold text-white mb-4">1.2. Datos Representante Legal y/o Gerente General</h3>
+
+                        <!-- Nombre-->
+                        <div class="mb-6">
+                            <label for="nombre-rlegal" class="block mt-2 mb-2 text-sm font-medium text-white">Nombre:</label>
+                            <input type="text" id="nombre-rlegal" name="nombre-rlegal" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        </div>
+
+                        <!-- Nacionalidad -->
+                        <div class="mb-6">
+                            <label class="block mt-2 mb-2 text-sm font-medium text-white">Nacionalidad:</label>
+                            <div class="flex gap-4 flex-col">
+                                <label class="flex items-center">
+                                    <input type="radio" name="nacionalidad-rlegal" value="chilena" class="form-radio text-blue-600" required onchange="toggleNacionalidadRlegal()">
+                                    <span class="ml-2 text-gray-100">Chilena</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="nacionalidad-rlegal" value="extranjera" class="form-radio text-blue-600" onchange="toggleNacionalidadRlegal()">
+                                    <span class="ml-2 mr-2 text-gray-100">Extranjera</span>
+                                    <input type="text" name="nacionalidad-rlegal-ext" placeholder="Indicar" class="bg-gray-700 border border-gray-600 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-64 p-2.5">
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Campo RUT -->
+                        <div class="mb-6" id="rut-rlegal-container">
+                            <label for="rut-rlegal" class="block mt-2 mb-2 text-sm font-medium text-white">RUT:</label>
+                            <input type="text" id="rut-rlegal" name="rut-rlegal" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                        </div>
+
+                        <!-- Nº Doc Identidad-->
+                        <div class="mb-6 hidden" id="doc-id-rlegal-container">
+                            <label for="doc-id-rlegal" class="block mt-2 mb-2 text-sm font-medium text-white">Nº Doc. Identidad:</label>
+                            <input type="text" id="doc-id-rlegal" name="doc-id-rlegal" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        </div>
+
+                        <!-- Estado Civil-->
+                        <div class="mb-6">
+                            <label for="estado-civil-rlegal" class="block mt-2 mb-2 text-sm font-medium text-white">Estado Civil:</label>
+                            <select id="estado-civil-rlegal" name="estado-civil-rlegal" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                                <option value="" disabled selected>Selecciona un estado civil</option>
+                                <option value="Soltero/a">Soltero/a</option>
+                                <option value="Casado/a">Casado/a</option>
+                                <option value="Viudo/a">Viudo/a</option>
+                                <option value="Divorciado/a">Divorciado/a</option>
+                                <option value="Separado/a">Separado/a</option>
+                            </select>
+                        </div>
+
+                        <!-- E-mail-->
+                        <div class="mb-6">
+                            <label for="email-rlegal" class="block mt-2 mb-2 text-sm font-medium text-white">E-Mail:</label>
+                            <input type="email" id="email-rlegal" name="email-rlegal" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        </div>
+
+                        <!-- Dirección-->
+                        <div class="mb-6">
+                            <label for="direccion-rlegal" class="block mt-2 mb-2 text-sm font-medium text-white">Dirección Particular:</label>
+                            <input type="text" id="direccion-rlegal" name="direccion-rlegal" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        </div>
+
+                        <!-- Ciudad-->
+                        <div class="mb-6">
+                            <label for="ciudad-rlegal" class="block mt-2 mb-2 text-sm font-medium text-white">Ciudad:</label>
+                            <select id="ciudad-rlegal" name="ciudad-rlegal" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" disabled>
+                                <option value="" disabled selected>Selecciona una ciudad</option>
+                            </select>
+                        </div>
+
+                        <!-- Región-->
+                        <div class="mb-6">
+                            <label for="region-rlegal" class="block mt-2 mb-2 text-sm font-medium text-white">Región:</label>
+                            <select id="region-rlegal" name="region-rlegal" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" onchange="cargarCiudades()" disabled>
+                                <option value="" disabled selected>Selecciona una región</option>
+                            </select>
+                        </div>
+
+                        <!-- País-->
+                        <div class="mb-6">
+                            <label for="pais-rlegal" class="block mt-2 mb-2 text-sm font-medium text-white">País:</label>
+                            <select id="pais-rlegal" name="pais-rlegal" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" onchange="cargarRegiones()">
+                                <option value="" disabled selected>Selecciona un país</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="max-w-lg w-full mx-auto my-10 mb-10 bg-gray-700 p-5 rounded-lg shadow-md">
+                        <h3 class="text-lg font-semibold text-white mb-4">1.3. Personas Autorizadas para dar Órdenes</h3>
+                            
+                        <div id="autorizados-container">
+                            <!-- Aquí se añadirán dinámicamente los campos -->
+                        </div>
+
+                        <!-- Botón Agregar Persona Autorizada -->
+                        <button type="button" id="add-autorizado" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Agregar Persona Autorizada</button>
+
+                    </div>
+
+                    <div class="max-w-lg w-full mx-auto my-10 mb-10 bg-gray-700 p-5 rounded-lg shadow-md">
+                        <h3 class="text-lg font-semibold text-white mb-4">1.4. Otros</h3>
+
+                        <!-- Tipo de Órdenes a Recibir -->
+                        <div class="mb-6">
+                            <label class="block mt-2 mb-2 text-sm font-medium text-white">Tipo de Órdenes a Recibir:</label>
+                            <div class="flex gap-4 flex-col">
+                                <label class="flex items-center">
+                                    <input type="radio" name="tipo-ordenes" value="sin-confirm" class="form-radio text-blue-600" required>
+                                    <span class="ml-2 text-gray-100">Órdenes verbales sin confirmación por escrito o electrónico</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="tipo-ordenes" value="con-confirm" class="form-radio text-blue-600">
+                                    <span class="ml-2 text-gray-100">Órdenes verbales con confirmación por escrito o electrónico</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="tipo-ordenes" value="escritas" class="form-radio text-blue-600">
+                                    <span class="ml-2 text-gray-100">Órdenes escritas</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Uso Interno -->
+                        <div class="mb-6">
+                            <label class="block mt-2 mb-2 text-sm font-medium text-white">Uso Interno:</label>
+                            <div class="flex gap-4 flex-col">
+                                <label class="flex items-center">
+                                    <input type="radio" name="uso-int" value="verif" class="form-radio text-blue-600" required>
+                                    <span class="ml-2 text-gray-100">Verificación en listas de control</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="uso-int" value="sit-trib" class="form-radio text-blue-600">
+                                    <span class="ml-2 text-gray-100">Situación tributaria SII</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="uso-int" value="lic-bienes" class="form-radio text-blue-600">
+                                    <span class="ml-2 text-gray-100">Licitud de Bienes</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="uso-int" value="otros" class="form-radio text-blue-600">
+                                    <span class="ml-2 mr-4 text-gray-100">Otros antecedentes</span>
+                                    <input type="text" name="otros-ant" placeholder="Indicar detalles" class="bg-gray-700 border border-gray-600 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-64 p-2.5">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="max-w-lg w-full mx-auto my-10 mb-10 bg-gray-700 p-5 rounded-lg shadow-md">
+                        <h3 class="text-lg font-semibold text-white mb-4">1.3. Beneficiarios Finales</h3>
+                            
+                        <div id="bens-container">
+                            <!-- Aquí se añadirán dinámicamente los campos -->
+                        </div>
+
+                        <!-- Botón Agregar Persona Autorizada -->
+                        <button type="button" id="add-ben" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Agregar Persona Autorizada</button>
+
+                    </div>
+                </div>
+
+                <div class="mt-6 max-w-lg w-full mx-auto my-10 mb-10 bg-gray-700 p-5 rounded-lg shadow-md">
+                    <h2 class="text-xl font-semibold text-white mb-4">2. Declaración de Vínculo con Personas Expuestas Políticamente</h2>
+
+                    <!-- PEP -->
+                    <div class="mb-6">
+                        <div class="flex gap-4">
+                            <label class="flex items-center">
+                                <input type="radio" name="pep" value="ser" class="form-radio text-blue-600" required>
+                                <span class="ml-2 text-gray-100">Ser</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="pep" value="no-ser" class="form-radio text-blue-600">
+                                <span class="ml-2 text-gray-100">No Ser</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 max-w-lg w-full mx-auto my-10 mb-10 bg-gray-700 p-5 rounded-lg shadow-md">
+                    <h2 class="text-xl font-semibold text-white mb-4">3. Declaración de Origen de los Fondos</h2>
+                    
+                    <!-- Actividad-->
+                    <div class="mb-6">
+                        <label for="actividad" class="block mt-2 mb-2 text-sm font-medium text-white">Actividad o Profesión:</label>
+                        <input type="text" id="actividad" name="actividad" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    </div>
+
+                    <!-- Origen de los Fondos-->
+                    <div class="mb-6">
+                        <label for="origen-fondos" class="block mt-2 mb-2 text-sm font-medium text-white">Origen de los Fondos:</label>
+                        <input type="text" id="origen-fondos" name="origen-fondos" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    </div>
+
+                    <!-- Destino de los Fondos-->
+                    <div class="mb-6">
+                        <label for="destino-fondos" class="block mt-2 mb-2 text-sm font-medium text-white">Destino de los Fondos:</label>
+                        <input type="text" id="destino-fondos" name="destino-fondos" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    </div>
+
+                </div>
+    
+                <!-- Botón para Enviar -->
+                <div class="mt-6 max-w-lg w-full mx-auto my-10 mb-10 ">
+                    <button type="submit" class="w-full mx-auto my-10 mb-10 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mt-6">Enviar</button>
+                </div>
+
+            </form>
+        </section>
+    
+        <!-- Pop-up para la firma -->
+        <div id="signature-pad-container" class="signature-pad-container">
+            <h2>Por favor, firme en su celular</h2>
+            <button id="start-signature">Iniciar firma</button>
+        </div>
+    </div>
+    <footer>
+        <div class="footer-container">
+            <!-- Sección del logo -->
+            <div class="footer-logo">
+                <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-silver.png" alt="Logo Orion" class="logo">
+                <img src="https://cambiosorion.cl/orionapp/assets/NombreOrion-white.png" alt="Nombre Orion" class="nombre">
+            </div>
+            <!-- Mapa de navegación -->
+            <div class="footer-navigation flex justify-between">
+                <div class="nav-section">
+                    <h3 class="font-bold text-lg">Servicios</h3>
+                    <ul class="list-none p-0">
+                        <li><a href="#" class="block py-1">Envíos</a></li>
+                        <li><a href="#" class="block py-1">Transferencias</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h3 href="nosotros" class="font-bold text-lg">Nosotros</h3>
+                    <ul class="list-none p-0">
+                        <li><a href="#" class="block py-1">Quienes Somos</a></li>
+                        <li><a href="nosotros#map" class="block py-1">Mapa</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h3 class="font-bold text-lg">Soporte</h3>
+                    <ul class="list-none p-0">
+                        <li><a href="faq" class="block py-1">Preguntas frecuentes</a></li>
+                        <li><a href="#" class="block py-1">Contacto</a></li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Información de contacto -->
+            <div class="footer-contact flex flex-wrap justify-between">
+                <div class="contact-info">
+                      <!-- Dirección -->
+                      <div class="contact-item">
+                          <a href="https://maps.app.goo.gl/6fQ31ySCJWSButxQ9" target="_blank">
+                              <img src="https://cambiosorion.cl/orionapp/icons/location-white.png" alt="Icono de ubicación" class="icon">
+                          </a>
+                          <div>
+                              <a href="https://maps.app.goo.gl/6fQ31ySCJWSButxQ9" target="_blank"><p>Agustinas 1035 Of 13, Santiago</p></a>
+                              <small>Lunes a Viernes 09:00 a 17:00 hrs</small>
+                          </div>
+                      </div> 
+                    <!-- Teléfono -->
+                    <div class="contact-item">
+                        <img src="https://cambiosorion.cl/orionapp/icons/phone-white.png" alt="Icono de teléfono" class="icon">
+                        <div>
+                            <p>+56 9 7184 6048</p>
+                        </div>
+                    </div>
+                    <!-- Correo -->
+                    <div class="contact-item">
+                        <img src="https://cambiosorion.cl/orionapp/icons/email-white.png" alt="Icono de correo" class="icon">
+                        <div>
+                            <p>contacto@cambiosorion.cl</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Redes Sociales -->
+              <div class="social-media flex gap-4">
+                  <a href="https://wa.me/+56971846048" target="_blank"><img src="https://cambiosorion.cl/orionapp/icons/whatsapp-white.png" alt="WhatsApp" class="icon"></a>
+                  <a href="https://www.facebook.com/CambiosOrion" target="_blank"><img src="https://cambiosorion.cl/orionapp/icons/facebook-white.png" alt="Facebook" class="icon"></a>
+                  <a href="https://www.instagram.com/Cambios.Orion.cl" target="_blank"><img src="https://cambiosorion.cl/orionapp/icons/instagram-white.png" alt="Instagram" class="icon"></a>
+                <a href="https://www.tiktok.com/@cambios.orion" target="_blank"><img src="https://cambiosorion.cl/orionapp/icons/tik-tok-white.png" alt="TikTok" class="icon"></a>
+              </div>
+        </div>
+        <div class="footer-bottom text-xs text-center p-4">
+            © 2025 Cambios Orion. Todos los derechos reservados.
+        </div>
+    </footer>
+        <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
+        <script src="./scripts/header.js"></script>
+        <script type="module" src="./scripts/form_doc.js"></script>
+    </body>
+</html>
