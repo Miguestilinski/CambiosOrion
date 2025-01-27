@@ -72,6 +72,10 @@ h2 {
     height: 100%;
 }
 
+nav ul li {
+    font-size: 14px;
+}
+
 /* Sidebar styles */
 .sidebar {
     width: 170px;
