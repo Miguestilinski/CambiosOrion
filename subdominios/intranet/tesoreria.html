@@ -1,20 +1,18 @@
 <!DOCTYPE html>
 <html lang="es">
-    
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar sesión</title>
+    <title>Intranet</title>
     <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/header.css">
     <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/footer.css">
-    <link rel="stylesheet" href="./styles/login.css">
+    <link rel="stylesheet" href="./styles/index.css">
     <link href="https://cambiosorion.cl/orionapp/public/styles/output.css" rel="stylesheet">
     <link rel="icon" href="https://cambiosorion.cl/orionapp/icons/favicon.png" type="image/png">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"> 
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">  
 </head>
-
-<body class="font-sans">
-    <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js"></script>
+<body>
+    <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js" crossorigin="anonymous"></script>
     <header>
         <!-- Logo y Nombre -->
         <div class="header-logo">
@@ -81,9 +79,10 @@
         <!-- Menú de navegación para escritorio -->
         <nav>
             <ul>
-                <li class="selected"><a href="https://admin.cambiosorion.cl/">Portal Admin</a></li>
+                <li><a href="https://intranet.cambiosorion.cl/">Sistema Cajas</a></li>
+                <li class="selected"><a href="https://intranet.cambiosorion.cl/tesoreria">Sistema Tesorería</a></li>
+                <li><a href="https://admin.cambiosorion.cl/index">Admin</a></li>
                 <li><a href="https://pizarras.cambiosorion.cl/">Pizarras</a></li>
-                <li><a href="https://intranet.cambiosorion.cl/">Intranet</a></li>
                 <li><a href="https://cambiosorion.cl/webmail">Correo</a></li>
             </ul>
         </nav>
@@ -122,48 +121,109 @@
     </header>
 
     <div class="header-divider"></div>
-    <div class="max-w-md w-full mx-auto my-10 bg-gray-800 p-6 rounded-lg shadow-md">
-        <h2 class="text-2xl font-bold text-white text-center mb-6">Iniciar sesión</h2>
-    
-        <form id="loginForm">
-            <!-- Selector de tipo de usuario (Cliente o Administrativo) como tabs -->
-            <div class="tabs mb-2 justify-center">
-                <button type="button" id="administrativoTab" class="tab-button active" data-tipo-usuario="administrativo">Administrativo</button>
+    <div class="main-content">
+        <aside id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <h2>Herramientas</h2>
             </div>
+            <ul class="menu">
+                <li class="menu-item mt-2 mb-2 rounded-lg active" data-section="operaciones">Operaciones</li>
+                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="operaciones-uaf">Operaciones UAF</li>
+                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="libros-contables">Libros Contables</li>
+                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="fichas-clientes">Fichas Clientes</li>
+                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="cuentas">Cuentas</li>
+                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="inventarios">Inventarios</li>
+                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="posiciones">Posiciones</li>
+                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="traspasos">Traspasos</li>
+                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="ingresos">Ingresos</li>
+                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="egresos">Egresos/Retiros</li>
+                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="retiros-utl">Egresos/Retiros Utilizadades</li>
+                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="tasas-cambio">Tasas de Cambio</li>
+                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="arqueo-caja">Arqueo de Caja</li>
+                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="remunieraciones">Remunieraciones</li>
+                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="equipo">Equipo</li>
+                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="Reportes">Reportes</li>
+                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="asign-cajeros">Asignar Cajeros</li>
+                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="herramientas">Más Herramientas</li>
+            </ul>
+        </aside>
+        <main id="dashboard-content" class="dashboard-content">
+            <section id="operaciones" class="content-section active">
+                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Operaciones</h1>
+                <p class="mb-6 text-md text-white">Consulta tu información personal.</p>
+            </section>         
+            <section id="operaciones-uaf" class="content-section">
+                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Operaciones UAF</h1>
+                <p class="mb-6 text-md text-white">Consulta tu historial de liquidaciones.</p>
+            </section>                                        
+            <section id="libros-contables" class="content-section">
+                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Libros Contables</h1>
+                <p class="mb-6 text-md text-white">Consulta tu sueldo restante para un anticipo.</p>
+            </section>
+            <section id="fichas-clientes" class="content-section">
+                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Fichas Clientes</h1>
+                <p class="mb-6 text-md text-white">Consulta tus días disponibles para vacaiones.</p>
+            </section>
+            <section id="cuentas" class="content-section">
+                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Cuentas</h1>
+                <p class="mb-6 text-md text-white">Consulta tus documentos legales de la empresa.</p>
+            </section>
+            <section id="inventarios" class="content-section">
+                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Inventarios</h1>
+                <p class="mb-6 text-md text-white">Sube aquí tus licencias médicas.</p>
+            </section>
+            <section id="posiciones" class="content-section">
+                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Posiciones</h1>
+                <p class="mb-6 text-md text-white">Sube aquí tus licencias médicas.</p>
+            </section>
+            <section id="traspasos" class="content-section">
+                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Traspasos</h1>
+                <p class="mb-6 text-md text-white">Sube aquí tus licencias médicas.</p>
+            </section>
+            <section id="ingresos" class="content-section">
+                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Ingresos</h1>
+                <p class="mb-6 text-md text-white">Sube aquí tus licencias médicas.</p>
+            </section>
+            <section id="egresos" class="content-section">
+                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Egresos/Retiros</h1>
+                <p class="mb-6 text-md text-white">Sube aquí tus licencias médicas.</p>
+            </section>
+            <section id="retiros-utl" class="content-section">
+                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Egresos/Retiros Utilidades</h1>
+                <p class="mb-6 text-md text-white">Sube aquí tus licencias médicas.</p>
+            </section>
+            <section id="tasas-cambio" class="content-section">
+                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Tasas de Cambio</h1>
+                <p class="mb-6 text-md text-white">Sube aquí tus licencias médicas.</p>
+            </section>
+            <section id="arqueo-caja" class="content-section">
+                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Arqueo de Caja</h1>
+                <p class="mb-6 text-md text-white">Sube aquí tus licencias médicas.</p>
+            </section>
+            <section id="remunieraciones" class="content-section">
+                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Remunieraciones</h1>
+                <p class="mb-6 text-md text-white">Sube aquí tus licencias médicas.</p>
+            </section>
+            <section id="equipo" class="content-section">
+                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Equipo</h1>
+                <p class="mb-6 text-md text-white">Sube aquí tus licencias médicas.</p>
+            </section>
+            <section id="Reportes" class="content-section">
+                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Reportes</h1>
+                <p class="mb-6 text-md text-white">Sube aquí tus licencias médicas.</p>
+            </section>
+            <section id="asign-cajeros" class="content-section">
+                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Asignar Cajeros</h1>
+                <p class="mb-6 text-md text-white">Sube aquí tus licencias médicas.</p>
+            </section>
+        </main>
+        <section id="herramientas" class="content-section">
+            <h1 class="mb-2 text-2xl font-medium leading-none text-white">Más Herramientas</h1>
+            <p class="mb-6 text-md text-white">Sube aquí tus licencias médicas.</p>
+        </section>
+    </main>
+    </div> 
 
-            <input type="hidden" id="tipoUsuario" name="tipoUsuario" value="cliente">
-    
-            <!-- Formulario Administrativo -->
-            <div id="administrativo-form" class="form-section active">
-                <label for="correo" class="block mb-2 text-sm font-medium text-white">Correo electrónico:</label>
-                <input type="email" name="correo" id="correo" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="usuario@cambiosorion.cl" required="required"/>
-                <p id="email-error" class="mt-2 text-sm text-red-600 dark:text-red-500 hidden"></p>
-            </div>
-    
-            <!-- Contraseña -->
-            <div class="mb-5">
-                <label for="password" class="block mb-2 text-sm font-medium text-white">Contraseña:</label>
-                <input type="password" name="password" id="password" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"/>
-                <p id="password-error" class="mt-2 text-sm text-red-600 dark:text-red-500 hidden"></p>
-            </div>
-    
-            <div class="flex items-start mb-5">
-                <div class="flex items-center h-5">
-                    <input id="remember" type="checkbox" class="w-4 h-4 border border-gray-600 rounded bg-gray-700 focus:ring-3 focus:ring-blue-300" />
-                </div>
-                <label for="remember" class="ml-2 text-sm font-medium text-white">Recordarme</label>
-            </div>
-    
-            <button type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Iniciar sesión</button>
-
-            <div class="text-center mt-4">
-                <a href="forgot" id="forgotPasswordLink" class="text-sm text-blue-500 hover:text-blue-700">Olvidé mi contraseña</a>
-            </div>
-    
-            <p id="error-message" class="hidden text-red-500 text-center mt-4">Credenciales incorrectas. Intenta nuevamente.</p>
-        </form>
-    </div>      
-    
     <footer>
         <div class="footer-container">
             <!-- Sección del logo -->
@@ -176,8 +236,8 @@
                 <div class="nav-section">
                     <h3 href="https://admin.cambiosorion.cl/" class="font-bold text-lg">Admin</h3>
                     <ul class="list-none p-0">
-                        <li><a href="https://admin.cambiosorion.cl/vacaciones" class="block py-1">Anicipos</a></li>
-                        <li><a href="https://admin.cambiosorion.cl/" class="block py-1">Vacaciones</a></li>
+                        <li><a href="https://admin.cambiosorion.cl/vacaciones" class="block py-1">Vacaciones</a></li>
+                        <li><a href="https://admin.cambiosorion.cl/" class="block py-1">Adelantos</a></li>
                     </ul>
                 </div>
                 <div class="nav-section">
@@ -197,48 +257,15 @@
             </div>
             <!-- Información de contacto -->
             <div class="footer-contact flex flex-wrap justify-between">
-                <div class="contact-info">
-                    <!-- Dirección -->
-                    <div class="contact-item">
-                        <a href="https://maps.app.goo.gl/6fQ31ySCJWSButxQ9" target="_blank">
-                            <img src="https://cambiosorion.cl/orionapp/icons/location-white.png" alt="Icono de ubicación" class="icon">
-                        </a>
-                        <div>
-                            <a href="https://maps.app.goo.gl/6fQ31ySCJWSButxQ9" target="_blank"><p>Agustinas 1035 Of 13, Santiago</p></a>
-                            <small>Lunes a Viernes 09:00 a 17:00 hrs</small>
-                        </div>
-                    </div> 
-                    <!-- Teléfono -->
-                    <div class="contact-item">
-                        <img src="https://cambiosorion.cl/orionapp/icons/phone-white.png" alt="Icono de teléfono" class="icon">
-                        <div>
-                            <p>+56 9 7184 6048</p>
-                        </div>
-                    </div>
-                    <!-- Correo -->
-                    <div class="contact-item">
-                        <img src="https://cambiosorion.cl/orionapp/icons/email-white.png" alt="Icono de correo" class="icon">
-                        <div>
-                            <p>contacto@cambiosorion.cl</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Redes Sociales -->
-            <div class="social-media flex gap-4">
-                <a href="https://wa.me/+56971846048?text=Hola,%20necesito%20consultar%20con%20un%20ejecutivo." target="_blank"><img src="https://cambiosorion.cl/orionapp/icons/whatsapp-white.png" alt="WhatsApp" class="icon"></a>
-                <a href="https://www.facebook.com/CambiosOrion" target="_blank"><img src="https://cambiosorion.cl/orionapp/icons/facebook-white.png" alt="Facebook" class="icon"></a>
-                <a href="https://www.instagram.com/CambiosOrion.cl" target="_blank"><img src="https://cambiosorion.cl/orionapp/icons/instagram-white.png" alt="Instagram" class="icon"></a>
-                <a href="https://www.tiktok.com/@cambios.orion" target="_blank"><img src="https://cambiosorion.cl/orionapp/icons/tik-tok-white.png" alt="TikTok" class="icon"></a>
-            </div>            
+            </div>         
         </div>
         <div class="footer-bottom text-xs text-center p-4">
             © 2025 Cambios Orion. Todos los derechos reservados.
         </div>
     </footer>
+
     <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
     <script type="module" src="https://cambiosorion.cl/orionapp/public/scripts/header.js" crossorigin="anonymous"></script>
-    <script src="./scripts/login.js"></script>
+    <script type="module" src="./scripts/index.js"></script>
 </body>
 </html>
- 
