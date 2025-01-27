@@ -41,6 +41,14 @@ h2 {
     @apply text-2xl font-semibold text-white text-center mb-6;
 }
 
+.header-logo img.logo {
+    width: 30px;
+}
+
+.header-logo img.nombre {
+    width: 60px;
+}
+
 .header-divider {
     background-color: white;
     width: 60%;
@@ -72,6 +80,7 @@ h2 {
     flex-direction: column;
     padding: 1.4rem;
     background: white;
+    border-radius: 0 0.5rem 0.5rem 0;
     border-right: 0.5px solid black;
 }
 
