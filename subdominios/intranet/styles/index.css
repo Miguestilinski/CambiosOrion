@@ -67,7 +67,7 @@ h2 {
 /* Sidebar styles */
 .sidebar {
     width: 170px;
-    color: white;
+    color: black;
     display: flex;
     flex-direction: column;
     padding: 2rem;
