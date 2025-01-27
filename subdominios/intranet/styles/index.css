@@ -42,7 +42,7 @@ h2 {
 }
 
 .header-divider {
-    background-color: black;
+    background-color: white;
 }
 
 .footer-logo .logo {
@@ -70,8 +70,8 @@ h2 {
     color: black;
     display: flex;
     flex-direction: column;
-    padding: 2rem;
-    background: transparent;
+    padding: 1.4rem;
+    background: white;
     border-right: 0.5px solid black;
 }
 
