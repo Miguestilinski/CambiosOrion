@@ -1,3 +1,7 @@
+<?php
+require_once 'https://cambiosorion.cl/data/check_session.php';
+verificarAccesoAdmin(); // Verifica si el usuario tiene acceso
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -130,7 +134,7 @@
                 <li class="menu-item mt-2 mb-2 rounded-lg active" data-section="transacciones">Ver Transacciones</li>
                 <li class="menu-item mt-2 mb-2 rounded-lg" data-section="transaccioness-uaf">Transacciones UAF</li>
                 <li class="menu-item mt-2 mb-2 rounded-lg" data-section="libros-contables">Libros Contables</li>
-                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="facrturas-electr">Facturas Electrónicas/li>
+                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="facrturas-electr">Facturas Electrónicas</li>
                 <li class="menu-item mt-2 mb-2 rounded-lg" data-section="tasas-sucursal">Tasas de Cambio por Sucursal</li>
                 <li class="menu-item mt-2 mb-2 rounded-lg" data-section="tasas-caja">Tasas de Cambio por Caja</li>
                 <li class="menu-item mt-2 mb-2 rounded-lg" data-section="transferencias">Transferencias</li>

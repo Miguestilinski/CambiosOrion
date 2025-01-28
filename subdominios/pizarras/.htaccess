@@ -1,7 +1,7 @@
 # Habilitar reescritura
 RewriteEngine On
 
-# Redirigir solicitudes al verificador de autenticación
+# Redirigir solicitudes al verificador de autenticacion
 RewriteCond %{REQUEST_URI} ^/$
 RewriteRule ^ auth.php [L]
 
