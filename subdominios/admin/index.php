@@ -261,8 +261,8 @@ verificarAccesoAdmin(); // Verifica si el usuario tiene acceso
                 <div class="nav-section">
                     <h3 class="font-bold text-lg">Intranet</h3>
                     <ul class="list-none p-0">
-                        <li><a href="https://intranet.cambiosorion.cl/" class="block py-1">Intranet</a></li>
-                        <li><a href="#" class="block py-1">Contacto</a></li>
+                        <li><a href="https://intranet.cambiosorion.cl/" class="block py-1">Sist. Cajas</a></li>
+                        <li><a href="https://intranet.cambiosorion.cl/tesorería" class="block py-1">Sist. Tesorería</a></li>
                     </ul>
                 </div>
             </div>
