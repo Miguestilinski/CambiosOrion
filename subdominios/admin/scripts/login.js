@@ -11,7 +11,6 @@ document.addEventListener("DOMContentLoaded", function() {
         event.preventDefault();
 
         const tipoUsuario = document.querySelector('.tab-button.active').dataset.tipoUsuario;
-        let rut = rutInput.value.trim().replace(/[^\dKk]/g, '').toUpperCase(); // Limpieza final del RUT
         let correo = document.getElementById("correo").value.trim().toLowerCase();
         const password = document.getElementById("password").value.trim();
 
