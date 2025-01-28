@@ -1,7 +1,19 @@
 <?php
-require_once 'https://cambiosorion.cl/data/check_session.php';
-verificarAccesoAdmin(); // Verifica si el usuario tiene acceso
+$url = 'https://cambiosorion.cl/data/check_session.php';
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($ch);
+curl_close($ch);
+
+if ($response) {
+    eval("?>$response<?>");
+} else {
+    die('No se pudo cargar el archivo remoto.');
+}
+
+verificarAccesoAdmin();
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
