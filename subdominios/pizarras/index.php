@@ -59,20 +59,15 @@ verificarAccesoAdmin(); // Verifica si el usuario tiene acceso
                 <ul class="py-2 text-sm text-gray-700">
                     <li><a href="https://admin.cambiosorion.cl/login" class="block px-4 py-2 hover:bg-gray-100">Iniciar Sesión</a></li>
                 </ul>
-                <ul class="py-2 text-sm text-gray-700">
-                    <li><a href="registro" class="block px-4 py-2 hover:bg-gray-100">Registro</a></li>
-                </ul>
             </div>
             <div id="user-actions-mobile" class="divide-y divide-gray-100" style="display:none;">
                 <div class="px-2 py-2 text-sm text-gray-900">
                     <div id="user-name">Nombre del usuario</div>
                     <div id="user-email" class="mail font-medium truncate">Correo del usuario</div>
                 </div>
-                <ul class="py-2 text-sm text-gray-700">
-                    <li><a href="https://clientes.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Mi perfil</a></li>
-                </ul>
                 <ul class="py-2 text-sm text-gray-700" id="menu-admin-mobile" style="display: none;">
-                    <li><a href="edit" class="block px-4 py-2 hover:bg-gray-100">Pizarra</a></li>
+                    <li><a href="https://admin.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Portal Admin</a></li>
+                    <li><a href="https://cambiosorion.cl/webmail" class="block px-4 py-2 hover:bg-gray-100">Correo</a></li>
                 </ul>
                 <ul class="py-2 text-sm text-gray-700">
                     <li><a href="#" class="block px-4 py-2 hover:bg-gray-100" id="logout-button-mobile">Cerrar sesión</a></li>
@@ -102,11 +97,9 @@ verificarAccesoAdmin(); // Verifica si el usuario tiene acceso
                         <div id="user-name">Nombre del usuario</div>
                         <div id="user-email" class="mail font-medium truncate">Correo del usuario</div>
                     </div>
-                    <ul class="py-2 text-sm text-gray-700" id="menu-cliente">
-                        <li><a href="https://clientes.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Mi perfil</a></li>
-                    </ul>
                     <ul class="py-2 text-sm text-gray-700" id="menu-admin" style="display: none;">
-                        <li><a href="index" class="block px-4 py-2 hover:bg-gray-100">Pizarra</a></li>
+                        <li><a href="https://admin.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Portal Admin</a></li>
+                        <li><a href="https://cambiosorion.cl/webmail" class="block px-4 py-2 hover:bg-gray-100">Correo</a></li>
                     </ul>
                     <ul class="py-2 text-sm text-gray-700">
                         <li><a href="#" class="block px-4 py-2 hover:bg-gray-100" id="logout-button">Cerrar sesión</a></li>
@@ -117,7 +110,6 @@ verificarAccesoAdmin(); // Verifica si el usuario tiene acceso
             <!-- Guest actions -->
             <div id="guest-actions" style="display:none;">
                 <a href="https://admin.cambiosorion.cl/login">Iniciar sesión</a>
-                <a href="registro" class="register-button">Registrarse</a>
             </div>
         </div>
     </header>
