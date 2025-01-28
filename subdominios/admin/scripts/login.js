@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function() {
         formData.set("correo", correo);
 
         try {
-            const response = await fetch('https://cambiosorion.cl/data/login.php', {
+            const response = await fetch('https://cambiosorion.cl/data/login_admin.php', {
                 method: 'POST',
                 body: formData,
             });
