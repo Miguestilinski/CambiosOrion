@@ -1,0 +1,11 @@
+# Habilitar reescritura
+RewriteEngine On
+
+# Redirigir solicitudes al verificador de autenticación
+RewriteCond %{REQUEST_URI} ^/$
+RewriteRule ^ auth.php [L]
+
+# Redirigir todas las solicitudes no existentes a index.html
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.html [L]
