@@ -23,35 +23,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const userNameElement = document.getElementById('user-name-dashboard');
     const roleTypeElement = document.getElementById('role-type');
     const emailElement = document.getElementById('email');
-    const rutGroupElement = document.getElementById('rut-group');
-    const rutElement = document.getElementById('rut');
 
     // Función para obtener los datos del usuario
-    function getUserData() {
-        fetch('https://cambiosorion.cl/data/get_user_data.php', {
+    function getWorkerData() {
+        fetch('https://cambiosorion.cl/data/get_worker_data.php', {
             method: 'GET',
             credentials: 'include' // Asegura que se envíen las cookies de sesión
         })
             .then(response => response.json()) // Parsear directamente como JSON
             .then(data => {
                 if (data.success) {
-                    const { nombre, correo, rut, tipo_cliente, rol } = data.user;
+                    const { nombre, correo, rol } = data.user;
 
                     // Actualiza la UI
                     userNameElement.textContent = nombre || "Usuario desconocido";
                     emailElement.placeholder = correo || "Correo no disponible";
-                    rutElement.textContent = rut || "RUT no disponible";
                     emailElement.value = "";
 
-                    if (tipo_cliente === 'persona') {
-                        userTypeElement.textContent = "Cliente";
-                        roleTypeElement.textContent = "Persona";
-                        rutGroupElement.classList.remove('hidden');
-                    } else if (tipo_cliente === 'empresa') {
-                        userTypeElement.textContent = "Cliente";
-                        roleTypeElement.textContent = "Empresa";
-                        rutGroupElement.classList.remove('hidden');
-                    } else if (rol === 'caja') {
+                    if (rol === 'caja') {
                         userTypeElement.textContent = "Administrativo";
                         roleTypeElement.textContent = "Caja";
                     } else if (rol === 'admin') {
@@ -78,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     }
 
-    getUserData();
+    getWorkerData();
     
     // Manejar la selección y eliminación de archivos
     document.querySelectorAll('input[type="file"]').forEach(input => {
