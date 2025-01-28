@@ -163,7 +163,7 @@ function showGuestUI() {
 function logout() {
     console.log('Intentando cerrar sesión...');
     
-    fetch('/data/cerrar_sesion.php', {
+    fetch('https://cambiosorion.cl/data/cerrar_sesion.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
