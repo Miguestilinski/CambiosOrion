@@ -156,7 +156,7 @@ verificarAccesoAdmin(); // Verifica si el usuario tiene acceso
                 <div class="nav-section">
                     <h3 href="https://admin.cambiosorion.cl/" class="font-bold text-lg">Admin</h3>
                     <ul class="list-none p-0">
-                        <li><a href="https://admin.cambiosorion.cl/vacaciones" class="block py-1">Vacaciones</a></li>
+                        <li><a href="https://admin.cambiosorion.cl/#vacaciones" class="block py-1">Vacaciones</a></li>
                         <li><a href="https://admin.cambiosorion.cl/" class="block py-1">Adelantos</a></li>
                     </ul>
                 </div>

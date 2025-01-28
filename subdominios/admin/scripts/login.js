@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function() {
             if (result.success) {
                 localStorage.setItem('sessionActive', 'true');
                 if (tipoUsuario === 'administrativo') {
-                    window.location.href = "https://admin.cambiosorion.cl/index";
+                    window.location.href = "https://admin.cambiosorion.cl/";
                 } else if (tipoUsuario === 'cliente') {
                     window.location.href = "https://cambiosorion.cl/sin-acceso";
                 }
@@ -55,30 +55,6 @@ document.addEventListener("DOMContentLoaded", function() {
             alert("Hubo un problema al conectar con el servidor.");
         }
     });
-
-    // Funciones de validación
-    function validarRUT(rut) {
-        rut = rut.replace(/[^\dKk]/g, '').toUpperCase();
-    
-        if (rut.length < 2) return false;
-    
-        const cuerpo = rut.slice(0, -1);
-        const dv = rut.slice(-1);
-    
-        if (!/^\d+$/.test(cuerpo)) return false;
-    
-        let suma = 0;
-        let multiplo = 2;
-    
-        for (let i = cuerpo.length - 1; i >= 0; i--) {
-            suma += cuerpo.charAt(i) * multiplo;
-            multiplo = multiplo === 7 ? 2 : multiplo + 1;
-        }
-        const dvCalculado = 11 - (suma % 11);
-        const dvCorrecto = dvCalculado === 10 ? 'K' : dvCalculado === 11 ? '0' : dvCalculado.toString();
-        
-        return dv === dvCorrecto;
-    }
 });
 
 // Función para restablecer los estilos de error
