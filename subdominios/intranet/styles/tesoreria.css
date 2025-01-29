@@ -120,7 +120,7 @@ nav ul li {
 
 .dashboard-content {
     flex-grow: 1; /* Ocupa el espacio restante */
-    padding: 2rem;
+    padding: 1.3rem;
 }
   
 .content-section {
@@ -143,11 +143,11 @@ select#mostrar-registros {
     width: 5rem;
 }
 
-.venta {
+tr.venta {
     background-color: #dbf599;
 }
 
-.compra {
+tr.compra {
     background-color: #c3e8f1;
 }
 
