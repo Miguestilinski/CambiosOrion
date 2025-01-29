@@ -142,8 +142,8 @@
         <main id="dashboard-content" class="dashboard-content">
             <section id="operaciones" class="content-section active p-4">
                 <!-- Título y botón Nueva Operación -->
-                <div class="flex items-center justify-between mb-6">
-                    <h1 class="text-2xl font-medium leading-none text-white">Operaciones</h1>
+                <div class="flex items-center mb-6">
+                    <h1 class="text-2xl font-medium mr-4 leading-none text-white">Operaciones</h1>
                     <button type="button" id="add-autorizado" 
                         class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
                         Nueva Operación
@@ -152,83 +152,85 @@
                 
                 <!-- Filtros de fecha y botón Borrar Filtros -->
                 <div class="flex items-center mb-6 space-x-4">
-                    <button type="button" id="borrar-filtros" 
-                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
-                        Borrar Filtros
-                    </button>
-                    <div class="flex space-x-2">
-                        <div>
+                    <div class="flex">
+                        <div class="mr-2">
                             <label for="fecha-inicio" class="block mb-1 text-sm text-white">Desde</label>
                             <input type="date" id="fecha-inicio" 
-                                class="block w-full px-2 py-1.5 text-sm rounded-lg bg-gray-700 border border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500">
+                                class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                         </div>
                         <div>
                             <label for="fecha-fin" class="block mb-1 text-sm text-white">Hasta</label>
                             <input type="date" id="fecha-fin" 
-                                class="block w-full px-2 py-1.5 text-sm rounded-lg bg-gray-700 border border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500">
+                                class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                         </div>
                     </div>
+                    <button type="button" id="borrar-filtros" 
+                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
+                    Borrar Filtros
+                </button>
                 </div>
                 
                 <!-- Checkboxes -->
-                <div class="mb-6 space-y-2">
-                    <div class="flex items-center space-x-2">
+                <div class="flex mb-6">
+                    <div class="flex items-center">
                         <input type="checkbox" id="emitidas" 
-                            class="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500">
+                            class="w-4 h-4 mr-2 text-blue-600 bg-white border-gray-600 rounded focus:ring-blue-500">
                         <label for="emitidas" class="text-sm text-white">Mostrar sólo emitidas/timbradas en SII</label>
                     </div>
-                    <div class="flex items-center space-x-2">
+                    <div class="flex items-center ml-4">
                         <input type="checkbox" id="no-emitidas" 
-                            class="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500">
+                            class="w-4 h-4 mr-2 text-blue-600 bg-white border-gray-600 rounded focus:ring-blue-500">
                         <label for="no-emitidas" class="text-sm text-white">Mostrar sólo NO emitidas/timbradas en SII</label>
                     </div>
                 </div>
                 
                 <!-- Filtros avanzados -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                <div class="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-6">
                     <div>
                         <label for="numero" class="block mb-1 text-sm text-white">Número</label>
                         <input type="text" id="numero" 
-                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-gray-700 border border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500">
+                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                     </div>
                     <div>
                         <label for="cliente" class="block mb-1 text-sm text-white">Cliente</label>
                         <input type="text" id="cliente" 
-                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-gray-700 border border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500">
+                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                     </div>
                     <div>
                         <label for="tipo-doc" class="block mb-1 text-sm text-white">Tipo de Documento</label>
                         <select id="tipo-doc" 
-                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-gray-700 border border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500">
+                            class="select-list block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                             <option value="">Seleccionar</option>
                         </select>
                     </div>
                     <div>
-                        <label for="n-doc" class="block mb-1 text-sm text-white">NºDoc</label>
-                        <input type="text" id="n-doc" 
-                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-gray-700 border border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500">
+                        <label for="n-doc" class="block mb-1 text-sm text-white">Nº Doc</label>
+                        <input type="text" id="n-doc"
+                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                     </div>
                     <div>
-                        <label for="n-nota" class="block mb-1 text-sm text-white">NºNota</label>
+                        <label for="n-nota" class="block mb-1 text-sm text-white">Nº Nota</label>
                         <input type="text" id="n-nota" 
-                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-gray-700 border border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500">
+                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                     </div>
                     <div>
                         <label for="tipo-transaccion" class="block mb-1 text-sm text-white">Tipo de Transacción</label>
                         <select id="tipo-transaccion" 
-                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-gray-700 border border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500">
+                            class="select-list block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                             <option value="">Seleccionar</option>
+                            <option value="compra">Compra</option>
+                            <option value="venta">Venta</option>
                         </select>
                     </div>
                     <div>
                         <label for="divisa" class="block mb-1 text-sm text-white">Divisa</label>
                         <input type="text" id="divisa" 
-                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-gray-700 border border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500">
+                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                     </div>
                     <div>
                         <label for="estado" class="block mb-1 text-sm text-white">Estado</label>
                         <select id="estado" 
-                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-gray-700 border border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500">
+                            class="select-list block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                             <option value="">Seleccionar</option>
                         </select>
                     </div>
@@ -239,23 +241,23 @@
                     <div class="flex items-center space-x-2">
                         <label for="mostrar-registros" class="text-sm text-white">Mostrar</label>
                         <select id="mostrar-registros" 
-                            class="block px-2 py-1.5 text-sm rounded-lg bg-gray-700 border border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500">
-                            <option value="10">10</option>
-                            <option value="20">20</option>
+                            class="block px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="25">25</option>
                             <option value="50">50</option>
+                            <option value="100">100</option>
                         </select>
                         <span class="text-sm text-white">registros</span>
                     </div>
                     <div>
                         <input type="text" id="buscar" placeholder="Buscar" 
-                            class="block w-64 px-2 py-1.5 text-sm rounded-lg bg-gray-700 border border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500">
+                            class="block w-64 px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                     </div>
                 </div>
                 
                 <!-- Tabla de operaciones -->
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm text-left text-white bg-gray-800">
-                        <thead class="text-xs uppercase bg-gray-700 text-gray-400">
+                        <thead class="text-xs uppercase bg-white text-gray-400">
                             <tr>
                                 <th class="px-4 py-2">Fecha</th>
                                 <th class="px-4 py-2">Número</th>
@@ -273,7 +275,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="border-b bg-gray-800 border-gray-700">
+                            <tr class="border-b venta border-gray-700">
                                 <td class="px-4 py-2">2025-01-28</td>
                                 <td class="px-4 py-2">12345</td>
                                 <td class="px-4 py-2">Cliente 1</td>
