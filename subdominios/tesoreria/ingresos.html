@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Operaciones</title>
+        <title>Ingresos</title>
         <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/header.css">
         <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/footer.css">
         <link rel="stylesheet" href="./styles/index.css">
@@ -115,60 +115,36 @@
     <div class="main-content">
         <div id="sidebar-container"></div>
         <main id="dashboard-content" class="dashboard-content">
-            <section id="operaciones" class="content-section active">
+            <section id="ingresos" class="content-section active">
                 <!-- Título y botón Nueva Operación -->
                 <div class="flex items-center mb-6">
-                    <h1 class="text-2xl font-medium mr-4 leading-none text-white">Operaciones</h1>
-                    <button type="button" id="nueva-op" href="./nueva-op"
-                        class="text-white bg-blue-700 mr-4 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
-                        Nueva Operación
-                    </button>
-                    <button type="button" id="exportar" href="#"
+                    <h1 class="text-2xl font-medium mr-4 leading-none text-white">Ingresos</h1>
+                    <button type="button" id="nuevo-ingreso" href="./nuevo-ingreso"
                         class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
-                        Exportar Excel
+                        Nuevo Ingreso
                     </button>
-                </div>
-                
-                <!-- Filtros de fecha y botón Borrar Filtros -->
-                <div class="flex items-center mb-6 space-x-4">
-                    <div class="flex">
-                        <div class="mr-2">
-                            <label for="fecha-inicio" class="block mb-1 text-sm text-white">Desde</label>
-                            <input type="date" id="fecha-inicio" 
-                                class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                        </div>
-                        <div>
-                            <label for="fecha-fin" class="block mb-1 text-sm text-white">Hasta</label>
-                            <input type="date" id="fecha-fin" 
-                                class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                        </div>
-                    </div>
-                    <button type="button" id="borrar-filtros" 
-                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
-                    Borrar Filtros
-                </button>
-                </div>
-                
-                <!-- Checkboxes -->
-                <div class="flex mb-6">
-                    <div class="flex items-center">
-                        <input type="checkbox" id="emitidas" 
-                            class="w-4 h-4 mr-2 text-blue-600 bg-white border-gray-600 rounded focus:ring-blue-500">
-                        <label for="emitidas" class="text-sm text-white">Mostrar sólo emitidas/timbradas en SII</label>
-                    </div>
-                    <div class="flex items-center ml-4">
-                        <input type="checkbox" id="no-emitidas" 
-                            class="w-4 h-4 mr-2 text-blue-600 bg-white border-gray-600 rounded focus:ring-blue-500">
-                        <label for="no-emitidas" class="text-sm text-white">Mostrar sólo NO emitidas/timbradas en SII</label>
-                    </div>
                 </div>
                 
                 <!-- Filtros avanzados -->
                 <div class="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-6">
                     <div>
-                        <label for="numero" class="block mb-1 text-sm text-white">Número</label>
+                        <label for="numero" class="block mb-1 text-sm text-white">Nº</label>
                         <input type="text" id="numero" 
                             class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label for="fecha" class="block mb-1 text-sm text-white">Fecha</label>
+                        <input type="text" id="fecha" 
+                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label for="tipo-ingreso" class="block mb-1 text-sm text-white">Tipo de Ingreso</label>
+                        <select id="tipo-ingreso"
+                            class="select-list block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Seleccionar</option>
+                            <option value="">Cuenta</option>
+                            <option value="">Efectivo</option>
+                        </select>
                     </div>
                     <div>
                         <label for="cliente" class="block mb-1 text-sm text-white">Cliente</label>
@@ -176,32 +152,14 @@
                             class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                     </div>
                     <div>
-                        <label for="tipo-doc" class="block mb-1 text-sm text-white">Tipo de Documento</label>
-                        <select id="tipo-doc"
-                            class="select-list block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Seleccionar</option>
-                            <option value="boleta">Boleta</option>
-                            <option value="factura">Factura</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="n-doc" class="block mb-1 text-sm text-white">Nº Doc</label>
-                        <input type="text" id="n-doc"
+                        <label for="caja" class="block mb-1 text-sm text-white">Caja</label>
+                        <input type="text" id="caja" 
                             class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                     </div>
                     <div>
-                        <label for="n-nota" class="block mb-1 text-sm text-white">Nº Nota</label>
-                        <input type="text" id="n-nota" 
+                        <label for="cuenta" class="block mb-1 text-sm text-white">Cuenta</label>
+                        <input type="text" id="cuenta" 
                             class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label for="tipo-transaccion" class="block mb-1 text-sm text-white">Tipo de Transacción</label>
-                        <select id="tipo-transaccion" 
-                            class="select-list block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Seleccionar</option>
-                            <option value="compra">Compra</option>
-                            <option value="venta">Venta</option>
-                        </select>
                     </div>
                     <div>
                         <label for="divisa" class="block mb-1 text-sm text-white">Divisa</label>
@@ -244,37 +202,29 @@
                     <table class="w-full text-sm text-left text-white bg-gray-800">
                         <thead class="text-xs uppercase bg-gray-800 text-white">
                             <tr>
-                                <th class="px-4 py-2">Fecha</th>
-                                <th class="px-4 py-2">Número</th>
+                                <th class="px-4 py-2">Nº</th>
+                                <th class="px-4 py-2">Fecha Creación</th>
+                                <th class="px-4 py-2">Tipo de Ingreso</th>
                                 <th class="px-4 py-2">Cliente</th>
-                                <th class="px-4 py-2">Tipo de Documento</th>
-                                <th class="px-4 py-2">Nº Doc</th>
-                                <th class="px-4 py-2">Nº Nota</th>
-                                <th class="px-4 py-2">Tipo de Transacción</th>
-                                <th class="px-4 py-2">Divisas</th>
+                                <th class="px-4 py-2">Caja</th>
+                                <th class="px-4 py-2">Cuenta</th>
+                                <th class="px-4 py-2">Divisa</th>
                                 <th class="px-4 py-2">Monto</th>
-                                <th class="px-4 py-2">Tasa de Cambio</th>
-                                <th class="px-4 py-2">SubTotal</th>
-                                <th class="px-4 py-2">Total</th>
                                 <th class="px-4 py-2">Estado</th>
                                 <th class="px-4 py-2"></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="venta border-b border-gray-700 text-gray-700">
-                                <td class="px-4 py-2">2025-01-28</td>
-                                <td class="px-4 py-2">12345</td>
-                                <td class="px-4 py-2">Cliente 1</td>
-                                <td class="px-4 py-2">Factura</td>
-                                <td class="px-4 py-2">123</td>
-                                <td class="px-4 py-2">456</td>
-                                <td class="px-4 py-2">Venta</td>
+                            <tr class="border-b bg-white border-gray-700 text-gray-700">
+                                <td class="px-4 py-2">1739</td>
+                                <td class="px-4 py-2">2025-01-30</td>
+                                <td class="px-4 py-2">Cuenta</td>
+                                <td class="px-4 py-2">Cliente</td>
+                                <td class="px-4 py-2">Tesorería</td>
+                                <td class="px-4 py-2">00 Cliente USD</td>
                                 <td class="px-4 py-2">USD</td>
-                                <td class="px-4 py-2">1.000</td>
-                                <td class="px-4 py-2">$983</td>
-                                <td class="px-4 py-2">$1.200</td>
-                                <td class="px-4 py-2">$1.200</td>
-                                <td class="px-4 py-2">Pagado</td>
+                                <td class="px-4 py-2">$30.000</td>
+                                <td class="px-4 py-2">Cerrado</td>
                                 <td class="px-4 py-2">
                                     <button class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1">
                                         Mostrar
