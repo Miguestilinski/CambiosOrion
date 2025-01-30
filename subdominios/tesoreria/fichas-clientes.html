@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Operaciones</title>
+        <title>Fichas Clientes</title>
         <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/header.css">
         <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/footer.css">
         <link rel="stylesheet" href="./styles/index.css">
@@ -115,13 +115,13 @@
     <div class="main-content">
         <div id="sidebar-container"></div>
         <main id="dashboard-content" class="dashboard-content">
-            <section id="operaciones" class="content-section active">
+            <section id="fichas-clientes" class="content-section active">
                 <!-- Título y botón Nueva Operación -->
                 <div class="flex items-center mb-6">
-                    <h1 class="text-2xl font-medium mr-4 leading-none text-white">Operaciones</h1>
-                    <button type="button" id="add-autorizado" href="./nueva-op.html"
+                    <h1 class="text-2xl font-medium mr-4 leading-none text-white">Fichas Clientes</h1>
+                    <button type="button" id="add-autorizado" href="./nueva-ficha.html"
                         class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
-                        Nueva Operación
+                        Nueva Ficha Cliente
                     </button>
                 </div>
                 
@@ -145,74 +145,42 @@
                 </button>
                 </div>
                 
-                <!-- Checkboxes -->
-                <div class="flex mb-6">
-                    <div class="flex items-center">
-                        <input type="checkbox" id="emitidas" 
-                            class="w-4 h-4 mr-2 text-blue-600 bg-white border-gray-600 rounded focus:ring-blue-500">
-                        <label for="emitidas" class="text-sm text-white">Mostrar sólo emitidas/timbradas en SII</label>
-                    </div>
-                    <div class="flex items-center ml-4">
-                        <input type="checkbox" id="no-emitidas" 
-                            class="w-4 h-4 mr-2 text-blue-600 bg-white border-gray-600 rounded focus:ring-blue-500">
-                        <label for="no-emitidas" class="text-sm text-white">Mostrar sólo NO emitidas/timbradas en SII</label>
-                    </div>
-                </div>
-                
                 <!-- Filtros avanzados -->
                 <div class="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-6">
                     <div>
-                        <label for="numero" class="block mb-1 text-sm text-white">Número</label>
-                        <input type="text" id="numero" 
-                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label for="cliente" class="block mb-1 text-sm text-white">Cliente</label>
-                        <input type="text" id="cliente" 
-                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label for="tipo-doc" class="block mb-1 text-sm text-white">Tipo de Documento</label>
-                        <select id="tipo-doc"
+                        <label for="tipo-cliente" class="block mb-1 text-sm text-white">Tipo de Cliente</label>
+                        <select id="tipo-cliente"
                             class="select-list block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                             <option value="">Seleccionar</option>
-                            <option value="boleta">Boleta</option>
-                            <option value="factura">Factura</option>
+                            <option value="boleta">Persona Natural</option>
+                            <option value="factura">Extranjero</option>
                         </select>
                     </div>
                     <div>
-                        <label for="n-doc" class="block mb-1 text-sm text-white">Nº Doc</label>
-                        <input type="text" id="n-doc"
+                        <label for="nombre-r-social" class="block mb-1 text-sm text-white">Nombre/Razón Social</label>
+                        <input type="text" id="nombre-r-social" 
                             class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                     </div>
                     <div>
-                        <label for="n-nota" class="block mb-1 text-sm text-white">Nº Nota</label>
-                        <input type="text" id="n-nota" 
+                        <label for="rut" class="block mb-1 text-sm text-white">RUT</label>
+                        <input type="text" id="rut" 
                             class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                     </div>
                     <div>
-                        <label for="tipo-transaccion" class="block mb-1 text-sm text-white">Tipo de Transacción</label>
-                        <select id="tipo-transaccion" 
+                        <label for="direccion" class="block mb-1 text-sm text-white">Dirección</label>
+                        <input type="text" id="direccion"
+                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label for="Fono" class="block mb-1 text-sm text-white">Fono</label>
+                        <input type="text" id="fono" 
+                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label for="habilitados" class="block mb-1 text-sm text-white">Habilitados</label>
+                        <select id="habilitados" 
                             class="select-list block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                             <option value="">Seleccionar</option>
-                            <option value="compra">Compra</option>
-                            <option value="venta">Venta</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="divisa" class="block mb-1 text-sm text-white">Divisa</label>
-                        <input type="text" id="divisa" 
-                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label for="estado" class="block mb-1 text-sm text-white">Estado</label>
-                        <select id="estado" 
-                            class="select-list block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Seleccionar</option>
-                            <option value="vigente">Vigente</option>
-                            <option value="abonado">Abonado</option>
-                            <option value="pagado">Pagado</option>
-                            <option value="anulado">Anulado</option>
                         </select>
                     </div>
                 </div>
@@ -259,21 +227,24 @@
                         <tbody>
                             <tr class="venta border-b border-gray-700 text-gray-700">
                                 <td class="px-4 py-2">2025-01-28</td>
-                                <td class="px-4 py-2">12345</td>
-                                <td class="px-4 py-2">Cliente 1</td>
-                                <td class="px-4 py-2">Factura</td>
-                                <td class="px-4 py-2">123</td>
-                                <td class="px-4 py-2">456</td>
-                                <td class="px-4 py-2">Venta</td>
-                                <td class="px-4 py-2">USD</td>
-                                <td class="px-4 py-2">1.000</td>
-                                <td class="px-4 py-2">$983</td>
-                                <td class="px-4 py-2">$1.200</td>
-                                <td class="px-4 py-2">$1.200</td>
-                                <td class="px-4 py-2">Pagado</td>
+                                <td class="px-4 py-2">Persona Natural</td>
+                                <td class="px-4 py-2">Cliente</td>
+                                <td class="px-4 py-2">11.111.111-1</td>
+                                <td class="px-4 py-2">Av. Agustinas 1035</td>
+                                <td class="px-4 py-2">+56 9 1234 5678</td>
                                 <td class="px-4 py-2">
                                     <button class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1">
                                         Mostrar
+                                    </button>
+                                </td>
+                                <td class="px-4 py-2">
+                                    <button class="text-white bg-black hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1">
+                                        Editar
+                                    </button>
+                                </td>
+                                <td class="px-4 py-2">
+                                    <button class="text-white bg-red-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1">
+                                        Deshabilitar
                                     </button>
                                 </td>
                             </tr>
