@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Cuentas</title>
+        <title>Inventarios</title>
         <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/header.css">
         <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/footer.css">
         <link rel="stylesheet" href="./styles/index.css">
@@ -115,31 +115,26 @@
     <div class="main-content">
         <div id="sidebar-container"></div>
         <main id="dashboard-content" class="dashboard-content">
-            <section id="cuentas" class="content-section active">
+            <section id="inventarios" class="content-section active">
                 <!-- Título y botón Nueva Operación -->
                 <div class="flex items-center mb-6">
-                    <h1 class="text-2xl font-medium mr-4 leading-none text-white">Cuentas</h1>
-                    <button type="button" id="nueva-cuenta" href="./nueva-cuenta.html"
-                        class="text-white bg-blue-700 mr-4 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
-                        Nueva Operación
-                    </button>
+                    <h1 class="text-2xl font-medium mr-4 leading-none text-white">Inventarios</h1>
                     <button type="button" id="exportar" href="#"
-                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
-                    Exportar Excel
-                </button>
+                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
+                        Exportar Excel
+                    </button>
                 </div>
                 
                 <!-- Filtros avanzados -->
                 <div class="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-6">
                     <div>
-                        <label for="codigo" class="block mb-1 text-sm text-white">Código</label>
-                        <input type="text" id="codigo" 
-                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label for="nombre" class="block mb-1 text-sm text-white">Nombre</label>
-                        <input type="text" id="nombre" 
-                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                        <label for="caja" class="block mb-1 text-sm text-white">Caja</label>
+                        <select id="caja"
+                            class="select-list block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Seleccionar</option>
+                            <option value="boleta">Caja</option>
+                            <option value="factura">Tesoreria</option>
+                        </select>
                     </div>
                     <div>
                         <label for="divisa" class="block mb-1 text-sm text-white">Divisa</label>
@@ -149,38 +144,14 @@
                         </select>
                     </div>
                     <div>
-                        <label for="por-cobrar" class="block mb-1 text-sm text-white">Por Cobrar</label>
-                        <select id="por-cobrar"
-                            class="select-list block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Seleccionar</option>
-                            <option value="boleta">Si</option>
-                            <option value="factura">No</option>
-                        </select>
+                        <label for="cantidad" class="block mb-1 text-sm text-white">Cantidad</label>
+                        <input type="text" id="cantidad" 
+                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                     </div>
                     <div>
-                        <label for="por-pagar" class="block mb-1 text-sm text-white">Por Pagar</label>
-                        <select id="por-pagar"
-                            class="select-list block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Seleccionar</option>
-                            <option value="boleta">Si</option>
-                            <option value="factura">No</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="activa" class="block mb-1 text-sm text-white">Activa</label>
-                        <select id="activa"
-                            class="select-list block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Seleccionar</option>
-                            <option value="boleta">Activa</option>
-                            <option value="factura">No Activa</option>
-                        </select>
-                    </div>
-                    <!-- botón Borrar Filtros -->
-                    <div>
-                        <button type="button" id="borrar-filtros" 
-                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
-                        Borrar Filtros
-                        </button>
+                        <label for="pmp" class="block mb-1 text-sm text-white">PMP</label>
+                        <input type="text" id="pmp" 
+                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                     </div>
                 </div>
                 
@@ -207,36 +178,22 @@
                     <table class="w-full text-sm text-left text-white bg-gray-800">
                         <thead class="text-xs uppercase bg-gray-800 text-white">
                             <tr>
-                                <th class="px-4 py-2">Código</th>
-                                <th class="px-4 py-2">Nombre</th>
+                                <th class="px-4 py-2">Caja</th>
                                 <th class="px-4 py-2">Divisa</th>
-                                <th class="px-4 py-2">Me Deben</th>
-                                <th class="px-4 py-2">Debo</th>
-                                <th class="px-4 py-2">Por Cobrar</th>
-                                <th class="px-4 py-2">Por Pagar</th>
-                                <th class="px-4 py-2">Activa</th>
-                                <th class="px-4 py-2"></th>
+                                <th class="px-4 py-2">Cantidad</th>
+                                <th class="px-4 py-2">PMP</th>
                                 <th class="px-4 py-2"></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr class="border-b bg-white border-gray-700 text-gray-700">
-                                <td class="px-4 py-2">12345</td>
-                                <td class="px-4 py-2">Cliente</td>
+                                <td class="px-4 py-2">Tesoreria</td>
                                 <td class="px-4 py-2">USD</td>
-                                <td class="px-4 py-2">456</td>
-                                <td class="px-4 py-2">0</td>
-                                <td class="px-4 py-2">Si</td>
-                                <td class="px-4 py-2">No</td>
-                                <td class="px-4 py-2">Activa</td>
+                                <td class="px-4 py-2">203</td>
+                                <td class="px-4 py-2">$0</td>
                                 <td class="px-4 py-2">
                                     <button class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1">
-                                        Mostrar
-                                    </button>
-                                </td>
-                                <td class="px-4 py-2">
-                                    <button class="text-white bg-black hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1">
-                                        Editar
+                                        Botón
                                     </button>
                                 </td>
                             </tr>
