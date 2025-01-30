@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function() {
     loginForm.addEventListener("submit", async function(event) {
         event.preventDefault();
 
-        const correo = document.getElementById("correo").value.trim().toLowerCase();
+        let correo = document.getElementById("correo").value.trim().toLowerCase();
         const password = document.getElementById("password").value.trim();
 
         // Convertir el correo a minúsculas automáticamente
