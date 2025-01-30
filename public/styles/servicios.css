@@ -54,6 +54,11 @@ h2 {
     gap: 2rem;
 }
 
+a.info-button {
+    align-self: center;
+    width: 15rem;
+}
+
 /* Estilo general de las secciones */
 .service-section {
     padding: 4rem 0;
