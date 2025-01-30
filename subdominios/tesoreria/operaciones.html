@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Operaciones</title>
+        <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/header.css">
+        <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/footer.css">
+        <link rel="stylesheet" href="./styles/index.css">
+        <link href="https://cambiosorion.cl/orionapp/public/styles/output.css" rel="stylesheet">
+        <link rel="icon" href="https://cambiosorion.cl/orionapp/icons/favicon.png" type="image/png">
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">  
+    </head>
+<body>
+    <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js" crossorigin="anonymous"></script>
+    <header>
+        <!-- Logo y Nombre -->
+        <div class="header-logo">
+            <a href="index">
+                <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-silver.png" alt="Logo Cambios Orion" class="logo">
+            </a>
+            <a href="index">
+                <img src="https://cambiosorion.cl/orionapp/assets/NombreOrion-white.png" alt="Nombre Cambios Orion" class="nombre">
+            </a>
+        </div>
+    
+        <!-- Botones para versión móvil -->
+        <div class="mobile-buttons">
+            <button class="menu-button" id="nav-menu-button">
+                <img src="https://cambiosorion.cl/orionapp/icons/menu-white.svg" alt="Menú">
+            </button>
+            <button class="menu-button" id="session-menu-button">
+                <img src="https://cambiosorion.cl/orionapp/icons/profile-white.png" alt="Sesión">
+            </button>
+        </div>
+    
+        <!-- Menús desplegables para móvil -->
+        <div id="nav-mobile-menu" class="mobile-menu hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
+            <ul class="py-2 text-sm text-gray-700">
+                <li><a href="https://admin.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Portal Admin</a></li>
+            </ul>
+            <ul class="py-2 text-sm text-gray-700">
+                <li><a href="https://pizarras.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Pizarras</a></li>
+            </ul>
+            <ul class="py-2 text-sm text-gray-700">
+                <li><a href="https://intranet.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Intranet</a></li>
+            </ul>
+            <ul class="py-2 text-sm text-gray-700">
+                <li><a href="https://cambiosorion.cl/webmail" class="block px-4 py-2 hover:bg-gray-100">Correo</a></li>
+            </ul>
+        </div>
+    
+        <div class="mobile-menu hidden bg-white rounded-lg shadow w-44" id="session-mobile-menu">
+            <div id="guest-actions-mobile" class="divide-y divide-gray-100" style="display:none;">
+                <ul class="py-2 text-sm text-gray-700">
+                    <li><a href="https://admin.cambiosorion.cl/login" class="block px-4 py-2 hover:bg-gray-100">Iniciar Sesión</a></li>
+                </ul>
+            </div>
+            <div id="user-actions-mobile" class="divide-y divide-gray-100" style="display:none;">
+                <div class="px-2 py-2 text-sm text-gray-900">
+                    <div id="user-name">Nombre del usuario</div>
+                    <div id="user-email" class="mail font-medium truncate">Correo del usuario</div>
+                </div>
+                <ul class="py-2 text-sm text-gray-700" id="menu-admin-mobile" style="display: none;">
+                    <li><a href="https://admin.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Portal Admin</a></li>
+                    <li><a href="https://cambiosorion.cl/webmail" class="block px-4 py-2 hover:bg-gray-100">Correo</a></li>
+                </ul>
+                <ul class="py-2 text-sm text-gray-700">
+                    <li><a href="#" class="block px-4 py-2 hover:bg-gray-100" id="logout-button-mobile">Cerrar sesión</a></li>
+                </ul>
+            </div>
+        </div>
+    
+        <!-- Menú de navegación para escritorio -->
+        <nav>
+            <ul>
+                <li><a href="https://intranet.cambiosorion.cl/">Sist. Cajas</a></li>
+                <li class="selected"><a href="https://intranet.cambiosorion.cl/tesoreria">Sist. Tesorería</a></li>
+                <li><a href="https://admin.cambiosorion.cl/">Portal Admin</a></li>
+                <li><a href="https://pizarras.cambiosorion.cl/">Pizarras</a></li>
+                <li><a href="https://cambiosorion.cl/webmail">Correo</a></li>
+            </ul>
+        </nav>
+    
+        <!-- Acciones para escritorio -->
+        <div class="header-actions">
+            <!-- User actions -->
+            <div id="user-actions" style="display:none;">
+                <button id="profile-menu-button" class="text-white bg-transparent hover:bg-gray-200 focus:outline-none">
+                    <img src="https://cambiosorion.cl/orionapp/icons/profile-white.png" alt="Profile">
+                </button>
+                <!-- Menú desplegable -->
+                <div id="dropdownInformation" class="hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
+                    <div class="px-4 py-3 text-sm text-gray-900">
+                        <div id="user-name">Nombre del usuario</div>
+                        <div id="user-email" class="mail font-medium truncate">Correo del usuario</div>
+                    </div>
+                    <ul class="py-2 text-sm text-gray-700" id="menu-admin" style="display: none;">
+                        <li><a href="https://admin.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Portal Admin</a></li>
+                        <li><a href="https://cambiosorion.cl/webmail" class="block px-4 py-2 hover:bg-gray-100">Correo</a></li>
+                    </ul>
+                    <ul class="py-2 text-sm text-gray-700">
+                        <li><a href="#" class="block px-4 py-2 hover:bg-gray-100" id="logout-button">Cerrar sesión</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Guest actions -->
+            <div id="guest-actions" style="display:none;">
+                <a href="https://admin.cambiosorion.cl/login">Iniciar sesión</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="header-divider"></div>
+    <div class="main-content">
+        <div id="sidebar-container"></div>
+        <main id="dashboard-content">
+            <section id="operaciones" class="content-section active">
+                <!-- Título y botón Nueva Operación -->
+                <div class="flex items-center mb-6">
+                    <h1 class="text-2xl font-medium mr-4 leading-none text-white">Operaciones</h1>
+                    <button type="button" id="add-autorizado" href="./nueva_op.html"
+                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
+                        Nueva Operación
+                    </button>
+                </div>
+                
+                <!-- Filtros de fecha y botón Borrar Filtros -->
+                <div class="flex items-center mb-6 space-x-4">
+                    <div class="flex">
+                        <div class="mr-2">
+                            <label for="fecha-inicio" class="block mb-1 text-sm text-white">Desde</label>
+                            <input type="date" id="fecha-inicio" 
+                                class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label for="fecha-fin" class="block mb-1 text-sm text-white">Hasta</label>
+                            <input type="date" id="fecha-fin" 
+                                class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+                    <button type="button" id="borrar-filtros" 
+                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
+                    Borrar Filtros
+                </button>
+                </div>
+                
+                <!-- Checkboxes -->
+                <div class="flex mb-6">
+                    <div class="flex items-center">
+                        <input type="checkbox" id="emitidas" 
+                            class="w-4 h-4 mr-2 text-blue-600 bg-white border-gray-600 rounded focus:ring-blue-500">
+                        <label for="emitidas" class="text-sm text-white">Mostrar sólo emitidas/timbradas en SII</label>
+                    </div>
+                    <div class="flex items-center ml-4">
+                        <input type="checkbox" id="no-emitidas" 
+                            class="w-4 h-4 mr-2 text-blue-600 bg-white border-gray-600 rounded focus:ring-blue-500">
+                        <label for="no-emitidas" class="text-sm text-white">Mostrar sólo NO emitidas/timbradas en SII</label>
+                    </div>
+                </div>
+                
+                <!-- Filtros avanzados -->
+                <div class="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-6">
+                    <div>
+                        <label for="numero" class="block mb-1 text-sm text-white">Número</label>
+                        <input type="text" id="numero" 
+                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label for="cliente" class="block mb-1 text-sm text-white">Cliente</label>
+                        <input type="text" id="cliente" 
+                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label for="tipo-doc" class="block mb-1 text-sm text-white">Tipo de Documento</label>
+                        <select id="tipo-doc"
+                            class="select-list block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Seleccionar</option>
+                            <option value="boleta">Boleta</option>
+                            <option value="factura">Factura</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="n-doc" class="block mb-1 text-sm text-white">Nº Doc</label>
+                        <input type="text" id="n-doc"
+                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label for="n-nota" class="block mb-1 text-sm text-white">Nº Nota</label>
+                        <input type="text" id="n-nota" 
+                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label for="tipo-transaccion" class="block mb-1 text-sm text-white">Tipo de Transacción</label>
+                        <select id="tipo-transaccion" 
+                            class="select-list block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Seleccionar</option>
+                            <option value="compra">Compra</option>
+                            <option value="venta">Venta</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="divisa" class="block mb-1 text-sm text-white">Divisa</label>
+                        <input type="text" id="divisa" 
+                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label for="estado" class="block mb-1 text-sm text-white">Estado</label>
+                        <select id="estado" 
+                            class="select-list block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Seleccionar</option>
+                            <option value="vigente">Vigente</option>
+                            <option value="abonado">Abonado</option>
+                            <option value="pagado">Pagado</option>
+                            <option value="anulado">Anulado</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Mostrar registros y buscar -->
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center space-x-2">
+                        <label for="mostrar-registros" class="text-sm text-white">Mostrar</label>
+                        <select id="mostrar-registros" 
+                            class="block px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                        <span class="text-sm text-white">registros</span>
+                    </div>
+                    <div>
+                        <input type="text" id="buscar" placeholder="Buscar" 
+                            class="block w-64 px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                </div>
+                
+                <!-- Tabla de operaciones -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left text-white bg-gray-800">
+                        <thead class="text-xs uppercase bg-gray-800 text-white">
+                            <tr>
+                                <th class="px-4 py-2">Fecha</th>
+                                <th class="px-4 py-2">Número</th>
+                                <th class="px-4 py-2">Cliente</th>
+                                <th class="px-4 py-2">Tipo de Documento</th>
+                                <th class="px-4 py-2">Nº Doc</th>
+                                <th class="px-4 py-2">Nº Nota</th>
+                                <th class="px-4 py-2">Tipo de Transacción</th>
+                                <th class="px-4 py-2">Divisas</th>
+                                <th class="px-4 py-2">Monto</th>
+                                <th class="px-4 py-2">Tasa de Cambio</th>
+                                <th class="px-4 py-2">SubTotal</th>
+                                <th class="px-4 py-2">Total</th>
+                                <th class="px-4 py-2">Estado</th>
+                                <th class="px-4 py-2"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="venta border-b border-gray-700 text-gray-700">
+                                <td class="px-4 py-2">2025-01-28</td>
+                                <td class="px-4 py-2">12345</td>
+                                <td class="px-4 py-2">Cliente 1</td>
+                                <td class="px-4 py-2">Factura</td>
+                                <td class="px-4 py-2">123</td>
+                                <td class="px-4 py-2">456</td>
+                                <td class="px-4 py-2">Venta</td>
+                                <td class="px-4 py-2">USD</td>
+                                <td class="px-4 py-2">1.000</td>
+                                <td class="px-4 py-2">$983</td>
+                                <td class="px-4 py-2">$1.200</td>
+                                <td class="px-4 py-2">$1.200</td>
+                                <td class="px-4 py-2">Pagado</td>
+                                <td class="px-4 py-2">
+                                    <button class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1">
+                                        Mostrar
+                                    </button>
+                                </td>
+                            </tr>
+                            <!-- Más filas -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>        
+        </main>
+    </div>
+
+    <footer>
+        <div class="footer-container">
+            <!-- Sección del logo -->
+            <div class="footer-logo">
+                <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-silver.png" alt="Logo Orion" class="logo">
+                <img src="https://cambiosorion.cl/orionapp/assets/NombreOrion-white.png" alt="Nombre Orion" class="nombre">
+            </div>
+            <!-- Mapa de navegación -->
+            <div class="footer-navigation flex justify-between">
+                <div class="nav-section">
+                    <h3 href="https://admin.cambiosorion.cl/" class="font-bold text-lg">Admin</h3>
+                    <ul class="list-none p-0">
+                        <li><a href="https://admin.cambiosorion.cl/#vacaciones" class="block py-1">Vacaciones</a></li>
+                        <li><a href="https://admin.cambiosorion.cl/" class="block py-1">Adelantos</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h3 href="https://pizarras.cambiosorion.cl/" class="font-bold text-lg">Pizarras</h3>
+                    <ul class="list-none p-0">
+                        <li><a href="https://pizarras.cambiosorion.cl/normal" class="block py-1">Normal</a></li>
+                        <li><a href="https://pizarras.cambiosorion.cl/destacadas" class="block py-1">Destacadas</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h3 class="font-bold text-lg">Intranet</h3>
+                    <ul class="list-none p-0">
+                        <li><a href="https://intranet.cambiosorion.cl/" class="block py-1">Sist. Cajas</a></li>
+                        <li><a href="https://intranet.cambiosorion.cl/tesorería" class="block py-1">Sist. Tesorería</a></li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Información de contacto -->
+            <div class="footer-contact flex flex-wrap justify-between">
+            </div>         
+        </div>
+        <div class="footer-bottom text-xs text-center p-4">
+            © 2025 Cambios Orion. Todos los derechos reservados.
+        </div>
+    </footer>
+
+    <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
+    <script type="module" src="https://cambiosorion.cl/orionapp/public/scripts/header.js" crossorigin="anonymous"></script>
+    <script type="module" src="./scripts/index.js"></script>
+    <script>
+        fetch('sidebar.html')
+            .then(response => response.text())
+            .then(data => document.getElementById('sidebar-container').innerHTML = data);
+    </script>
+</body>
+</html>
