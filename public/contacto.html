@@ -1,18 +1,15 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Envios</title>
+    <title>Contacto</title>
     <link rel="stylesheet" href="styles/header.css">
-    <link rel="stylesheet" href="styles/envios.css">
+    <link rel="stylesheet" href="styles/contacto.css">
     <link rel="stylesheet" href="styles/footer.css">
     <link href="./styles/output.css" rel="stylesheet">
     <link rel="icon" href="/orionapp/icons/favicon.png" type="image/png">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-
 <body class="font-sans">
     <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js"></script>
     <header>
@@ -37,7 +34,6 @@
         </div>
     
         <!-- Menús desplegables para móvil -->
-        <!-- Menús desplegables para móvil -->
         <div id="nav-mobile-menu" class="mobile-menu hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
             <ul class="py-2 text-sm text-gray-700">
                 <li><a href="index" class="block px-4 py-2 hover:bg-gray-100">Inicio</a></li>
@@ -49,7 +45,7 @@
                 <li><a href="nosotros" class="block px-4 py-2 hover:bg-gray-100">Nosotros</a></li>
             </ul>
             <ul class="py-2 text-sm text-gray-700">
-                <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Contacto</a></li>
+                <li><a href="contacto" class="block px-4 py-2 hover:bg-gray-100">Contacto</a></li>
             </ul>
         </div>
     
@@ -71,7 +67,7 @@
                     <li><a href="https://clientes.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Mi perfil</a></li>
                 </ul>
                 <ul class="py-2 text-sm text-gray-700" id="menu-admin-mobile" style="display: none;">
-                    <li><a href="edit" class="block px-4 py-2 hover:bg-gray-100">Pizarra</a></li>
+                    <li><a href="https://admin.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Portal Admin</a></li>
                 </ul>
                 <ul class="py-2 text-sm text-gray-700">
                     <li><a href="#" class="block px-4 py-2 hover:bg-gray-100" id="logout-button-mobile">Cerrar sesión</a></li>
@@ -82,10 +78,10 @@
         <!-- Menú de navegación para escritorio -->
         <nav>
             <ul>
-                <li"><a href="index">Inicio</a></li>
-                <li class="selected"><a href="servicios">Servicios</a></li>
+                <li><a href="index">Inicio</a></li>
+                <li><a href="servicios">Servicios</a></li>
                 <li><a href="nosotros">Nosotros</a></li>
-                <li><a href="#">Contacto</a></li>
+                <li class="selected"><a href="contacto">Contacto</a></li>
             </ul>
         </nav>
     
@@ -121,16 +117,39 @@
             </div>
         </div>
     </header>
-    
-    <div class="header-divider"></div>
-    <div class="main-content">
-        <main>
-            <section>
 
-            </section>
-        </main>        
+    <div class="max-w-2xl w-full mx-auto my-10 p-5 rounded-lg shadow-md bg-gray-800">
+        <h2 class="text-2xl font-semibold text-white mb-6 text-center">Formulario de Contacto</h2>
+        
+        <form id="contactForm" class="space-y-6">
+            <!-- Nombre -->
+            <div>
+                <label for="nombre" class="block text-sm font-medium mb-2">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" class="bg-white border border-gray-600 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+            </div>
+            
+            <!-- Correo Electrónico -->
+            <div>
+                <label for="email" class="block text-sm font-medium mb-2">Correo Electrónico:</label>
+                <input type="email" id="email" name="email" class="bg-white border border-gray-600 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+            </div>
+            
+            <!-- Asunto -->
+            <div>
+                <label for="asunto" class="block text-sm font-medium mb-2">Asunto:</label>
+                <input type="text" id="asunto" name="asunto" class="bg-white border border-gray-600 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+            </div>
+            
+            <!-- Mensaje -->
+            <div>
+                <label for="mensaje" class="block text-sm font-medium mb-2">Mensaje:</label>
+                <textarea id="mensaje" name="mensaje" rows="4" class="bg-white border border-gray-600 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required></textarea>
+            </div>
+            
+            <!-- Botón Enviar -->
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-all">Enviar</button>
+        </form>
     </div>
-
     <footer>
         <div class="footer-container">
             <!-- Sección del logo -->
@@ -203,8 +222,8 @@
             © 2025 Cambios Orion. Todos los derechos reservados.
         </div>
     </footer>
-    <script src="/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
-    <script src="scripts/header.js"></script>
-    <script src="scripts/envios.js"></script>
-</body>
+        <script src="/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
+        <script src="scripts/header.js"></script>
+        <script type="module" src="scripts/contacto.js"></script>
+    </body>
 </html>
