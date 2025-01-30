@@ -61,6 +61,10 @@ p.hidden {
     display: none;
 }
 
+.banner{
+    height: 25rem;
+}
+
 button {
     padding: 12px;
     background-color: #3b82f6;
