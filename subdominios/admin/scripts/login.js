@@ -1,17 +1,9 @@
 document.addEventListener("DOMContentLoaded", function() {
-    const administrativoTab = document.getElementById('administrativoTab');
-    const administrativoForm = document.getElementById('administrativo-form');
-    
-    // Establecer "Cliente" como la pestaña predeterminada
-    administrativoTab.classList.add('active');
-    administrativoForm.classList.add('active');
-    
     const loginForm = document.getElementById("loginForm");
     loginForm.addEventListener("submit", async function(event) {
         event.preventDefault();
 
-        const tipoUsuario = document.querySelector('.tab-button.active').dataset.tipoUsuario;
-        let correo = document.getElementById("correo").value.trim().toLowerCase();
+        const correo = document.getElementById("correo").value.trim().toLowerCase();
         const password = document.getElementById("password").value.trim();
 
         // Convertir el correo a minúsculas automáticamente
@@ -44,8 +36,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 localStorage.setItem('sessionActive', 'true');
                 if (tipoUsuario === 'administrativo') {
                     window.location.href = "https://admin.cambiosorion.cl/";
-                } else if (tipoUsuario === 'cliente') {
-                    window.location.href = "https://cambiosorion.cl/sin-acceso";
                 }
             } else {
                 alert(result.message);
