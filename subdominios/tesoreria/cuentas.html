@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Operaciones</title>
+        <title>Cuentas</title>
         <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/header.css">
         <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/footer.css">
         <link rel="stylesheet" href="./styles/index.css">
@@ -115,104 +115,72 @@
     <div class="main-content">
         <div id="sidebar-container"></div>
         <main id="dashboard-content" class="dashboard-content">
-            <section id="operaciones" class="content-section active">
+            <section id="cuentas" class="content-section active">
                 <!-- Título y botón Nueva Operación -->
                 <div class="flex items-center mb-6">
-                    <h1 class="text-2xl font-medium mr-4 leading-none text-white">Operaciones</h1>
-                    <button type="button" id="nueva-op" href="./nueva-op.html"
+                    <h1 class="text-2xl font-medium mr-4 leading-none text-white">Cuentas</h1>
+                    <button type="button" id="nueva-cuenta" href="./nueva-cuenta.html"
                         class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
                         Nueva Operación
                     </button>
+                    <button type="button" id="exportar" href="#"
+                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
+                    Exportar Excel
+                </button>
                 </div>
                 
                 <!-- Filtros de fecha y botón Borrar Filtros -->
                 <div class="flex items-center mb-6 space-x-4">
-                    <div class="flex">
-                        <div class="mr-2">
-                            <label for="fecha-inicio" class="block mb-1 text-sm text-white">Desde</label>
-                            <input type="date" id="fecha-inicio" 
-                                class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                        </div>
-                        <div>
-                            <label for="fecha-fin" class="block mb-1 text-sm text-white">Hasta</label>
-                            <input type="date" id="fecha-fin" 
-                                class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                        </div>
-                    </div>
                     <button type="button" id="borrar-filtros" 
                     class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
                     Borrar Filtros
-                </button>
-                </div>
-                
-                <!-- Checkboxes -->
-                <div class="flex mb-6">
-                    <div class="flex items-center">
-                        <input type="checkbox" id="emitidas" 
-                            class="w-4 h-4 mr-2 text-blue-600 bg-white border-gray-600 rounded focus:ring-blue-500">
-                        <label for="emitidas" class="text-sm text-white">Mostrar sólo emitidas/timbradas en SII</label>
-                    </div>
-                    <div class="flex items-center ml-4">
-                        <input type="checkbox" id="no-emitidas" 
-                            class="w-4 h-4 mr-2 text-blue-600 bg-white border-gray-600 rounded focus:ring-blue-500">
-                        <label for="no-emitidas" class="text-sm text-white">Mostrar sólo NO emitidas/timbradas en SII</label>
-                    </div>
+                    </button>
                 </div>
                 
                 <!-- Filtros avanzados -->
                 <div class="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-6">
                     <div>
-                        <label for="numero" class="block mb-1 text-sm text-white">Número</label>
-                        <input type="text" id="numero" 
+                        <label for="codigo" class="block mb-1 text-sm text-white">Código</label>
+                        <input type="text" id="codigo" 
                             class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                     </div>
                     <div>
-                        <label for="cliente" class="block mb-1 text-sm text-white">Cliente</label>
-                        <input type="text" id="cliente" 
+                        <label for="nombre" class="block mb-1 text-sm text-white">Nombre</label>
+                        <input type="text" id="nombre" 
                             class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label for="tipo-doc" class="block mb-1 text-sm text-white">Tipo de Documento</label>
-                        <select id="tipo-doc"
-                            class="select-list block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Seleccionar</option>
-                            <option value="boleta">Boleta</option>
-                            <option value="factura">Factura</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="n-doc" class="block mb-1 text-sm text-white">Nº Doc</label>
-                        <input type="text" id="n-doc"
-                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label for="n-nota" class="block mb-1 text-sm text-white">Nº Nota</label>
-                        <input type="text" id="n-nota" 
-                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label for="tipo-transaccion" class="block mb-1 text-sm text-white">Tipo de Transacción</label>
-                        <select id="tipo-transaccion" 
-                            class="select-list block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Seleccionar</option>
-                            <option value="compra">Compra</option>
-                            <option value="venta">Venta</option>
-                        </select>
                     </div>
                     <div>
                         <label for="divisa" class="block mb-1 text-sm text-white">Divisa</label>
-                        <input type="text" id="divisa" 
-                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label for="estado" class="block mb-1 text-sm text-white">Estado</label>
-                        <select id="estado" 
+                        <select id="divisa"
                             class="select-list block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                             <option value="">Seleccionar</option>
-                            <option value="vigente">Vigente</option>
-                            <option value="abonado">Abonado</option>
-                            <option value="pagado">Pagado</option>
-                            <option value="anulado">Anulado</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="por-cobrar" class="block mb-1 text-sm text-white">Por Cobrar</label>
+                        <select id="por-cobrar"
+                            class="select-list block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Seleccionar</option>
+                            <option value="boleta">Si</option>
+                            <option value="factura">No</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="por-pagar" class="block mb-1 text-sm text-white">Por Pagar</label>
+                        <select id="por-pagar"
+                            class="select-list block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Seleccionar</option>
+                            <option value="boleta">Si</option>
+                            <option value="factura">No</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="activa" class="block mb-1 text-sm text-white">Activa</label>
+                        <select id="activa"
+                            class="select-list block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Seleccionar</option>
+                            <option value="boleta">Activa</option>
+                            <option value="factura">No Activa</option>
                         </select>
                     </div>
                 </div>
@@ -240,40 +208,37 @@
                     <table class="w-full text-sm text-left text-white bg-gray-800">
                         <thead class="text-xs uppercase bg-gray-800 text-white">
                             <tr>
-                                <th class="px-4 py-2">Fecha</th>
-                                <th class="px-4 py-2">Número</th>
-                                <th class="px-4 py-2">Cliente</th>
-                                <th class="px-4 py-2">Tipo de Documento</th>
-                                <th class="px-4 py-2">Nº Doc</th>
-                                <th class="px-4 py-2">Nº Nota</th>
-                                <th class="px-4 py-2">Tipo de Transacción</th>
-                                <th class="px-4 py-2">Divisas</th>
-                                <th class="px-4 py-2">Monto</th>
-                                <th class="px-4 py-2">Tasa de Cambio</th>
-                                <th class="px-4 py-2">SubTotal</th>
-                                <th class="px-4 py-2">Total</th>
-                                <th class="px-4 py-2">Estado</th>
+                                <th class="px-4 py-2">Código</th>
+                                <th class="px-4 py-2">Nombre</th>
+                                <th class="px-4 py-2">Divisa</th>
+                                <th class="px-4 py-2">Me Deben</th>
+                                <th class="px-4 py-2">Debo</th>
+                                <th class="px-4 py-2">Por Cobrar</th>
+                                <th class="px-4 py-2">Por Pagar</th>
+                                <th class="px-4 py-2">Activa</th>
+                                <th class="px-4 py-2"></th>
                                 <th class="px-4 py-2"></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr class="venta border-b border-gray-700 text-gray-700">
-                                <td class="px-4 py-2">2025-01-28</td>
                                 <td class="px-4 py-2">12345</td>
-                                <td class="px-4 py-2">Cliente 1</td>
+                                <td class="px-4 py-2">Cliente</td>
                                 <td class="px-4 py-2">Factura</td>
-                                <td class="px-4 py-2">123</td>
-                                <td class="px-4 py-2">456</td>
-                                <td class="px-4 py-2">Venta</td>
                                 <td class="px-4 py-2">USD</td>
-                                <td class="px-4 py-2">1.000</td>
-                                <td class="px-4 py-2">$983</td>
-                                <td class="px-4 py-2">$1.200</td>
-                                <td class="px-4 py-2">$1.200</td>
-                                <td class="px-4 py-2">Pagado</td>
+                                <td class="px-4 py-2">456</td>
+                                <td class="px-4 py-2">0</td>
+                                <td class="px-4 py-2">Si</td>
+                                <td class="px-4 py-2">No</td>
+                                <td class="px-4 py-2">Activa</td>
                                 <td class="px-4 py-2">
                                     <button class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1">
                                         Mostrar
+                                    </button>
+                                </td>
+                                <td class="px-4 py-2">
+                                    <button class="text-white bg-black hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1">
+                                        Editar
                                     </button>
                                 </td>
                             </tr>
