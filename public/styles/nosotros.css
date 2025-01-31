@@ -65,6 +65,16 @@ p.hidden {
     height: 25rem;
 }
 
+p.text-up{
+    border-top-right-radius: 0.5rem;
+    border-top-left-radius: 0.5rem;
+}
+
+p.text-down{
+    border-bottom-right-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
+}
+
 button {
     padding: 12px;
     background-color: #3b82f6;
