@@ -101,9 +101,9 @@ document.addEventListener("DOMContentLoaded", function() {
             if (result.success) {
                 localStorage.setItem('sessionActive', 'true');
                 if (tipoUsuario === 'cliente') {
-                    window.location.href = "index";
+                    window.location.href = "https://clientes.cambiosorion.cl/";
                 } else if (tipoUsuario === 'administrativo') {
-                    window.location.href = "edit";
+                    window.location.href = "https://admin.cambiosorion.cl/";
                 }
             } else {
                 alert(result.message);
