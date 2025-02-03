@@ -136,6 +136,22 @@ input#email{
     justify-self: center;
 }
 
+tr.venta {
+    background-color: #dbf599;
+}
+
+.venta {
+    background-color: #dbf599;
+}
+
+tr.compra {
+    background-color: #c3e8f1;
+}
+
+.compra {
+    background-color: #c3e8f1;
+}
+
 .file-list {
     list-style: none;
     padding: 0;
