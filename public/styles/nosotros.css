@@ -62,7 +62,12 @@ p.hidden {
 }
 
 .banner{
-    height: 40rem;
+    height: 33rem;
+    justify-items: center;
+}
+
+.front-orion{
+    height: revert-layer;
 }
 
 p.text-up{
