@@ -116,48 +116,50 @@
         <div id="sidebar-container"></div>
         <main id="dashboard-content" class="dashboard-content">
             <section id="arqueo-caja" class="content-section active">
-                <!-- Título y botón Nueva Operación -->
-                <div class="flex items-center mb-6">
-                    <h1 class="text-2xl font-medium mr-4 leading-none text-white">Cuadratura de Caja</h1>
-                </div>
-                <!-- Lista de Divisas -->
-                <aside class="w-1/3 bg-gray-800 p-6 overflow-y-auto">
-                    <h2 class="text-xl font-semibold mb-4">Divisas</h2>
-                    <ul id="divisas-lista" class="space-y-2">
-                        <!-- Ejemplo de divisa -->
-                        <li class="p-3 bg-gray-700 rounded-lg cursor-pointer flex justify-between items-center" onclick="seleccionarDivisa('USD')">
-                            <span>💵 USD</span>
-                            <span>Arqueo: $5000</span>
-                            <span>Diferencia: $100</span>
-                        </li>
-                        <!-- Agregar más divisas dinámicamente -->
-                    </ul>
-                </aside>
-        
-                <!-- Detalle del Arqueo -->
-                <div class="w-2/3 p-6">
-                    <h2 id="titulo-divisa" class="text-xl font-semibold mb-4">Seleccione una divisa</h2>
-                    <table id="tabla-arqueo" class="w-full text-left hidden">
-                        <thead>
-                            <tr class="bg-gray-700">
-                                <th class="p-3">Total Sistema</th>
-                                <th class="p-3">Fracción</th>
-                                <th class="p-3">Cantidad</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbody-arqueo">
-                            <tr class="bg-gray-600">
-                                <td class="p-3" id="total-sistema">$0</td>
-                                <td class="p-3"></td>
-                                <td class="p-3"></td>
-                            </tr>
-                            <!-- Las filas de billetes y inputs se agregarán dinámicamente -->
-                        </tbody>
-                    </table>
-                    
-                    <div id="resumen" class="hidden mt-6">
-                        <p class="text-lg">Total Arqueo: <span id="total-arqueo">$0</span></p>
-                        <p class="text-lg">Diferencia de Caja: <span id="diferencia-caja">$0</span></p>
+                <div class="flex h-screen">
+                    <!-- Título y botón Nueva Operación -->
+                    <div class="flex items-center mb-6">
+                        <h1 class="text-2xl font-medium mr-4 leading-none text-white">Cuadratura de Caja</h1>
+                    </div>
+                    <!-- Lista de Divisas -->
+                    <aside class="w-1/3 bg-gray-800 p-6 overflow-y-auto">
+                        <h2 class="text-xl font-semibold mb-4">Divisas</h2>
+                        <ul id="divisas-lista" class="space-y-2">
+                            <!-- Ejemplo de divisa -->
+                            <li class="p-3 bg-gray-700 rounded-lg cursor-pointer flex justify-between items-center" onclick="seleccionarDivisa('USD')">
+                                <span>💵 USD</span>
+                                <span>Arqueo: $5000</span>
+                                <span>Diferencia: $100</span>
+                            </li>
+                            <!-- Agregar más divisas dinámicamente -->
+                        </ul>
+                    </aside>
+            
+                    <!-- Detalle del Arqueo -->
+                    <div class="w-2/3 p-6">
+                        <h2 id="titulo-divisa" class="text-xl font-semibold mb-4">Seleccione una divisa</h2>
+                        <table id="tabla-arqueo" class="w-full text-left hidden">
+                            <thead>
+                                <tr class="bg-gray-700">
+                                    <th class="p-3">Total Sistema</th>
+                                    <th class="p-3">Fracción</th>
+                                    <th class="p-3">Cantidad</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-arqueo">
+                                <tr class="bg-gray-600">
+                                    <td class="p-3" id="total-sistema">$0</td>
+                                    <td class="p-3"></td>
+                                    <td class="p-3"></td>
+                                </tr>
+                                <!-- Las filas de billetes y inputs se agregarán dinámicamente -->
+                            </tbody>
+                        </table>
+                        
+                        <div id="resumen" class="hidden mt-6">
+                            <p class="text-lg">Total Arqueo: <span id="total-arqueo">$0</span></p>
+                            <p class="text-lg">Diferencia de Caja: <span id="diferencia-caja">$0</span></p>
+                        </div>
                     </div>
                 </div>
             </section>
