@@ -1,7 +1,7 @@
 function seleccionarDivisa(divisa) {
     document.getElementById('titulo-divisa').textContent = `Arqueo de ${divisa}`;
     document.getElementById('tabla-arqueo').classList.remove('hidden');
-    document.getElementById('resumen').classList.remove('hidden');
+    document.getElementById('detalle').classList.remove('hidden');
     
     // Simulación de datos
     const totalSistema = 5000;

@@ -120,7 +120,7 @@
                 <div class="flex items-center mb-6">
                     <h1 class="text-2xl font-medium mr-4 leading-none text-white">Cuadratura de Caja</h1>
                 </div>
-                <div class="flex h-screen">
+                <div class="flex">
                     <!-- Lista de Divisas -->
                     <aside class="w-1/3 p-2 overflow-y-auto text-white">
                         <h2 class="text-xl font-semibold mb-4">Divisas</h2>
@@ -162,7 +162,7 @@
                     <!-- Detalle del Arqueo -->
                     <div class="w-2/3 p-4 text-white">
                         <h2 id="titulo-divisa" class="text-xl font-semibold mb-4">Seleccione una divisa</h2>
-                        <table id="tabla-arqueo" class="w-full text-left hidden">
+                        <table id="tabla-arqueo" class="w-full text-left rounded-lg hidden">
                             <thead>
                                 <tr class="bg-gray-700">
                                     <th class="p-3">Total Sistema</th>
@@ -170,17 +170,41 @@
                                     <th class="p-3">Cantidad</th>
                                 </tr>
                             </thead>
-                            <tbody id="tbody-arqueo">
-                                <tr class="bg-gray-600">
+                            <tbody id="tbody-arqueo" class="bg-white text-gray-700">
+                                <tr class="bg-white text-gray-700">
                                     <td class="p-3" id="total-sistema">$0</td>
-                                    <td class="p-3"></td>
-                                    <td class="p-3"></td>
+                                    <td class="p-3">100</td><td class="p-3"></td>
+                                    
                                 </tr>
-                                <!-- Las filas de billetes y inputs se agregarán dinámicamente -->
+                                <tr class="bg-white text-gray-700">
+                                    <td class="p-3" id="total-sistema"></td>
+                                    <td class="p-3">50</td><td class="p-3"></td>
+                                    
+                                </tr><tr class="bg-white text-gray-700">
+                                    <td class="p-3" id="total-sistema"></td>
+                                    <td class="p-3">20</td><td class="p-3"></td>
+                                    
+                                </tr><tr class="bg-white text-gray-700">
+                                    <td class="p-3" id="total-sistema"></td>
+                                    <td class="p-3">10</td><td class="p-3"></td>
+                                    
+                                </tr><tr class="bg-white text-gray-700">
+                                    <td class="p-3" id="total-sistema"></td>
+                                    <td class="p-3">5</td><td class="p-3"></td>
+                                    
+                                </tr><tr class="bg-white text-gray-700">
+                                    <td class="p-3" id="total-sistema"></td>
+                                    <td class="p-3">1</td><td class="p-3"></td>
+                                    
+                                </tr><tr class="bg-white text-gray-700">
+                                    <td class="p-3" id="total-sistema"></td>
+                                    <td class="p-3">Otros:</td><td class="p-3"></td>
+                                    
+                                </tr><!-- Las filas de billetes y inputs se agregarán dinámicamente -->
                             </tbody>
                         </table>
                         
-                        <div id="resumen" class="hidden mt-6">
+                        <div id="detalle" class="detalle hidden mt-6">
                             <p class="text-lg">Total Arqueo: <span id="total-arqueo">$0</span></p>
                             <p class="text-lg">Diferencia de Caja: <span id="diferencia-caja">$0</span></p>
                         </div>
