@@ -152,6 +152,10 @@ tr.compra {
     background-color: #c3e8f1;
 }
 
+.resumen {
+    flex-direction: column;
+}
+
 .file-list {
     list-style: none;
     padding: 0;
