@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Divisas</title>
+        <title>Transacciones</title>
         <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/header.css">
         <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/footer.css">
         <link rel="stylesheet" href="./styles/index.css">
@@ -115,70 +115,104 @@
     <div class="main-content">
         <div id="sidebar-container"></div>
         <main id="dashboard-content" class="dashboard-content">
-            <section id="remuneraciones" class="content-section active">
+            <section id="transacciones" class="content-section active">
                 <!-- Título y botón Nueva Operación -->
                 <div class="flex items-center mb-6">
-                    <h1 class="text-2xl font-medium mr-4 leading-none text-white">Remuneraciones</h1>
-                    <button type="button" id="nuevo-remuneracion" href="./nuevo-remuneracion"
-                        class="text-white mr-2 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
-                        Nuevo Remuneración
+                    <h1 class="text-2xl font-medium mr-4 leading-none text-white">Transacciones</h1>
+                    <button type="button" id="nueva-tr" href="./nueva-tr"
+                        class="text-white bg-blue-700 mr-4 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
+                        Nueva Transacción
                     </button>
-                    <button type="button" id="remuneraciones" href="#"
-                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
-                        Remuneraciones
-                    </button>
+                </div>
+                
+                <!-- Filtros de fecha y botón Borrar Filtros -->
+                <div class="flex items-center mb-6 space-x-4">
+                    <div class="flex">
+                        <div class="mr-2">
+                            <label for="fecha-inicio" class="block mb-1 text-sm text-white">Desde</label>
+                            <input type="date" id="fecha-inicio" 
+                                class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label for="fecha-fin" class="block mb-1 text-sm text-white">Hasta</label>
+                            <input type="date" id="fecha-fin" 
+                                class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+                    <button type="button" id="borrar-filtros" 
+                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
+                    Borrar Filtros
+                </button>
+                </div>
+                
+                <!-- Checkboxes -->
+                <div class="flex mb-6">
+                    <div class="flex items-center">
+                        <input type="checkbox" id="emitidas" 
+                            class="w-4 h-4 mr-2 text-blue-600 bg-white border-gray-600 rounded focus:ring-blue-500">
+                        <label for="emitidas" class="text-sm text-white">Mostrar sólo emitidas/timbradas en SII</label>
+                    </div>
+                    <div class="flex items-center ml-4">
+                        <input type="checkbox" id="no-emitidas" 
+                            class="w-4 h-4 mr-2 text-blue-600 bg-white border-gray-600 rounded focus:ring-blue-500">
+                        <label for="no-emitidas" class="text-sm text-white">Mostrar sólo NO emitidas/timbradas en SII</label>
+                    </div>
                 </div>
                 
                 <!-- Filtros avanzados -->
                 <div class="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-6">
                     <div>
-                        <label for="periodo" class="block mb-1 text-sm text-white">Nombre</label>
-                        <input type="text" id="periodo" 
+                        <label for="numero" class="block mb-1 text-sm text-white">Número</label>
+                        <input type="text" id="numero" 
                             class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                     </div>
                     <div>
-                        <label for="integrante" class="block mb-1 text-sm text-white">RUT</label>
-                        <input type="text" id="integrante" 
+                        <label for="cliente" class="block mb-1 text-sm text-white">Cliente</label>
+                        <input type="text" id="cliente" 
                             class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                     </div>
                     <div>
-                        <label for="monto" class="block mb-1 text-sm text-white">Fecha de Ingreso</label>
-                        <input type="text" id="monto" 
-                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label for="cargo" class="block mb-1 text-sm text-white">Cargo</label>
-                        <select id="cargo"
+                        <label for="tipo-doc" class="block mb-1 text-sm text-white">Tipo de Documento</label>
+                        <select id="tipo-doc"
                             class="select-list block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                             <option value="">Seleccionar</option>
-                            <option value="">Caja</option>
-                            <option value="">Tesorería</option>
-                            <option value="">Socio</option>
-                            <option value="">Otro</option>
+                            <option value="boleta">Boleta</option>
+                            <option value="factura">Factura</option>
                         </select>
                     </div>
                     <div>
-                        <label for="contrato" class="block mb-1 text-sm text-white">Contrato</label>
-                        <select id="estado"
-                            class="select-list block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Seleccionar</option>
-                            <option value="">Contratado</option>
-                            <option value="">Apoyo</option>
-                            <option value="">Practicante</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="sueldo" class="block mb-1 text-sm text-white">Sueldo Líquido</label>
-                        <input type="text" id="sueldo" 
+                        <label for="n-doc" class="block mb-1 text-sm text-white">Nº Doc</label>
+                        <input type="text" id="n-doc"
                             class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                     </div>
                     <div>
-                        <label for="habilitados" class="block mb-1 text-sm text-white">Habilitados</label>
-                        <select id="habilitados"
+                        <label for="n-nota" class="block mb-1 text-sm text-white">Nº Nota</label>
+                        <input type="text" id="n-nota" 
+                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label for="tipo-transaccion" class="block mb-1 text-sm text-white">Tipo de Transacción</label>
+                        <select id="tipo-transaccion" 
                             class="select-list block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                             <option value="">Seleccionar</option>
-                            <option value="">No Habilitado</option>
-                            <option value="">Habilitado</option>
+                            <option value="compra">Compra</option>
+                            <option value="venta">Venta</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="divisa" class="block mb-1 text-sm text-white">Divisa</label>
+                        <input type="text" id="divisa" 
+                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label for="estado" class="block mb-1 text-sm text-white">Estado</label>
+                        <select id="estado" 
+                            class="select-list block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Seleccionar</option>
+                            <option value="vigente">Vigente</option>
+                            <option value="abonado">Abonado</option>
+                            <option value="pagado">Pagado</option>
+                            <option value="anulado">Anulado</option>
                         </select>
                     </div>
                 </div>
@@ -187,7 +221,7 @@
                 <div class="flex items-center justify-between mb-6">
                     <div class="flex items-center space-x-2">
                         <label for="mostrar-registros" class="text-sm text-white">Mostrar</label>
-                        <select id="mostrar-registros"
+                        <select id="mostrar-registros" 
                             class="block px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                             <option value="25">25</option>
                             <option value="50">50</option>
@@ -206,23 +240,37 @@
                     <table class="w-full text-sm text-left text-white bg-gray-800">
                         <thead class="text-xs uppercase bg-gray-800 text-white">
                             <tr>
-                                <th class="px-4 py-2">Nombre</th>
-                                <th class="px-4 py-2">RUT</th>
-                                <th class="px-4 py-2">Fecha de Ingreso</th>
-                                <th class="px-4 py-2">Rol</th>
-                                <th class="px-4 py-2">Tipo de Contrato</th>
-                                <th class="px-4 py-2">Sueldo Líquido</th>
+                                <th class="px-4 py-2">Fecha</th>
+                                <th class="px-4 py-2">Número</th>
+                                <th class="px-4 py-2">Cliente</th>
+                                <th class="px-4 py-2">Tipo de Documento</th>
+                                <th class="px-4 py-2">Nº Doc</th>
+                                <th class="px-4 py-2">Nº Nota</th>
+                                <th class="px-4 py-2">Tipo de Transacción</th>
+                                <th class="px-4 py-2">Divisas</th>
+                                <th class="px-4 py-2">Monto</th>
+                                <th class="px-4 py-2">Tasa de Cambio</th>
+                                <th class="px-4 py-2">SubTotal</th>
+                                <th class="px-4 py-2">Total</th>
+                                <th class="px-4 py-2">Estado</th>
                                 <th class="px-4 py-2"></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="border-b bg-white border-gray-700 text-gray-700">
-                                <td class="px-4 py-2">Integrante</td>
-                                <td class="px-4 py-2">12.345.678-9</td>
-                                <td class="px-4 py-2">2025-01</td>
-                                <td class="px-4 py-2">Caja</td>
-                                <td class="px-4 py-2">Contratado</td>
-                                <td class="px-4 py-2">$100.000</td>
+                            <tr class="venta border-b border-gray-700 text-gray-700">
+                                <td class="px-4 py-2">2025-01-28</td>
+                                <td class="px-4 py-2">12345</td>
+                                <td class="px-4 py-2">Cliente 1</td>
+                                <td class="px-4 py-2">Factura</td>
+                                <td class="px-4 py-2">123</td>
+                                <td class="px-4 py-2">456</td>
+                                <td class="px-4 py-2">Venta</td>
+                                <td class="px-4 py-2">USD</td>
+                                <td class="px-4 py-2">1.000</td>
+                                <td class="px-4 py-2">$983</td>
+                                <td class="px-4 py-2">$1.200</td>
+                                <td class="px-4 py-2">$1.200</td>
+                                <td class="px-4 py-2">Pagado</td>
                                 <td class="px-4 py-2">
                                     <button class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1">
                                         Mostrar
