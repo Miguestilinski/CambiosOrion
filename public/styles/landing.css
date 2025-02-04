@@ -231,6 +231,19 @@ button:hover {
     text-decoration: underline;
 }
 
+
+a.fab {
+    right: 3.5rem;
+    bottom: 2rem;
+    background: #21479e;
+    z-index: 99999;
+}
+
+a.fab:hover {
+    transform: scale(1.1);
+    background: #3d63ba;
+}
+
 @media (max-width: 887px) {
 
 }
