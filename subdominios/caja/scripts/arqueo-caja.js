@@ -10,7 +10,7 @@ function seleccionarDivisa(divisa) {
     document.getElementById('total-sistema').textContent = `$${totalSistema}`;
     const tbody = document.getElementById('tbody-arqueo');
     tbody.innerHTML = `
-        <tr class="bg-gray-600">
+        <tr class="bg-gray-700">
             <td class="p-3" id="total-sistema">$${totalSistema}</td>
             <td class="p-3"></td>
             <td class="p-3"></td>
@@ -19,11 +19,11 @@ function seleccionarDivisa(divisa) {
     
     billetes.forEach(valor => {
         tbody.innerHTML += `
-            <tr class="bg-gray-700">
+            <tr class="bg-white text-gray-700">
                 <td class="p-3"></td>
                 <td class="p-3">$${valor}</td>
                 <td class="p-3">
-                    <input type="number" class="w-16 p-1 bg-gray-800 border border-gray-600 text-white text-center" oninput="calcularTotal()">
+                    <input type="number" class="w-16 p-1 bg-white border border-gray-600 text-gray-700 text-center" oninput="calcularTotal()">
                 </td>
             </tr>
         `;
