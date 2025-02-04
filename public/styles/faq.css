@@ -64,6 +64,18 @@ h2 {
     border-top: 1px solid #e5e7eb; /* Tailwind gray-300 */
 }
 
+a.fab {
+    right: 3.5rem;
+    bottom: 2rem;
+    background: #21479e;
+    z-index: 99999;
+}
+
+a.fab:hover {
+    transform: scale(1.1);
+    background: #3d63ba;
+}
+
 /* Estilos para la versión móvil */
 @media (max-width: 887px) {
 

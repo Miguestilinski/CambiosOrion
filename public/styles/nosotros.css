@@ -265,6 +265,18 @@ h2.text-2xl.font-bold.text-center.text-white {
     color: #333;
 }
 
+a.fab {
+    right: 3.5rem;
+    bottom: 2rem;
+    background: #21479e;
+    z-index: 99999;
+}
+
+a.fab:hover {
+    transform: scale(1.1);
+    background: #3d63ba;
+}
+
 @media (max-width: 887px) {
     .banner{
         height: 20rem;
