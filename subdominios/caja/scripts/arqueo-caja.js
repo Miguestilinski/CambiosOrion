@@ -1,4 +1,4 @@
-function seleccionarDivisa(divisa) {
+window.seleccionarDivisa = function(divisa) {
     document.getElementById('titulo-divisa').textContent = `Arqueo de ${divisa}`;
     document.getElementById('tabla-arqueo').classList.remove('hidden');
     document.getElementById('detalle').classList.remove('hidden');
@@ -30,7 +30,7 @@ function seleccionarDivisa(divisa) {
     });
 }
 
-function calcularTotal() {
+window.calcularTotal = function() {
     let totalArqueo = 0;
     const inputs = document.querySelectorAll('#tbody-arqueo input');
     const billetes = [100, 50, 20, 10, 5, 1];
