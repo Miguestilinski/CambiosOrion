@@ -54,11 +54,20 @@ function seleccionarDivisa(divisa) {
 
 function generarTablaArqueo(divisa) {
     const billetes = [100, 50, 20, 10, 5, 1];
-    const tbody = document.getElementById('tbody-arqueo');
-    tbody.innerHTML = "";
 
-    billetes.forEach(valor => {
-        const fila = document.createElement("tr");
+    document.getElementById('total-sistema').textContent = `$${totalSistema}`;
+    const tbody = document.getElementById('tbody-arqueo');
+    tbody.innerHTML = `
+        <tr class="bg-white text-gray-700">
+            <td class="p-3" id="total-sistema" rowspan="2">$${totalSistema}</td>
+            <td class="p-3">$${billetes[0]}</td>
+            <td class="p-3">
+                <input type="number" class="w-16 p-1 bg-white border border-gray-600 text-gray-700 text-center" oninput="calcularTotal()">
+            </td>
+        </tr>
+    `;
+
+    billetes.slice(1).forEach(valor => {
         fila.classList.add("bg-white", "text-gray-700");
         fila.innerHTML = `
             <td class="p-3">$${valor}</td>
