@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function cargarDivisas() {
-    fetch("https://cambiosorion/data/get_divisas.php")
+    fetch("https://cambiosorion.cl/data/get_divisas.php")
         .then(response => response.json())
         .then(divisas => {
             const lista = document.getElementById("divisas-lista");
@@ -53,7 +53,7 @@ function seleccionarDivisa(divisa) {
 }
 
 function generarTablaArqueo(divisa) {
-    
+
     // Simulación de datos
     const totalSistema = 5000;
     const billetes = [100, 50, 20, 10, 5, 1];
@@ -100,7 +100,7 @@ function calcularTotal(codigoDivisa) {
 }
 
 document.getElementById("guardar-arqueo").addEventListener("click", function() {
-    fetch("https://cambiosorion/data/get_divisas.php")
+    fetch("https://cambiosorion.cl/data/get_divisas.php")
         .then(response => response.json())
         .then(divisas => {
             let todasCero = divisas.every(divisa => parseFloat(document.getElementById(`diferencia-${divisa.codigo}`).textContent) === 0);
@@ -115,7 +115,7 @@ document.getElementById("guardar-arqueo").addEventListener("click", function() {
 });
 
 function guardarCuadratura(divisas) {
-    fetch("https://cambiosorion/data/guardar_arqueo.php", {
+    fetch("https://cambiosorion.cl/data/guardar_arqueo.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ divisas: divisas })
