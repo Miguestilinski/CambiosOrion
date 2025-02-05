@@ -10,7 +10,7 @@ window.seleccionarDivisa = function(divisa) {
     document.getElementById('total-sistema').textContent = `$${totalSistema}`;
     const tbody = document.getElementById('tbody-arqueo');
     tbody.innerHTML = `
-        <tr class="bg-gray-700">
+        <tr class="bg-white text-gray-700">
             <td class="p-3" id="total-sistema">$${totalSistema}</td>
             <td class="p-3"></td>
             <td class="p-3"></td>
