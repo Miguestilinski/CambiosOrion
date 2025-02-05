@@ -53,6 +53,9 @@ function seleccionarDivisa(divisa) {
 }
 
 function generarTablaArqueo(divisa) {
+    
+    // Simulación de datos
+    const totalSistema = 5000;
     const billetes = [100, 50, 20, 10, 5, 1];
 
     document.getElementById('total-sistema').textContent = `$${totalSistema}`;
