@@ -100,7 +100,7 @@ function calcularTotal(codigoDivisa) {
 }
 
 document.getElementById("guardar-arqueo").addEventListener("click", function() {
-    fetch("https://cambiosorion.cl/data/get_divisas.php")
+    fetch("https://cambiosorion.cl/data/get_divisas_arqueo.php")
         .then(response => response.json())
         .then(divisas => {
             let todasCero = divisas.every(divisa => parseFloat(document.getElementById(`diferencia-${divisa.codigo}`).textContent) === 0);
