@@ -1,14 +1,11 @@
-# Habilitar reescritura
-RewriteEngine On
+RewriteEngine on
 
-# Redirigir solicitudes al verificador de autenticaci√≥n
+# Redirigir solicitudes al verificador de autenticacion
 RewriteCond %{REQUEST_URI} ^/$
-RewriteRule ^ auth.php [L]
+RewriteRule ^ https://cambiosorion.cl/data/auth.php [L]
 
-# Redirigir todas las solicitudes no existentes a index.html
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^ index.html [L]
+# Establecer index.php como la p·gina principal
+DirectoryIndex operaciones.html
 
 RewriteCond %{HTTP_REFERER} !^http://admin.cambiosorion.cl/.*$      [NC]
 RewriteCond %{HTTP_REFERER} !^http://admin.cambiosorion.cl$      [NC]
