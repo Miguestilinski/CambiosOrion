@@ -6,7 +6,7 @@ const axios = require('axios');
 const session = require('express-session');
 const cors = require('cors');
 const app = express();
-const port = process.env.PORT || 3306;
+const port = process.env.PORT || 3000;
 
 // Cargar las variables de entorno
 require('dotenv').config();
