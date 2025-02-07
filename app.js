@@ -35,6 +35,7 @@ requiredEnv.forEach((envVar) => {
 });
 
 // Crear conexión a la base de datos
+
 const dbConfig = {
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
