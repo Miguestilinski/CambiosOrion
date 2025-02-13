@@ -70,3 +70,57 @@ Stack trace:
 #0 /home/cambioso/public_html/index.php(4): mysqli->__construct()
 #1 {main}
   thrown in /home/cambioso/public_html/index.php on line 4
+[18-Oct-2024 13:42:27 America/Santiago] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'cambioso_admin'@'localhost' (using password: YES) in /home/cambioso/public_html/orionapp/test.php:8
+Stack trace:
+#0 /home/cambioso/public_html/orionapp/test.php(8): mysqli->__construct()
+#1 {main}
+  thrown in /home/cambioso/public_html/orionapp/test.php on line 8
+[18-Oct-2024 13:42:29 America/Santiago] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'cambioso_admin'@'localhost' (using password: YES) in /home/cambioso/public_html/orionapp/test.php:8
+Stack trace:
+#0 /home/cambioso/public_html/orionapp/test.php(8): mysqli->__construct()
+#1 {main}
+  thrown in /home/cambioso/public_html/orionapp/test.php on line 8
+[18-Oct-2024 13:42:44 America/Santiago] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'cambioso_admin'@'localhost' (using password: YES) in /home/cambioso/public_html/orionapp/test.php:8
+Stack trace:
+#0 /home/cambioso/public_html/orionapp/test.php(8): mysqli->__construct()
+#1 {main}
+  thrown in /home/cambioso/public_html/orionapp/test.php on line 8
+[18-Oct-2024 13:42:45 America/Santiago] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'cambioso_admin'@'localhost' (using password: YES) in /home/cambioso/public_html/orionapp/test.php:8
+Stack trace:
+#0 /home/cambioso/public_html/orionapp/test.php(8): mysqli->__construct()
+#1 {main}
+  thrown in /home/cambioso/public_html/orionapp/test.php on line 8
+[18-Oct-2024 13:42:45 America/Santiago] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'cambioso_admin'@'localhost' (using password: YES) in /home/cambioso/public_html/orionapp/test.php:8
+Stack trace:
+#0 /home/cambioso/public_html/orionapp/test.php(8): mysqli->__construct()
+#1 {main}
+  thrown in /home/cambioso/public_html/orionapp/test.php on line 8
+[18-Oct-2024 13:42:53 America/Santiago] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'cambioso_admin'@'localhost' (using password: YES) in /home/cambioso/public_html/orionapp/test.php:8
+Stack trace:
+#0 /home/cambioso/public_html/orionapp/test.php(8): mysqli->__construct()
+#1 {main}
+  thrown in /home/cambioso/public_html/orionapp/test.php on line 8
+[18-Oct-2024 13:42:54 America/Santiago] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'cambioso_admin'@'localhost' (using password: YES) in /home/cambioso/public_html/orionapp/test.php:8
+Stack trace:
+#0 /home/cambioso/public_html/orionapp/test.php(8): mysqli->__construct()
+#1 {main}
+  thrown in /home/cambioso/public_html/orionapp/test.php on line 8
+[18-Oct-2024 13:44:29 America/Santiago] PHP Warning:  Undefined array key "divisa" in /home/cambioso/public_html/orionapp/test.php on line 26
+[18-Oct-2024 13:44:29 America/Santiago] PHP Warning:  Undefined array key "divisa" in /home/cambioso/public_html/orionapp/test.php on line 26
+[18-Oct-2024 13:44:29 America/Santiago] PHP Warning:  Undefined array key "divisa" in /home/cambioso/public_html/orionapp/test.php on line 26
+[18-Oct-2024 13:44:29 America/Santiago] PHP Warning:  Undefined array key "divisa" in /home/cambioso/public_html/orionapp/test.php on line 26
+[18-Oct-2024 13:44:29 America/Santiago] PHP Warning:  Undefined array key "divisa" in /home/cambioso/public_html/orionapp/test.php on line 26
+[18-Oct-2024 13:44:29 America/Santiago] PHP Warning:  Undefined array key "divisa" in /home/cambioso/public_html/orionapp/test.php on line 26
+[18-Oct-2024 13:44:29 America/Santiago] PHP Warning:  Undefined array key "divisa" in /home/cambioso/public_html/orionapp/test.php on line 26
+[18-Oct-2024 13:44:29 America/Santiago] PHP Warning:  Undefined array key "divisa" in /home/cambioso/public_html/orionapp/test.php on line 26
+[18-Oct-2024 13:44:29 America/Santiago] PHP Warning:  Undefined array key "divisa" in /home/cambioso/public_html/orionapp/test.php on line 26
+[18-Oct-2024 13:44:29 America/Santiago] PHP Warning:  Undefined array key "divisa" in /home/cambioso/public_html/orionapp/test.php on line 26
+[18-Oct-2024 13:44:29 America/Santiago] PHP Warning:  Undefined array key "divisa" in /home/cambioso/public_html/orionapp/test.php on line 26
+[18-Oct-2024 13:44:29 America/Santiago] PHP Warning:  Undefined array key "divisa" in /home/cambioso/public_html/orionapp/test.php on line 26
+[18-Oct-2024 13:44:29 America/Santiago] PHP Warning:  Undefined array key "divisa" in /home/cambioso/public_html/orionapp/test.php on line 26
+[18-Oct-2024 13:44:29 America/Santiago] PHP Warning:  Undefined array key "divisa" in /home/cambioso/public_html/orionapp/test.php on line 26
+[18-Oct-2024 13:44:29 America/Santiago] PHP Warning:  Undefined array key "divisa" in /home/cambioso/public_html/orionapp/test.php on line 26
+[18-Oct-2024 13:44:29 America/Santiago] PHP Warning:  Undefined array key "divisa" in /home/cambioso/public_html/orionapp/test.php on line 26
+[18-Oct-2024 13:44:29 America/Santiago] PHP Warning:  Undefined array key "divisa" in /home/cambioso/public_html/orionapp/test.php on line 26
+[18-Oct-2024 13:44:29 America/Santiago] PHP Warning:  Undefined array key "divisa" in /home/cambioso/public_html/orionapp/test.php on line 26
+[18-Oct-2024 13:44:29 America/Santiago] PHP Warning:  Undefined array key "divisa" in /home/cambioso/public_html/orionapp/test.php on line 26

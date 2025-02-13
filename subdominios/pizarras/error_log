@@ -1,0 +1,12 @@
+[28-Jan-2025 10:29:13 America/Santiago] PHP Warning:  require_once(): https:// wrapper is disabled in the server configuration by allow_url_fopen=0 in /home/cambioso/public_html/orionapp/subdominios/pizarras/index.php on line 2
+[28-Jan-2025 10:29:13 America/Santiago] PHP Warning:  require_once(https://cambiosorion.cl/data/check_session.php): Failed to open stream: no suitable wrapper could be found in /home/cambioso/public_html/orionapp/subdominios/pizarras/index.php on line 2
+[28-Jan-2025 10:29:13 America/Santiago] PHP Fatal error:  Uncaught Error: Failed opening required 'https://cambiosorion.cl/data/check_session.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/cambioso/public_html/orionapp/subdominios/pizarras/index.php:2
+Stack trace:
+#0 {main}
+  thrown in /home/cambioso/public_html/orionapp/subdominios/pizarras/index.php on line 2
+[28-Jan-2025 12:41:21 America/Santiago] PHP Warning:  require_once(): https:// wrapper is disabled in the server configuration by allow_url_fopen=0 in /home/cambioso/public_html/orionapp/subdominios/pizarras/index.php on line 2
+[28-Jan-2025 12:41:21 America/Santiago] PHP Warning:  require_once(https://cambiosorion.cl/data/check_session.php): Failed to open stream: no suitable wrapper could be found in /home/cambioso/public_html/orionapp/subdominios/pizarras/index.php on line 2
+[28-Jan-2025 12:41:21 America/Santiago] PHP Fatal error:  Uncaught Error: Failed opening required 'https://cambiosorion.cl/data/check_session.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/cambioso/public_html/orionapp/subdominios/pizarras/index.php:2
+Stack trace:
+#0 {main}
+  thrown in /home/cambioso/public_html/orionapp/subdominios/pizarras/index.php on line 2
