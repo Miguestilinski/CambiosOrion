@@ -6,7 +6,7 @@ const axios = require('axios');
 const session = require('express-session');
 const cors = require('cors');
 const app = express();
-const port = process.env.PORT || 3306;
+const port = process.env.PORT || 3000;
 
 // Cargar las variables de entorno
 require('dotenv').config();
@@ -35,11 +35,13 @@ requiredEnv.forEach((envVar) => {
 });
 
 // Crear conexión a la base de datos
+
 const dbConfig = {
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
+  connectTimeout: 10000,
 };
 
 // Conectar a la base de datos
