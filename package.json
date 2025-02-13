@@ -13,22 +13,29 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^1.7.9",
+    "call-bind-apply-helpers": "^1.0.2",
     "circle-flags": "github:HatScripts/circle-flags",
     "cors": "^2.8.5",
     "country-state-city": "^3.2.1",
     "dotenv": "^16.4.7",
+    "es-value-fixtures": "^1.7.1",
     "express": "^4.21.2",
     "express-session": "^1.18.1",
     "flags": "github:tabler/tabler-flags",
     "flowbite": "^2.5.2",
+    "for-each": "^0.3.5",
     "google-auth-library": "^9.15.0",
+    "has-strict-mode": "^1.1.0",
     "mysql": "^2.18.1",
     "nodemailer": "^6.9.16",
     "pdf-lib": "^1.17.1",
     "signature_pad": "^5.0.4",
+    "tape": "^5.9.0",
     "ws": "^8.18.0"
   },
   "devDependencies": {
-    "tailwindcss": "^3.4.14"
+    "@ljharb/tsconfig": "^0.2.3",
+    "tailwindcss": "^3.4.14",
+    "typescript": "^5.7.3"
   }
 }

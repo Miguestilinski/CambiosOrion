@@ -1,0 +1,72 @@
+{
+	"name": "make-arrow-function",
+	"version": "1.2.0",
+	"author": "Jordan Harband",
+	"funding": {
+		"url": "https://github.com/sponsors/ljharb"
+	},
+	"description": "Function that returns an arbitrary arrow function, or undefined if arrow function syntax is unsupported.",
+	"license": "MIT",
+	"main": "index.js",
+	"scripts": {
+		"prepublish": "safe-publish-latest",
+		"pretest": "npm run --silent lint",
+		"test": "npm run tests-only",
+		"tests-only": "node test",
+		"posttest": "npx aud",
+		"coverage": "covert test/*.js",
+		"lint": "eslint .",
+		"version": "auto-changelog && git add CHANGELOG.md",
+		"postversion": "auto-changelog && git add CHANGELOG.md && git commit --no-edit --amend && git tag -f \"v$(node -e \"console.log(require('./package.json').version)\")\""
+	},
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/ljharb/make-arrow-function.git"
+	},
+	"bugs": {
+		"url": "https://github.com/ljharb/make-arrow-function/issues"
+	},
+	"keywords": [
+		"arrow function",
+		"ES6",
+		"arrow",
+		"fat arrow"
+	],
+	"dependencies": {},
+	"devDependencies": {
+		"@ljharb/eslint-config": "^16.0.0",
+		"auto-changelog": "^1.16.2",
+		"covert": "^1.1.1",
+		"eslint": "^6.8.0",
+		"safe-publish-latest": "^1.1.4",
+		"tape": "^5.0.0-next.4"
+	},
+	"testling": {
+		"files": "test/index.js",
+		"browsers": [
+			"iexplore/6.0..latest",
+			"firefox/3.0..6.0",
+			"firefox/15.0..latest",
+			"firefox/nightly",
+			"chrome/4.0..10.0",
+			"chrome/20.0..latest",
+			"chrome/canary",
+			"opera/10.0..latest",
+			"opera/next",
+			"safari/4.0..latest",
+			"ipad/6.0..latest",
+			"iphone/6.0..latest",
+			"android-browser/4.2"
+		]
+	},
+	"engines": {
+		"node": ">= 0.4"
+	},
+	"auto-changelog": {
+		"output": "CHANGELOG.md",
+		"template": "keepachangelog",
+		"unreleased": false,
+		"commitLimit": false,
+		"backfillLimit": false
+	}
+}

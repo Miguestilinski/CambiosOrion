@@ -1,0 +1,42 @@
+'use strict';
+
+var test = require('tape');
+var makeArrowFunction = require('../');
+
+test('makeArrowFunction() is undefined or an arrow function', function (t) {
+	var arrowFunction = makeArrowFunction();
+	if (arrowFunction) {
+		t.equal(typeof arrowFunction, 'function', 'makeArrowFunction is function');
+		t.equal(String(arrowFunction), '(a, b) => a * b', 'arrowFunction has expected source');
+	} else {
+		t.equal(typeof arrowFunction, 'undefined', 'makeArrowFunction is undefined');
+	}
+	t.end();
+});
+
+test('makeArrowFunction.list() is an array', function (t) {
+	var funcs = makeArrowFunction.list();
+	var expectedSources = [
+		'(a, b) => a * b',
+		'() => 42',
+		'() => function () {}',
+		'() => x => x * x',
+		'y => x => x * x',
+		'x => x * x',
+		'x => { return x * x; }',
+		'(x, y) => { return x + x; }',
+		'(a = Math.random(10)) => {}',
+		'(a = function() {\n\tif (Math.random() < 0.5) { return 42; }\n\treturn "something else";\n}) => a()'
+	];
+	t.plan(1 + (2 * funcs.length));
+	t.equal(Object.prototype.toString.call(funcs), '[object Array]', 'list() is an array');
+	if (funcs.length === 0) {
+		t.comment('no arrow functions present');
+	} else {
+		for (var i = 0; i < funcs.length; ++i) {
+			t.equal(typeof funcs[i], 'function', funcs[i] + ' is a function');
+			t.equal(String(funcs[i]), expectedSources[i], '"' + funcs[i] + '" !== "' + expectedSources[i] + '"');
+		}
+	}
+	t.end();
+});

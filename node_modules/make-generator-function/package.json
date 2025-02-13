@@ -1,0 +1,76 @@
+{
+	"name": "make-generator-function",
+	"version": "2.0.0",
+	"author": "Jordan Harband",
+	"funding": {
+		"url": "https://github.com/sponsors/ljharb"
+	},
+	"description": "Returns an arbitrary generator function, or undefined if generator syntax is unsupported.",
+	"license": "MIT",
+	"main": "index.js",
+	"scripts": {
+		"prepublish": "safe-publish-latest",
+		"pretest": "npm run --silent lint",
+		"test": "npm run --silent tests-only",
+		"tests-only": "node --harmony test",
+		"posttest": "npx aud",
+		"coverage": "covert test/*.js",
+		"lint": "eslint .",
+		"eccheck": "eclint check *.js **/*.js > /dev/null",
+		"version": "auto-changelog && git add CHANGELOG.md",
+		"postversion": "auto-changelog && git add CHANGELOG.md && git commit --no-edit --amend && git tag -f \"v$(node -e \"console.log(require('./package.json').version)\")\""
+	},
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/ljharb/make-generator-function.git"
+	},
+	"bugs": {
+		"url": "https://github.com/ljharb/make-generator-function/issues"
+	},
+	"keywords": [
+		"generator function",
+		"ES6",
+		"generator",
+		"function*"
+	],
+	"dependencies": {},
+	"devDependencies": {
+		"@ljharb/eslint-config": "^16.0.0",
+		"auto-changelog": "^1.16.2",
+		"covert": "^1.1.1",
+		"eclint": "^2.8.1",
+		"eslint": "^6.8.0",
+		"for-each": "^0.3.3",
+		"iterate-iterator": "^1.0.1",
+		"safe-publish-latest": "^1.1.4",
+		"tape": "^5.0.0-next.4"
+	},
+	"testling": {
+		"files": "test/index.js",
+		"browsers": [
+			"iexplore/6.0..latest",
+			"firefox/3.0..6.0",
+			"firefox/15.0..latest",
+			"firefox/nightly",
+			"chrome/4.0..10.0",
+			"chrome/20.0..latest",
+			"chrome/canary",
+			"opera/10.0..latest",
+			"opera/next",
+			"safari/4.0..latest",
+			"ipad/6.0..latest",
+			"iphone/6.0..latest",
+			"android-browser/4.2"
+		]
+	},
+	"engines": {
+		"node": ">= 0.4"
+	},
+	"auto-changelog": {
+		"output": "CHANGELOG.md",
+		"template": "keepachangelog",
+		"unreleased": false,
+		"commitLimit": false,
+		"backfillLimit": false
+	}
+}
