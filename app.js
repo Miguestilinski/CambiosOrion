@@ -25,6 +25,9 @@ app.use(
   })
 );
 
+const compression = require('compression');
+app.use(compression());
+
 // Validar que las variables de entorno están configuradas
 const requiredEnv = ['DB_HOST', 'DB_USER', 'DB_PASS', 'DB_NAME'];
 requiredEnv.forEach((envVar) => {
@@ -55,7 +58,26 @@ db.connect((error) => {
 app.use('/assets', express.static(path.join(__dirname, 'orionapp/assets')));
 app.use('/icons', express.static(path.join(__dirname, 'orionapp/icons')));
 app.use('/sounds', express.static(path.join(__dirname, 'orionapp/sounds')));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'orionapp/public')));
+
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  next();
+});
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(503).send("Servicio no disponible temporalmente. Por favor, intenta más tarde.");
+});
+
+app.use((req, res, next) => {
+  if (!req.secure && process.env.NODE_ENV === 'production') {
+    return res.redirect('https://' + req.headers.host + req.url);
+  }
+  next();
+});
 
 // Middleware para identificar subdominios
 app.use((req, res, next) => {
