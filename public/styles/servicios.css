@@ -3,7 +3,7 @@ body {
     @apply font-sans bg-white;
     margin: 0;
     padding: 0;
-    background: rgba(0, 0, 0, 0.45) url('/orionapp/assets/FondoOrion.jpg') no-repeat center top;
+    background: rgba(0, 0, 0, 0.45) url('https://cambiosorion.cl/orionapp/assets/FondoOrion.jpg') no-repeat center top;
     background-size: cover;
     background-attachment: fixed;
     position: relative;
@@ -70,7 +70,7 @@ a.info-button {
 
 /* Estilo para las secciones impares */
 .service-section:nth-of-type(odd) {
-    background: rgba(0, 0, 0, 0.45) url('/orionapp/assets/FondoOrion.jpg') no-repeat center;
+    background: rgba(0, 0, 0, 0.45) url('https://cambiosorion.cl/orionapp/assets/FondoOrion.jpg') no-repeat center;
     background-size: cover;
     background-attachment: fixed;
 }
