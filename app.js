@@ -58,7 +58,7 @@ db.connect((error) => {
 app.use('/assets', express.static(path.join(__dirname, 'orionapp/assets')));
 app.use('/icons', express.static(path.join(__dirname, 'orionapp/icons')));
 app.use('/sounds', express.static(path.join(__dirname, 'orionapp/sounds')));
-app.use(express.static(path.join(__dirname, 'public')));
+//app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
