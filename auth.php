@@ -6,6 +6,10 @@ header('Content-Type: application/json');
 
 session_start();
 
+// Obtener el host actual (incluye el subdominio si lo hay)
+$host = $_SERVER['HTTP_HOST']; // Ejemplo: admin.cambiosorion.cl
+$requestUri = $_SERVER['REQUEST_URI']; // Ruta que se está solicitando
+
 // Verifica si la sesión está activa
 if (!isset($_SESSION['user'])) {
     header("Location: https://cambiosorion.cl/sin-acceso");
@@ -18,19 +22,21 @@ if ($_SESSION['user']['tipo'] !== 'administrativo' || $_SESSION['user']['rol'] =
     exit;
 }
 
-// Obtener el subdominio actual
-$host = $_SERVER['HTTP_HOST']; // Ejemplo: admin.cambiosorion.cl
-$subdomain = explode('.', $host)[0]; // Extraer la primera parte del subdominio
-
-// Verificar si ya estamos en el índice del subdominio
-if ($_SERVER['REQUEST_URI'] !== '/' && $_SERVER['REQUEST_URI'] !== '/') {
-    exit; // No hacer nada si el usuario ya está en la ruta correcta
+// Verifica si el usuario ya está en el subdominio correcto
+if (strpos($host, 'cambiosorion.cl') !== false && $host !== 'cambiosorion.cl') {
+    // Si está en un subdominio, no hacer nada y permitir que continúe
+    exit;
 }
 
-// Construir la URL correcta del subdominio
-$url = "https://$host/";
+// Si el usuario está en el dominio principal y debería estar en un subdominio, redirigirlo
+$subdomain = explode('.', $host)[0]; // Extraer la primera parte del subdominio
+if ($subdomain !== 'cambiosorion' && $subdomain !== 'www') {
+    // Redirigir al índice del subdominio
+    header("Location: https://$host$requestUri");
+    exit;
+}
 
-// Redirigir al índice del subdominio
-header("Location: $url");
+// Si llega aquí, significa que está en cambiosorion.cl en lugar de un subdominio
+header("Location: https://cambiosorion.cl/sin-acceso");
 exit;
 ?>
