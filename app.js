@@ -58,7 +58,6 @@ db.connect((error) => {
 app.use('/assets', express.static(path.join(__dirname, 'orionapp/assets')));
 app.use('/icons', express.static(path.join(__dirname, 'orionapp/icons')));
 app.use('/sounds', express.static(path.join(__dirname, 'orionapp/sounds')));
-//app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
@@ -71,10 +70,6 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(503).send("Servicio no disponible temporalmente. Por favor, intenta más tarde.");
 });
-
-//app.use((req, res, next) => {
-//  next();
-//});
 
 // Middleware para identificar subdominios
 app.use((req, res, next) => {
