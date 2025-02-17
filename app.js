@@ -72,9 +72,9 @@ app.use((err, req, res, next) => {
   res.status(503).send("Servicio no disponible temporalmente. Por favor, intenta más tarde.");
 });
 
-app.use((req, res, next) => {
-  next();
-});
+//app.use((req, res, next) => {
+//  next();
+//});
 
 // Middleware para identificar subdominios
 app.use((req, res, next) => {
