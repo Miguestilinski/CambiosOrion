@@ -178,4 +178,9 @@ a.fab:hover {
     .sending-money-image img {
         height: auto; 
     }
+
+    a.fab {
+        right: 1.5rem;
+        bottom: 1rem;
+    }    
 }

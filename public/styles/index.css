@@ -612,6 +612,11 @@ a.fab:hover {
 }
 
 @media (max-width: 887px) {
+    a.fab {
+        right: 1.5rem;
+        bottom: 1rem;
+    }    
+    
     #toggle-container {
         display: none;
     }

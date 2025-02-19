@@ -78,5 +78,9 @@ a.fab:hover {
 
 /* Estilos para la versión móvil */
 @media (max-width: 887px) {
+    a.fab {
+        right: 1.5rem;
+        bottom: 1rem;
+    }    
 
 }
