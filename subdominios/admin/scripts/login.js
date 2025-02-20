@@ -6,6 +6,8 @@ document.addEventListener("DOMContentLoaded", function() {
         let correo = document.getElementById("correo").value.trim().toLowerCase();
         const password = document.getElementById("password").value.trim();
 
+        console.log("Formulario enviado", correo, password);
+
         // Convertir el correo a minúsculas automáticamente
         correo = correo.toLowerCase();
 
@@ -29,9 +31,13 @@ document.addEventListener("DOMContentLoaded", function() {
                 credentials: "include"
             });
 
-            if (!response.ok) throw new Error("Error en la conexión con el servidor");
+            if (!response.ok) {
+                console.log("Error en la respuesta del servidor:", response.status);
+                throw new Error("Error en la conexión con el servidor");
+            }
 
             const result = await response.json();
+            console.log("Respuesta del servidor:", result);
             
             if (result.success) {
                 localStorage.setItem('sessionActive', 'true');
