@@ -211,7 +211,9 @@ function saveEditedCurrencies() {
         return;
     }
 
-    const currentTimestamp = new Date().toLocaleString('sv-SE', { timeZone: 'America/Santiago' }).replace(' ', 'T');
+    const now = new Date();
+    now.setHours(now.getHours() - 3);
+    const currentTimestamp = now.toISOString();
 
     // Enviar cambios al servidor asegurando no enviar campos vacíos
     const validChanges = changesToSave.map(divisa => ({
