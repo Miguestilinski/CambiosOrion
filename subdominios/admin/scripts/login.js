@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const response = await fetch('https://cambiosorion.cl/data/login_admin.php', {
                 method: 'POST',
                 body: formData,
+                credentials: "include"
             });
 
             if (!response.ok) throw new Error("Error en la conexión con el servidor");
