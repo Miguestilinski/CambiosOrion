@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function() {
         // Convertir el correo a minúsculas automáticamente
         correo = correo.toLowerCase();
 
-        if (tipoUsuario === 'administrativo' && correo === "") {
+        if (correo === "") {
             alert("Por favor, ingresa un correo válido.");
             return;
         }
@@ -41,9 +41,7 @@ document.addEventListener("DOMContentLoaded", function() {
             
             if (result.success) {
                 localStorage.setItem('sessionActive', 'true');
-                if (tipoUsuario === 'administrativo') {
-                    window.location.href = "https://admin.cambiosorion.cl/";
-                }
+                window.location.href = "https://admin.cambiosorion.cl/";
             } else {
                 alert(result.message);
             }
