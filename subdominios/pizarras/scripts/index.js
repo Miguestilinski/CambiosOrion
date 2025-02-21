@@ -211,17 +211,11 @@ function saveEditedCurrencies() {
         return;
     }
 
-    // Convertir la fecha y hora a la zona horaria de Santiago
-    const currentTimestamp = new Intl.DateTimeFormat('en-GB', {
-        timeZone: 'America/Santiago',
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false,
-    }).format(new Date());
+    const now = new Date();
+    const options = { timeZone: 'America/Santiago', hour12: false };
+    const currentTimestamp = new Intl.DateTimeFormat('en-GB', options).format(now);
+    console.log(currentTimestamp); // Fecha con la hora ajustada a la zona horaria deseada
+
 
     // Enviar cambios al servidor asegurando no enviar campos vacíos
     const validChanges = changesToSave.map(divisa => ({
