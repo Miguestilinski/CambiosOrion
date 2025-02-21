@@ -211,11 +211,8 @@ function saveEditedCurrencies() {
         return;
     }
 
-    const now = new Date();
-    const options = { timeZone: 'America/Santiago', hour12: false };
-    const currentTimestamp = new Intl.DateTimeFormat('en-GB', options).format(now);
+    const currentTimestamp = new Date().toLocaleString('en-US', { timeZone: 'America/Santiago' });
     console.log(currentTimestamp); // Fecha con la hora ajustada a la zona horaria deseada
-
 
     // Enviar cambios al servidor asegurando no enviar campos vacíos
     const validChanges = changesToSave.map(divisa => ({
