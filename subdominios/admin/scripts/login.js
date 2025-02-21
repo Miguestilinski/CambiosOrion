@@ -1,17 +1,10 @@
 document.addEventListener("DOMContentLoaded", function() {
-    console.log("DOM completamente cargado");
     const loginForm = document.getElementById("loginForm");
-    console.log("Formulario de login encontrado");
     loginForm.addEventListener("submit", async function(event) {
         event.preventDefault();
-        console.log("Evento submit capturado");
 
         let correo = document.getElementById("correo").value.trim().toLowerCase();
         const password = document.getElementById("password").value.trim();
-
-        console.log("Datos ingresados:", { correo, password });
-
-        console.log("Preparando datos para envío");
 
         // Convertir el correo a minúsculas automáticamente
         correo = correo.toLowerCase();
@@ -28,12 +21,8 @@ document.addEventListener("DOMContentLoaded", function() {
             return;
         }
 
-        console.log("Preparando datos para envío");
-
         const formData = new FormData(loginForm);
         formData.set("correo", correo);
-
-        console.log("Enviando solicitud a API...");
 
         try {
             const response = await fetch('https://cambiosorion.cl/data/login_admin.php', {
@@ -49,10 +38,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 throw new Error("Error en la conexión con el servidor");
             }
 
-            console.log("Respuesta recibida", response);
-
             const result = await response.json();
-            console.log("Respuesta del servidor:", result);
             
             if (result.success) {
                 console.log("Login exitoso, redirigiendo...");

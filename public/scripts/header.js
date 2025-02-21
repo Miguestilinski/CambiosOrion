@@ -73,7 +73,10 @@ function setupEventListeners() {
 
 // Función para comprobar el estado de sesión con AJAX
 function checkSession() {
-    fetch('https://cambiosorion.cl/data/session_status.php')
+    fetch('https://cambiosorion.cl/data/session_status.php', {
+            method: 'GET',
+            credentials: 'include' // Asegura que las cookies de sesión sean enviadas
+        })
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
