@@ -211,9 +211,7 @@ function saveEditedCurrencies() {
         return;
     }
 
-    const now = new Date();
-    now.setHours(now.getHours() - 3);
-    const currentTimestamp = now.toISOString();
+    const currentTimestamp = new Date().toISOString();
 
     // Enviar cambios al servidor asegurando no enviar campos vacíos
     const validChanges = changesToSave.map(divisa => ({
