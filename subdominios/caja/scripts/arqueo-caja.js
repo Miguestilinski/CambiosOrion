@@ -2,35 +2,42 @@ document.addEventListener("DOMContentLoaded", function() {
     cargarDivisas();
 });
 
-function cargarDivisas() {
-    fetch("https://cambiosorion.cl/data/get_divisas.php")
-        .then(response => response.json())
-        .then(divisas => {
-            const lista = document.getElementById("divisas-lista");
-            lista.innerHTML = ""; // Limpiar la lista antes de agregar nuevas opciones
+async function cargarDivisas() {
+    try {
+        let response = await fetch("https://cambiosorion.cl/data/get_divisas_arqueo.php");
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        
+        let divisas = await response.json();
+        
+        const lista = document.getElementById("divisas-lista");
+        lista.innerHTML = ""; // Limpiar la lista
 
-            divisas.forEach(divisa => {
-                const div = document.createElement("div");
-                div.classList.add("p-3", "rounded-lg", "cursor-pointer", "flex", "justify-between", "items-center");
-                div.onclick = () => seleccionarDivisa(divisa);
-                div.innerHTML = `
-                    <div class="flex">
-                        <img class="w-6 h-6 mr-2" src="https://cambiosorion.cl/orionapp/node_modules/circle-flags/flags/${divisa.codigo.toLowerCase()}.svg">
-                        <span class="m">${divisa.codigo}</span>
-                    </div>
-                    <div class="resumen flex text-sm">
-                        <span class="text-sm">Arqueo:</span>
-                        <span class="items-center text-md">$<span id="arqueo-${divisa.codigo}">${divisa.arqueo}</span></span>
-                    </div>
-                    <div class="resumen flex text-sm">
-                        <span class="text-sm">Diferencia:</span>
-                        <span class="text-sm">$<span id="diferencia-${divisa.codigo}">${divisa.diferencia}</span></span>
-                    </div>
-                `;
-                lista.appendChild(div);
-            });
-        })
-        .catch(error => console.error("Error al cargar divisas:", error));
+        divisas.forEach(divisa => {
+            const div = document.createElement("div");
+            div.classList.add("p-3", "bg-gray-600", "rounded-lg", "cursor-pointer", "flex", "justify-between", "items-center");
+            div.setAttribute("data-codigo", divisa.codigo); // Atributo para búsqueda eficiente
+            div.onclick = () => seleccionarDivisa(divisa);
+
+            div.innerHTML = `
+                <div class="flex">
+                    <img class="w-6 h-6 mr-2" src="https://cambiosorion.cl/orionapp/node_modules/circle-flags/flags/${divisa.codigo.toLowerCase()}.svg">
+                    <span class="m">${divisa.codigo}</span>
+                </div>
+                <div class="resumen flex text-sm">
+                    <span class="text-sm">Arqueo:</span>
+                    <span class="items-center text-md">$<span id="arqueo-${divisa.codigo}">${divisa.arqueo}</span></span>
+                </div>
+                <div class="resumen flex text-sm">
+                    <span class="text-sm">Diferencia:</span>
+                    <span class="text-sm">$<span id="diferencia-${divisa.codigo}">${divisa.diferencia}</span></span>
+                </div>
+            `;
+
+            lista.appendChild(div);
+        });
+    } catch (error) {
+        console.error("Error al cargar divisas:", error);
+    }
 }
 
 function seleccionarDivisa(divisa) {
@@ -38,17 +45,16 @@ function seleccionarDivisa(divisa) {
     document.getElementById('tabla-arqueo').classList.remove('hidden');
     document.getElementById('detalle').classList.remove('hidden');
 
-    // Remover fondo de la divisa previamente seleccionada
+    // Remover fondo de divisa previamente seleccionada
     document.querySelectorAll('#divisas-lista div').forEach(el => el.classList.remove('bg-gray-700'));
     
     // Agregar fondo a la divisa seleccionada
-    const divSeleccionado = [...document.querySelectorAll('#divisas-lista div')]
-        .find(el => el.textContent.includes(divisa.codigo));
+    const divSeleccionado = document.querySelector(`#divisas-lista div[data-codigo="${divisa.codigo}"]`);
     if (divSeleccionado) divSeleccionado.classList.add('bg-gray-700');
     
     document.getElementById('total-sistema').textContent = `$${divisa.arqueo}`;
     
-    // Actualizar la tabla de arqueo con datos de la divisa seleccionada
+    // Actualizar tabla con los datos de la divisa seleccionada
     generarTablaArqueo(divisa);
 }
 
