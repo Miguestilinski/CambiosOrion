@@ -106,54 +106,65 @@ function seleccionarDivisa(divisa) {
 }
 
 function generarTablaArqueo(divisa) {
-
-    // Simulación de datos
-    const totalSistema = 5000;
-    const billetes = [100, 50, 20, 10, 5, 1];
-
-    document.getElementById('total-sistema').textContent = `$${totalSistema}`;
     const tbody = document.getElementById('tbody-arqueo');
-    tbody.innerHTML = `
-        <tr class="bg-white text-gray-700">
-            <td class="p-3" id="total-sistema" rowspan="2">$${totalSistema}</td>
-            <td class="p-3">$${billetes[0]}</td>
-            <td class="p-3">
-                <input type="number" class="w-16 p-1 bg-white border border-gray-600 text-gray-700 text-center" oninput="calcularTotal()">
-            </td>
-        </tr>
-    `;
+    tbody.innerHTML = ""; // Limpiar la tabla antes de generarla
 
-    billetes.slice(1).forEach(valor => {
+    if (divisa.fraccionable) {
+        // Si la divisa es fraccionable, mostrar la denominación en la tabla
+        let denominaciones = divisa.denominacion ? divisa.denominacion.split(",") : [];
+        denominaciones = denominaciones.map(Number).sort((a, b) => b - a); // Ordenar de mayor a menor
+
+        denominaciones.forEach(denominacion => {
+            let fila = document.createElement("tr");
+            fila.classList.add("bg-white", "text-gray-700");
+
+            fila.innerHTML = `
+                <td class="p-3">${divisa.simbolo} ${denominacion}</td>
+                <td class="p-3">
+                    <input type="number" class="w-16 p-1 bg-white border border-gray-600 text-gray-700 text-center" 
+                           oninput="calcularTotal('${divisa.codigo}', '${divisa.simbolo}')">
+                </td>
+            `;
+            tbody.appendChild(fila);
+        });
+    } else {
+        // Si la divisa NO es fraccionable, solo mostrar una entrada de cantidad unitaria
+        let fila = document.createElement("tr");
         fila.classList.add("bg-white", "text-gray-700");
+
         fila.innerHTML = `
-            <td class="p-3">$${valor}</td>
+            <td class="p-3">${divisa.nombre} (${divisa.codigo})</td>
             <td class="p-3">
-                <input type="number" class="w-16 p-1 bg-white border border-gray-600 text-gray-700 text-center" oninput="calcularTotal('${divisa.codigo}')">
+                <input type="number" class="w-16 p-1 bg-white border border-gray-600 text-gray-700 text-center"
+                       oninput="calcularTotal('${divisa.codigo}', '${divisa.simbolo}')">
             </td>
         `;
         tbody.appendChild(fila);
-    });
+    }
 }
 
-function calcularTotal(codigoDivisa) {
+function calcularTotal(codigoDivisa, simboloDivisa) {
     let totalArqueo = 0;
     const inputs = document.querySelectorAll('#tbody-arqueo input');
-    const billetes = [100, 50, 20, 10, 5, 1];
-    
-    inputs.forEach((input, index) => {
-        totalArqueo += (parseInt(input.value) || 0) * billetes[index];
+    const filas = document.querySelectorAll('#tbody-arqueo tr');
+
+    filas.forEach((fila, index) => {
+        let denominacion = parseFloat(fila.cells[0].textContent.replace(simboloDivisa, "").trim()) || 1;
+        let cantidad = parseInt(inputs[index].value) || 0;
+        totalArqueo += cantidad * denominacion;
     });
+
+    document.getElementById('total-arqueo').textContent = `${simboloDivisa} ${totalArqueo}`;
     
-    document.getElementById('total-arqueo').textContent = `$${totalArqueo}`;
-    const totalSistema = parseInt(document.getElementById('total-sistema').textContent.replace('$', ''));
+    const totalSistema = parseFloat(document.getElementById('total-sistema').textContent.replace(simboloDivisa, "").trim()) || 0;
     const diferencia = totalArqueo - totalSistema;
     
-    document.getElementById('diferencia-caja').textContent = `$${diferencia}`;
+    document.getElementById('diferencia-caja').textContent = `${simboloDivisa} ${diferencia}`;
     document.getElementById(`diferencia-${codigoDivisa}`).textContent = diferencia;
 }
 
 document.getElementById("guardar-arqueo").addEventListener("click", function() {
-    fetch("https://cambiosorion.cl/data/get_divisas_arqueo.php")
+    fetch("https://cambiosorion.cl/data/get_divisas_internas.php")
         .then(response => response.json())
         .then(divisas => {
             let todasCero = divisas.every(divisa => parseFloat(document.getElementById(`diferencia-${divisa.codigo}`).textContent) === 0);
