@@ -16,26 +16,29 @@ async function cargarDivisas() {
             ))
         );
 
+        // Filtrar divisas según su tipo
+        divisas = divisas.filter(divisa => {
+            return divisa.tipo_divisa !== 'otra'; // Excluimos divisas tipo 'otra'
+        });
+
         // Ordenar las divisas según la lista proporcionada
         const ordenPreferido = [
-            "USD", "EUR", "ARS", "BRL", "PEN", "COP", "UYU", "BOB", "CAD", "GBP", "JPY", "CNY", "SEK", "AUD", "NZD", "CHF", "DKK"
+            "CLP", "USD", "EUR", "ARS", "BRL", "PEN", "COP", "UYU", "BOB", "CAD", "GBP", "JPY", "CNY", 
+            "SEK", "AUD", "MXN", "NZD", "CHF", "DKK", "DKH", "WON", "DOP", "PYG", "CRC", "BSD", "NOK"
         ];
 
-        // Ordenar divisas basándonos en el orden preferido, luego agregar monedas de oro
+        // Ordenar divisas basándonos en el orden preferido
         divisas.sort((a, b) => {
             const indexA = ordenPreferido.indexOf(a.codigo);
             const indexB = ordenPreferido.indexOf(b.codigo);
 
-            // Si ambos códigos están en el orden preferido
             if (indexA !== -1 && indexB !== -1) {
                 return indexA - indexB;
             }
 
-            // Si uno de los códigos está en el orden preferido y el otro no
             if (indexA !== -1) return -1;
             if (indexB !== -1) return 1;
 
-            // Si ninguno está en el orden preferido, mantenemos el orden original
             return 0;
         });
 
@@ -49,10 +52,20 @@ async function cargarDivisas() {
             div.setAttribute("data-codigo", divisa.codigo);
             div.onclick = () => seleccionarDivisa(divisa);
 
+            let displayText = "";
+            if (divisa.tipo_divisa === "divisa") {
+                displayText = `${divisa.codigo} (${divisa.simbolo})`; // Mostrar código para divisas normales
+            } else if (divisa.tipo_divisa === "moneda") {
+                displayText = divisa.nombre; // Mostrar nombre para monedas de oro o plata
+            } else {
+                // No mostrar nada para el tipo "otra" ya que no debe aparecer
+                return; 
+            }
+
             div.innerHTML = `
                 <div class="flex">
                     <img class="w-6 h-6 mr-2" src="${divisa.icono}" alt="${divisa.pais}">
-                    <span class="m">${divisa.codigo} (${divisa.simbolo})</span>
+                    <span class="m">${displayText}</span>
                 </div>
                 <div class="resumen flex text-sm">
                     <span class="text-sm">Arqueo:</span>
