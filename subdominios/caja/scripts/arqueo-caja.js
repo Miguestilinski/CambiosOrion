@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 async function cargarDivisas() {
     try {
-        let response = await fetch("https://cambiosorion.cl/data/get_divisas_arqueo.php");
+        let response = await fetch("https://cambiosorion.cl/data/get_divisas_internas.php");
         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
         
         let divisas = await response.json();
@@ -15,22 +15,23 @@ async function cargarDivisas() {
         divisas.forEach(divisa => {
             const div = document.createElement("div");
             div.classList.add("p-3", "bg-gray-600", "rounded-lg", "cursor-pointer", "flex", "justify-between", "items-center");
-            div.setAttribute("data-codigo", divisa.codigo); // Atributo para búsqueda eficiente
+            div.setAttribute("data-codigo", divisa.codigo);
             div.onclick = () => seleccionarDivisa(divisa);
 
             div.innerHTML = `
                 <div class="flex">
-                    <img class="w-6 h-6 mr-2" src="https://cambiosorion.cl/orionapp/node_modules/circle-flags/flags/${divisa.codigo.toLowerCase()}.svg">
-                    <span class="m">${divisa.codigo}</span>
+                    <img class="w-6 h-6 mr-2" src="${divisa.icono}" alt="${divisa.pais}">
+                    <span class="m">${divisa.codigo} (${divisa.simbolo})</span>
                 </div>
                 <div class="resumen flex text-sm">
-                    <span class="text-sm">Arqueo:</span>
-                    <span class="items-center text-md">$<span id="arqueo-${divisa.codigo}">${divisa.arqueo}</span></span>
+                    <span class="text-sm">Fraccionable:</span>
+                    <span class="text-md">${divisa.fraccionable ? 'Sí' : 'No'}</span>
                 </div>
+                ${divisa.fraccionable ? `
                 <div class="resumen flex text-sm">
-                    <span class="text-sm">Diferencia:</span>
-                    <span class="text-sm">$<span id="diferencia-${divisa.codigo}">${divisa.diferencia}</span></span>
-                </div>
+                    <span class="text-sm">Denominación:</span>
+                    <span class="text-md">${divisa.denominacion}</span>
+                </div>` : ''}
             `;
 
             lista.appendChild(div);
@@ -41,7 +42,7 @@ async function cargarDivisas() {
 }
 
 function seleccionarDivisa(divisa) {
-    document.getElementById('titulo-divisa').textContent = `Arqueo de ${divisa.codigo}`;
+    document.getElementById('titulo-divisa').textContent = `Detalles de ${divisa.nombre} (${divisa.codigo})`;
     document.getElementById('tabla-arqueo').classList.remove('hidden');
     document.getElementById('detalle').classList.remove('hidden');
 
@@ -51,12 +52,11 @@ function seleccionarDivisa(divisa) {
     // Agregar fondo a la divisa seleccionada
     const divSeleccionado = document.querySelector(`#divisas-lista div[data-codigo="${divisa.codigo}"]`);
     if (divSeleccionado) divSeleccionado.classList.add('bg-gray-700');
-    
-    document.getElementById('total-sistema').textContent = `$${divisa.arqueo}`;
-    
-    // Actualizar tabla con los datos de la divisa seleccionada
-    generarTablaArqueo(divisa);
+
+    // Mostrar información relevante
+    document.getElementById('total-sistema').textContent = `${divisa.simbolo} ${divisa.denominacion || 'N/A'}`;
 }
+
 
 function generarTablaArqueo(divisa) {
 
