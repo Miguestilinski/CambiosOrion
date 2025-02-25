@@ -54,7 +54,7 @@ async function cargarDivisas() {
 
             let displayText = "";
             if (divisa.tipo_divisa === "divisa") {
-                displayText = `${divisa.codigo} (${divisa.simbolo})`; // Mostrar código para divisas normales
+                displayText = `${divisa.codigo}`; // Mostrar código para divisas normales
             } else if (divisa.tipo_divisa === "moneda") {
                 displayText = divisa.nombre; // Mostrar nombre para monedas de oro o plata
             } else {
