@@ -9,6 +9,37 @@ async function cargarDivisas() {
         
         let divisas = await response.json();
         
+        // Filtrar divisas duplicadas (basado en código)
+        divisas = divisas.filter((value, index, self) =>
+            index === self.findIndex((t) => (
+                t.codigo === value.codigo
+            ))
+        );
+
+        // Ordenar las divisas según la lista proporcionada
+        const ordenPreferido = [
+            "USD", "EUR", "ARS", "BRL", "PEN", "COP", "UYU", "BOB", "CAD", "GBP", "JPY", "CNY", "SEK", "AUD", "NZD", "CHF", "DKK"
+        ];
+
+        // Ordenar divisas basándonos en el orden preferido, luego agregar monedas de oro
+        divisas.sort((a, b) => {
+            const indexA = ordenPreferido.indexOf(a.codigo);
+            const indexB = ordenPreferido.indexOf(b.codigo);
+
+            // Si ambos códigos están en el orden preferido
+            if (indexA !== -1 && indexB !== -1) {
+                return indexA - indexB;
+            }
+
+            // Si uno de los códigos está en el orden preferido y el otro no
+            if (indexA !== -1) return -1;
+            if (indexB !== -1) return 1;
+
+            // Si ninguno está en el orden preferido, mantenemos el orden original
+            return 0;
+        });
+
+        // Crear lista deslizable
         const lista = document.getElementById("divisas-lista");
         lista.innerHTML = ""; // Limpiar la lista
 
@@ -24,18 +55,22 @@ async function cargarDivisas() {
                     <span class="m">${divisa.codigo} (${divisa.simbolo})</span>
                 </div>
                 <div class="resumen flex text-sm">
-                    <span class="text-sm">Fraccionable:</span>
-                    <span class="text-md">${divisa.fraccionable ? 'Sí' : 'No'}</span>
+                    <span class="text-sm">Arqueo:</span>
+                    <span class="text-md">${divisa.arqueo || 'N/A'}</span>
                 </div>
-                ${divisa.fraccionable ? `
                 <div class="resumen flex text-sm">
-                    <span class="text-sm">Denominación:</span>
-                    <span class="text-md">${divisa.denominacion}</span>
-                </div>` : ''}
+                    <span class="text-sm">Diferencia:</span>
+                    <span class="text-md">${divisa.diferencia || 'N/A'}</span>
+                </div>
             `;
 
             lista.appendChild(div);
         });
+
+        // Agregar barra de desplazamiento
+        lista.style.maxHeight = '400px';
+        lista.style.overflowY = 'auto';
+
     } catch (error) {
         console.error("Error al cargar divisas:", error);
     }
@@ -56,7 +91,6 @@ function seleccionarDivisa(divisa) {
     // Mostrar información relevante
     document.getElementById('total-sistema').textContent = `${divisa.simbolo} ${divisa.denominacion || 'N/A'}`;
 }
-
 
 function generarTablaArqueo(divisa) {
 
