@@ -176,21 +176,24 @@ function calcularTotal(codigoDivisa, simboloDivisa) {
     const filas = document.querySelectorAll('#tbody-arqueo tr');
 
     filas.forEach((fila, index) => {
-        // Extraer la denominación de la celda correspondiente
-        let denominacion = parseFloat(fila.cells[1].textContent.trim()) || 1;
+        let denominacion = parseFloat(fila.cells[0].textContent.replace(simboloDivisa, "").trim()) || 1;
         let cantidad = parseInt(inputs[index].value) || 0;
-
-        // Multiplicar cantidad por denominación y agregar al total
         totalArqueo += cantidad * denominacion;
     });
 
     // Mostrar el total del arqueo
     document.getElementById('total-arqueo').textContent = `${simboloDivisa} ${totalArqueo}`;
-
-    // Calcular y mostrar la diferencia de caja
-    const totalSistema = parseFloat(document.getElementById('total-sistema').textContent.replace(simboloDivisa, "").trim()) || 0;
-    const diferencia = totalArqueo - totalSistema;
     
+    // Obtener el total del sistema
+    const totalSistema = parseFloat(document.getElementById('total-sistema').textContent.replace(simboloDivisa, "").trim()) || 0;
+    
+    // Si el total arqueo es 0 y el total sistema no es 0, la diferencia será negativa
+    let diferencia = totalArqueo - totalSistema;
+    if (totalArqueo === 0 && totalSistema !== 0) {
+        diferencia = -totalSistema; // La diferencia será el valor negativo de Total Sistema
+    }
+
+    // Mostrar la diferencia
     document.getElementById('diferencia-caja').textContent = `${simboloDivisa} ${diferencia}`;
     document.getElementById(`diferencia-${codigoDivisa}`).textContent = diferencia;
 }
