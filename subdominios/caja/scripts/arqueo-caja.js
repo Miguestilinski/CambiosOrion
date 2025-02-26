@@ -111,7 +111,6 @@ function seleccionarDivisa(divisa) {
     generarTablaArqueo(divisa);
 }
 
-
 function generarTablaArqueo(divisa) {
     const tbody = document.getElementById('tbody-arqueo');
     tbody.innerHTML = ""; // Limpiar la tabla antes de generarla
@@ -134,7 +133,8 @@ function generarTablaArqueo(divisa) {
             <td class="p-3 text-center">${denominaciones[0]}</td>
             <td class="p-3 text-center">
                 <input type="number" class="w-16 p-1 bg-white border border-gray-600 text-gray-700 text-center"
-                       oninput="calcularTotal('${divisa.codigo}', '${divisa.simbolo}')">
+                       oninput="calcularTotal('${divisa.codigo}', '${divisa.simbolo}')"
+                       value="0" min="0">
             </td>
         `;
         tbody.appendChild(filaTotal);
@@ -149,7 +149,8 @@ function generarTablaArqueo(divisa) {
                 <td class="p-3 text-center">${denominaciones[i]}</td>
                 <td class="p-3 text-center">
                     <input type="number" class="w-16 p-1 bg-white border border-gray-600 text-gray-700 text-center"
-                           oninput="calcularTotal('${divisa.codigo}', '${divisa.simbolo}')">
+                           oninput="calcularTotal('${divisa.codigo}', '${divisa.simbolo}')"
+                           value="0" min="0">
                 </td>
             `;
             tbody.appendChild(fila);
@@ -164,11 +165,19 @@ function generarTablaArqueo(divisa) {
             <td class="p-3 text-center">1</td>
             <td class="p-3 text-center">
                 <input type="number" class="w-16 p-1 bg-white border border-gray-600 text-gray-700 text-center"
-                       oninput="calcularTotal('${divisa.codigo}', '${divisa.simbolo}')">
+                       oninput="calcularTotal('${divisa.codigo}', '${divisa.simbolo}')"
+                       value="0" min="0">
             </td>
         `;
         tbody.appendChild(fila);
     }
+
+    // Recuperar las cantidades de localStorage si existen
+    const cantidadesGuardadas = JSON.parse(localStorage.getItem(divisa.codigo)) || {};
+    document.querySelectorAll('#tbody-arqueo input').forEach((input, index) => {
+        const denominacion = denominaciones[index];
+        input.value = cantidadesGuardadas[denominacion] || 0;  // Asigna el valor guardado o 0
+    });
 }
 
 function calcularTotal(codigoDivisa, simboloDivisa) {
@@ -196,11 +205,24 @@ function calcularTotal(codigoDivisa, simboloDivisa) {
     }
 
     // Mostrar la diferencia
-    document.getElementById('diferencia-caja').textContent = `${simboloDivisa} ${diferencia}`;
-    document.getElementById(`diferencia-${codigoDivisa}`).textContent = `${simboloDivisa} ${diferencia}`;
+    document.getElementById('diferencia-caja').textContent = `${simboloDivisa} ${diferencia.toFixed(2)}`;
+    document.getElementById('diferencia-caja').classList.remove("text-gray-700");
+    if (diferencia < 0) {
+        document.getElementById('diferencia-caja').classList.add("text-red-600");
+    } else {
+        document.getElementById('diferencia-caja').classList.add("text-green-600");
+    }
 
-    // Actualizar la lista de divisas con el nuevo arqueo y diferencia
-    actualizarListaDivisas(codigoDivisa, totalArqueo, diferencia);
+    // Guardar las cantidades en el localStorage
+    const cantidades = {};
+    inputs.forEach((input, index) => {
+        const denominacion = parseFloat(filas[index].cells[1].textContent.trim());
+        if (denominacion) {
+            cantidades[denominacion] = parseInt(input.value) || 0;
+        }
+    });
+
+    localStorage.setItem(codigoDivisa, JSON.stringify(cantidades));
 }
 
 function actualizarListaDivisas(codigoDivisa, totalArqueo, diferencia) {
