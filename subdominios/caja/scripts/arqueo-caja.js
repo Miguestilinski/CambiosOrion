@@ -176,13 +176,18 @@ function calcularTotal(codigoDivisa, simboloDivisa) {
     const filas = document.querySelectorAll('#tbody-arqueo tr');
 
     filas.forEach((fila, index) => {
-        let denominacion = parseFloat(fila.cells[0].textContent.replace(simboloDivisa, "").trim()) || 1;
+        // Extraer la denominación de la celda correspondiente
+        let denominacion = parseFloat(fila.cells[1].textContent.trim()) || 1;
         let cantidad = parseInt(inputs[index].value) || 0;
+
+        // Multiplicar cantidad por denominación y agregar al total
         totalArqueo += cantidad * denominacion;
     });
 
+    // Mostrar el total del arqueo
     document.getElementById('total-arqueo').textContent = `${simboloDivisa} ${totalArqueo}`;
-    
+
+    // Calcular y mostrar la diferencia de caja
     const totalSistema = parseFloat(document.getElementById('total-sistema').textContent.replace(simboloDivisa, "").trim()) || 0;
     const diferencia = totalArqueo - totalSistema;
     
