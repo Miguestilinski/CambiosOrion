@@ -212,8 +212,9 @@ function actualizarListaDivisas(codigoDivisa, totalArqueo, diferencia) {
             
             // Verificamos que los elementos existan antes de actualizar
             if (arqueoElement && diferenciaElement) {
-                arqueoElement.textContent = `Arqueo: ${totalArqueo}`;
-                diferenciaElement.textContent = `Diferencia: ${diferencia}`;
+                // Actualizar solo el contenido de arqueo y diferencia
+                arqueoElement.textContent = `Arqueo: ${simboloDivisa} ${totalArqueo}`;
+                diferenciaElement.textContent = `Diferencia: ${simboloDivisa} ${diferencia}`;
             }
         }
     });
