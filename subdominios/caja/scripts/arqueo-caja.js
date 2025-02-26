@@ -200,21 +200,24 @@ function calcularTotal(codigoDivisa, simboloDivisa) {
 
     // Actualizar la lista de divisas con el nuevo arqueo y diferencia
     actualizarListaDivisas(codigoDivisa, totalArqueo, diferencia);
+
+    // Actualizar la información de la divisa seleccionada
+    actualizarInfoDivisaSeleccionada(codigoDivisa, totalArqueo, diferencia, simboloDivisa);
 }
 
-function actualizarListaDivisas(codigoDivisa, totalArqueo, diferencia) {
-    // Obtener el elemento correspondiente a la divisa en la lista
+function actualizarInfoDivisaSeleccionada(codigoDivisa, totalArqueo, diferencia, simboloDivisa) {
+    // Actualizar la sección de información de la divisa seleccionada
     const divisaElemento = document.querySelector(`#divisas-lista > div[data-codigo="${codigoDivisa}"]`);
 
     if (divisaElemento) {
-        // Actualizar los valores de Arqueo y Diferencia en la lista de divisas
+        // Obtener los elementos donde mostrar los valores de Arqueo y Diferencia
         const arqueoElemento = divisaElemento.querySelector('.resumen .text-md:nth-child(2)');
         const diferenciaElemento = divisaElemento.querySelector('.resumen .text-md:nth-child(4)');
 
-        // Actualizar el valor de Arqueo
+        // Actualizar los valores de Arqueo
         arqueoElemento.textContent = `${simboloDivisa} ${totalArqueo}`;
 
-        // Actualizar el valor de Diferencia
+        // Actualizar los valores de Diferencia
         diferenciaElemento.textContent = `${simboloDivisa} ${diferencia}`;
     }
 }
