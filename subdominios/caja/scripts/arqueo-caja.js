@@ -152,22 +152,6 @@ function generarTablaArqueo(divisa) {
         tbody.appendChild(filaTotal);
         });
 
-        // Agregar filas para el resto de las denominaciones
-        for (let i = 1; i < denominaciones.length; i++) {
-            let fila = document.createElement("tr");
-            fila.classList.add("bg-white", "text-gray-700");
-
-            fila.innerHTML = `
-                <td class="p-3"></td>
-                <td class="p-3 text-center">${denominaciones[i]}</td>
-                <td class="p-3 text-center">
-                    <input type="number" class="w-16 p-1 bg-white border border-gray-600 text-gray-700 text-center"
-                           oninput="calcularTotal('${divisa.codigo}', '${divisa.simbolo}')"
-                           value="0" min="0">
-                </td>
-            `;
-            tbody.appendChild(fila);
-        }
     } else {
         // Si la divisa NO es fraccionable, solo mostrar una fila con denominación 1
         let fila = document.createElement("tr");
@@ -192,7 +176,8 @@ function generarTablaArqueo(divisa) {
         const input = fila.querySelector('input');
         if (input) {
             const denominacion = parseFloat(fila.cells[1].textContent.trim());
-            input.value = cantidadesGuardadas[denominacion] || 0;
+            const claveDenominacion = denominacion.toFixed(2); // Asegura formato consistente
+            input.value = cantidadesGuardadas[claveDenominacion] || 0;
         }
     });    
 }
@@ -213,7 +198,9 @@ function calcularTotal(codigoDivisa, simboloDivisa) {
     document.getElementById('total-arqueo').textContent = `${simboloDivisa} ${totalArqueo}`;
 
     // Obtener el total del sistema
-    const totalSistema = parseFloat(document.getElementById('total-sistema').textContent.replace(simboloDivisa, "").trim()) || 0;
+    const totalSistemaElem = document.getElementById('total-sistema');
+    if (!totalSistemaElem) return; // Evita el error si el elemento no existe
+    const totalSistema = parseFloat(totalSistemaElem.textContent.replace(simboloDivisa, "").trim()) || 0;
     
     // Calcular la diferencia
     let diferencia = totalArqueo - totalSistema;
