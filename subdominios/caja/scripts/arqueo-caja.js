@@ -191,15 +191,9 @@ function calcularTotal(codigoDivisa, simboloDivisa) {
     
     // Calcular la diferencia
     let diferencia = totalArqueo - totalSistema;
-    if (totalArqueo === 0 && totalSistema !== 0) {
-        diferencia = -totalSistema; // La diferencia será el valor negativo de Total Sistema
-    }
+    document.getElementById('diferencia').textContent = `${simboloDivisa} ${diferencia.toFixed(2)}`;
 
-    // Mostrar la diferencia
-    document.getElementById('diferencia-caja').textContent = `${simboloDivisa} ${diferencia}`;
-    document.getElementById(`diferencia-${codigoDivisa}`).textContent = `${simboloDivisa} ${diferencia}`;
-
-    // Actualizar la lista de divisas con el nuevo arqueo y diferencia
+    // Actualizar la lista de divisas
     actualizarListaDivisas(codigoDivisa, totalArqueo, diferencia);
 }
 
