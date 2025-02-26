@@ -109,7 +109,7 @@ function generarTablaArqueo(divisa) {
     const tbody = document.getElementById('tbody-arqueo');
     tbody.innerHTML = ""; // Limpiar la tabla antes de generarla
 
-    // Simulación de un total sistema (lo configurarás dinámicamente)
+    // Simulación de un total sistema (debe configurarse dinámicamente)
     const sistemaTotal = 1000; // Valor de prueba
     document.getElementById('tabla-arqueo').classList.remove('hidden'); // Mostrar tabla
     document.getElementById('titulo-divisa').textContent = `Arqueo de ${divisa.nombre}`;
@@ -123,7 +123,7 @@ function generarTablaArqueo(divisa) {
         filaTotal.classList.add("bg-white", "text-gray-700");
 
         filaTotal.innerHTML = `
-            <td class="p-3 text-center">${divisa.simbolo} <span id="total-sistema">${sistemaTotal}</span></td>
+            <td class="p-3 text-center" id="total-sistema">${divisa.simbolo} ${sistemaTotal}</td>
             <td class="p-3 text-center">${denominaciones[0]}</td>
             <td class="p-3 text-center">
                 <input type="number" class="w-16 p-1 bg-white border border-gray-600 text-gray-700 text-center"
@@ -148,12 +148,12 @@ function generarTablaArqueo(divisa) {
             tbody.appendChild(fila);
         }
     } else {
-        // Si la divisa NO es fraccionable, solo mostrar una fila con cantidad unitaria
+        // Si la divisa NO es fraccionable, solo mostrar una fila con denominación 1
         let fila = document.createElement("tr");
         fila.classList.add("bg-white", "text-gray-700");
 
         fila.innerHTML = `
-            <td class="p-3 text-center">${divisa.simbolo} <span id="total-sistema">${sistemaTotal}</span></td>
+            <td class="p-3 text-center" id="total-sistema">${divisa.simbolo} ${sistemaTotal}</td>
             <td class="p-3 text-center">1</td>
             <td class="p-3 text-center">
                 <input type="number" class="w-16 p-1 bg-white border border-gray-600 text-gray-700 text-center"
@@ -162,6 +162,19 @@ function generarTablaArqueo(divisa) {
         `;
         tbody.appendChild(fila);
     }
+
+    // Agregar fila para "Otros"
+    let filaOtros = document.createElement("tr");
+    filaOtros.classList.add("bg-white", "text-gray-700");
+    filaOtros.innerHTML = `
+        <td class="p-3"></td>
+        <td class="p-3 text-center">Otros:</td>
+        <td class="p-3 text-center">
+            <input type="number" class="w-16 p-1 bg-white border border-gray-600 text-gray-700 text-center"
+                   oninput="calcularTotal('${divisa.codigo}', '${divisa.simbolo}')">
+        </td>
+    `;
+    tbody.appendChild(filaOtros);
 }
 
 function calcularTotal(codigoDivisa, simboloDivisa) {
