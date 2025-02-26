@@ -101,8 +101,8 @@ function seleccionarDivisa(divisa) {
     const divSeleccionado = document.querySelector(`#divisas-lista div[data-codigo="${divisa.codigo}"]`);
     if (divSeleccionado) divSeleccionado.classList.add('bg-gray-800');
 
-    // Mostrar información relevante
-    document.getElementById('total-sistema').textContent = `${divisa.simbolo} ${divisa.denominacion || 'N/A'}`;
+    // Generar tabla de arqueo
+    generarTablaArqueo(divisa);
 }
 
 function generarTablaArqueo(divisa) {
@@ -162,19 +162,6 @@ function generarTablaArqueo(divisa) {
         `;
         tbody.appendChild(fila);
     }
-
-    // Agregar fila para "Otros"
-    let filaOtros = document.createElement("tr");
-    filaOtros.classList.add("bg-white", "text-gray-700");
-    filaOtros.innerHTML = `
-        <td class="p-3"></td>
-        <td class="p-3 text-center">Otros:</td>
-        <td class="p-3 text-center">
-            <input type="number" class="w-16 p-1 bg-white border border-gray-600 text-gray-700 text-center"
-                   oninput="calcularTotal('${divisa.codigo}', '${divisa.simbolo}')">
-        </td>
-    `;
-    tbody.appendChild(filaOtros);
 }
 
 function calcularTotal(codigoDivisa, simboloDivisa) {
