@@ -175,6 +175,7 @@ function calcularTotal(codigoDivisa, simboloDivisa) {
     const inputs = document.querySelectorAll('#tbody-arqueo input');
     const filas = document.querySelectorAll('#tbody-arqueo tr');
 
+    // Calcular el total de arqueo
     filas.forEach((fila, index) => {
         let denominacion = parseFloat(fila.cells[0].textContent.replace(simboloDivisa, "").trim()) || 1;
         let cantidad = parseInt(inputs[index].value) || 0;
@@ -187,7 +188,7 @@ function calcularTotal(codigoDivisa, simboloDivisa) {
     // Obtener el total del sistema
     const totalSistema = parseFloat(document.getElementById('total-sistema').textContent.replace(simboloDivisa, "").trim()) || 0;
     
-    // Si el total arqueo es 0 y el total sistema no es 0, la diferencia será negativa
+    // Calcular la diferencia
     let diferencia = totalArqueo - totalSistema;
     if (totalArqueo === 0 && totalSistema !== 0) {
         diferencia = -totalSistema; // La diferencia será el valor negativo de Total Sistema
@@ -196,6 +197,26 @@ function calcularTotal(codigoDivisa, simboloDivisa) {
     // Mostrar la diferencia
     document.getElementById('diferencia-caja').textContent = `${simboloDivisa} ${diferencia}`;
     document.getElementById(`diferencia-${codigoDivisa}`).textContent = diferencia;
+
+    // Actualizar la lista de divisas con el nuevo arqueo y diferencia
+    actualizarListaDivisas(codigoDivisa, totalArqueo, diferencia);
+}
+
+function actualizarListaDivisas(codigoDivisa, totalArqueo, diferencia) {
+    // Obtener el elemento correspondiente a la divisa en la lista
+    const divisaElemento = document.querySelector(`#divisas-lista > div[data-codigo="${codigoDivisa}"]`);
+
+    if (divisaElemento) {
+        // Actualizar los valores de Arqueo y Diferencia en la lista de divisas
+        const arqueoElemento = divisaElemento.querySelector('.resumen .text-md:nth-child(2)');
+        const diferenciaElemento = divisaElemento.querySelector('.resumen .text-md:nth-child(4)');
+
+        // Actualizar el valor de Arqueo
+        arqueoElemento.textContent = `${totalArqueo}`;
+
+        // Actualizar el valor de Diferencia
+        diferenciaElemento.textContent = `${diferencia}`;
+    }
 }
 
 document.getElementById("guardar-arqueo").addEventListener("click", function() {
