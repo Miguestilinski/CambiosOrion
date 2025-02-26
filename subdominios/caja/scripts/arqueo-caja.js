@@ -107,7 +107,7 @@ function seleccionarDivisa(divisa) {
         divSeleccionado.classList.add('bg-gray-800'); // Aplicar color de selección
     }
 
-    // Generar tabla de arqueo
+    // Generar tabla de arqueo con los datos de la divisa seleccionada
     generarTablaArqueo(divisa);
 }
 
@@ -129,7 +129,7 @@ function generarTablaArqueo(divisa) {
         filaTotal.classList.add("bg-white", "text-gray-700");
 
         filaTotal.innerHTML = `
-            <td class="p-3 text-center" id="total-sistema">${divisa.simbolo} ${sistemaTotal}</td>
+            <td class="p-3 text-center" id="total-sistema">${index === 0 ? divisa.simbolo + ' ' + sistemaTotal : ''}</td>
             <td class="p-3 text-center">${denominaciones[0]}</td>
             <td class="p-3 text-center">
                 <input type="number" class="w-16 p-1 bg-white border border-gray-600 text-gray-700 text-center"
@@ -172,11 +172,11 @@ function generarTablaArqueo(divisa) {
         tbody.appendChild(fila);
     }
 
-    // Recuperar las cantidades de localStorage si existen
+    // Recuperar las cantidades guardadas para la divisa seleccionada
     const cantidadesGuardadas = JSON.parse(localStorage.getItem(divisa.codigo)) || {};
     document.querySelectorAll('#tbody-arqueo input').forEach((input, index) => {
         const denominacion = denominaciones[index];
-        input.value = cantidadesGuardadas[denominacion] || 0;  // Asigna el valor guardado o 0
+        input.value = cantidadesGuardadas[denominacion] || 0; // Asigna el valor guardado o 0
     });
 }
 
