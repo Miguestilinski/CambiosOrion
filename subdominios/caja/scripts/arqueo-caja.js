@@ -112,6 +112,7 @@ function seleccionarDivisa(divisa) {
 }
 
 function generarTablaArqueo(divisa) {
+    
     const tbody = document.getElementById('tbody-arqueo');
     tbody.innerHTML = ""; // Limpiar la tabla antes de generarla
 
@@ -120,27 +121,35 @@ function generarTablaArqueo(divisa) {
     document.getElementById('tabla-arqueo').classList.remove('hidden'); // Mostrar tabla
     document.getElementById('titulo-divisa').textContent = `Arqueo de ${divisa.nombre}`;
 
-    if (divisa.fraccionable) {
-        let denominaciones = divisa.denominacion ? divisa.denominacion.split(",").map(Number) : [];
+    // Asegurar que divisa.denominacion existe y es una cadena válida
+    let denominaciones = [];
+    if (divisa.denominacion && typeof divisa.denominacion === "string") {
+        denominaciones = divisa.denominacion.split(",").map(num => parseFloat(num.trim()));
         denominaciones.sort((a, b) => b - a); // Ordenar de mayor a menor
+    }
 
-        let esPrimeraFila = true; // Bandera para la primera fila
+    const cantidadesGuardadas = JSON.parse(localStorage.getItem(divisa.codigo)) || {};
+
+    if (divisa.fraccionable && denominaciones.length > 0) {
+        denominaciones.forEach((denominacion, index) => {
 
         let filaTotal = document.createElement("tr");
         filaTotal.classList.add("bg-white", "text-gray-700");
+
+        let cantidadGuardada = cantidadesGuardadas[denominacion] || 0;
+        denominaciones.sort((a, b) => b - a); // Ordenar de mayor a menor
         
         filaTotal.innerHTML = `
-            <td class="p-3 text-center" id="total-sistema">${esPrimeraFila ? divisa.simbolo + ' ' + sistemaTotal : ''}</td>
-            <td class="p-3 text-center">${denominaciones[0]}</td>
+            <td class="p-3 text-center">${index === 0 ? `${divisa.simbolo} ${sistemaTotal}` : ''}</td>
+            <td class="p-3 text-center">${denominacion}</td>
             <td class="p-3 text-center">
                 <input type="number" class="w-16 p-1 bg-white border border-gray-600 text-gray-700 text-center"
                        oninput="calcularTotal('${divisa.codigo}', '${divisa.simbolo}')"
-                       value="0" min="0">
+                       value="${cantidadGuardada}" min="0">
             </td>
-        `;
+        `});
         
         tbody.appendChild(filaTotal);
-        esPrimeraFila = false; // Desactiva la bandera después de la primera fila        
 
         // Agregar filas para el resto de las denominaciones
         for (let i = 1; i < denominaciones.length; i++) {
@@ -163,24 +172,28 @@ function generarTablaArqueo(divisa) {
         let fila = document.createElement("tr");
         fila.classList.add("bg-white", "text-gray-700");
 
+        let cantidadGuardada = cantidadesGuardadas[1] || 0;
+
         fila.innerHTML = `
             <td class="p-3 text-center" id="total-sistema">${divisa.simbolo} ${sistemaTotal}</td>
             <td class="p-3 text-center">1</td>
             <td class="p-3 text-center">
                 <input type="number" class="w-16 p-1 bg-white border border-gray-600 text-gray-700 text-center"
                        oninput="calcularTotal('${divisa.codigo}', '${divisa.simbolo}')"
-                       value="0" min="0">
+                       value="${cantidadGuardada}" min="0">
             </td>
         `;
         tbody.appendChild(fila);
     }
 
     // Recuperar las cantidades guardadas para la divisa seleccionada
-    const cantidadesGuardadas = JSON.parse(localStorage.getItem(divisa.codigo)) || {};
-    document.querySelectorAll('#tbody-arqueo input').forEach((input, index) => {
-        const denominacion = denominaciones[index];
-        input.value = cantidadesGuardadas[denominacion] || 0; // Asigna el valor guardado o 0
-    });
+    document.querySelectorAll('#tbody-arqueo tr').forEach((fila, index) => {
+        const input = fila.querySelector('input');
+        if (input) {
+            const denominacion = parseFloat(fila.cells[1].textContent.trim());
+            input.value = cantidadesGuardadas[denominacion] || 0;
+        }
+    });    
 }
 
 function calcularTotal(codigoDivisa, simboloDivisa) {
