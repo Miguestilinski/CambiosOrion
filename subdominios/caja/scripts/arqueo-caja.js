@@ -124,12 +124,13 @@ function generarTablaArqueo(divisa) {
         let denominaciones = divisa.denominacion ? divisa.denominacion.split(",").map(Number) : [];
         denominaciones.sort((a, b) => b - a); // Ordenar de mayor a menor
 
-        // Primera fila con Total Sistema y primera denominación
+        let esPrimeraFila = true; // Bandera para la primera fila
+
         let filaTotal = document.createElement("tr");
         filaTotal.classList.add("bg-white", "text-gray-700");
-
+        
         filaTotal.innerHTML = `
-            <td class="p-3 text-center" id="total-sistema">${divisa.simbolo + ' ' + sistemaTotal}</td>
+            <td class="p-3 text-center" id="total-sistema">${esPrimeraFila ? divisa.simbolo + ' ' + sistemaTotal : ''}</td>
             <td class="p-3 text-center">${denominaciones[0]}</td>
             <td class="p-3 text-center">
                 <input type="number" class="w-16 p-1 bg-white border border-gray-600 text-gray-700 text-center"
@@ -137,7 +138,9 @@ function generarTablaArqueo(divisa) {
                        value="0" min="0">
             </td>
         `;
+        
         tbody.appendChild(filaTotal);
+        esPrimeraFila = false; // Desactiva la bandera después de la primera fila        
 
         // Agregar filas para el resto de las denominaciones
         for (let i = 1; i < denominaciones.length; i++) {
