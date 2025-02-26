@@ -109,32 +109,53 @@ function generarTablaArqueo(divisa) {
     const tbody = document.getElementById('tbody-arqueo');
     tbody.innerHTML = ""; // Limpiar la tabla antes de generarla
 
-    if (divisa.fraccionable) {
-        // Si la divisa es fraccionable, mostrar la denominación en la tabla
-        let denominaciones = divisa.denominacion ? divisa.denominacion.split(",") : [];
-        denominaciones = denominaciones.map(Number).sort((a, b) => b - a); // Ordenar de mayor a menor
+    // Simulación de un total sistema (lo configurarás dinámicamente)
+    const sistemaTotal = 1000; // Valor de prueba
+    document.getElementById('tabla-arqueo').classList.remove('hidden'); // Mostrar tabla
+    document.getElementById('titulo-divisa').textContent = `Arqueo de ${divisa.nombre}`;
 
-        denominaciones.forEach(denominacion => {
+    if (divisa.fraccionable) {
+        let denominaciones = divisa.denominacion ? divisa.denominacion.split(",").map(Number) : [];
+        denominaciones.sort((a, b) => b - a); // Ordenar de mayor a menor
+
+        // Primera fila con Total Sistema y primera denominación
+        let filaTotal = document.createElement("tr");
+        filaTotal.classList.add("bg-white", "text-gray-700");
+
+        filaTotal.innerHTML = `
+            <td class="p-3 text-center">${divisa.simbolo} <span id="total-sistema">${sistemaTotal}</span></td>
+            <td class="p-3 text-center">${denominaciones[0]}</td>
+            <td class="p-3 text-center">
+                <input type="number" class="w-16 p-1 bg-white border border-gray-600 text-gray-700 text-center"
+                       oninput="calcularTotal('${divisa.codigo}', '${divisa.simbolo}')">
+            </td>
+        `;
+        tbody.appendChild(filaTotal);
+
+        // Agregar filas para el resto de las denominaciones
+        for (let i = 1; i < denominaciones.length; i++) {
             let fila = document.createElement("tr");
             fila.classList.add("bg-white", "text-gray-700");
 
             fila.innerHTML = `
-                <td class="p-3">${divisa.simbolo} MONTO SISTEMA</td>
-                <td class="p-3">
-                    <input type="number" class="w-16 p-1 bg-white border border-gray-600 text-gray-700 text-center" 
+                <td class="p-3"></td>
+                <td class="p-3 text-center">${denominaciones[i]}</td>
+                <td class="p-3 text-center">
+                    <input type="number" class="w-16 p-1 bg-white border border-gray-600 text-gray-700 text-center"
                            oninput="calcularTotal('${divisa.codigo}', '${divisa.simbolo}')">
                 </td>
             `;
             tbody.appendChild(fila);
-        });
+        }
     } else {
-        // Si la divisa NO es fraccionable, solo mostrar una entrada de cantidad unitaria
+        // Si la divisa NO es fraccionable, solo mostrar una fila con cantidad unitaria
         let fila = document.createElement("tr");
         fila.classList.add("bg-white", "text-gray-700");
 
         fila.innerHTML = `
-            <td class="p-3">${divisa.nombre} (${divisa.codigo})</td>
-            <td class="p-3">
+            <td class="p-3 text-center">${divisa.simbolo} <span id="total-sistema">${sistemaTotal}</span></td>
+            <td class="p-3 text-center">1</td>
+            <td class="p-3 text-center">
                 <input type="number" class="w-16 p-1 bg-white border border-gray-600 text-gray-700 text-center"
                        oninput="calcularTotal('${divisa.codigo}', '${divisa.simbolo}')">
             </td>
