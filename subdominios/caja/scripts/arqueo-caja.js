@@ -111,6 +111,7 @@ function seleccionarDivisa(divisa) {
     generarTablaArqueo(divisa);
 }
 
+
 function generarTablaArqueo(divisa) {
     const tbody = document.getElementById('tbody-arqueo');
     tbody.innerHTML = ""; // Limpiar la tabla antes de generarla
@@ -200,26 +201,18 @@ function calcularTotal(codigoDivisa, simboloDivisa) {
 
     // Actualizar la lista de divisas con el nuevo arqueo y diferencia
     actualizarListaDivisas(codigoDivisa, totalArqueo, diferencia);
-
-    // Actualizar la información de la divisa seleccionada
-    actualizarInfoDivisaSeleccionada(codigoDivisa, totalArqueo, diferencia, simboloDivisa);
 }
 
-function actualizarInfoDivisaSeleccionada(codigoDivisa, totalArqueo, diferencia, simboloDivisa) {
-    // Actualizar la sección de información de la divisa seleccionada
-    const divisaElemento = document.querySelector(`#divisas-lista > div[data-codigo="${codigoDivisa}"]`);
-
-    if (divisaElemento) {
-        // Obtener los elementos donde mostrar los valores de Arqueo y Diferencia
-        const arqueoElemento = divisaElemento.querySelector('.resumen .text-md:nth-child(2)');
-        const diferenciaElemento = divisaElemento.querySelector('.resumen .text-md:nth-child(4)');
-
-        // Actualizar los valores de Arqueo
-        arqueoElemento.textContent = `${simboloDivisa} ${totalArqueo}`;
-
-        // Actualizar los valores de Diferencia
-        diferenciaElemento.textContent = `${simboloDivisa} ${diferencia}`;
-    }
+function actualizarListaDivisas(codigoDivisa, totalArqueo, diferencia) {
+    const divisas = document.querySelectorAll("#divisas-lista > div");
+    divisas.forEach(divisa => {
+        if (divisa.getAttribute("data-codigo") === codigoDivisa) {
+            const arqueoElement = divisa.querySelector(".resumen > span");
+            const diferenciaElement = divisa.querySelector(".resumen > span:last-child");
+            arqueoElement.textContent = `Arqueo: ${totalArqueo}`;
+            diferenciaElement.textContent = `Diferencia: ${diferencia}`;
+        }
+    });
 }
 
 document.getElementById("guardar-arqueo").addEventListener("click", function() {
