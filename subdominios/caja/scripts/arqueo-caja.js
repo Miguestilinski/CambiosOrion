@@ -69,11 +69,11 @@ async function cargarDivisas() {
                 </div>
                 <div class="resumen flex text-sm">
                     <span class="text-sm">Arqueo:</span>
-                    <span class="text-md">${divisa.arqueo !== undefined ? divisa.arqueo : 0}</span>
+                    <span class="text-md" id="arqueo-${divisa.codigo}">${divisa.arqueo !== undefined ? divisa.arqueo : 0}</span>
                 </div>
                 <div class="resumen flex text-sm">
                     <span class="text-sm">Diferencia:</span>
-                    <span class="text-md">${divisa.diferencia !== undefined ? divisa.diferencia : 0}</span>
+                    <span class="text-md" id="diferencia-${divisa.codigo}">${divisa.diferencia !== undefined ? divisa.diferencia : 0}</span>
                 </div>
             `;
 
@@ -207,10 +207,14 @@ function actualizarListaDivisas(codigoDivisa, totalArqueo, diferencia) {
     const divisas = document.querySelectorAll("#divisas-lista > div");
     divisas.forEach(divisa => {
         if (divisa.getAttribute("data-codigo") === codigoDivisa) {
-            const arqueoElement = divisa.querySelector(".resumen > span");
+            const arqueoElement = divisa.querySelector(".resumen > span:nth-child(2)");
             const diferenciaElement = divisa.querySelector(".resumen > span:last-child");
-            arqueoElement.textContent = `Arqueo: ${totalArqueo}`;
-            diferenciaElement.textContent = `Diferencia: ${diferencia}`;
+            
+            // Verificamos que los elementos existan antes de actualizar
+            if (arqueoElement && diferenciaElement) {
+                arqueoElement.textContent = `Arqueo: ${totalArqueo}`;
+                diferenciaElement.textContent = `Diferencia: ${diferencia}`;
+            }
         }
     });
 }
