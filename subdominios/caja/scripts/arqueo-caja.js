@@ -69,11 +69,11 @@ async function cargarDivisas() {
                 </div>
                 <div class="resumen flex text-sm">
                     <span class="text-sm">Arqueo:</span>
-                    <span class="text-md">${divisa.arqueo || 'N/A'}</span>
+                    <span class="text-md">${divisa.arqueo !== undefined ? divisa.arqueo : 0}</span>
                 </div>
                 <div class="resumen flex text-sm">
                     <span class="text-sm">Diferencia:</span>
-                    <span class="text-md">${divisa.diferencia || 'N/A'}</span>
+                    <span class="text-md">${divisa.diferencia !== undefined ? divisa.diferencia : 0}</span>
                 </div>
             `;
 
@@ -184,6 +184,7 @@ function calcularTotal(codigoDivisa, simboloDivisa) {
 
     // Mostrar el total del arqueo
     document.getElementById('total-arqueo').textContent = `${simboloDivisa} ${totalArqueo}`;
+
     
     // Obtener el total del sistema
     const totalSistema = parseFloat(document.getElementById('total-sistema').textContent.replace(simboloDivisa, "").trim()) || 0;
