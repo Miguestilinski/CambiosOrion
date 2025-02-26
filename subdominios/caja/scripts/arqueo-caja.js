@@ -147,9 +147,10 @@ function generarTablaArqueo(divisa) {
                        oninput="calcularTotal('${divisa.codigo}', '${divisa.simbolo}')"
                        value="${cantidadGuardada}" min="0">
             </td>
-        `});
+        `;
         
         tbody.appendChild(filaTotal);
+        });
 
         // Agregar filas para el resto de las denominaciones
         for (let i = 1; i < denominaciones.length; i++) {
