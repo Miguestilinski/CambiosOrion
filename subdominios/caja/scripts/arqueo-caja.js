@@ -119,7 +119,7 @@ function generarTablaArqueo(divisa) {
             fila.classList.add("bg-white", "text-gray-700");
 
             fila.innerHTML = `
-                <td class="p-3">${divisa.simbolo} ${denominacion}</td>
+                <td class="p-3">${divisa.simbolo} MONTO SISTEMA</td>
                 <td class="p-3">
                     <input type="number" class="w-16 p-1 bg-white border border-gray-600 text-gray-700 text-center" 
                            oninput="calcularTotal('${divisa.codigo}', '${divisa.simbolo}')">
