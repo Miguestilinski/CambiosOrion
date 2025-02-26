@@ -24,7 +24,7 @@ async function cargarDivisas() {
         // Ordenar las divisas según la lista proporcionada
         const ordenPreferido = [
             "CLP", "USD", "EUR", "ARS", "BRL", "PEN", "COP", "UYU", "BOB", "CAD", "GBP", "JPY", "CNY", 
-            "SEK", "AUD", "MXN", "NZD", "CHF", "DKK", "DKH", "WON", "DOP", "PYG", "CRC", "BSD", "NOK"
+            "SEK", "AUD", "MXN", "NZD", "CHF", "DKK", "NOK", "WON", "DOP", "DKH", "PYG", "CRC", "BSD", 
         ];
 
         // Ordenar divisas basándonos en el orden preferido
@@ -99,7 +99,7 @@ function seleccionarDivisa(divisa) {
     
     // Agregar fondo a la divisa seleccionada
     const divSeleccionado = document.querySelector(`#divisas-lista div[data-codigo="${divisa.codigo}"]`);
-    if (divSeleccionado) divSeleccionado.classList.add('bg-gray-700');
+    if (divSeleccionado) divSeleccionado.classList.add('bg-gray-800');
 
     // Mostrar información relevante
     document.getElementById('total-sistema').textContent = `${divisa.simbolo} ${divisa.denominacion || 'N/A'}`;

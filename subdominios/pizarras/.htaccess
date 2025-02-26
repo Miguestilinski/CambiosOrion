@@ -1,51 +1,26 @@
 RewriteEngine on
 
-# Redirigir solicitudes al verificador de autenticacion
-RewriteCond %{REQUEST_URI} ^/$
-RewriteRule ^ https://cambiosorion.cl/data/auth.php [L]
+# Si el usuario NO tiene una sesion activa, redirigir a login
+RewriteCond %{HTTP_COOKIE} !PHPSESSID [NC]
+RewriteRule ^(.*)$ https://admin.cambiosorion.cl/login [R,L]
 
-# Establecer index.php como la página principal
+# Si el usuario no es admin, redirigir a /sin-acceso
+#RewriteCond %{HTTP_COOKIE} !admin_authenticated=true [NC]
+#RewriteRule ^(.*)$ https://cambiosorion.cl/sin-acceso [R,L]
+
+# Establecer index.html como pagina de inicio
 DirectoryIndex index.html
 
-RewriteCond %{HTTP_REFERER} !^http://admin.cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://admin.cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://clientes.cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://clientes.cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://intranet.cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://intranet.cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://pizarras.cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://pizarras.cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://www.admin.cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://www.admin.cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://www.cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://www.cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://www.clientes.cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://www.clientes.cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://www.intranet.cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://www.intranet.cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://www.pizarras.cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://www.pizarras.cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://admin.cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://admin.cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://clientes.cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://clientes.cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://intranet.cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://intranet.cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://pizarras.cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://pizarras.cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://www.admin.cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://www.admin.cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://www.cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://www.cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://www.clientes.cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://www.clientes.cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://www.intranet.cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://www.intranet.cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://www.pizarras.cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://www.pizarras.cambiosorion.cl$      [NC]
+# Ocultar extensiones .html
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^([^/]+)/?$ $1.html [L]
+
+# Permitir solo acceso a imagenes (opcional)
+RewriteCond %{REQUEST_URI} \.(jpg|jpeg|gif|png|bmp)$ [NC]
 RewriteRule .*\.(jpg|jpeg|gif|png|bmp)$ https://cambiosorion.cl/sin-acceso [R,NC]
 
+# Configuracion PHP (No modificar)
+<IfModule mime_module>
+  AddHandler application/x-httpd-ea-php81 .php .php8 .phtml
+</IfModule>

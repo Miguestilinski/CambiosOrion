@@ -9,7 +9,7 @@ RewriteRule ^(.*)$ https://admin.cambiosorion.cl/login [R,L]
 #RewriteRule ^(.*)$ https://cambiosorion.cl/sin-acceso [R,L]
 
 # Establecer index.html como pagina de inicio
-DirectoryIndex operaciones.html
+DirectoryIndex transacciones.html
 
 # Ocultar extensiones .html
 RewriteCond %{REQUEST_FILENAME} !-d
