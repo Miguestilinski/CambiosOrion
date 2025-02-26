@@ -94,12 +94,18 @@ function seleccionarDivisa(divisa) {
     document.getElementById('tabla-arqueo').classList.remove('hidden');
     document.getElementById('detalle').classList.remove('hidden');
 
-    // Remover fondo de divisa previamente seleccionada
-    document.querySelectorAll('#divisas-lista div').forEach(el => el.classList.remove('bg-gray-700'));
-    
-    // Agregar fondo a la divisa seleccionada
+    // Restaurar todas las divisas a su color original
+    document.querySelectorAll('#divisas-lista div').forEach(el => {
+        el.classList.remove('bg-gray-800'); // Quitar selección previa
+        el.classList.add('bg-gray-600'); // Restaurar color original
+    });
+
+    // Aplicar fondo oscuro solo a la divisa seleccionada
     const divSeleccionado = document.querySelector(`#divisas-lista div[data-codigo="${divisa.codigo}"]`);
-    if (divSeleccionado) divSeleccionado.classList.add('bg-gray-800');
+    if (divSeleccionado) {
+        divSeleccionado.classList.remove('bg-gray-600'); // Quitar el color original
+        divSeleccionado.classList.add('bg-gray-800'); // Aplicar color de selección
+    }
 
     // Generar tabla de arqueo
     generarTablaArqueo(divisa);
