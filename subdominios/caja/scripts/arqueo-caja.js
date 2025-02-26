@@ -177,7 +177,7 @@ function calcularTotal(codigoDivisa, simboloDivisa) {
 
     // Calcular el total de arqueo
     filas.forEach((fila, index) => {
-        let denominacion = parseFloat(fila.cells[0].textContent.replace(simboloDivisa, "").trim()) || 1;
+        let denominacion = parseFloat(fila.cells[1].textContent.trim()) || 1; // Ajustado para tomar denominación de la segunda columna
         let cantidad = parseInt(inputs[index].value) || 0;
         totalArqueo += cantidad * denominacion;
     });
@@ -185,7 +185,6 @@ function calcularTotal(codigoDivisa, simboloDivisa) {
     // Mostrar el total del arqueo
     document.getElementById('total-arqueo').textContent = `${simboloDivisa} ${totalArqueo}`;
 
-    
     // Obtener el total del sistema
     const totalSistema = parseFloat(document.getElementById('total-sistema').textContent.replace(simboloDivisa, "").trim()) || 0;
     
@@ -197,7 +196,7 @@ function calcularTotal(codigoDivisa, simboloDivisa) {
 
     // Mostrar la diferencia
     document.getElementById('diferencia-caja').textContent = `${simboloDivisa} ${diferencia}`;
-    document.getElementById(`diferencia-${codigoDivisa}`).textContent = diferencia;
+    document.getElementById(`diferencia-${codigoDivisa}`).textContent = `${simboloDivisa} ${diferencia}`;
 
     // Actualizar la lista de divisas con el nuevo arqueo y diferencia
     actualizarListaDivisas(codigoDivisa, totalArqueo, diferencia);
@@ -213,10 +212,10 @@ function actualizarListaDivisas(codigoDivisa, totalArqueo, diferencia) {
         const diferenciaElemento = divisaElemento.querySelector('.resumen .text-md:nth-child(4)');
 
         // Actualizar el valor de Arqueo
-        arqueoElemento.textContent = `${totalArqueo}`;
+        arqueoElemento.textContent = `${simboloDivisa} ${totalArqueo}`;
 
         // Actualizar el valor de Diferencia
-        diferenciaElemento.textContent = `${diferencia}`;
+        diferenciaElemento.textContent = `${simboloDivisa} ${diferencia}`;
     }
 }
 
