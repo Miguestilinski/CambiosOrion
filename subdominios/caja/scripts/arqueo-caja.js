@@ -210,10 +210,10 @@ function calcularTotal(codigoDivisa, simboloDivisa) {
     // Mostrar la diferencia
     document.getElementById('diferencia-caja').textContent = `${simboloDivisa} ${diferencia.toFixed(2)}`;
     document.getElementById('diferencia-caja').classList.remove("text-gray-700");
-    if (diferencia < 0) {
-        document.getElementById('diferencia-caja').classList.add("text-red-600");
-    } else {
+    if (diferencia == 0) {
         document.getElementById('diferencia-caja').classList.add("text-green-600");
+    } else {
+        document.getElementById('diferencia-caja').classList.add("text-red-600");
     }
 
     // Guardar las cantidades en el localStorage
