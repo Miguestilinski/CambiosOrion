@@ -112,7 +112,6 @@ function seleccionarDivisa(divisa) {
 }
 
 function generarTablaArqueo(divisa) {
-    
     const tbody = document.getElementById('tbody-arqueo');
     tbody.innerHTML = ""; // Limpiar la tabla antes de generarla
 
@@ -132,24 +131,23 @@ function generarTablaArqueo(divisa) {
 
     if (divisa.fraccionable && denominaciones.length > 0) {
         denominaciones.forEach((denominacion, index) => {
+            let filaTotal = document.createElement("tr");
+            filaTotal.classList.add("bg-white", "text-gray-700");
 
-        let filaTotal = document.createElement("tr");
-        filaTotal.classList.add("bg-white", "text-gray-700");
-
-        let cantidadGuardada = cantidadesGuardadas[denominacion] || 0;
-        denominaciones.sort((a, b) => b - a); // Ordenar de mayor a menor
-        
-        filaTotal.innerHTML = `
-            <td class="p-3 text-center">${index === 0 ? `${divisa.simbolo} ${sistemaTotal}` : ''}</td>
-            <td class="p-3 text-center">${denominacion}</td>
-            <td class="p-3 text-center">
-                <input type="number" class="w-16 p-1 bg-white border border-gray-600 text-gray-700 text-center"
-                       oninput="calcularTotal('${divisa.codigo}', '${divisa.simbolo}')"
-                       value="${cantidadGuardada}" min="0">
-            </td>
-        `;
-        
-        tbody.appendChild(filaTotal);
+            let claveDenominacion = denominacion.toFixed(2); // Asegurar formato consistente
+            let cantidadGuardada = cantidadesGuardadas[claveDenominacion] || 0;
+            
+            filaTotal.innerHTML = `
+                <td class="p-3 text-center">${index === 0 ? `${divisa.simbolo} ${sistemaTotal}` : ''}</td>
+                <td class="p-3 text-center">${denominacion}</td>
+                <td class="p-3 text-center">
+                    <input type="number" class="w-16 p-1 bg-white border border-gray-600 text-gray-700 text-center"
+                        oninput="calcularTotal('${divisa.codigo}', '${divisa.simbolo}')"
+                        value="${cantidadGuardada}" min="0">
+                </td>
+            `;
+            
+            tbody.appendChild(filaTotal);
         });
 
     } else {
@@ -187,11 +185,16 @@ function calcularTotal(codigoDivisa, simboloDivisa) {
     const inputs = document.querySelectorAll('#tbody-arqueo input');
     const filas = document.querySelectorAll('#tbody-arqueo tr');
 
+    let cantidades = {};
+
     // Calcular el total de arqueo
     filas.forEach((fila, index) => {
-        let denominacion = parseFloat(fila.cells[1].textContent.trim()) || 1; // Ajustado para tomar denominación de la segunda columna
+        let denominacion = parseFloat(fila.cells[1].textContent.trim()) || 1;
+        let claveDenominacion = denominacion.toFixed(2); // Consistencia en localStorage
         let cantidad = parseInt(inputs[index].value) || 0;
+
         totalArqueo += cantidad * denominacion;
+        cantidades[claveDenominacion] = cantidad; // Guardar con clave estandarizada
     });
 
     // Mostrar el total del arqueo
@@ -210,21 +213,8 @@ function calcularTotal(codigoDivisa, simboloDivisa) {
 
     // Mostrar la diferencia
     document.getElementById('diferencia-caja').textContent = `${simboloDivisa} ${diferencia.toFixed(2)}`;
-    document.getElementById('diferencia-caja').classList.remove("text-gray-700");
-    if (diferencia == 0) {
-        document.getElementById('diferencia-caja').classList.add("text-green-600");
-    } else {
-        document.getElementById('diferencia-caja').classList.add("text-red-600");
-    }
-
-    // Guardar las cantidades en el localStorage
-    const cantidades = {};
-    inputs.forEach((input, index) => {
-        const denominacion = parseFloat(filas[index].cells[1].textContent.trim());
-        if (denominacion) {
-            cantidades[denominacion] = parseInt(input.value) || 0;
-        }
-    });
+    document.getElementById('diferencia-caja').classList.remove("text-gray-700", "text-green-600", "text-red-600");
+    document.getElementById('diferencia-caja').classList.add(diferencia === 0 ? "text-green-600" : "text-red-600");
 
     localStorage.setItem(codigoDivisa, JSON.stringify(cantidades));
 }
