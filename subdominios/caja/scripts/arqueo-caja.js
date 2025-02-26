@@ -95,13 +95,13 @@ function seleccionarDivisa(divisa) {
     document.getElementById('detalle').classList.remove('hidden');
 
     // Restaurar todas las divisas a su color original
-    document.querySelectorAll('#divisas-lista div').forEach(el => {
+    document.querySelectorAll('#divisas-lista > div').forEach(el => {
         el.classList.remove('bg-gray-800'); // Quitar selección previa
         el.classList.add('bg-gray-600'); // Restaurar color original
     });
 
     // Aplicar fondo oscuro solo a la divisa seleccionada
-    const divSeleccionado = document.querySelector(`#divisas-lista div[data-codigo="${divisa.codigo}"]`);
+    const divSeleccionado = document.querySelector(`#divisas-lista > div[data-codigo="${divisa.codigo}"]`);
     if (divSeleccionado) {
         divSeleccionado.classList.remove('bg-gray-600'); // Quitar el color original
         divSeleccionado.classList.add('bg-gray-800'); // Aplicar color de selección
