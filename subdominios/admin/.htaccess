@@ -9,6 +9,10 @@ RewriteRule ^login$ login.html [L]
 #RewriteCond %{HTTP_COOKIE} admin_authenticated=true [NC]
 #RewriteRule ^login$ - [L]
 
+# Si el usuario es cliente, redirigirlo fuera
+RewriteCond %{HTTP_COOKIE} user_role=(cliente|persona|empresa) [NC]
+RewriteRule ^ https://cambiosorion.cl/sin-acceso [R=302,L]
+
 # Establecer index.html como página de inicio
 DirectoryIndex index.html
 
