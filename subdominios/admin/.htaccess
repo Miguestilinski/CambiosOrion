@@ -1,8 +1,9 @@
 RewriteEngine on
 
-# Evitar redirección si ya estamos en /login
+# Evitar redirección infinita si ya estamos en /login
 RewriteCond %{REQUEST_URI} ^/login$ [NC]
-RewriteRule ^ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^login$ login.html [L]
 
 # Verificar autenticación antes de permitir acceso
 #RewriteCond %{HTTP_COOKIE} admin_authenticated=true [NC]

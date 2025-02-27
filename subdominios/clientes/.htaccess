@@ -1,54 +1,29 @@
 # Habilitar reescritura
 RewriteEngine On
 
-# Redirigir solicitudes al verificador de autenticación
-RewriteCond %{REQUEST_URI} ^/$
-RewriteRule ^ auth.php [L]
-
-# Redirigir todas las solicitudes no existentes a index.html
+# Evitar redirección infinita si ya estamos en /login
+RewriteCond %{REQUEST_URI} ^https://cambiosorion.cl/login$ [NC]
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^ index.html [L]
+RewriteRule ^https://cambiosorion.cl/login$ https://cambiosorion.cl/login.html [L]
 
-RewriteCond %{HTTP_REFERER} !^http://admin.cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://admin.cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://clientes.cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://clientes.cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://intranet.cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://intranet.cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://pizarras.cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://pizarras.cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://www.admin.cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://www.admin.cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://www.cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://www.cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://www.clientes.cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://www.clientes.cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://www.intranet.cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://www.intranet.cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://www.pizarras.cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^http://www.pizarras.cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://admin.cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://admin.cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://clientes.cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://clientes.cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://intranet.cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://intranet.cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://pizarras.cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://pizarras.cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://www.admin.cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://www.admin.cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://www.cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://www.cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://www.clientes.cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://www.clientes.cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://www.intranet.cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://www.intranet.cambiosorion.cl$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://www.pizarras.cambiosorion.cl/.*$      [NC]
-RewriteCond %{HTTP_REFERER} !^https://www.pizarras.cambiosorion.cl$      [NC]
+# Establecer index.html como página de inicio
+DirectoryIndex index.html
+
+# Ocultar extensión .html
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^(.+)$ $1.html [L]
+
+# Redirigir URLs con .html a la versión sin extensión (opcional)
+RewriteCond %{THE_REQUEST} \s([^.]+)\.html [NC]
+RewriteRule ^ %1 [R=301,L]
+
+# Permitir solo acceso a imágenes (si es necesario)
+RewriteCond %{REQUEST_URI} \.(jpg|jpeg|gif|png|bmp)$ [NC]
 RewriteRule .*\.(jpg|jpeg|gif|png|bmp)$ https://cambiosorion.cl/sin-acceso [R,NC]
 
+# php -- BEGIN cPanel-generated handler, do not edit
+<IfModule mime_module>
+  AddHandler application/x-httpd-ea-php81 .php .php8 .phtml
+</IfModule>
+# php -- END cPanel-generated handler, do not edit
