@@ -5,18 +5,32 @@ header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Access-Control-Allow-Credentials: true");
 header('Content-Type: application/json');
 
-// Configurar los parámetros de la cookie de sesión
-session_set_cookie_params([
-    'lifetime' => 86400, // 1 día
-    'domain' => '.cambiosorion.cl', // Aplica a todos los subdominios
-    'secure' => true, // Solo en HTTPS
-    'httponly' => true, // Evita accesos desde JS
-    'samesite' => 'Lax'
-]);
-
 $host = $_SERVER['HTTP_HOST'];
 $partes = explode('.', $host);
 $subdominio = $partes[0];
+
+// Configurar la cookie de sesión según el subdominio
+if ($subdominio === "clientes") {
+    setcookie("user_role", $_SESSION['user']['rol'], [
+        'expires' => time() + 86400, // 1 día
+        'path' => '/',
+        'domain' => 'clientes.cambiosorion.cl', // Para compartir entre subdominios
+        'secure' => true,
+        'httponly' => true,
+        'samesite' => 'Lax'
+    ]);
+} else {
+    setcookie("user_role", $_SESSION['user']['rol'], [
+        'expires' => time() + 86400, // 1 día
+        'path' => '/',
+        'domain' => '.cambiosorion.cl', // Para compartir entre subdominios
+        'secure' => true,
+        'httponly' => true,
+        'samesite' => 'Lax'
+    ]);
+}
+
+session_start();
 
 $usuario = $_SESSION['user'] ?? null;
 $rol_usuario = $_SESSION['user']['rol'] ?? null;

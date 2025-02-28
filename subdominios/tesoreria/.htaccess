@@ -1,10 +1,10 @@
 RewriteEngine on
 
-# Si el usuario es cliente, redirigirlo fuera
+# Bloquear acceso a clientes en subdominios administrativos
 RewriteCond %{HTTP_COOKIE} user_role=(cliente|persona|empresa) [NC]
 RewriteRule ^ https://cambiosorion.cl/sin-acceso [R=302,L]
 
-# Si el usuario NO tiene una sesion activa, redirigir a login
+# Si el usuario NO tiene una sesión activa, redirigir al login de administradores
 RewriteCond %{HTTP_COOKIE} !PHPSESSID [NC]
 RewriteRule ^(.*)$ https://admin.cambiosorion.cl/login [R,L]
 
@@ -12,13 +12,17 @@ RewriteRule ^(.*)$ https://admin.cambiosorion.cl/login [R,L]
 #RewriteCond %{HTTP_COOKIE} !admin_authenticated=true [NC]
 #RewriteRule ^(.*)$ https://cambiosorion.cl/sin-acceso [R,L]
 
-# Establecer index.html como pagina de inicio
+# Establecer index.html como página de inicio
 DirectoryIndex operaciones.html
 
-# Ocultar extensiones .html
+# Ocultar extensión .html
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.html -f
-RewriteRule ^([^/]+)/?$ $1.html [L]
+RewriteRule ^(.+)$ $1.html [L]
+
+# Redirigir URLs con .html a la versión sin extensión (opcional)
+RewriteCond %{THE_REQUEST} \s([^.]+)\.html [NC]
+RewriteRule ^ %1 [R=301,L]
 
 # Permitir solo acceso a imagenes (opcional)
 RewriteCond %{REQUEST_URI} \.(jpg|jpeg|gif|png|bmp)$ [NC]
