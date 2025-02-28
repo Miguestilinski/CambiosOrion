@@ -1,6 +1,10 @@
 # Habilitar reescritura
 RewriteEngine On
 
+RewriteCond %{HTTP_COOKIE} ^.*PHPSESSID=.*$ [NC]
+RewriteCond %{HTTP_REFERER} !clientes.cambiosorion.cl [NC]
+RewriteRule .* - [F]
+
 # Evitar redirección infinita si ya estamos en /login
 RewriteCond %{REQUEST_URI} ^https://cambiosorion.cl/login$ [NC]
 RewriteCond %{REQUEST_FILENAME} !-f
