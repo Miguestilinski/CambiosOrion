@@ -5,7 +5,7 @@ RewriteCond %{HTTP_COOKIE} user_role=(cliente|persona|empresa) [NC]
 RewriteRule ^ https://cambiosorion.cl/sin-acceso [R=302,L]
 
 # Si el usuario NO tiene una sesión activa, redirigir al login de administradores
-RewriteCond %{HTTP_COOKIE} !PHPSESSID [NC]
+#RewriteCond %{HTTP_COOKIE} !PHPSESSID [NC]
 RewriteRule ^(.*)$ https://admin.cambiosorion.cl/login [R,L]
 
 # Si el usuario no es admin, redirigir a /sin-acceso
