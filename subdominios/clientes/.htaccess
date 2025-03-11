@@ -1,14 +1,14 @@
 # Habilitar reescritura
 RewriteEngine On
 
-RewriteCond %{HTTP_COOKIE} ^.*PHPSESSID=.*$ [NC]
-RewriteCond %{HTTP_REFERER} !clientes.cambiosorion.cl [NC]
-RewriteRule .* - [F]
+#RewriteCond %{HTTP_COOKIE} ^.*PHPSESSID=.*$ [NC]
+#RewriteCond %{HTTP_REFERER} !clientes.cambiosorion.cl [NC]
+#RewriteRule .* - [F]
 
 # Evitar redirección infinita si ya estamos en /login
-RewriteCond %{REQUEST_URI} ^https://cambiosorion.cl/login$ [NC]
+RewriteCond %{REQUEST_URI} ^/login$ [NC]
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^https://cambiosorion.cl/login$ https://cambiosorion.cl/login.html [L]
+RewriteRule ^/login$ /login.html [L]
 
 # Establecer index.html como página de inicio
 DirectoryIndex index.html
