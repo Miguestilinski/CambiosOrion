@@ -1,8 +1,8 @@
 RewriteEngine on
 
 # Bloquear acceso a clientes en subdominios administrativos
-RewriteCond %{HTTP_COOKIE} user_role=(cliente|persona|empresa) [NC]
-RewriteRule ^ https://cambiosorion.cl/sin-acceso [R=302,L]
+#RewriteCond %{HTTP_COOKIE} user_role=(cliente|persona|empresa) [NC]
+#RewriteRule ^ https://cambiosorion.cl/sin-acceso [R=302,L]
 
 # Si el usuario NO tiene una sesión activa, redirigir al login de administradores
 #RewriteCond %{HTTP_COOKIE} !PHPSESSID [NC]
