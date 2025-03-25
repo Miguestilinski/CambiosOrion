@@ -8,6 +8,7 @@ let displayedCurrencies = ["CLP", "USD", "EUR", "ARS"];
 function initializePage() {
     showSkeleton();
     loadCurrenciesWithSSE();
+    fetchIndicators();
     fetchClosingRates();
     updateLastUpdatedTimestamp();
 }
@@ -82,6 +83,19 @@ function loadCurrenciesWithSSE() {
         console.error('Error con la conexión SSE:', error);
         eventSource.close(); // Cierra la conexión si ocurre un error persistente
     };
+}
+
+async function fetchIndicators() {
+    fetch('https://cambiosorion.cl/data/indicadores.php')
+    .then(response => response.json())
+    .then(data => {
+        let content = "";
+        for (const [key, value] of Object.entries(data)) {
+            content += `${key}: ${value.valor} CLP (${value.fecha}) | `;
+        }
+        document.getElementById("ticker").innerHTML = `<span>${content}</span>`;
+    })
+    .catch(error => console.error("Error:", error));
 }
 
 async function fetchClosingRates() {

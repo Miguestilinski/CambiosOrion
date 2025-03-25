@@ -611,6 +611,26 @@ a.fab:hover {
     background: #3d63ba;
 }
 
+#ticker {
+    background: black;
+    color: white;
+    padding: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+#ticker span {
+    display: inline-block;
+    padding-right: 50px;
+    animation: scroll 15s linear infinite;
+}
+@keyframes scroll {
+    from { transform: translateX(100%); }
+    to { transform: translateX(-100%); }
+}
+
 @media (max-width: 887px) {
     a.fab {
         right: 1.5rem;
