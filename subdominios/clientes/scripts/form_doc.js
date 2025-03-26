@@ -512,7 +512,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         let formularioData = {};
         formData.forEach((value, key) => {
-            formularioData.push({ [key]: value });
+            formularioData[key] = value;
         });
 
         console.log("Datos recopilados:", formularioData);
