@@ -510,7 +510,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Recopilar todos los datos del formulario
         const formData = new FormData(form);
 
-        formularioData = [];
+        let formularioData = {};
         formData.forEach((value, key) => {
             formularioData.push({ [key]: value });
         });
@@ -528,7 +528,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-            // Enviar los datos al servidor
+        // Enviar los datos al servidor
         try {
             const response = await fetch("https://cambiosorion.cl/data/save_cliente.php", {
                 method: "POST",
