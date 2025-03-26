@@ -98,9 +98,10 @@ async function fetchIndicators() {
         // Construir el contenido del ticker
         let content = "";
         for (const [nombre, value] of Object.entries(data)) {
-            content += `${nombre}: ${value.valor} CLP | `;
+            content += `${nombre}: ${value.valor} CLP   | `;
         }
-        document.getElementById("ticker-content").innerHTML = content;
+        // Agregar contenido duplicado para que el ticker parezca continuo
+        document.getElementById("ticker-content").innerHTML = content + content;
     })
     .catch(error => console.error("Error:", error));
 }

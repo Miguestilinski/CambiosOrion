@@ -611,6 +611,11 @@ a.fab:hover {
     background: #3d63ba;
 }
 
+span#paridades-date {
+    margin-left: 1.5rem;
+    color: white;
+}
+
 #ticker {
     background: black;
     color: white;
@@ -621,8 +626,8 @@ a.fab:hover {
 }
 
 #ticker-content {
-    display: inline-block;
-    padding-right: 100%;
+    display: flex;
+    width: max-content;
     animation: tickerScroll 55s linear infinite;
 }
 
