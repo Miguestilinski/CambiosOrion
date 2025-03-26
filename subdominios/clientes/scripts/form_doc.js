@@ -528,12 +528,31 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        // Completar y descargar el PDF
-        await completarPDF(formularioData, autorizadosCount);
+            // Enviar los datos al servidor
+        try {
+            const response = await fetch("https://cambiosorion.cl/data/save_cliente.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formularioData)
+            });
 
-        // fetch("/submit_form", { method: "POST", body: JSON.stringify(formularioData) });
+            const result = await response.json();
+            console.log("Respuesta del servidor:", result);
 
-        alert("Formulario enviado, PDF generado y descargado exitosamente.");
+            if (result.success) {
+                alert("Formulario enviado y guardado en la base de datos correctamente.");
+
+                // Completar y descargar el PDF
+                await completarPDF(formularioData, autorizadosCount);
+                alert("Formulario enviado, PDF generado y descargado exitosamente.");
+
+            } else {
+                alert("Error al guardar los datos: " + result.message);
+            }
+        } catch (error) {
+            console.error("Error en la solicitud:", error);
+            alert("Hubo un problema al enviar los datos.");
+        } 
     });
 
     // Cargar países para ambos conjuntos
