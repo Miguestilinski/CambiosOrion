@@ -617,15 +617,13 @@ a.fab:hover {
     padding: 10px;
     white-space: nowrap;
     overflow: hidden;
-    position: fixed;
-    bottom: 0;
     width: 100%;
 }
 
 #ticker-content {
     display: inline-block;
     padding-right: 100%;
-    animation: tickerScroll 25s linear infinite;
+    animation: tickerScroll 55s linear infinite;
 }
 
 @keyframes tickerScroll {

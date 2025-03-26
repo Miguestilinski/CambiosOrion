@@ -89,7 +89,14 @@ async function fetchIndicators() {
     fetch('https://cambiosorion.cl/data/indicadores.php')
     .then(response => response.json())
     .then(data => {
-        let content = '<strong>Paridades Banco Central de Chile (' + new Date().toLocaleDateString("es-CL") + ')</strong> | ';
+        // Obtener la fecha actual en formato chileno
+        let fechaActual = new Date().toLocaleDateString("es-CL");
+
+        // Actualizar el título con la fecha
+        document.getElementById("paridades-date").innerText = `Paridades Banco Central de Chile (${fechaActual})`;
+
+        // Construir el contenido del ticker
+        let content = "";
         for (const [nombre, value] of Object.entries(data)) {
             content += `${nombre}: ${value.valor} CLP | `;
         }
