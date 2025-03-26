@@ -621,12 +621,14 @@ a.fab:hover {
     bottom: 0;
     width: 100%;
 }
-#ticker span {
+
+#ticker-content {
     display: inline-block;
-    padding-right: 50px;
-    animation: scroll 15s linear infinite;
+    padding-right: 100%;
+    animation: tickerScroll 25s linear infinite;
 }
-@keyframes scroll {
+
+@keyframes tickerScroll {
     from { transform: translateX(100%); }
     to { transform: translateX(-100%); }
 }

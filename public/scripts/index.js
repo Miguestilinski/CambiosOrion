@@ -89,11 +89,11 @@ async function fetchIndicators() {
     fetch('https://cambiosorion.cl/data/indicadores.php')
     .then(response => response.json())
     .then(data => {
-        let content = "";
-        for (const [key, value] of Object.entries(data)) {
-            content += `${key}: ${value.valor} CLP (${value.fecha}) | `;
+        let content = '<strong>Paridades Banco Central de Chile (' + new Date().toLocaleDateString("es-CL") + ')</strong> | ';
+        for (const [nombre, value] of Object.entries(data)) {
+            content += `${nombre}: ${value.valor} CLP | `;
         }
-        document.getElementById("ticker").innerHTML = `<span>${content}</span>`;
+        document.getElementById("ticker-content").innerHTML = content;
     })
     .catch(error => console.error("Error:", error));
 }
