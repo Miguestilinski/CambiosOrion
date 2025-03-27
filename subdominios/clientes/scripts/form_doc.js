@@ -505,6 +505,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Evento para manejar el envío del formulario
     form.addEventListener("submit", async (event) => {
+        let tipo = '';
+
+        const esExtranjero = document.querySelector('input[name="nacionalidad-dec"]:checked')?.value === 'extranjera';
+        const esPersonaJuridica = document.querySelector('input[name="tipo-empresa"]:checked')?.value === 'nacional';
+
+        if (esExtranjero) {
+            tipo = 'extranjero';
+        } else if (esPersonaJuridica) {
+            tipo = 'juridica';
+        } else {
+            tipo = 'natural';
+        }
+
+        console.log('Tipo determinado:', tipo);
+
         event.preventDefault(); // Evitar envío normal del formulario
 
         // Recopilar todos los datos del formulario
