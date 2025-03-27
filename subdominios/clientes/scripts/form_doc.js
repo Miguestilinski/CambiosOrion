@@ -511,11 +511,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const esPersonaJuridica = document.querySelector('input[name="tipo-empresa"]:checked')?.value === 'nacional';
 
         if (esExtranjero) {
-            tipo = 'extranjero';
+            tipo = 'Extranjero';
         } else if (esPersonaJuridica) {
-            tipo = 'juridica';
+            tipo = 'Persona Juridica';
         } else {
-            tipo = 'natural';
+            tipo = 'Persona Natural';
         }
 
         console.log('Tipo determinado:', tipo);
