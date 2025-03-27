@@ -227,8 +227,9 @@ async function completarPDF(formularioData, autorizadosCount, beneficiariosCount
         } else {
             tipo = 'Persona Natural';
         }
+        datosRecopilados.tipo = datosRecopilados.tipo.trim();
 
-        console.log('Tipo determinado:', tipo);
+        console.log("Tipo determinado:", datosRecopilados.tipo);
 
         // Uso Interno
         const usoIntValue = document.querySelector('input[name="uso-int"]:checked')?.value;
@@ -520,6 +521,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Evento para manejar el envío del formulario
     form.addEventListener("submit", async (event) => {
+        const valoresPermitidos = ["Persona Juridica", "Persona Natural", "Extranjero"];
+        if (!valoresPermitidos.includes(datosRecopilados.tipo)) {
+            console.error("Valor de tipo inválido:", datosRecopilados.tipo);
+            return;
+        }
+
         event.preventDefault(); // Evitar envío normal del formulario
 
         // Recopilar todos los datos del formulario
