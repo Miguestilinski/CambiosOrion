@@ -532,9 +532,11 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
             const response = await fetch("https://cambiosorion.cl/data/save_cliente.php", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formularioData)
             });
+
+            const textResponse = await response.text();
+            console.log("Respuesta del servidor:", textResponse);
 
             const result = await response.json();
             console.log("Respuesta del servidor:", result);
