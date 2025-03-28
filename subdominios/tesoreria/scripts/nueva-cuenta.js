@@ -107,44 +107,48 @@ document.addEventListener("click", (e) => {
 
 // Enviar formulario
 document.getElementById("form-nueva-cuenta").addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  if (!clienteSeleccionado || !divisaSeleccionada) {
-    alert("Debes seleccionar un cliente y una divisa.");
-    return;
-  }
-
-  const body = {
-    cliente_id: clienteSeleccionado.id,
-    divisa_id: divisaSeleccionada.id,
-  };
-
-  try {
-    const res = await fetch("https://cambiosorion.cl/data/nueva-cuenta.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-
-    // Verificar si la respuesta es exitosa
-    if (!res.ok) {
-      throw new Error('Error al crear la cuenta: ' + res.statusText);
+    e.preventDefault();
+  
+    if (!clienteSeleccionado || !divisaSeleccionada) {
+      alert("Debes seleccionar un cliente y una divisa.");
+      return;
     }
-
-    const data = await res.json();
-
-    if (data.success) {
-      alert(`Cuenta creada exitosamente: ${data.cuenta_id}`);
-      // Reset
-      clienteInput.value = "";
-      divisaInput.value = "";
-      clienteSeleccionado = null;
-      divisaSeleccionada = null;
-    } else {
-      alert(data.error || "Error al crear la cuenta.");
+  
+    const body = {
+      cliente_id: clienteSeleccionado.id,
+      divisa_id: divisaSeleccionada.id,
+    };
+  
+    try {
+      const res = await fetch("https://cambiosorion.cl/data/nueva-cuenta.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+  
+      // Verificar si la respuesta es exitosa
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error('Error al crear cuenta:', errorText); // Imprimir el error del servidor
+        alert("Hubo un problema con la conexión al servidor.");
+        return;
+      }
+  
+      const data = await res.json();
+  
+      if (data.success) {
+        alert(`Cuenta creada exitosamente: ${data.cuenta_id}`);
+        // Reset
+        clienteInput.value = "";
+        divisaInput.value = "";
+        clienteSeleccionado = null;
+        divisaSeleccionada = null;
+      } else {
+        alert(data.error || "Error al crear la cuenta.");
+      }
+    } catch (error) {
+      alert("Error de conexión con el servidor.");
+      console.error(error);
     }
-  } catch (error) {
-    alert("Error de conexión con el servidor.");
-    console.error(error);
-  }
 });
+  
