@@ -110,32 +110,32 @@ document.getElementById("form-nueva-cuenta").addEventListener("submit", async (e
     e.preventDefault();
   
     if (!clienteSeleccionado || !divisaSeleccionada) {
-      alert("Debes seleccionar un cliente y una divisa.");
-      return;
-    }
-  
-    const body = {
-      cliente_id: clienteSeleccionado.id,
-      divisa_id: divisaSeleccionada.id,
-    };
-  
-    try {
-      const res = await fetch("https://cambiosorion.cl/data/nueva-cuenta.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
+        alert("Debes seleccionar un cliente y una divisa.");
+        return;
+      }
+    
+      const body = {
+        cliente_id: clienteSeleccionado.id,
+        divisa_id: divisaSeleccionada.id,
+      };
+    
+      try {
+        const res = await fetch("https://cambiosorion.cl/data/nueva-cuenta.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
   
       // Verificar si la respuesta es exitosa
       if (!res.ok) {
-        const errorText = await res.text();
-        console.error('Error al crear cuenta:', errorText); // Imprimir el error del servidor
+        const errorText = await res.text(); // Obtener la respuesta completa como texto
+        console.error('Error de respuesta del servidor:', errorText); // Mostrar la respuesta completa
         alert("Hubo un problema con la conexión al servidor.");
         return;
       }
   
       const data = await res.json();
-  
+
       if (data.success) {
         alert(`Cuenta creada exitosamente: ${data.cuenta_id}`);
         // Reset
