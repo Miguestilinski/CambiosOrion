@@ -116,12 +116,12 @@
         <div id="sidebar-container"></div>
         <main id="dashboard-content" class="dashboard-content">
             <section id="cuentas" class="content-section active">
-                <!-- Título y botón Nueva Operación -->
+                <!-- Título y botón Nueva Cuenta -->
                 <div class="flex items-center mb-6">
                     <h1 class="text-2xl font-medium mr-4 leading-none text-white">Cuentas</h1>
-                    <button type="button" id="nueva-cuenta" href="./nueva-cuenta.html"
+                    <button type="button" id="nueva-cuenta" href="./nueva-cuenta"
                         class="text-white bg-blue-700 mr-4 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
-                        Nueva Operación
+                        Nueva Cuenta
                     </button>
                     <button type="button" id="exportar" href="#"
                     class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
@@ -132,8 +132,8 @@
                 <!-- Filtros avanzados -->
                 <div class="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-6">
                     <div>
-                        <label for="codigo" class="block mb-1 text-sm text-white">Código</label>
-                        <input type="text" id="codigo" 
+                        <label for="id" class="block mb-1 text-sm text-white">ID</label>
+                        <input type="text" id="id" 
                             class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                     </div>
                     <div>
@@ -296,7 +296,7 @@
 
     <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
     <script type="module" src="https://cambiosorion.cl/orionapp/public/scripts/header.js" crossorigin="anonymous"></script>
-    <script type="module" src="./scripts/index.js"></script>
+    <script type="module" src="./scripts/cuentas.js"></script>
     <script>
         fetch('sidebar.html')
             .then(response => response.text())
