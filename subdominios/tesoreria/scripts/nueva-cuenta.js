@@ -18,21 +18,31 @@ clienteInput.addEventListener("input", async (e) => {
       query
     )}`
   );
-  const clientes = await res.json();
 
-  resultadoClientes.innerHTML = "";
-  clientes.forEach((cliente) => {
-    const li = document.createElement("li");
-    li.textContent = cliente.nombre;
-    li.classList.add("px-2", "py-1", "hover:bg-gray-200", "cursor-pointer");
-    li.addEventListener("click", () => {
-      clienteInput.value = cliente.nombre;
-      clienteSeleccionado = cliente;
-      resultadoClientes.classList.add("hidden");
+  // Verificar si la respuesta es válida
+  if (!res.ok) {
+    console.error('Error al buscar cliente', res.statusText);
+    return;
+  }
+
+  try {
+    const clientes = await res.json();
+    resultadoClientes.innerHTML = "";
+    clientes.forEach((cliente) => {
+      const li = document.createElement("li");
+      li.textContent = cliente.nombre;
+      li.classList.add("px-2", "py-1", "hover:bg-gray-200", "cursor-pointer");
+      li.addEventListener("click", () => {
+        clienteInput.value = cliente.nombre;
+        clienteSeleccionado = cliente;
+        resultadoClientes.classList.add("hidden");
+      });
+      resultadoClientes.appendChild(li);
     });
-    resultadoClientes.appendChild(li);
-  });
-  resultadoClientes.classList.remove("hidden");
+    resultadoClientes.classList.remove("hidden");
+  } catch (error) {
+    console.error("Error al procesar la respuesta de los clientes", error);
+  }
 });
 
 // Buscar divisa
@@ -48,21 +58,31 @@ divisaInput.addEventListener("input", async (e) => {
       query
     )}`
   );
-  const divisas = await res.json();
 
-  resultadoDivisas.innerHTML = "";
-  divisas.forEach((divisa) => {
-    const li = document.createElement("li");
-    li.textContent = divisa.nombre;
-    li.classList.add("px-2", "py-1", "hover:bg-gray-200", "cursor-pointer");
-    li.addEventListener("click", () => {
-      divisaInput.value = divisa.nombre;
-      divisaSeleccionada = divisa;
-      resultadoDivisas.classList.add("hidden");
+  // Verificar si la respuesta es válida
+  if (!res.ok) {
+    console.error('Error al buscar divisa', res.statusText);
+    return;
+  }
+
+  try {
+    const divisas = await res.json();
+    resultadoDivisas.innerHTML = "";
+    divisas.forEach((divisa) => {
+      const li = document.createElement("li");
+      li.textContent = divisa.nombre;
+      li.classList.add("px-2", "py-1", "hover:bg-gray-200", "cursor-pointer");
+      li.addEventListener("click", () => {
+        divisaInput.value = divisa.nombre;
+        divisaSeleccionada = divisa;
+        resultadoDivisas.classList.add("hidden");
+      });
+      resultadoDivisas.appendChild(li);
     });
-    resultadoDivisas.appendChild(li);
-  });
-  resultadoDivisas.classList.remove("hidden");
+    resultadoDivisas.classList.remove("hidden");
+  } catch (error) {
+    console.error("Error al procesar la respuesta de las divisas", error);
+  }
 });
 
 // Cerrar dropdown al clickear fuera
@@ -95,6 +115,12 @@ document.getElementById("form-nueva-cuenta").addEventListener("submit", async (e
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     });
+
+    // Verificar si la respuesta es válida
+    if (!res.ok) {
+      throw new Error('Error al crear la cuenta: ' + res.statusText);
+    }
+
     const data = await res.json();
 
     if (data.success) {
@@ -109,5 +135,6 @@ document.getElementById("form-nueva-cuenta").addEventListener("submit", async (e
     }
   } catch (error) {
     alert("Error de conexión con el servidor.");
+    console.error(error);
   }
 });
