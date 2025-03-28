@@ -14,9 +14,7 @@ clienteInput.addEventListener("input", async (e) => {
   }
 
   const res = await fetch(
-    `https://cambiosorion.cl/data/nueva-cuenta.php?buscar_cliente=${encodeURIComponent(
-      query
-    )}`
+    `https://cambiosorion.cl/data/nueva-cuenta.php?buscar_cliente=${encodeURIComponent(query)}`
   );
 
   // Verificar si la respuesta es exitosa
@@ -27,7 +25,6 @@ clienteInput.addEventListener("input", async (e) => {
   }
 
   try {
-    // Intentar parsear la respuesta como JSON
     const clientes = await res.json();
     resultadoClientes.innerHTML = "";
     clientes.forEach((cliente) => {
@@ -44,9 +41,9 @@ clienteInput.addEventListener("input", async (e) => {
     resultadoClientes.classList.remove("hidden");
   } catch (error) {
     console.error("Error al procesar la respuesta de los clientes", error);
-    // Si no es JSON, mostrar el contenido de la respuesta para diagnóstico
     const text = await res.text();
     console.error("Respuesta del servidor:", text);
+    alert("Error al procesar la respuesta del servidor. Intenta nuevamente.");
   }
 });
 
@@ -59,9 +56,7 @@ divisaInput.addEventListener("input", async (e) => {
   }
 
   const res = await fetch(
-    `https://cambiosorion.cl/data/nueva-cuenta.php?buscar_divisa=${encodeURIComponent(
-      query
-    )}`
+    `https://cambiosorion.cl/data/nueva-cuenta.php?buscar_divisa=${encodeURIComponent(query)}`
   );
 
   // Verificar si la respuesta es exitosa
@@ -72,7 +67,6 @@ divisaInput.addEventListener("input", async (e) => {
   }
 
   try {
-    // Intentar parsear la respuesta como JSON
     const divisas = await res.json();
     resultadoDivisas.innerHTML = "";
     divisas.forEach((divisa) => {
@@ -89,9 +83,9 @@ divisaInput.addEventListener("input", async (e) => {
     resultadoDivisas.classList.remove("hidden");
   } catch (error) {
     console.error("Error al procesar la respuesta de las divisas", error);
-    // Si no es JSON, mostrar el contenido de la respuesta para diagnóstico
     const text = await res.text();
     console.error("Respuesta del servidor:", text);
+    alert("Error al procesar la respuesta del servidor. Intenta nuevamente.");
   }
 });
 
@@ -107,48 +101,47 @@ document.addEventListener("click", (e) => {
 
 // Enviar formulario
 document.getElementById("form-nueva-cuenta").addEventListener("submit", async (e) => {
-    e.preventDefault();
-  
-    if (!clienteSeleccionado || !divisaSeleccionada) {
-        alert("Debes seleccionar un cliente y una divisa.");
-        return;
-      }
-    
-      const body = {
-        cliente_id: clienteSeleccionado.id,
-        divisa_id: divisaSeleccionada.id,
-      };
-    
-      try {
-        const res = await fetch("https://cambiosorion.cl/data/nueva-cuenta.php", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
-        });
-  
-      // Verificar si la respuesta es exitosa
-      if (!res.ok) {
-        const errorText = await res.text(); // Obtener la respuesta completa como texto
-        console.error('Error de respuesta del servidor:', errorText); // Mostrar la respuesta completa
-        alert("Hubo un problema con la conexión al servidor.");
-        return;
-      }
-  
-      const data = await res.json();
+  e.preventDefault();
 
-      if (data.success) {
-        alert(`Cuenta creada exitosamente: ${data.cuenta_id}`);
-        // Reset
-        clienteInput.value = "";
-        divisaInput.value = "";
-        clienteSeleccionado = null;
-        divisaSeleccionada = null;
-      } else {
-        alert(data.error || "Error al crear la cuenta.");
-      }
-    } catch (error) {
-      alert("Error de conexión con el servidor.");
-      console.error(error);
+  if (!clienteSeleccionado || !divisaSeleccionada) {
+    alert("Debes seleccionar un cliente y una divisa.");
+    return;
+  }
+
+  const body = {
+    cliente_id: clienteSeleccionado.id,
+    divisa_id: divisaSeleccionada.id,
+  };
+
+  try {
+    const res = await fetch("https://cambiosorion.cl/data/nueva-cuenta.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+
+    // Verificar si la respuesta es exitosa
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error('Error de respuesta del servidor:', errorText);
+      alert("Hubo un problema con la conexión al servidor.");
+      return;
     }
+
+    const data = await res.json();
+
+    if (data.success) {
+      alert(`Cuenta creada exitosamente: ${data.cuenta_id}`);
+      // Reset
+      clienteInput.value = "";
+      divisaInput.value = "";
+      clienteSeleccionado = null;
+      divisaSeleccionada = null;
+    } else {
+      alert(data.error || "Error al crear la cuenta.");
+    }
+  } catch (error) {
+    alert("Error de conexión con el servidor.");
+    console.error(error);
+  }
 });
-  
