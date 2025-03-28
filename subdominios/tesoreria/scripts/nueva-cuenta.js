@@ -142,6 +142,6 @@ document.getElementById("form-nueva-cuenta").addEventListener("submit", async (e
     }
   } catch (error) {
     alert("Error de conexión con el servidor.");
-    console.error(error);
+    console.error("Error de conexión:", error); 
   }
 });
