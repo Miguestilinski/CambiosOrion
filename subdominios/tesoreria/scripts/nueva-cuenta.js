@@ -19,13 +19,15 @@ clienteInput.addEventListener("input", async (e) => {
     )}`
   );
 
-  // Verificar si la respuesta es válida
+  // Verificar si la respuesta es exitosa
   if (!res.ok) {
     console.error('Error al buscar cliente', res.statusText);
+    alert("Hubo un problema con la conexión al servidor. Intenta nuevamente.");
     return;
   }
 
   try {
+    // Intentar parsear la respuesta como JSON
     const clientes = await res.json();
     resultadoClientes.innerHTML = "";
     clientes.forEach((cliente) => {
@@ -42,6 +44,9 @@ clienteInput.addEventListener("input", async (e) => {
     resultadoClientes.classList.remove("hidden");
   } catch (error) {
     console.error("Error al procesar la respuesta de los clientes", error);
+    // Si no es JSON, mostrar el contenido de la respuesta para diagnóstico
+    const text = await res.text();
+    console.error("Respuesta del servidor:", text);
   }
 });
 
@@ -59,13 +64,15 @@ divisaInput.addEventListener("input", async (e) => {
     )}`
   );
 
-  // Verificar si la respuesta es válida
+  // Verificar si la respuesta es exitosa
   if (!res.ok) {
     console.error('Error al buscar divisa', res.statusText);
+    alert("Hubo un problema con la conexión al servidor. Intenta nuevamente.");
     return;
   }
 
   try {
+    // Intentar parsear la respuesta como JSON
     const divisas = await res.json();
     resultadoDivisas.innerHTML = "";
     divisas.forEach((divisa) => {
@@ -82,6 +89,9 @@ divisaInput.addEventListener("input", async (e) => {
     resultadoDivisas.classList.remove("hidden");
   } catch (error) {
     console.error("Error al procesar la respuesta de las divisas", error);
+    // Si no es JSON, mostrar el contenido de la respuesta para diagnóstico
+    const text = await res.text();
+    console.error("Respuesta del servidor:", text);
   }
 });
 
@@ -116,7 +126,7 @@ document.getElementById("form-nueva-cuenta").addEventListener("submit", async (e
       body: JSON.stringify(body),
     });
 
-    // Verificar si la respuesta es válida
+    // Verificar si la respuesta es exitosa
     if (!res.ok) {
       throw new Error('Error al crear la cuenta: ' + res.statusText);
     }
