@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function obtenerCuentas() {
         const params = new URLSearchParams();
         params.set('id', idInput.value);
-        params.set('nombre', nombreInput.value);
+        params.set('nombre_cliente', nombreInput.value);
         params.set('divisa', divisaSelect.value);
         params.set('por_cobrar', porCobrarSelect.value);
         params.set('por_pagar', porPagarSelect.value);
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
             tr.classList.add('border-b', 'bg-white', 'border-gray-700', 'text-gray-700');
             tr.innerHTML = `
                 <td class="px-4 py-2">${cuenta.id}</td>
-                <td class="px-4 py-2">${cuenta.nombre}</td>
+                <td class="px-4 py-2">${cuenta.nombre_cliente}</td>
                 <td class="px-4 py-2">${cuenta.divisa}</td>
                 <td class="px-4 py-2">${cuenta.me_deben}</td>
                 <td class="px-4 py-2">${cuenta.debo}</td>
