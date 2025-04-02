@@ -128,8 +128,10 @@ document.getElementById("form-nueva-cuenta").addEventListener("submit", async (e
       return;
     }
 
-    const data = await res.json();
+    const textResponse = await res.text(); // 🔍 Leer la respuesta en texto
+    console.log("Respuesta cruda del servidor:", textResponse); // 👀 Imprimir en consola
 
+    const data = JSON.parse(textResponse); // 👈 Intentar parsear manualmente
     if (data.success) {
       alert(`Cuenta creada exitosamente: ${data.cuenta_id}`);
       // Reset
@@ -140,6 +142,7 @@ document.getElementById("form-nueva-cuenta").addEventListener("submit", async (e
     } else {
       alert(data.error || "Error al crear la cuenta.");
     }
+    
   } catch (error) {
     console.error("Error de conexión:", error);
   
