@@ -9,6 +9,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const activaSelect = document.getElementById('activa');
     const borrarFiltrosBtn = document.getElementById('borrar-filtros');
     const tablaCuentas = document.querySelector('table tbody');
+    const nuevaCuentaBtn = document.getElementById('nueva-cuenta');
+
+    // Redirigir al hacer clic en "Nueva Cuenta"
+    if (nuevaCuentaBtn) {
+        nuevaCuentaBtn.addEventListener('click', () => {
+            window.location.href = 'https://tesoreria.cambiosorion.cl/nueva-cuenta';
+        });
+    }
 
     // Función para obtener las cuentas con los filtros aplicados
     function obtenerCuentas() {
