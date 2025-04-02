@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
         params.set('mostrar_registros', mostrarRegistros.value);
         params.set('buscar', buscarInput.value);
 
-        fetch(`cuentas.php?${params.toString()}`)
+        fetch(`https://cambiosorion.cl/data/cuentas.php?${params.toString()}`)
             .then(response => response.json())
             .then(cuentas => {
                 mostrarResultados(cuentas);
