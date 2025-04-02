@@ -141,9 +141,20 @@ document.getElementById("form-nueva-cuenta").addEventListener("submit", async (e
       alert(data.error || "Error al crear la cuenta.");
     }
   } catch (error) {
-    const text = await res.text();
-    console.error("Respuesta del servidor:", text);
-    alert("Error de conexión con el servidor.");
-    console.error("Error de conexión:", error); 
-  }
+    console.error("Error de conexión:", error);
+  
+    let errorMessage = "Error de conexión con el servidor.";
+    
+    if (error.response) { 
+      try {
+        const text = await error.response.text();
+        console.error("Respuesta del servidor:", text);
+        errorMessage += `\nDetalle: ${text}`;
+      } catch (textError) {
+        console.error("No se pudo leer la respuesta del servidor.");
+      }
+    }
+  
+    alert(errorMessage);
+  }  
 });
