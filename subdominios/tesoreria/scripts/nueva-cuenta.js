@@ -131,7 +131,7 @@ document.getElementById("form-nueva-cuenta").addEventListener("submit", async (e
     }
 
     const textResponse = await res.text();
-    console.log("Respuesta cruda del servidor:", textResponse);
+    console.log("Respuesta cruda del servidor:", textResponse);    
 
     const data = JSON.parse(textResponse);
     if (data.success) {
