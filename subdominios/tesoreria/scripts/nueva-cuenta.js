@@ -76,8 +76,10 @@ divisaInput.addEventListener("input", async (e) => {
       li.addEventListener("click", () => {
         divisaInput.value = divisa.nombre;
         divisaSeleccionada = divisa;
+        console.log(`ID de divisas_interna seleccionado: ${divisa.id}`);
+        console.log(`Valor asignado a divisa_id: ${divisa.id}`);
         resultadoDivisas.classList.add("hidden");
-      });
+      });      
       resultadoDivisas.appendChild(li);
     });
     resultadoDivisas.classList.remove("hidden");
