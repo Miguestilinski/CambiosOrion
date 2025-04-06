@@ -1,7 +1,7 @@
 const clienteInput = document.getElementById("cliente");
 const resultadoClientes = document.getElementById("resultado-clientes");
 const divisaInput = document.getElementById("divisa");
-const resultadoDivisas = document.getElementById("resultado-divisas");
+const divisaSugerencias = document.getElementById("divisa-sugerencias");
 let clienteSeleccionado = null;
 let divisaSeleccionada = null;
 
@@ -51,7 +51,7 @@ clienteInput.addEventListener("input", async (e) => {
 divisaInput.addEventListener("input", async (e) => {
   const query = e.target.value.trim();
   if (query.length < 1) {
-    resultadoDivisas.classList.add("hidden");
+    divisaSugerencias.classList.add("hidden");
     return;
   }
 
@@ -68,7 +68,7 @@ divisaInput.addEventListener("input", async (e) => {
 
   try {
     const divisas = await res.json();
-    resultadoDivisas.innerHTML = "";
+    divisaSugerencias.innerHTML = "";
     divisas.forEach((divisa) => {
       const li = document.createElement("li");
       li.textContent = divisa.nombre;
@@ -78,11 +78,11 @@ divisaInput.addEventListener("input", async (e) => {
         divisaSeleccionada = divisa;
         console.log(`ID de divisas_interna seleccionado: ${divisa.id}`);
         console.log(`Valor asignado a divisa_id: ${divisa.id}`);
-        resultadoDivisas.classList.add("hidden");
+        divisaSugerencias.classList.add("hidden");
       });      
-      resultadoDivisas.appendChild(li);
+      divisaSugerencias.appendChild(li);
     });
-    resultadoDivisas.classList.remove("hidden");
+    divisaSugerencias.classList.remove("hidden");
   } catch (error) {
     console.error("Error al procesar la respuesta de las divisas", error);
     const text = await res.text();
@@ -96,8 +96,8 @@ document.addEventListener("click", (e) => {
   if (!clienteInput.contains(e.target) && !resultadoClientes.contains(e.target)) {
     resultadoClientes.classList.add("hidden");
   }
-  if (!divisaInput.contains(e.target) && !resultadoDivisas.contains(e.target)) {
-    resultadoDivisas.classList.add("hidden");
+  if (!divisaInput.contains(e.target) && !divisaSugerencias.contains(e.target)) {
+    divisaSugerencias.classList.add("hidden");
   }
 });
 
@@ -116,6 +116,7 @@ document.getElementById("form-nueva-cuenta").addEventListener("submit", async (e
   };
 
   try {
+    console.log("Datos enviados:", body);
     const res = await fetch("https://cambiosorion.cl/data/nueva-cuenta.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },

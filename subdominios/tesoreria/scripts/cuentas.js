@@ -3,13 +3,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const buscarInput = document.getElementById('buscar');
     const idInput = document.getElementById('id');
     const nombreInput = document.getElementById('nombre');
-    const divisaSelect = document.getElementById('divisa');
+    const divisaInput = document.getElementById('divisa');
     const porCobrarSelect = document.getElementById('por-cobrar');
     const porPagarSelect = document.getElementById('por-pagar');
     const activaSelect = document.getElementById('activa');
     const borrarFiltrosBtn = document.getElementById('borrar-filtros');
     const tablaCuentas = document.querySelector('table tbody');
     const nuevaCuentaBtn = document.getElementById('nueva-cuenta');
+    const divisaSugerencias = document.getElementById('divisa-sugerencias');
 
     // Redirigir al hacer clic en "Nueva Cuenta"
     if (nuevaCuentaBtn) {
@@ -74,6 +75,60 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Buscar divisa
+    divisaInput.addEventListener("input", async (e) => {
+        const query = e.target.value.trim();
+        if (query.length < 1) {
+        divisaSugerencias.classList.add("hidden");
+        return;
+        }
+    
+        const res = await fetch(
+        `https://cambiosorion.cl/data/nueva-cuenta.php?buscar_divisa=${encodeURIComponent(query)}`
+        );
+    
+        // Verificar si la respuesta es exitosa
+        if (!res.ok) {
+        console.error('Error al buscar divisa', res.statusText);
+        alert("Hubo un problema con la conexión al servidor. Intenta nuevamente.");
+        return;
+        }
+    
+        try {
+        const divisas = await res.json();
+        divisaSugerencias.innerHTML = "";
+        divisas.forEach((divisa) => {
+            const li = document.createElement("li");
+            li.textContent = divisa.nombre;
+            li.classList.add("px-2", "py-1", "hover:bg-gray-200", "cursor-pointer");
+            li.addEventListener("click", () => {
+            divisaInput.value = divisa.nombre;
+            divisaSeleccionada = divisa;
+            console.log(`ID de divisas_interna seleccionado: ${divisa.id}`);
+            console.log(`Valor asignado a divisa_id: ${divisa.id}`);
+            divisaSugerencias.classList.add("hidden");
+            });      
+            divisaSugerencias.appendChild(li);
+        });
+        divisaSugerencias.classList.remove("hidden");
+        } catch (error) {
+        console.error("Error al procesar la respuesta de las divisas", error);
+        const text = await res.text();
+        console.error("Respuesta del servidor:", text);
+        alert("Error al procesar la respuesta del servidor. Intenta nuevamente.");
+        }
+    });
+  
+    // Cerrar dropdown al clickear fuera
+    document.addEventListener("click", (e) => {
+        if (!clienteInput.contains(e.target) && !resultadoClientes.contains(e.target)) {
+            resultadoClientes.classList.add("hidden");
+        }
+        if (!divisaInput.contains(e.target) && !divisaSugerencias.contains(e.target)) {
+            divisaSugerencias.classList.add("hidden");
+        }
+    });
+
     // Función para obtener las sugerencias para el filtro de ID
     function obtenerSugerenciasId() {
         fetch(`https://cambiosorion.cl/data/cuentas.php?buscar_cliente=${idInput.value}`)
@@ -113,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
     mostrarRegistros.addEventListener('change', obtenerCuentas);
     idInput.addEventListener('input', obtenerCuentas);
     nombreInput.addEventListener('input', obtenerCuentas);
-    divisaSelect.addEventListener('change', obtenerCuentas);
+    divisaInput.addEventListener('change', obtenerCuentas);
     porCobrarSelect.addEventListener('change', obtenerCuentas);
     porPagarSelect.addEventListener('change', obtenerCuentas);
     activaSelect.addEventListener('change', obtenerCuentas);
@@ -122,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
     borrarFiltrosBtn.addEventListener('click', () => {
         idInput.value = '';
         nombreInput.value = '';
-        divisaSelect.value = '';
+        divisaInput.value = '';
         porCobrarSelect.value = '';
         porPagarSelect.value = '';
         activaSelect.value = '';
