@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const params = new URLSearchParams();
         params.set('id', idInput.value);
         params.set('nombre_cliente', nombreInput.value);
-        params.set('divisa', divisaSelect.value);
+        params.set('divisa_id', divisaInput.dataset.id || '');
         params.set('por_cobrar', porCobrarSelect.value);
         params.set('por_pagar', porPagarSelect.value);
         params.set('activa', activaSelect.value);
