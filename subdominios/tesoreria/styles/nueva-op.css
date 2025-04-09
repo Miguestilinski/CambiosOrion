@@ -1,0 +1,203 @@
+/* Estilos globales */
+body {
+    @apply font-sans bg-white;
+    margin: 0;
+    padding: 0;
+    background: rgba(0, 0, 0, 0.45) url('https://cambiosorion.cl/orionapp/assets/FondoOrion.jpg') no-repeat center top;
+    background-size: cover;
+    background-attachment: fixed;
+    position: relative;
+    z-index: 1;
+}
+
+/* Degradado solo en la imagen de fondo */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7) 60%, black 100%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+html, body {
+    display: flex;
+    flex-direction: column;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+/* Sección principal del conversor */
+.container {
+    @apply max-w-lg mx-auto bg-white p-10 rounded-lg shadow-lg;
+}
+
+h2 {
+    @apply text-2xl font-semibold text-white text-center mb-6;
+}
+
+.header-logo img.logo {
+    width: 30px;
+}
+
+.header-logo img.nombre {
+    width: 60px;
+}
+
+.header-divider {
+    background-color: white;
+    width: 60%;
+    margin-left: 7rem;
+}
+
+.footer-logo .logo {
+    width: 100px;
+}
+
+.footer-logo .nombre {
+    width: 100px;
+}
+
+.relative {
+    position: relative;
+}
+
+.main-content {
+    display: flex;
+    height: 100%;
+}
+
+nav ul li {
+    font-size: 14px;
+}
+
+/* Sidebar styles */
+.sidebar {
+    width: 170px;
+    color: black;
+    display: flex;
+    flex-direction: column;
+    padding: 1.4rem;
+    background: white;
+    border-radius: 0 0.5rem 0.5rem 0;
+    border-right: 0.5px solid black;
+}
+
+.sidebar-header {
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.menu {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.8rem;
+    color: black;
+}
+
+.menu-item {
+    padding: 0.7rem;
+    cursor: pointer;
+    border-radius: 0.5rem;
+    transition: background-color 0.3s ease;
+}
+  
+.menu-item:hover {
+    background-color: #76767676;
+}
+
+.menu-item.active {
+    background-color: #76767676;
+}
+
+.dashboard-content {
+    flex-grow: 1; /* Ocupa el espacio restante */
+    padding: 1.3rem;
+}
+  
+.content-section {
+    display: none;
+}
+
+.content-section.active {
+    display: block;
+}
+
+.select-list{
+    width:8.5rem;
+}
+
+input{
+    width:8.5rem;
+}
+
+select#mostrar-registros {
+    width: 5rem;
+}
+
+.divisa-sugerencias {
+    position: absolute; /* Posiciona el dropdown por encima de otros elementos */
+    z-index: 9999; /* Asegura que esté por encima de otros elementos */
+    width: 100%; /* Asegura que el dropdown tenga el mismo ancho que el input */
+    max-height: 200px; /* Limita la altura del dropdown */
+    overflow-y: auto; /* Habilita scroll si hay demasiadas sugerencias */
+}
+  
+.divisa-item {
+    position: relative; /* Necesario para que el ul se posicione de manera absoluta dentro de este contenedor */
+}
+
+@media (max-width: 887px) {
+    .main-content {
+        flex-direction: column; /* Ajusta a diseño vertical en pantallas pequeñas */
+    }
+
+    .sidebar-header{
+        margin-top: 1rem;
+    }
+
+    /* Sidebar como pestañas */
+    .sidebar {
+        width: 100%; /* Sidebar ocupa toda la anchura */
+        border-right: none; /* Elimina la línea divisoria en diseño vertical */
+        border-bottom: 0.5px solid white; /* Línea divisora horizontal */
+        display: flex; /* Mostrar barra horizontal */
+        justify-content: space-around; /* Centrado de pestañas */
+        padding: 0; /* Eliminar padding */
+    }
+
+    .menu {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        padding: 0;
+    }
+
+    .menu-item {
+        padding: 0.75rem;
+        font-size: 0.875rem;
+        flex: 1;
+        text-align: center;
+        border-radius: 0;
+        background-color: transparent;
+    }
+
+    .menu-item.active {
+        background-color: #76767676;
+    }
+
+    .dashboard-content {
+        margin-top: 1rem;
+        padding: 1rem;
+    }
+
+
+}
