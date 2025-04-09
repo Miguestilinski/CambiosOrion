@@ -66,15 +66,31 @@ function agregarDivisa() {
     const subtotalSpan = nuevaDivisa.querySelector(".divisa-subtotal");
 
     function calcularSubtotal() {
-        const monto = parseFloat(montoInput.value) || 0;
-        const tasa = parseFloat(tasaInput.value) || 0;
+        const monto = parseInt(montoInput.value) || 0; // Elimina decimales
+        const tasa = parseInt(tasaInput.value) || 0; // Elimina decimales
         const subtotal = monto * tasa;
-        subtotalSpan.textContent = `Subtotal: $${subtotal.toFixed(2)}`;
+    
+        // Formatear el subtotal con separadores de miles
+        const subtotalFormateado = new Intl.NumberFormat('es-CL').format(subtotal);
+    
+        subtotalSpan.textContent = `Subtotal: $${subtotalFormateado}`;
         calcularTotal();
     }
 
-    montoInput.addEventListener("input", calcularSubtotal);
-    tasaInput.addEventListener("input", calcularSubtotal);
+    montoInput.addEventListener("input", (e) => {
+        // Asegurarse de que el valor sea un número entero sin decimales
+        e.target.value = e.target.value.replace(/[^0-9]/g, ''); // Elimina cualquier carácter no numérico
+    
+        calcularSubtotal();
+    });
+    
+    tasaInput.addEventListener("input", (e) => {
+        // Asegurarse de que el valor sea un número entero sin decimales
+        e.target.value = e.target.value.replace(/[^0-9]/g, ''); // Elimina cualquier carácter no numérico
+    
+        calcularSubtotal();
+    });
+    
 
     nuevaDivisa.querySelector(".eliminar-divisa").addEventListener("click", () => {
         nuevaDivisa.remove();
@@ -128,9 +144,12 @@ function calcularTotal() {
         const subtotal = parseFloat(subtotalText) || 0;
         total += subtotal;
     });
-    document.getElementById("total-operacion").textContent = total.toFixed(2);
+
+    // Formatear el total con separadores de miles
+    const totalFormateado = new Intl.NumberFormat('es-CL').format(total);
+
+    document.getElementById("total-operacion").textContent = totalFormateado;
 }
-    
 
 // Inicializar con una divisa por defecto
 agregarDivisa();
