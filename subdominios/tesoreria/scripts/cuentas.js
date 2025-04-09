@@ -129,40 +129,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Función para obtener las sugerencias para el filtro de ID
-    function obtenerSugerenciasId() {
-        fetch(`https://cambiosorion.cl/data/cuentas.php?buscar_cliente=${idInput.value}`)
-            .then(response => response.json())
-            .then(sugerencias => {
-                mostrarSugerencias(idInput, sugerencias);
-            });
-    }
-
-    // Función para obtener las sugerencias para el filtro de Nombre
-    function obtenerSugerenciasNombre() {
-        fetch(`https://cambiosorion.cl/data/cuentas.php?buscar_cliente=${nombreInput.value}`)
-            .then(response => response.json())
-            .then(sugerencias => {
-                mostrarSugerencias(nombreInput, sugerencias);
-            });
-    }
-
-    // Función para mostrar las sugerencias
-    function mostrarSugerencias(input, sugerencias) {
-        const listaSugerencias = document.getElementById(`${input.id}-sugerencias`);
-        listaSugerencias.innerHTML = '';
-        
-        sugerencias.forEach(sugerencia => {
-            const item = document.createElement('li');
-            item.textContent = sugerencia.nombre_cliente || sugerencia.id;
-            item.addEventListener('click', () => {
-                input.value = item.textContent;
-                obtenerCuentas();
-            });
-            listaSugerencias.appendChild(item);
-        });
-    }
-
     // Buscar cuando el valor de búsqueda cambie
     buscarInput.addEventListener('input', obtenerCuentas);
     mostrarRegistros.addEventListener('change', obtenerCuentas);
