@@ -169,7 +169,7 @@ function calcularTotal() {
     const totalFormateado = new Intl.NumberFormat('es-CL').format(total);
 
     // Mostrar el total en el DOM
-    document.getElementById("total-operacion").textContent = `$${totalFormateado}`;
+    document.getElementById("total-operacion").textContent = `${totalFormateado}`;
 }
 
 
