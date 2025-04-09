@@ -66,7 +66,7 @@ function agregarDivisa() {
     const subtotalSpan = nuevaDivisa.querySelector(".divisa-subtotal");
 
     function calcularSubtotal() {
-        const monto = parseInt(montoInput.value) || 0; // Elimina decimales del monto
+        const monto = parseInt(montoInput.value.replace(/[^0-9]/g, '')) || 0; // Elimina decimales del monto
         let tasa = tasaInput.value.trim(); // Tomamos el valor de la tasa
     
         // Validar la tasa de cambio
@@ -95,8 +95,9 @@ function agregarDivisa() {
     });
     
     tasaInput.addEventListener("input", (e) => {
-        // Asegurarse de que el valor sea un número decimal solo si empieza con 0.
         let value = e.target.value;
+        
+        // Validar que la tasa de cambio solo tenga decimales si empieza con '0.'
         if (value.match(/^0\.\d+$/) || value.match(/^\d+$/)) {
             e.target.value = value; // Permitir si es un valor como 0.256 o 2
         } else {
@@ -148,21 +149,21 @@ function agregarDivisa() {
     });
 
     document.getElementById("divisas-container").appendChild(nuevaDivisa);
-    }
+}
   
-    function calcularTotal() {
-        let total = 0;
-        document.querySelectorAll(".divisa-item").forEach(item => {
-            const subtotalText = item.querySelector(".divisa-subtotal").textContent.replace(/[^0-9.]/g, "");
-            const subtotal = parseFloat(subtotalText) || 0;
-            total += subtotal;
-        });
+function calcularTotal() {
+    let total = 0;
+    document.querySelectorAll(".divisa-item").forEach(item => {
+        const subtotalText = item.querySelector(".divisa-subtotal").textContent.replace(/[^0-9.]/g, "");
+        const subtotal = parseFloat(subtotalText) || 0;
+        total += subtotal;
+    });
 
-        // Formatear el total con separadores de miles
-        const totalFormateado = new Intl.NumberFormat('es-CL').format(total);
+    // Formatear el total con separadores de miles
+    const totalFormateado = new Intl.NumberFormat('es-CL').format(total);
 
-        document.getElementById("total-operacion").textContent = totalFormateado;
-    }
+    document.getElementById("total-operacion").textContent = totalFormateado;
+}
 
 // Inicializar con una divisa por defecto
 agregarDivisa();
