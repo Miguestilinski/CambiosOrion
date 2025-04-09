@@ -153,8 +153,12 @@ function agregarDivisa() {
   
 function calcularTotal() {
     let total = 0;
+
+    // Iterar sobre cada divisa y sumar el subtotal de cada una
     document.querySelectorAll(".divisa-item").forEach(item => {
         const subtotalText = item.querySelector(".divisa-subtotal").textContent.replace(/[^0-9.]/g, "");
+        
+        // Asegurarse de que el subtotal es un número
         const subtotal = parseFloat(subtotalText) || 0;
         total += subtotal;
     });
@@ -162,6 +166,7 @@ function calcularTotal() {
     // Formatear el total con separadores de miles
     const totalFormateado = new Intl.NumberFormat('es-CL').format(total);
 
+    // Mostrar el total en el DOM
     document.getElementById("total-operacion").textContent = `$${totalFormateado}`;
 }
 
