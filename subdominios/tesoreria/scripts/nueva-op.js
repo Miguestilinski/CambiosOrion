@@ -98,15 +98,15 @@ function agregarDivisa() {
     tasaInput.addEventListener("input", (e) => {
         let value = e.target.value;
         
-        // Validar que la tasa de cambio solo tenga decimales si empieza con '0.'
-        if (value.match(/^0\.\d+$/) || value.match(/^\d+$/)) {
-            e.target.value = value; // Permitir si es un valor como 0.256 o 2
+        // Permitir números enteros y decimales (con punto)
+        if (value.match(/^(\d+(\.\d{0,2})?)?$/)) { 
+            e.target.value = value; // Si es válido, lo dejamos tal cual
         } else {
-            e.target.value = value.slice(0, -1); // Eliminar el último carácter si es inválido
+            e.target.value = value.slice(0, -1); // Eliminar el último carácter si no es válido
         }
     
         calcularSubtotal();
-    });
+    });    
 
     nuevaDivisa.querySelector(".eliminar-divisa").addEventListener("click", () => {
         nuevaDivisa.remove();
