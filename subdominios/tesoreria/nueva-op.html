@@ -113,264 +113,142 @@
 
     <div class="header-divider"></div>
     <div class="main-content">
-        <aside id="sidebar" class="sidebar">
-            <div class="sidebar-header">
-                <h2>Herramientas</h2>
-            </div>
-            <ul class="menu">
-                <li class="menu-item mt-2 mb-2 rounded-lg active" data-section="operaciones">Operaciones</li>
-                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="operaciones-uaf">Operaciones UAF</li>
-                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="libros-contables">Libros Contables</li>
-                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="fichas-clientes">Fichas Clientes</li>
-                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="cuentas">Cuentas</li>
-                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="inventarios">Inventarios</li>
-                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="posiciones">Posiciones</li>
-                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="traspasos">Traspasos</li>
-                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="ingresos">Ingresos</li>
-                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="egresos">Egresos/Retiros</li>
-                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="retiros-utl">Egresos/Retiros Utilizadades</li>
-                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="tasas-cambio">Tasas de Cambio</li>
-                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="arqueo-caja">Arqueo de Caja</li>
-                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="remuneraciones">Remuneraciones</li>
-                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="equipo">Equipo</li>
-                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="reportes">Reportes</li>
-                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="asign-cajeros">Asignar Cajeros</li>
-                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="herramientas">Más Herramientas</li>
-            </ul>
-        </aside>
+        <div id="sidebar-container"></div>
         <main id="dashboard-content" class="dashboard-content">
-            <section id="operaciones" class="content-section active">
-                <!-- Título y botón Nueva Operación -->
-                <div class="flex items-center mb-6">
-                    <h1 class="text-2xl font-medium mr-4 leading-none text-white">Operaciones</h1>
-                    <button type="button" id="add-autorizado" href="./nueva_op.html"
-                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
-                        Nueva Operación
+          <section id="nueva-operacion" class="content-section active">
+            <div class="flex items-center mb-6">
+              <h1 class="text-2xl font-medium mr-4 leading-none text-white">Crear Nueva Operación</h1>
+            </div>
+      
+            <!-- Formulario Nueva Operación -->
+            <form id="form-nueva-operacion" class="grid grid-cols-1 gap-6 mb-6">
+      
+              <!-- Tipo de Transacción -->
+              <div>
+                <label class="block mb-1 text-sm text-white">Tipo de Transacción</label>
+                <select id="tipo-transaccion" class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
+                  <option value="compra">Compra</option>
+                  <option value="venta">Venta</option>
+                </select>
+              </div>
+      
+              <!-- Tipo de Documento -->
+              <div>
+                <label class="block mb-1 text-sm text-white">Tipo de Documento</label>
+                <select id="tipo-documento" class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
+                  <option value="boleta">Boleta</option>
+                  <option value="factura">Factura</option>
+                </select>
+              </div>
+      
+              <!-- Cliente -->
+              <div>
+                <label for="cliente" class="block mb-1 text-sm text-white">Cliente</label>
+                <input
+                  type="text"
+                  id="cliente"
+                  placeholder="Buscar cliente por nombre"
+                  autocomplete="off"
+                  class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
+                />
+                <ul id="resultado-clientes" class="bg-white border border-gray-600 text-gray-700 rounded-lg mt-1 hidden"></ul>
+              </div>
+      
+              <!-- Observaciones -->
+              <div>
+                <label for="observaciones" class="block mb-1 text-sm text-white">Observaciones</label>
+                <textarea
+                  id="observaciones"
+                  rows="4"
+                  placeholder="Escribe observaciones aquí..."
+                  class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
+                ></textarea>
+              </div>
+      
+              <!-- Sección de Divisas -->
+              <div id="divisas-container" class="space-y-4">
+                <label class="block text-sm text-white font-medium mb-2">Divisas</label>
+      
+                <!-- Divisa Template -->
+                <div class="divisa-item grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                  <!-- Nombre Divisa -->
+                  <div>
+                    <input
+                      type="text"
+                      placeholder="Buscar divisa"
+                      class="divisa-nombre block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
+                      autocomplete="off"
+                    />
+                    <ul class="divisa-sugerencias bg-white border border-gray-600 text-gray-700 rounded-lg mt-1 hidden"></ul>
+                  </div>
+      
+                  <!-- Monto -->
+                  <div>
+                    <input
+                      type="number"
+                      placeholder="Monto"
+                      class="divisa-monto block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
+                    />
+                  </div>
+      
+                  <!-- Tasa de Cambio -->
+                  <div>
+                    <input
+                      type="number"
+                      placeholder="Tasa de cambio"
+                      class="divisa-tasa block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
+                    />
+                  </div>
+      
+                  <!-- Subtotal + Eliminar -->
+                  <div class="flex items-center justify-between">
+                    <span class="divisa-subtotal text-white text-sm font-medium">Subtotal: $0.00</span>
+                    <button
+                      type="button"
+                      class="eliminar-divisa text-red-600 hover:text-red-800 text-sm font-medium"
+                    >
+                      Eliminar
                     </button>
+                  </div>
                 </div>
-                
-                <!-- Filtros de fecha y botón Borrar Filtros -->
-                <div class="flex items-center mb-6 space-x-4">
-                    <div class="flex">
-                        <div class="mr-2">
-                            <label for="fecha-inicio" class="block mb-1 text-sm text-white">Desde</label>
-                            <input type="date" id="fecha-inicio" 
-                                class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                        </div>
-                        <div>
-                            <label for="fecha-fin" class="block mb-1 text-sm text-white">Hasta</label>
-                            <input type="date" id="fecha-fin" 
-                                class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                        </div>
-                    </div>
-                    <button type="button" id="borrar-filtros" 
-                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
-                    Borrar Filtros
+              </div>
+      
+              <!-- Botón Agregar Divisa -->
+              <div>
+                <button
+                  type="button"
+                  id="agregar-divisa"
+                  class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-2"
+                >
+                  + Agregar Divisa
                 </button>
-                </div>
-                
-                <!-- Checkboxes -->
-                <div class="flex mb-6">
-                    <div class="flex items-center">
-                        <input type="checkbox" id="emitidas" 
-                            class="w-4 h-4 mr-2 text-blue-600 bg-white border-gray-600 rounded focus:ring-blue-500">
-                        <label for="emitidas" class="text-sm text-white">Mostrar sólo emitidas/timbradas en SII</label>
-                    </div>
-                    <div class="flex items-center ml-4">
-                        <input type="checkbox" id="no-emitidas" 
-                            class="w-4 h-4 mr-2 text-blue-600 bg-white border-gray-600 rounded focus:ring-blue-500">
-                        <label for="no-emitidas" class="text-sm text-white">Mostrar sólo NO emitidas/timbradas en SII</label>
-                    </div>
-                </div>
-                
-                <!-- Filtros avanzados -->
-                <div class="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-6">
-                    <div>
-                        <label for="numero" class="block mb-1 text-sm text-white">Número</label>
-                        <input type="text" id="numero" 
-                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label for="cliente" class="block mb-1 text-sm text-white">Cliente</label>
-                        <input type="text" id="cliente" 
-                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label for="tipo-doc" class="block mb-1 text-sm text-white">Tipo de Documento</label>
-                        <select id="tipo-doc" 
-                            class="select-list block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Seleccionar</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="n-doc" class="block mb-1 text-sm text-white">Nº Doc</label>
-                        <input type="text" id="n-doc"
-                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label for="n-nota" class="block mb-1 text-sm text-white">Nº Nota</label>
-                        <input type="text" id="n-nota" 
-                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label for="tipo-transaccion" class="block mb-1 text-sm text-white">Tipo de Transacción</label>
-                        <select id="tipo-transaccion" 
-                            class="select-list block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Seleccionar</option>
-                            <option value="compra">Compra</option>
-                            <option value="venta">Venta</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="divisa" class="block mb-1 text-sm text-white">Divisa</label>
-                        <input type="text" id="divisa" 
-                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label for="estado" class="block mb-1 text-sm text-white">Estado</label>
-                        <select id="estado" 
-                            class="select-list block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Seleccionar</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <!-- Mostrar registros y buscar -->
-                <div class="flex items-center justify-between mb-6">
-                    <div class="flex items-center space-x-2">
-                        <label for="mostrar-registros" class="text-sm text-white">Mostrar</label>
-                        <select id="mostrar-registros" 
-                            class="block px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="25">25</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                        </select>
-                        <span class="text-sm text-white">registros</span>
-                    </div>
-                    <div>
-                        <input type="text" id="buscar" placeholder="Buscar" 
-                            class="block w-64 px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                </div>
-                
-                <!-- Tabla de operaciones -->
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left text-white bg-gray-800">
-                        <thead class="text-xs uppercase bg-gray-800 text-white">
-                            <tr>
-                                <th class="px-4 py-2">Fecha</th>
-                                <th class="px-4 py-2">Número</th>
-                                <th class="px-4 py-2">Cliente</th>
-                                <th class="px-4 py-2">Tipo de Documento</th>
-                                <th class="px-4 py-2">Nº Doc</th>
-                                <th class="px-4 py-2">Nº Nota</th>
-                                <th class="px-4 py-2">Tipo de Transacción</th>
-                                <th class="px-4 py-2">Divisas</th>
-                                <th class="px-4 py-2">Monto</th>
-                                <th class="px-4 py-2">Tasa de Cambio</th>
-                                <th class="px-4 py-2">SubTotal</th>
-                                <th class="px-4 py-2">Total</th>
-                                <th class="px-4 py-2">Estado</th>
-                                <th class="px-4 py-2"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="venta border-b border-gray-700">
-                                <td class="px-4 py-2">2025-01-28</td>
-                                <td class="px-4 py-2">12345</td>
-                                <td class="px-4 py-2">Cliente 1</td>
-                                <td class="px-4 py-2">Factura</td>
-                                <td class="px-4 py-2">123</td>
-                                <td class="px-4 py-2">456</td>
-                                <td class="px-4 py-2">Venta</td>
-                                <td class="px-4 py-2">USD</td>
-                                <td class="px-4 py-2">1.000</td>
-                                <td class="px-4 py-2">$983</td>
-                                <td class="px-4 py-2">$1.200</td>
-                                <td class="px-4 py-2">$1.200</td>
-                                <td class="px-4 py-2">Pagado</td>
-                                <td class="px-4 py-2">
-                                    <button class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1">
-                                        Mostrar
-                                    </button>
-                                </td>
-                            </tr>
-                            <!-- Más filas -->
-                        </tbody>
-                    </table>
-                </div>
-            </section>                    
-            <section id="operaciones-uaf" class="content-section">
-                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Operaciones UAF</h1>
-                <p class="mb-6 text-md text-white">Consulta tu historial de liquidaciones.</p>
-            </section>                                        
-            <section id="libros-contables" class="content-section">
-                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Libros Contables</h1>
-                <p class="mb-6 text-md text-white">Consulta tu sueldo restante para un anticipo.</p>
-            </section>
-            <section id="fichas-clientes" class="content-section">
-                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Fichas Clientes</h1>
-                <p class="mb-6 text-md text-white">Consulta tus días disponibles para vacaiones.</p>
-            </section>
-            <section id="cuentas" class="content-section">
-                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Cuentas</h1>
-                <p class="mb-6 text-md text-white">Consulta tus documentos legales de la empresa.</p>
-            </section>
-            <section id="inventarios" class="content-section">
-                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Inventarios</h1>
-                <p class="mb-6 text-md text-white">Sube aquí tus licencias médicas.</p>
-            </section>
-            <section id="posiciones" class="content-section">
-                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Posiciones</h1>
-                <p class="mb-6 text-md text-white">Sube aquí tus licencias médicas.</p>
-            </section>
-            <section id="traspasos" class="content-section">
-                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Traspasos</h1>
-                <p class="mb-6 text-md text-white">Sube aquí tus licencias médicas.</p>
-            </section>
-            <section id="ingresos" class="content-section">
-                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Ingresos</h1>
-                <p class="mb-6 text-md text-white">Sube aquí tus licencias médicas.</p>
-            </section>
-            <section id="egresos" class="content-section">
-                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Egresos/Retiros</h1>
-                <p class="mb-6 text-md text-white">Sube aquí tus licencias médicas.</p>
-            </section>
-            <section id="retiros-utl" class="content-section">
-                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Egresos/Retiros Utilidades</h1>
-                <p class="mb-6 text-md text-white">Sube aquí tus licencias médicas.</p>
-            </section>
-            <section id="tasas-cambio" class="content-section">
-                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Tasas de Cambio</h1>
-                <p class="mb-6 text-md text-white">Sube aquí tus licencias médicas.</p>
-            </section>
-            <section id="arqueo-caja" class="content-section">
-                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Arqueo de Caja</h1>
-                <p class="mb-6 text-md text-white">Sube aquí tus licencias médicas.</p>
-            </section>
-            <section id="remuneraciones" class="content-section">
-                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Remuneraciones</h1>
-                <p class="mb-6 text-md text-white">Sube aquí tus licencias médicas.</p>
-            </section>
-            <section id="equipo" class="content-section">
-                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Equipo</h1>
-                <p class="mb-6 text-md text-white">Sube aquí tus licencias médicas.</p>
-            </section>
-            <section id="reportes" class="content-section">
-                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Reportes</h1>
-                <p class="mb-6 text-md text-white">Sube aquí tus licencias médicas.</p>
-            </section>
-            <section id="asign-cajeros" class="content-section">
-                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Asignar Cajeros</h1>
-                <p class="mb-6 text-md text-white">Sube aquí tus licencias médicas.</p>
-            </section>
-            <section id="herramientas" class="content-section">
-                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Más Herramientas</h1>
-                <p class="mb-6 text-md text-white">Sube aquí tus licencias médicas.</p>
-            </section>
+              </div>
+      
+              <!-- Total -->
+              <div class="text-white font-medium text-lg">
+                Total: $<span id="total-operacion">0.00</span>
+              </div>
+      
+              <!-- Botones Finales -->
+              <div class="flex space-x-4">
+                <button
+                  type="submit"
+                  class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
+                >
+                  Crear Operación
+                </button>
+                <button
+                  type="button"
+                  id="cancelar-operacion"
+                  class="text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </section>
         </main>
-    </main>
-    </div> 
+      </div>      
 
     <footer>
         <div class="footer-container">
