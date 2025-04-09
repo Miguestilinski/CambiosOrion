@@ -42,7 +42,7 @@ document.addEventListener("click", (e) => {
 
 // Manejo de divisas
 let divisaIndex = 0;
-const divisaContainer = document.getElementById("divisa-container");
+const divisaContainer = document.getElementById("divisas-container");
 const totalSpan = document.getElementById("total-operacion");
 
 document.getElementById("agregar-divisa").addEventListener("click", () => {
@@ -50,104 +50,87 @@ document.getElementById("agregar-divisa").addEventListener("click", () => {
 });
 
 function agregarDivisa() {
-  const index = divisaIndex++;
+    const plantilla = document.querySelector(".divisa-item");
+    const nuevaDivisa = plantilla.cloneNode(true);
+    nuevaDivisa.classList.remove("hidden");
 
-  const wrapper = document.createElement("div");
-  wrapper.className = "grid grid-cols-6 gap-2 items-end mb-4";
-  wrapper.dataset.index = index;
+    // Limpiar valores
+    nuevaDivisa.querySelector(".divisa-nombre").value = "";
+    nuevaDivisa.querySelector(".divisa-monto").value = "";
+    nuevaDivisa.querySelector(".divisa-tasa").value = "";
+    nuevaDivisa.querySelector(".divisa-subtotal").textContent = "Subtotal: $0.00";
 
-  wrapper.innerHTML = `
-    <div class="col-span-2">
-      <label class="block text-sm text-white">Divisa</label>
-      <input type="text" class="divisa-input block w-full px-2 py-1.5 rounded-lg bg-white border border-gray-600 text-gray-700" placeholder="Buscar divisa" data-index="${index}" />
-      <ul class="divisa-sugerencias bg-white border border-gray-600 text-gray-700 rounded-lg mt-1 hidden" data-index="${index}"></ul>
-    </div>
-    <div>
-      <label class="block text-sm text-white">Monto</label>
-      <input type="number" step="any" class="monto-input block w-full px-2 py-1.5 rounded-lg bg-white border border-gray-600 text-gray-700" />
-    </div>
-    <div>
-      <label class="block text-sm text-white">Tasa</label>
-      <input type="number" step="any" class="tasa-input block w-full px-2 py-1.5 rounded-lg bg-white border border-gray-600 text-gray-700" />
-    </div>
-    <div>
-      <label class="block text-sm text-white">Subtotal</label>
-      <input type="text" class="subtotal-input block w-full px-2 py-1.5 rounded-lg bg-gray-100 border border-gray-600 text-gray-700" readonly />
-    </div>
-    <div>
-      <button type="button" class="eliminar-divisa text-sm text-white bg-red-600 hover:bg-red-700 px-3 py-1.5 rounded">Eliminar</button>
-    </div>
-  `;
+    // Añadir eventos
+    const montoInput = nuevaDivisa.querySelector(".divisa-monto");
+    const tasaInput = nuevaDivisa.querySelector(".divisa-tasa");
+    const subtotalSpan = nuevaDivisa.querySelector(".divisa-subtotal");
 
-  divisaContainer.appendChild(wrapper);
-
-  const montoInput = wrapper.querySelector(".monto-input");
-  const tasaInput = wrapper.querySelector(".tasa-input");
-  const subtotalInput = wrapper.querySelector(".subtotal-input");
-
-  function calcularSubtotal() {
-    const monto = parseFloat(montoInput.value) || 0;
-    const tasa = parseFloat(tasaInput.value) || 0;
-    const subtotal = monto * tasa;
-    subtotalInput.value = subtotal.toFixed(2);
-    calcularTotal();
-  }
-
-  montoInput.addEventListener("input", calcularSubtotal);
-  tasaInput.addEventListener("input", calcularSubtotal);
-
-  // eliminar divisa
-  wrapper.querySelector(".eliminar-divisa").addEventListener("click", () => {
-    wrapper.remove();
-    calcularTotal();
-  });
-
-  // autocompletar divisa
-  const divisaInput = wrapper.querySelector(".divisa-input");
-  const sugerenciasUl = wrapper.querySelector(".divisa-sugerencias");
-
-  divisaInput.addEventListener("input", async (e) => {
-    const query = e.target.value.trim();
-    if (query.length < 1) {
-      sugerenciasUl.classList.add("hidden");
-      return;
+    function calcularSubtotal() {
+        const monto = parseFloat(montoInput.value) || 0;
+        const tasa = parseFloat(tasaInput.value) || 0;
+        const subtotal = monto * tasa;
+        subtotalSpan.textContent = `Subtotal: $${subtotal.toFixed(2)}`;
+        calcularTotal();
     }
-    try {
-      const res = await fetch(`https://cambiosorion.cl/data/nueva-cuenta.php?buscar_divisa=${encodeURIComponent(query)}`);
-      if (!res.ok) throw new Error("Error buscando divisa");
-      const divisas = await res.json();
-      sugerenciasUl.innerHTML = "";
-      divisas.forEach((divisa) => {
-        const li = document.createElement("li");
-        li.textContent = divisa.nombre;
-        li.classList.add("px-2", "py-1", "hover:bg-gray-200", "cursor-pointer");
-        li.addEventListener("click", () => {
-          divisaInput.value = divisa.nombre;
-          sugerenciasUl.classList.add("hidden");
+
+    montoInput.addEventListener("input", calcularSubtotal);
+    tasaInput.addEventListener("input", calcularSubtotal);
+
+    nuevaDivisa.querySelector(".eliminar-divisa").addEventListener("click", () => {
+        nuevaDivisa.remove();
+        calcularTotal();
+    });
+
+    // Autocompletar divisa
+    const divisaInput = nuevaDivisa.querySelector(".divisa-nombre");
+    const sugerenciasUl = nuevaDivisa.querySelector(".divisa-sugerencias");
+
+    divisaInput.addEventListener("input", async (e) => {
+        const query = e.target.value.trim();
+        if (query.length < 1) {
+        sugerenciasUl.classList.add("hidden");
+        return;
+        }
+        try {
+        const res = await fetch(`https://cambiosorion.cl/data/nueva-op.php?buscar_divisa=${encodeURIComponent(query)}`);
+        const divisas = await res.json();
+        sugerenciasUl.innerHTML = "";
+        divisas.forEach((divisa) => {
+            const li = document.createElement("li");
+            li.textContent = divisa.nombre;
+            li.classList.add("px-2", "py-1", "hover:bg-gray-200", "cursor-pointer");
+            li.addEventListener("click", () => {
+            divisaInput.value = divisa.nombre;
+            sugerenciasUl.classList.add("hidden");
+            });
+            sugerenciasUl.appendChild(li);
         });
-        sugerenciasUl.appendChild(li);
-      });
-      sugerenciasUl.classList.remove("hidden");
-    } catch (err) {
-      console.error(err);
-    }
-  });
+        sugerenciasUl.classList.remove("hidden");
+        } catch (err) {
+        console.error(err);
+        }
+    });
 
-  document.addEventListener("click", (e) => {
-    if (!divisaInput.contains(e.target) && !sugerenciasUl.contains(e.target)) {
-      sugerenciasUl.classList.add("hidden");
+    document.addEventListener("click", (e) => {
+        if (!divisaInput.contains(e.target) && !sugerenciasUl.contains(e.target)) {
+        sugerenciasUl.classList.add("hidden");
+        }
+    });
+
+    document.getElementById("divisas-container").appendChild(nuevaDivisa);
     }
-  });
-}
+  
 
 function calcularTotal() {
-  let total = 0;
-  document.querySelectorAll(".subtotal-input").forEach((input) => {
-    const val = parseFloat(input.value);
-    if (!isNaN(val)) total += val;
-  });
-  totalSpan.textContent = total.toFixed(2);
+    let total = 0;
+    document.querySelectorAll(".divisa-item").forEach(item => {
+        const subtotalText = item.querySelector(".divisa-subtotal").textContent.replace(/[^0-9.]/g, "");
+        const subtotal = parseFloat(subtotalText) || 0;
+        total += subtotal;
+    });
+    document.getElementById("total-operacion").textContent = total.toFixed(2);
 }
+    
 
 // Inicializar con una divisa por defecto
 agregarDivisa();
