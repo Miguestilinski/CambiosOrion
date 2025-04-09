@@ -66,8 +66,18 @@ function agregarDivisa() {
     const subtotalSpan = nuevaDivisa.querySelector(".divisa-subtotal");
 
     function calcularSubtotal() {
-        const monto = parseInt(montoInput.value) || 0; // Elimina decimales
-        const tasa = parseInt(tasaInput.value) || 0; // Elimina decimales
+        const monto = parseInt(montoInput.value) || 0; // Elimina decimales del monto
+        let tasa = tasaInput.value.trim(); // Tomamos el valor de la tasa
+    
+        // Validar la tasa de cambio
+        if (tasa.match(/^\d+$/)) {
+            tasa = parseInt(tasa); // Si no tiene decimales, tratamos como entero
+        } else if (tasa.match(/^0\.\d+$/)) {
+            tasa = parseFloat(tasa); // Si tiene decimales (como 0.256), lo tratamos como float
+        } else {
+            tasa = 0; // Si la tasa no es válida, la consideramos como 0
+        }
+    
         const subtotal = monto * tasa;
     
         // Formatear el subtotal con separadores de miles
@@ -85,12 +95,16 @@ function agregarDivisa() {
     });
     
     tasaInput.addEventListener("input", (e) => {
-        // Asegurarse de que el valor sea un número entero sin decimales
-        e.target.value = e.target.value.replace(/[^0-9]/g, ''); // Elimina cualquier carácter no numérico
+        // Asegurarse de que el valor sea un número decimal solo si empieza con 0.
+        let value = e.target.value;
+        if (value.match(/^0\.\d+$/) || value.match(/^\d+$/)) {
+            e.target.value = value; // Permitir si es un valor como 0.256 o 2
+        } else {
+            e.target.value = value.slice(0, -1); // Eliminar el último carácter si es inválido
+        }
     
         calcularSubtotal();
     });
-    
 
     nuevaDivisa.querySelector(".eliminar-divisa").addEventListener("click", () => {
         nuevaDivisa.remove();
@@ -136,20 +150,19 @@ function agregarDivisa() {
     document.getElementById("divisas-container").appendChild(nuevaDivisa);
     }
   
+    function calcularTotal() {
+        let total = 0;
+        document.querySelectorAll(".divisa-item").forEach(item => {
+            const subtotalText = item.querySelector(".divisa-subtotal").textContent.replace(/[^0-9.]/g, "");
+            const subtotal = parseFloat(subtotalText) || 0;
+            total += subtotal;
+        });
 
-function calcularTotal() {
-    let total = 0;
-    document.querySelectorAll(".divisa-item").forEach(item => {
-        const subtotalText = item.querySelector(".divisa-subtotal").textContent.replace(/[^0-9.]/g, "");
-        const subtotal = parseFloat(subtotalText) || 0;
-        total += subtotal;
-    });
+        // Formatear el total con separadores de miles
+        const totalFormateado = new Intl.NumberFormat('es-CL').format(total);
 
-    // Formatear el total con separadores de miles
-    const totalFormateado = new Intl.NumberFormat('es-CL').format(total);
-
-    document.getElementById("total-operacion").textContent = totalFormateado;
-}
+        document.getElementById("total-operacion").textContent = totalFormateado;
+    }
 
 // Inicializar con una divisa por defecto
 agregarDivisa();
