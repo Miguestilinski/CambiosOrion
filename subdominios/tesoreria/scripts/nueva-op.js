@@ -66,7 +66,7 @@ function agregarDivisa() {
     const subtotalSpan = nuevaDivisa.querySelector(".divisa-subtotal");
 
     function calcularSubtotal() {
-        const monto = parseInt(montoInput.value.replace(/[^0-9]/g, '')) || 0; // Elimina decimales del monto
+        const monto = parseInt(montoInput.value) || 0; // Elimina decimales del monto
         let tasa = tasaInput.value.trim(); // Tomamos el valor de la tasa
     
         // Validar la tasa de cambio
@@ -162,7 +162,7 @@ function calcularTotal() {
     // Formatear el total con separadores de miles
     const totalFormateado = new Intl.NumberFormat('es-CL').format(total);
 
-    document.getElementById("total-operacion").textContent = totalFormateado;
+    document.getElementById("total-operacion").textContent = `$${totalFormateado}`;
 }
 
 // Inicializar con una divisa por defecto
