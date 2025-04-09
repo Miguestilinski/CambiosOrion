@@ -86,7 +86,7 @@ function agregarDivisa() {
     
         subtotalSpan.textContent = `Subtotal: $${subtotalFormateado}`;
         calcularTotal();
-    }
+    }    
 
     montoInput.addEventListener("input", (e) => {
         // Asegurarse de que el valor sea un número entero sin decimales
@@ -151,15 +151,14 @@ function agregarDivisa() {
 
     document.getElementById("divisas-container").appendChild(nuevaDivisa);
 }
-  
 
 function calcularTotal() {
     let total = 0;
 
     // Iterar sobre cada divisa y sumar el subtotal de cada una
     document.querySelectorAll(".divisa-item").forEach(item => {
-        const subtotalText = item.querySelector(".divisa-subtotal").textContent.replace(/[^0-9.]/g, "");
-        
+        const subtotalText = item.querySelector(".divisa-subtotal").textContent.replace(/[^0-9]/g, "");  // Solo números
+
         // Asegurarse de que el subtotal es un número entero
         const subtotal = parseInt(subtotalText) || 0; // Convertimos a entero
         
@@ -172,6 +171,7 @@ function calcularTotal() {
     // Mostrar el total en el DOM
     document.getElementById("total-operacion").textContent = `$${totalFormateado}`;
 }
+
 
 // Inicializar con una divisa por defecto
 agregarDivisa();
