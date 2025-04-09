@@ -78,7 +78,8 @@ function agregarDivisa() {
             tasa = 0; // Si la tasa no es válida, la consideramos como 0
         }
     
-        const subtotal = monto * tasa;
+        // Calcular el subtotal como un valor entero
+        const subtotal = Math.round(monto * tasa);  // Redondeamos a entero
     
         // Formatear el subtotal con separadores de miles
         const subtotalFormateado = new Intl.NumberFormat('es-CL').format(subtotal);
@@ -151,6 +152,7 @@ function agregarDivisa() {
     document.getElementById("divisas-container").appendChild(nuevaDivisa);
 }
   
+
 function calcularTotal() {
     let total = 0;
 
@@ -158,8 +160,9 @@ function calcularTotal() {
     document.querySelectorAll(".divisa-item").forEach(item => {
         const subtotalText = item.querySelector(".divisa-subtotal").textContent.replace(/[^0-9.]/g, "");
         
-        // Asegurarse de que el subtotal es un número
-        const subtotal = parseFloat(subtotalText) || 0;
+        // Asegurarse de que el subtotal es un número entero
+        const subtotal = parseInt(subtotalText) || 0; // Convertimos a entero
+        
         total += subtotal;
     });
 
@@ -167,7 +170,7 @@ function calcularTotal() {
     const totalFormateado = new Intl.NumberFormat('es-CL').format(total);
 
     // Mostrar el total en el DOM
-    totalSpan.textContent = `$${totalFormateado}`;
+    document.getElementById("total-operacion").textContent = `$${totalFormateado}`;
 }
 
 // Inicializar con una divisa por defecto
