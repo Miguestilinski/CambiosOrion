@@ -143,16 +143,24 @@ select#mostrar-registros {
     width: 5rem;
 }
 
+.resultados-clientes {
+    position: absolute;
+    z-index: 9999;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
 .divisa-sugerencias {
-    position: absolute; /* Posiciona el dropdown por encima de otros elementos */
-    z-index: 9999; /* Asegura que esté por encima de otros elementos */
-    width: 100%; /* Asegura que el dropdown tenga el mismo ancho que el input */
-    max-height: 200px; /* Limita la altura del dropdown */
-    overflow-y: auto; /* Habilita scroll si hay demasiadas sugerencias */
+    position: absolute;
+    z-index: 9999;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
 }
   
 .divisa-item {
-    position: relative; /* Necesario para que el ul se posicione de manera absoluta dentro de este contenedor */
+    position: relative;
 }
 
 @media (max-width: 887px) {
