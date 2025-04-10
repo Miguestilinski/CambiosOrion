@@ -143,7 +143,7 @@ select#mostrar-registros {
     width: 5rem;
 }
 
-.resultados-clientes {
+.resultado-clientes {
     position: absolute;
     z-index: 9999;
     width: 100%;
