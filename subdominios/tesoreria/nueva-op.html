@@ -194,7 +194,9 @@
                   <!-- Tasa de Cambio -->
                   <div>
                     <input
-                      type="number"
+                      type="text"
+                      inputmode="decimal"
+                      pattern="^\d+(\.\d{0,2})?$"
                       placeholder="Tasa de cambio"
                       class="divisa-tasa block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
                     />
