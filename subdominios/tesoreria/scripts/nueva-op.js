@@ -172,6 +172,74 @@ function calcularTotal() {
     document.getElementById("total-operacion").textContent = `${totalFormateado}`;
 }
 
-
 // Inicializar con una divisa por defecto
 agregarDivisa();
+
+document.querySelector("button[type='submit']").addEventListener("click", async (e) => {
+  e.preventDefault(); // Evita el comportamiento por defecto del formulario
+
+  if (!clienteSeleccionado) {
+    alert("Selecciona un cliente válido.");
+    return;
+  }
+
+  const tipoTransaccion = document.getElementById("tipo_transaccion").value;
+  const tipoDocumento = document.getElementById("tipo_documento").value;
+  const numeroDocumento = document.getElementById("numero_documento").value;
+  const numeroNota = document.getElementById("numero_nota").value;
+  const observaciones = document.getElementById("observaciones").value;
+  const fecha = new Date().toISOString().slice(0, 10); // Fecha actual en formato YYYY-MM-DD
+
+  let totalOperacion = 0;
+  let divisas = [];
+
+  document.querySelectorAll(".divisa-item:not(.hidden)").forEach((item) => {
+    const nombre = item.querySelector(".divisa-nombre").value.trim();
+    const monto = parseInt(item.querySelector(".divisa-monto").value) || 0;
+    const tasa = parseFloat(item.querySelector(".divisa-tasa").value) || 0;
+    const subtotal = Math.round(monto * tasa);
+
+    if (nombre && monto > 0 && tasa > 0) {
+      divisas.push({ nombre, monto, tasa, subtotal });
+      totalOperacion += subtotal;
+    }
+  });
+
+  const payload = {
+    fecha,
+    cliente_id: clienteSeleccionado.id,
+    tipo_transaccion: tipoTransaccion,
+    tipo_documento: tipoDocumento,
+    numero_documento: numeroDocumento,
+    numero_nota: numeroNota,
+    estado: "pendiente",
+    observaciones,
+    total: totalOperacion,
+    divisas
+  };
+
+  try {
+    const res = await fetch("https://cambiosorion.cl/data/nueva-op.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const result = await res.json();
+    if (result.error) {
+      alert("Error al crear operación: " + result.error);
+    } else {
+      alert("Operación creada con éxito.");
+      window.location.href = "https://tesoreria.cambiosorion.cl/operaciones"; // Redirige a operaciones
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Ocurrió un error al enviar los datos.");
+  }
+});
+
+document.getElementById("cancelar-operacion").addEventListener("click", () => {
+  window.location.href = "https://tesoreria.cambiosorion.cl/operaciones";
+});
