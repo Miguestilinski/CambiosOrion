@@ -232,7 +232,7 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
       alert("Error al crear operación: " + result.error);
     } else {
       alert("Operación creada con éxito.");
-      window.location.href = "https://tesoreria.cambiosorion.cl/operaciones"; // Redirige a operaciones
+      window.location.href = "https://tesoreria.cambiosorion.cl/operaciones";
     }
   } catch (err) {
     console.error(err);
