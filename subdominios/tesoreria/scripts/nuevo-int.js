@@ -2,18 +2,26 @@ document.getElementById("form-nuevo-int").addEventListener("submit", async (e) =
     e.preventDefault();
   
     const nombre = document.getElementById("nombre").value.trim();
-    const rol = document.getElementById("rol").value.trim();
+    const rut = document.getElementById("rut").value.trim();
+    const fechaIngreso = document.getElementById("fechaIngreso").value;
+    const rol = document.getElementById("rol").value;
+    const tipoContrato = document.getElementById("tipoContrato").value.trim();
+    const sueldoLiquido = document.getElementById("sueldoLiquido").value.trim();
     const email = document.getElementById("email").value.trim();
     const telefono = document.getElementById("telefono").value.trim();
   
-    if (!nombre || !rol || !email) {
+    if (!nombre || !rut || !fechaIngreso || !rol || !tipoContrato || !sueldoLiquido || !email) {
       alert("Por favor completa todos los campos obligatorios.");
       return;
     }
   
     const body = {
       nombre,
+      rut,
+      fechaIngreso,
       rol,
+      tipoContrato,
+      sueldoLiquido,
       email,
       telefono
     };
@@ -27,7 +35,7 @@ document.getElementById("form-nuevo-int").addEventListener("submit", async (e) =
   
       const textResponse = await res.text();
       console.log("Respuesta cruda del servidor:", textResponse);
-      
+  
       const data = JSON.parse(textResponse);
   
       if (data.success) {

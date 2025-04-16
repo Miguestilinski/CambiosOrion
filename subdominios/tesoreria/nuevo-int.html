@@ -125,70 +125,67 @@
               <!-- Nombre -->
               <div>
                 <label for="nombre" class="block mb-1 text-sm text-white">Nombre Completo</label>
-                <input
-                  type="text"
-                  id="nombre"
-                  required
-                  placeholder="Ej: Juan Pérez"
-                  class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                />
+                <input type="text" id="nombre" required placeholder="Ej: Juan Pérez" class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
               </div>
       
-              <!-- Rol -->
+              <!-- RUT -->
+              <div>
+                <label for="rut" class="block mb-1 text-sm text-white">RUT</label>
+                <input type="text" id="rut" required placeholder="Ej: 12.345.678-9" class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
+              </div>
+      
+              <!-- Fecha de Ingreso -->
+              <div>
+                <label for="fechaIngreso" class="block mb-1 text-sm text-white">Fecha de Ingreso</label>
+                <input type="date" id="fechaIngreso" required class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
+              </div>
+      
+              <!-- Rol (Select) -->
               <div>
                 <label for="rol" class="block mb-1 text-sm text-white">Rol</label>
-                <input
-                  type="text"
-                  id="rol"
-                  required
-                  placeholder="Ej: Administrador, Ejecutivo, Cajero"
-                  class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                />
+                <select id="rol" required class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                  <option value="">Seleccione un rol</option>
+                  <option value="socio">Socio</option>
+                  <option value="admin">Admin</option>
+                  <option value="caja">Caja</option>
+                  <option value="otro">Otro</option>
+                </select>
+              </div>
+      
+              <!-- Tipo de Contrato -->
+              <div>
+                <label for="tipoContrato" class="block mb-1 text-sm text-white">Tipo de Contrato</label>
+                <input type="text" id="tipoContrato" required placeholder="Ej: Plazo fijo, indefinido" class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
+              </div>
+      
+              <!-- Sueldo Líquido -->
+              <div>
+                <label for="sueldoLiquido" class="block mb-1 text-sm text-white">Sueldo Líquido</label>
+                <input type="number" id="sueldoLiquido" required placeholder="Ej: 550000" class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
               </div>
       
               <!-- Email -->
               <div>
                 <label for="email" class="block mb-1 text-sm text-white">Email</label>
-                <input
-                  type="email"
-                  id="email"
-                  required
-                  placeholder="correo@ejemplo.com"
-                  class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                />
+                <input type="email" id="email" required placeholder="correo@ejemplo.com" class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
               </div>
       
               <!-- Teléfono -->
               <div>
                 <label for="telefono" class="block mb-1 text-sm text-white">Teléfono (opcional)</label>
-                <input
-                  type="text"
-                  id="telefono"
-                  placeholder="Ej: +56912345678"
-                  class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                />
+                <input type="text" id="telefono" placeholder="Ej: +56912345678" class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
               </div>
       
               <!-- Botones -->
               <div class="md:col-span-2 flex space-x-4">
-                <button
-                  type="submit"
-                  class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
-                >
-                  Agregar Integrante
-                </button>
-                <button
-                  type="button"
-                  id="cancelar"
-                  class="text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5"
-                >
-                  Cancelar
-                </button>
+                <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">Agregar Integrante</button>
+                <button type="button" id="cancelar" class="text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5">Cancelar</button>
               </div>
             </form>
           </section>
         </main>
-      </div>      
+      </div>
+          
 
     <footer>
         <div class="footer-container">
