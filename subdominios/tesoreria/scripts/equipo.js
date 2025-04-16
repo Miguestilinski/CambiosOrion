@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
         params.set('buscar', buscarInput.value);
         params.set('mostrar', mostrarRegistros.value);
 
-        fetch(`./equipo.php?${params.toString()}`)
+        fetch(`https://cambiosorion.cl/data/equipo.php?${params.toString()}`)
             .then(response => response.json())
             .then(data => {
                 mostrarResultados(data);
