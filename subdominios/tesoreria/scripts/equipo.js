@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (nuevoIntegranteBtn) {
         nuevoIntegranteBtn.addEventListener('click', () => {
-            window.location.href = './nuevo-integrante';
+            window.location.href = 'https://tesoreria.cambiosorion.cl/nuevo-int';
         });
     }
 
