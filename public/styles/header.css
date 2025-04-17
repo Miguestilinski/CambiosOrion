@@ -3,7 +3,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px;
+    padding: 0.5rem;
     position: relative;
     flex-wrap: wrap;
 }
@@ -20,8 +20,9 @@ header {
 }
 
 .header-logo img.logo {
-    width: 60px;
-    margin-right: 10px;
+    width: 10rem;
+    margin-left: 1rem;
+    /*margin-right: 10px; */
 }
 
 .header-logo img.nombre {
