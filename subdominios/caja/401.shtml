@@ -33,7 +33,6 @@
         </div>
     
         <!-- Menús desplegables para móvil -->
-        <!-- Menús desplegables para móvil -->
         <div id="nav-mobile-menu" class="mobile-menu hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
             <ul class="py-2 text-sm text-gray-700">
                 <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Inicio</a></li>
