@@ -32,6 +32,10 @@ html {
     scroll-behavior: smooth;
 }
 
+.header-logo{
+    gap: 7rem;
+}
+
 /* Estilo para el contenedor de la tabla */
 .table-container {
     background-color: rgba(0, 0, 0, 0.3); /* Fondo oscuro semi-transparente */
