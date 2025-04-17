@@ -11,6 +11,7 @@ footer {
 .footer-container {
     display: flex;
     justify-content: space-between; /* Distribuir el espacio entre las 3 secciones */
+    margin-top: 1rem;
 }
 
 /* Sección del logo */
