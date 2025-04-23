@@ -155,38 +155,36 @@ document.addEventListener('DOMContentLoaded', () => {
         
             celdasPorFecha[key] = cell; // guardar referencia a esta celda
         }
-    
-        // Pintar vacaciones directamente sobre el grid (como una franja continua)
+
+        // Pintar vacaciones encima del calendario
         solicitudes.forEach(s => {
             if (s.estado !== 'aprobado') return;
 
             const start = new Date(s.desde);
             const end = new Date(s.hasta);
 
-            let fecha = new Date(start);
-            while (fecha <= end) {
-                const key = fecha.toISOString().split('T')[0];
-                if (celdasPorFecha[key]) {
-                    const cell = celdasPorFecha[key];
-                    const cellIndex = Array.from(grid.children).indexOf(cell);
-                    var row = Math.floor(cellIndex / 7) + 1; // +1 por el encabezado de los días
-                    break;
-                }
-                fecha.setDate(fecha.getDate() + 1);
+            const rect = document.createElement('div');
+            rect.className = 'evento-vacacion';
+
+            let startCell, endCell;
+
+            for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+                const key = d.toISOString().split('T')[0];
+                if (!startCell && celdasPorFecha[key]) startCell = celdasPorFecha[key];
+                endCell = celdasPorFecha[key] || endCell;
             }
 
-            // Calcular columna de inicio y fin
-            const startDay = (start.getDay() === 0 ? 6 : start.getDay() - 1); // lunes = 0
-            const endDay = (end.getDay() === 0 ? 6 : end.getDay() - 1);
+            if (startCell && endCell) {
+                const startRect = startCell.getBoundingClientRect();
+                const endRect = endCell.getBoundingClientRect();
+                const gridRect = grid.getBoundingClientRect();
 
-            const rect = document.createElement('div');
-            rect.className = 'evento-vacacion z-10';
-            rect.style.gridColumnStart = startDay + 1;
-            rect.style.gridColumnEnd = endDay + 2;
-            rect.style.gridRowStart = row;
-            rect.style.gridRowEnd = row + 1;
+                rect.style.left = (startRect.left - gridRect.left) + 'px';
+                rect.style.top = (startRect.top - gridRect.top + startCell.offsetHeight - 20) + 'px'; // debajo del número del día
+                rect.style.width = (endRect.right - startRect.left) + 'px';
+            }
 
-            grid.appendChild(rect);
+            document.getElementById('calendar-wrapper').appendChild(rect);
         });
 
     }

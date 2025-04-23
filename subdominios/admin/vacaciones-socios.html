@@ -124,8 +124,10 @@
                           <h3 id="calendar-title" class="text-lg font-semibold">Mes</h3>
                           <button id="next-month" class="text-sm hover:underline">Mes siguiente &rarr;</button>
                         </div>
-                        <div id="calendar-grid" class="grid grid-cols-7 gap-px bg-gray-300 text-xs text-center text-black rounded overflow-hidden shadow-lg ring-1 ring-white/10">
-                          <!-- días se rellenan desde JS -->
+                        <div id="calendar-wrapper" class="relative">
+                            <div id="calendar-grid" class="grid grid-cols-7 gap-px bg-gray-300 text-xs text-center text-black rounded overflow-hidden shadow-lg ring-1 ring-white/10">
+                            <!-- días se rellenan desde JS -->
+                            </div>
                         </div>
                     </div>
 
