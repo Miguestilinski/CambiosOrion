@@ -166,23 +166,24 @@ document.addEventListener('DOMContentLoaded', () => {
             // Crear el rectángulo que cubrirá la duración de las vacaciones
             while (fecha <= hasta) {
                 const key = fecha.toISOString().split('T')[0];
-        
+    
                 // Solo de lunes (1) a viernes (5)
                 if (fecha.getDay() >= 1 && fecha.getDay() <= 5 && celdasPorFecha[key]) {
                     // Crear un div para cada evento de vacaciones
                     const rectangulo = document.createElement('div');
-                    rectangulo.className = 'evento-vacacion absolute top-0 left-0 bg-blue-500 opacity-60 z-10';
+                    rectangulo.className = 'evento-vacacion z-10'; // Removemos el 'absolute', ya que ahora lo posicionamos con grid
                     
-                    // Ajustar el ancho del rectángulo en base a las celdas ocupadas por el evento
+                    // Ajustar el ancho y el inicio del rectángulo con grid
                     const startDate = new Date(s.desde);
                     const endDate = new Date(s.hasta);
-                    let startCellIndex = (startDate.getDay() === 0 ? 6 : startDate.getDay() - 1);
-                    let endCellIndex = (endDate.getDay() === 0 ? 6 : endDate.getDay() - 1);
-        
-                    // Establecer el ancho y posición del rectángulo (de manera relativa)
-                    rectangulo.style.gridColumnStart = startCellIndex + 1;
-                    rectangulo.style.gridColumnEnd = endCellIndex + 2;
-        
+                    
+                    const startColumn = (startDate.getDay() === 0 ? 6 : startDate.getDay() - 1); // columna del lunes
+                    const endColumn = (endDate.getDay() === 0 ? 6 : endDate.getDay() - 1); // columna del viernes
+                    
+                    rectangulo.style.gridColumnStart = startColumn + 1; // Grid usa 1-index
+                    rectangulo.style.gridColumnEnd = endColumn + 2; // El final incluye el último día
+                    
+                    // Añadir el evento al grid (no se ajusta la posición absoluta)
                     celdasPorFecha[key].appendChild(rectangulo);
                 }
                 fecha.setDate(fecha.getDate() + 1);
