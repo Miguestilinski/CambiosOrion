@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     let currentMonth = new Date();
-
+    
     function renderCalendarioMensual() {
         const grid = document.getElementById('calendar-grid');
         const title = document.getElementById('calendar-title');
@@ -175,8 +175,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 fecha.setDate(fecha.getDate() + 1);
             }
         });
-    }
+    }    
     
+    // Botones de navegación
+    document.getElementById('prev-month').addEventListener('click', () => {
+        currentMonth.setMonth(currentMonth.getMonth() - 1);
+        renderCalendarioMensual();
+    });
+    
+    document.getElementById('next-month').addEventListener('click', () => {
+        currentMonth.setMonth(currentMonth.getMonth() + 1);
+        renderCalendarioMensual();
+    });
     
     renderSolicitudesPendientes();
     renderHistorico();
