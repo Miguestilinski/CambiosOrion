@@ -114,8 +114,14 @@
         <div id="sidebar-container"></div>
         <main id="dashboard-content" class="dashboard-content">
             <section id="vacaciones" class="content-section active">
-                <h1 class="mb-4 text-2xl font-medium text-white">Solicitudes de Vacaciones</h1>
-                <div id="vacaciones-list" class="space-y-4"></div>
+                <h2 class="mb-2 text-xl text-white">Solicitudes Pendientes</h2>
+                    <div id="solicitudes-pendientes" class="space-y-4 mb-6"></div>
+
+                    <h2 class="mb-2 text-xl text-white">Calendario de Vacaciones</h2>
+                    <div id="calendario-vacaciones" class="bg-white rounded-lg p-4 mb-6"></div>
+
+                    <h2 class="mb-2 text-xl text-white">Histórico de Solicitudes</h2>
+                    <div id="vacaciones-historicas" class="space-y-4"></div>
             </section>
         </main>
     </div> 
@@ -195,7 +201,7 @@
 
     <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
     <script type="module" src="https://cambiosorion.cl/orionapp/public/scripts/header.js" crossorigin="anonymous"></script>
-    <script type="module" src="https://admin.cambiosorion.cl/scripts/index.js"></script>
+    <script type="module" src="https://admin.cambiosorion.cl/scripts/vacaciones-socios.js"></script>
     <script>
         fetch('sidebar-socios.html')
             .then(response => response.text())
