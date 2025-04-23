@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
             contenedor.innerHTML = `
                 <div>
                     <h2 class="font-medium text-lg">${s.nombre}</h2>
-                    <p class="text-sm">Desde: ${s.desde} &nbsp;&nbsp; Hasta: ${s.hasta}</p>
+                    <p class="text-sm">Desde: ${formatearFecha(s.desde)} &nbsp;&nbsp; Hasta: ${formatearFecha(s.hasta)}</p>
                     <p class="text-sm mb-2">Días solicitados: ${getDias(s.desde, s.hasta)}</p>
                     <div class="space-x-2">
                         <button class="btn-aprobar bg-green-600 text-white px-3 py-1 rounded" data-id="${s.id}">Aprobar</button>
@@ -80,12 +80,20 @@ document.addEventListener('DOMContentLoaded', () => {
             contenedor.innerHTML = `
                 <div>
                     <h2 class="font-medium text-lg">${s.nombre}</h2>
-                    <p class="text-sm">Desde: ${s.desde} - Hasta: ${s.hasta}</p>
+                    <p class="text-sm">Desde: ${formatearFecha(s.desde)} - Hasta: ${formatearFecha(s.hasta)}</p>
                     <p class="text-sm">Estado: <span class="${s.estado === 'aprobado' ? 'text-green-600' : 'text-red-600'}">${s.estado}</span></p>
                 </div>
             `;
             vacacionesHistoricasDiv.appendChild(contenedor);
         });
+    }
+
+    function formatearFecha(fecha) {
+        const f = new Date(fecha);
+        const dia = String(f.getDate()).padStart(2, '0');
+        const mes = String(f.getMonth() + 1).padStart(2, '0');
+        const anio = f.getFullYear();
+        return `${dia}/${mes}/${anio}`;
     }
 
     let currentMonth = new Date();
@@ -128,11 +136,10 @@ document.addEventListener('DOMContentLoaded', () => {
             grid.appendChild(document.createElement('div'));
         }
     
-        const aprobadas = solicitudes.filter(s => s.estado === 'aprobado');
         const fechasConVacaciones = {};
         
         // Iterar sobre las solicitudes aprobadas para marcarlas en el calendario
-        aprobadas.forEach(s => {
+        solicitudes.forEach(s => {
             let fecha = new Date(s.desde);
             const hasta = new Date(s.hasta);
         
@@ -158,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
             const diaText = document.createElement('div');
             diaText.className = 'font-semibold';
-            diaText.textContent = dia;
+            diaText.textContent = formatearFecha(fechaActual); // Formateo la fecha aquí
         
             cell.appendChild(diaText);
         
