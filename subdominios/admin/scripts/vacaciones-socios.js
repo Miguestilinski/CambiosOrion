@@ -113,16 +113,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const primerDia = new Date(year, month, 1);
         const ultimoDia = new Date(year, month + 1, 0);
         
-        // Obtener el día de la semana del primer día del mes
-        let offset = primerDia.getDay(); // 0 = domingo, 1 = lunes, ...
+        let offset = primerDia.getDay();
+        offset = offset === 0 ? 6 : offset - 1;
         
-        // Ajustar el desplazamiento para que la semana empiece el lunes
-        offset = offset === 0 ? 6 : offset - 1; // Si es domingo (0), lo convertimos a 6 (último día de la semana)
-        
-        // Mostrar el título del mes
         title.textContent = currentMonth.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
         
-        // Encabezado de días (siempre empieza con Lunes)
         const diasDeLaSemana = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
         diasDeLaSemana.forEach(dia => {
             const cell = document.createElement('div');
@@ -131,67 +126,56 @@ document.addEventListener('DOMContentLoaded', () => {
             grid.appendChild(cell);
         });
         
-        // Añadir celdas vacías antes del primer día del mes
         for (let i = 0; i < offset; i++) {
             grid.appendChild(document.createElement('div'));
         }
     
-        // Celdas de días del mes (guardar referencia a cada celda por fecha)
         const celdasPorFecha = {};
-        
+    
         for (let dia = 1; dia <= ultimoDia.getDate(); dia++) {
             const fechaActual = new Date(year, month, dia);
             const key = fechaActual.toISOString().split('T')[0];
-        
+            
             const cell = document.createElement('div');
             cell.className = 'p-2 h-20 border bg-white text-gray-800 relative';
-        
+            
             const diaText = document.createElement('div');
             diaText.className = 'font-semibold';
             diaText.textContent = fechaActual.getDate();
-        
+            
             cell.appendChild(diaText);
             grid.appendChild(cell);
-        
-            celdasPorFecha[key] = cell; // guardar referencia a esta celda
+            
+            celdasPorFecha[key] = cell;
         }
-    
-        // Pintar vacaciones directamente sobre las celdas
+        
+        // Pintar vacaciones
         solicitudes.forEach(s => {
             if (s.estado !== 'aprobado') return;
-    
+        
             let fecha = new Date(s.desde);
             const hasta = new Date(s.hasta);
-    
-            // Crear el rectángulo que cubrirá la duración de las vacaciones
+        
             while (fecha <= hasta) {
                 const key = fecha.toISOString().split('T')[0];
                 const diaSemana = fecha.getDay();
-    
-                // Solo de lunes (1) a viernes (5)
+        
                 if (diaSemana >= 1 && diaSemana <= 5 && celdasPorFecha[key]) {
                     const rectangulo = document.createElement('div');
-                    rectangulo.className = 'evento-vacacion absolute top-0 left-0 h-full bg-blue-500 opacity-60 z-10'; // color y opacidad ajustables
+                    rectangulo.className = 'evento-vacacion absolute top-0 left-0';
                     
-                    // Ajustar el ancho del rectángulo para que ocupe las celdas correspondientes
+                    // Ajustar el ancho y alto de acuerdo con el día
+                    rectangulo.style.width = '100%';
+                    rectangulo.style.height = '100%';
+                    rectangulo.style.backgroundColor = 'rgba(59, 130, 246, 0.6)';
+                    
                     celdasPorFecha[key].appendChild(rectangulo);
                 }
-    
+        
                 fecha.setDate(fecha.getDate() + 1);
             }
         });
-    }    
-    
-    // Botones de navegación
-    document.getElementById('prev-month').addEventListener('click', () => {
-        currentMonth.setMonth(currentMonth.getMonth() - 1);
-        renderCalendarioMensual();
-    });
-    
-    document.getElementById('next-month').addEventListener('click', () => {
-        currentMonth.setMonth(currentMonth.getMonth() + 1);
-        renderCalendarioMensual();
-    });
+    }
     
     
     renderSolicitudesPendientes();

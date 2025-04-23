@@ -137,18 +137,32 @@ input#email{
 }
 
 .evento-vacacion {
-    background-color: rgba(59, 130, 246, 0.3); /* azul semitransparente */
-    border: 1px solid #3b82f6;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(59, 130, 246, 0.6); /* Azul semitransparente */
     border-radius: 4px;
-    padding: 2px 4px;
-    font-size: 0.75rem;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-} 
+    border: 1px solid #3b82f6;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
 #calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /* 7 columnas, una para cada día de la semana */
+    gap: 2px;
     position: relative;
+}
+
+#calendar-grid div {
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
   
 
