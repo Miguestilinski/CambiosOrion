@@ -39,12 +39,12 @@ document.addEventListener('DOMContentLoaded', () => {
         tbody.innerHTML = '';
         if (añoSelect.value && mesSelect.value) {
             const liquidaciones = obtenerLiquidaciones(añoSelect.value, mesSelect.value);
-            liquidaciones.forEach(({ socio, documento }) => {
+            liquidaciones.forEach(({ miembro, documento }) => {
                 const fila = document.createElement('tr');
                 fila.className = "border-b bg-white border-gray-700 text-gray-700";
 
                 fila.innerHTML = `
-                    <td class="px-4 py-2">${socio}</td>
+                    <td class="px-4 py-2">${miembro}</td>
                     <td class="px-4 py-2">${meses[mesSelect.value - 1]} ${añoSelect.value}</td>
                     <td class="px-4 py-2">
                         <button class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1">
