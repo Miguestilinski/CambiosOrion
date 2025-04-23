@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Admin</title>
+    <title>Portal Socios</title>
     <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/header.css">
     <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/footer.css">
     <link rel="stylesheet" href="https://admin.cambiosorion.cl/styles/index.css">
@@ -35,7 +35,7 @@
         <!-- Menús desplegables para móvil -->
         <div id="nav-mobile-menu" class="mobile-menu hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
             <ul class="py-2 text-sm text-gray-700">
-                <li><a href="https://admin.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Portal Admin</a></li>
+                <li><a href="https://admin.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Portal Socios</a></li>
             </ul>
             <ul class="py-2 text-sm text-gray-700">
                 <li><a href="https://pizarras.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Pizarras</a></li>
@@ -60,7 +60,7 @@
                     <div id="user-email" class="mail font-medium truncate">Correo del usuario</div>
                 </div>
                 <ul class="py-2 text-sm text-gray-700" id="menu-admin-mobile" style="display: none;">
-                    <li><a href="https://admin.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Portal Admin</a></li>
+                    <li><a href="https://admin.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Portal Socios</a></li>
                     <li><a href="https://cambiosorion.cl/webmail" class="block px-4 py-2 hover:bg-gray-100">Correo</a></li>
                 </ul>
                 <ul class="py-2 text-sm text-gray-700">
@@ -72,7 +72,7 @@
         <!-- Menú de navegación para escritorio -->
         <nav>
             <ul>
-                <li class="selected"><a href="https://admin.cambiosorion.cl/">Portal Admin</a></li>
+                <li class="selected"><a href="https://admin.cambiosorion.cl/">Portal Socios</a></li>
                 <li><a href="https://pizarras.cambiosorion.cl/">Pizarras</a></li>
                 <li><a href="https://caja.cambiosorion.cl/">Sist. Caja</a></li>
                 <li><a href="https://tesoreria.cambiosorion.cl/">Sist. Tesoreria</a></li>
@@ -93,7 +93,7 @@
                         <div id="user-email" class="mail font-medium truncate">Correo del usuario</div>
                     </div>
                     <ul class="py-2 text-sm text-gray-700" id="menu-admin" style="display: none;">
-                        <li><a href="https://admin.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Portal Admin</a></li>
+                        <li><a href="https://admin.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Portal Socios</a></li>
                         <li><a href="https://cambiosorion.cl/webmail" class="block px-4 py-2 hover:bg-gray-100">Correo</a></li>
                     </ul>
                     <ul class="py-2 text-sm text-gray-700">
@@ -245,7 +245,7 @@
     <script type="module" src="https://cambiosorion.cl/orionapp/public/scripts/header.js" crossorigin="anonymous"></script>
     <script type="module" src="https://admin.cambiosorion.cl/scripts/index.js"></script>
     <script>
-        fetch('sidebar.html')
+        fetch('sidebar-socios.html')
             .then(response => response.text())
             .then(data => document.getElementById('sidebar-container').innerHTML = data);
     </script>
