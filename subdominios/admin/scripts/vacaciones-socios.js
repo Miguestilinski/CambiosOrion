@@ -169,16 +169,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
             cell.appendChild(diaText);
         
-            if (fechasConVacaciones[key]) {
-                cell.classList.add('bg-red-200'); // fondo del día con vacaciones
-                fechasConVacaciones[key].forEach(nombre => {
-                    const etiqueta = document.createElement('div');
-                    etiqueta.className = 'text-xs mt-1 text-red-800 font-medium';
-                    etiqueta.textContent = nombre;
-                    cell.appendChild(etiqueta);
-                });
-            }
-        
             grid.appendChild(cell);
         }
 
