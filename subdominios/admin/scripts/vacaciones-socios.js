@@ -137,105 +137,47 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     
         const fechasConVacaciones = {};
-        
-        // Iterar sobre las solicitudes aprobadas para marcarlas en el calendario
-        solicitudes.forEach(s => {
-            let fecha = new Date(s.desde);
-            const hasta = new Date(s.hasta);
-        
-            while (fecha <= hasta) {
-                const diaSemana = fecha.getDay();
-                // Solo de lunes (1) a viernes (5)
-                if (diaSemana >= 1 && diaSemana <= 5) {
-                    const key = fecha.toISOString().split('T')[0];
-                    if (!fechasConVacaciones[key]) fechasConVacaciones[key] = [];
-                    fechasConVacaciones[key].push(s.nombre);
-                }
-                fecha.setDate(fecha.getDate() + 1);
-            }
-        });
-        
-        // Celdas de días del mes
+
+        // Celdas de días del mes (guardar referencia a cada celda por fecha)
+        const celdasPorFecha = {};
+
         for (let dia = 1; dia <= ultimoDia.getDate(); dia++) {
             const fechaActual = new Date(year, month, dia);
             const key = fechaActual.toISOString().split('T')[0];
-        
+
             const cell = document.createElement('div');
             cell.className = 'p-2 h-20 border bg-white text-gray-800 relative';
-        
+
             const diaText = document.createElement('div');
             diaText.className = 'font-semibold';
             diaText.textContent = fechaActual.getDate();
-        
+
             cell.appendChild(diaText);
-        
             grid.appendChild(cell);
+
+            celdasPorFecha[key] = cell; // guardar referencia a esta celda
         }
 
-        // Crear contenedor para eventos superpuesto al grid
-        const overlay = document.createElement('div');
-        overlay.style.position = 'absolute';
-        overlay.style.top = '0';
-        overlay.style.left = '0';
-        overlay.style.right = '0';
-        overlay.style.bottom = '0';
-        overlay.style.pointerEvents = 'none'; // para que no interfiera con clics
-        overlay.className = 'w-full h-full grid grid-cols-7 gap-0';
-        overlay.style.gridTemplateRows = `repeat(${Math.ceil((offset + ultimoDia.getDate()) / 7) + 1}, minmax(80px, auto))`;
-        grid.parentElement.style.position = 'relative'; // Asegura que el contenedor tenga posición relativa
-        grid.parentElement.appendChild(overlay); // Inserta el overlay dentro del contenedor del grid
-
-        // Eventos: rectángulos de vacaciones aprobadas
-        solicitudes.forEach((s, idx) => {
+        // Pintar vacaciones directamente sobre las celdas
+        solicitudes.forEach(s => {
             if (s.estado !== 'aprobado') return;
 
-            const desde = new Date(s.desde);
+            let fecha = new Date(s.desde);
             const hasta = new Date(s.hasta);
 
-            // Ignorar si está fuera del mes actual
-            if (hasta < primerDia || desde > ultimoDia) return;
+            while (fecha <= hasta) {
+                const key = fecha.toISOString().split('T')[0];
+                const diaSemana = fecha.getDay();
 
-            // Fecha de inicio del bloque (ajustada al mes actual)
-            const inicio = new Date(Math.max(desde, primerDia));
-            const fin = new Date(Math.min(hasta, ultimoDia));
-
-            // Índice de celda en el grid (empezando desde lunes = 0)
-            const startOffset = (inicio.getDay() + 6) % 7; // ajustar para lunes como primer día
-            const startIndex = offset + inicio.getDate() - 1;
-
-            const totalDias = Math.floor((fin - inicio) / (1000 * 60 * 60 * 24)) + 1;
-
-            // Crear evento visual
-            const evento = document.createElement('div');
-            evento.className = 'evento-vacacion';
-            evento.textContent = s.nombre;
-
-            const semana = Math.floor(startIndex / 7);
-            const diaEnSemana = startIndex % 7;
-
-            // Posicionar usando grid-row y grid-column
-            evento.style.gridRow = `${semana + 2}`; // +2 porque la fila 1 son los headers
-            let diasRestantes = totalDias;
-            let startIdx = startIndex;
-            while (diasRestantes > 0) {
-                const semana = Math.floor(startIdx / 7);
-                const diaSemana = startIdx % 7;
-                const diasEnEstaSemana = Math.min(7 - diaSemana, diasRestantes);
-
-                const evento = document.createElement('div');
-                evento.className = 'evento-vacacion';
-                evento.textContent = s.nombre;
-
-                evento.style.gridRow = `${semana + 2}`;
-                evento.style.gridColumn = `${diaSemana + 1} / span ${diasEnEstaSemana}`;
-
-                overlay.appendChild(evento);
-
-                startIdx += diasEnEstaSemana;
-                diasRestantes -= diasEnEstaSemana;
+                // Solo de lunes (1) a viernes (5)
+                if (diaSemana >= 1 && diaSemana <= 5 && celdasPorFecha[key]) {
+                    const evento = document.createElement('div');
+                    evento.className = 'evento-vacacion mt-1';
+                    evento.textContent = s.nombre;
+                    celdasPorFecha[key].appendChild(evento);
+                }
+                fecha.setDate(fecha.getDate() + 1);
             }
-
-            overlay.appendChild(evento);
         });
 
     }
