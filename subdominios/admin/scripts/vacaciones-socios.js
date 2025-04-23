@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
             solicitud.estado = nuevoEstado;
             renderSolicitudesPendientes();
             renderHistorico();
-            renderCalendario();
+            renderCalendarioMensual();
         }
     }
 
@@ -88,47 +88,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function renderCalendario() {
-        calendarioVacacionesDiv.innerHTML = '';
-
-        const aprobadas = solicitudes.filter(s => s.estado === 'aprobado');
-
-        if (aprobadas.length === 0) {
-            calendarioVacacionesDiv.innerHTML = `<p class="text-sm">No hay vacaciones aprobadas para mostrar en el calendario.</p>`;
-            return;
-        }
-
-        const fechas = [];
-
-        aprobadas.forEach(s => {
-            let fecha = new Date(s.desde);
-            const hasta = new Date(s.hasta);
-
-            while (fecha <= hasta) {
-                fechas.push({
-                    dia: fecha.toISOString().split('T')[0],
-                    nombre: s.nombre
-                });
-                fecha.setDate(fecha.getDate() + 1);
-            }
-        });
-
-        fechas.sort((a, b) => new Date(a.dia) - new Date(b.dia));
-
-        const calendarioHTML = fechas.map(f => `
-            <p class="text-sm">${f.dia} — ${f.nombre}</p>
-        `).join('');
-
-        calendarioVacacionesDiv.innerHTML = calendarioHTML;
-    }
-
     let currentMonth = new Date();
 
     function renderCalendarioMensual() {
         const grid = document.getElementById('calendar-grid');
         const title = document.getElementById('calendar-title');
 
-        grid.innerHTML = '';
+        while (grid.firstChild) {
+            grid.removeChild(grid.firstChild);
+        }    
 
         const year = currentMonth.getFullYear();
         const month = currentMonth.getMonth();
@@ -216,7 +184,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     renderSolicitudesPendientes();
     renderHistorico();
-    renderCalendario();
     renderCalendarioMensual();
 
 });
