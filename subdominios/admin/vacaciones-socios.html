@@ -119,6 +119,16 @@
 
                     <h2 class="mb-2 text-xl text-white">Calendario de Vacaciones</h2>
                     <div id="calendario-vacaciones" class="bg-white rounded-lg p-4 mb-6"></div>
+                    <div class="mb-6">
+                        <div class="flex justify-between items-center text-white mb-2">
+                          <button id="prev-month" class="text-sm hover:underline">&larr; Mes anterior</button>
+                          <h3 id="calendar-title" class="text-lg font-semibold">Mes</h3>
+                          <button id="next-month" class="text-sm hover:underline">Mes siguiente &rarr;</button>
+                        </div>
+                        <div id="calendar-grid" class="grid grid-cols-7 gap-px bg-gray-300 text-xs text-center text-black rounded overflow-hidden">
+                          <!-- días se rellenan desde JS -->
+                        </div>
+                    </div>
 
                     <h2 class="mb-2 text-xl text-white">Histórico de Solicitudes</h2>
                     <div id="vacaciones-historicas" class="space-y-4"></div>

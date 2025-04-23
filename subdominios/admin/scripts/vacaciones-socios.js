@@ -122,7 +122,91 @@ document.addEventListener('DOMContentLoaded', () => {
         calendarioVacacionesDiv.innerHTML = calendarioHTML;
     }
 
+    let currentMonth = new Date();
+
+    function renderCalendarioMensual() {
+        const grid = document.getElementById('calendar-grid');
+        const title = document.getElementById('calendar-title');
+
+        grid.innerHTML = '';
+
+        const year = currentMonth.getFullYear();
+        const month = currentMonth.getMonth();
+
+        const primerDia = new Date(year, month, 1);
+        const ultimoDia = new Date(year, month + 1, 0);
+        const diaInicio = primerDia.getDay();
+
+        title.textContent = currentMonth.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+
+        // Encabezado de días
+        ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].forEach(dia => {
+            const cell = document.createElement('div');
+            cell.className = 'bg-gray-200 p-2 font-bold';
+            cell.textContent = dia;
+            grid.appendChild(cell);
+        });
+
+        // Celdas vacías antes del 1 del mes
+        for (let i = 0; i < diaInicio; i++) {
+            grid.appendChild(document.createElement('div'));
+        }
+
+        const aprobadas = solicitudes.filter(s => s.estado === 'aprobado');
+        const fechasConVacaciones = {};
+
+        aprobadas.forEach(s => {
+            let fecha = new Date(s.desde);
+            const hasta = new Date(s.hasta);
+
+            while (fecha <= hasta) {
+                const key = fecha.toISOString().split('T')[0];
+                if (!fechasConVacaciones[key]) fechasConVacaciones[key] = [];
+                fechasConVacaciones[key].push(s.nombre);
+                fecha.setDate(fecha.getDate() + 1);
+            }
+        });
+
+        // Celdas de días del mes
+        for (let dia = 1; dia <= ultimoDia.getDate(); dia++) {
+            const fechaActual = new Date(year, month, dia);
+            const key = fechaActual.toISOString().split('T')[0];
+
+            const cell = document.createElement('div');
+            cell.className = 'p-2 h-20 border bg-white text-gray-800 relative';
+
+            const diaText = document.createElement('div');
+            diaText.className = 'font-semibold';
+            diaText.textContent = dia;
+
+            cell.appendChild(diaText);
+
+            if (fechasConVacaciones[key]) {
+                fechasConVacaciones[key].forEach(nombre => {
+                    const etiqueta = document.createElement('div');
+                    etiqueta.className = 'text-xs mt-1 bg-red-100 text-red-800 rounded px-1';
+                    etiqueta.textContent = nombre;
+                    cell.appendChild(etiqueta);
+                });
+            }
+
+            grid.appendChild(cell);
+        }
+    }
+
+    // Botones de navegación
+    document.getElementById('prev-month').addEventListener('click', () => {
+        currentMonth.setMonth(currentMonth.getMonth() - 1);
+        renderCalendarioMensual();
+    });
+    document.getElementById('next-month').addEventListener('click', () => {
+        currentMonth.setMonth(currentMonth.getMonth() + 1);
+        renderCalendarioMensual();
+    });
+
     renderSolicitudesPendientes();
     renderHistorico();
     renderCalendario();
+    renderCalendarioMensual();
+
 });
