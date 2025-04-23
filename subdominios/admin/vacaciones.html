@@ -1,26 +1,25 @@
 <!DOCTYPE html>
 <html lang="es">
-    
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar sesión</title>
+    <title>Portal Admin</title>
     <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/header.css">
     <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/footer.css">
-    <link rel="stylesheet" href="https://admin.cambiosorion.cl/styles/login.css">
+    <link rel="stylesheet" href="https://admin.cambiosorion.cl/styles/index.css">
     <link href="https://cambiosorion.cl/orionapp/public/styles/output.css" rel="stylesheet">
-     <link rel="icon" href="https://cambiosorion.cl/orionapp/icons/IsotipoOrion-blue.svg" type="image/png">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"> 
+    <link rel="icon" href="https://cambiosorion.cl/orionapp/icons/IsotipoOrion-blue.svg" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">  
 </head>
-
-<body class="font-sans">
-    <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js"></script>
+<body>
+    <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js" crossorigin="anonymous"></script>
     <header>
         <!-- Logo y Nombre -->
         <div class="header-logo">
             <a href="index">
                 <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Logo Cambios Orion" class="logo">
             </a>
+             
         </div>
     
         <!-- Botones para versión móvil -->
@@ -111,48 +110,45 @@
     </header>
 
     <div class="header-divider"></div>
-    <div class="max-w-md w-full mx-auto my-10 bg-gray-800 p-6 rounded-lg shadow-md">
-        <h2 class="text-2xl font-bold text-white text-center mb-6">Iniciar sesión</h2>
-    
-        <form id="loginForm">
-            <!-- Selector de tipo de usuario (Cliente o Administrativo) como tabs -->
-            <div class="tabs mb-2 justify-center">
-                <button type="button" id="administrativoTab" class="tab-button active" data-tipo-usuario="administrativo">Administrativo</button>
-            </div>
-
-            <input type="hidden" id="tipoUsuario" name="tipoUsuario" value="cliente">
-    
-            <!-- Formulario Administrativo -->
-            <div id="administrativo-form" class="form-section active">
-                <label for="correo" class="block mb-2 text-sm font-medium text-white">Correo electrónico:</label>
-                <input type="email" name="correo" id="correo" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="usuario@cambiosorion.cl" required="required"/>
-                <p id="email-error" class="mt-2 text-sm text-red-600 dark:text-red-500 hidden"></p>
-            </div>
-    
-            <!-- Contraseña -->
-            <div class="mb-5">
-                <label for="password" class="block mb-2 text-sm font-medium text-white">Contraseña:</label>
-                <input type="password" name="password" id="password" class="bg-gray-700 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"/>
-                <p id="password-error" class="mt-2 text-sm text-red-600 dark:text-red-500 hidden"></p>
-            </div>
-    
-            <div class="flex items-start mb-5">
-                <div class="flex items-center h-5">
-                    <input id="remember" type="checkbox" class="w-4 h-4 border border-gray-600 rounded bg-gray-700 focus:ring-3 focus:ring-blue-300" />
+    <div class="main-content">
+        <div id="sidebar-container"></div>
+        <main id="dashboard-content" class="dashboard-content">
+            <section id="vacaciones" class="content-section">
+                <div class="container max-w-2xl mx-4 my-6 p-8 bg-white text-gray-900 rounded-xl shadow-md">
+                    <h1 class="text-xl font-bold">Calculadora de Vacaciones</h1>
+            
+                    <!-- Información del trabajador -->
+                    <div id="worker-info" class="my-4">
+                        <p><strong>Fecha de ingreso:</strong> <span id="fecha-ingreso"></span></p>
+                        <p><strong>Meses trabajados:</strong> <span id="meses-trabajados"></span></p>
+                        <p><strong>Días disponibles:</strong> <span id="dias-disponibles"></span></p>
+                        <p><strong>Días usados:</strong> <span id="dias-usados"></span></p>
+                    </div>
+            
+                    <!-- Simulador -->
+                    <div id="simulator" class="my-4">
+                        <h2 class="text-lg font-bold">Simulador de Vacaciones</h2>
+                        <label for="start-date">Fecha de salida:</label>
+                        <input type="date" id="start-date" class="border p-1 rounded">
+                    
+                        <label for="end-date">Fecha de regreso:</label>
+                        <input type="date" id="end-date" class="border p-1 rounded">
+                    
+                        <button id="simulate" class="bg-green-500 text-white px-4 py-2 rounded">Calcular</button>
+                        <p id="simulation-result" class="mt-2"></p>
+                    </div>
+            
+                    <!-- Calendario -->
+                    <div id="calendar" class="my-4">
+                        <h2 class="text-lg font-bold">Calendario</h2>
+                        <div id="calendar-container" class="grid grid-cols-7 gap-2"></div>
+                        <button id="save-dates" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded">Guardar Días Seleccionados</button>
+                    </div>
                 </div>
-                <label for="remember" class="ml-2 text-sm font-medium text-white">Recordarme</label>
-            </div>
-    
-            <button type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Iniciar sesión</button>
+            </section>
+        </main>
+    </div> 
 
-            <div class="text-center mt-4">
-                <a href="forgot" id="forgotPasswordLink" class="text-sm text-blue-500 hover:text-blue-700">Olvidé mi contraseña</a>
-            </div>
-    
-            <p id="error-message" class="hidden text-red-500 text-center mt-4">Credenciales incorrectas. Intenta nuevamente.</p>
-        </form>
-    </div>      
-    
     <footer>
         <div class="footer-container">
             <!-- Sección del logo -->
@@ -165,8 +161,8 @@
                 <div class="nav-section">
                     <h3 href="https://admin.cambiosorion.cl/" class="font-bold text-lg">Admin</h3>
                     <ul class="list-none p-0">
-                        <li><a href="https://admin.cambiosorion.cl/#vacaciones" class="block py-1">Anicipos</a></li>
-                        <li><a href="https://admin.cambiosorion.cl/" class="block py-1">Vacaciones</a></li>
+                        <li><a href="https://admin.cambiosorion.cl/#vacaciones" class="block py-1">Vacaciones</a></li>
+                        <li><a href="https://admin.cambiosorion.cl/" class="block py-1">Adelantos</a></li>
                     </ul>
                 </div>
                 <div class="nav-section">
@@ -214,6 +210,7 @@
                 </div>
             </div>
             <!-- Redes Sociales -->
+        <!-- Redes Sociales -->
             <div class="social-media flex gap-4">
                 <a href="https://wa.me/+56971846048?text=Hola,%20necesito%20consultar%20con%20un%20ejecutivo." target="_blank"><img src="https://cambiosorion.cl/orionapp/icons/whatsapp-white.png" alt="WhatsApp" class="icon"></a>
                 <a href="https://www.facebook.com/CambiosOrion" target="_blank"><img src="https://cambiosorion.cl/orionapp/icons/facebook-white.png" alt="Facebook" class="icon"></a>
@@ -225,9 +222,14 @@
             © 2025 Cambios Orion. Todos los derechos reservados.
         </div>
     </footer>
+
     <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
     <script type="module" src="https://cambiosorion.cl/orionapp/public/scripts/header.js" crossorigin="anonymous"></script>
-    <script src="https://admin.cambiosorion.cl/scripts/login.js"></script>
+    <script type="module" src="https://admin.cambiosorion.cl/scripts/index.js"></script>
+    <script>
+        fetch('sidebar.html')
+            .then(response => response.text())
+            .then(data => document.getElementById('sidebar-container').innerHTML = data);
+    </script>
 </body>
 </html>
- 

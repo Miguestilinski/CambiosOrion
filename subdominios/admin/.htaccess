@@ -14,7 +14,7 @@ RewriteCond %{HTTP_COOKIE} user_role=(cliente|persona|empresa) [NC]
 RewriteRule ^ https://cambiosorion.cl/sin-acceso [R=302,L]
 
 # Establecer index.html como página de inicio
-DirectoryIndex index.html
+DirectoryIndex datos-personales.html
 
 # Ocultar extensión .html
 RewriteCond %{REQUEST_FILENAME} !-d
