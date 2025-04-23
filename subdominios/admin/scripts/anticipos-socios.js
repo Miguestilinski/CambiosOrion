@@ -1,16 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const anticiposList = document.getElementById('anticipos-list');
-    const filtroaño = document.getElementById('filtro-año');
+    const anticiposActualesDiv = document.getElementById('anticipos-actuales');
+    const anticiposHistoricosDiv = document.getElementById('anticipos-historicos');
+    const filtroAño = document.getElementById('filtro-año');
     const filtroMes = document.getElementById('filtro-mes');
 
     const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
                    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-    
+
     const hoy = new Date();
     const añoActual = hoy.getFullYear();
     const mesActual = hoy.getMonth();
 
-    // Simular data de anticipos
     const anticipos = [
         { id: 1, nombre: "Pedro Pérez", monto: 120000, año: 2025, mes: 3, estado: "pendiente" },
         { id: 2, nombre: "Ana Gómez", monto: 90000, año: 2025, mes: 4, estado: "aprobado" },
@@ -20,9 +20,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function poblarFiltros() {
         for (let a = añoActual - 1; a <= añoActual + 1; a++) {
             const option = new Option(a, a);
-            filtroaño.add(option);
+            filtroAño.add(option);
         }
-        filtroaño.value = añoActual;
+        filtroAño.value = añoActual;
 
         meses.forEach((mes, i) => {
             const option = new Option(mes, i);
@@ -31,23 +31,18 @@ document.addEventListener('DOMContentLoaded', () => {
         filtroMes.value = mesActual;
     }
 
-    function renderAnticipos() {
-        anticiposList.innerHTML = '';
-        const año = parseInt(filtroaño.value);
-        const mes = parseInt(filtroMes.value);
-
-        const filtrados = anticipos.filter(a => a.año === año && a.mes === mes);
+    function renderAnticiposActuales() {
+        anticiposActualesDiv.innerHTML = '';
+        const filtrados = anticipos.filter(a => a.año === añoActual && a.mes === mesActual);
 
         if (filtrados.length === 0) {
-            anticiposList.innerHTML = `<p class="text-white">No hay solicitudes para este mes.</p>`;
+            anticiposActualesDiv.innerHTML = `<p class="text-white">No hay solicitudes este mes.</p>`;
             return;
         }
 
         filtrados.forEach(a => {
             const contenedor = document.createElement('div');
             contenedor.className = 'p-4 rounded-lg bg-white text-gray-800 border border-gray-300';
-
-            const puedeModificar = (a.año === añoActual && a.mes === mesActual);
 
             contenedor.innerHTML = `
                 <div class="flex justify-between items-center">
@@ -58,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <span class="${a.estado === 'aprobado' ? 'text-green-600' : a.estado === 'rechazado' ? 'text-red-600' : 'text-yellow-600'}">${a.estado}</span>
                         </p>
                     </div>
-                    ${puedeModificar && a.estado === 'pendiente' ? `
+                    ${a.estado === 'pendiente' ? `
                         <div class="space-x-2">
                             <button class="aprobar bg-green-600 text-white px-3 py-1 rounded" data-id="${a.id}">Aprobar</button>
                             <button class="rechazar bg-red-600 text-white px-3 py-1 rounded" data-id="${a.id}">Rechazar</button>
@@ -67,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
 
-            anticiposList.appendChild(contenedor);
+            anticiposActualesDiv.appendChild(contenedor);
         });
 
         document.querySelectorAll('.aprobar').forEach(btn => {
@@ -79,17 +74,50 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function renderAnticiposHistoricos() {
+        anticiposHistoricosDiv.innerHTML = '';
+        const año = parseInt(filtroAño.value);
+        const mes = parseInt(filtroMes.value);
+
+        const filtrados = anticipos.filter(a => a.año === año && a.mes === mes);
+
+        if (filtrados.length === 0) {
+            anticiposHistoricosDiv.innerHTML = `<p class="text-white">No hay registros históricos para este mes.</p>`;
+            return;
+        }
+
+        filtrados.forEach(a => {
+            const contenedor = document.createElement('div');
+            contenedor.className = 'p-4 rounded-lg bg-white text-gray-800 border border-gray-300';
+
+            contenedor.innerHTML = `
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h2 class="font-medium text-lg">${a.nombre}</h2>
+                        <p class="text-sm">Monto: $${a.monto.toLocaleString()}</p>
+                        <p class="text-sm">Estado: 
+                            <span class="${a.estado === 'aprobado' ? 'text-green-600' : a.estado === 'rechazado' ? 'text-red-600' : 'text-yellow-600'}">${a.estado}</span>
+                        </p>
+                    </div>
+                </div>
+            `;
+            anticiposHistoricosDiv.appendChild(contenedor);
+        });
+    }
+
     function cambiarEstado(id, nuevoEstado) {
         const anticipo = anticipos.find(a => a.id === id);
         if (anticipo && anticipo.estado === 'pendiente') {
             anticipo.estado = nuevoEstado;
-            renderAnticipos();
+            renderAnticiposActuales();
+            renderAnticiposHistoricos(); // En caso de que se esté viendo el mes actual en la parte histórica
         }
     }
 
-    filtroaño.addEventListener('change', renderAnticipos);
-    filtroMes.addEventListener('change', renderAnticipos);
+    filtroAño.addEventListener('change', renderAnticiposHistoricos);
+    filtroMes.addEventListener('change', renderAnticiposHistoricos);
 
     poblarFiltros();
-    renderAnticipos();
+    renderAnticiposActuales();
+    renderAnticiposHistoricos();
 });
