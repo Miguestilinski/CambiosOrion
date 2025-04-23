@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 fecha.setDate(fecha.getDate() + 1);
             }
         });
-    }
+    }    
     
     // Botones de navegación
     document.getElementById('prev-month').addEventListener('click', () => {
@@ -192,6 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
         currentMonth.setMonth(currentMonth.getMonth() + 1);
         renderCalendarioMensual();
     });
+    
     
     renderSolicitudesPendientes();
     renderHistorico();
