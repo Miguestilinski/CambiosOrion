@@ -182,7 +182,8 @@ document.addEventListener('DOMContentLoaded', () => {
         overlay.style.pointerEvents = 'none'; // para que no interfiera con clics
         overlay.className = 'w-full h-full grid grid-cols-7 gap-0';
         overlay.style.gridTemplateRows = `repeat(${Math.ceil((offset + ultimoDia.getDate()) / 7) + 1}, minmax(80px, auto))`;
-        calendarioVacacionesDiv.appendChild(overlay);
+        grid.parentElement.style.position = 'relative'; // Asegura que el contenedor tenga posición relativa
+        grid.parentElement.appendChild(overlay); // Inserta el overlay dentro del contenedor del grid
 
         // Eventos: rectángulos de vacaciones aprobadas
         solicitudes.forEach((s, idx) => {
