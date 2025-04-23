@@ -179,7 +179,6 @@ document.addEventListener('DOMContentLoaded', () => {
         overlay.style.left = '0';
         overlay.style.right = '0';
         overlay.style.bottom = '0';
-        overlay.style.backgroundColor = 'rgba(255,0,0,0.05)';
         overlay.style.pointerEvents = 'none'; // para que no interfiera con clics
         overlay.className = 'w-full h-full grid grid-cols-7 gap-0';
         overlay.style.gridTemplateRows = `repeat(${Math.ceil((offset + ultimoDia.getDate()) / 7) + 1}, minmax(80px, auto))`;
@@ -215,7 +214,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Posicionar usando grid-row y grid-column
             evento.style.gridRow = `${semana + 2}`; // +2 porque la fila 1 son los headers
-            evento.style.gridColumn = `${diaEnSemana + 1} / span ${Math.min(7 - diaEnSemana, totalDias)}`;
+            let diasRestantes = totalDias;
+            let startIdx = startIndex;
+            while (diasRestantes > 0) {
+                const semana = Math.floor(startIdx / 7);
+                const diaSemana = startIdx % 7;
+                const diasEnEstaSemana = Math.min(7 - diaSemana, diasRestantes);
+
+                const evento = document.createElement('div');
+                evento.className = 'evento-vacacion';
+                evento.textContent = s.nombre;
+
+                evento.style.gridRow = `${semana + 2}`;
+                evento.style.gridColumn = `${diaSemana + 1} / span ${diasEnEstaSemana}`;
+
+                overlay.appendChild(evento);
+
+                startIdx += diasEnEstaSemana;
+                diasRestantes -= diasEnEstaSemana;
+            }
 
             overlay.appendChild(evento);
         });
