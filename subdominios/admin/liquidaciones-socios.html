@@ -114,29 +114,39 @@
         <div id="sidebar-container"></div>
         <main id="dashboard-content" class="dashboard-content">
             <section id="liquidaciones" class="content-section active">
-                <h1 class="mb-4 text-2xl font-medium text-white">Liquidaciones de Funcionarios</h1>
+                <div class="flex items-center mb-6">
+                    <h1 class="text-2xl font-medium mr-4 leading-none text-white">Liquidaciones de Socios</h1>
+                </div>
     
-                <!-- Selector de Mes -->
-                <div class="mb-4">
-                    <label for="mes-select" class="text-white text-lg font-semibold mr-2">Selecciona un mes:</label>
-                    <select id="mes-select" class="p-2 rounded text-black">
-                        <option value="">-- Selecciona un mes --</option>
-                        <option value="2024-01">Enero 2024</option>
-                        <option value="2024-02">Febrero 2024</option>
-                        <option value="2024-03">Marzo 2024</option>
-                        <option value="2024-04">Abril 2024</option>
-                        <!-- Agrega más meses según necesidad -->
-                    </select>
+                <!-- Filtros de Año y Mes -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div>
+                        <label for="anio" class="block mb-1 text-sm text-white">Año</label>
+                        <select id="anio"
+                            class="select-list block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Seleccionar año</option>
+                            <!-- Años se agregan por JS -->
+                        </select>
+                    </div>
+                    <div>
+                        <label for="mes" class="block mb-1 text-sm text-white">Mes</label>
+                        <select id="mes"
+                            class="select-list block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                            disabled>
+                            <option value="">Seleccionar mes</option>
+                            <!-- Meses se agregan por JS -->
+                        </select>
+                    </div>
                 </div>
     
                 <!-- Tabla de Liquidaciones -->
                 <div class="overflow-x-auto">
-                    <table class="min-w-full text-sm text-white border border-gray-600">
-                        <thead class="bg-gray-700">
+                    <table class="min-w-full text-sm text-white bg-gray-800">
+                        <thead class="bg-gray-700 text-xs uppercase text-white">
                             <tr>
-                                <th class="px-4 py-2 text-left">Funcionario</th>
-                                <th class="px-4 py-2 text-left">Mes</th>
-                                <th class="px-4 py-2 text-left">Documento</th>
+                                <th class="px-4 py-2">Socio</th>
+                                <th class="px-4 py-2">Mes</th>
+                                <th class="px-4 py-2">Documento</th>
                             </tr>
                         </thead>
                         <tbody id="liquidaciones-body"></tbody>
