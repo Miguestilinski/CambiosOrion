@@ -181,6 +181,54 @@ document.addEventListener('DOMContentLoaded', () => {
         
             grid.appendChild(cell);
         }
+
+        // Crear contenedor para eventos superpuesto al grid
+        const overlay = document.createElement('div');
+        overlay.style.position = 'absolute';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.right = '0';
+        overlay.style.bottom = '0';
+        overlay.style.pointerEvents = 'none'; // para que no interfiera con clics
+        overlay.className = 'w-full h-full grid grid-cols-7 gap-0';
+        overlay.style.gridTemplateRows = `repeat(${Math.ceil((offset + ultimoDia.getDate()) / 7)}, minmax(80px, auto))`;
+        grid.appendChild(overlay);
+
+        // Eventos: rectángulos de vacaciones aprobadas
+        solicitudes.forEach((s, idx) => {
+            if (s.estado !== 'aprobado') return;
+
+            const desde = new Date(s.desde);
+            const hasta = new Date(s.hasta);
+
+            // Ignorar si está fuera del mes actual
+            if (hasta < primerDia || desde > ultimoDia) return;
+
+            // Fecha de inicio del bloque (ajustada al mes actual)
+            const inicio = new Date(Math.max(desde, primerDia));
+            const fin = new Date(Math.min(hasta, ultimoDia));
+
+            // Índice de celda en el grid (empezando desde lunes = 0)
+            const startOffset = (inicio.getDay() + 6) % 7; // ajustar para lunes como primer día
+            const startIndex = offset + inicio.getDate() - 1;
+
+            const totalDias = Math.floor((fin - inicio) / (1000 * 60 * 60 * 24)) + 1;
+
+            // Crear evento visual
+            const evento = document.createElement('div');
+            evento.className = 'evento-vacacion';
+            evento.textContent = s.nombre;
+
+            const semana = Math.floor(startIndex / 7);
+            const diaEnSemana = startIndex % 7;
+
+            // Posicionar usando grid-row y grid-column
+            evento.style.gridRow = `${semana + 2}`; // +2 porque la fila 1 son los headers
+            evento.style.gridColumn = `${diaEnSemana + 1} / span ${Math.min(7 - diaEnSemana, totalDias)}`;
+
+            overlay.appendChild(evento);
+        });
+
     }
     
     // Botones de navegación
