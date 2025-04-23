@@ -153,9 +153,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Celdas vacías antes del 1 del mes
-        for (let i = 0; i < diaInicio; i++) {
+        for (let i = 0; i < offset; i++) {
             grid.appendChild(document.createElement('div'));
-        }
+        }        
 
         const aprobadas = solicitudes.filter(s => s.estado === 'aprobado');
         const fechasConVacaciones = {};     
