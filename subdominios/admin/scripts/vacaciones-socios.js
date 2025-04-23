@@ -135,12 +135,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const primerDia = new Date(year, month, 1);
         const ultimoDia = new Date(year, month + 1, 0);
-        const diaInicio = primerDia.getDay();
+        let offset = primerDia.getDay(); // 0 = domingo, 1 = lunes, ...
+        offset = offset === 0 ? 6 : offset - 1; // convierte domingo (0) a 6 y ajusta el resto
+        for (let i = 0; i < offset; i++) {
+            grid.appendChild(document.createElement('div'));
+        }
+
 
         title.textContent = currentMonth.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
 
         // Encabezado de días
-        ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].forEach(dia => {
+        ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'].forEach(dia => {
             const cell = document.createElement('div');
             cell.className = 'bg-gray-200 p-2 font-bold';
             cell.textContent = dia;
@@ -153,18 +158,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const aprobadas = solicitudes.filter(s => s.estado === 'aprobado');
-        const fechasConVacaciones = {};
+        const fechasConVacaciones = {};     
 
         aprobadas.forEach(s => {
             let fecha = new Date(s.desde);
             const hasta = new Date(s.hasta);
 
             while (fecha <= hasta) {
-                const key = fecha.toISOString().split('T')[0];
-                if (!fechasConVacaciones[key]) fechasConVacaciones[key] = [];
-                fechasConVacaciones[key].push(s.nombre);
+                const diaSemana = fecha.getDay();
+                // Solo de lunes (1) a viernes (5)
+                if (diaSemana >= 1 && diaSemana <= 5) {
+                    const key = fecha.toISOString().split('T')[0];
+                    if (!fechasConVacaciones[key]) fechasConVacaciones[key] = [];
+                    fechasConVacaciones[key].push(s.nombre);
+                }
                 fecha.setDate(fecha.getDate() + 1);
-            }
+            }   
         });
 
         // Celdas de días del mes
@@ -182,13 +191,14 @@ document.addEventListener('DOMContentLoaded', () => {
             cell.appendChild(diaText);
 
             if (fechasConVacaciones[key]) {
+                cell.classList.add('bg-red-200'); // fondo del día con vacaciones
                 fechasConVacaciones[key].forEach(nombre => {
                     const etiqueta = document.createElement('div');
-                    etiqueta.className = 'text-xs mt-1 bg-red-100 text-red-800 rounded px-1';
+                    etiqueta.className = 'text-xs mt-1 text-red-800 font-medium';
                     etiqueta.textContent = nombre;
                     cell.appendChild(etiqueta);
                 });
-            }
+            }            
 
             grid.appendChild(cell);
         }
