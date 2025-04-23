@@ -156,39 +156,39 @@ document.addEventListener('DOMContentLoaded', () => {
             celdasPorFecha[key] = cell; // guardar referencia a esta celda
         }
     
-        // Pintar vacaciones directamente sobre las celdas
+        // Pintar vacaciones directamente sobre el grid (como una franja continua)
         solicitudes.forEach(s => {
             if (s.estado !== 'aprobado') return;
-        
-            let fecha = new Date(s.desde);
-            const hasta = new Date(s.hasta);
-            
-            // Crear el rectángulo que cubrirá la duración de las vacaciones
-            while (fecha <= hasta) {
+
+            const start = new Date(s.desde);
+            const end = new Date(s.hasta);
+
+            let fecha = new Date(start);
+            while (fecha <= end) {
                 const key = fecha.toISOString().split('T')[0];
-    
-                // Solo de lunes (1) a viernes (5)
-                if (fecha.getDay() >= 1 && fecha.getDay() <= 5 && celdasPorFecha[key]) {
-                    // Crear un div para cada evento de vacaciones
-                    const rectangulo = document.createElement('div');
-                    rectangulo.className = 'evento-vacacion z-10'; // Removemos el 'absolute', ya que ahora lo posicionamos con grid
-                    
-                    // Ajustar el ancho y el inicio del rectángulo con grid
-                    const startDate = new Date(s.desde);
-                    const endDate = new Date(s.hasta);
-                    
-                    const startColumn = (startDate.getDay() === 0 ? 6 : startDate.getDay() - 1); // columna del lunes
-                    const endColumn = (endDate.getDay() === 0 ? 6 : endDate.getDay() - 1); // columna del viernes
-                    
-                    rectangulo.style.gridColumnStart = startColumn + 1; // Grid usa 1-index
-                    rectangulo.style.gridColumnEnd = endColumn + 2; // El final incluye el último día
-                    
-                    // Añadir el evento al grid (no se ajusta la posición absoluta)
-                    celdasPorFecha[key].appendChild(rectangulo);
+                if (celdasPorFecha[key]) {
+                    const cell = celdasPorFecha[key];
+                    const cellIndex = Array.from(grid.children).indexOf(cell);
+                    var row = Math.floor(cellIndex / 7) + 1; // +1 por el encabezado de los días
+                    break;
                 }
                 fecha.setDate(fecha.getDate() + 1);
             }
+
+            // Calcular columna de inicio y fin
+            const startDay = (start.getDay() === 0 ? 6 : start.getDay() - 1); // lunes = 0
+            const endDay = (end.getDay() === 0 ? 6 : end.getDay() - 1);
+
+            const rect = document.createElement('div');
+            rect.className = 'evento-vacacion z-10';
+            rect.style.gridColumnStart = startDay + 1;
+            rect.style.gridColumnEnd = endDay + 2;
+            rect.style.gridRowStart = row;
+            rect.style.gridRowEnd = row + 1;
+
+            grid.appendChild(rect);
         });
+
     }
     
     
