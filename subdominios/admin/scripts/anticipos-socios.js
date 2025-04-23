@@ -48,12 +48,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="flex justify-between items-center">
                     <div>
                         <h2 class="font-medium text-lg">${a.nombre}</h2>
-                        <p class="text-sm">Sueldo: $${a.sueldo.toLocaleString()}</p>
+                        <p class="text-sm">Sueldo: $${a.sueldo.toLocaleString('es-CL')}</p>
                         <label class="block text-sm mt-1">Monto solicitado:
                             <input type="number" class="monto-input mt-0.5 px-2 py-1 border rounded w-full text-sm"
                                 data-id="${a.id}" value="${a.monto}">
                         </label>
-                        <p class="text-sm mt-1">Restante: $${(a.sueldo - getTotalAprobado(a.nombre, a.año, a.mes)).toLocaleString()}</p>
+                        <p class="text-sm mt-1">Restante: $${(a.sueldo - getTotalAprobado(a.nombre, a.año, a.mes)).toLocaleString('es-CL')}</p>
                         <p class="text-sm">Estado: 
                             <span class="${a.estado === 'aprobado' ? 'text-green-600' : a.estado === 'rechazado' ? 'text-red-600' : 'text-yellow-600'}">${a.estado}</span>
                         </p>
@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="flex justify-between items-center">
                     <div>
                         <h2 class="font-medium text-lg">${a.nombre}</h2>
-                        <p class="text-sm">Monto: $${a.monto.toLocaleString()}</p>
+                        <p class="text-sm">Monto: $${a.monto.toLocaleString('es-CL')}</p>
                         <p class="text-sm">Estado: 
                             <span class="${a.estado === 'aprobado' ? 'text-green-600' : a.estado === 'rechazado' ? 'text-red-600' : 'text-yellow-600'}">${a.estado}</span>
                         </p>
