@@ -138,21 +138,21 @@ document.addEventListener('DOMContentLoaded', () => {
     
         // Celdas de días del mes (guardar referencia a cada celda por fecha)
         const celdasPorFecha = {};
-    
+        
         for (let dia = 1; dia <= ultimoDia.getDate(); dia++) {
             const fechaActual = new Date(year, month, dia);
             const key = fechaActual.toISOString().split('T')[0];
-    
+        
             const cell = document.createElement('div');
             cell.className = 'p-2 h-20 border bg-white text-gray-800 relative';
-    
+        
             const diaText = document.createElement('div');
             diaText.className = 'font-semibold';
             diaText.textContent = fechaActual.getDate();
-    
+        
             cell.appendChild(diaText);
             grid.appendChild(cell);
-    
+        
             celdasPorFecha[key] = cell; // guardar referencia a esta celda
         }
     
@@ -164,25 +164,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const hasta = new Date(s.hasta);
     
             // Crear el rectángulo que cubrirá la duración de las vacaciones
-            const evento = document.createElement('div');
-            evento.className = 'evento-vacacion absolute top-0 left-0 h-full bg-blue-500 opacity-60 z-10'; // Puedes ajustar el color y la opacidad
-    
-            // Ajustar el ancho del rectángulo para que ocupe las celdas correspondientes
             while (fecha <= hasta) {
                 const key = fecha.toISOString().split('T')[0];
                 const diaSemana = fecha.getDay();
     
                 // Solo de lunes (1) a viernes (5)
                 if (diaSemana >= 1 && diaSemana <= 5 && celdasPorFecha[key]) {
-                    const rectangulo = evento.cloneNode();
+                    const rectangulo = document.createElement('div');
+                    rectangulo.className = 'evento-vacacion absolute top-0 left-0 h-full bg-blue-500 opacity-60 z-10'; // color y opacidad ajustables
+                    
+                    // Ajustar el ancho del rectángulo para que ocupe las celdas correspondientes
                     celdasPorFecha[key].appendChild(rectangulo);
                 }
     
                 fecha.setDate(fecha.getDate() + 1);
             }
         });
-    }
-    
+    }    
     
     // Botones de navegación
     document.getElementById('prev-month').addEventListener('click', () => {
