@@ -1,17 +1,17 @@
 RewriteEngine on
 
 # Evitar redirección infinita si ya estamos en /login
-RewriteCond %{REQUEST_URI} ^/login$ [NC]
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^login$ login.html [L]
+#RewriteCond %{REQUEST_URI} ^/login$ [NC]
+#RewriteCond %{REQUEST_FILENAME} !-f
+#RewriteRule ^login$ login.html [L]
 
 # Verificar autenticación antes de permitir acceso
 #RewriteCond %{HTTP_COOKIE} admin_authenticated=true [NC]
 #RewriteRule ^login$ - [L]
 
 # Si el usuario es cliente, redirigirlo fuera
-RewriteCond %{HTTP_COOKIE} user_role=(cliente|persona|empresa) [NC]
-RewriteRule ^ https://cambiosorion.cl/sin-acceso [R=302,L]
+#RewriteCond %{HTTP_COOKIE} user_role=(cliente|persona|empresa) [NC]
+#RewriteRule ^ https://cambiosorion.cl/sin-acceso [R=302,L]
 
 # Establecer index.html como página de inicio
 DirectoryIndex datos-personales.html
