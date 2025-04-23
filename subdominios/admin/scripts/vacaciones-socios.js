@@ -179,9 +179,10 @@ document.addEventListener('DOMContentLoaded', () => {
         overlay.style.left = '0';
         overlay.style.right = '0';
         overlay.style.bottom = '0';
+        overlay.style.backgroundColor = 'rgba(255,0,0,0.05)';
         overlay.style.pointerEvents = 'none'; // para que no interfiera con clics
         overlay.className = 'w-full h-full grid grid-cols-7 gap-0';
-        overlay.style.gridTemplateRows = `repeat(${Math.ceil((offset + ultimoDia.getDate()) / 7)}, minmax(80px, auto))`;
+        overlay.style.gridTemplateRows = `repeat(${Math.ceil((offset + ultimoDia.getDate()) / 7) + 1}, minmax(80px, auto))`;
         calendarioVacacionesDiv.appendChild(overlay);
 
         // Eventos: rectángulos de vacaciones aprobadas
