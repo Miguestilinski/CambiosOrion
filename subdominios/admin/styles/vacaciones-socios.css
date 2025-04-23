@@ -140,8 +140,6 @@ input#email{
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
     background-color: rgba(59, 130, 246, 0.6); /* Azul semitransparente */
     border-radius: 4px;
     border: 1px solid #3b82f6;
@@ -149,6 +147,8 @@ input#email{
     display: flex;
     align-items: center;
     justify-content: center;
+    height: 100%; /* Ajusta la altura para cubrir toda la celda */
+    width: 100%; /* Asegura que el evento cubra todo el ancho de las celdas seleccionadas */
 }
 
 #calendar-grid {
@@ -163,6 +163,7 @@ input#email{
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative; /* Esto permite la colocación de los eventos sobre las celdas */
 }
   
 

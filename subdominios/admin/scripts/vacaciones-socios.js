@@ -159,28 +159,37 @@ document.addEventListener('DOMContentLoaded', () => {
         // Pintar vacaciones directamente sobre las celdas
         solicitudes.forEach(s => {
             if (s.estado !== 'aprobado') return;
-    
+        
             let fecha = new Date(s.desde);
             const hasta = new Date(s.hasta);
-    
+            
             // Crear el rectángulo que cubrirá la duración de las vacaciones
             while (fecha <= hasta) {
                 const key = fecha.toISOString().split('T')[0];
-                const diaSemana = fecha.getDay();
-    
+        
                 // Solo de lunes (1) a viernes (5)
-                if (diaSemana >= 1 && diaSemana <= 5 && celdasPorFecha[key]) {
+                if (fecha.getDay() >= 1 && fecha.getDay() <= 5 && celdasPorFecha[key]) {
+                    // Crear un div para cada evento de vacaciones
                     const rectangulo = document.createElement('div');
-                    rectangulo.className = 'evento-vacacion absolute top-0 left-0 h-full bg-blue-500 opacity-60 z-10'; // color y opacidad ajustables
+                    rectangulo.className = 'evento-vacacion absolute top-0 left-0 bg-blue-500 opacity-60 z-10';
                     
-                    // Ajustar el ancho del rectángulo para que ocupe las celdas correspondientes
+                    // Ajustar el ancho del rectángulo en base a las celdas ocupadas por el evento
+                    const startDate = new Date(s.desde);
+                    const endDate = new Date(s.hasta);
+                    let startCellIndex = (startDate.getDay() === 0 ? 6 : startDate.getDay() - 1);
+                    let endCellIndex = (endDate.getDay() === 0 ? 6 : endDate.getDay() - 1);
+        
+                    // Establecer el ancho y posición del rectángulo (de manera relativa)
+                    rectangulo.style.gridColumnStart = startCellIndex + 1;
+                    rectangulo.style.gridColumnEnd = endCellIndex + 2;
+        
                     celdasPorFecha[key].appendChild(rectangulo);
                 }
-    
                 fecha.setDate(fecha.getDate() + 1);
             }
         });
-    }    
+    }
+    
     
     // Botones de navegación
     document.getElementById('prev-month').addEventListener('click', () => {
@@ -192,7 +201,6 @@ document.addEventListener('DOMContentLoaded', () => {
         currentMonth.setMonth(currentMonth.getMonth() + 1);
         renderCalendarioMensual();
     });
-    
     
     renderSolicitudesPendientes();
     renderHistorico();
