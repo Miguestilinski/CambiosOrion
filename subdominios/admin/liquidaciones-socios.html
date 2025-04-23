@@ -115,13 +115,28 @@
         <main id="dashboard-content" class="dashboard-content">
             <section id="liquidaciones" class="content-section active">
                 <h1 class="mb-4 text-2xl font-medium text-white">Liquidaciones de Funcionarios</h1>
+    
+                <!-- Selector de Mes -->
+                <div class="mb-4">
+                    <label for="mes-select" class="text-white text-lg font-semibold mr-2">Selecciona un mes:</label>
+                    <select id="mes-select" class="p-2 rounded text-black">
+                        <option value="">-- Selecciona un mes --</option>
+                        <option value="2024-01">Enero 2024</option>
+                        <option value="2024-02">Febrero 2024</option>
+                        <option value="2024-03">Marzo 2024</option>
+                        <option value="2024-04">Abril 2024</option>
+                        <!-- Agrega más meses según necesidad -->
+                    </select>
+                </div>
+    
+                <!-- Tabla de Liquidaciones -->
                 <div class="overflow-x-auto">
-                    <table class="min-w-full text-sm text-white">
+                    <table class="min-w-full text-sm text-white border border-gray-600">
                         <thead class="bg-gray-700">
                             <tr>
-                                <th class="px-4 py-2">Funcionario</th>
-                                <th class="px-4 py-2">Mes</th>
-                                <th class="px-4 py-2">Documento</th>
+                                <th class="px-4 py-2 text-left">Funcionario</th>
+                                <th class="px-4 py-2 text-left">Mes</th>
+                                <th class="px-4 py-2 text-left">Documento</th>
                             </tr>
                         </thead>
                         <tbody id="liquidaciones-body"></tbody>
@@ -206,7 +221,7 @@
 
     <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
     <script type="module" src="https://cambiosorion.cl/orionapp/public/scripts/header.js" crossorigin="anonymous"></script>
-    <script type="module" src="https://admin.cambiosorion.cl/scripts/index.js"></script>
+    <script type="module" src="https://admin.cambiosorion.cl/scripts/liquidaciones-socios.js"></script>
     <script>
         fetch('sidebar-socios.html')
             .then(response => response.text())
