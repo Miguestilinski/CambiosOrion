@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
             const diaText = document.createElement('div');
             diaText.className = 'font-semibold';
-            diaText.textContent = formatearFecha(fechaActual); // Formateo la fecha aquí
+            diaText.textContent = fechaActual.getDate();
         
             cell.appendChild(diaText);
         
