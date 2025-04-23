@@ -115,6 +115,23 @@
         <main id="dashboard-content" class="dashboard-content">
             <section id="anticipos" class="content-section active">
                 <h1 class="mb-4 text-2xl font-medium text-white">Solicitudes de Anticipos</h1>
+                <!-- Filtros por Año y Mes -->
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div>
+                        <label for="filtro-año" class="block mb-1 text-sm text-white">Año</label>
+                        <select id="filtro-año"
+                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                            <!-- Opciones generadas por JS -->
+                        </select>
+                    </div>
+                    <div>
+                        <label for="filtro-mes" class="block mb-1 text-sm text-white">Mes</label>
+                        <select id="filtro-mes"
+                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                            <!-- Opciones generadas por JS -->
+                        </select>
+                    </div>
+                </div>
                 <div id="anticipos-list" class="space-y-4"></div>
             </section>
         </main>
@@ -195,7 +212,7 @@
 
     <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
     <script type="module" src="https://cambiosorion.cl/orionapp/public/scripts/header.js" crossorigin="anonymous"></script>
-    <script type="module" src="https://admin.cambiosorion.cl/scripts/index.js"></script>
+    <script type="module" src="https://admin.cambiosorion.cl/scripts/anticipos-socios.js"></script>
     <script>
         fetch('sidebar-socios.html')
             .then(response => response.text())
