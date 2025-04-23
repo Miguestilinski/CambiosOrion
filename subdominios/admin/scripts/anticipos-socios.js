@@ -12,10 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const mesActual = hoy.getMonth();
 
     const anticipos = [
-        { id: 1, nombre: "Pedro Pérez", monto: 120000, año: 2025, mes: 3, estado: "pendiente" },
-        { id: 2, nombre: "Ana Gómez", monto: 90000, año: 2025, mes: 4, estado: "aprobado" },
-        { id: 3, nombre: "Luis Soto", monto: 50000, año: 2025, mes: 4, estado: "pendiente" }
-    ];
+        { id: 1, nombre: "Pedro Pérez", monto: 120000, sueldo: 500000, año: 2025, mes: 3, estado: "pendiente" },
+        { id: 2, nombre: "Ana Gómez", monto: 90000, sueldo: 450000, año: 2025, mes: 4, estado: "aprobado" },
+        { id: 3, nombre: "Luis Soto", monto: 50000, sueldo: 480000, año: 2025, mes: 4, estado: "pendiente" }
+    ];    
 
     function poblarFiltros() {
         for (let a = añoActual - 1; a <= añoActual + 1; a++) {
@@ -48,7 +48,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="flex justify-between items-center">
                     <div>
                         <h2 class="font-medium text-lg">${a.nombre}</h2>
-                        <p class="text-sm">Monto: $${a.monto.toLocaleString()}</p>
+                        <p class="text-sm">Sueldo: $${a.sueldo.toLocaleString()}</p>
+                        <label class="block text-sm mt-1">Monto solicitado:
+                            <input type="number" class="monto-input mt-0.5 px-2 py-1 border rounded w-full text-sm"
+                                data-id="${a.id}" value="${a.monto}">
+                        </label>
+                        <p class="text-sm mt-1">Restante: $${(a.sueldo - getTotalAprobado(a.nombre, a.año, a.mes)).toLocaleString()}</p>
                         <p class="text-sm">Estado: 
                             <span class="${a.estado === 'aprobado' ? 'text-green-600' : a.estado === 'rechazado' ? 'text-red-600' : 'text-yellow-600'}">${a.estado}</span>
                         </p>
@@ -73,6 +78,12 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.addEventListener('click', e => cambiarEstado(parseInt(e.target.dataset.id), 'rechazado'));
         });
     }
+
+    function getTotalAprobado(nombre, año, mes) {
+        return anticipos
+            .filter(a => a.nombre === nombre && a.año === año && a.mes === mes && a.estado === 'aprobado')
+            .reduce((acc, cur) => acc + cur.monto, 0);
+    }    
 
     function renderAnticiposHistoricos() {
         anticiposHistoricosDiv.innerHTML = '';
@@ -104,6 +115,18 @@ document.addEventListener('DOMContentLoaded', () => {
             anticiposHistoricosDiv.appendChild(contenedor);
         });
     }
+
+    document.querySelectorAll('.monto-input').forEach(input => {
+        input.addEventListener('change', e => {
+            const id = parseInt(e.target.dataset.id);
+            const nuevoMonto = parseInt(e.target.value);
+            const anticipo = anticipos.find(a => a.id === id);
+            if (anticipo && anticipo.estado === 'pendiente' && !isNaN(nuevoMonto)) {
+                anticipo.monto = nuevoMonto;
+                renderAnticiposActuales(); // volver a renderizar para actualizar restante
+            }
+        });
+    });    
 
     function cambiarEstado(id, nuevoEstado) {
         const anticipo = anticipos.find(a => a.id === id);
