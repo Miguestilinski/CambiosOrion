@@ -96,11 +96,13 @@ app.get('/', (req, res) => {
 });
 
 // Ruta SSE para enviar datos de divisas en tiempo real
-app.get('/api/divisas/stream', (req, res) => {
+app.get('/api/stream', (req, res) => {
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');
   res.setHeader('Keep-Alive', 'timeout=60, max=100');
+  res.flushHeaders(); // fuerza envío inmediato de los headers
+
 
   const NodeCache = require('node-cache');
   const cache = new NodeCache({ stdTTL: 60, checkperiod: 120 });
@@ -119,13 +121,16 @@ app.get('/api/divisas/stream', (req, res) => {
     });
   };
 
-  const intervalId = setInterval(sendData, 5000); // Enviar datos cada 5 segundos
-
+  const intervalId = setInterval(sendData, 1000); // Enviar datos cada 1 segundo
+  const keepAlivePing = setInterval(() => {
+    res.write(': ping\n\n');
+  }, 20000); // cada 20s
+  
   req.on('close', () => {
     clearInterval(intervalId);
+    clearInterval(keepAlivePing);
     res.end();
-    console.log('Cliente desconectado, limpieza de intervalos');
-  });
+  });  
 
   sendData(); // Enviar datos inmediatamente al conectarse
 });

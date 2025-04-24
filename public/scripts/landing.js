@@ -110,7 +110,7 @@ let eventSource;
 let retryTimeout;
 
 function initializeSSE() {
-    eventSource = new EventSource('https://cambiosorion.cl/data/stream_divisas.php');
+    eventSource = new EventSource('https://cambiosorion.cl/api/stream/stream_divisas.php');
 
     eventSource.onopen = () => {
         console.log('Conexión SSE establecida correctamente.');
