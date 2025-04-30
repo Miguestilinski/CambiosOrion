@@ -48,6 +48,25 @@ document.addEventListener('DOMContentLoaded', () => {
         operaciones.forEach(operacion => {
             const tr = document.createElement('tr');
             tr.classList.add('border-b', 'bg-white', 'border-gray-700', 'text-gray-700');
+
+            // Crear botón Mostrar
+            const btnMostrar = document.createElement('button');
+            btnMostrar.textContent = 'Mostrar';
+            btnMostrar.className = 'text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1';
+            btnMostrar.addEventListener('click', () => {
+                window.location.href = `detalle-op.html?id=${operacion.id}`;
+            });
+
+            // Crear botón Editar
+            const btnEditar = document.createElement('button');
+            btnEditar.textContent = 'Editar';
+            btnEditar.className = 'text-white bg-black hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1';
+
+            // Crear botón Desactivar
+            const btnDesactivar = document.createElement('button');
+            btnDesactivar.textContent = 'Desactivar';
+            btnDesactivar.className = 'text-white bg-red-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1';
+
             tr.innerHTML = `
                 <td class="px-4 py-2">${operacion.id}</td>
                 <td class="px-4 py-2">${operacion.nombre_cliente}</td>
@@ -57,16 +76,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="px-4 py-2">${operacion.por_cobrar_texto}</td>
                 <td class="px-4 py-2">${operacion.por_pagar_texto}</td>
                 <td class="px-4 py-2">${operacion.activa_texto}</td>
-                <td class="px-4 py-2">
-                    <button class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1">Mostrar</button>
-                </td>
-                <td class="px-4 py-2">
-                    <button class="text-white bg-black hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1">Editar</button>
-                </td>
-                <td class="px-4 py-2">
-                    <button class="text-white bg-red-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1">Desactivar</button>
-                </td>
+                <td class="px-4 py-2 mostrar-btn-cell"></td>
+                <td class="px-4 py-2"></td>
+                <td class="px-4 py-2"></td>
             `;
+
+            tr.querySelector('.mostrar-btn-cell').appendChild(btnMostrar);
+            tr.children[9].appendChild(btnEditar);
+            tr.children[10].appendChild(btnDesactivar);
+
             tablaOperaciones.appendChild(tr);
         });
     }
