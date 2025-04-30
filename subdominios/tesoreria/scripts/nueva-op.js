@@ -203,10 +203,10 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
     return;
   }
 
-  const tipoTransaccion = document.getElementById("tipo_transaccion").value;
-  const tipoDocumento = document.getElementById("tipo_documento").value;
-  const numeroDocumento = document.getElementById("numero_documento").value;
-  const numeroNota = document.getElementById("numero_nota").value;
+  const tipoTransaccion = document.getElementById("tipo-transaccion").value;
+  const tipoDocumento = document.getElementById("tipo-documento").value;
+  const numeroDocumento = document.getElementById("numero-documento").value;
+  const numeroNota = document.getElementById("numero-nota").value;
   const observaciones = document.getElementById("observaciones").value;
   const fecha = new Date().toISOString().slice(0, 10); // Fecha actual en formato YYYY-MM-DD
 
