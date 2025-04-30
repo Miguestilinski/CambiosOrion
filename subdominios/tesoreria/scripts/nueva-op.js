@@ -237,7 +237,7 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
     estado: "pendiente",
     observaciones,
     total: totalOperacion,
-    divisas
+    detalles: divisas
   };
 
   // Verifica los valores recopilados
