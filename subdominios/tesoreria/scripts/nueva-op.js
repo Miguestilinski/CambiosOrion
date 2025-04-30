@@ -1,4 +1,5 @@
 let clienteSeleccionado = null;
+let advertenciaMostrada = false;
 
 // Autocompletado cliente
 const clienteInput = document.getElementById("cliente");
@@ -46,7 +47,26 @@ const divisaContainer = document.getElementById("divisas-container");
 const totalSpan = document.getElementById("total-operacion");
 
 document.getElementById("agregar-divisa").addEventListener("click", () => {
-  agregarDivisa();
+  const divisasActuales = document.querySelectorAll(".divisa-item:not(.hidden)").length;
+
+  if (divisasActuales === 1 && !advertenciaMostrada) {
+    // Mostrar modal
+    document.getElementById("modal-multiples-divisas").classList.remove("hidden");
+
+    // Configurar botones
+    document.getElementById("confirmar-multiples-divisas").onclick = () => {
+      advertenciaMostrada = true;
+      document.getElementById("modal-multiples-divisas").classList.add("hidden");
+      agregarDivisa();
+    };
+
+    document.getElementById("cancelar-multiples-divisas").onclick = () => {
+      document.getElementById("modal-multiples-divisas").classList.add("hidden");
+    };
+
+  } else {
+    agregarDivisa();
+  }
 });
 
 function agregarDivisa() {
