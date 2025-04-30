@@ -240,6 +240,18 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
     divisas
   };
 
+  // Verifica los valores recopilados
+  console.log("Verificación de campos:");
+  console.log("Cliente seleccionado:", clienteSeleccionado);
+  console.log("Tipo de transacción:", tipoTransaccion);
+  console.log("Tipo de documento:", tipoDocumento);
+  console.log("Observaciones:", observaciones);
+  console.log("Fecha:", fecha);
+  console.log("Número de documento:", numeroDocumento);
+  console.log("Número de nota:", numeroNota);
+  console.log("Total operación:", totalOperacion);
+  console.log("Divisas:", divisas);
+
   try {
     const res = await fetch("https://cambiosorion.cl/data/nueva-op.php", {
       method: "POST",
@@ -265,3 +277,5 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
 document.getElementById("cancelar-operacion").addEventListener("click", () => {
   window.location.href = "https://tesoreria.cambiosorion.cl/operaciones";
 });
+
+
