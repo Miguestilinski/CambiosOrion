@@ -216,6 +216,11 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
   let totalOperacion = 0;
   let divisas = [];
 
+  if (!divisaId) {
+    alert(`Selecciona una divisa válida desde la lista (autocompletado).`);
+    return;
+  }    
+
   document.querySelectorAll(".divisa-item:not(.hidden)").forEach((item) => {
     const inputNombre = item.querySelector(".divisa-nombre");
     const nombre = inputNombre.value.trim();
@@ -223,6 +228,11 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
     const monto = parseInt(item.querySelector(".divisa-monto").value) || 0;
     const tasa = parseFloat(item.querySelector(".divisa-tasa").value) || 0;
     const subtotal = Math.round(monto * tasa);
+
+    if (!divisaId || !nombre) {
+      console.warn("Divisa sin seleccionar correctamente:", nombre);
+      return;
+    }    
 
     if (divisaId && monto > 0 && tasa > 0) {
       divisas.push({
@@ -259,7 +269,7 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
   console.log("Número de documento:", numeroDocumento);
   console.log("Número de nota:", numeroNota);
   console.log("Total operación:", totalOperacion);
-  console.log("Divisas:", divisas);
+  console.log("Detalles:", divisas);
 
   try {
     const res = await fetch("https://cambiosorion.cl/data/nueva-op.php", {
@@ -272,15 +282,15 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
 
     const resultado = await res.json();
     console.log("Respuesta del servidor:", resultado);
-    if (res.ok) {
+    if (resultado.error) {
+      alert("Error: " + resultado.error);
+    } else {
       alert("Operación registrada con éxito.");
       //window.location.href = "https://tesoreria.cambiosorion.cl/operaciones";
-    } else {
-      throw new Error(resultado?.mensaje || "Error al registrar operación");
     }
-  } catch (error) {
-    console.error("Error al enviar la operación:", error);
-    alert("Ocurrió un error al guardar la operación.");
+  } catch (err) {
+    console.error(err);
+    alert("Hubo un problema al registrar la operación.");
   }
 });
 
