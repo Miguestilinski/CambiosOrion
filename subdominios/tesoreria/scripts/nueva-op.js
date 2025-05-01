@@ -227,7 +227,7 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
   document.querySelectorAll(".divisa-item:not(.hidden)").forEach((item) => {
     const inputNombre = item.querySelector(".divisa-nombre");
     const nombre = inputNombre.value.trim();
-    const divisaId = parseInt(inputNombre.dataset.id);
+    const divisaId = inputNombre.dataset.id;
     const monto = parseInt(item.querySelector(".divisa-monto").value) || 0;
     const tasa = parseFloat(item.querySelector(".divisa-tasa").value) || 0;
     const subtotal = Math.round(monto * tasa);
@@ -238,7 +238,7 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
       alert(`Selecciona una divisa válida desde la lista (autocompletado).`);
       validacionFallida = true;
       return;
-    }  
+    }    
 
     if (divisaId && monto > 0 && tasa > 0) {
       divisas.push({
