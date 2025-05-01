@@ -215,11 +215,7 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
 
   let totalOperacion = 0;
   let divisas = [];
-
-  if (!divisaId) {
-    alert(`Selecciona una divisa válida desde la lista (autocompletado).`);
-    return;
-  }    
+  let validacionFallida = false;
 
   document.querySelectorAll(".divisa-item:not(.hidden)").forEach((item) => {
     const inputNombre = item.querySelector(".divisa-nombre");
@@ -230,9 +226,10 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
     const subtotal = Math.round(monto * tasa);
 
     if (!divisaId || !nombre) {
-      console.warn("Divisa sin seleccionar correctamente:", nombre);
+      alert(`Selecciona una divisa válida desde la lista (autocompletado).`);
+      validacionFallida = true;
       return;
-    }    
+    }  
 
     if (divisaId && monto > 0 && tasa > 0) {
       divisas.push({
@@ -245,6 +242,8 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
       totalOperacion += subtotal;
     }
   });
+
+  if (validacionFallida) return;
 
   const payload = {
     fecha,
