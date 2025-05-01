@@ -291,7 +291,7 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
       alert("Error: " + resultado.error);
     } else {
       alert("Operación registrada con éxito.");
-      //window.location.href = "https://tesoreria.cambiosorion.cl/operaciones";
+      window.location.href = "https://tesoreria.cambiosorion.cl/operaciones";
     }
   } catch (err) {
     console.error(err);
