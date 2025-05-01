@@ -206,8 +206,6 @@ agregarDivisa();
 document.querySelector("button[type='submit']").addEventListener("click", async (e) => {
   e.preventDefault(); // Evita el comportamiento por defecto del formulario
 
-  console.log(`Divisa input: ${nombre}, data-id: ${inputNombre.dataset.id}`);
-
   if (!clienteSeleccionado) {
     alert("Selecciona un cliente válido.");
     return;
@@ -233,6 +231,8 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
     const monto = parseInt(item.querySelector(".divisa-monto").value) || 0;
     const tasa = parseFloat(item.querySelector(".divisa-tasa").value) || 0;
     const subtotal = Math.round(monto * tasa);
+
+    console.log(`Divisa input: ${nombre}, data-id: ${inputNombre.dataset.id}`);
 
     if (!divisaId || !nombre) {
       alert(`Selecciona una divisa válida desde la lista (autocompletado).`);
