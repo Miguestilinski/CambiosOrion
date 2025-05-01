@@ -214,7 +214,6 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
   const tipoTransaccion = document.getElementById("tipo-transaccion").value;
   const tipoDocumento = document.getElementById("tipo-documento").value;
   const observaciones = document.getElementById("observaciones").value;
-  const fecha = new Date().toISOString().slice(0, 10); // Fecha actual en formato YYYY-MM-DD
 
   // Generar datos de prueba para número de documento y número de nota
   const numeroDocumento = "DOC-" + Math.floor(100000 + Math.random() * 900000); // ejemplo: DOC-123456
@@ -255,7 +254,6 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
   if (validacionFallida) return;
 
   const payload = {
-    fecha,
     cliente_id: clienteSeleccionado.id,
     tipo_transaccion: tipoTransaccion,
     tipo_documento: tipoDocumento,
@@ -273,7 +271,6 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
   console.log("Tipo de transacción:", tipoTransaccion);
   console.log("Tipo de documento:", tipoDocumento);
   console.log("Observaciones:", observaciones);
-  console.log("Fecha:", fecha);
   console.log("Número de documento:", numeroDocumento);
   console.log("Número de nota:", numeroNota);
   console.log("Total operación:", totalOperacion);
