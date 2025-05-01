@@ -152,9 +152,10 @@ function agregarDivisa() {
             li.textContent = divisa.nombre;
             li.classList.add("px-2", "py-1", "hover:bg-gray-200", "cursor-pointer");
             li.addEventListener("click", () => {
-            divisaInput.value = divisa.nombre;
-            divisaInput.dataset.id = divisa.id;
-            sugerenciasUl.classList.add("hidden");
+              divisaInput.value = divisa.nombre;
+              divisaInput.dataset.id = divisa.id;
+              sugerenciasUl.classList.add("hidden");
+              console.log(`Divisa seleccionada: ${divisa.nombre}, ID: ${divisa.id}`);
             });
             sugerenciasUl.appendChild(li);
         });
@@ -171,6 +172,12 @@ function agregarDivisa() {
     });
 
     document.getElementById("divisas-container").appendChild(nuevaDivisa);
+    // Limpiar valores
+    nuevaDivisa.querySelector(".divisa-nombre").value = "";
+    nuevaDivisa.querySelector(".divisa-nombre").removeAttribute("data-id");
+    nuevaDivisa.querySelector(".divisa-monto").value = "";
+    nuevaDivisa.querySelector(".divisa-tasa").value = "";
+    nuevaDivisa.querySelector(".divisa-subtotal").textContent = "Subtotal: $0.00";
 }
 
 function calcularTotal() {
@@ -198,6 +205,8 @@ agregarDivisa();
 
 document.querySelector("button[type='submit']").addEventListener("click", async (e) => {
   e.preventDefault(); // Evita el comportamiento por defecto del formulario
+
+  console.log(`Divisa input: ${nombre}, data-id: ${inputNombre.dataset.id}`);
 
   if (!clienteSeleccionado) {
     alert("Selecciona un cliente válido.");
