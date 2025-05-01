@@ -270,16 +270,17 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
       body: JSON.stringify(payload)
     });
 
-    const result = await res.json();
-    if (result.error) {
-      alert("Error al crear operación: " + result.error);
-    } else {
-      alert("Operación creada con éxito.");
+    const resultado = await res.json();
+    console.log("Respuesta del servidor:", resultado);
+    if (res.ok) {
+      alert("Operación registrada con éxito.");
       window.location.href = "https://tesoreria.cambiosorion.cl/operaciones";
+    } else {
+      throw new Error(resultado?.mensaje || "Error al registrar operación");
     }
-  } catch (err) {
-    console.error(err);
-    alert("Ocurrió un error al enviar los datos.");
+  } catch (error) {
+    console.error("Error al enviar la operación:", error);
+    alert("Ocurrió un error al guardar la operación.");
   }
 });
 
