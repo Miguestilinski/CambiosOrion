@@ -153,6 +153,7 @@ function agregarDivisa() {
             li.classList.add("px-2", "py-1", "hover:bg-gray-200", "cursor-pointer");
             li.addEventListener("click", () => {
             divisaInput.value = divisa.nombre;
+            divisaInput.dataset.id = divisa.id;
             sugerenciasUl.classList.add("hidden");
             });
             sugerenciasUl.appendChild(li);
@@ -216,13 +217,21 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
   let divisas = [];
 
   document.querySelectorAll(".divisa-item:not(.hidden)").forEach((item) => {
-    const nombre = item.querySelector(".divisa-nombre").value.trim();
+    const inputNombre = item.querySelector(".divisa-nombre");
+    const nombre = inputNombre.value.trim();
+    const divisaId = parseInt(inputNombre.dataset.id);
     const monto = parseInt(item.querySelector(".divisa-monto").value) || 0;
     const tasa = parseFloat(item.querySelector(".divisa-tasa").value) || 0;
     const subtotal = Math.round(monto * tasa);
 
-    if (nombre && monto > 0 && tasa > 0) {
-      divisas.push({ nombre, monto, tasa, subtotal });
+    if (divisaId && monto > 0 && tasa > 0) {
+      divisas.push({
+        divisa_id: divisaId,
+        nombre,
+        monto,
+        tasa_cambio: tasa,
+        subtotal
+      });      
       totalOperacion += subtotal;
     }
   });
