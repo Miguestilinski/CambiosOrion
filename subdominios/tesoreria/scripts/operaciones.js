@@ -37,7 +37,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         fetch(`https://cambiosorion.cl/data/operaciones.php?${params.toString()}`)
             .then(response => response.json())
-            .then(data => mostrarResultados(data))
+            .then(data => {
+                console.log('Datos recibidos:', data);
+                mostrarResultados(data);
+            })            
             .catch(error => console.error('Error al obtener operaciones:', error));
     }
 
@@ -77,16 +80,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="px-4 py-2">${operacion.por_pagar_texto}</td>
                 <td class="px-4 py-2">${operacion.activa_texto}</td>
                 <td class="px-4 py-2 mostrar-btn-cell"></td>
-                <td class="px-4 py-2"></td>
-                <td class="px-4 py-2"></td>
             `;
 
             tr.querySelector('.mostrar-btn-cell').appendChild(btnMostrar);
-            tr.children[9].appendChild(btnEditar);
-            tr.children[10].appendChild(btnDesactivar);
 
             tablaOperaciones.appendChild(tr);
         });
+        console.log(numeroInput, clienteInput, tipoDocSelect, tablaOperaciones);
     }
 
     // Borrar filtros
