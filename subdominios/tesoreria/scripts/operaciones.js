@@ -46,6 +46,20 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(error => console.error('Error al obtener operaciones:', error));
     }
 
+    function formatearNumero(numero) {
+        if (numero === null || numero === undefined || numero === '') return '';
+        
+        const opciones = {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 3
+        };
+    
+        return Number(numero)
+            .toLocaleString('es-CL', opciones)  // Chile usa punto para miles y coma para decimales
+            .replace(/\u00A0/g, ''); // Elimina el espacio no separable que agrega en algunos navegadores
+    }
+    
+
     // Función para mostrar los resultados en la tabla
     function mostrarResultados(operaciones) {
         tablaOperaciones.innerHTML = '';
@@ -95,9 +109,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="px-4 py-2">${operacion.numero_nota}</td>
                 <td class="px-4 py-2">${operacion.tipo_transaccion}</td>
                 <td class="px-4 py-2">${operacion.divisa}</td>
-                <td class="px-4 py-2">${operacion.monto_total}</td>
-                <td class="px-4 py-2">${operacion.tasa_cambio_promedio}</td>
-                <td class="px-4 py-2">${operacion.total}</td>
+                <td class="px-4 py-2">${formatearNumero(operacion.monto_total)}</td>
+                <td class="px-4 py-2">${formatearNumero(operacion.tasa_cambio_promedio)}</td>
+                <td class="px-4 py-2">${formatearNumero(operacion.total)}</td>
                 <td class="px-4 py-2">${operacion.estado}</td>
                 <td class="px-4 py-2 mostrar-btn-cell"></td>
             `;
