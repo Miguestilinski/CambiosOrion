@@ -60,9 +60,12 @@ document.addEventListener("DOMContentLoaded", () => {
             // Sección de documento
             let documentoHTML = "";
 
+            // Título h2
+            let documentoTitulo = `<h2 class="text-xl font-semibold text-white mb-3">Documento</h2>`;
+
             if (info.numero_documento) {
                 documentoHTML = `
-                    <div class="mt-6 text-gray-300 font-medium">
+                    <div class="mt-4 text-gray-300 font-medium">
                         Documento emitido al SII: <strong>${info.numero_documento}</strong><br/>
                         <button onclick="window.open('https://cambiosorion.cl/documentos/${info.numero_documento}.pdf', '_blank')" 
                                 class="mt-2 inline-block bg-white text-gray-800 px-4 py-2 rounded shadow hover:bg-gray-100">
@@ -72,17 +75,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 `;
             } else {
                 documentoHTML = `
-                    <div class="mt-6 text-gray-300 font-medium">
+                    <div class="mt-4 text-gray-300 font-medium">
                         Esta operación fue registrada internamente, pero no fue emitida al SII.
                     </div>
                 `;
             }
-            
+
             const nuevaSeccion = document.createElement("div");
             nuevaSeccion.id = "seccion-documento";
-            nuevaSeccion.innerHTML = documentoHTML;
+            nuevaSeccion.innerHTML = documentoTitulo + documentoHTML;
 
-            document.getElementById("dashboard-content").appendChild(nuevaSeccion);
+            document.getElementById("seccion-documento").appendChild(nuevaSeccion);
         })
         .catch(err => {
             console.error(err);
