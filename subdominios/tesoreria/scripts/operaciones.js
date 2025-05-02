@@ -50,10 +50,17 @@ document.addEventListener('DOMContentLoaded', () => {
     function mostrarResultados(operaciones) {
         tablaOperaciones.innerHTML = '';
 
+        if (operaciones.length === 0) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td colspan="9" class="text-center text-gray-500 py-4">No se encontraron operaciones</td>`;
+            tablaOperaciones.appendChild(tr);
+            return;
+        }
+
         operaciones.forEach(operacion => {
             const tr = document.createElement('tr');
             tr.classList.add('border-b', 'bg-white', 'border-gray-700', 'text-gray-700');
-
+    
             // Crear botón Mostrar
             const btnMostrar = document.createElement('button');
             btnMostrar.textContent = 'Mostrar';
@@ -61,17 +68,17 @@ document.addEventListener('DOMContentLoaded', () => {
             btnMostrar.addEventListener('click', () => {
                 window.location.href = `detalle-op.html?id=${operacion.id}`;
             });
-
+    
             // Crear botón Editar
             const btnEditar = document.createElement('button');
             btnEditar.textContent = 'Editar';
             btnEditar.className = 'text-white bg-black hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1';
-
+    
             // Crear botón Desactivar
             const btnDesactivar = document.createElement('button');
             btnDesactivar.textContent = 'Desactivar';
             btnDesactivar.className = 'text-white bg-red-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1';
-
+    
             tr.innerHTML = `
                 <td class="px-4 py-2">${operacion.id}</td>
                 <td class="px-4 py-2">${operacion.cliente_id}</td>
@@ -83,20 +90,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="px-4 py-2">${operacion.divisa}</td>
                 <td class="px-4 py-2 mostrar-btn-cell"></td>
             `;
-
+    
             tr.querySelector('.mostrar-btn-cell').appendChild(btnMostrar);
-
+    
             tablaOperaciones.appendChild(tr);
-
-            if (operaciones.length === 0) {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `<td colspan="9" class="text-center text-gray-500 py-4">No se encontraron operaciones</td>`;
-                tablaOperaciones.appendChild(tr);
-                return;
-            }
-            
         });
-        console.log(numeroInput, clienteInput, tipoDocSelect, tablaOperaciones);
     }
 
     // Borrar filtros
