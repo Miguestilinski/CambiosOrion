@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (operaciones.length === 0) {
             const tr = document.createElement('tr');
-            tr.innerHTML = `<td colspan="14" class="text-center text-gray-700 py-4 bg-white">No se encontraron operaciones</td>`;
+            tr.innerHTML = `<td colspan="13" class="text-center text-gray-700 py-4 bg-white">No se encontraron operaciones</td>`;
             tablaOperaciones.appendChild(tr);
             return;
         }
@@ -60,7 +60,14 @@ document.addEventListener('DOMContentLoaded', () => {
         operaciones.forEach(operacion => {
             const tr = document.createElement('tr');
             tr.classList.add('border-b', 'bg-white', 'border-gray-700', 'text-gray-700');
-    
+
+            // Colores según tipo de transacción
+            if (operacion.tipo_transaccion === 'Compra') {
+                tr.style.backgroundColor = '#c3e8f1'; // celeste
+            } else if (operacion.tipo_transaccion === 'Venta') {
+                tr.style.backgroundColor = '#dbf599'; // verde claro
+            }
+
             // Crear botón Mostrar
             const btnMostrar = document.createElement('button');
             btnMostrar.textContent = 'Mostrar';
