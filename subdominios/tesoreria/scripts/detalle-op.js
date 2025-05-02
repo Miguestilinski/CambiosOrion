@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Total al final en blanco
             const totalHTML = `
-                <div class="mt-6 text-white text-lg font-semibold">
+                <div class="mt-4 text-white text-lg font-semibold">
                     Total operación: $${formatNumber(info.total)}
                 </div>
             `;
@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
             let documentoHTML = "";
 
             // Título h2
-            let documentoTitulo = `<h2 class="text-xl font-semibold text-white mb-3">Documento</h2>`;
+            let documentoTitulo = `<h2 class="text-xl font-semibold text-white mt-6 mb-3">Documento</h2>`;
 
             if (info.numero_documento) {
                 documentoHTML = `
