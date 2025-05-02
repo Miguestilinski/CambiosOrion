@@ -14,35 +14,35 @@ document.addEventListener("DOMContentLoaded", () => {
             return JSON.parse(text);
         })    
         .then(data => {
-        if (data.error) {
-            document.getElementById("info-operacion").innerHTML = `<p>${data.error}</p>`;
-            return;
-        }
+            if (data.error) {
+                document.getElementById("info-operacion").innerHTML = `<p>${data.error}</p>`;
+                return;
+            }
 
-        // Mostrar info general de la operación
-        const info = data.operacion;
-        const infoHTML = `
-            <p><strong>Número de operación:</strong> ${info.numero_operacion}</p>
-            <p><strong>Código:</strong> ${info.codigo_operacion}</p>
-            <p><strong>Cliente:</strong> ${info.cliente}</p>
-            <p><strong>Total:</strong> $${info.total}</p>
-        `;
-        document.getElementById("info-operacion").innerHTML = infoHTML;
+            // Mostrar info general de la operación
+            const info = data.operacion;
+            const infoHTML = `
+                <div><span class="font-semibold text-gray-300">Número de operación:</span> ${info.numero_operacion}</div>
+                <div><span class="font-semibold text-gray-300">Código:</span> ${info.codigo_operacion}</div>
+                <div><span class="font-semibold text-gray-300">Cliente:</span> ${info.cliente}</div>
+                <div><span class="font-semibold text-gray-300">Total:</span> $${info.total.toLocaleString()}</div>
+            `;
+            document.getElementById("info-operacion").innerHTML = infoHTML;
 
-        // Mostrar detalles de divisas
-        const detallesHTML = data.detalles.map(det => `
-            <div class="mb-4 p-3 rounded border border-white bg-gray-800">
-            <p><strong>Divisa:</strong> ${det.divisa}</p>
-            <p><strong>Monto:</strong> ${det.monto}</p>
-            <p><strong>Tasa de cambio:</strong> ${det.tasa_cambio}</p>
-            <p><strong>Subtotal:</strong> ${det.subtotal}</p>
-            </div>
-        `).join("");
+            // Mostrar detalles de divisas
+            const detallesHTML = data.detalles.map(det => `
+                <div class="p-4 rounded-lg bg-white shadow-md border border-gray-200 text-gray-800">
+                    <div class="mb-1"><span class="font-medium text-gray-600">Divisa:</span> ${det.divisa}</div>
+                    <div class="mb-1"><span class="font-medium text-gray-600">Monto:</span> ${det.monto}</div>
+                    <div class="mb-1"><span class="font-medium text-gray-600">Tasa de cambio:</span> ${det.tasa_cambio}</div>
+                    <div><span class="font-medium text-gray-600">Subtotal:</span> $${det.subtotal}</div>
+                </div>
+            `).join("");
 
-        document.getElementById("detalle-divisas").innerHTML = detallesHTML;
+            document.getElementById("detalle-divisas").innerHTML = detallesHTML;
         })
         .catch(err => {
-        console.error(err);
-        document.getElementById("info-operacion").innerHTML = "<p>Error al cargar la operación.</p>";
-    });
+            console.error(err);
+            document.getElementById("info-operacion").innerHTML = "<p>Error al cargar la operación.</p>";
+        });
 });
