@@ -72,13 +72,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             tr.innerHTML = `
                 <td class="px-4 py-2">${operacion.id}</td>
-                <td class="px-4 py-2">${operacion.nombre_cliente}</td>
+                <td class="px-4 py-2">${operacion.cliente_id}</td>
+                <td class="px-4 py-2">${operacion.tipo_transaccion}</td>
+                <td class="px-4 py-2">${operacion.tipo_documento}</td>
+                <td class="px-4 py-2">${operacion.numero_documento}</td>
+                <td class="px-4 py-2">${operacion.estado}</td>
+                <td class="px-4 py-2">${operacion.total}</td>
                 <td class="px-4 py-2">${operacion.divisa}</td>
-                <td class="px-4 py-2">${operacion.me_deben}</td>
-                <td class="px-4 py-2">${operacion.debo}</td>
-                <td class="px-4 py-2">${operacion.por_cobrar_texto}</td>
-                <td class="px-4 py-2">${operacion.por_pagar_texto}</td>
-                <td class="px-4 py-2">${operacion.activa_texto}</td>
                 <td class="px-4 py-2 mostrar-btn-cell"></td>
             `;
 
