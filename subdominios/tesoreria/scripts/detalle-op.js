@@ -8,7 +8,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     fetch(`https://cambiosorion.cl/data/detalle-op.php?id=${id}`)
-        .then(res => res.json())
+        .then(async res => {
+            const text = await res.text();
+            console.log("Respuesta cruda:", text);
+            return JSON.parse(text);
+        })    
         .then(data => {
         if (data.error) {
             document.getElementById("info-operacion").innerHTML = `<p>${data.error}</p>`;
