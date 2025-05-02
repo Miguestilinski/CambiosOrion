@@ -35,6 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
         params.set('buscar', buscarInput.value);
         params.set('mostrar_registros', mostrarRegistros.value);
 
+        console.log('Parámetros enviados:', params.toString());
+
         fetch(`https://cambiosorion.cl/data/operaciones.php?${params.toString()}`)
             .then(response => response.json())
             .then(data => {
@@ -85,6 +87,14 @@ document.addEventListener('DOMContentLoaded', () => {
             tr.querySelector('.mostrar-btn-cell').appendChild(btnMostrar);
 
             tablaOperaciones.appendChild(tr);
+
+            if (operaciones.length === 0) {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td colspan="9" class="text-center text-gray-500 py-4">No se encontraron operaciones</td>`;
+                tablaOperaciones.appendChild(tr);
+                return;
+            }
+            
         });
         console.log(numeroInput, clienteInput, tipoDocSelect, tablaOperaciones);
     }
