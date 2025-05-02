@@ -80,14 +80,16 @@ document.addEventListener('DOMContentLoaded', () => {
             btnDesactivar.className = 'text-white bg-red-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1';
     
             tr.innerHTML = `
+                <td class="px-4 py-2">${operacion.fecha}</td>
                 <td class="px-4 py-2">${operacion.id}</td>
                 <td class="px-4 py-2">${operacion.cliente_id}</td>
-                <td class="px-4 py-2">${operacion.tipo_transaccion}</td>
                 <td class="px-4 py-2">${operacion.tipo_documento}</td>
                 <td class="px-4 py-2">${operacion.numero_documento}</td>
+                <td class="px-4 py-2">${operacion.numero_nota}</td>
+                <td class="px-4 py-2">${operacion.tipo_transaccion}</td>
+                <td class="px-4 py-2">${operacion.divisa}</td>
                 <td class="px-4 py-2">${operacion.estado}</td>
                 <td class="px-4 py-2">${operacion.total}</td>
-                <td class="px-4 py-2">${operacion.divisa}</td>
                 <td class="px-4 py-2 mostrar-btn-cell"></td>
             `;
     
