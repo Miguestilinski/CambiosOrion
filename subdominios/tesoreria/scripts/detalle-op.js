@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    fetch(`detalle-op.php?id=${id}`)
+    fetch(`https://cambiosorion.cl/data/detalle-op.php?id=${id}`)
         .then(res => res.json())
         .then(data => {
         if (data.error) {

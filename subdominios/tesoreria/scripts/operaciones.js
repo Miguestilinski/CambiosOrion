@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
             btnMostrar.textContent = 'Mostrar';
             btnMostrar.className = 'text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1';
             btnMostrar.addEventListener('click', () => {
-                window.location.href = `detalle-op.html?id=${operacion.id}`;
+                window.location.href = `detalle-op?id=${operacion.id}`;
             });
     
             // Crear botón Editar
