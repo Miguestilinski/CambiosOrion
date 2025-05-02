@@ -58,9 +58,25 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("detalle-divisas").insertAdjacentHTML("afterend", totalHTML);
 
             // Sección de documento
-            const documentoHTML = info.numero_documento 
-                ? `<div class="mt-6 text-green-400 font-medium">Documento emitido al SII: <strong>${info.numero_documento}</strong></div>`
-                : `<div class="mt-6 text-red-400 font-medium">Esta operación aún no ha sido emitida al SII.</div>`;
+            let documentoHTML = "";
+
+            if (info.numero_documento) {
+                documentoHTML = `
+                    <div class="mt-6 text-gray-300 font-medium">
+                        Documento emitido al SII: <strong>${info.numero_documento}</strong><br/>
+                        <button onclick="window.open('https://cambiosorion.cl/documentos/${info.numero_documento}.pdf', '_blank')" 
+                                class="mt-2 inline-block bg-white text-gray-800 px-4 py-2 rounded shadow hover:bg-gray-100">
+                            Ver documento
+                        </button>
+                    </div>
+                `;
+            } else {
+                documentoHTML = `
+                    <div class="mt-6 text-gray-300 font-medium">
+                        Esta operación fue registrada internamente, pero no fue emitida al SII.
+                    </div>
+                `;
+            }
             
             const nuevaSeccion = document.createElement("div");
             nuevaSeccion.id = "seccion-documento";
