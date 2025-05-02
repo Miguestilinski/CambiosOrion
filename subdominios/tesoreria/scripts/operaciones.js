@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (operaciones.length === 0) {
             const tr = document.createElement('tr');
-            tr.innerHTML = `<td colspan="9" class="text-center text-gray-500 py-4">No se encontraron operaciones</td>`;
+            tr.innerHTML = `<td colspan="14" class="text-center text-gray-700 py-4 bg-white">No se encontraron operaciones</td>`;
             tablaOperaciones.appendChild(tr);
             return;
         }
