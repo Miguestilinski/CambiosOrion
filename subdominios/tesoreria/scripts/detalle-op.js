@@ -19,13 +19,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
+            const formatNumber = (num) => {
+                const n = parseFloat(num);
+                if (isNaN(n)) return num;
+                return n.toLocaleString('es-CL', {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 3
+                });
+            };
+
             // Mostrar info general de la operación
             const info = data.operacion;
             const infoHTML = `
                 <div><span class="font-semibold text-gray-300">Número de operación:</span> ${info.numero_operacion}</div>
                 <div><span class="font-semibold text-gray-300">Código:</span> ${info.codigo_operacion}</div>
                 <div><span class="font-semibold text-gray-300">Cliente:</span> ${info.cliente}</div>
-                <div><span class="font-semibold text-gray-300">Total:</span> $${info.total.toLocaleString()}</div>
             `;
             document.getElementById("info-operacion").innerHTML = infoHTML;
 
@@ -33,13 +41,32 @@ document.addEventListener("DOMContentLoaded", () => {
             const detallesHTML = data.detalles.map(det => `
                 <div class="p-4 rounded-lg bg-white shadow-md border border-gray-200 text-gray-800">
                     <div class="mb-1"><span class="font-medium text-gray-600">Divisa:</span> ${det.divisa}</div>
-                    <div class="mb-1"><span class="font-medium text-gray-600">Monto:</span> ${det.monto}</div>
-                    <div class="mb-1"><span class="font-medium text-gray-600">Tasa de cambio:</span> ${det.tasa_cambio}</div>
-                    <div><span class="font-medium text-gray-600">Subtotal:</span> $${det.subtotal}</div>
+                    <div class="mb-1"><span class="font-medium text-gray-600">Monto:</span> ${formatNumber(det.monto)}</div>
+                    <div class="mb-1"><span class="font-medium text-gray-600">Tasa de cambio:</span> ${formatNumber(det.tasa_cambio)}</div>
+                    <div><span class="font-medium text-gray-600">Subtotal:</span> $${formatNumber(det.subtotal)}</div>
                 </div>
             `).join("");
 
             document.getElementById("detalle-divisas").innerHTML = detallesHTML;
+
+            // Total al final en blanco
+            const totalHTML = `
+                <div class="mt-6 text-white text-lg font-semibold">
+                    Total operación: $${formatNumber(info.total)}
+                </div>
+            `;
+            document.getElementById("detalle-divisas").insertAdjacentHTML("afterend", totalHTML);
+
+            // Sección de documento
+            const documentoHTML = info.numero_documento 
+                ? `<div class="mt-6 text-green-400 font-medium">Documento emitido al SII: <strong>${info.numero_documento}</strong></div>`
+                : `<div class="mt-6 text-red-400 font-medium">Esta operación aún no ha sido emitida al SII.</div>`;
+            
+            const nuevaSeccion = document.createElement("div");
+            nuevaSeccion.id = "seccion-documento";
+            nuevaSeccion.innerHTML = documentoHTML;
+
+            document.getElementById("dashboard-content").appendChild(nuevaSeccion);
         })
         .catch(err => {
             console.error(err);
