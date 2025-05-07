@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const nombreInput = document.getElementById('nombre');
     const rutInput = document.getElementById('rut');
     const fechaIngresoInput = document.getElementById('fecha_ingreso');
-    const cargoInput = document.getElementById('cargo');
+    const rolInput = document.getElementById('rol');
     const contratoInput = document.getElementById('contrato');
     const sueldoInput = document.getElementById('sueldo');
     const habilitadosInput = document.getElementById('habilitados');
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         params.set('nombre', nombreInput.value);
         params.set('rut', rutInput.value);
         params.set('fecha_ingreso', fechaIngresoInput.value);
-        params.set('cargo', cargoInput.value);
+        params.set('rol', rolInput.value);
         params.set('contrato', contratoInput.value);
         params.set('sueldo', sueldoInput.value);
         params.set('habilitados', habilitadosInput.value);
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="px-4 py-2">${item.nombre}</td>
                 <td class="px-4 py-2">${item.rut}</td>
                 <td class="px-4 py-2">${item.fecha_ingreso}</td>
-                <td class="px-4 py-2">${item.cargo}</td>
+                <td class="px-4 py-2">${item.rol}</td>
                 <td class="px-4 py-2">${item.contrato}</td>
                 <td class="px-4 py-2">${item.sueldo}</td>
                 <td class="px-4 py-2">
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
         nombreInput,
         rutInput,
         fechaIngresoInput,
-        cargoInput,
+        rolInput,
         contratoInput,
         sueldoInput,
         habilitadosInput
