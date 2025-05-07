@@ -81,7 +81,7 @@ async function cargarDivisas() {
         });
 
         // Agregar barra de desplazamiento
-        lista.style.maxHeight = '400px';
+        lista.style.maxHeight = '31rem';
         lista.style.overflowY = 'auto';
 
     } catch (error) {
