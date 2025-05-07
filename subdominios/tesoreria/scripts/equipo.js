@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fetch(`https://cambiosorion.cl/data/equipo.php?${params.toString()}`)
             .then(response => response.json())
             .then(data => {
+                console.log(data);
                 mostrarResultados(data);
             })
             .catch(error => console.error('Error:', error));
