@@ -49,9 +49,9 @@ document.addEventListener('DOMContentLoaded', () => {
             tr.classList.add('bg-white', 'border-b', 'border-gray-700', 'text-gray-700');
 
             tr.innerHTML = `
-                <td class="px-4 py-2">${cliente.fecha}</td>
-                <td class="px-4 py-2">${cliente.tipo_cliente}</td>
-                <td class="px-4 py-2">${cliente.nombre}</td>
+                <td class="px-4 py-2">${cliente.fecha_ingreso}</td>
+                <td class="px-4 py-2">${cliente.tipo}</td>
+                <td class="px-4 py-2">${cliente.razon_social}</td>
                 <td class="px-4 py-2">${cliente.rut}</td>
                 <td class="px-4 py-2">${cliente.direccion}</td>
                 <td class="px-4 py-2">${cliente.fono}</td>
