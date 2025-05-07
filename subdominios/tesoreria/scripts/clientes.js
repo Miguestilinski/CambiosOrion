@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
             btnMostrar.textContent = 'Mostrar';
             btnMostrar.className = 'text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1';
             btnMostrar.addEventListener('click', () => {
-                window.location.href = `detalle-cliente?id=${cliente.id}`; // Ajusta URL según corresponda
+                window.location.href = `detalle-cl?id=${cliente.id}`; // Ajusta URL según corresponda
             });
     
             // Crear botón Deshabilitar (opcionalmente puedes también hacer funcionalidad aquí)
