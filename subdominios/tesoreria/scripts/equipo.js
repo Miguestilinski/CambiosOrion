@@ -48,8 +48,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="px-4 py-2">${item.rut}</td>
                 <td class="px-4 py-2">${item.fecha_ingreso}</td>
                 <td class="px-4 py-2">${item.rol}</td>
-                <td class="px-4 py-2">${item.contrato}</td>
-                <td class="px-4 py-2">${item.sueldo}</td>
+                <td class="px-4 py-2">${item.tipo_contrato}</td>
+                <td class="px-4 py-2">${item.sueldo_liquido}</td>
                 <td class="px-4 py-2">
                     <button class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1">
                         Mostrar
