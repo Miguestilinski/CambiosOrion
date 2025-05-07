@@ -32,11 +32,22 @@ document.addEventListener('DOMContentLoaded', () => {
         fetch(`https://cambiosorion.cl/data/equipo.php?${params.toString()}`)
             .then(response => response.json())
             .then(data => {
-                console.log(data);
                 mostrarResultados(data);
             })
             .catch(error => console.error('Error:', error));
     }
+
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses empiezan desde 0
+        const year = date.getFullYear();
+        return `${day}-${month}-${year}`;
+    }
+    
+    function formatSueldo(sueldo) {
+        return '$' + Number(sueldo).toLocaleString('es-CL');
+    }    
 
     function mostrarResultados(lista) {
         tablaEquipo.innerHTML = '';
@@ -46,10 +57,10 @@ document.addEventListener('DOMContentLoaded', () => {
             tr.innerHTML = `
                 <td class="px-4 py-2">${item.nombre}</td>
                 <td class="px-4 py-2">${item.rut}</td>
-                <td class="px-4 py-2">${item.fecha_ingreso}</td>
+                <td class="px-4 py-2">${formatDate(item.fecha_ingreso)}</td>
                 <td class="px-4 py-2">${item.rol}</td>
                 <td class="px-4 py-2">${item.tipo_contrato}</td>
-                <td class="px-4 py-2">${item.sueldo_liquido}</td>
+                <td class="px-4 py-2">${formatSueldo(item.sueldo_liquido)}</td>
                 <td class="px-4 py-2">
                     <button class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1">
                         Mostrar
