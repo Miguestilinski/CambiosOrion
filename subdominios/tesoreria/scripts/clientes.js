@@ -45,8 +45,22 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderizarTabla(clientes) {
         tablaClientes.innerHTML = '';
         clientes.forEach(cliente => {
+
             const tr = document.createElement('tr');
             tr.classList.add('bg-white', 'border-b', 'border-gray-700', 'text-gray-700');
+    
+            // Crear botón Mostrar
+            const btnMostrar = document.createElement('button');
+            btnMostrar.textContent = 'Mostrar';
+            btnMostrar.className = 'text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1';
+            btnMostrar.addEventListener('click', () => {
+                window.location.href = `detalle-cliente?id=${cliente.id}`; // Ajusta URL según corresponda
+            });
+    
+            // Crear botón Deshabilitar (opcionalmente puedes también hacer funcionalidad aquí)
+            const btnDeshabilitar = document.createElement('button');
+            btnDeshabilitar.textContent = 'Deshabilitar';
+            btnDeshabilitar.className = 'text-white bg-red-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1';
 
             tr.innerHTML = `
                 <td class="px-4 py-2">${cliente.fecha_ingreso}</td>
@@ -55,9 +69,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="px-4 py-2">${cliente.rut}</td>
                 <td class="px-4 py-2">${cliente.direccion}</td>
                 <td class="px-4 py-2">${cliente.fono}</td>
-                <td class="px-4 py-2"><button class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1">Mostrar</button></td>
-                <td class="px-4 py-2"><button class="text-white bg-red-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1">Deshabilitar</button></td>
+                <td class="px-4 py-2 mostrar-btn-cell"></td>
+                <td class="px-4 py-2 deshabilitar-btn-cell"></td>
             `;
+
+            tr.querySelector('.mostrar-btn-cell').appendChild(btnMostrar);
+            tr.querySelector('.deshabilitar-btn-cell').appendChild(btnDeshabilitar);
 
             tablaClientes.appendChild(tr);
         });
