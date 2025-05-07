@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Redirigir al hacer clic en "Nueva Transaccion"
    if (nuevaTransaccionBtn) {
     nuevaTransaccionBtn.addEventListener('click', () => {
-        window.location.href = 'https://tesoreria.cambiosorion.cl/nueva-tr';
+        window.location.href = 'https://caja.cambiosorion.cl/nueva-tr';
     });
 }
 
