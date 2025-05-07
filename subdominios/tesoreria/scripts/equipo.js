@@ -1,15 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
     const mostrarRegistros = document.getElementById('mostrar-registros');
     const buscarInput = document.getElementById('buscar');
-    const nombreInput = document.getElementById('periodo');
-    const rutInput = document.getElementById('integrante');
-    const fechaInput = document.getElementById('monto');
+    const nombreInput = document.getElementById('nombre');
+    const rutInput = document.getElementById('rut');
+    const fechaIngresoInput = document.getElementById('fecha_ingreso');
     const cargoInput = document.getElementById('cargo');
-    const contratoInput = document.getElementById('estado');
+    const contratoInput = document.getElementById('contrato');
     const sueldoInput = document.getElementById('sueldo');
     const habilitadosInput = document.getElementById('habilitados');
     const tablaEquipo = document.querySelector('table tbody');
-    const nuevoIntegranteBtn = document.getElementById('nuevo-integrante');
+    const nuevoIntegranteBtn = document.getElementById('nuevo-int');
 
     if (nuevoIntegranteBtn) {
         nuevoIntegranteBtn.addEventListener('click', () => {
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const params = new URLSearchParams();
         params.set('nombre', nombreInput.value);
         params.set('rut', rutInput.value);
-        params.set('fecha_ingreso', fechaInput.value);
+        params.set('fecha_ingreso', fechaIngresoInput.value);
         params.set('cargo', cargoInput.value);
         params.set('contrato', contratoInput.value);
         params.set('sueldo', sueldoInput.value);
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
         buscarInput,
         nombreInput,
         rutInput,
-        fechaInput,
+        fechaIngresoInput,
         cargoInput,
         contratoInput,
         sueldoInput,
