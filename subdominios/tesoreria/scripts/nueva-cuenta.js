@@ -2,8 +2,16 @@ const clienteInput = document.getElementById("cliente");
 const resultadoClientes = document.getElementById("resultado-clientes");
 const divisaInput = document.getElementById("divisa");
 const divisaSugerencias = document.getElementById("divisa-sugerencias");
+const cancelarBtn = document.getElementById('cancelar');
 let clienteSeleccionado = null;
 let divisaSeleccionada = null;
+
+// Redirigir al hacer clic en "Nueva Operacion"
+if (cancelarBtn) {
+  cancelarBtn.addEventListener('click', () => {
+      window.location.href = 'https://tesoreria.cambiosorion.cl/cuentas';
+  });
+}
 
 // Buscar cliente
 clienteInput.addEventListener("input", async (e) => {
