@@ -26,14 +26,13 @@ document.addEventListener('DOMContentLoaded', () => {
         params.set('simbolo', simboloInput.value);
         params.set('tipo', tipoInput.value);
         params.set('fraccionable', fraccionableInput.value);
-        params.set('mostrar_registros', mostrarRegistros.value);
+        params.set('mostrar', mostrarRegistros.value);
         params.set('buscar', buscarInput.value);
 
         fetch(`https://cambiosorion.cl/data/divisas-int.php?${params.toString()}`)
             .then(response => response.json())
-            .then(text => {
-                console.log('Respuesta cruda:', text);
-                const divisas = JSON.parse(text); // Aquí puedes ver si el JSON realmente está vacío o roto
+            .then(divisas => {
+                console.log('Divisas:', divisas);
                 mostrarResultados(divisas);
             })
             .catch(error => console.error('Error al obtener las divisas:', error));
