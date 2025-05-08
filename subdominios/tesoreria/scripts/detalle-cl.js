@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         <td class="px-4 py-2">${formatNumber(op.tasa_cambio)}</td>
                         <td class="px-4 py-2">${formatNumber(op.total)}</td>
                         <td class="px-4 py-2">${op.estado || ''}</td>
-                        <td class="px-4 py-2 flex gap-2">
+                        <td class="px-4 py-2 gap-2">
                         <a href="/detalle-op?id=${op.id}" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1">Mostrar</a>
                         </td>
                     </tr>
