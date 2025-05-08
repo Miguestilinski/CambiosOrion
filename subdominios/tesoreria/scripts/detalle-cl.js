@@ -162,6 +162,7 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .then(res => res.text())  // Leer la respuesta como texto
         .then(text => {
+            console.log("Respuesta del servidor:", text); // Ver qué estás recibiendo
             try {
                 const response = JSON.parse(text);
                 // Aquí ya puedes trabajar con el JSON
@@ -179,6 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("Error de red o servidor", error);
             alert("Error al intentar guardar los datos");
         });
+        
         });
 
       })
