@@ -24,9 +24,13 @@ document.addEventListener("DOMContentLoaded", () => {
             const infoHTML = `
                 <div><span class="font-semibold text-gray-300">Razón social:</span> ${cliente.razon_social}</div>
                 <div><span class="font-semibold text-gray-300">RUT:</span> ${cliente.rut}</div>
-                <div><span class="font-semibold text-gray-300">Email:</span> ${cliente.email}</div>
-                <div><span class="font-semibold text-gray-300">Teléfono:</span> ${cliente.telefono}</div>
+                <div><span class="font-semibold text-gray-300">Email:</span> ${cliente.correo}</div>
+                <div><span class="font-semibold text-gray-300">Teléfono:</span> ${cliente.fono}</div>
                 <div><span class="font-semibold text-gray-300">Dirección:</span> ${cliente.direccion}</div>
+                <button id="btn-operaciones" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                    Ver Operaciones
+                </button>
+                <div id="detalle-operaciones-cliente" class="mt-4 hidden"></div>
             `;
             document.getElementById("info-cliente").innerHTML = infoHTML;
 
@@ -39,19 +43,27 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             };
 
-            const operacionesHTML = data.operaciones.map(op => `
-                <div class="p-4 rounded-lg bg-white shadow-md border border-gray-200 text-gray-800">
-                    <div><span class="font-medium text-gray-600">Número operación:</span> ${op.id}</div>
-                    <div><span class="font-medium text-gray-600">Código:</span> ${op.codigo_operacion}</div>
-                    <div><span class="font-medium text-gray-600">Total:</span> $${formatNumber(op.total)}</div>
-                    <div><span class="font-medium text-gray-600">Fecha:</span> ${op.fecha}</div>
-                    <a href="detalle-op.html?id=${op.id}" class="mt-2 inline-block bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">
-                        Ver operación
-                    </a>
-                </div>
-            `).join("");
-
-            document.getElementById("detalle-operaciones-cliente").innerHTML = operacionesHTML;
+            document.getElementById("btn-operaciones").addEventListener("click", () => {
+                const contenedor = document.getElementById("detalle-operaciones-cliente");
+                if (contenedor.classList.contains("hidden")) {
+                    contenedor.innerHTML = data.operaciones.map(op => `
+                        <div class="p-4 rounded-lg bg-white shadow-md border border-gray-200 text-gray-800 mb-2">
+                            <div><span class="font-medium text-gray-600">Número operación:</span> ${op.id}</div>
+                            <div><span class="font-medium text-gray-600">Código:</span> ${op.codigo_operacion}</div>
+                            <div><span class="font-medium text-gray-600">Total:</span> $${formatNumber(op.total)}</div>
+                            <div><span class="font-medium text-gray-600">Fecha:</span> ${op.fecha}</div>
+                            <a href="detalle-op.html?id=${op.id}" class="mt-2 inline-block bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">
+                                Ver operación
+                            </a>
+                        </div>
+                    `).join("");
+                    contenedor.classList.remove("hidden");
+                    document.getElementById("btn-operaciones").innerText = "Ocultar Operaciones";
+                } else {
+                    contenedor.classList.add("hidden");
+                    document.getElementById("btn-operaciones").innerText = "Ver Operaciones";
+                }
+            });
         })
         .catch(err => {
             console.error(err);
