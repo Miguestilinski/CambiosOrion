@@ -160,11 +160,10 @@ document.addEventListener("DOMContentLoaded", () => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(datosActualizados),
         })
-        .then(res => res.text())  // Leer la respuesta como texto
+        .then(res => res.text())  // Lee la respuesta como texto
         .then(text => {
-            console.log("Respuesta del servidor:", text); // Ver qué estás recibiendo
             try {
-                const response = JSON.parse(text);
+                const response = JSON.parse(text);  // Intenta parsear la respuesta
                 // Aquí ya puedes trabajar con el JSON
                 if (response.success) {
                     alert("Cliente actualizado correctamente");
@@ -174,8 +173,9 @@ document.addEventListener("DOMContentLoaded", () => {
             } catch (error) {
                 console.error("Error al parsear la respuesta JSON", error);
                 alert("Hubo un error al procesar la respuesta del servidor");
+                console.log("Respuesta cruda del servidor:", text);  // Imprimir la respuesta para depurar
             }
-        })
+        })        
         .catch(error => {
             console.error("Error de red o servidor", error);
             alert("Error al intentar guardar los datos");
