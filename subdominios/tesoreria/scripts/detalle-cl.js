@@ -105,13 +105,28 @@ document.addEventListener("DOMContentLoaded", () => {
         let clienteOriginal = { ...cliente };
 
         document.getElementById("btn-editar").addEventListener("click", () => {
-        const formHTML = `
-            <input type="text" id="input-razon" placeholder="Razón social" value="${cliente.razon_social}" class="w-full p-2 rounded bg-gray-700 text-white" />
-            <input type="text" id="input-rut" placeholder="RUT" value="${cliente.rut}" class="w-full p-2 rounded bg-gray-700 text-white" />
-            <input type="email" id="input-correo" placeholder="Email" value="${cliente.correo}" class="w-full p-2 rounded bg-gray-700 text-white" />
-            <input type="text" id="input-fono" placeholder="Teléfono" value="${cliente.fono}" class="w-full p-2 rounded bg-gray-700 text-white" />
-            <input type="text" id="input-direccion" placeholder="Dirección" value="${cliente.direccion}" class="w-full p-2 rounded bg-gray-700 text-white" />
-        `;
+            const formHTML = `
+            <div class="mb-3">
+              <label for="input-razon" class="text-gray-300">Razón social:</label>
+              <input type="text" id="input-razon" value="${cliente.razon_social}" class="w-full p-2 rounded bg-white text-black" />
+            </div>
+            <div class="mb-3">
+              <label for="input-rut" class="text-gray-300">RUT:</label>
+              <input type="text" id="input-rut" value="${cliente.rut}" class="w-full p-2 rounded bg-white text-black" />
+            </div>
+            <div class="mb-3">
+              <label for="input-correo" class="text-gray-300">Email:</label>
+              <input type="email" id="input-correo" value="${cliente.correo}" class="w-full p-2 rounded bg-white text-black" />
+            </div>
+            <div class="mb-3">
+              <label for="input-fono" class="text-gray-300">Teléfono:</label>
+              <input type="text" id="input-fono" value="${cliente.fono}" class="w-full p-2 rounded bg-white text-black" />
+            </div>
+            <div class="mb-3">
+              <label for="input-direccion" class="text-gray-300">Dirección:</label>
+              <input type="text" id="input-direccion" value="${cliente.direccion}" class="w-full p-2 rounded bg-white text-black" />
+            </div>
+        `;        
         document.getElementById("info-cliente").innerHTML = formHTML;
         document.getElementById("acciones-edicion").classList.remove("hidden");
         });
