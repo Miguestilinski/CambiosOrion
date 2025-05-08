@@ -85,8 +85,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         <td class="px-4 py-2">${op.estado || ''}</td>
                         <td class="px-4 py-2 flex gap-2">
                         <a href="/detalle-op?id=${op.id}" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1">Mostrar</a>
-                        <button class="text-white bg-black hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1">Editar</button>
-                        <button class="text-white bg-red-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1">Desactivar</button>
                         </td>
                     </tr>
                     `;
