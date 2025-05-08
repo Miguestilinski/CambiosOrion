@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
         params.set('sueldo', sueldoInput.value);
         params.set('habilitados', habilitadosInput.value);
         params.set('buscar', buscarInput.value);
-        params.set('mostrar-registros', mostrarRegistros.value);
+        params.set('mostrar', mostrarRegistros.value);
 
         fetch(`https://cambiosorion.cl/data/equipo.php?${params.toString()}`)
             .then(response => response.json())
