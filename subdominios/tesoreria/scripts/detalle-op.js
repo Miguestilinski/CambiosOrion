@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div class="mt-4 text-gray-300 font-medium">
                         Documento emitido al SII: <strong>${info.numero_documento}</strong><br/>
                         <button onclick="window.open('https://cambiosorion.cl/documentos/${info.numero_documento}.pdf', '_blank')" 
-                                class="mt-2 inline-block bg-white text-gray-800 px-4 py-2 rounded shadow hover:bg-gray-100">
+                                class="mt-2 inline-block bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700">
                             Ver documento
                         </button>
                     </div>
