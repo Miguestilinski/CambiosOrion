@@ -62,25 +62,35 @@ document.addEventListener("DOMContentLoaded", () => {
                   </tr>
                 </thead>
                 <tbody>
-                  ${data.operaciones.map(op => `
-                    <tr class="border-b border-gray-700">
+                ${data.operaciones.map(op => {
+                    const colorFondo = op.tipo_transaccion === 'Compra'
+                    ? 'style="background-color: #c3e8f1;"'
+                    : op.tipo_transaccion === 'Venta'
+                    ? 'style="background-color: #dbf599;"'
+                    : '';
+
+                    return `
+                    <tr class="border-b bg-white border-gray-700 text-gray-700" ${colorFondo}>
                         <td class="px-4 py-2">${op.fecha}</td>
                         <td class="px-4 py-2">${op.id}</td>
                         <td class="px-4 py-2">${cliente.razon_social}</td>
                         <td class="px-4 py-2">${op.tipo_documento || ''}</td>
-                        <td class="px-4 py-2">${op.nro_doc || ''}</td>
-                        <td class="px-4 py-2">${op.nro_nota || ''}</td>
+                        <td class="px-4 py-2">${op.numero_documento || ''}</td>
+                        <td class="px-4 py-2">${op.numero_nota || ''}</td>
                         <td class="px-4 py-2">${op.tipo_transaccion || ''}</td>
                         <td class="px-4 py-2">${op.divisa || ''}</td>
                         <td class="px-4 py-2">${formatNumber(op.monto)}</td>
                         <td class="px-4 py-2">${formatNumber(op.tasa_cambio)}</td>
                         <td class="px-4 py-2">${formatNumber(op.total)}</td>
                         <td class="px-4 py-2">${op.estado || ''}</td>
-                        <td class="px-4 py-2">
-                            <a href="/detalle-op?id=${op.id}" class="text-blue-400 underline">Mostrar</a>
+                        <td class="px-4 py-2 flex gap-2">
+                        <a href="/detalle-op?id=${op.id}" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1">Mostrar</a>
+                        <button class="text-white bg-black hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1">Editar</button>
+                        <button class="text-white bg-red-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1">Desactivar</button>
                         </td>
                     </tr>
-                  `).join("")}
+                    `;
+                }).join("")}
                 </tbody>
               </table>
             `;
