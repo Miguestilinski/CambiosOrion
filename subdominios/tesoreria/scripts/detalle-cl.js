@@ -58,23 +58,27 @@ document.addEventListener("DOMContentLoaded", () => {
                     <th class="px-4 py-2">Tasa de Cambio</th>
                     <th class="px-4 py-2">Total</th>
                     <th class="px-4 py-2">Estado</th>
+                    <th class="px-4 py-2"></th>
                   </tr>
                 </thead>
                 <tbody>
                   ${data.operaciones.map(op => `
                     <tr class="border-b border-gray-700">
-                      <td class="px-4 py-2">${op.fecha}</td>
-                      <td class="px-4 py-2">${op.id}</td>
-                      <td class="px-4 py-2">${cliente.razon_social}</td>
-                      <td class="px-4 py-2">${op.tipo_documento || ''}</td>
-                      <td class="px-4 py-2">${op.nro_doc || ''}</td>
-                      <td class="px-4 py-2">${op.nro_nota || ''}</td>
-                      <td class="px-4 py-2">${op.tipo_transaccion || ''}</td>
-                      <td class="px-4 py-2">${op.divisa || ''}</td>
-                      <td class="px-4 py-2">${formatNumber(op.monto)}</td>
-                      <td class="px-4 py-2">${formatNumber(op.tasa_cambio)}</td>
-                      <td class="px-4 py-2">${formatNumber(op.total)}</td>
-                      <td class="px-4 py-2">${op.estado || ''}</td>
+                        <td class="px-4 py-2">${op.fecha}</td>
+                        <td class="px-4 py-2">${op.id}</td>
+                        <td class="px-4 py-2">${cliente.razon_social}</td>
+                        <td class="px-4 py-2">${op.tipo_documento || ''}</td>
+                        <td class="px-4 py-2">${op.nro_doc || ''}</td>
+                        <td class="px-4 py-2">${op.nro_nota || ''}</td>
+                        <td class="px-4 py-2">${op.tipo_transaccion || ''}</td>
+                        <td class="px-4 py-2">${op.divisa || ''}</td>
+                        <td class="px-4 py-2">${formatNumber(op.monto)}</td>
+                        <td class="px-4 py-2">${formatNumber(op.tasa_cambio)}</td>
+                        <td class="px-4 py-2">${formatNumber(op.total)}</td>
+                        <td class="px-4 py-2">${op.estado || ''}</td>
+                        <td class="px-4 py-2">
+                            <a href="/detalle-op?id=${op.id}" class="text-blue-400 underline">Mostrar</a>
+                        </td>
                     </tr>
                   `).join("")}
                 </tbody>
