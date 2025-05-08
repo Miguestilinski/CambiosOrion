@@ -101,6 +101,65 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("btn-operaciones").innerText = "Ver Operaciones";
           }
         });
+
+        let clienteOriginal = { ...cliente };
+
+        document.getElementById("btn-editar").addEventListener("click", () => {
+        const formHTML = `
+            <input type="text" id="input-razon" placeholder="Razón social" value="${cliente.razon_social}" class="w-full p-2 rounded bg-gray-700 text-white" />
+            <input type="text" id="input-rut" placeholder="RUT" value="${cliente.rut}" class="w-full p-2 rounded bg-gray-700 text-white" />
+            <input type="email" id="input-correo" placeholder="Email" value="${cliente.correo}" class="w-full p-2 rounded bg-gray-700 text-white" />
+            <input type="text" id="input-fono" placeholder="Teléfono" value="${cliente.fono}" class="w-full p-2 rounded bg-gray-700 text-white" />
+            <input type="text" id="input-direccion" placeholder="Dirección" value="${cliente.direccion}" class="w-full p-2 rounded bg-gray-700 text-white" />
+        `;
+        document.getElementById("info-cliente").innerHTML = formHTML;
+        document.getElementById("acciones-edicion").classList.remove("hidden");
+        });
+
+        // Cancelar edición
+        document.getElementById("btn-cancelar").addEventListener("click", () => {
+        const infoHTML = `
+            <div><span class="font-semibold text-gray-300">Razón social:</span> ${clienteOriginal.razon_social}</div>
+            <div><span class="font-semibold text-gray-300">RUT:</span> ${clienteOriginal.rut}</div>
+            <div><span class="font-semibold text-gray-300">Email:</span> ${clienteOriginal.correo}</div>
+            <div><span class="font-semibold text-gray-300">Teléfono:</span> ${clienteOriginal.fono}</div>
+            <div><span class="font-semibold text-gray-300">Dirección:</span> ${clienteOriginal.direccion}</div>
+        `;
+        document.getElementById("info-cliente").innerHTML = infoHTML;
+        document.getElementById("acciones-edicion").classList.add("hidden");
+        });
+
+        // Guardar cambios
+        document.getElementById("btn-guardar").addEventListener("click", () => {
+        const datosActualizados = {
+            id: clienteOriginal.id,
+            razon_social: document.getElementById("input-razon").value,
+            rut: document.getElementById("input-rut").value,
+            correo: document.getElementById("input-correo").value,
+            fono: document.getElementById("input-fono").value,
+            direccion: document.getElementById("input-direccion").value,
+        };
+
+        fetch("https://cambiosorion.cl/data/detalle-cl.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(datosActualizados),
+        })
+        .then(res => res.json())
+        .then(response => {
+            if (response.success) {
+            alert("Cliente actualizado correctamente");
+            location.reload(); // Recarga para ver los datos nuevos
+            } else {
+            alert("Error al actualizar: " + response.error);
+            }
+        })
+        .catch(error => {
+            console.error("Error al actualizar cliente:", error);
+            alert("Hubo un error al actualizar los datos.");
+        });
+        });
+
       })
       .catch(err => {
         console.error(err);
