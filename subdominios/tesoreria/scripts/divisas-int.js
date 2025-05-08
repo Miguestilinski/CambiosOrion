@@ -10,14 +10,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const tablaDivisas = document.querySelector('table tbody');
     const nuevaDivisaBtn = document.getElementById('nueva-divisa');
 
-    // Redirigir al hacer clic en "Nueva Divisa"
     if (nuevaDivisaBtn) {
         nuevaDivisaBtn.addEventListener('click', () => {
             window.location.href = 'https://tesoreria.cambiosorion.cl/nueva-divisa';
         });
     }
 
-    // Función para obtener las divisas con filtros
     function obtenerDivisas() {
         const params = new URLSearchParams();
         params.set('nombre', nombreInput.value);
@@ -38,7 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(error => console.error('Error al obtener las divisas:', error));
     }
 
-    // Mostrar resultados en la tabla
     function mostrarResultados(divisas) {
         tablaDivisas.innerHTML = '';
 
@@ -50,8 +47,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="px-4 py-2">${divisa.pais}</td>
                 <td class="px-4 py-2">${divisa.codigo}</td>
                 <td class="px-4 py-2">${divisa.simbolo}</td>
-                <td class="px-4 py-2">${divisa.tipo}</td>
-                <td class="px-4 py-2">${divisa.fraccionable === "1" ? "Si" : "No"}</td>
+                <td class="px-4 py-2">${divisa.tipo_divisa ?? '-'}</td>
+                <td class="px-4 py-2">${divisa.fraccionable}</td>
                 <td class="px-4 py-2">
                     <button class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1">
                         Mostrar
@@ -62,7 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Eventos para actualizar la tabla
     [
         nombreInput,
         paisInput,
@@ -74,6 +70,5 @@ document.addEventListener('DOMContentLoaded', () => {
         buscarInput
     ].forEach(el => el.addEventListener('input', obtenerDivisas));
 
-    // Cargar divisas al inicio
     obtenerDivisas();
 });
