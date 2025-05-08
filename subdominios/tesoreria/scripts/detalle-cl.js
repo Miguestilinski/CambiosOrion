@@ -160,18 +160,24 @@ document.addEventListener("DOMContentLoaded", () => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(datosActualizados),
         })
-        .then(res => res.json())
-        .then(response => {
-            if (response.success) {
-            alert("Cliente actualizado correctamente");
-            location.reload(); // Recarga para ver los datos nuevos
-            } else {
-            alert("Error al actualizar: " + response.error);
+        .then(res => res.text())  // Leer la respuesta como texto
+        .then(text => {
+            try {
+                const response = JSON.parse(text);
+                // Aquí ya puedes trabajar con el JSON
+                if (response.success) {
+                    alert("Cliente actualizado correctamente");
+                } else {
+                    alert("Error: " + response.error);
+                }
+            } catch (error) {
+                console.error("Error al parsear la respuesta JSON", error);
+                alert("Hubo un error al procesar la respuesta del servidor");
             }
         })
         .catch(error => {
-            console.error("Error al actualizar cliente:", error);
-            alert("Hubo un error al actualizar los datos.");
+            console.error("Error de red o servidor", error);
+            alert("Error al intentar guardar los datos");
         });
         });
 
