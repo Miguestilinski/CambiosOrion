@@ -30,7 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
         fetch(`https://cambiosorion.cl/data/divisas-int.php?${params.toString()}`)
             .then(response => response.json())
             .then(divisas => {
-                console.log('Divisas:', divisas);
                 mostrarResultados(divisas);
             })
             .catch(error => console.error('Error al obtener las divisas:', error));
