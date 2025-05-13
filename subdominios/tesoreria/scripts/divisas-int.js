@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (nuevaDivisaBtn) {
         nuevaDivisaBtn.addEventListener('click', () => {
-            window.location.href = 'https://tesoreria.cambiosorion.cl/nueva-divisa';
+            window.location.href = 'https://tesoreria.cambiosorion.cl/nueva-div';
         });
     }
 
