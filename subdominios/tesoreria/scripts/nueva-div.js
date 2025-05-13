@@ -47,21 +47,31 @@ document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("DOMContentLoaded", async () => {
   const banderaSelector = document.getElementById("bandera-selector");
   const urlBanderaInput = document.getElementById("url-bandera");
-  const pathBase = "https://cambiosorion.cl/orionapp/node_modules/circle-flags/flags";
 
-  paises.forEach((codigo) => {
-    const img = document.createElement("img");
-    img.src = `${pathBase}/${codigo}.svg`;
-    img.alt = codigo.toUpperCase();
-    img.className = "w-8 h-8 cursor-pointer rounded-full border border-gray-400 hover:border-blue-500";
-    img.title = codigo.toUpperCase();
+  try {
+    const res = await fetch("https://cambiosorion.cl/data/nueva-div.php");
+    const banderas = await res.json();
 
-    img.addEventListener("click", () => {
-      document.querySelectorAll("#bandera-selector img").forEach(img => img.classList.remove("ring-2", "ring-blue-500"));
-      img.classList.add("ring-2", "ring-blue-500");
-      urlBanderaInput.value = `${pathBase}/${codigo}.svg`;
+    if (!Array.isArray(banderas)) throw new Error("Respuesta inesperada del servidor");
+
+    banderas.forEach(({ codigo, url }) => {
+      const img = document.createElement("img");
+      img.src = url;
+      img.alt = codigo.toUpperCase();
+      img.className = "w-8 h-8 cursor-pointer rounded-full border border-gray-400 hover:border-blue-500";
+      img.title = codigo.toUpperCase();
+
+      img.addEventListener("click", () => {
+        document.querySelectorAll("#bandera-selector img").forEach(img => img.classList.remove("ring-2", "ring-blue-500"));
+        img.classList.add("ring-2", "ring-blue-500");
+        urlBanderaInput.value = url;
+      });
+
+      banderaSelector.appendChild(img);
     });
 
-    banderaSelector.appendChild(img);
-  });
+  } catch (err) {
+    console.error("Error cargando banderas:", err);
+    alert("No se pudieron cargar las banderas. Intenta más tarde.");
+  }
 });
