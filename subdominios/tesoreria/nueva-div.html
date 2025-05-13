@@ -122,35 +122,54 @@
             <form id="form-nueva-divisa" class="grid grid-cols-2 gap-4 max-w-3xl mx-auto">
             <!-- Columna Izquierda -->
             <div>
-                <label for="nombre">Nombre:</label>
-                <input type="text" id="nombre" name="nombre" required class="w-full border p-2 rounded">
+                <label for="nombre" class="block mb-1 text-sm text-white">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" required class="w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700" placeholder="Ej: Peso Chileno">
             </div>
 
             <div>
-                <label for="abreviacion">Abreviación (2 letras):</label>
-                <input type="text" id="abreviacion" name="abreviacion" maxlength="2" required class="w-full border p-2 rounded uppercase">
+                <label for="abreviacion" class="block mb-1 text-sm text-white">Abreviación (2 letras):</label>
+                <input type="text" id="abreviacion" name="abreviacion" maxlength="2" required class="w-full p-2 uppercase text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
             </div>
 
             <div>
-                <label for="pais">País:</label>
-                <input type="text" id="pais" name="pais" required class="w-full border p-2 rounded">
+            <label for="tipo-divisa" class="block mb-1 text-sm text-white">Tipo de Divisa</label>
+            <select id="tipo-divisa" class="w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
+                <option value="divisa">Divisa</option>
+                <option value="moneda">Moneda</option>
+                <option value="otro">Otra</option>
+            </select>
             </div>
 
             <div>
-                <label for="url-bandera">URL Bandera:</label>
-                <input type="text" id="url-bandera" name="url-bandera" readonly class="w-full border p-2 rounded bg-gray-100">
+                <label for="pais" class="block mb-1 text-sm text-white">País:</label>
+                <input type="text" id="pais" name="pais" required class="w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700" placeholder="Ej: Chile">
             </div>
 
             <div>
-                <label for="fraccionable" class="inline-flex items-center mt-2">
-                <input type="checkbox" id="fraccionable" class="mr-2"> ¿Fraccionable?
+                <label for="codigo" class="block mb-1 text-sm text-white">Código (3 Letras):</label>
+                <input type="text" id="codigo" name="codigo" maxlength="2" required class="w-full p-2 uppercase text-sm rounded-lg bg-white border border-gray-600 text-gray-700" placeholder="Ej: CLP">
+            </div>
+
+            <div>
+                <label for="simbolo" class="block mb-1 text-sm text-white">Simbolo:</label>
+                <input type="text" id="simbolo" name="simbolo" required class="w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700" placeholder="Ej: $">
+            </div>
+
+            <div>
+                <label for="url-bandera" class="block mb-1 text-sm text-white">URL Bandera:</label>
+                <input type="text" id="url-bandera" name="url-bandera" readonly class="w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
+            </div>
+
+            <div>
+                <label for="fraccionable" class="inline-flex items-center mt-2 text-sm text-white">
+                <input type="checkbox" id="fraccionable" class="mr-2 p-2 rounded-lg bg-white border border-gray-600"> ¿Es Fraccionable?
                 </label>
             </div>
 
             <!-- Denominaciones (ocupa todo el ancho) -->
             <div class="col-span-2 hidden" id="seccion-denominaciones">
-                <label for="denominaciones">Denominaciones:</label>
-                <textarea id="denominaciones" name="denominaciones" rows="4" class="w-full border p-2 rounded" placeholder="Ej: 1, 5, 10, 20, 50, 100..."></textarea>
+                <label for="denominaciones" class="block mb-1 text-sm text-white">Denominaciones:</label>
+                <textarea id="denominaciones" name="denominaciones" rows="4" class="w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700" placeholder="Ej: 1, 5, 10, 20, 50, 100..."></textarea>
             </div>
 
             <!-- Botón -->
