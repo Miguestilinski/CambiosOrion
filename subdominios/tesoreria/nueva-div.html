@@ -114,132 +114,50 @@
     <div id="sidebar-container"></div>
     <main id="dashboard-content" class="dashboard-content">
         <section id="nueva-divisa" class="content-section active">
-        <div class="flex items-center mb-6">
-            <h1 class="text-2xl font-medium mr-4 leading-none text-white">Crear Nueva Divisa Interna</h1>
-        </div>
+            <div class="flex items-center mb-6">
+                <h1 class="text-2xl font-medium mr-4 leading-none text-white">Crear Nueva Divisa Interna</h1>
+            </div>
 
-        <!-- Formulario Nueva Divisa -->
-        <form id="form-nueva-divisa" class="grid grid-cols-1 gap-6 mb-6">
-            <!-- ID -->
+            <!-- Formulario Nueva Divisa -->
+            <form id="form-nueva-divisa" class="grid grid-cols-2 gap-4 max-w-3xl mx-auto">
+            <!-- Columna Izquierda -->
             <div>
-            <label for="id-divisa" class="block mb-1 text-sm text-white">ID</label>
-            <input
-                type="text"
-                id="id-divisa"
-                placeholder="Ej: D47"
-                class="block w-1/2 px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
-            />
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" required class="w-full border p-2 rounded">
             </div>
 
-            <!-- Nombre -->
             <div>
-            <label for="nombre-divisa" class="block mb-1 text-sm text-white">Nombre</label>
-            <input
-                type="text"
-                id="nombre-divisa"
-                placeholder="Ej: Peso Chileno"
-                class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
-            />
+                <label for="abreviacion">Abreviación (2 letras):</label>
+                <input type="text" id="abreviacion" name="abreviacion" maxlength="2" required class="w-full border p-2 rounded uppercase">
             </div>
 
-            <!-- País -->
             <div>
-            <label for="pais-divisa" class="block mb-1 text-sm text-white">País</label>
-            <input
-                type="text"
-                id="pais-divisa"
-                placeholder="Ej: Chile"
-                class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
-            />
+                <label for="pais">País:</label>
+                <input type="text" id="pais" name="pais" required class="w-full border p-2 rounded">
             </div>
 
-            <!-- Código -->
             <div>
-            <label for="codigo-divisa" class="block mb-1 text-sm text-white">Código</label>
-            <input
-                type="text"
-                id="codigo-divisa"
-                placeholder="Ej: CLP"
-                class="block w-1/2 px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
-            />
+                <label for="url-bandera">URL Bandera:</label>
+                <input type="text" id="url-bandera" name="url-bandera" readonly class="w-full border p-2 rounded bg-gray-100">
             </div>
 
-            <!-- Símbolo -->
             <div>
-            <label for="simbolo-divisa" class="block mb-1 text-sm text-white">Símbolo</label>
-            <input
-                type="text"
-                id="simbolo-divisa"
-                placeholder="Ej: $"
-                class="block w-1/4 px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
-            />
+                <label for="fraccionable" class="inline-flex items-center mt-2">
+                <input type="checkbox" id="fraccionable" class="mr-2"> ¿Fraccionable?
+                </label>
             </div>
 
-            <!-- Fraccionable -->
-            <div>
-            <label for="fraccionable-divisa" class="block mb-1 text-sm text-white">Fraccionable</label>
-            <select
-                id="fraccionable-divisa"
-                class="block w-1/4 px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
-            >
-                <option value="1">Sí</option>
-                <option value="0">No</option>
-            </select>
+            <!-- Denominaciones (ocupa todo el ancho) -->
+            <div class="col-span-2 hidden" id="seccion-denominaciones">
+                <label for="denominaciones">Denominaciones:</label>
+                <textarea id="denominaciones" name="denominaciones" rows="4" class="w-full border p-2 rounded" placeholder="Ej: 1, 5, 10, 20, 50, 100..."></textarea>
             </div>
 
-            <!-- Denominaciones -->
-            <div>
-            <label for="denominacion-divisa" class="block mb-1 text-sm text-white">Denominaciones</label>
-            <input
-                type="text"
-                id="denominacion-divisa"
-                placeholder="Ej: 1, 5, 10, 50, 100, 500, ..."
-                class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
-            />
-            <p class="text-xs text-gray-300 mt-1">Separa las denominaciones con comas.</p>
+            <!-- Botón -->
+            <div class="col-span-2 text-center">
+                <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded">Guardar Divisa</button>
             </div>
-
-            <!-- Icono (URL) -->
-            <div>
-            <label for="icono-divisa" class="block mb-1 text-sm text-white">URL Icono</label>
-            <input
-                type="url"
-                id="icono-divisa"
-                placeholder="https://ejemplo.com/icono.svg"
-                class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
-            />
-            </div>
-
-            <!-- Tipo de Divisa -->
-            <div>
-            <label for="tipo-divisa" class="block mb-1 text-sm text-white">Tipo de Divisa</label>
-            <select
-                id="tipo-divisa"
-                class="block w-1/2 px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
-            >
-                <option value="divisa">Divisa</option>
-                <option value="cripto">Criptomoneda</option>
-                <option value="token">Token</option>
-            </select>
-            </div>
-
-            <!-- Botones Finales -->
-            <div class="flex space-x-4">
-            <button
-                type="submit"
-                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
-            >
-                Crear Divisa
-            </button>
-            <button
-                type="button"
-                id="cancelar-divisa"
-                class="text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5"
-            >
-                Cancelar
-            </button>
-            </div>
-        </form>
+            </form>
         </section>
     </main>
     </div>
