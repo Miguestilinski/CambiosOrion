@@ -57,12 +57,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     banderas.forEach(({ codigo, url }) => {
       const img = document.createElement("img");
       img.src = url;
-      img.alt = codigo.toUpperCase();
-      img.className = "w-8 h-8 cursor-pointer rounded-full border border-gray-400 hover:border-blue-500";
-      img.title = codigo.toUpperCase();
+      img.alt = codigo;
+      img.className = "w-8 h-8 m-1 cursor-pointer rounded-full border border-gray-400 hover:border-blue-500";
+      img.title = codigo;
 
       img.addEventListener("click", () => {
-        document.querySelectorAll("#bandera-selector img").forEach(img => img.classList.remove("ring-2", "ring-blue-500"));
+        // Remueve selección previa
+        document.querySelectorAll("#bandera-selector img").forEach(img =>
+          img.classList.remove("ring-2", "ring-blue-500")
+        );
+
+        // Marca esta bandera como seleccionada
         img.classList.add("ring-2", "ring-blue-500");
         urlBanderaInput.value = url;
       });
