@@ -47,6 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("DOMContentLoaded", async () => {
   const banderaSelector = document.getElementById("bandera-selector");
   const urlBanderaInput = document.getElementById("url-bandera");
+  const iconoSeleccionado = document.getElementById("icono-seleccionado");
 
   try {
     const res = await fetch("https://cambiosorion.cl/data/nueva-div.php");
@@ -70,6 +71,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         // Marca esta bandera como seleccionada
         img.classList.add("ring-2", "ring-blue-500");
         urlBanderaInput.value = url;
+
+        // Muestra la imagen seleccionada al lado del label
+        iconoSeleccionado.src = url;
+        iconoSeleccionado.classList.remove("hidden");
       });
 
       banderaSelector.appendChild(img);
