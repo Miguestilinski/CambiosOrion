@@ -42,6 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const tr = document.createElement('tr');
             tr.classList.add('border-b', 'bg-white', 'border-gray-700', 'text-gray-700');
             tr.innerHTML = `
+                <td class="px-4 py-2">${divisa.icono}</td>
                 <td class="px-4 py-2">${divisa.nombre}</td>
                 <td class="px-4 py-2">${divisa.pais}</td>
                 <td class="px-4 py-2">${divisa.codigo}</td>
