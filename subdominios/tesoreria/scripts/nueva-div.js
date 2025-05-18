@@ -24,7 +24,10 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     try {
-      const res = await fetch("https://cambiosorion.cl/data/nueva-div.php", {
+      const endpoint = "https://cambiosorion.cl/data/nueva-div.php";
+      console.log("Enviando datos a:", endpoint);
+
+      const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -37,18 +40,22 @@ document.addEventListener("DOMContentLoaded", () => {
       try {
         result = JSON.parse(text);
       } catch (e) {
-        throw new Error("Respuesta no es JSON válido");
+        // Mostrar respuesta como HTML si no es JSON
+        const nuevaVentana = window.open();
+        nuevaVentana.document.write(text);
+        nuevaVentana.document.close();
+        throw new Error("La respuesta no es JSON válido. Se abrió en una nueva ventana.");
       }
 
-      //const result = await res.json();
-      if (!res.ok || result.error) throw new Error(result.error || "Error al guardar divisa");
+      if (!res.ok || result.error) {
+        throw new Error(result.error || "Error al guardar divisa");
+      }
 
-      console.log("Datos enviados:", data);
-
+      console.log("Datos enviados correctamente:", data);
       alert("Divisa guardada exitosamente");
       location.reload();
     } catch (err) {
-      console.error(err);
+      console.error("Error en el envío:", err);
       alert("Hubo un problema al guardar la divisa: " + err.message);
     }
   });
