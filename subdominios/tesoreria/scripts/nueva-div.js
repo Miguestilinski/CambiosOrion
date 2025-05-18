@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const abreviacionInput = document.getElementById("abreviacion");
   const urlBanderaInput = document.getElementById("url-bandera");
   const fraccionableCheckbox = document.getElementById("fraccionable");
   const seccionDenominaciones = document.getElementById("seccion-denominaciones");
@@ -15,7 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const data = {
       nombre: document.getElementById("nombre").value.trim(),
-      abreviacion: abreviacionInput.value.trim().toLowerCase(),
       tipo_divisa: document.getElementById("tipo-divisa").value,
       pais: document.getElementById("pais").value.trim(),
       codigo: document.getElementById("codigo").value.trim().toUpperCase(),
