@@ -30,8 +30,20 @@ document.addEventListener("DOMContentLoaded", () => {
         body: JSON.stringify(data),
       });
 
-      const result = await res.json();
+      const text = await res.text();
+      console.log("Respuesta cruda del servidor:", text);
+
+      let result;
+      try {
+        result = JSON.parse(text);
+      } catch (e) {
+        throw new Error("Respuesta no es JSON válido");
+      }
+
+      //const result = await res.json();
       if (!res.ok || result.error) throw new Error(result.error || "Error al guardar divisa");
+
+      console.log("Datos enviados:", data);
 
       alert("Divisa guardada exitosamente");
       location.reload();
