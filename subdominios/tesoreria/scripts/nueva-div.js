@@ -85,3 +85,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     alert("No se pudieron cargar las banderas. Intenta más tarde.");
   }
 });
+
+document.getElementById("cancelar").addEventListener("click", () => {
+  window.location.href = "https://tesoreria.cambiosorion.cl/divisas_int";
+});

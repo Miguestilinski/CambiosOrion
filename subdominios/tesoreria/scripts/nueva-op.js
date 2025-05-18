@@ -299,8 +299,6 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
   }
 });
 
-document.getElementById("cancelar-operacion").addEventListener("click", () => {
+document.getElementById("cancelar").addEventListener("click", () => {
   window.location.href = "https://tesoreria.cambiosorion.cl/operaciones";
 });
-
-
