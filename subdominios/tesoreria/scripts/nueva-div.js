@@ -1,11 +1,11 @@
 document.addEventListener("DOMContentLoaded", () => {
   const urlIconoInput = document.getElementById("url-icono");
   const fraccionableCheckbox = document.getElementById("fraccionable");
-  const seccionDenominaciones = document.getElementById("seccion-denominaciones");
+  const seccionDenominacion = document.getElementById("seccion-denominacion");
 
   // Mostrar/ocultar sección de denominaciones
   fraccionableCheckbox.addEventListener("change", () => {
-    seccionDenominaciones.classList.toggle("hidden", !fraccionableCheckbox.checked);
+    seccionDenominacion.classList.toggle("hidden", !fraccionableCheckbox.checked);
   });
 
   // Enviar formulario
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
       simbolo: document.getElementById("simbolo").value.trim(),
       url_icono: urlIconoInput.value,
       fraccionable: fraccionableCheckbox.checked ? 1 : 0,
-      denominaciones: document.getElementById("denominaciones").value.trim()
+      denominacion: document.getElementById("denominacion").value.trim()
     };
 
     try {
