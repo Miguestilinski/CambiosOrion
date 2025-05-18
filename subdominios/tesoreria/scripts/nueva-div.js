@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const urlBanderaInput = document.getElementById("url-bandera");
+  const urlIconoInput = document.getElementById("url-icono");
   const fraccionableCheckbox = document.getElementById("fraccionable");
   const seccionDenominaciones = document.getElementById("seccion-denominaciones");
 
@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
       pais: document.getElementById("pais").value.trim(),
       codigo: document.getElementById("codigo").value.trim().toUpperCase(),
       simbolo: document.getElementById("simbolo").value.trim(),
-      url_bandera: urlBanderaInput.value,
+      url_icono: urlIconoInput.value,
       fraccionable: fraccionableCheckbox.checked ? 1 : 0,
       denominaciones: document.getElementById("denominaciones").value.trim()
     };
@@ -62,17 +62,17 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 document.addEventListener("DOMContentLoaded", async () => {
-  const banderaSelector = document.getElementById("bandera-selector");
-  const urlBanderaInput = document.getElementById("url-bandera");
+  const IconoSelector = document.getElementById("icono-selector");
+  const urlIconoInput = document.getElementById("url-icono");
   const iconoSeleccionado = document.getElementById("icono-seleccionado");
 
   try {
     const res = await fetch("https://cambiosorion.cl/data/nueva-div.php");
-    const banderas = await res.json();
+    const iconos = await res.json();
 
-    if (!Array.isArray(banderas)) throw new Error("Respuesta inesperada del servidor");
+    if (!Array.isArray(iconos)) throw new Error("Respuesta inesperada del servidor");
 
-    banderas.forEach(({ codigo, url }) => {
+    iconos.forEach(({ codigo, url }) => {
       const img = document.createElement("img");
       img.src = url;
       img.alt = codigo;
@@ -81,25 +81,25 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       img.addEventListener("click", () => {
         // Remueve selección previa
-        document.querySelectorAll("#bandera-selector img").forEach(img =>
+        document.querySelectorAll("#icono-selector img").forEach(img =>
           img.classList.remove("ring-2", "ring-blue-500")
         );
 
         // Marca esta bandera como seleccionada
         img.classList.add("ring-2", "ring-blue-500");
-        urlBanderaInput.value = url;
+        urlIconoInput.value = url;
 
         // Muestra la imagen seleccionada al lado del label
         iconoSeleccionado.src = url;
         iconoSeleccionado.classList.remove("hidden");
       });
 
-      banderaSelector.appendChild(img);
+      IconoSelector.appendChild(img);
     });
 
   } catch (err) {
-    console.error("Error cargando banderas:", err);
-    alert("No se pudieron cargar las banderas. Intenta más tarde.");
+    console.error("Error cargando iconos:", err);
+    alert("No se pudieron cargar los iconos. Intenta más tarde.");
   }
 });
 
