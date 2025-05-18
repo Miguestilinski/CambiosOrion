@@ -87,5 +87,5 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 document.getElementById("cancelar").addEventListener("click", () => {
-  window.location.href = "https://tesoreria.cambiosorion.cl/divisas_int";
+  window.location.href = "https://tesoreria.cambiosorion.cl/divisas-int";
 });
