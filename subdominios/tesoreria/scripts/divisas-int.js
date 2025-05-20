@@ -41,6 +41,15 @@ document.addEventListener('DOMContentLoaded', () => {
         divisas.forEach(divisa => {
             const tr = document.createElement('tr');
             tr.classList.add('border-b', 'bg-white', 'border-gray-700', 'text-gray-700');
+
+            // Crear botón Mostrar
+            const btnMostrar = document.createElement('button');
+            btnMostrar.textContent = 'Mostrar';
+            btnMostrar.className = 'text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1';
+            btnMostrar.addEventListener('click', () => {
+                window.location.href = `detalle-div?id=${divisa.id}`; // Ajusta URL según corresponda
+            });
+
             tr.innerHTML = `
                 <td class="px-4 py-2">
                     <img src="${divisa.icono}" alt="Icono" class="w-6 h-6 rounded-full border border-gray-400" />
@@ -51,12 +60,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="px-4 py-2">${divisa.simbolo}</td>
                 <td class="px-4 py-2">${divisa.tipo_divisa ?? '-'}</td>
                 <td class="px-4 py-2">${divisa.fraccionable}</td>
-                <td class="px-4 py-2">
-                    <button class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1">
-                        Mostrar
-                    </button>
-                </td>
+                <td class="px-4 py-2 mostrar-btn-cell"></td>
             `;
+
+            tr.querySelector('.mostrar-btn-cell').appendChild(btnMostrar);
+
             tablaDivisas.appendChild(tr);
         });
     }
