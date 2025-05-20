@@ -1,101 +1,107 @@
-// detalle-div.js
-
-import { obtenerDetalleDivisa, actualizarDivisa } from './api-divisa.js';
-
-let divisaOriginal = null;
-
 document.addEventListener('DOMContentLoaded', async () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const id = urlParams.get('id');
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
 
-    if (!id) {
-        console.error("ID de divisa no proporcionado.");
+  if (!id) {
+    document.getElementById('info-divisa').innerHTML = "<p>ID de divisa no proporcionado.</p>";
+    return;
+  }
+
+  fetch(`https://cambiosorion.cl/data/detalle-div.php?id=${id}`)
+    .then(async res => {
+      const text = await res.text();
+      console.log("Respuesta cruda divisa:", text);
+      return JSON.parse(text);
+    })
+    .then(data => {
+      if (data.error) {
+        document.getElementById("info-divisa").innerHTML = `<p>${data.error}</p>`;
         return;
-    }
+      }
 
-    const divisa = await obtenerDetalleDivisa(id);
+      const divisa = data.divisa;
+      let divisaOriginal = { ...divisa };
 
-    if (divisa) {
-        divisaOriginal = divisa;
-        mostrarDetalle(divisa);
-    }
+      const infoHTML = `
+        <div><span class="font-semibold text-gray-300">Nombre:</span> ${divisa.nombre}</div>
+        <div><span class="font-semibold text-gray-300">Símbolo:</span> ${divisa.simbolo}</div>
+        <div><span class="font-semibold text-gray-300">Código ISO:</span> ${divisa.codigo}</div>
+        <div><span class="font-semibold text-gray-300">País:</span> ${divisa.pais}</div>
+      `;
+      document.getElementById("info-divisa").innerHTML = infoHTML;
 
-    configurarBotones(id);
-});
-
-function mostrarDetalle(divisa) {
-    const contenedor = document.getElementById('info-divisa');
-    contenedor.innerHTML = `
-        <div><strong>Nombre:</strong> <span id="nombre-divisa">${divisa.nombre}</span></div>
-        <div><strong>Símbolo:</strong> <span id="simbolo-divisa">${divisa.simbolo}</span></div>
-        <div><strong>Código:</strong> <span id="codigo-divisa">${divisa.codigo}</span></div>
-        <div><strong>País:</strong> <span id="pais-divisa">${divisa.pais}</span></div>
-        <div><strong>Estado:</strong> <span id="estado-divisa">${divisa.estado}</span></div>
-    `;
-}
-
-function configurarBotones(id) {
-    const btnEditar = document.getElementById('btn-editar');
-    const btnGuardar = document.getElementById('btn-guardar');
-    const btnCancelar = document.getElementById('btn-cancelar');
-    const acciones = document.getElementById('acciones-edicion');
-    const info = document.getElementById('info-divisa');
-
-    btnEditar.addEventListener('click', () => {
-        if (!divisaOriginal) return;
-
-        acciones.classList.remove('hidden');
-        btnEditar.classList.add('hidden');
-
-        info.innerHTML = `
-            <div>
-                <label class="block mb-1 text-white">Nombre:</label>
-                <input type="text" id="input-nombre" class="w-full p-2 rounded bg-gray-700 text-white border border-gray-600" value="${divisaOriginal.nombre}">
-            </div>
-            <div>
-                <label class="block mb-1 text-white">Símbolo:</label>
-                <input type="text" id="input-simbolo" class="w-full p-2 rounded bg-gray-700 text-white border border-gray-600" value="${divisaOriginal.simbolo}">
-            </div>
-            <div>
-                <label class="block mb-1 text-white">Estado:</label>
-                <select id="input-estado" class="w-full p-2 rounded bg-gray-700 text-white border border-gray-600">
-                    <option value="Activo" ${divisaOriginal.estado === 'Activo' ? 'selected' : ''}>Activo</option>
-                    <option value="Inactivo" ${divisaOriginal.estado === 'Inactivo' ? 'selected' : ''}>Inactivo</option>
-                </select>
-            </div>
+      document.getElementById("btn-editar").addEventListener("click", () => {
+        const formHTML = `
+          <div class="mb-3">
+            <label for="input-nombre" class="text-gray-300">Nombre:</label>
+            <input type="text" id="input-nombre" value="${divisa.nombre}" class="w-full p-2 rounded bg-white text-black" />
+          </div>
+          <div class="mb-3">
+            <label for="input-simbolo" class="text-gray-300">Símbolo:</label>
+            <input type="text" id="input-simbolo" value="${divisa.simbolo}" class="w-full p-2 rounded bg-white text-black" />
+          </div>
+          <div class="mb-3">
+            <label for="input-codigo" class="text-gray-300">Código ISO:</label>
+            <input type="text" id="input-codigo" value="${divisa.codigo}" class="w-full p-2 rounded bg-white text-black" />
+          </div>
+          <div class="mb-3">
+            <label for="input-pais" class="text-gray-300">País:</label>
+            <input type="text" id="input-pais" value="${divisa.pais}" class="w-full p-2 rounded bg-white text-black" />
+          </div>
         `;
+        document.getElementById("info-divisa").innerHTML = formHTML;
+        document.getElementById("acciones-edicion").classList.remove("hidden");
+      });
+
+      document.getElementById("btn-cancelar").addEventListener("click", () => {
+        const infoHTML = `
+          <div><span class="font-semibold text-gray-300">Nombre:</span> ${divisaOriginal.nombre}</div>
+          <div><span class="font-semibold text-gray-300">Símbolo:</span> ${divisaOriginal.simbolo}</div>
+          <div><span class="font-semibold text-gray-300">Código ISO:</span> ${divisaOriginal.codigo}</div>
+          <div><span class="font-semibold text-gray-300">País:</span> ${divisaOriginal.pais}</div>
+        `;
+        document.getElementById("info-divisa").innerHTML = infoHTML;
+        document.getElementById("acciones-edicion").classList.add("hidden");
+      });
+
+      document.getElementById("btn-guardar").addEventListener("click", () => {
+        const datosActualizados = {
+          id: divisaOriginal.id,
+          nombre: document.getElementById("input-nombre").value,
+          simbolo: document.getElementById("input-simbolo").value,
+          codigo: document.getElementById("input-codigo").value,
+          pais: document.getElementById("input-pais").value,
+        };
+
+        fetch("https://cambiosorion.cl/data/detalle-div.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(datosActualizados),
+        })
+          .then(res => res.text())
+          .then(text => {
+            try {
+              const response = JSON.parse(text);
+              if (response.success) {
+                alert("Divisa actualizada correctamente");
+              } else {
+                alert("Error: " + response.error);
+              }
+            } catch (error) {
+              console.error("Error al parsear la respuesta JSON", error);
+              alert("Hubo un error al procesar la respuesta del servidor");
+              console.log("Respuesta cruda del servidor:", text);
+            }
+          })
+          .catch(error => {
+            console.error("Error de red o servidor", error);
+            alert("Error al intentar guardar los datos");
+          });
+      });
+
+    })
+    .catch(err => {
+      console.error(err);
+      document.getElementById("info-divisa").innerHTML = "<p>Error al cargar la divisa.</p>";
     });
-
-    btnCancelar.addEventListener('click', () => {
-        acciones.classList.add('hidden');
-        btnEditar.classList.remove('hidden');
-        mostrarDetalle(divisaOriginal);
-    });
-
-    btnGuardar.addEventListener('click', async () => {
-        const nombre = document.getElementById('input-nombre').value.trim();
-        const simbolo = document.getElementById('input-simbolo').value.trim();
-        const estado = document.getElementById('input-estado').value;
-
-        if (!nombre || !simbolo) {
-            alert("Nombre y símbolo son obligatorios.");
-            return;
-        }
-
-        const respuesta = await actualizarDivisa({
-            id,
-            nombre,
-            simbolo,
-            estado
-        });
-
-        if (respuesta.success) {
-            divisaOriginal = { ...divisaOriginal, nombre, simbolo, estado };
-            mostrarDetalle(divisaOriginal);
-            acciones.classList.add('hidden');
-            btnEditar.classList.remove('hidden');
-        } else {
-            alert(respuesta.error || "Error al actualizar la divisa.");
-        }
-    });
-}
+});
