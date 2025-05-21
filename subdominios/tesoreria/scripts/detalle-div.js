@@ -22,41 +22,71 @@ document.addEventListener('DOMContentLoaded', async () => {
       const divisa = data.divisa;
       let divisaOriginal = { ...divisa };
 
-      const infoHTML = `
-        <div><span class="font-semibold text-gray-300">Nombre:</span> ${divisa.nombre}</div>
-        <div><span class="font-semibold text-gray-300">Símbolo:</span> ${divisa.simbolo}</div>
-        <div><span class="font-semibold text-gray-300">Código:</span> ${divisa.codigo}</div>
-        <div><span class="font-semibold text-gray-300">País:</span> ${divisa.pais}</div>
-        <div><span class="font-semibold text-gray-300">Estado:</span> 
-          <span class="${divisa.estado === 'habilitada' ? 'text-green-500' : 'text-red-500'}">
-            ${divisa.estado === 'habilitada' ? 'Habilitada' : 'Deshabilitada'}
-          </span>
-        </div>
-      `;
+      const renderInfo = () => {
+        const infoHTML = `
+          <div><span class="font-semibold text-gray-300">Nombre:</span> ${divisa.nombre}</div>
+          <div><span class="font-semibold text-gray-300">Símbolo:</span> ${divisa.simbolo}</div>
+          <div><span class="font-semibold text-gray-300">Código:</span> ${divisa.codigo}</div>
+          <div><span class="font-semibold text-gray-300">País:</span> ${divisa.pais}</div>
+          <div><span class="font-semibold text-gray-300">Estado:</span> 
+            <span class="${divisa.estado === 'habilitada' ? 'text-green-500' : 'text-red-500'}">
+              ${divisa.estado === 'habilitada' ? 'Habilitada' : 'Deshabilitada'}
+            </span>
+          </div>
+        `;
+        document.getElementById("info-divisa").innerHTML = infoHTML;
+      };
 
-      document.getElementById("info-divisa").innerHTML = infoHTML;
+      const btnToggleEstado = document.getElementById("btn-toggle-estado");
+      const actualizarBotonEstado = () => {
+        btnToggleEstado.textContent = divisa.estado === "habilitada" ? "Deshabilitar" : "Habilitar";
+        btnToggleEstado.classList.remove("bg-green-700", "bg-red-700", "bg-yellow-600");
+        btnToggleEstado.classList.add(divisa.estado === "habilitada" ? "bg-yellow-600" : "bg-green-700");
+      };
+
+      actualizarBotonEstado();
+
+      btnToggleEstado.onclick = () => {
+        const nuevoEstado = divisa.estado === "habilitada" ? "deshabilitada" : "habilitada";
+
+        fetch("https://cambiosorion.cl/data/detalle-div.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: divisa.id, estado: nuevoEstado })
+        })
+        .then(res => res.json())
+        .then(response => {
+          if (response.success) {
+            divisa.estado = nuevoEstado;
+            divisaOriginal.estado = nuevoEstado;
+
+            // Actualizar visualmente el estado (texto)
+            renderInfo();
+            actualizarBotonEstado();
+          } else {
+            alert("Error al cambiar el estado");
+          }
+        });
+      };
+
+      renderInfo();
+
       let modoEdicion = false;
 
       document.getElementById("btn-editar").addEventListener("click", () => {
         if (modoEdicion) {
-          // Salir del modo edición (restaurar vista original)
-          const infoHTML = `
-            <div><span class="font-semibold text-gray-300">Nombre:</span> ${divisaOriginal.nombre}</div>
-            <div><span class="font-semibold text-gray-300">Símbolo:</span> ${divisaOriginal.simbolo}</div>
-            <div><span class="font-semibold text-gray-300">Código:</span> ${divisaOriginal.codigo}</div>
-            <div><span class="font-semibold text-gray-300">País:</span> ${divisaOriginal.pais}</div>
-            <div><span class="font-semibold text-gray-300">Estado:</span> 
-              <span class="${divisaOriginal.estado === 'habilitada' ? 'text-green-500' : 'text-red-500'}">
-                ${divisaOriginal.estado === 'habilitada' ? 'Habilitada' : 'Deshabilitada'}
-              </span>
-            </div>
-          `;
-          document.getElementById("info-divisa").innerHTML = infoHTML;
+          // Salir del modo edición
+          divisa.nombre = divisaOriginal.nombre;
+          divisa.simbolo = divisaOriginal.simbolo;
+          divisa.codigo = divisaOriginal.codigo;
+          divisa.pais = divisaOriginal.pais;
+
+          renderInfo();
           document.getElementById("acciones-edicion").classList.add("hidden");
           document.getElementById("btn-editar").textContent = "Editar";
           modoEdicion = false;
         } else {
-          // Entrar al modo edición
+          // Entrar modo edición, sin el input estado
           const formHTML = `
             <div class="mb-3">
               <label for="input-nombre" class="text-gray-300">Nombre:</label>
@@ -74,13 +104,6 @@ document.addEventListener('DOMContentLoaded', async () => {
               <label for="input-pais" class="text-gray-300">País:</label>
               <input type="text" id="input-pais" value="${divisa.pais}" class="w-full p-2 rounded bg-white text-black" />
             </div>
-            <div class="mb-3">
-              <label for="input-estado" class="text-gray-300">Estado:</label>
-              <select id="input-estado" class="w-full p-2 rounded bg-white text-black">
-                <option value="habilitada" ${divisa.estado === 'habilitada' ? 'selected' : ''}>Habilitada</option>
-                <option value="deshabilitada" ${divisa.estado === 'deshabilitada' ? 'selected' : ''}>Deshabilitada</option>
-              </select>
-            </div>
           `;
           document.getElementById("info-divisa").innerHTML = formHTML;
           document.getElementById("acciones-edicion").classList.remove("hidden");
@@ -90,18 +113,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
 
       document.getElementById("btn-cancelar").addEventListener("click", () => {
-        const infoHTML = `
-          <div><span class="font-semibold text-gray-300">Nombre:</span> ${divisaOriginal.nombre}</div>
-          <div><span class="font-semibold text-gray-300">Símbolo:</span> ${divisaOriginal.simbolo}</div>
-          <div><span class="font-semibold text-gray-300">Código:</span> ${divisaOriginal.codigo}</div>
-          <div><span class="font-semibold text-gray-300">País:</span> ${divisaOriginal.pais}</div>
-          <div><span class="font-semibold text-gray-300">Estado:</span> 
-          <span class="${divisa.estado === 'habilitada' ? 'text-green-500' : 'text-red-500'}">
-            ${divisaOriginal.estado === 'habilitada' ? 'Habilitada' : 'Deshabilitada'}
-          </span>
-          </div>
-        `;
-        document.getElementById("info-divisa").innerHTML = infoHTML;
+        renderInfo();
         document.getElementById("acciones-edicion").classList.add("hidden");
         document.getElementById("btn-editar").textContent = "Editar";
         modoEdicion = false;
@@ -114,7 +126,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           simbolo: document.getElementById("input-simbolo").value,
           codigo: document.getElementById("input-codigo").value,
           pais: document.getElementById("input-pais").value,
-          estado: document.getElementById("input-estado").value,
+          // No enviamos estado aquí porque se maneja solo por el botón
         };
 
         fetch("https://cambiosorion.cl/data/detalle-div.php", {
@@ -130,27 +142,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 alert("Divisa actualizada correctamente");
 
                 // Actualizar datos en divisaOriginal y divisa
-                divisaOriginal = { ...datosActualizados };
-                divisa = { ...datosActualizados };
+                divisaOriginal = { ...divisaOriginal, ...datosActualizados };
+                Object.assign(divisa, datosActualizados);
 
-                // Mostrar vista actualizada
-                const infoHTML = `
-                  <div><span class="font-semibold text-gray-300">Nombre:</span> ${divisa.nombre}</div>
-                  <div><span class="font-semibold text-gray-300">Símbolo:</span> ${divisa.simbolo}</div>
-                  <div><span class="font-semibold text-gray-300">Código:</span> ${divisa.codigo}</div>
-                  <div><span class="font-semibold text-gray-300">País:</span> ${divisa.pais}</div>
-                  <div><span class="font-semibold text-gray-300">Estado:</span> 
-                    <span class="${divisa.estado === 'habilitada' ? 'text-green-500' : 'text-red-500'}">
-                      ${divisa.estado === 'habilitada' ? 'Habilitada' : 'Deshabilitada'}
-                    </span>
-                  </div>
-                `;
-                document.getElementById("info-divisa").innerHTML = infoHTML;
+                renderInfo();
                 document.getElementById("acciones-edicion").classList.add("hidden");
                 document.getElementById("btn-editar").textContent = "Editar";
                 modoEdicion = false;
-              }
-              else {
+              } else {
                 alert("Error: " + response.error);
               }
             } catch (error) {
