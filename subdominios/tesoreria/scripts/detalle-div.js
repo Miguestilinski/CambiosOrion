@@ -21,16 +21,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       const divisa = data.divisa;
       let divisaOriginal = { ...divisa };
+      const estadoTexto = (estado) => estado == 1 ? "habilitada" : "deshabilitada";
 
       const renderInfo = () => {
+        const estadoStr = estadoTexto(divisa.estado);
         const infoHTML = `
           <div><span class="font-semibold text-gray-300">Nombre:</span> ${divisa.nombre}</div>
           <div><span class="font-semibold text-gray-300">Símbolo:</span> ${divisa.simbolo}</div>
           <div><span class="font-semibold text-gray-300">Código:</span> ${divisa.codigo}</div>
           <div><span class="font-semibold text-gray-300">País:</span> ${divisa.pais}</div>
           <div><span class="font-semibold text-gray-300">Estado:</span> 
-            <span class="${divisa.estado === 'habilitada' ? 'text-green-500' : 'text-red-500'}">
-              ${divisa.estado === 'habilitada' ? 'Habilitada' : 'Deshabilitada'}
+            <span class="${estadoStr === 'habilitada' ? 'text-green-500' : 'text-red-500'}">
+              ${estadoStr.charAt(0).toUpperCase() + estadoStr.slice(1)}
             </span>
           </div>
         `;
@@ -39,15 +41,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       const btnToggleEstado = document.getElementById("btn-toggle-estado");
       const actualizarBotonEstado = () => {
-        btnToggleEstado.textContent = divisa.estado === "habilitada" ? "Deshabilitar" : "Habilitar";
+        btnToggleEstado.textContent = divisa.estado == 1 ? "Deshabilitar" : "Habilitar";
         btnToggleEstado.classList.remove("bg-green-700", "bg-red-700", "bg-yellow-600");
-        btnToggleEstado.classList.add(divisa.estado === "habilitada" ? "bg-yellow-600" : "bg-green-700");
+        btnToggleEstado.classList.add(divisa.estado == 1 ? "bg-yellow-600" : "bg-green-700");
       };
 
       actualizarBotonEstado();
 
       btnToggleEstado.onclick = () => {
-        const nuevoEstado = divisa.estado === "habilitada" ? "deshabilitada" : "habilitada";
+        const nuevoEstado = divisa.estado === 1 ? 0 : 1;  // Cambia 1 a 0 y viceversa
 
         fetch("https://cambiosorion.cl/data/detalle-div.php", {
           method: "POST",
@@ -69,7 +71,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             divisa.estado = nuevoEstado;
             divisaOriginal.estado = nuevoEstado;
 
-            // Actualizar visualmente el estado (texto)
             renderInfo();
             actualizarBotonEstado();
           } else {
