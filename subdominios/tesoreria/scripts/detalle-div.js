@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         <div><span class="font-semibold text-gray-300">Código:</span> ${divisa.codigo}</div>
         <div><span class="font-semibold text-gray-300">País:</span> ${divisa.pais}</div>
         <div><span class="font-semibold text-gray-300">Estado:</span> 
-          <span class="${divisa.estado === 'activo' ? 'text-green-500' : 'text-red-500'}">
+          <span class="${divisa.estado === 'habilitada' ? 'text-green-500' : 'text-red-500'}">
             ${divisa.estado === 'habilitada' ? 'Habilitada' : 'Deshabilitada'}
           </span>
         </div>
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           <div><span class="font-semibold text-gray-300">Código:</span> ${divisaOriginal.codigo}</div>
           <div><span class="font-semibold text-gray-300">País:</span> ${divisaOriginal.pais}</div>
           <div><span class="font-semibold text-gray-300">Estado:</span> 
-          <span class="${divisa.estado === 'activo' ? 'text-green-500' : 'text-red-500'}">
+          <span class="${divisa.estado === 'habilitada' ? 'text-green-500' : 'text-red-500'}">
             ${divisaOriginal.estado === 'habilitada' ? 'Habilitada' : 'Deshabilitada'}
           </span>
           </div>
