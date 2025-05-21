@@ -114,34 +114,45 @@
         <div id="sidebar-container"></div>
         <main id="dashboard-content" class="dashboard-content">
             <section id="detalle-divisa" class="content-section active">
-                <div class="flex items-center mb-6">
-                    <h1 class="text-2xl font-medium mr-4 leading-none text-white">Detalle de Divisa Interna</h1>
+                <div class="flex items-center justify-between mb-6">
+                    <!-- Título y botón Editar -->
+                    <div class="flex items-center">
+                    <h1 class="text-2xl font-medium mr-4 leading-none text-white">
+                        Detalle de Divisa Interna
+                    </h1>
                     <button type="button" id="btn-editar"
                         class="text-white bg-blue-700 mr-4 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
                         Editar Divisa
                     </button>
+                    </div>
+
+                    <!-- Botón Eliminar a la derecha -->
+                    <button id="btn-eliminar"
+                    class="bg-red-700 text-white px-4 py-2 rounded hover:bg-red-800 hidden">
+                    Eliminar
+                    </button>
                 </div>
 
-                <div id="info-divisa" class="space-y-2 mb-6 text-sm w-1/2 text-white bg-gray-800 rounded-lg p-4 border border-gray-600"></div>
+                <div id="info-divisa"
+                    class="space-y-2 mb-6 text-sm w-1/2 text-white bg-gray-800 rounded-lg p-4 border border-gray-600">
+                </div>
 
+                <!-- Botones de Guardar/Cancelar -->
                 <div class="hidden mb-4 justify-between items-center" id="acciones-edicion">
-                <div class="space-x-2">
+                    <div class="space-x-2">
                     <button id="btn-guardar" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                    Guardar Cambios
+                        Guardar Cambios
                     </button>
                     <button id="btn-cancelar" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
-                    Cancelar
+                        Cancelar
                     </button>
-                </div>
-                    <button id="btn-eliminar" class="bg-red-700 text-white px-4 py-2 rounded hover:bg-red-800">
-                        Eliminar
-                    </button>
+                    </div>
                 </div>
                 <!-- Modal de advertencia de eliminación -->
                 <div id="modal-confirmar-eliminacion" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
                     <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
                         <h2 class="text-lg font-semibold mb-4">⚠️ Atención</h2>
-                        <p class="mb-4">¿Estás seguro que deseas eliminar esta divisa? Esta acción no se puede deshacer.</p>
+                        <p class="mb-4">¿Estás seguro que deseas eliminar esta divisa? Esta acción es permanente y no se podrán realizar más operaciones con ella.</p>
                         <div class="flex justify-end space-x-4">
                         <button id="cancelar-eliminacion" class="bg-gray-300 text-gray-700 px-4 py-2 rounded">Cancelar</button>
                         <button id="confirmar-eliminacion" class="bg-red-600 text-white px-4 py-2 rounded">Eliminar</button>

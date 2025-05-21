@@ -165,9 +165,23 @@ document.addEventListener('DOMContentLoaded', async () => {
           });
       });
 
-      document.getElementById("btn-eliminar").addEventListener("click", () => {
-        const confirmacion = confirm("¿Estás seguro que deseas eliminar esta divisa? Esta acción es permanente y no se podrán realizar más operaciones con ella.");
-        if (!confirmacion) return;
+      // Referencias a elementos del modal
+      const btnEliminar = document.getElementById("btn-eliminar");
+      const modal = document.getElementById("modal-confirmar-eliminacion");
+      const btnCancelarModal = document.getElementById("cancelar-eliminacion");
+      const btnConfirmarEliminar = document.getElementById("confirmar-eliminacion");
+
+      // Mostrar modal
+      btnEliminar.addEventListener("click", () => {
+        modal.classList.remove("hidden");
+      });
+
+      // Cancelar eliminación
+      btnCancelarModal.addEventListener("click", () => {
+        modal.classList.add("hidden");
+      });
+
+      btnConfirmarEliminar.addEventListener("click", () => {
 
         fetch(`https://cambiosorion.cl/data/detalle-div.php?id=${divisaOriginal.id}`, {
           method: "DELETE",
@@ -197,39 +211,5 @@ document.addEventListener('DOMContentLoaded', async () => {
     .catch(err => {
       console.error(err);
       document.getElementById("info-divisa").innerHTML = "<p>Error al cargar la divisa.</p>";
-    });
-
-    // Referencias a elementos del modal
-    const btnEliminar = document.getElementById("btn-eliminar");
-    const modal = document.getElementById("modal-confirmar-eliminacion");
-    const btnCancelarModal = document.getElementById("cancelar-eliminacion");
-    const btnConfirmarEliminar = document.getElementById("confirmar-eliminacion");
-
-    // Mostrar modal
-    btnEliminar.addEventListener("click", () => {
-      modal.classList.remove("hidden");
-    });
-
-    // Cancelar eliminación
-    btnCancelarModal.addEventListener("click", () => {
-      modal.classList.add("hidden");
-    });
-
-    // Confirmar eliminación
-    btnConfirmarEliminar.addEventListener("click", () => {
-      fetch(`https://cambiosorion.cl/data/eliminar-div.php?id=${id}`, {
-        method: "DELETE",
-      })
-        .then(res => res.json())
-        .then(response => {
-          if (response.success) {
-            window.location.href = "divisas.html";
-          } else {
-            alert("Error al eliminar la divisa.");
-          }
-        })
-        .catch(() => {
-          alert("No se pudo conectar al servidor.");
-        });
     });
 });
