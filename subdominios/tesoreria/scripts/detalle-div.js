@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const infoHTML = `
         <div><span class="font-semibold text-gray-300">Nombre:</span> ${divisa.nombre}</div>
         <div><span class="font-semibold text-gray-300">Símbolo:</span> ${divisa.simbolo}</div>
-        <div><span class="font-semibold text-gray-300">Código ISO:</span> ${divisa.codigo}</div>
+        <div><span class="font-semibold text-gray-300">Código:</span> ${divisa.codigo}</div>
         <div><span class="font-semibold text-gray-300">País:</span> ${divisa.pais}</div>
       `;
       document.getElementById("info-divisa").innerHTML = infoHTML;
@@ -41,12 +41,19 @@ document.addEventListener('DOMContentLoaded', async () => {
             <input type="text" id="input-simbolo" value="${divisa.simbolo}" class="w-full p-2 rounded bg-white text-black" />
           </div>
           <div class="mb-3">
-            <label for="input-codigo" class="text-gray-300">Código ISO:</label>
+            <label for="input-codigo" class="text-gray-300">Código:</label>
             <input type="text" id="input-codigo" value="${divisa.codigo}" class="w-full p-2 rounded bg-white text-black" />
           </div>
           <div class="mb-3">
             <label for="input-pais" class="text-gray-300">País:</label>
             <input type="text" id="input-pais" value="${divisa.pais}" class="w-full p-2 rounded bg-white text-black" />
+          </div>
+          <div class="mb-3">
+            <label for="input-estado" class="text-gray-300">Estado:</label>
+            <select id="input-estado" class="w-full p-2 rounded bg-white text-black">
+              <option value="activo" ${divisa.estado === 'activo' ? 'selected' : ''}>Activo</option>
+              <option value="inactivo" ${divisa.estado === 'inactivo' ? 'selected' : ''}>Inactivo</option>
+            </select>
           </div>
         `;
         document.getElementById("info-divisa").innerHTML = formHTML;
@@ -57,8 +64,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         const infoHTML = `
           <div><span class="font-semibold text-gray-300">Nombre:</span> ${divisaOriginal.nombre}</div>
           <div><span class="font-semibold text-gray-300">Símbolo:</span> ${divisaOriginal.simbolo}</div>
-          <div><span class="font-semibold text-gray-300">Código ISO:</span> ${divisaOriginal.codigo}</div>
+          <div><span class="font-semibold text-gray-300">Código:</span> ${divisaOriginal.codigo}</div>
           <div><span class="font-semibold text-gray-300">País:</span> ${divisaOriginal.pais}</div>
+          <div><span class="font-semibold text-gray-300">Estado:</span> 
+          <span class="${divisa.estado === 'activo' ? 'text-green-500' : 'text-red-500'}">
+            ${divisa.estado === 'activo' ? 'Activo' : 'Inactivo'}
+          </span>
+          </div>
         `;
         document.getElementById("info-divisa").innerHTML = infoHTML;
         document.getElementById("acciones-edicion").classList.add("hidden");
@@ -71,6 +83,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           simbolo: document.getElementById("input-simbolo").value,
           codigo: document.getElementById("input-codigo").value,
           pais: document.getElementById("input-pais").value,
+          estado: document.getElementById("input-estado").value,
         };
 
         fetch("https://cambiosorion.cl/data/detalle-div.php", {
