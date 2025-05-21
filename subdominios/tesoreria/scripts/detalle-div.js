@@ -198,4 +198,38 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.error(err);
       document.getElementById("info-divisa").innerHTML = "<p>Error al cargar la divisa.</p>";
     });
+
+    // Referencias a elementos del modal
+    const btnEliminar = document.getElementById("btn-eliminar");
+    const modal = document.getElementById("modal-confirmar-eliminacion");
+    const btnCancelarModal = document.getElementById("cancelar-eliminacion");
+    const btnConfirmarEliminar = document.getElementById("confirmar-eliminacion");
+
+    // Mostrar modal
+    btnEliminar.addEventListener("click", () => {
+      modal.classList.remove("hidden");
+    });
+
+    // Cancelar eliminación
+    btnCancelarModal.addEventListener("click", () => {
+      modal.classList.add("hidden");
+    });
+
+    // Confirmar eliminación
+    btnConfirmarEliminar.addEventListener("click", () => {
+      fetch(`https://cambiosorion.cl/data/eliminar-div.php?id=${id}`, {
+        method: "DELETE",
+      })
+        .then(res => res.json())
+        .then(response => {
+          if (response.success) {
+            window.location.href = "divisas.html";
+          } else {
+            alert("Error al eliminar la divisa.");
+          }
+        })
+        .catch(() => {
+          alert("No se pudo conectar al servidor.");
+        });
+    });
 });
