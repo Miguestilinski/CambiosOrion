@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const estadoTexto = (estado) => estado == 1 ? "habilitada" : "deshabilitada";
 
       const renderInfo = () => {
-        const estadoStr = estadoTexto(divisa.estado);
+        const estadoStr = estadoTexto(Number(divisa.estado));
         const infoHTML = `
           <div><span class="font-semibold text-gray-300">Nombre:</span> ${divisa.nombre}</div>
           <div><span class="font-semibold text-gray-300">Símbolo:</span> ${divisa.simbolo}</div>
@@ -70,6 +70,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           if (response.success) {
             divisa.estado = nuevoEstado;
             divisaOriginal.estado = nuevoEstado;
+
+            console.log("Estado actual de divisa:", divisa.estado);
 
             renderInfo();
             actualizarBotonEstado();
