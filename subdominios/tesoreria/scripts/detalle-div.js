@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           <div><span class="font-semibold text-gray-300">País:</span> ${divisaOriginal.pais}</div>
           <div><span class="font-semibold text-gray-300">Estado:</span> 
           <span class="${divisa.estado === 'activo' ? 'text-green-500' : 'text-red-500'}">
-            ${divisaOriginal.estado === 'activo' ? 'Activo' : 'Inactivo'}
+            ${divisaOriginal.estado === 'activo' ? 'Habilitada' : 'Deshabilitada'}
           </span>
           </div>
         `;
