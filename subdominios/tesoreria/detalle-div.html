@@ -127,8 +127,16 @@
                     </div>
                 </div>
 
-                <div id="info-divisa"
-                    class="space-y-2 mb-6 text-sm w-1/2 text-white bg-gray-800 rounded-lg p-4 border border-gray-600">
+                <div class="relative w-1/2 mb-6">
+                    <div id="info-divisa"
+                        class="space-y-2 text-sm text-white bg-gray-800 rounded-lg p-4 border border-gray-600">
+                    </div>
+
+                    <!-- Botón Eliminar posicionado en la esquina inferior derecha de info-divisa -->
+                    <button id="btn-eliminar"
+                        class="absolute -bottom-4 right-4 bg-red-700 text-white text-sm px-5 py-2.5 rounded hover:bg-red-800 shadow">
+                        Eliminar
+                    </button>
                 </div>
 
                 <!-- Botón Eliminar debajo de info-divisa, alineado a la derecha -->
