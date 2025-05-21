@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
-  fetch(`https://cambiosorion.cl/data/detalle-div.php?id=${id}`)
+  fetch(`https://cambiosorion.cl/data/detalle-div.php?id=${id}&_=${Date.now()}`)
     .then(async res => {
       const text = await res.text();
       console.log("Respuesta cruda divisa:", text);
