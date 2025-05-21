@@ -21,6 +21,20 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       const divisa = data.divisa;
       let divisaOriginal = { ...divisa };
+
+      const infoHTML = `
+        <div><span class="font-semibold text-gray-300">Nombre:</span> ${divisa.nombre}</div>
+        <div><span class="font-semibold text-gray-300">Símbolo:</span> ${divisa.simbolo}</div>
+        <div><span class="font-semibold text-gray-300">Código:</span> ${divisa.codigo}</div>
+        <div><span class="font-semibold text-gray-300">País:</span> ${divisa.pais}</div>
+        <div><span class="font-semibold text-gray-300">Estado:</span> 
+          <span class="${divisa.estado === 'habilitada' ? 'text-green-500' : 'text-red-500'}">
+            ${divisa.estado === 'habilitada' ? 'Habilitada' : 'Deshabilitada'}
+          </span>
+        </div>
+      `;
+
+      document.getElementById("info-divisa").innerHTML = infoHTML;
       let modoEdicion = false;
 
       document.getElementById("btn-editar").addEventListener("click", () => {
