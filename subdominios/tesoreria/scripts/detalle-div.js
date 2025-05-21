@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         <div><span class="font-semibold text-gray-300">País:</span> ${divisa.pais}</div>
         <div><span class="font-semibold text-gray-300">Estado:</span> 
           <span class="${divisa.estado === 'activo' ? 'text-green-500' : 'text-red-500'}">
-            ${divisa.estado === 'activo' ? 'Habilitada' : 'Deshabilitada'}
+            ${divisa.estado === 'habilitada' ? 'Habilitada' : 'Deshabilitada'}
           </span>
         </div>
       `;
@@ -56,8 +56,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           <div class="mb-3">
             <label for="input-estado" class="text-gray-300">Estado:</label>
             <select id="input-estado" class="w-full p-2 rounded bg-white text-black">
-              <option value="activo" ${divisa.estado === 'activo' ? 'selected' : ''}>Habilitada</option>
-              <option value="inactivo" ${divisa.estado === 'inactivo' ? 'selected' : ''}>Deshabilitada</option>
+              <option value="habilitada" ${divisa.estado === 'habilitada' ? 'selected' : ''}>Habilitada</option>
+              <option value="deshabilitada" ${divisa.estado === 'deshabilitada' ? 'selected' : ''}>Deshabilitada</option>
             </select>
           </div>
         `;
@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           <div><span class="font-semibold text-gray-300">País:</span> ${divisaOriginal.pais}</div>
           <div><span class="font-semibold text-gray-300">Estado:</span> 
           <span class="${divisa.estado === 'activo' ? 'text-green-500' : 'text-red-500'}">
-            ${divisaOriginal.estado === 'activo' ? 'Habilitada' : 'Deshabilitada'}
+            ${divisaOriginal.estado === 'habilitada' ? 'Habilitada' : 'Deshabilitada'}
           </span>
           </div>
         `;
