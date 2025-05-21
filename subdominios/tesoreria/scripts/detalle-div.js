@@ -21,48 +21,58 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       const divisa = data.divisa;
       let divisaOriginal = { ...divisa };
-
-      const infoHTML = `
-        <div><span class="font-semibold text-gray-300">Nombre:</span> ${divisa.nombre}</div>
-        <div><span class="font-semibold text-gray-300">Símbolo:</span> ${divisa.simbolo}</div>
-        <div><span class="font-semibold text-gray-300">Código:</span> ${divisa.codigo}</div>
-        <div><span class="font-semibold text-gray-300">País:</span> ${divisa.pais}</div>
-        <div><span class="font-semibold text-gray-300">Estado:</span> 
-          <span class="${divisa.estado === 'habilitada' ? 'text-green-500' : 'text-red-500'}">
-            ${divisa.estado === 'habilitada' ? 'Habilitada' : 'Deshabilitada'}
-          </span>
-        </div>
-      `;
-      document.getElementById("info-divisa").innerHTML = infoHTML;
+      let modoEdicion = false;
 
       document.getElementById("btn-editar").addEventListener("click", () => {
-        const formHTML = `
-          <div class="mb-3">
-            <label for="input-nombre" class="text-gray-300">Nombre:</label>
-            <input type="text" id="input-nombre" value="${divisa.nombre}" class="w-full p-2 rounded bg-white text-black" />
-          </div>
-          <div class="mb-3">
-            <label for="input-simbolo" class="text-gray-300">Símbolo:</label>
-            <input type="text" id="input-simbolo" value="${divisa.simbolo}" class="w-full p-2 rounded bg-white text-black" />
-          </div>
-          <div class="mb-3">
-            <label for="input-codigo" class="text-gray-300">Código:</label>
-            <input type="text" id="input-codigo" value="${divisa.codigo}" class="w-full p-2 rounded bg-white text-black" />
-          </div>
-          <div class="mb-3">
-            <label for="input-pais" class="text-gray-300">País:</label>
-            <input type="text" id="input-pais" value="${divisa.pais}" class="w-full p-2 rounded bg-white text-black" />
-          </div>
-          <div class="mb-3">
-            <label for="input-estado" class="text-gray-300">Estado:</label>
-            <select id="input-estado" class="w-full p-2 rounded bg-white text-black">
-              <option value="habilitada" ${divisa.estado === 'habilitada' ? 'selected' : ''}>Habilitada</option>
-              <option value="deshabilitada" ${divisa.estado === 'deshabilitada' ? 'selected' : ''}>Deshabilitada</option>
-            </select>
-          </div>
-        `;
-        document.getElementById("info-divisa").innerHTML = formHTML;
-        document.getElementById("acciones-edicion").classList.remove("hidden");
+        if (modoEdicion) {
+          // Salir del modo edición (restaurar vista original)
+          const infoHTML = `
+            <div><span class="font-semibold text-gray-300">Nombre:</span> ${divisaOriginal.nombre}</div>
+            <div><span class="font-semibold text-gray-300">Símbolo:</span> ${divisaOriginal.simbolo}</div>
+            <div><span class="font-semibold text-gray-300">Código:</span> ${divisaOriginal.codigo}</div>
+            <div><span class="font-semibold text-gray-300">País:</span> ${divisaOriginal.pais}</div>
+            <div><span class="font-semibold text-gray-300">Estado:</span> 
+              <span class="${divisaOriginal.estado === 'habilitada' ? 'text-green-500' : 'text-red-500'}">
+                ${divisaOriginal.estado === 'habilitada' ? 'Habilitada' : 'Deshabilitada'}
+              </span>
+            </div>
+          `;
+          document.getElementById("info-divisa").innerHTML = infoHTML;
+          document.getElementById("acciones-edicion").classList.add("hidden");
+          document.getElementById("btn-editar").textContent = "Editar";
+          modoEdicion = false;
+        } else {
+          // Entrar al modo edición
+          const formHTML = `
+            <div class="mb-3">
+              <label for="input-nombre" class="text-gray-300">Nombre:</label>
+              <input type="text" id="input-nombre" value="${divisa.nombre}" class="w-full p-2 rounded bg-white text-black" />
+            </div>
+            <div class="mb-3">
+              <label for="input-simbolo" class="text-gray-300">Símbolo:</label>
+              <input type="text" id="input-simbolo" value="${divisa.simbolo}" class="w-full p-2 rounded bg-white text-black" />
+            </div>
+            <div class="mb-3">
+              <label for="input-codigo" class="text-gray-300">Código:</label>
+              <input type="text" id="input-codigo" value="${divisa.codigo}" class="w-full p-2 rounded bg-white text-black" />
+            </div>
+            <div class="mb-3">
+              <label for="input-pais" class="text-gray-300">País:</label>
+              <input type="text" id="input-pais" value="${divisa.pais}" class="w-full p-2 rounded bg-white text-black" />
+            </div>
+            <div class="mb-3">
+              <label for="input-estado" class="text-gray-300">Estado:</label>
+              <select id="input-estado" class="w-full p-2 rounded bg-white text-black">
+                <option value="habilitada" ${divisa.estado === 'habilitada' ? 'selected' : ''}>Habilitada</option>
+                <option value="deshabilitada" ${divisa.estado === 'deshabilitada' ? 'selected' : ''}>Deshabilitada</option>
+              </select>
+            </div>
+          `;
+          document.getElementById("info-divisa").innerHTML = formHTML;
+          document.getElementById("acciones-edicion").classList.remove("hidden");
+          document.getElementById("btn-editar").textContent = "Cancelar edición";
+          modoEdicion = true;
+        }
       });
 
       document.getElementById("btn-cancelar").addEventListener("click", () => {
@@ -79,6 +89,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         `;
         document.getElementById("info-divisa").innerHTML = infoHTML;
         document.getElementById("acciones-edicion").classList.add("hidden");
+        document.getElementById("btn-editar").textContent = "Editar";
+        modoEdicion = false;
       });
 
       document.getElementById("btn-guardar").addEventListener("click", () => {
@@ -102,7 +114,29 @@ document.addEventListener('DOMContentLoaded', async () => {
               const response = JSON.parse(text);
               if (response.success) {
                 alert("Divisa actualizada correctamente");
-              } else {
+
+                // Actualizar datos en divisaOriginal y divisa
+                divisaOriginal = { ...datosActualizados };
+                divisa = { ...datosActualizados };
+
+                // Mostrar vista actualizada
+                const infoHTML = `
+                  <div><span class="font-semibold text-gray-300">Nombre:</span> ${divisa.nombre}</div>
+                  <div><span class="font-semibold text-gray-300">Símbolo:</span> ${divisa.simbolo}</div>
+                  <div><span class="font-semibold text-gray-300">Código:</span> ${divisa.codigo}</div>
+                  <div><span class="font-semibold text-gray-300">País:</span> ${divisa.pais}</div>
+                  <div><span class="font-semibold text-gray-300">Estado:</span> 
+                    <span class="${divisa.estado === 'habilitada' ? 'text-green-500' : 'text-red-500'}">
+                      ${divisa.estado === 'habilitada' ? 'Habilitada' : 'Deshabilitada'}
+                    </span>
+                  </div>
+                `;
+                document.getElementById("info-divisa").innerHTML = infoHTML;
+                document.getElementById("acciones-edicion").classList.add("hidden");
+                document.getElementById("btn-editar").textContent = "Editar";
+                modoEdicion = false;
+              }
+              else {
                 alert("Error: " + response.error);
               }
             } catch (error) {
