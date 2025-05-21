@@ -54,7 +54,16 @@ document.addEventListener('DOMContentLoaded', async () => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ id: divisa.id, estado: nuevoEstado })
         })
-        .then(res => res.json())
+        .then(res => res.text())
+        .then(text => {
+          console.log("Respuesta cruda POST:", text);
+          try {
+            return JSON.parse(text);
+          } catch(e) {
+            console.error("Error JSON:", e);
+            throw e;
+          }
+        })
         .then(response => {
           if (response.success) {
             divisa.estado = nuevoEstado;
@@ -66,8 +75,10 @@ document.addEventListener('DOMContentLoaded', async () => {
           } else {
             alert("Error al cambiar el estado");
           }
-        });
-      };
+        })
+        .catch(err => {
+          alert("Error al procesar la respuesta JSON");
+      });
 
       renderInfo();
 
