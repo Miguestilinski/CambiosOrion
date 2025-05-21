@@ -27,6 +27,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         <div><span class="font-semibold text-gray-300">Símbolo:</span> ${divisa.simbolo}</div>
         <div><span class="font-semibold text-gray-300">Código:</span> ${divisa.codigo}</div>
         <div><span class="font-semibold text-gray-300">País:</span> ${divisa.pais}</div>
+        <div><span class="font-semibold text-gray-300">Estado:</span> 
+          <span class="${divisa.estado === 'activo' ? 'text-green-500' : 'text-red-500'}">
+            ${divisa.estado === 'activo' ? 'Habilitada' : 'Deshabilitada'}
+          </span>
+        </div>
       `;
       document.getElementById("info-divisa").innerHTML = infoHTML;
 
@@ -51,8 +56,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           <div class="mb-3">
             <label for="input-estado" class="text-gray-300">Estado:</label>
             <select id="input-estado" class="w-full p-2 rounded bg-white text-black">
-              <option value="activo" ${divisa.estado === 'activo' ? 'selected' : ''}>Activo</option>
-              <option value="inactivo" ${divisa.estado === 'inactivo' ? 'selected' : ''}>Inactivo</option>
+              <option value="activo" ${divisa.estado === 'activo' ? 'selected' : ''}>Habilitada</option>
+              <option value="inactivo" ${divisa.estado === 'inactivo' ? 'selected' : ''}>Deshabilitada</option>
             </select>
           </div>
         `;
@@ -68,7 +73,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           <div><span class="font-semibold text-gray-300">País:</span> ${divisaOriginal.pais}</div>
           <div><span class="font-semibold text-gray-300">Estado:</span> 
           <span class="${divisa.estado === 'activo' ? 'text-green-500' : 'text-red-500'}">
-            ${divisa.estado === 'activo' ? 'Activo' : 'Inactivo'}
+            ${divisaOriginal.estado === 'activo' ? 'Activo' : 'Inactivo'}
           </span>
           </div>
         `;
@@ -109,6 +114,34 @@ document.addEventListener('DOMContentLoaded', async () => {
           .catch(error => {
             console.error("Error de red o servidor", error);
             alert("Error al intentar guardar los datos");
+          });
+      });
+
+      document.getElementById("btn-eliminar").addEventListener("click", () => {
+        const confirmacion = confirm("¿Estás seguro que deseas eliminar esta divisa? Esta acción es permanente y no se podrán realizar más operaciones con ella.");
+        if (!confirmacion) return;
+
+        fetch(`https://cambiosorion.cl/data/detalle-div.php?id=${divisaOriginal.id}`, {
+          method: "DELETE",
+        })
+          .then(res => res.text())
+          .then(text => {
+            try {
+              const response = JSON.parse(text);
+              if (response.success) {
+                alert("Divisa eliminada correctamente.");
+                window.location.href = "https://tesoreria.cambiosorion.cl/divisas-int"; // o redirigir a la lista de divisas
+              } else {
+                alert("Error al eliminar: " + response.error);
+              }
+            } catch (err) {
+              alert("Error procesando la respuesta del servidor");
+              console.error(err);
+            }
+          })
+          .catch(err => {
+            alert("Error de red o servidor");
+            console.error(err);
           });
       });
 
