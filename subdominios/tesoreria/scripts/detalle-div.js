@@ -75,10 +75,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           } else {
             alert("Error al cambiar el estado");
           }
-        })
-        .catch(err => {
-          alert("Error al procesar la respuesta JSON");
-      });
+        });
+      };
 
       renderInfo();
 
