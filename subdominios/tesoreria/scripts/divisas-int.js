@@ -60,6 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="px-4 py-2">${divisa.simbolo}</td>
                 <td class="px-4 py-2">${divisa.tipo_divisa ?? '-'}</td>
                 <td class="px-4 py-2">${divisa.fraccionable}</td>
+                <td class="px-4 py-2">${divisa.estado}</td>
                 <td class="px-4 py-2 mostrar-btn-cell"></td>
             `;
 
