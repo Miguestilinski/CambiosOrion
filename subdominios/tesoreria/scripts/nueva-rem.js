@@ -1,4 +1,27 @@
 document.addEventListener("DOMContentLoaded", async () => {
+    function generarPeriodos() {
+        const select = document.getElementById("periodo");
+        const hoy = new Date();
+        const periodos = [];
+
+        for (let i = -2; i <= 1; i++) {
+            const fecha = new Date(hoy.getFullYear(), hoy.getMonth() + i, 1);
+            const mes = String(fecha.getMonth() + 1).padStart(2, "0");
+            const anio = fecha.getFullYear();
+            const value = `${mes}-${anio}`;
+            periodos.push(value);
+        }
+
+        periodos.forEach((p) => {
+            const option = document.createElement("option");
+            option.value = p;
+            option.textContent = p;
+            select.appendChild(option);
+        });
+    }
+
+    generarPeriodos();
+
     const select = document.getElementById("integrante");
     const montoInput = document.getElementById("monto");
     let integrantes = [];
@@ -73,31 +96,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     document.getElementById("cancelar-remuneracion").addEventListener("click", () => {
         window.history.back();
-    });
-
-    function generarPeriodos() {
-    const select = document.getElementById("periodo");
-    const hoy = new Date();
-    const periodos = [];
-
-    for (let i = -2; i <= 1; i++) {
-        const fecha = new Date(hoy.getFullYear(), hoy.getMonth() + i, 1);
-        const mes = String(fecha.getMonth() + 1).padStart(2, "0");
-        const anio = fecha.getFullYear();
-        const value = `${mes}-${anio}`;
-        periodos.push(value);
-    }
-
-    periodos.forEach((p) => {
-        const option = document.createElement("option");
-        option.value = p;
-        option.textContent = p;
-        select.appendChild(option);
-    });
-    }
-
-    document.addEventListener("DOMContentLoaded", async () => {
-        generarPeriodos(); // <- Agrega esta línea
     });
 
 });
