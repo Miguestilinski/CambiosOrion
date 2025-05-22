@@ -119,73 +119,74 @@
                 </div>
             
                 <form id="form-nueva-remuneracion" class="grid grid-cols-1 gap-6 mb-6 max-w-3xl ml-4 mr-6">
+                    
+                    <!-- Periodo -->
+                    <div>
+                        <label class="block mb-1 text-sm text-white">Periodo</label>
+                        <input
+                        type="text"
+                        id="periodo"
+                        placeholder="Ej: 04-2025"
+                        class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
+                        required
+                        />
+                    </div>
                 
-                <!-- Periodo -->
-                <div>
-                    <label class="block mb-1 text-sm text-white">Periodo</label>
-                    <input
-                    type="text"
-                    id="periodo"
-                    placeholder="Ej: 04-2025"
-                    class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
-                    required
-                    />
-                </div>
-            
-                <!-- Integrantes -->
-                <div>
-                    <label for="integrantes" class="block mb-1 text-sm text-white">Integrantes</label>
-                    <textarea
-                    id="integrantes"
-                    rows="3"
-                    placeholder="Ingrese nombres separados por coma o una lista..."
-                    class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
-                    required
-                    ></textarea>
-                </div>
-            
-                <!-- Monto -->
-                <div>
-                    <label for="monto" class="block mb-1 text-sm text-white">Monto Total</label>
-                    <input
-                    type="number"
-                    step="0.01"
-                    id="monto"
-                    placeholder="Ej: 150000.00"
-                    class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
-                    required
-                    />
-                </div>
-            
-                <!-- Estado -->
-                <div>
-                    <label for="estado" class="block mb-1 text-sm text-white">Estado</label>
-                    <select
-                    id="estado"
-                    class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
-                    required
-                    >
-                    <option value="Pendiente">Pendiente</option>
-                    <option value="Pagado">Pagado</option>
-                    </select>
-                </div>
-            
-                <!-- Botones -->
-                <div class="flex space-x-4">
-                    <button
-                    type="submit"
-                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
-                    >
-                    Guardar Remuneración
-                    </button>
-                    <button
-                    type="button"
-                    id="cancelar-remuneracion"
-                    class="text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5"
-                    >
-                    Cancelar
-                    </button>
-                </div>
+                    <!-- Integrantes -->
+                    <div>
+                        <label for="integrante" class="block mb-1 text-sm text-white">Integrante</label>
+                        <select
+                            id="integrante"
+                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
+                            required
+                        >
+                            <option value="">Seleccione un integrante</option>
+                            <!-- Opciones se cargarán dinámicamente -->
+                        </select>
+                    </div>
+
+                    <!-- Monto -->
+                    <div>
+                        <label for="monto" class="block mb-1 text-sm text-white">Monto Total</label>
+                        <input
+                            type="number"
+                            step="0.01"
+                            id="monto"
+                            placeholder="Ej: 150000.00"
+                            class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
+                            required
+                        />
+                    </div>
+
+                    <!-- Estado -->
+                    <div>
+                        <label for="estado" class="block mb-1 text-sm text-white">Estado</label>
+                        <select
+                        id="estado"
+                        class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
+                        required
+                        >
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="Pagado">Pagado</option>
+                        </select>
+                    </div>
+                
+                    <!-- Botones -->
+                    <div class="flex space-x-4">
+                        <button
+                        type="submit"
+                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
+                        >
+                        Guardar Remuneración
+                        </button>
+                        <button
+                        type="button"
+                        id="cancelar-remuneracion"
+                        class="text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5"
+                        >
+                        Cancelar
+                        </button>
+                    </div>
                 </form>
             </section>
         </main>
@@ -233,7 +234,7 @@
 
     <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
     <script type="module" src="https://cambiosorion.cl/orionapp/public/scripts/header.js" crossorigin="anonymous"></script>
-    <script type="module" src="./scripts/nueva-op.js"></script>
+    <script type="module" src="./scripts/nueva-rem.js"></script>
     <script>
         fetch('sidebar.html')
             .then(response => response.text())
