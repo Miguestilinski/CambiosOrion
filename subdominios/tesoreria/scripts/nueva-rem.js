@@ -23,10 +23,26 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
+    function formatearMonto(valor) {
+        const numero = parseInt(valor.toString().replace(/\D/g, ""), 10);
+        if (isNaN(numero)) return "";
+        return "$" + numero.toLocaleString("es-CL");
+    }
+
+    function limpiarMonto(formateado) {
+        return formateado.replace(/\D/g, "");
+    }
+
     generarPeriodos();
 
     const select = document.getElementById("integrante");
     const montoInput = document.getElementById("monto");
+
+    montoInput.addEventListener("input", () => {
+        const limpio = limpiarMonto(montoInput.value);
+        montoInput.value = formatearMonto(limpio);
+    });
+
     let integrantes = [];
 
     try {
@@ -54,7 +70,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const selectedId = select.value;
     const integrante = integrantes.find((i) => i.id === selectedId);
     if (integrante) {
-        montoInput.value = integrante.sueldo_liquido;
+        montoInput.value = formatearMonto(integrante.sueldo_liquido);
     }
     });
 
@@ -64,7 +80,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const periodo = document.getElementById("periodo").value.trim();
     const integranteId = document.getElementById("integrante").value;
-    const monto = document.getElementById("monto").value.trim();
+    const monto = limpiarMonto(document.getElementById("monto").value.trim());
     const estado = document.getElementById("estado").value;
 
     if (!periodo || !integranteId || !monto || !estado) {
