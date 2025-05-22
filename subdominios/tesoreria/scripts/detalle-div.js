@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
 
       const divisa = data.divisa;
+      divisa.estado = Number(divisa.estado);
       let divisaOriginal = { ...divisa };
       const estadoTexto = (estado) => estado == 1 ? "habilitada" : "deshabilitada";
 
@@ -49,7 +50,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       actualizarBotonEstado();
 
       btnToggleEstado.onclick = () => {
-        const nuevoEstado = divisa.estado === 1 ? 0 : 1;  // Cambia 1 a 0 y viceversa
+        const nuevoEstado = Number(divisa.estado) === 1 ? 0 : 1;
 
         fetch("https://cambiosorion.cl/data/detalle-div.php", {
           method: "POST",
