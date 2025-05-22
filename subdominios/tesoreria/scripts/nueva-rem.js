@@ -3,21 +3,24 @@ document.addEventListener("DOMContentLoaded", async () => {
         const select = document.getElementById("periodo");
         const hoy = new Date();
         const periodos = [];
+        const meses = [
+            "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+        ];
 
         for (let i = -2; i <= 1; i++) {
             const fecha = new Date(hoy.getFullYear(), hoy.getMonth() + i, 1);
-            const mes = String(fecha.getMonth() + 1).padStart(2, "0");
+            const mesNum = String(fecha.getMonth() + 1).padStart(2, "0");
+            const mesNombre = meses[fecha.getMonth()];
             const anio = fecha.getFullYear();
-            const value = `${mes}-${anio}`;
-            periodos.push(value);
-        }
+            const value = `${mesNum}-${anio}`;
+            const display = `${mesNombre} ${anio}`;
 
-        periodos.forEach((p) => {
             const option = document.createElement("option");
-            option.value = p;
-            option.textContent = p;
+            option.value = value;
+            option.textContent = display;
             select.appendChild(option);
-        });
+        }
     }
 
     generarPeriodos();
