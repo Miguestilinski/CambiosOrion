@@ -150,10 +150,11 @@
                     <div>
                         <label for="monto" class="block mb-1 text-sm text-white">Monto Total</label>
                         <input
-                            type="number"
-                            step="0.01"
+                            type="text"
+                            inputmode="numeric"
+                            pattern="\d*"
                             id="monto"
-                            placeholder="Ej: $150000"
+                            placeholder="Ej: $150.000"
                             class="block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
                             required
                         />
