@@ -43,8 +43,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       const btnToggleEstado = document.getElementById("btn-toggle-estado");
       const actualizarBotonEstado = () => {
         btnToggleEstado.textContent = divisa.estado == 1 ? "Deshabilitar" : "Habilitar";
-        btnToggleEstado.classList.remove("bg-green-700", "bg-red-700", "bg-yellow-600");
-        btnToggleEstado.classList.add(divisa.estado == 1 ? "bg-yellow-600" : "bg-green-700");
+        btnToggleEstado.classList.remove("bg-green-700", "bg-red-700", "bg-green-600");
+        btnToggleEstado.classList.add(divisa.estado == 1 ? "bg-yellow-700" : "bg-green-700");
       };
 
       actualizarBotonEstado();
