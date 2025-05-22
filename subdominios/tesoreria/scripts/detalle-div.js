@@ -203,7 +203,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             try {
               const response = JSON.parse(text);
               if (response.success) {
-                alert("Divisa eliminada correctamente.");
                 window.location.href = "https://tesoreria.cambiosorion.cl/divisas-int"; // o redirigir a la lista de divisas
               } else {
                 alert("Error al eliminar: " + response.error);
