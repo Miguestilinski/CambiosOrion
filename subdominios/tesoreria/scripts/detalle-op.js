@@ -123,12 +123,12 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             if (abonado > 0) {
-                document.getElementById("seccion-abonos").style.display = "block";
-                const lista = document.getElementById("lista-abonos");
+                document.getElementById("seccion-pagoss").style.display = "block";
+                const lista = document.getElementById("lista-pagoss");
 
-                // Supongamos que `data.abonos` es un array con abonos previos.
-                if (Array.isArray(data.abonos)) {
-                    data.abonos.forEach(a => {
+                // Supongamos que `data.pagoss` es un array con pagoss previos.
+                if (Array.isArray(data.pagoss)) {
+                    data.pagoss.forEach(a => {
                         const li = document.createElement("li");
                         li.textContent = `$${formatNumber(a.monto)} - ${a.fecha}`;
                         lista.appendChild(li);
@@ -216,7 +216,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     body: JSON.stringify({
                         id: info.id_operacion,
                         estado: nuevoEstado,
-                        abono: montoIngresado
+                        pagos: montoIngresado
                     })
                 })
                 .then(res => res.json())
