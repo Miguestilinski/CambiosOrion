@@ -28,8 +28,24 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             };
 
+            function colorEstado(estado) {
+                switch (estado) {
+                    case "Vigente":
+                        return "#3B82F6"; // Azul (Tailwind blue-500)
+                    case "Abonado":
+                        return "#F97316"; // Naranjo (Tailwind orange-500)
+                    case "Pagado":
+                        return "#22C55E"; // Verde (Tailwind green-500)
+                    case "Anulado":
+                        return "#EF4444"; // Rojo (Tailwind red-500)
+                    default:
+                        return "#FFFFFF"; // Blanco por defecto
+                }
+            }
+
             // Mostrar info general de la operación
             const info = data.operacion;
+            const color = colorEstado(info.estado);
             const totalOperacion = parseFloat(info.total);
             let abonado = parseFloat(info.monto_pagado || 0);
             let restante = totalOperacion - abonado;
@@ -108,6 +124,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div><span class="font-semibold text-gray-300">Número de operación:</span> ${info.numero_operacion}</div>
                 <div><span class="font-semibold text-gray-300">Código:</span> ${info.codigo_operacion}</div>
                 <div><span class="font-semibold text-gray-300">Cliente:</span> ${info.cliente}</div>
+                <div>
+                    <span class="font-semibold text-gray-300">Estado:</span> 
+                    <span style="color: ${color}; font-weight: 700;">${info.estado}</span>
+                </div>
             `;
             document.getElementById("info-operacion").innerHTML = infoHTML;
 
