@@ -50,6 +50,78 @@ document.addEventListener("DOMContentLoaded", () => {
             let abonado = parseFloat(info.monto_pagado || 0);
             let restante = totalOperacion - abonado;
 
+
+            // --- Funcionalidad Botón Exportar PDF ---
+            document.getElementById("exportar-pdf").addEventListener("click", () => {
+                // Abre el PDF en una nueva pestaña
+                if (info.numero_documento) {
+                    const urlPDF = `https://cambiosorion.cl/documentos/${info.numero_documento}.pdf`;
+                    window.open(urlPDF, "_blank");
+                } else {
+                    alert("No hay documento emitido para exportar PDF.");
+                }
+            });
+
+            // --- Funcionalidad Botón Emitir Documento SII ---
+            document.getElementById("emitir-doc").addEventListener("click", () => {
+                if (info.estado === "Anulado") {
+                    alert("No se puede emitir documento para una operación anulada.");
+                    return;
+                }
+
+                if (confirm("¿Deseas emitir el documento al SII?")) {
+                    fetch(`https://cambiosorion.cl/data/emitir-doc.php`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ id: info.id_operacion })
+                    })
+                    .then(res => res.json())
+                    .then(res => {
+                        if (res.success) {
+                            alert("Documento emitido correctamente.");
+                            location.reload();
+                        } else {
+                            alert("Error al emitir documento: " + res.message);
+                        }
+                    })
+                    .catch(() => {
+                        alert("Error de conexión al emitir documento.");
+                    });
+                }
+            });
+
+            // --- Funcionalidad Botón Anular (el rojo en la fila superior) ---
+            document.getElementById("anular").addEventListener("click", () => {
+                if (info.estado === "Anulado") {
+                    alert("La operación ya está anulada.");
+                    return;
+                }
+                if (confirm("¿Seguro que deseas anular esta operación? Esto revertirá el inventario.")) {
+                    fetch(`https://cambiosorion.cl/data/anular-op.php`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ id: info.id_operacion })
+                    })
+                    .then(res => res.json())
+                    .then(res => {
+                        if (res.success) {
+                            alert("Operación anulada.");
+                            location.reload();
+                        } else {
+                            alert("Error al anular: " + res.message);
+                        }
+                    })
+                    .catch(() => {
+                        alert("Error de conexión al anular operación.");
+                    });
+                }
+            });
+
+            // --- Funcionalidad Botón Imprimir ---
+            document.getElementById("imprimir").addEventListener("click", () => {
+                window.print();
+            });
+
             if (abonado > 0) {
                 document.getElementById("seccion-abonos").style.display = "block";
                 const lista = document.getElementById("lista-abonos");
