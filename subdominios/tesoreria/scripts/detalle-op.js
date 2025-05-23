@@ -79,8 +79,46 @@ document.addEventListener("DOMContentLoaded", () => {
                 btnPago.textContent = "Pagado";
             }
 
+            function formatToCLP(value) {
+                if (!value) return "";
+                // Quitar todo lo que no sea número o coma/punto decimal
+                const cleanValue = value.toString().replace(/[^0-9]/g, "");
+                if (cleanValue === "") return "";
+
+                const number = parseInt(cleanValue, 10);
+                if (isNaN(number)) return "";
+
+                // Formatear usando Intl.NumberFormat para Chile
+                return "$" + number.toLocaleString("es-CL");
+            }
+
+            inputPago.addEventListener("input", (e) => {
+                const cursorPosition = inputPago.selectionStart;
+                const rawValue = inputPago.value;
+
+                // Guardamos solo números
+                const onlyNumbers = rawValue.replace(/[^0-9]/g, "");
+                
+                // Formatear
+                const formatted = formatToCLP(onlyNumbers);
+
+                inputPago.value = formatted;
+
+                // Intentamos mantener cursor al final
+                inputPago.selectionStart = inputPago.selectionEnd = inputPago.value.length;
+            });
+
             btnPago.addEventListener("click", () => {
-                const montoIngresado = parseFloat(inputPago.value || "0");
+                // Extraemos sólo números del input
+                const rawValue = inputPago.value;
+                const numericString = rawValue.replace(/[^0-9]/g, "");
+
+                if (!numericString) {
+                    alert("Monto inválido");
+                    return;
+                }
+
+                const montoIngresado = parseFloat(numericString);
 
                 if (isNaN(montoIngresado) || montoIngresado <= 0) {
                     alert("Monto inválido");
