@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const inputPago = document.getElementById("input-pago");
             const btnPago = document.getElementById("btn-registrar-pago");
 
-            inputPago.placeholder = `Monto sugerido: $${formatNumber(restante)}`;
+            inputPago.placeholder = `$${formatNumber(restante)}`;
 
             if (info.estado === "Pagado") {
                 inputPago.disabled = true;
