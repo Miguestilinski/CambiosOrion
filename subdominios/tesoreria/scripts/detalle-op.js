@@ -50,8 +50,6 @@ document.addEventListener("DOMContentLoaded", () => {
             let abonado = parseFloat(info.monto_pagado || 0);
             let restante = totalOperacion - abonado;
 
-            document.getElementById("estado-actual").textContent = info.estado;
-
             if (abonado > 0) {
                 document.getElementById("seccion-abonos").style.display = "block";
                 const lista = document.getElementById("lista-abonos");
