@@ -59,6 +59,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
                         tr.innerHTML = `
                             <td class="px-4 py-2">${inv.caja}</td>
+                            <td class="px-4 py-2">
+                                <img src="${inv.icono}" alt="Icono" class="w-6 h-6 rounded-full border border-gray-400" />
+                            </td>
                             <td class="px-4 py-2">${inv.divisa}</td>
                             <td class="px-4 py-2">${inv.cantidad}</td>
                             <td class="px-4 py-2">${inv.pmp}</td>
