@@ -16,8 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
         fetch("https://cambiosorion.cl/data/inventarios.php")
             .then(res => res.text())  // Leer respuesta como texto
             .then(text => {
-                console.log("Respuesta cruda divisas:", text);  // Mostrar respuesta cruda
-                console.log("Longitud de texto divisas:", text.length);
                 try {
                     const data = JSON.parse(text);
                     divisaInput.innerHTML = `<option value="">Seleccionar</option>`;
