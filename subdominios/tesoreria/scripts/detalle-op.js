@@ -94,17 +94,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
             inputPago.addEventListener("input", (e) => {
                 const cursorPosition = inputPago.selectionStart;
-                const rawValue = inputPago.value;
 
-                // Guardamos solo números
-                const onlyNumbers = rawValue.replace(/[^0-9]/g, "");
-                
-                // Formatear
-                const formatted = formatToCLP(onlyNumbers);
+                const onlyNumbers = inputPago.value.replace(/[^0-9]/g, "");
+
+                let numero = parseInt(onlyNumbers, 10);
+
+                if (!isNaN(numero) && numero > restante) {
+                    numero = Math.floor(restante);
+                }
+
+                const formatted = numero ? formatToCLP(numero) : "";
 
                 inputPago.value = formatted;
 
-                // Intentamos mantener cursor al final
                 inputPago.selectionStart = inputPago.selectionEnd = inputPago.value.length;
             });
 
