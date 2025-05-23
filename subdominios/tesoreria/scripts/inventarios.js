@@ -8,12 +8,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (exportarBtn) {
         exportarBtn.addEventListener("click", () => {
-            window.location.href = "https://cambiosorion/data/exportar_inventarios_excel.php";
+            window.location.href = "https://cambiosorion.cl/data/exportar_inventarios_excel.php";
         });
     }
 
     function cargarDivisas() {
-        fetch("https://cambiosorion/data/inventarios.php?action=divisas")
+        fetch("https://cambiosorion.cl/data/inventarios.php?action=divisas")
             .then(res => res.json())
             .then(data => {
                 divisaInput.innerHTML = `<option value="">Seleccionar</option>`;
@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
         params.set("buscar", buscarInput.value);
         params.set("limite", mostrarRegistros.value);
 
-        fetch(`https://cambiosorion/data/inventarios.php?action=listar&${params.toString()}`)
+        fetch(`https://cambiosorion.cl/data/inventarios.php?action=listar&${params.toString()}`)
             .then(res => res.json())
             .then(inventarios => {
                 tablaInventarios.innerHTML = "";
@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     btnMostrar.textContent = "Mostrar";
                     btnMostrar.className = "text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1";
                     btnMostrar.addEventListener("click", () => {
-                        window.location.href = `https://cambiosorion/data/detalle-inv.php?id=${inv.id}`;
+                        window.location.href = `https://cambiosorion.cl/data/detalle-inv.php?id=${inv.id}`;
                     });
 
                     tr.innerHTML = `
