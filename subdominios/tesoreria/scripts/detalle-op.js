@@ -158,8 +158,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const seccionDocumento = document.getElementById("seccion-documento");
             seccionDocumento.innerHTML = documentoTitulo + documentoHTML;
 
-            document.getElementById("select-estado").value = info.estado;
-
             if (info.estado === "Abonado") {
             document.getElementById("seccion-abono").style.display = "block";
             document.getElementById("input-abono").value = info.monto_pagado;
