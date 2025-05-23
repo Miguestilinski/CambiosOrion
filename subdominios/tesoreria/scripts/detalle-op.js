@@ -161,7 +161,11 @@ document.addEventListener("DOMContentLoaded", () => {
             const infoHTML = `
                 <div><span class="font-semibold text-gray-300">Número de operación:</span> ${info.numero_operacion}</div>
                 <div><span class="font-semibold text-gray-300">Código:</span> ${info.codigo_operacion}</div>
-                <div><span class="font-semibold text-gray-300">Cliente:</span> ${info.cliente}</div>
+                <div><span class="font-semibold text-gray-300">Vendedor:</span> ${info.vendedor}</div>
+                <div><span class="font-semibold text-gray-300">Caja:</span> ${info.caja}</div>
+                <div><span class="font-semibold text-gray-300">Cliente:</span> ${info.cliente}</div> 
+                <div><span class="font-semibold text-gray-300">Tipo de Transacción:</span> ${info.tipo_operacion}</div>
+                <div><span class="font-semibold text-gray-300">Observaciones:</span> ${info.observaciones}</div>
                 <div>
                     <span class="font-semibold text-gray-300">Estado:</span> 
                     <span style="color: ${color}; font-weight: 700;">${info.estado}</span>
