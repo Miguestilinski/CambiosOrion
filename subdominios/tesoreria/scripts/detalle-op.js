@@ -30,6 +30,80 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Mostrar info general de la operación
             const info = data.operacion;
+            const totalOperacion = parseFloat(info.total);
+            let abonado = parseFloat(info.monto_pagado || 0);
+            let restante = totalOperacion - abonado;
+
+            document.getElementById("estado-actual").textContent = info.estado;
+
+            if (abonado > 0) {
+                document.getElementById("seccion-abonos").style.display = "block";
+                const lista = document.getElementById("lista-abonos");
+
+                // Supongamos que `data.abonos` es un array con abonos previos.
+                if (Array.isArray(data.abonos)) {
+                    data.abonos.forEach(a => {
+                        const li = document.createElement("li");
+                        li.textContent = `$${formatNumber(a.monto)} - ${a.fecha}`;
+                        lista.appendChild(li);
+                    });
+                } else {
+                    const li = document.createElement("li");
+                    li.textContent = `$${formatNumber(abonado)} registrado anteriormente`;
+                    lista.appendChild(li);
+                }
+            }
+
+            const inputPago = document.getElementById("input-pago");
+            const btnPago = document.getElementById("btn-registrar-pago");
+
+            inputPago.placeholder = `Monto sugerido: $${formatNumber(restante)}`;
+
+            if (info.estado === "Pagado") {
+                inputPago.disabled = true;
+                btnPago.disabled = true;
+                btnPago.textContent = "Pagado";
+            }
+
+            btnPago.addEventListener("click", () => {
+                const montoIngresado = parseFloat(inputPago.value || "0");
+
+                if (isNaN(montoIngresado) || montoIngresado <= 0) {
+                    alert("Monto inválido");
+                    return;
+                }
+
+                if (montoIngresado > restante) {
+                    alert("El monto excede lo pendiente");
+                    return;
+                }
+
+                // Nuevo estado
+                let nuevoEstado = "Abonado";
+                if (montoIngresado === restante) {
+                    nuevoEstado = "Pagado";
+                }
+
+                fetch(`https://cambiosorion.cl/data/detalle-op.php`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        id: info.id_operacion,
+                        estado: nuevoEstado,
+                        abono: montoIngresado
+                    })
+                })
+                .then(res => res.json())
+                .then(res => {
+                    if (res.success) {
+                        alert("Pago registrado correctamente");
+                        location.reload();
+                    } else {
+                        alert("Error al registrar: " + res.message);
+                    }
+                });
+            });
+
             const infoHTML = `
                 <div><span class="font-semibold text-gray-300">Número de operación:</span> ${info.numero_operacion}</div>
                 <div><span class="font-semibold text-gray-300">Código:</span> ${info.codigo_operacion}</div>
@@ -81,11 +155,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 `;
             }
 
-            const nuevaSeccion = document.createElement("div");
-            nuevaSeccion.id = "seccion-documento";
-            nuevaSeccion.innerHTML = documentoTitulo + documentoHTML;
-
-            document.getElementById("seccion-documento").appendChild(nuevaSeccion);
+            const seccionDocumento = document.getElementById("seccion-documento");
+            seccionDocumento.innerHTML = documentoTitulo + documentoHTML;
 
             document.getElementById("select-estado").value = info.estado;
 
