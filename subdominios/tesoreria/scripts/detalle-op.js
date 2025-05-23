@@ -86,6 +86,69 @@ document.addEventListener("DOMContentLoaded", () => {
             nuevaSeccion.innerHTML = documentoTitulo + documentoHTML;
 
             document.getElementById("seccion-documento").appendChild(nuevaSeccion);
+
+            document.getElementById("select-estado").value = info.estado;
+
+            if (info.estado === "Abonado") {
+            document.getElementById("seccion-abono").style.display = "block";
+            document.getElementById("input-abono").value = info.monto_pagado;
+            }
+
+            // Mostrar o esconder abono según selección
+            document.getElementById("select-estado").addEventListener("change", (e) => {
+            const val = e.target.value;
+            document.getElementById("seccion-abono").style.display = val === "Abonado" ? "block" : "none";
+            });
+
+            // Guardar cambio de estado
+            document.getElementById("btn-guardar-estado").addEventListener("click", () => {
+            const estado = document.getElementById("select-estado").value;
+            const abono = parseFloat(document.getElementById("input-abono").value || 0);
+
+            if (estado === "Abonado" && (isNaN(abono) || abono <= 0 || abono > parseFloat(info.total))) {
+                alert("Monto de abono inválido.");
+                return;
+            }
+
+            fetch(`https://cambiosorion.cl/data/detalle-op.php`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                id: info.id_operacion,
+                estado,
+                abono
+                })
+            })
+            .then(res => res.json())
+            .then(res => {
+                if (res.success) {
+                alert("Estado actualizado.");
+                location.reload();
+                } else {
+                alert("Error al actualizar: " + res.message);
+                }
+            });
+            });
+
+            // Anular operación
+            document.getElementById("btn-anular").addEventListener("click", () => {
+            if (!confirm("¿Seguro que deseas anular esta operación? Esto revertirá el inventario.")) return;
+
+            fetch(`https://cambiosorion.cl/data/detalle-op.php`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: info.id_operacion })
+            })
+            .then(res => res.json())
+            .then(res => {
+                if (res.success) {
+                alert("Operación anulada.");
+                location.reload();
+                } else {
+                alert("Error al anular: " + res.message);
+                }
+            });
+            });
         })
         .catch(err => {
             console.error(err);
