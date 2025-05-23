@@ -123,12 +123,12 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             if (abonado > 0) {
-                document.getElementById("seccion-pagoss").style.display = "block";
-                const lista = document.getElementById("lista-pagoss");
+                document.getElementById("seccion-pagos").style.display = "block";
+                const lista = document.getElementById("lista-pagos");
 
-                // Supongamos que `data.pagoss` es un array con pagoss previos.
-                if (Array.isArray(data.pagoss)) {
-                    data.pagoss.forEach(a => {
+                // Supongamos que `data.pagos` es un array con pagos previos.
+                if (Array.isArray(data.pagos)) {
+                    data.pagos.forEach(a => {
                         const li = document.createElement("li");
                         li.textContent = `$${formatNumber(a.monto)} - ${a.fecha}`;
                         lista.appendChild(li);
