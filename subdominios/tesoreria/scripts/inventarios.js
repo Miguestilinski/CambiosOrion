@@ -42,7 +42,6 @@ document.addEventListener("DOMContentLoaded", () => {
         fetch(`https://cambiosorion.cl/data/inventarios.php?${params.toString()}`)
             .then(res => res.text())  // Leer respuesta como texto
             .then(text => {
-                console.log("Respuesta cruda inventarios:", text);  // Mostrar respuesta cruda
                 try {
                     const inventarios = JSON.parse(text);
                     tablaInventarios.innerHTML = "";
