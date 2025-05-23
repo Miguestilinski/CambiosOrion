@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function cargarDivisas() {
-        fetch("https://cambiosorion.cl/data/inventarios.php?action=divisas")
+        fetch("https://cambiosorion.cl/data/inventarios.php")
             .then(res => res.json())
             .then(data => {
                 divisaInput.innerHTML = `<option value="">Seleccionar</option>`;
@@ -29,12 +29,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function cargarInventarios() {
         const params = new URLSearchParams();
-        params.set("caja", cajaInput.value);
-        params.set("divisa", divisaInput.value);
-        params.set("buscar", buscarInput.value);
-        params.set("limite", mostrarRegistros.value);
+        if(cajaInput.value) params.set("caja", cajaInput.value);
+        if(divisaInput.value) params.set("divisa", divisaInput.value);
+        if(buscarInput.value) params.set("buscar", buscarInput.value);
+        if(mostrarRegistros.value) params.set("limite", mostrarRegistros.value);
 
-        fetch(`https://cambiosorion.cl/data/inventarios.php?action=listar&${params.toString()}`)
+        fetch(`https://cambiosorion.cl/data/inventarios.php?${params.toString()}`)
             .then(res => res.json())
             .then(inventarios => {
                 tablaInventarios.innerHTML = "";
@@ -43,7 +43,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     const tr = document.createElement("tr");
                     tr.classList.add("border-b", "bg-white", "border-gray-700", "text-gray-700");
 
-                    // Botón Mostrar
                     const btnMostrar = document.createElement("button");
                     btnMostrar.textContent = "Mostrar";
                     btnMostrar.className = "text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1";
