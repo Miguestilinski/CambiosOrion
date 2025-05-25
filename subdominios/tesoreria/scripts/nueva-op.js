@@ -13,6 +13,44 @@ let usuarioSesion = null;
   }
 })();
 
+async function cargarCajas() {
+  const cajaSelect = document.getElementById("caja");
+  cajaSelect.innerHTML = ""; // Limpiar opciones previas
+
+  try {
+    const res = await fetch("https://cambiosorion.cl/data/nueva-op.php?cajas_activas=1");
+    if (!res.ok) throw new Error("No se pudo obtener las cajas.");
+    const cajas = await res.json();
+
+    // Opción por defecto: Tesorería
+    const opcionDefault = document.createElement("option");
+    opcionDefault.value = "1"; // Cambia por el id real de Tesorería
+    opcionDefault.textContent = "Tesorería";
+    cajaSelect.appendChild(opcionDefault);
+
+    // Agregar el resto de las cajas activas
+    cajas.forEach((caja) => {
+      // Omitir "Tesorería" si ya fue agregada
+      if (caja.id !== "1") {
+        const option = document.createElement("option");
+        option.value = caja.id;
+        option.textContent = caja.nombre;
+        cajaSelect.appendChild(option);
+      }
+    });
+
+  } catch (error) {
+    console.error("Error al cargar cajas:", error);
+    const option = document.createElement("option");
+    option.value = "";
+    option.textContent = "Error al cargar cajas";
+    cajaSelect.appendChild(option);
+  }
+}
+
+// Llamamos a la función una vez cargue el script
+cargarCajas();
+
 let clienteSeleccionado = null;
 let advertenciaMostrada = false;
 
