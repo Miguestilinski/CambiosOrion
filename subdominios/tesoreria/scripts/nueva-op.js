@@ -3,7 +3,9 @@ let usuarioSesion = null;
 // Obtener datos del usuario desde session_status.php
 (async () => {
   try {
-    const res = await fetch("https://cambiosorion.cl/data/session_status.php");
+    const res = await fetch("https://cambiosorion.cl/data/session_status.php", {
+      credentials: "include"
+    });
     if (!res.ok) throw new Error("No se pudo obtener la sesión.");
     const data = await res.json();
     usuarioSesion = data;
@@ -24,7 +26,7 @@ async function cargarCajas() {
 
     // Opción por defecto: Tesorería
     const opcionDefault = document.createElement("option");
-    opcionDefault.value = "1"; // Cambia por el id real de Tesorería
+    opcionDefault.value = "0"; // Cambia por el id real de Tesorería
     opcionDefault.textContent = "Tesorería";
     cajaSelect.appendChild(opcionDefault);
 
