@@ -50,7 +50,6 @@ document.addEventListener("DOMContentLoaded", () => {
             let abonado = parseFloat(info.monto_pagado || 0);
             let restante = totalOperacion - abonado;
 
-
             // --- Funcionalidad Botón Exportar PDF ---
             document.getElementById("exportar-pdf").addEventListener("click", () => {
                 // Abre el PDF en una nueva pestaña
@@ -235,7 +234,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div><span class="font-semibold text-gray-300">Código:</span> ${info.codigo_operacion}</div>
                 <div><span class="font-semibold text-gray-300">Vendedor:</span> ${info.vendedor}</div>
                 <div><span class="font-semibold text-gray-300">Caja:</span> ${info.caja}</div>
-                <div><span class="font-semibold text-gray-300">Cliente:</span> ${info.cliente}</div> 
+                <div><span class="font-semibold text-gray-300">Cliente:</span> ${info.nombre_cliente}</div> 
                 <div><span class="font-semibold text-gray-300">Tipo de Transacción:</span> ${info.tipo_transaccion}</div>
                 <div><span class="font-semibold text-gray-300">Observaciones:</span> ${info.observaciones}</div>
                 <div>
