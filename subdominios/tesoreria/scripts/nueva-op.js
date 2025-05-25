@@ -3,7 +3,7 @@ let usuarioSesion = null;
 // Obtener datos del usuario desde session_status.php
 (async () => {
   try {
-    const res = await fetch("https://cambiosorion.cl/data/data/session_status.php");
+    const res = await fetch("https://cambiosorion.cl/data/session_status.php");
     if (!res.ok) throw new Error("No se pudo obtener la sesión.");
     const data = await res.json();
     usuarioSesion = data;
