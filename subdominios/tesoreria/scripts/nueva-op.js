@@ -1,3 +1,18 @@
+let usuarioSesion = null;
+
+// Obtener datos del usuario desde session_status.php
+(async () => {
+  try {
+    const res = await fetch("https://cambiosorion.cl/data/data/session_status.php");
+    if (!res.ok) throw new Error("No se pudo obtener la sesión.");
+    const data = await res.json();
+    usuarioSesion = data;
+    console.log("Usuario autenticado:", usuarioSesion);
+  } catch (error) {
+    console.error("Error obteniendo la sesión:", error);
+  }
+})();
+
 let clienteSeleccionado = null;
 let advertenciaMostrada = false;
 
@@ -211,9 +226,15 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
     return;
   }
 
+  if (!usuarioSesion || !usuarioSesion.isAuthenticated) {
+    alert("No se pudo validar al usuario.");
+    return;
+  }
+
   const tipoTransaccion = document.getElementById("tipo-transaccion").value;
   const tipoDocumento = document.getElementById("tipo-documento").value;
   const observaciones = document.getElementById("observaciones").value;
+  const cajaSeleccionada = document.getElementById("caja").value;
 
   // Generar datos de prueba para número de documento y número de nota
   const numeroDocumento = "DOC-" + Math.floor(100000 + Math.random() * 900000); // ejemplo: DOC-123456
@@ -254,6 +275,7 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
   if (validacionFallida) return;
 
   const payload = {
+    caja: cajaSeleccionada,
     cliente_id: clienteSeleccionado.id,
     tipo_transaccion: tipoTransaccion,
     tipo_documento: tipoDocumento,
@@ -262,7 +284,11 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
     estado: "pendiente",
     observaciones,
     total: totalOperacion,
-    detalles: divisas
+    detalles: divisas,
+    vendedor: {
+      id: usuarioSesion.equipo_id,
+      nombre: usuarioSesion.equipo_nombre,
+    }
   };
 
   // Verifica los valores recopilados
