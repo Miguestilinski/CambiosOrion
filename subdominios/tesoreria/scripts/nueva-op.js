@@ -23,6 +23,8 @@ async function cargarCajas() {
     const res = await fetch("https://cambiosorion.cl/data/nueva-op.php?cajas_activas=1");
     if (!res.ok) throw new Error("No se pudo obtener las cajas.");
     const text = await res.text();
+    console.log("Texto recibido:", text);
+
     try {
       const cajas = JSON.parse(text);
 
