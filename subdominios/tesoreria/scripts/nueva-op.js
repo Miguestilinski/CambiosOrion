@@ -20,7 +20,7 @@ async function cargarCajas() {
   cajaSelect.innerHTML = ""; // Limpiar opciones previas
 
   try {
-    const res = await fetch("https://cambiosorion.cl/data/nueva-op.php?cajas_activas=1");
+    const res = await fetch("https://cambiosorion.cl/data/nueva-op.php?cajas_activas");
     if (!res.ok) throw new Error("No se pudo obtener las cajas.");
     const text = await res.text();
     console.log("Texto recibido:", text);
