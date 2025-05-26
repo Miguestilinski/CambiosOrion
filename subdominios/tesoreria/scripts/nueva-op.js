@@ -22,24 +22,30 @@ async function cargarCajas() {
   try {
     const res = await fetch("https://cambiosorion.cl/data/nueva-op.php?cajas_activas=1");
     if (!res.ok) throw new Error("No se pudo obtener las cajas.");
-    const cajas = await res.json();
+    const text = await res.text();
+    try {
+      const cajas = JSON.parse(text);
 
-    // Opción por defecto: Tesorería
-    const opcionDefault = document.createElement("option");
-    opcionDefault.value = "0"; // Cambia por el id real de Tesorería
-    opcionDefault.textContent = "Tesorería";
-    cajaSelect.appendChild(opcionDefault);
+      // Opción por defecto: Tesorería
+      const opcionDefault = document.createElement("option");
+      opcionDefault.value = "0";
+      opcionDefault.textContent = "Tesorería";
+      cajaSelect.appendChild(opcionDefault);
 
-    // Agregar el resto de las cajas activas
-    cajas.forEach((caja) => {
-      // Omitir "Tesorería" si ya fue agregada
-      if (caja.id !== "1") {
-        const option = document.createElement("option");
-        option.value = caja.id;
-        option.textContent = caja.nombre;
-        cajaSelect.appendChild(option);
-      }
-    });
+      // Agregar el resto de las cajas activas
+      cajas.forEach((caja) => {
+        // Omitir "Tesorería" si ya fue agregada
+        if (caja.id !== "1") {
+          const option = document.createElement("option");
+          option.value = caja.id;
+          option.textContent = caja.nombre;
+          cajaSelect.appendChild(option);
+        }
+      });
+    } catch (e) {
+      console.error("Respuesta no es JSON válido:", text);
+      throw e;
+    }
 
   } catch (error) {
     console.error("Error al cargar cajas:", error);
