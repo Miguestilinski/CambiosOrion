@@ -225,38 +225,24 @@ function agregarDivisa() {
               sugerenciasUl.classList.add("hidden");
               console.log(`Divisa seleccionada: ${divisa.nombre}, ID: ${divisa.id}`);
 
-              // Obtener la tasa actual desde el servidor (si está en la tabla divisas)
-              document.getElementById("tipo-transaccion").addEventListener("change", async () => {
-                  const tipoOperacion = document.getElementById("tipo-transaccion").value;
-
-                  // Recorrer todas las divisas agregadas
-                  document.querySelectorAll(".divisa-item:not(.hidden)").forEach(async (item) => {
-                      const inputNombre = item.querySelector(".divisa-nombre");
-                      const tasaInput = item.querySelector(".divisa-tasa");
-
-                      const nombre = inputNombre.value.trim();
-                      if (!nombre) return;
-
-                      try {
-                          const res = await fetch(`https://cambiosorion.cl/data/nueva-op.php?precio_divisa=${encodeURIComponent(nombre)}&tipo=${tipoOperacion}`);
-                          const data = await res.json();
-
-                          if (data && data.precio) {
-                              const precio = parseFloat(data.precio);
-                              const precioFormateado = Number.isInteger(precio)
-                                  ? new Intl.NumberFormat('es-CL').format(precio)
-                                  : new Intl.NumberFormat('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(precio);
-
-                              tasaInput.placeholder = `≈ ${precioFormateado}`;
-                          } else {
-                              tasaInput.placeholder = "Tasa de cambio";
-                          }
-                      } catch (err) {
-                          console.error("Error al actualizar precio:", err);
-                          tasaInput.placeholder = "Tasa de cambio";
-                      }
-                  });
-              });
+              // Actualizar inmediatamente el placeholder al seleccionar divisa
+              const tipoOperacion = document.getElementById("tipo-transaccion").value;
+              try {
+                  const res = await fetch(`https://cambiosorion.cl/data/nueva-op.php?precio_divisa=${encodeURIComponent(divisa.nombre)}&tipo=${tipoOperacion}`);
+                  const data = await res.json();
+                  if (data && data.precio) {
+                      const precio = parseFloat(data.precio);
+                      const precioFormateado = Number.isInteger(precio)
+                          ? new Intl.NumberFormat('es-CL').format(precio)
+                          : new Intl.NumberFormat('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(precio);
+                      nuevaDivisa.querySelector(".divisa-tasa").placeholder = `≈ ${precioFormateado}`;
+                  } else {
+                      nuevaDivisa.querySelector(".divisa-tasa").placeholder = "Tasa de cambio";
+                  }
+              } catch (err) {
+                  console.error("Error al obtener tasa:", err);
+                  nuevaDivisa.querySelector(".divisa-tasa").placeholder = "Tasa de cambio";
+              }
             });
             sugerenciasUl.appendChild(li);
         });
@@ -280,6 +266,38 @@ function agregarDivisa() {
     nuevaDivisa.querySelector(".divisa-tasa").value = "";
     nuevaDivisa.querySelector(".divisa-subtotal").textContent = "Subtotal: $0.00";
 }
+
+document.getElementById("tipo-transaccion").addEventListener("change", async () => {
+    const tipoOperacion = document.getElementById("tipo-transaccion").value;
+
+    // Recorrer todas las divisas agregadas
+    document.querySelectorAll(".divisa-item:not(.hidden)").forEach(async (item) => {
+        const inputNombre = item.querySelector(".divisa-nombre");
+        const tasaInput = item.querySelector(".divisa-tasa");
+
+        const nombre = inputNombre.value.trim();
+        if (!nombre) return;
+
+        try {
+            const res = await fetch(`https://cambiosorion.cl/data/nueva-op.php?precio_divisa=${encodeURIComponent(nombre)}&tipo=${tipoOperacion}`);
+            const data = await res.json();
+
+            if (data && data.precio) {
+                const precio = parseFloat(data.precio);
+                const precioFormateado = Number.isInteger(precio)
+                    ? new Intl.NumberFormat('es-CL').format(precio)
+                    : new Intl.NumberFormat('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(precio);
+
+                tasaInput.placeholder = `≈ ${precioFormateado}`;
+            } else {
+                tasaInput.placeholder = "Tasa de cambio";
+            }
+        } catch (err) {
+            console.error("Error al actualizar precio:", err);
+            tasaInput.placeholder = "Tasa de cambio";
+        }
+    });
+});
 
 function calcularTotal() {
     let total = 0;
