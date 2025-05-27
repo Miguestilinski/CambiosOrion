@@ -444,7 +444,7 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
     tipo_documento: tipoDocumento,
     numero_documento: numeroDocumento,
     numero_nota: numeroNota,
-    estado: "pendiente",
+    estado: "Vigente",
     observaciones,
     total: totalOperacion,
     detalles: divisas,
