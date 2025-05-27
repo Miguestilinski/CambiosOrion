@@ -23,7 +23,6 @@ async function cargarCajas() {
     const res = await fetch("https://cambiosorion.cl/data/nueva-op.php?buscar_cajas=1");
     if (!res.ok) throw new Error("No se pudo obtener las cajas.");
     const text = await res.text();
-    console.log("Texto recibido:", text);
 
     try {
       const cajas = JSON.parse(text);
@@ -96,7 +95,11 @@ clienteInput.addEventListener("input", async (e) => {
     resultadoClientes.classList.remove("hidden");
   } catch (error) {
     console.error(error);
-    alert("Hubo un problema buscando clientes.");
+    mostrarModal({
+      titulo: "❌ Error",
+      mensaje: "Hubo un problema buscando clientes.",
+      textoConfirmar: "Entendido"
+    });
   }
 });
 
@@ -268,16 +271,71 @@ function calcularTotal() {
 // Inicializar con una divisa por defecto
 agregarDivisa();
 
+function mostrarModal({ titulo, mensaje, textoConfirmar = "Aceptar", textoCancelar = null, onConfirmar, onCancelar }) {
+  const modal = document.getElementById("modal-generico");
+  const tituloElem = document.getElementById("modal-generico-titulo");
+  const mensajeElem = document.getElementById("modal-generico-mensaje");
+  const btnConfirmar = document.getElementById("modal-generico-confirmar");
+  const btnCancelar = document.getElementById("modal-generico-cancelar");
+
+  tituloElem.textContent = titulo;
+  mensajeElem.textContent = mensaje;
+  btnConfirmar.textContent = textoConfirmar;
+
+  if (textoCancelar) {
+    btnCancelar.classList.remove("hidden");
+    btnCancelar.textContent = textoCancelar;
+  } else {
+    btnCancelar.classList.add("hidden");
+  }
+
+  modal.classList.remove("hidden");
+
+  // Remover handlers anteriores
+  btnConfirmar.onclick = () => {
+    modal.classList.add("hidden");
+    if (onConfirmar) onConfirmar();
+  };
+
+  btnCancelar.onclick = () => {
+    modal.classList.add("hidden");
+    if (onCancelar) onCancelar();
+  };
+}
+
+function mostrarModalOperacionExitosa() {
+  const modal = document.getElementById("modal-operacion-exitosa");
+  modal.classList.remove("hidden");
+
+  document.getElementById("nueva-operacion").onclick = () => {
+    modal.classList.add("hidden");
+    document.getElementById("form-nueva-operacion").reset();
+    // Resetear también estado adicional si es necesario
+  };
+
+  document.getElementById("volver-operaciones").onclick = () => {
+    window.location.href = "https://tesoreria.cambiosorion.cl/operaciones";
+  };
+}
+
 document.querySelector("button[type='submit']").addEventListener("click", async (e) => {
   e.preventDefault(); // Evita el comportamiento por defecto del formulario
 
   if (!clienteSeleccionado) {
-    alert("Selecciona un cliente válido.");
+    mostrarModal({
+      titulo: "❌ Error",
+      mensaje: "Selecciona un cliente válido.",
+      textoConfirmar: "Entendido"
+    });
     return;
   }
 
   if (!usuarioSesion || !usuarioSesion.isAuthenticated) {
-    alert("No se pudo validar al usuario.");
+    mostrarModal({
+      titulo: "❌ Error",
+      mensaje: "No se pudo validar al usuario.",
+      textoConfirmar: "Entendido"
+    });
     return;
   }
 
@@ -305,7 +363,11 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
     console.log(`Divisa input: ${nombre}, data-id: ${inputNombre.dataset.id}`);
 
     if (!divisaId || !nombre) {
-      alert(`Selecciona una divisa válida desde la lista (autocompletado).`);
+      mostrarModal({
+        titulo: "❌ Error",
+        mensaje: `Selecciona una divisa válida desde la lista (autocompletado).`,
+        textoConfirmar: "Entendido"
+      });
       validacionFallida = true;
       return;
     }    
@@ -364,14 +426,21 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
     const resultado = await res.json();
     console.log("Respuesta del servidor:", resultado);
     if (resultado.error) {
-      alert("Error: " + resultado.error);
+      mostrarModal({
+        titulo: "❌ Error",
+        mensaje: ("Error: " + resultado.error),
+        textoConfirmar: "Entendido"
+      });
     } else {
-      alert("Operación registrada con éxito.");
-      window.location.href = "https://tesoreria.cambiosorion.cl/operaciones";
+      mostrarModalOperacionExitosa();
     }
   } catch (err) {
     console.error(err);
-    alert("Hubo un problema al registrar la operación.");
+    mostrarModal({
+      titulo: "❌ Error",
+      mensaje: "Hubo un problema al registrar la operación.",
+      textoConfirmar: "Entendido"
+    });
   }
 });
 
