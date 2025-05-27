@@ -224,6 +224,21 @@ function agregarDivisa() {
               divisaInput.dataset.id = divisa.id;
               sugerenciasUl.classList.add("hidden");
               console.log(`Divisa seleccionada: ${divisa.nombre}, ID: ${divisa.id}`);
+                // Obtener la tasa actual desde el servidor (si está en la tabla divisas)
+              try {
+                const resTasa =  fetch(`https://cambiosorion.cl/data/nueva-op.php?precio_divisa=${encodeURIComponent(divisa.nombre)}&tipo=${tipoTransaccion}`);
+                const data = resTasa.json();
+                
+                // Solo actualiza el placeholder si existe el precio (es divisa externa)
+                if (data && data.precio) {
+                  tasaInput.placeholder = `≈ ${data.precio}`;
+                } else {
+                  tasaInput.placeholder = "Tasa de cambio";
+                }
+              } catch (err) {
+                console.error("Error al obtener precio:", err);
+                tasaInput.placeholder = "Tasa de cambio";
+              }
             });
             sugerenciasUl.appendChild(li);
         });
