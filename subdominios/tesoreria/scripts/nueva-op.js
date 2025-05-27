@@ -28,20 +28,23 @@ async function cargarCajas() {
     try {
       const cajas = JSON.parse(text);
 
-      // Opción por defecto: Tesorería
-      const opcionDefault = document.createElement("option");
-      opcionDefault.value = "0";
-      opcionDefault.textContent = "Tesorería";
-      cajaSelect.appendChild(opcionDefault);
+      // Ordenar: Tesorería primero, luego las otras
+      cajas.sort((a, b) => {
+        if (a.nombre.toLowerCase() === "tesoreria") return -1;
+        if (b.nombre.toLowerCase() === "tesoreria") return 1;
+        return 0;
+      });
 
-      // Agregar el resto de las cajas activas
+      // Agregar todas las cajas sin duplicar
+      const idsAgregados = new Set();
+
       cajas.forEach((caja) => {
-        // Omitir "Tesorería" si ya fue agregada
-        if (caja.id !== "1") {
+        if (!idsAgregados.has(caja.id)) {
           const option = document.createElement("option");
           option.value = caja.id;
           option.textContent = caja.nombre;
           cajaSelect.appendChild(option);
+          idsAgregados.add(caja.id);
         }
       });
     } catch (e) {
