@@ -414,7 +414,7 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
   console.log("Número de nota:", numeroNota);
   console.log("Total operación:", totalOperacion);
   console.log("Detalles:", divisas);
-  console.log("Vendedor:", vendedor);
+  console.log("Vendedor:", usuarioSesion.equipo_nombre);
 
   try {
     const res = await fetch("https://cambiosorion.cl/data/nueva-op.php", {
