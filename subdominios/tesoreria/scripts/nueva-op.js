@@ -405,6 +405,7 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
 
   // Verifica los valores recopilados
   console.log("Verificación de campos:");
+  console.log("Caja:", cajaSeleccionada);
   console.log("Cliente seleccionado:", clienteSeleccionado);
   console.log("Tipo de transacción:", tipoTransaccion);
   console.log("Tipo de documento:", tipoDocumento);
@@ -413,6 +414,7 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
   console.log("Número de nota:", numeroNota);
   console.log("Total operación:", totalOperacion);
   console.log("Detalles:", divisas);
+  console.log("Vendedor:", vendedor);
 
   try {
     const res = await fetch("https://cambiosorion.cl/data/nueva-op.php", {
