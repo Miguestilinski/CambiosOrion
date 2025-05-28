@@ -138,45 +138,52 @@
                 <div id="detalle-divisas" class="space-y-4"></div>
                 <div id="seccion-documento"></div>
                 <div id="estado-operacion" class="mt-6 bg-gray-800 border border-gray-600 p-4 rounded text-white space-y-3">
-                <h2 class="text-xl font-semibold text-white mb-3">Pagos</h2>
-
-                <div id="tabla-historico-pagos" class="text-sm"></div>
-
-                <button id="btn-nuevo-pago" class="mt-4 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white">
+                <!-- Encabezado y botón en la misma línea -->
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="text-xl font-semibold text-white">Pagos</h2>
+                    <button id="btn-nuevo-pago" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white">
                     Nuevo Pago
-                </button>
+                    </button>
+                </div>
 
-                <form id="form-nuevo-pago" class="mt-4 space-y-3 hidden">
-                    <div>
-                    <label for="tipo-pago" class="block text-gray-300">Tipo de pago:</label>
-                    <select id="tipo-pago" class="bg-gray-700 border border-gray-500 text-white p-2 rounded w-full">
+                <!-- Formulario encima de la tabla -->
+                <form id="form-nuevo-pago" class="space-y-3 hidden mb-4">
+                    <!-- Inputs en fila -->
+                    <div class="flex flex-wrap gap-4">
+                    <div class="flex-1 min-w-[150px]">
+                        <label for="tipo-pago" class="block text-gray-300 mb-1">Tipo de pago:</label>
+                        <select id="tipo-pago" class="bg-white border border-gray-600 text-gray-700 p-2 rounded w-full">
                         <option value="">Seleccione</option>
                         <option value="efectivo">Efectivo</option>
                         <option value="transferencia">Transferencia</option>
                         <option value="tarjeta">Tarjeta</option>
                         <option value="otro">Otro</option>
-                    </select>
+                        </select>
                     </div>
 
-                    <div>
-                    <label for="divisa" class="block text-gray-300">Divisa:</label>
-                    <select id="divisa" class="bg-gray-700 border border-gray-500 text-white p-2 rounded w-full">
+                    <div class="flex-1 min-w-[150px]">
+                        <label for="divisa" class="block text-gray-300 mb-1">Divisa:</label>
+                        <select id="divisa" class="bg-white border border-gray-600 text-gray-700 p-2 rounded w-full">
                         <option value="">Seleccione</option>
                         <option value="CLP">CLP</option>
                         <option value="USD">USD</option>
                         <option value="EUR">EUR</option>
-                    </select>
+                        </select>
                     </div>
 
-                    <div>
-                    <label for="input-pago" class="block text-gray-300">Monto:</label>
-                    <input type="text" id="input-pago" class="bg-gray-700 border border-gray-500 text-white p-2 rounded w-full" placeholder="$0">
+                    <div class="flex-1 min-w-[150px]">
+                        <label for="input-pago" class="block text-gray-300 mb-1">Monto:</label>
+                        <input type="text" id="input-pago" class="bg-white border border-gray-600 text-gray-700 p-2 rounded w-full" placeholder="$0">
+                    </div>
                     </div>
 
-                    <button type="button" id="btn-registrar-pago" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-white">
+                    <button type="button" id="btn-registrar-pago" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-white mt-2">
                     Registrar Pago
                     </button>
                 </form>
+
+                <!-- Tabla de pagos históricos -->
+                <div id="tabla-historico-pagos" class="text-sm"></div>
                 </div>
               </section>              
         </main>
