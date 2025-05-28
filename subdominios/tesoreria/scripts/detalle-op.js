@@ -326,7 +326,7 @@ document.addEventListener("DOMContentLoaded", () => {
             seccionDocumento.innerHTML = documentoTitulo + documentoHTML;
 
             // Anular operación
-            document.getElementById("btn-anular").addEventListener("click", () => {
+            document.getElementById("anular").addEventListener("click", () => {
             if (!confirm("¿Seguro que deseas anular esta operación? Esto revertirá el inventario.")) return;
 
             fetch(`https://cambiosorion.cl/data/detalle-op.php`, {
