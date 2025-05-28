@@ -467,6 +467,9 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
   console.log("Detalles:", divisas);
   console.log("Vendedor:", usuarioSesion.equipo_nombre);
 
+  const inventarioOK = await verificarInventarioAntesDeGuardar();
+  if (!inventarioOK) return;
+
   try {
     const res = await fetch("https://cambiosorion.cl/data/nueva-op.php", {
       method: "POST",
@@ -500,3 +503,33 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
 document.getElementById("cancelar").addEventListener("click", () => {
   window.location.href = "https://tesoreria.cambiosorion.cl/operaciones";
 });
+
+async function verificarInventarioAntesDeGuardar() {
+  const divisas = document.querySelectorAll(".divisa-item:not(.hidden)");
+  const cajaSeleccionada = document.getElementById("caja").value;
+
+  for (const divisaItem of divisas) {
+    const divisaInput = divisaItem.querySelector(".divisa-nombre");
+    const montoInput = divisaItem.querySelector(".divisa-monto");
+
+    const divisaId = divisaInput.dataset.id;
+    const monto = parseInt(montoInput.value) || 0;
+
+    if (!divisaId || monto <= 0) continue;
+
+    const url = `https://cambiosorion.cl/data/nueva-op.php?verificar_inventario=1&divisa_id=${divisaId}&cantidad=${monto}&caja=${cajaSeleccionada}`;
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if (!data.ok) {
+      mostrarModal({
+        titulo: "❌ Inventario insuficiente",
+        mensaje: `No hay suficiente stock de ${divisaInput.value} en la caja seleccionada.`,
+        textoConfirmar: "Entendido"
+      });
+      return false;
+    }
+  }
+
+  return true;
+}
