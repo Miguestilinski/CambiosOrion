@@ -520,6 +520,7 @@ async function verificarInventarioAntesDeGuardar() {
     const url = `https://cambiosorion.cl/data/nueva-op.php?verificar_inventario=1&divisa_id=${divisaId}&cantidad=${monto}&caja=${cajaSeleccionada}`;
     const res = await fetch(url);
     const data = await res.json();
+    console.log(`Inventario para divisa ${divisaId} en caja ${cajaSeleccionada}:`, data);
 
     if (!data.ok) {
       mostrarModal({
