@@ -149,10 +149,10 @@
                 <!-- Formulario encima de la tabla -->
                 <form id="form-nuevo-pago" class="space-y-3 hidden mb-4">
                     <!-- Inputs en fila -->
-                    <div class="flex flex-wrap gap-4">
+                    <div class="flex flex-wrap gap-4 mb-2">
                     <div class="flex-1 min-w-[150px]">
                         <label for="tipo-pago" class="block text-gray-300 mb-1">Tipo de pago:</label>
-                        <select id="tipo-pago" class="bg-white border border-gray-600 text-gray-700 p-2 rounded w-full">
+                        <select id="tipo-pago" class="bg-white border border-gray-600 text-gray-700 px-2 py-2.5 text-sm rounded-lg w-full">
                         <option value="">Seleccione</option>
                         <option value="efectivo">Efectivo</option>
                         <option value="transferencia">Transferencia</option>
@@ -160,14 +160,14 @@
                         <option value="otro">Otro</option>
                         </select>
                     </div>
-                    
+
                     <div class="flex-1 min-w-[150px] relative">
                     <label for="divisa-input" class="block text-gray-300 mb-1">Divisa:</label>
                     <input
                         id="divisa-input"
                         type="text"
                         placeholder="Buscar divisa"
-                        class="divisa-nombre block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
+                        class="divisa-nombre block bg-white border border-gray-600 text-gray-700 px-2 py-2.5 text-sm rounded-lg w-full"
                         autocomplete="off"
                     />
                     <ul class="divisa-sugerencias absolute z-10 bg-white border border-gray-600 text-gray-700 rounded-lg mt-1 hidden w-full max-h-48 overflow-y-auto"></ul>
@@ -175,7 +175,7 @@
 
                     <div class="flex-1 min-w-[150px]">
                         <label for="input-pago" class="block text-gray-300 mb-1">Monto:</label>
-                        <input type="text" id="input-pago" class="bg-white border border-gray-600 text-gray-700 p-2 rounded w-full" placeholder="$0">
+                        <input type="text" id="input-pago" class="bg-white border border-gray-600 text-gray-700 px-2 py-2.5 text-sm rounded-lg w-full" placeholder="$0">
                     </div>
                     </div>
 
