@@ -139,6 +139,38 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
 
+            // Mostrar tabla de pagos si existen
+            const contenedorPagos = document.getElementById("tabla-historico-pagos");
+
+            if (Array.isArray(data.pagos) && data.pagos.length > 0) {
+                const tabla = document.createElement("table");
+                tabla.className = "w-full text-left text-gray-200 border-collapse";
+
+                tabla.innerHTML = `
+                    <thead class="text-sm border-b border-gray-500">
+                        <tr>
+                            <th class="py-2">Fecha</th>
+                            <th class="py-2">Tipo</th>
+                            <th class="py-2">Divisa</th>
+                            <th class="py-2">Monto</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.pagos.map(p => `
+                            <tr class="border-b border-gray-700">
+                                <td class="py-1">${p.fecha}</td>
+                                <td class="py-1">${p.tipo || '—'}</td>
+                                <td class="py-1">${p.divisa || 'CLP'}</td>
+                                <td class="py-1">$${formatNumber(p.monto)}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                `;
+                contenedorPagos.appendChild(tabla);
+            } else {
+                contenedorPagos.innerHTML = `<p class="text-gray-400 italic">No se han realizado pagos en esta operación.</p>`;
+            }
+
             const inputPago = document.getElementById("input-pago");
             const btnPago = document.getElementById("btn-registrar-pago");
 
@@ -215,7 +247,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     body: JSON.stringify({
                         id: info.id_operacion,
                         estado: nuevoEstado,
-                        pagos: montoIngresado
+                        pagos: montoIngresado,
+                        tipo: document.getElementById("tipo-pago").value,
+                        divisa: document.getElementById("divisa").value
                     })
                 })
                 .then(res => res.json())
@@ -315,4 +349,12 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error(err);
             document.getElementById("info-operacion").innerHTML = "<p>Error al cargar la operación.</p>";
         });
+
+        const btnNuevoPago = document.getElementById("btn-nuevo-pago");
+        const formNuevoPago = document.getElementById("form-nuevo-pago");
+
+        btnNuevoPago.addEventListener("click", () => {
+            formNuevoPago.classList.toggle("hidden");
+        });
+
 });
