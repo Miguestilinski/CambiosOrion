@@ -180,7 +180,7 @@
                 <!-- Divisa Template -->
                 <div class="divisa-item grid grid-cols-1 md:grid-cols-4 gap-4 items-end hidden">
                   <!-- Nombre Divisa -->
-                  <div>
+                  <div class="relative w-full">
                     <label for="divisa" class="block mb-1 text-sm text-white">Divisa</label>
                     <input
                       type="text"
@@ -188,7 +188,7 @@
                       class="divisa-nombre block w-full px-2 py-1.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
                       autocomplete="off"
                     />
-                    <ul class="divisa-sugerencias bg-white border border-gray-600 text-gray-700 rounded-lg mt-1 hidden"></ul>
+                    <ul class="divisa-sugerencias absolute z-10 w-full bg-white border border-gray-600 text-gray-700 rounded-lg mt-1 hidden max-h-48 overflow-y-auto"></ul>
                   </div>
       
                   <!-- Monto -->
