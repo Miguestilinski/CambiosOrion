@@ -345,16 +345,59 @@ document.addEventListener("DOMContentLoaded", () => {
             });
             });
         })
-        .catch(err => {
-            console.error(err);
-            document.getElementById("info-operacion").innerHTML = "<p>Error al cargar la operación.</p>";
-        });
+    .catch(err => {
+        console.error(err);
+        document.getElementById("info-operacion").innerHTML = "<p>Error al cargar la operación.</p>";
+    });
 
-        const btnNuevoPago = document.getElementById("btn-nuevo-pago");
-        const formNuevoPago = document.getElementById("form-nuevo-pago");
+    const btnNuevoPago = document.getElementById("btn-nuevo-pago");
+    const formNuevoPago = document.getElementById("form-nuevo-pago");
 
-        btnNuevoPago.addEventListener("click", () => {
-            formNuevoPago.classList.toggle("hidden");
-        });
+    btnNuevoPago.addEventListener("click", () => {
+        formNuevoPago.classList.toggle("hidden");
+    });
+
+    // Autocompletar divisa en Detalle Operación
+    const divisaInput = document.getElementById("divisa-input");
+    const sugerenciasUl = divisaInput.nextElementSibling; // ul
+    const idSeleccionado = divisaInput.dataset.id;
+
+    divisaInput.addEventListener("input", async (e) => {
+        const query = e.target.value.trim();
+        if (query.length < 1) {
+            sugerenciasUl.classList.add("hidden");
+            return;
+        }
+
+        try {
+            const res = await fetch(`https://cambiosorion.cl/data/detalle-op.php?buscar_divisa=${encodeURIComponent(query)}`);
+            const divisas = await res.json();
+
+            sugerenciasUl.innerHTML = "";
+            divisas.forEach((divisa) => {
+                const li = document.createElement("li");
+                li.textContent = divisa.nombre;
+                li.classList.add("px-2", "py-1", "hover:bg-gray-200", "cursor-pointer");
+                li.addEventListener("click", () => {
+                    divisaInput.value = divisa.nombre;
+                    divisaInput.dataset.id = divisa.id;
+                    sugerenciasUl.classList.add("hidden");
+                    console.log(`Divisa seleccionada: ${divisa.nombre}, ID: ${divisa.id}`);
+                });
+                sugerenciasUl.appendChild(li);
+            });
+
+            sugerenciasUl.classList.remove("hidden");
+        } catch (err) {
+            console.error("Error al buscar divisas:", err);
+        }
+    });
+
+    // Ocultar sugerencias al hacer clic fuera
+    document.addEventListener("click", (e) => {
+        if (!divisaInput.contains(e.target) && !sugerenciasUl.contains(e.target)) {
+            sugerenciasUl.classList.add("hidden");
+        }
+    });
 
 });
