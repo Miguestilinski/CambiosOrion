@@ -138,57 +138,76 @@
                 <div id="detalle-divisas" class="space-y-4"></div>
                 <div id="seccion-documento"></div>
                 <div id="estado-operacion" class="mt-6 bg-gray-800 border border-gray-600 p-4 rounded text-white space-y-3">
-                    
-                <!-- Encabezado y botón en la misma línea -->
-                <div class="flex items-center mb-3">
-                    <h2 class="mr-4 text-xl font-semibold text-white">Pagos</h2>
-                    <button id="btn-nuevo-pago" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white">
-                    Nuevo Pago
-                    </button>
+
+                    <!-- Encabezado y botón en la misma línea -->
+                    <div class="flex items-center mb-3">
+                        <h2 class="mr-4 text-xl font-semibold text-white">Pagos</h2>
+                        <button id="btn-nuevo-pago" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white">
+                        Nuevo Pago
+                        </button>
+                    </div>
+
+                    <!-- Formulario encima de la tabla -->
+                    <form id="form-nuevo-pago" class="space-y-3 hidden mb-4">
+
+                        <!-- Origen del pago con botones tipo toggle -->
+                        <div>
+                            <label class="block text-gray-300 mb-2 text-base font-semibold">¿Quién paga?</label>
+                            <div class="flex gap-4">
+                            <button type="button" id="btn-cliente" data-origen="cliente"
+                                class="origen-pago-btn bg-white text-gray-800 border-2 border-blue-500 font-medium rounded-lg px-4 py-3 flex-1 hover:bg-blue-100 focus:outline-none">
+                                Cliente
+                            </button>
+                            <button type="button" id="btn-orion" data-origen="orion"
+                                class="origen-pago-btn bg-white text-gray-800 border-2 border-blue-500 font-medium rounded-lg px-4 py-3 flex-1 hover:bg-blue-100 focus:outline-none">
+                                Orion
+                            </button>
+                            </div>
+                            <input type="hidden" id="origen-pago" name="origen-pago" />
+                        </div>
+                        
+                        <!-- Inputs en fila -->
+                        <div class="flex flex-wrap gap-4 mb-2">
+
+                            <!-- Tipo de pago -->
+                            <div class="flex-1 min-w-[150px]">
+                                <label for="tipo-pago" class="block text-gray-300 mb-1">Tipo de pago:</label>
+                                <select id="tipo-pago" class="bg-white border border-gray-600 text-gray-700 px-2 py-2.5 text-sm rounded-lg w-full">
+                                <option value="">Seleccione</option>
+                                <option value="efectivo">Efectivo</option>
+                                <option value="transferencia">Transferencia</option>
+                                <option value="tarjeta">Tarjeta</option>
+                                <option value="otro">Otro</option>
+                                </select>
+                            </div>
+
+                            <div class="flex-1 min-w-[150px] relative">
+                            <label for="divisa-input" class="block text-gray-300 mb-1">Divisa:</label>
+                            <input
+                                id="divisa-input"
+                                type="text"
+                                placeholder="Buscar divisa"
+                                class="divisa-nombre block bg-white border border-gray-600 text-gray-700 px-2 py-2.5 text-sm rounded-lg w-full"
+                                autocomplete="off"
+                            />
+                            <ul class="divisa-sugerencias absolute z-10 bg-white border border-gray-600 text-gray-700 rounded-lg mt-1 hidden w-full max-h-48 overflow-y-auto"></ul>
+                            </div>
+
+                            <div class="flex-1 min-w-[150px]">
+                                <label for="input-pago" class="block text-gray-300 mb-1">Monto:</label>
+                                <input type="text" id="input-pago" class="bg-white border border-gray-600 text-gray-700 px-2 py-2.5 text-sm rounded-lg w-full" placeholder="$0">
+                            </div>
+                        </div>
+
+                        <button type="button" id="btn-registrar-pago" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-white mt-2">
+                        Registrar Pago
+                        </button>
+                    </form>
+
+                    <!-- Tabla de pagos históricos -->
+                    <div id="tabla-historico-pagos" class="text-sm"></div>
                 </div>
-
-                <!-- Formulario encima de la tabla -->
-                <form id="form-nuevo-pago" class="space-y-3 hidden mb-4">
-                    <!-- Inputs en fila -->
-                    <div class="flex flex-wrap gap-4 mb-2">
-                    <div class="flex-1 min-w-[150px]">
-                        <label for="tipo-pago" class="block text-gray-300 mb-1">Tipo de pago:</label>
-                        <select id="tipo-pago" class="bg-white border border-gray-600 text-gray-700 px-2 py-2.5 text-sm rounded-lg w-full">
-                        <option value="">Seleccione</option>
-                        <option value="efectivo">Efectivo</option>
-                        <option value="transferencia">Transferencia</option>
-                        <option value="tarjeta">Tarjeta</option>
-                        <option value="otro">Otro</option>
-                        </select>
-                    </div>
-
-                    <div class="flex-1 min-w-[150px] relative">
-                    <label for="divisa-input" class="block text-gray-300 mb-1">Divisa:</label>
-                    <input
-                        id="divisa-input"
-                        type="text"
-                        placeholder="Buscar divisa"
-                        class="divisa-nombre block bg-white border border-gray-600 text-gray-700 px-2 py-2.5 text-sm rounded-lg w-full"
-                        autocomplete="off"
-                    />
-                    <ul class="divisa-sugerencias absolute z-10 bg-white border border-gray-600 text-gray-700 rounded-lg mt-1 hidden w-full max-h-48 overflow-y-auto"></ul>
-                    </div>
-
-                    <div class="flex-1 min-w-[150px]">
-                        <label for="input-pago" class="block text-gray-300 mb-1">Monto:</label>
-                        <input type="text" id="input-pago" class="bg-white border border-gray-600 text-gray-700 px-2 py-2.5 text-sm rounded-lg w-full" placeholder="$0">
-                    </div>
-                    </div>
-
-                    <button type="button" id="btn-registrar-pago" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-white mt-2">
-                    Registrar Pago
-                    </button>
-                </form>
-
-                <!-- Tabla de pagos históricos -->
-                <div id="tabla-historico-pagos" class="text-sm"></div>
-                </div>
-              </section>
+            </section>
         </main>
     </div>
 
