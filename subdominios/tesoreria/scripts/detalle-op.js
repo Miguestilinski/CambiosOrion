@@ -140,14 +140,26 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             // Mostrar tabla de pagos si existen
-            const contenedorPagos = document.getElementById("tabla-historico-pagos");
+            const contenedorCliente = document.getElementById("tabla-historico-pagos-cliente");
+            const contenedorOrion = document.getElementById("tabla-historico-pagos-orion");
 
-            if (Array.isArray(data.pagos) && data.pagos.length > 0) {
+            const pagosCliente = data.pagos.filter(p => p.origen === "cliente");
+            const pagosOrion = data.pagos.filter(p => p.origen === "orion");
+
+            function renderTabla(contenedor, titulo, pagos) {
+                if (pagos.length === 0) {
+                    contenedor.innerHTML = `<p class="text-gray-400 italic">No se han realizado pagos de ${titulo.toLowerCase()}.</p>`;
+                    return;
+                }
+
                 const tabla = document.createElement("table");
                 tabla.className = "w-full text-left text-gray-200 border-collapse";
 
                 tabla.innerHTML = `
                     <thead class="text-sm border-b border-gray-500">
+                        <tr>
+                            <th colspan="4" class="py-2 text-lg font-semibold">${titulo}</th>
+                        </tr>
                         <tr>
                             <th class="py-2">Fecha</th>
                             <th class="py-2">Tipo</th>
@@ -156,7 +168,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         </tr>
                     </thead>
                     <tbody>
-                        ${data.pagos.map(p => `
+                        ${pagos.map(p => `
                             <tr class="border-b border-gray-700">
                                 <td class="py-1">${p.fecha}</td>
                                 <td class="py-1">${p.tipo || '—'}</td>
@@ -166,10 +178,13 @@ document.addEventListener("DOMContentLoaded", () => {
                         `).join('')}
                     </tbody>
                 `;
-                contenedorPagos.appendChild(tabla);
-            } else {
-                contenedorPagos.innerHTML = `<p class="text-gray-400 italic">No se han realizado pagos en esta operación.</p>`;
+
+                contenedor.innerHTML = "";
+                contenedor.appendChild(tabla);
             }
+
+            renderTabla(contenedorCliente, "Pagos de Cliente", pagosCliente);
+            renderTabla(contenedorOrion, "Pagos de Orion", pagosOrion);
 
             const inputPago = document.getElementById("input-pago");
             const btnPago = document.getElementById("btn-registrar-pago");
@@ -354,7 +369,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const formNuevoPago = document.getElementById("form-nuevo-pago");
 
     btnNuevoPago.addEventListener("click", () => {
+        const isHidden = formNuevoPago.classList.contains("hidden");
+
+        // Mostrar u ocultar el formulario
         formNuevoPago.classList.toggle("hidden");
+
+        // Cambiar el texto del botón y del título
+        if (isHidden) {
+            btnNuevoPago.textContent = "Cancelar Pago";
+            document.getElementById("titulo-pago").textContent = "Nuevo Pago";
+        } else {
+            btnNuevoPago.textContent = "Nuevo Pago";
+            document.getElementById("titulo-pago").textContent = "Pagos";
+        }
     });
 
     // Autocompletar divisa en Detalle Operación

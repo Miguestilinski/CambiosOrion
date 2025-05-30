@@ -141,7 +141,7 @@
 
                     <!-- Encabezado y botón en la misma línea -->
                     <div class="flex items-center mb-3">
-                        <h2 class="mr-4 text-xl font-semibold text-white">Pagos</h2>
+                        <h2 id="titulo-pago" class="mr-4 text-xl font-semibold text-white">Pagos</h2>
                         <button id="btn-nuevo-pago" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white">
                         Nuevo Pago
                         </button>
@@ -206,8 +206,9 @@
                         </button>
                     </form>
 
-                    <!-- Tabla de pagos históricos -->
-                    <div id="tabla-historico-pagos" class="text-sm"></div>
+                    <!-- Tablas de pagos históricos -->
+                    <div id="tabla-historico-pagos-cliente" class="text-sm mb-4"></div>
+                    <div id="tabla-historico-pagos-orion" class="text-sm"></div>
                 </div>
             </section>
         </main>
