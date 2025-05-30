@@ -402,7 +402,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Autocompletar divisa en Detalle Operación
     const divisaInput = document.getElementById("divisa-input");
     const sugerenciasUl = divisaInput.nextElementSibling; // ul
-    const idSeleccionado = divisaInput.dataset.id;
+    const operacionId = divisaInput.dataset.operacionId;
 
     divisaInput.addEventListener("input", async (e) => {
         const query = e.target.value.trim();
@@ -412,7 +412,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-            const res = await fetch(`https://cambiosorion.cl/data/detalle-op.php?buscar_divisa=${encodeURIComponent(query)}`);
+            const res = await fetch(`https://cambiosorion.cl/data/detalle-op.php?buscar_divisa=${encodeURIComponent(query)}&operacion_id=${operacionId}`);
             const divisas = await res.json();
 
             sugerenciasUl.innerHTML = "";
@@ -429,7 +429,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 sugerenciasUl.appendChild(li);
             });
 
-            sugerenciasUl.classList.remove("hidden");
+            sugerenciasUl.classList.toggle("hidden", divisas.length === 0);
         } catch (err) {
             console.error("Error al buscar divisas:", err);
         }
