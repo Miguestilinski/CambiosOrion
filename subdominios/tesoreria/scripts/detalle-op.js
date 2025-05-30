@@ -295,7 +295,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Mostrar detalles de divisas
             const detallesHTML = data.detalles.map(det => `
-                <div class="p-4 rounded-lg bg-white shadow-md border border-gray-200 text-gray-800">
+                <div class="p-4 rounded-lg bg-white shadow-md border border-gray-200 text-gray-800 min-w-[200px]">
                     <div class="mb-1"><span class="font-medium text-gray-600">Divisa:</span> ${det.divisa}</div>
                     <div class="mb-1"><span class="font-medium text-gray-600">Monto:</span> ${formatNumber(det.monto)}</div>
                     <div class="mb-1"><span class="font-medium text-gray-600">Tasa de cambio:</span> ${formatNumber(det.tasa_cambio)}</div>
