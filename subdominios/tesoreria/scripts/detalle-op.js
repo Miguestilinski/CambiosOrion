@@ -429,13 +429,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Ocultar sugerencias al hacer clic fuera
-    document.addEventListener("click", (e) => {
-        if (!divisaSelect.contains(e.target) && !sugerenciasUl.contains(e.target)) {
-            sugerenciasUl.classList.add("hidden");
-        }
-    });
-
     document.querySelectorAll(".origen-card").forEach(card => {
         card.addEventListener("click", () => {
             document.getElementById("origen-pago").value = card.dataset.origen;
