@@ -295,11 +295,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Mostrar detalles de divisas
             const detallesHTML = data.detalles.map(det => `
-                <div class="p-4 rounded-lg bg-white shadow-md border border-gray-200 text-gray-800 min-w-[200px]">
-                    <div class="mb-1"><span class="font-medium text-gray-600">Divisa:</span> ${det.divisa}</div>
-                    <div class="mb-1"><span class="font-medium text-gray-600">Monto:</span> ${formatNumber(det.monto)}</div>
-                    <div class="mb-1"><span class="font-medium text-gray-600">Tasa de cambio:</span> ${formatNumber(det.tasa_cambio)}</div>
-                    <div><span class="font-medium text-gray-600">Subtotal:</span> $${formatNumber(det.subtotal)}</div>
+                <div class="p-4 rounded-lg bg-white shadow-md border border-gray-200 text-gray-800 w-full overflow-x-auto">
+                    <div class="flex flex-row flex-wrap gap-6 whitespace-nowrap">
+                        <div><span class="font-medium text-gray-600">Divisa:</span> ${det.divisa}</div>
+                        <div><span class="font-medium text-gray-600">Monto:</span> ${formatNumber(det.monto)}</div>
+                        <div><span class="font-medium text-gray-600">Tasa de cambio:</span> ${formatNumber(det.tasa_cambio)}</div>
+                        <div><span class="font-medium text-gray-600">Subtotal:</span> $${formatNumber(det.subtotal)}</div>
+                    </div>
                 </div>
             `).join("");
 
