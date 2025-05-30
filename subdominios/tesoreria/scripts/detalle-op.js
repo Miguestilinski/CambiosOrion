@@ -305,7 +305,10 @@ document.addEventListener("DOMContentLoaded", () => {
                         </div>
                         ${data.detalles.map(det => `
                             <div class="grid grid-cols-4 rounded-lg text-sm text-center text-gray-800 border-b border-gray-200">
-                                <div class="p-2">${det.divisa}</div>
+                                <div class="p-2 flex items-center justify-center gap-2">
+                                    <img src="${det.divisa_icono}" alt="${det.divisa}" class="w-5 h-5 inline-block" />
+                                    <span>${det.divisa}</span>
+                                </div>
                                 <div class="p-2">${formatNumber(det.monto)}</div>
                                 <div class="p-2">${formatNumber(det.tasa_cambio)}</div>
                                 <div class="p-2">$${formatNumber(det.subtotal)}</div>
