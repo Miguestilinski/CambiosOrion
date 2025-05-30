@@ -183,16 +183,13 @@
                                 </select>
                             </div>
 
-                            <div class="flex-1 min-w-[150px] relative">
-                            <label for="divisa-input" class="block text-gray-300 mb-1">Divisa:</label>
-                            <input
-                                id="divisa-input"
-                                type="text"
-                                placeholder="Buscar divisa"
-                                class="divisa-nombre block bg-white border border-gray-600 text-gray-700 px-2 py-2.5 text-sm rounded-lg w-full"
-                                autocomplete="off"
-                            />
-                            <ul class="divisa-sugerencias absolute z-10 bg-white border border-gray-600 text-gray-700 rounded-lg mt-1 hidden w-full max-h-48 overflow-y-auto"></ul>
+                            <div class="flex-1 min-w-[150px]">
+                                <label for="divisa-select" class="block text-gray-300 mb-1">Divisa:</label>
+                                <select
+                                    id="divisa-select"
+                                    class="divisa-nombre block bg-white border border-gray-600 text-gray-700 px-2 py-2.5 text-sm rounded-lg w-full">
+                                    <option value="">Cargando divisas...</option>
+                                </select>
                             </div>
 
                             <div class="flex-1 min-w-[150px]">

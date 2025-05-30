@@ -400,11 +400,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Autocompletar divisa en Detalle Operación
-    const divisaInput = document.getElementById("divisa-input");
-    const sugerenciasUl = divisaInput.nextElementSibling; // ul
-    const operacionId = divisaInput.dataset.operacionId;
+    const divisaSelect = document.getElementById("divisa-select");
+    const sugerenciasUl = divisaSelect.nextElementSibling; // ul
+    const operacionId = divisaSelect.dataset.operacionId;
 
-    divisaInput.addEventListener("input", async (e) => {
+    divisaSelect.addEventListener("input", async (e) => {
         const query = e.target.value.trim();
         if (query.length < 1) {
             sugerenciasUl.classList.add("hidden");
@@ -412,32 +412,26 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-            const res = await fetch(`https://cambiosorion.cl/data/detalle-op.php?buscar_divisa=${encodeURIComponent(query)}&operacion_id=${operacionId}`);
+            const res = await fetch(`https://cambiosorion.cl/data/detalle-op.php?buscar_divisas=${operacionId}`);
             const divisas = await res.json();
 
-            sugerenciasUl.innerHTML = "";
-            divisas.forEach((divisa) => {
-                const li = document.createElement("li");
-                li.textContent = divisa.nombre;
-                li.classList.add("px-2", "py-1", "hover:bg-gray-200", "cursor-pointer");
-                li.addEventListener("click", () => {
-                    divisaInput.value = divisa.nombre;
-                    divisaInput.dataset.id = divisa.id;
-                    sugerenciasUl.classList.add("hidden");
-                    console.log(`Divisa seleccionada: ${divisa.nombre}, ID: ${divisa.id}`);
-                });
-                sugerenciasUl.appendChild(li);
+            // Limpiar y agregar opciones
+            select.innerHTML = '<option value="">Seleccione una divisa</option>';
+            divisas.forEach(divisa => {
+                const option = document.createElement("option");
+                option.value = divisa.id;
+                option.textContent = divisa.nombre;
+                select.appendChild(option);
             });
-
-            sugerenciasUl.classList.toggle("hidden", divisas.length === 0);
         } catch (err) {
-            console.error("Error al buscar divisas:", err);
+            console.error("Error al cargar divisas:", err);
+            select.innerHTML = '<option value="">Error al cargar</option>';
         }
     });
 
     // Ocultar sugerencias al hacer clic fuera
     document.addEventListener("click", (e) => {
-        if (!divisaInput.contains(e.target) && !sugerenciasUl.contains(e.target)) {
+        if (!divisaSelect.contains(e.target) && !sugerenciasUl.contains(e.target)) {
             sugerenciasUl.classList.add("hidden");
         }
     });
