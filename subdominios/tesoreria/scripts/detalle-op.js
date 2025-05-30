@@ -397,36 +397,30 @@ document.addEventListener("DOMContentLoaded", () => {
             btnNuevoPago.textContent = "Nuevo Pago";
             document.getElementById("titulo-pago").textContent = "Pagos";
         }
+        
+        cargarDivisas(id);
     });
 
-    // Autocompletar divisa en Detalle Operación
-    const divisaSelect = document.getElementById("divisa-select");
-    const sugerenciasUl = divisaSelect.nextElementSibling; // ul
-
-    divisaSelect.addEventListener("input", async (e) => {
-        const query = e.target.value.trim();
-        if (query.length < 1) {
-            sugerenciasUl.classList.add("hidden");
-            return;
-        }
+    async function cargarDivisas(operacionId) {
+        const divisaSelect = document.getElementById("divisa-select");
 
         try {
-            const res = await fetch(`https://cambiosorion.cl/data/detalle-op.php?buscar_divisas=1&operacion_id=${id}`);
+            const res = await fetch(`https://cambiosorion.cl/data/detalle-op.php?buscar_divisas=1&operacion_id=${operacionId}`);
             const divisas = await res.json();
 
             // Limpiar y agregar opciones
-            select.innerHTML = '<option value="">Seleccione una divisa</option>';
+            divisaSelect.innerHTML = '<option value="">Seleccione una divisa</option>';
             divisas.forEach(divisa => {
                 const option = document.createElement("option");
                 option.value = divisa.id;
                 option.textContent = divisa.nombre;
-                select.appendChild(option);
+                divisaSelect.appendChild(option);
             });
         } catch (err) {
             console.error("Error al cargar divisas:", err);
-            select.innerHTML = '<option value="">Error al cargar</option>';
+            divisaSelect.innerHTML = '<option value="">Error al cargar</option>';
         }
-    });
+    }
 
     document.querySelectorAll(".origen-card").forEach(card => {
         card.addEventListener("click", () => {
