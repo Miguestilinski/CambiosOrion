@@ -294,16 +294,26 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("info-operacion").innerHTML = infoHTML;
 
             // Mostrar detalles de divisas
-            const detallesHTML = data.detalles.map(det => `
-                <div class="p-4 rounded-lg bg-white shadow-md border border-gray-200 text-gray-800 w-full overflow-x-auto">
-                    <div class="flex flex-row flex-wrap gap-6 whitespace-nowrap">
-                        <div><span class="font-medium text-gray-600">Divisa:</span> ${det.divisa}</div>
-                        <div><span class="font-medium text-gray-600">Monto:</span> ${formatNumber(det.monto)}</div>
-                        <div><span class="font-medium text-gray-600">Tasa de cambio:</span> ${formatNumber(det.tasa_cambio)}</div>
-                        <div><span class="font-medium text-gray-600">Subtotal:</span> $${formatNumber(det.subtotal)}</div>
+            const detallesHTML = `
+                <div class="overflow-x-auto w-full">
+                    <div class="min-w-max border border-gray-300 rounded-lg bg-white shadow-md">
+                        <div class="grid grid-cols-4 text-sm font-medium text-gray-700 bg-gray-100 border-b border-black text-center">
+                            <div class="p-2">Divisa</div>
+                            <div class="p-2">Monto</div>
+                            <div class="p-2">Tasa de cambio</div>
+                            <div class="p-2">Subtotal</div>
+                        </div>
+                        ${data.detalles.map(det => `
+                            <div class="grid grid-cols-4 text-sm text-center text-gray-800 border-b border-gray-200">
+                                <div class="p-2">${det.divisa}</div>
+                                <div class="p-2">${formatNumber(det.monto)}</div>
+                                <div class="p-2">${formatNumber(det.tasa_cambio)}</div>
+                                <div class="p-2">$${formatNumber(det.subtotal)}</div>
+                            </div>
+                        `).join("")}
                     </div>
                 </div>
-            `).join("");
+            `;
 
             document.getElementById("detalle-divisas").innerHTML = detallesHTML;
 
