@@ -297,14 +297,14 @@ document.addEventListener("DOMContentLoaded", () => {
             const detallesHTML = `
                 <div class="overflow-x-auto w-full">
                     <div class="min-w-max border border-gray-300 rounded-lg bg-white shadow-md">
-                        <div class="grid grid-cols-4 text-sm font-medium text-gray-700 bg-gray-100 border-b border-black text-center">
+                        <div class="grid grid-cols-4 rounded-t-lg text-sm font-medium text-gray-700 bg-gray-100 border-b border-black text-center">
                             <div class="p-2">Divisa</div>
                             <div class="p-2">Monto</div>
                             <div class="p-2">Tasa de cambio</div>
                             <div class="p-2">Subtotal</div>
                         </div>
                         ${data.detalles.map(det => `
-                            <div class="grid grid-cols-4 text-sm text-center text-gray-800 border-b border-gray-200">
+                            <div class="grid grid-cols-4 rounded-lg text-sm text-center text-gray-800 border-b border-gray-200">
                                 <div class="p-2">${det.divisa}</div>
                                 <div class="p-2">${formatNumber(det.monto)}</div>
                                 <div class="p-2">${formatNumber(det.tasa_cambio)}</div>
