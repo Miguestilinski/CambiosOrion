@@ -402,7 +402,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // Autocompletar divisa en Detalle Operación
     const divisaSelect = document.getElementById("divisa-select");
     const sugerenciasUl = divisaSelect.nextElementSibling; // ul
-    const operacionId = divisaSelect.dataset.operacionId;
 
     divisaSelect.addEventListener("input", async (e) => {
         const query = e.target.value.trim();
@@ -412,7 +411,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-            const res = await fetch(`https://cambiosorion.cl/data/detalle-op.php?buscar_divisas=${operacionId}`);
+            const res = await fetch(`https://cambiosorion.cl/data/detalle-op.php?buscar_divisas=1&operacion_id=${id}`);
             const divisas = await res.json();
 
             // Limpiar y agregar opciones
