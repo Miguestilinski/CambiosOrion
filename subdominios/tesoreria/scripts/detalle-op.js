@@ -400,4 +400,19 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    document.querySelectorAll(".origen-card").forEach(card => {
+        card.addEventListener("click", () => {
+            document.getElementById("origen-pago").value = card.dataset.origen;
+
+            document.querySelectorAll(".origen-card").forEach(c => {
+            c.classList.remove("border-blue-500", "bg-blue-600", "text-white");
+            c.classList.add("border-gray-500", "bg-transparent", "text-gray-300");
+            });
+
+            card.classList.remove("border-gray-500", "bg-transparent", "text-gray-300");
+            card.classList.add("border-blue-500", "bg-blue-600", "text-white");
+        });
+    });
+
+
 });
