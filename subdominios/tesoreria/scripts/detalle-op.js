@@ -265,6 +265,33 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             btnPago.addEventListener("click", () => {
+                if (!document.getElementById("origen-pago").value) {
+                    mostrarModal({
+                        titulo: "❌ Error",
+                        mensaje: "Selecciona el origen del pago",
+                        textoConfirmar: "Entendido"
+                    });
+                    return;
+                }
+
+                if (!document.getElementById("tipo-pago").value) {
+                    mostrarModal({
+                        titulo: "❌ Error",
+                        mensaje: "Selecciona el tipo de pago",
+                        textoConfirmar: "Entendido"
+                    });
+                    return;
+                }
+
+                if (!document.getElementById("divisa-select").value) {
+                    mostrarModal({
+                        titulo: "❌ Error",
+                        mensaje: "Selecciona la divisa",
+                        textoConfirmar: "Entendido"
+                    });
+                    return;
+                }
+
                 // Extraemos sólo números del input
                 const rawValue = inputPago.value;
                 const numericString = rawValue.replace(/[^0-9]/g, "");
@@ -302,33 +329,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 let nuevoEstado = "Abonado";
                 if (montoIngresado === restante) {
                     nuevoEstado = "Pagado";
-                }
-
-                if (!document.getElementById("origen-pago").value) {
-                    mostrarModal({
-                        titulo: "❌ Error",
-                        mensaje: "Selecciona el origen del pago",
-                        textoConfirmar: "Entendido"
-                    });
-                    return;
-                }
-
-                if (!document.getElementById("tipo-pago").value) {
-                    mostrarModal({
-                        titulo: "❌ Error",
-                        mensaje: "Selecciona el tipo de pago",
-                        textoConfirmar: "Entendido"
-                    });
-                    return;
-                }
-
-                if (!document.getElementById("divisa-select").value) {
-                    mostrarModal({
-                        titulo: "❌ Error",
-                        mensaje: "Selecciona la divisa",
-                        textoConfirmar: "Entendido"
-                    });
-                    return;
                 }
 
                 fetch(`https://cambiosorion.cl/data/detalle-op.php`, {
