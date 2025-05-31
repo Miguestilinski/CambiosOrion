@@ -182,7 +182,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const pagosCliente = data.pagos.filter(p => p.origen === "cliente");
             const pagosOrion = data.pagos.filter(p => p.origen === "orion");
 
-            function renderTabla(contenedor, titulo, pagos) {
+            function renderTabla(contenedor, titulo, pagos, origen) {
                 if (pagos.length === 0) {
                     contenedor.innerHTML = `<p class="text-gray-400 italic">No se han realizado pagos de ${titulo.toLowerCase()}.</p>`;
                     return;
@@ -192,24 +192,33 @@ document.addEventListener("DOMContentLoaded", () => {
                 tabla.className = "w-full text-left text-gray-200 border-collapse";
 
                 tabla.innerHTML = `
-                    <thead class="text-sm border-b border-gray-500">
+                    <thead class="text-sm border-b border-gray-500 bg-blue-800 rounded-t-md">
                         <tr>
-                            <th colspan="4" class="py-2 text-lg font-semibold">${titulo}</th>
+                            <th colspan="5" class="py-2 text-lg font-semibold rounded-t-md">${titulo}</th>
                         </tr>
-                        <tr>
-                            <th class="py-2">Fecha</th>
-                            <th class="py-2">Tipo</th>
-                            <th class="py-2">Divisa</th>
-                            <th class="py-2">Monto</th>
+                        <tr class="bg-blue-700">
+                            <th class="py-2 px-2">Fecha</th>
+                            <th class="py-2 px-2">Tipo</th>
+                            <th class="py-2 px-2">Divisa</th>
+                            <th class="py-2 px-2">Monto</th>
+                            <th class="py-2 px-2 text-center"> </th>
                         </tr>
                     </thead>
                     <tbody>
                         ${pagos.map(p => `
                             <tr class="border-b border-gray-700">
-                                <td class="py-1">${p.fecha}</td>
-                                <td class="py-1">${p.tipo || '—'}</td>
-                                <td class="py-1">${p.divisa || 'CLP'}</td>
-                                <td class="py-1">$${formatNumber(p.monto)}</td>
+                                <td class="py-1 px-2">${p.fecha}</td>
+                                <td class="py-1 px-2">${p.tipo || '—'}</td>
+                                <td class="py-1 px-2">${p.divisa || 'CLP'}</td>
+                                <td class="py-1 px-2">$${formatNumber(p.monto)}</td>
+                                <td class="py-1 px-2 text-center">
+                                    <button 
+                                        class="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-2 rounded delete-button"
+                                        data-id="${p.id}" 
+                                        data-origen="${origen}">
+                                        ✕
+                                    </button>
+                                </td>
                             </tr>
                         `).join('')}
                     </tbody>
@@ -217,10 +226,60 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 contenedor.innerHTML = "";
                 contenedor.appendChild(tabla);
+
+                // Añadir funcionalidad al botón eliminar
+                tabla.querySelectorAll(".delete-button").forEach(btn => {
+                    btn.addEventListener("click", () => {
+                        const id = btn.dataset.id;
+                        const origen = btn.dataset.origen;
+
+                        mostrarModal({
+                            titulo: "⚠️ Confirmar eliminación",
+                            mensaje: "¿Estás seguro que deseas eliminar este pago?",
+                            textoConfirmar: "Eliminar",
+                            textoCancelar: "Cancelar",
+                            onConfirmar: () => {
+                                fetch(`https://cambiosorion.cl/data/detalle-op.php`, {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type": "application/json"
+                                    },
+                                    body: JSON.stringify({ id, origen })
+                                })
+                                .then(res => res.json())
+                                .then(response => {
+                                    if (response.success) {
+                                        mostrarModal({
+                                            titulo: "✅ Elimiación Exitosa",
+                                            mensaje: "Pago eliminado correctamente.",
+                                            onConfirmar: () => location.reload()
+                                        });
+                                    } else {
+                                        mostrarModal({
+                                            titulo: "❌ Error",
+                                            mensaje: "Error al eliminar el pago: " + (response.message || ''),
+                                            textoConfirmar: "Cerrar"
+                                        });
+                                    }
+                                })
+                                .catch(() => {
+                                    mostrarModal({
+                                        titulo: "❌ Error",
+                                        mensaje: "Error de conexión al eliminar el pago.",
+                                        textoConfirmar: "Cerrar"
+                                    });
+                                });
+                            },
+                            onCancelar: () => {
+                                // No hacer nada al cancelar
+                            }
+                        });
+                    });
+                });
             }
 
-            renderTabla(contenedorCliente, "Pagos de Cliente", pagosCliente);
-            renderTabla(contenedorOrion, "Pagos de Orion", pagosOrion);
+            renderTabla(contenedorCliente, "Pagos de Cliente", pagosCliente, "cliente");
+            renderTabla(contenedorOrion, "Pagos de Orion", pagosOrion, "orion");
 
             const inputPago = document.getElementById("input-pago");
             const btnPago = document.getElementById("btn-registrar-pago");
