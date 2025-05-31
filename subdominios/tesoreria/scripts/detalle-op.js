@@ -338,7 +338,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     caja_id: 0,
                     tipo_pago: document.getElementById("tipo-pago").value,
                     divisa: document.getElementById("divisa-select").value,
-                    origen: document.getElementById("origen-pago").value
+                    origen: document.getElementById("origen-pago").value,
+                    cliente_id: info.cliente_id
                 };
 
                 console.log("Enviando payload:", payload);
