@@ -96,10 +96,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     return;
                 }
                 if (confirm("¿Seguro que deseas anular esta operación? Esto revertirá el inventario.")) {
-                    fetch(`https://cambiosorion.cl/data/anular-op.php`, {
+                    fetch(`https://cambiosorion.cl/data/detalle-op.php`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ id: info.id_operacion })
+                        body: JSON.stringify({ id: info.id })
                     })
                     .then(res => res.json())
                     .then(res => {
