@@ -192,7 +192,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 tabla.className = "w-full text-left text-gray-200 border-collapse";
 
                 tabla.innerHTML = `
-                    <thead class="text-sm border-b border-gray-500 bg-blue-800 rounded-t-md">
+                    <thead class="text-sm border-b border-gray-500 rounded-t-md">
                         <tr>
                             <th colspan="5" class="py-2 text-lg font-semibold rounded-t-md">${titulo}</th>
                         </tr>
