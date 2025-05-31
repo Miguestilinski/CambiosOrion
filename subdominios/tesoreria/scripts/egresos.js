@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (nuevoEgresoBtn) {
         nuevoEgresoBtn.addEventListener('click', () => {
-            window.location.href = './nuevo-egreso';  // Ajusta la URL si es necesario
+            window.location.href = '.https://tesoreria.cambiosorion.cl/nuevo-egreso';
         });
     }
 
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
         params.set('buscar', buscarInput.value);
         params.set('mostrar', mostrarRegistros.value);
 
-        fetch(`./egresos.php?${params.toString()}`)
+        fetch(`https://tesoreria.cambiosorion.cl/data/egresos.php?${params.toString()}`)
             .then(response => response.json())
             .then(data => {
                 mostrarResultados(data);
