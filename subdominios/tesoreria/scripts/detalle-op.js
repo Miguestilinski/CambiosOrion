@@ -347,7 +347,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 .then(res => res.json())
                 .then(res => {
                     if (res.success) {
-                        mostrarModalOperacionExitosa();
+                        mostrarModalPagoExitoso();
                     } else {
                         mostrarModal({
                             titulo: "❌ Error",
@@ -559,7 +559,7 @@ function mostrarModal({ titulo, mensaje, textoConfirmar = "Aceptar", textoCancel
   };
 }
 
-function mostrarModalPagoExitosa() {
+function mostrarModalPagoExitoso() {
   const modal = document.getElementById("modal-pago-exitoso");
   modal.classList.remove("hidden");
 
