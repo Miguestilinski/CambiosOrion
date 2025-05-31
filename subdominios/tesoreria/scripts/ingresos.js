@@ -63,12 +63,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const tr = document.createElement('tr');
             tr.classList.add('border-b', 'bg-white', 'border-gray-700', 'text-gray-700');
             tr.innerHTML = `
-                <td class="px-4 py-2">${item.numero}</td>
-                <td class="px-4 py-2">${formatDate(item.fecha_creacion)}</td>
+                <td class="px-4 py-2">${item.id}</td>
+                <td class="px-4 py-2">${formatDate(item.fecha)}</td>
                 <td class="px-4 py-2">${item.tipo_ingreso}</td>
                 <td class="px-4 py-2">${item.cliente}</td>
                 <td class="px-4 py-2">${item.caja}</td>
-                <td class="px-4 py-2">${item.cuenta}</td>
+                <td class="px-4 py-2">${item.cuenta ?? ''}</td>
                 <td class="px-4 py-2">${item.divisa}</td>
                 <td class="px-4 py-2">${formatMonto(item.monto)}</td>
                 <td class="px-4 py-2">${item.estado}</td>
