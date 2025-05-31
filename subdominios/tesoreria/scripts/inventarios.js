@@ -32,8 +32,6 @@ document.addEventListener("DOMContentLoaded", () => {
             .catch(error => console.error("Error al cargar divisas:", error));
     }
 
-    Number(inv.cantidad).toLocaleString("es-CL", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-
     function cargarInventarios() {
         const params = new URLSearchParams();
         if(cajaInput.value) params.set("caja", cajaInput.value);
@@ -58,6 +56,8 @@ document.addEventListener("DOMContentLoaded", () => {
                         btnMostrar.addEventListener("click", () => {
                             window.location.href = `https://cambiosorion.cl/data/detalle-inv.php?id=${inv.id}`;
                         });
+
+                        Number(inv.cantidad).toLocaleString("es-CL", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
                         tr.innerHTML = `
                             <td class="px-4 py-2">${inv.nombre_caja}</td>
