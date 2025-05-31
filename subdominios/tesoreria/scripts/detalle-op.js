@@ -57,14 +57,22 @@ document.addEventListener("DOMContentLoaded", () => {
                     const urlPDF = `https://cambiosorion.cl/documentos/${info.numero_documento}.pdf`;
                     window.open(urlPDF, "_blank");
                 } else {
-                    alert("No hay documento emitido para exportar PDF.");
+                    mostrarModal({
+                        titulo: "❌ Error",
+                        mensaje: "No hay documento emitido para exportar PDF",
+                        textoConfirmar: "Entendido"
+                    });
                 }
             });
 
             // --- Funcionalidad Botón Emitir Documento SII ---
             document.getElementById("emitir-doc").addEventListener("click", () => {
                 if (info.estado === "Anulado") {
-                    alert("No se puede emitir documento para una operación anulada.");
+                    mostrarModal({
+                        titulo: "❌ Error",
+                        mensaje: "No se puede emitir documento para una operación anulada",
+                        textoConfirmar: "Entendido"
+                    });
                     return;
                 }
 
@@ -77,14 +85,26 @@ document.addEventListener("DOMContentLoaded", () => {
                     .then(res => res.json())
                     .then(res => {
                         if (res.success) {
-                            alert("Documento emitido correctamente.");
+                            mostrarModal({
+                                titulo: ">✅ Emisión Exitosa",
+                                mensaje: "Documento emitido correctamente",
+                                textoConfirmar: "Entendido"
+                            });
                             location.reload();
                         } else {
-                            alert("Error al emitir documento: " + res.message);
+                            mostrarModal({
+                                titulo: "❌ Error",
+                                mensaje: "Error al emitir documento: " + res.message,
+                                textoConfirmar: "Entendido"
+                            });
                         }
                     })
                     .catch(() => {
-                        alert("Error de conexión al emitir documento.");
+                        mostrarModal({
+                                titulo: "❌ Error",
+                                mensaje: "Error de conexión al emitir documento",
+                                textoConfirmar: "Entendido"
+                        });
                     });
                 }
             });
@@ -92,7 +112,11 @@ document.addEventListener("DOMContentLoaded", () => {
             // --- Funcionalidad Botón Anular (el rojo en la fila superior) ---
             document.getElementById("anular").addEventListener("click", () => {
                 if (info.estado === "Anulado") {
-                    alert("La operación ya está anulada.");
+                    mostrarModal({
+                        titulo: "❌ Error",
+                        mensaje: "La operación ya está anulada",
+                        textoConfirmar: "Entendido"
+                    });
                     return;
                 }
                 if (confirm("¿Seguro que deseas anular esta operación? Esto revertirá el inventario.")) {
@@ -104,14 +128,26 @@ document.addEventListener("DOMContentLoaded", () => {
                     .then(res => res.json())
                     .then(res => {
                         if (res.success) {
-                            alert("Operación anulada.");
+                            mostrarModal({
+                                titulo: ">✅ Anulación Exitosa",
+                                mensaje: "Operación anulada",
+                                textoConfirmar: "Entendido"
+                            });
                             location.reload();
                         } else {
-                            alert("Error al anular: " + res.message);
+                            mostrarModal({
+                                titulo: "❌ Error",
+                                mensaje: "Error al anular: " + res.message,
+                                textoConfirmar: "Entendido"
+                            });
                         }
                     })
                     .catch(() => {
-                        alert("Error de conexión al anular operación.");
+                        mostrarModal({
+                            titulo: "❌ Error",
+                            mensaje: "Error de conexión al anular operación",
+                            textoConfirmar: "Entendido"
+                        });
                     });
                 }
             });
@@ -234,19 +270,31 @@ document.addEventListener("DOMContentLoaded", () => {
                 const numericString = rawValue.replace(/[^0-9]/g, "");
 
                 if (!numericString) {
-                    alert("Monto inválido");
+                    mostrarModal({
+                        titulo: "❌ Error",
+                        mensaje: "Monto inválido",
+                        textoConfirmar: "Entendido"
+                    });
                     return;
                 }
 
                 const montoIngresado = parseFloat(numericString);
 
                 if (isNaN(montoIngresado) || montoIngresado <= 0) {
-                    alert("Monto inválido");
+                    mostrarModal({
+                        titulo: "❌ Error",
+                        mensaje: "Monto inválido",
+                        textoConfirmar: "Entendido"
+                    });
                     return;
                 }
 
                 if (montoIngresado > restante) {
-                    alert("El monto excede lo pendiente");
+                    mostrarModal({
+                        titulo: "❌ Error",
+                        mensaje: "El monto excede lo pendiente",
+                        textoConfirmar: "Entendido"
+                    });
                     return;
                 }
 
@@ -257,17 +305,29 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
                 if (!document.getElementById("origen-pago").value) {
-                    alert("Selecciona el origen del pago");
+                    mostrarModal({
+                        titulo: "❌ Error",
+                        mensaje: "Selecciona el origen del pago",
+                        textoConfirmar: "Entendido"
+                    });
                     return;
                 }
 
                 if (!document.getElementById("tipo-pago").value) {
-                    alert("Selecciona el tipo de pago");
+                    mostrarModal({
+                        titulo: "❌ Error",
+                        mensaje: "Selecciona el tipo de pago",
+                        textoConfirmar: "Entendido"
+                    });
                     return;
                 }
 
                 if (!document.getElementById("divisa-select").value) {
-                    alert("Selecciona la divisa");
+                    mostrarModal({
+                        titulo: "❌ Error",
+                        mensaje: "Selecciona la divisa",
+                        textoConfirmar: "Entendido"
+                    });
                     return;
                 }
 
@@ -287,10 +347,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 .then(res => res.json())
                 .then(res => {
                     if (res.success) {
-                        alert("Pago registrado correctamente");
-                        location.reload();
+                        mostrarModalOperacionExitosa();
                     } else {
-                        alert("Error al registrar: " + res.message);
+                        mostrarModal({
+                            titulo: "❌ Error",
+                            mensaje: "Error al registrar: " + res.message,
+                            textoConfirmar: "Entendido"
+                        });
                     }
                 });
             });
@@ -384,10 +447,18 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(res => res.json())
             .then(res => {
                 if (res.success) {
-                alert("Operación anulada.");
+                    mostrarModal({
+                        titulo: ">✅ Anulación Exitosa",
+                        mensaje: "Operación anulada",
+                        textoConfirmar: "Entendido"
+                    });
                 location.reload();
                 } else {
-                alert("Error al anular: " + res.message);
+                    mostrarModal({
+                        titulo: "❌ Error",
+                        mensaje: "Error al anular: " + res.message,
+                        textoConfirmar: "Entendido"
+                    });
                 }
             });
             });
@@ -455,3 +526,50 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 });
+
+function mostrarModal({ titulo, mensaje, textoConfirmar = "Aceptar", textoCancelar = null, onConfirmar, onCancelar }) {
+  const modal = document.getElementById("modal-generico");
+  const tituloElem = document.getElementById("modal-generico-titulo");
+  const mensajeElem = document.getElementById("modal-generico-mensaje");
+  const btnConfirmar = document.getElementById("modal-generico-confirmar");
+  const btnCancelar = document.getElementById("modal-generico-cancelar");
+
+  tituloElem.textContent = titulo;
+  mensajeElem.textContent = mensaje;
+  btnConfirmar.textContent = textoConfirmar;
+
+  if (textoCancelar) {
+    btnCancelar.classList.remove("hidden");
+    btnCancelar.textContent = textoCancelar;
+  } else {
+    btnCancelar.classList.add("hidden");
+  }
+
+  modal.classList.remove("hidden");
+
+  // Remover handlers anteriores
+  btnConfirmar.onclick = () => {
+    modal.classList.add("hidden");
+    if (onConfirmar) onConfirmar();
+  };
+
+  btnCancelar.onclick = () => {
+    modal.classList.add("hidden");
+    if (onCancelar) onCancelar();
+  };
+}
+
+function mostrarModalPagoExitosa() {
+  const modal = document.getElementById("modal-pago-exitoso");
+  modal.classList.remove("hidden");
+
+  document.getElementById("nuevo-pago").onclick = () => {
+    modal.classList.add("hidden");
+    document.getElementById("form-nuevo-pago").reset();
+    // Resetear también estado adicional si es necesario
+  };
+
+  document.getElementById("volver-operaciones").onclick = () => {
+    location.reload();
+  };
+}
