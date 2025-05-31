@@ -331,18 +331,22 @@ document.addEventListener("DOMContentLoaded", () => {
                     nuevoEstado = "Pagado";
                 }
 
+                const payload = {
+                    id: info.id,
+                    estado: nuevoEstado,
+                    pagos: montoIngresado,
+                    caja_id: info.caja_id,
+                    tipo_pago: document.getElementById("tipo-pago").value,
+                    divisa: document.getElementById("divisa-select").value,
+                    origen: document.getElementById("origen-pago").value
+                };
+
+                console.log("Enviando payload:", payload);
+
                 fetch(`https://cambiosorion.cl/data/detalle-op.php`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        id: info.id,
-                        estado: nuevoEstado,
-                        pagos: montoIngresado,
-                        caja_id: info.caja_id,
-                        tipo_pago: document.getElementById("tipo-pago").value,
-                        divisa: document.getElementById("divisa-select").value,
-                        origen: document.getElementById("origen-pago").value
-                    })
+                    body: JSON.stringify(payload)
                 })
                 .then(res => res.json())
                 .then(res => {
