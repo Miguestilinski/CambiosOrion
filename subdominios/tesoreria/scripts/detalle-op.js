@@ -260,11 +260,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        id: info.id_operacion,
+                        id: info.id,
                         estado: nuevoEstado,
                         pagos: montoIngresado,
                         tipo: document.getElementById("tipo-pago").value,
-                        divisa: document.getElementById("divisa").value
+                        divisa: document.getElementById("divisa-select").value,
+                        origen: document.getElementById("origen-pago").value
                     })
                 })
                 .then(res => res.json())
