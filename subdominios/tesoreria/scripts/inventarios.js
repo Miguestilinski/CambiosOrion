@@ -32,6 +32,8 @@ document.addEventListener("DOMContentLoaded", () => {
             .catch(error => console.error("Error al cargar divisas:", error));
     }
 
+    Number(inv.cantidad).toLocaleString("es-CL", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+
     function cargarInventarios() {
         const params = new URLSearchParams();
         if(cajaInput.value) params.set("caja", cajaInput.value);
@@ -63,8 +65,8 @@ document.addEventListener("DOMContentLoaded", () => {
                                 <img src="${inv.icono}" alt="Icono" class="w-6 h-6 rounded-full border border-gray-400" />
                             </td>
                             <td class="px-4 py-2">${inv.divisa}</td>
-                            <td class="px-4 py-2">${inv.cantidad}</td>
-                            <td class="px-4 py-2">${inv.pmp}</td>
+                            <td class="px-4 py-2">${Number(inv.cantidad).toLocaleString("es-CL")}</td>
+                            <td class="px-4 py-2">${Number(inv.pmp).toLocaleString("es-CL")}</td>
                             <td class="px-4 py-2 mostrar-btn-cell"></td>
                         `;
 
