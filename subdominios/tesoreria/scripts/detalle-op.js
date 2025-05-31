@@ -256,6 +256,21 @@ document.addEventListener("DOMContentLoaded", () => {
                     nuevoEstado = "Pagado";
                 }
 
+                if (!document.getElementById("origen-pago").value) {
+                    alert("Selecciona el origen del pago");
+                    return;
+                }
+
+                if (!document.getElementById("tipo-pago").value) {
+                    alert("Selecciona el tipo de pago");
+                    return;
+                }
+
+                if (!document.getElementById("divisa-select").value) {
+                    alert("Selecciona la divisa");
+                    return;
+                }
+
                 fetch(`https://cambiosorion.cl/data/detalle-op.php`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -263,6 +278,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         id: info.id,
                         estado: nuevoEstado,
                         pagos: montoIngresado,
+                        caja_id: info.caja_id,
                         tipo: document.getElementById("tipo-pago").value,
                         divisa: document.getElementById("divisa-select").value,
                         origen: document.getElementById("origen-pago").value
