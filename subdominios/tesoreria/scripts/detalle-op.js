@@ -583,7 +583,7 @@ function mostrarModalPagoExitoso() {
     // Resetear también estado adicional si es necesario
   };
 
-  document.getElementById("volver-operaciones").onclick = () => {
-    location.reload();
+  document.getElementById("volver").onclick = () => {
+    window.location.href = "https://tesoreria.cambiosorion.cl/operaciones";
   };
 }
