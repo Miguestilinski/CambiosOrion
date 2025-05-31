@@ -351,10 +351,19 @@ document.addEventListener("DOMContentLoaded", () => {
                     } else {
                         mostrarModal({
                             titulo: "❌ Error",
-                            mensaje: "Error al registrar: " + res.message,
+                            mensaje: "Error al registrar: " + (res.message ?? "Respuesta inválida del servidor"),
                             textoConfirmar: "Entendido"
                         });
+                        console.error("Respuesta del servidor:", res);
                     }
+                })
+                .catch(error => {
+                    mostrarModal({
+                        titulo: "❌ Error",
+                        mensaje: "Error de red o respuesta inválida: " + error,
+                        textoConfirmar: "Entendido"
+                    });
+                    console.error("Error en el fetch:", error);
                 });
             });
 
