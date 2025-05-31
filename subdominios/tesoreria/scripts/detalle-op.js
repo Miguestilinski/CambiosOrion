@@ -578,9 +578,7 @@ function mostrarModalPagoExitoso() {
   modal.classList.remove("hidden");
 
   document.getElementById("nuevo-pago").onclick = () => {
-    modal.classList.add("hidden");
-    document.getElementById("form-nuevo-pago").reset();
-    // Resetear también estado adicional si es necesario
+    location.reload();
   };
 
   document.getElementById("volver").onclick = () => {
