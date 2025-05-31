@@ -335,7 +335,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     id: info.id,
                     estado: nuevoEstado,
                     pagos: montoIngresado,
-                    caja_id: info.caja_id,
+                    caja_id: 0,
                     tipo_pago: document.getElementById("tipo-pago").value,
                     divisa: document.getElementById("divisa-select").value,
                     origen: document.getElementById("origen-pago").value
