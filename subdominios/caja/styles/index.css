@@ -131,11 +131,6 @@ nav ul li {
     display: block;
 }
 
-input#email{
-    width: 70%;
-    justify-self: center;
-}
-
 tr.venta {
     background-color: #dbf599;
 }
