@@ -84,7 +84,8 @@ document.addEventListener("DOMContentLoaded", function () {
             li.dataset.id = cliente.id;
             li.classList.add("px-2", "py-1", "hover:bg-gray-200", "cursor-pointer");
             li.addEventListener("click", () => {
-            clienteInput.value = cliente.id; // Guardamos el ID
+            clienteInput.value = cliente.nombre; // Mostramos nombre
+            document.getElementById("cliente").value = cliente.id; // Guardamos ID real
             resultadoClientes.classList.add("hidden");
             });
             resultadoClientes.appendChild(li);
@@ -120,7 +121,8 @@ document.addEventListener("DOMContentLoaded", function () {
             li.dataset.id = divisa.id;
             li.classList.add("px-2", "py-1", "hover:bg-gray-200", "cursor-pointer");
             li.addEventListener("click", () => {
-            divisaInput.value = divisa.id; // Guardamos el ID
+            divisaInput.value = divisa.nombre; // Mostramos nombre
+            document.getElementById("divisa").value = divisa.id; // Guardamos ID real
             sugerenciasDivisas.classList.add("hidden");
             });
             sugerenciasDivisas.appendChild(li);
