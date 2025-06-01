@@ -129,7 +129,7 @@
                   <option value="venta">Venta</option>
                 </select>
               </div>
-      
+
               <!-- Tipo de Documento -->
               <div>
                 <label class="block mb-1 text-sm text-white">Tipo de Documento</label>
@@ -138,104 +138,48 @@
                   <option value="factura">Factura</option>
                 </select>
               </div>
-      
+
               <!-- Cliente -->
               <div class="relative">
-                <label for="cliente" class="block mb-1 text-sm text-white">Cliente</label>
-                <input
-                  type="text"
-                  id="cliente"
-                  placeholder="Buscar cliente por nombre"
-                  autocomplete="off"
-                  class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
-                />
-                <ul 
-                    id="resultado-clientes" 
-                    class="resultado-clientes bg-white border border-gray-600 text-gray-700 rounded-lg mt-1 hidden"></ul>
-              </div>
-      
-              <!-- Observaciones -->
-              <div>
-                <label for="observaciones" class="block mb-1 text-sm text-white">Observaciones</label>
-                <textarea
-                  id="observaciones"
-                  rows="4"
-                  placeholder="Escribe observaciones aquí..."
-                  class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
-                ></textarea>
-              </div>
-      
-              <!-- Sección de Divisas -->
-              <div id="divisas-container" class="space-y-4">
-                <label class="block text-lg text-white font-medium mb-2">Divisas</label>
-      
-                <!-- Divisa Template -->
-                <div class="divisa-item grid grid-cols-1 md:grid-cols-4 gap-4 items-end hidden">
-                  <!-- Nombre Divisa -->
-                  <div>
-                    <input
-                      type="text"
-                      placeholder="Buscar divisa"
-                      class="divisa-nombre block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
-                      autocomplete="off"
-                    />
-                    <ul class="divisa-sugerencias bg-white border border-gray-600 text-gray-700 rounded-lg mt-1 hidden"></ul>
-                  </div>
-      
-                  <!-- Monto -->
-                  <div>
-                    <input
-                      type="number"
-                      placeholder="Monto"
-                      class="divisa-monto block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
-                    />
-                  </div>
-      
-                  <!-- Tasa de Cambio -->
-                  <div>
-                    <input
-                      type="text"
-                      inputmode="decimal"
-                      pattern="^\d+(\.\d{0,2})?$"
-                      placeholder="Tasa de cambio"
-                      class="divisa-tasa block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
-                    />
-                  </div>
-      
-                  <!-- Subtotal + Eliminar -->
-                  <div class="flex items-center justify-between">
-                    <span class="divisa-subtotal text-white text-sm font-medium">Subtotal: $0.00</span>
-                    <button
-                      type="button"
-                      class="eliminar-divisa text-red-600 hover:text-red-800 text-sm font-medium"
-                    >
-                      Eliminar
-                    </button>
-                  </div>
-                </div>
+                <label for="cliente" class="block mb-1 text-sm text-white">Cliente (opcional)</label>
+                <input type="text" id="cliente" placeholder="Buscar cliente por nombre" autocomplete="off" class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700" />
+                <ul id="resultado-clientes" class="resultado-clientes bg-white border border-gray-600 text-gray-700 rounded-lg mt-1 hidden"></ul>
               </div>
 
-      
+              <!-- Email -->
+              <div>
+                <label for="email" class="block mb-1 text-sm text-white">Correo Electrónico (opcional)</label>
+                <input type="email" id="email" placeholder="cliente@correo.com" class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700" />
+              </div>
+
+              <!-- Divisa -->
+              <div>
+                <label class="block mb-1 text-sm text-white">Divisa</label>
+                <input type="text" id="divisa" placeholder="Buscar divisa" autocomplete="off" class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700" />
+                <ul id="sugerencias-divisas" class="bg-white border border-gray-600 text-gray-700 rounded-lg mt-1 hidden"></ul>
+              </div>
+
+              <!-- Tasa de Cambio -->
+              <div>
+                <label for="tasa" class="block mb-1 text-sm text-white">Tasa de Cambio</label>
+                <input type="number" step="0.01" id="tasa" placeholder="Tasa de cambio" class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700" />
+              </div>
+
+              <!-- Monto -->
+              <div>
+                <label for="monto" class="block mb-1 text-sm text-white">Monto</label>
+                <input type="number" id="monto" placeholder="Monto" class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700" />
+              </div>
+
               <!-- Total -->
               <div class="text-white font-medium text-lg">
                 Total: $<span id="total-transaccion">0.00</span>
               </div>
-      
+
               <!-- Botones Finales -->
               <div class="flex space-x-4">
-                <button
-                  type="submit"
-                  class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
-                >
-                  Crear Transacción
-                </button>
-                <button
-                  type="button"
-                  id="cancelar-transaccion"
-                  class="text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5"
-                >
-                  Cancelar
-                </button>
+                <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">Crear Transacción</button>
+                <button type="button" id="cancelar-transaccion" class="text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5">Cancelar</button>
               </div>
             </form>
           </section>
