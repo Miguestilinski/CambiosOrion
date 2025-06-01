@@ -5,14 +5,36 @@ document.addEventListener("DOMContentLoaded", function () {
   const totalSpan = document.getElementById("total-transaccion");
   const cancelarBtn = document.getElementById("cancelar-transaccion");
 
+  // Referencias para IDs reales de cliente y divisa
+  let clienteID = null;
+  let divisaID = null;
+
+  // Formatea con punto como separador de miles
+  function formatearMiles(valor) {
+    return valor.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  }
+
+  function limpiarFormato(valor) {
+    return valor.toString().replace(/\./g, "");
+  }
+
   function actualizarTotal() {
-    const monto = parseFloat(montoInput.value) || 0;
+    const monto = parseFloat(limpiarFormato(montoInput.value)) || 0;
     const tasa = parseFloat(tasaInput.value) || 0;
     const total = monto * tasa;
     totalSpan.textContent = total.toFixed(2);
   }
 
-  montoInput.addEventListener("input", actualizarTotal);
+  // Reaccionar a entrada en monto para dar formato de miles
+  montoInput.addEventListener("input", function (e) {
+    let valor = limpiarFormato(e.target.value);
+    if (!/^\d*$/.test(valor)) return;
+
+    const num = parseInt(valor, 10) || 0;
+    e.target.value = formatearMiles(num);
+    actualizarTotal();
+  });
+
   tasaInput.addEventListener("input", actualizarTotal);
 
   form.addEventListener("submit", function (e) {
@@ -21,11 +43,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const datos = {
       tipo_transaccion: document.getElementById("tipo-transaccion").value,
       tipo_documento: document.getElementById("tipo-documento").value,
-      cliente: document.getElementById("cliente").value,
+      cliente: clienteID,
       email: document.getElementById("email").value,
-      divisa: document.getElementById("divisa").value,
+      divisa: divisaID,
       tasa: parseFloat(tasaInput.value) || 0,
-      monto: parseFloat(montoInput.value) || 0,
+      monto: parseFloat(limpiarFormato(montoInput.value)) || 0,
     };
 
     fetch("https://cambiosorion.cl/data/nueva-tr.php", {
@@ -41,6 +63,8 @@ document.addEventListener("DOMContentLoaded", function () {
           alert("✅ Transacción registrada correctamente");
           form.reset();
           totalSpan.textContent = "0.00";
+          clienteID = null;
+          divisaID = null;
         } else {
           alert("❌ Error: " + respuesta.mensaje);
         }
@@ -55,81 +79,82 @@ document.addEventListener("DOMContentLoaded", function () {
     if (confirm("¿Seguro que quieres cancelar la transacción?")) {
       form.reset();
       totalSpan.textContent = "0.00";
+      clienteID = null;
+      divisaID = null;
     }
   });
 
-    // Autocompletado para cliente
-    const clienteInput = document.getElementById("cliente");
-    const resultadoClientes = document.getElementById("resultado-clientes");
+  // Autocompletado para cliente
+  const clienteInput = document.getElementById("cliente");
+  const resultadoClientes = document.getElementById("resultado-clientes");
 
-    clienteInput.addEventListener("input", function () {
+  clienteInput.addEventListener("input", function () {
     const query = clienteInput.value.trim();
     if (query.length < 2) {
-        resultadoClientes.classList.add("hidden");
-        return;
+      resultadoClientes.classList.add("hidden");
+      return;
     }
 
     fetch(`https://cambiosorion.cl/data/nueva-tr.php?buscar_cliente=${encodeURIComponent(query)}`)
-        .then((res) => res.json())
-        .then((data) => {
+      .then((res) => res.json())
+      .then((data) => {
         resultadoClientes.innerHTML = "";
         if (data.length === 0) {
-            resultadoClientes.classList.add("hidden");
-            return;
+          resultadoClientes.classList.add("hidden");
+          return;
         }
 
         data.forEach((cliente) => {
-            const li = document.createElement("li");
-            li.textContent = cliente.nombre;
-            li.dataset.id = cliente.id;
-            li.classList.add("px-2", "py-1", "hover:bg-gray-200", "cursor-pointer");
-            li.addEventListener("click", () => {
-            clienteInput.value = cliente.nombre; // Mostramos nombre
-            document.getElementById("cliente").value = cliente.id; // Guardamos ID real
+          const li = document.createElement("li");
+          li.textContent = cliente.nombre;
+          li.dataset.id = cliente.id;
+          li.classList.add("px-2", "py-1", "hover:bg-gray-200", "cursor-pointer");
+          li.addEventListener("click", () => {
+            clienteInput.value = cliente.nombre;
+            clienteID = cliente.id;
             resultadoClientes.classList.add("hidden");
-            });
-            resultadoClientes.appendChild(li);
+          });
+          resultadoClientes.appendChild(li);
         });
 
         resultadoClientes.classList.remove("hidden");
-        });
-    });
+      });
+  });
 
-    // Autocompletado para divisa
-    const divisaInput = document.getElementById("divisa");
-    const sugerenciasDivisas = document.getElementById("sugerencias-divisas");
+  // Autocompletado para divisa
+  const divisaInput = document.getElementById("divisa");
+  const sugerenciasDivisas = document.getElementById("sugerencias-divisas");
 
-    divisaInput.addEventListener("input", function () {
+  divisaInput.addEventListener("input", function () {
     const query = divisaInput.value.trim();
     if (query.length < 1) {
-        sugerenciasDivisas.classList.add("hidden");
-        return;
+      sugerenciasDivisas.classList.add("hidden");
+      return;
     }
 
     fetch(`https://cambiosorion.cl/data/nueva-tr.php?buscar_divisa=${encodeURIComponent(query)}`)
-        .then((res) => res.json())
-        .then((data) => {
+      .then((res) => res.json())
+      .then((data) => {
         sugerenciasDivisas.innerHTML = "";
         if (data.length === 0) {
-            sugerenciasDivisas.classList.add("hidden");
-            return;
+          sugerenciasDivisas.classList.add("hidden");
+          return;
         }
 
         data.forEach((divisa) => {
-            const li = document.createElement("li");
-            li.textContent = divisa.nombre;
-            li.dataset.id = divisa.id;
-            li.classList.add("px-2", "py-1", "hover:bg-gray-200", "cursor-pointer");
-            li.addEventListener("click", () => {
-            divisaInput.value = divisa.nombre; // Mostramos nombre
-            document.getElementById("divisa").value = divisa.id; // Guardamos ID real
+          const li = document.createElement("li");
+          li.textContent = divisa.nombre;
+          li.dataset.id = divisa.id;
+          li.classList.add("px-2", "py-1", "hover:bg-gray-200", "cursor-pointer");
+          li.addEventListener("click", () => {
+            divisaInput.value = divisa.nombre;
+            divisaID = divisa.id;
             sugerenciasDivisas.classList.add("hidden");
-            });
-            sugerenciasDivisas.appendChild(li);
+          });
+          sugerenciasDivisas.appendChild(li);
         });
 
         sugerenciasDivisas.classList.remove("hidden");
-        });
-    });
-
+      });
+  });
 });
