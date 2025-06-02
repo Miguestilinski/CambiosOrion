@@ -60,28 +60,37 @@ document.addEventListener("DOMContentLoaded", function () {
       .then((res) => res.json())
       .then((respuesta) => {
         if (respuesta.exito) {
-          alert("✅ Transacción registrada correctamente");
-          form.reset();
-          totalSpan.textContent = "0.00";
-          clienteID = null;
-          divisaID = null;
+            mostrarModalExitoso();
         } else {
-          alert("❌ Error: " + respuesta.mensaje);
+            mostrarModalError({
+                titulo: "❌ Error",
+                mensaje: `Error del servidor: ${respuesta.mensaje}`,
+                textoConfirmar: "Entendido"
+            });
         }
       })
       .catch((error) => {
         console.error("Error al enviar:", error);
-        alert("❌ Error al enviar los datos");
+        mostrarModalError({
+            titulo: "❌ Error",
+            mensaje: `Error al enviar los datos ${error}`,
+            textoConfirmar: "Entendido"
+        });
       });
   });
 
   cancelarBtn.addEventListener("click", function () {
-    if (confirm("¿Seguro que quieres cancelar la transacción?")) {
-      form.reset();
-      totalSpan.textContent = "0.00";
-      clienteID = null;
-      divisaID = null;
-    }
+    mostrarModalError({
+        mensaje: `¿Seguro que quieres cancelar la transacción?`,
+        textoConfirmar: "Cancelar",
+        textoCancelar: "Volver",
+        onConfirmar: () => {
+        form.reset();
+        totalSpan.textContent = "0.00";
+        clienteID = null;
+        divisaID = null;
+        }
+    });
   });
 
   // Autocompletado para cliente
@@ -158,3 +167,80 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   });
 });
+
+function mostrarModalAdvertencia({mensaje, textoConfirmar = "Aceptar", textoCancelar = null, onConfirmar, onCancelar }) {
+  const modal = document.getElementById("modal-advertencia");
+  const mensajeElem = document.getElementById("modal-advertencia-mensaje");
+  const btnConfirmar = document.getElementById("modal-advertencia-confirmar");
+  const btnCancelar = document.getElementById("modal-advertencia-cancelar");
+
+  mensajeElem.textContent = mensaje;
+  btnConfirmar.textContent = textoConfirmar;
+
+  if (textoCancelar) {
+    btnCancelar.classList.remove("hidden");
+    btnCancelar.textContent = textoCancelar;
+  } else {
+    btnCancelar.classList.add("hidden");
+  }
+
+  modal.classList.remove("hidden");
+
+  // Remover handlers anteriores
+  btnConfirmar.onclick = () => {
+    modal.classList.add("hidden");
+    if (onConfirmar) onConfirmar();
+  };
+
+  btnCancelar.onclick = () => {
+    modal.classList.add("hidden");
+    if (onCancelar) onCancelar();
+  };
+}
+
+function mostrarModalError({ titulo, mensaje, textoConfirmar = "Aceptar", textoCancelar = null, onConfirmar, onCancelar }) {
+  const modal = document.getElementById("modal-error");
+  const tituloElem = document.getElementById("modal-error-titulo");
+  const mensajeElem = document.getElementById("modal-error-mensaje");
+  const btnConfirmar = document.getElementById("modal-error-confirmar");
+  const btnCancelar = document.getElementById("modal-error-cancelar");
+
+  tituloElem.textContent = titulo;
+  mensajeElem.textContent = mensaje;
+  btnConfirmar.textContent = textoConfirmar;
+
+  if (textoCancelar) {
+    btnCancelar.classList.remove("hidden");
+    btnCancelar.textContent = textoCancelar;
+  } else {
+    btnCancelar.classList.add("hidden");
+  }
+
+  modal.classList.remove("hidden");
+
+  // Remover handlers anteriores
+  btnConfirmar.onclick = () => {
+    modal.classList.add("hidden");
+    if (onConfirmar) onConfirmar();
+  };
+
+  btnCancelar.onclick = () => {
+    modal.classList.add("hidden");
+    if (onCancelar) onCancelar();
+  };
+}
+
+function mostrarModalExitoso() {
+  const modal = document.getElementById("modal-exitoso");
+  modal.classList.remove("hidden");
+
+  document.getElementById("nueva-transaccion").onclick = () => {
+    modal.classList.add("hidden");
+    document.getElementById("form-nueva-tr").reset();
+    // Resetear también estado adicional si es necesario
+  };
+
+  document.getElementById("volver").onclick = () => {
+    window.location.href = "https://caja.cambiosorion.cl/transacciones";
+  };
+}
