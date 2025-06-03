@@ -14,32 +14,6 @@ let usuarioSesion = null;
   }
 })();
 
-async function cargarCajas() {
-  const cajaSelect = document.getElementById("caja");
-  cajaSelect.innerHTML = "";
-
-  try {
-    const res = await fetch("https://cambiosorion.cl/data/nueva-tr.php?buscar_cajas=1");
-    if (!res.ok) throw new Error("No se pudo obtener las cajas.");
-    const cajas = await res.json();
-
-    cajas.forEach((caja) => {
-      const option = document.createElement("option");
-      option.value = caja.id;
-      option.textContent = caja.nombre;
-      cajaSelect.appendChild(option);
-    });
-  } catch (error) {
-    console.error("Error al cargar cajas:", error);
-    const option = document.createElement("option");
-    option.value = "";
-    option.textContent = "Error al cargar cajas";
-    cajaSelect.appendChild(option);
-  }
-}
-
-cargarCajas();
-
 let clienteSeleccionado = null;
 
 const clienteInput = document.getElementById("cliente");
@@ -211,7 +185,7 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
   }
 
   const payload = {
-    caja: document.getElementById("caja").value,
+    caja: usuarioSesion.caja_id,
     cliente_id: clienteSeleccionado.id,
     tipo_transaccion: document.getElementById("tipo-transaccion").value,
     tipo_documento: document.getElementById("tipo-documento").value,
