@@ -165,7 +165,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   const divisaInput = document.getElementById("divisa");
-  const sugerenciasDivisas = document.getElementById("sugerencias-divisas");
+  const sugerenciasUl = document.getElementById("sugerencias-divisas");
 
     divisaInput.addEventListener("input", async (e) => {
         const query = e.target.value.trim();
