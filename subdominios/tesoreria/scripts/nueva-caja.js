@@ -38,7 +38,6 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .catch(err => {
         console.error("Error al obtener divisas:", err);
-        alert("No se pudieron cargar las divisas.");
         });
     }
 
