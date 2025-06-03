@@ -177,6 +177,31 @@ document.addEventListener("DOMContentLoaded", function () {
         sugerenciasDivisas.classList.remove("hidden");
       });
   });
+
+  function obtenerPreciosDivisa(divisaID) {
+    return fetch(`https://cambiosorion.cl/data/nueva-tr.php?divisa_id=${divisaID}`)
+      .then((res) => res.json())
+      .catch((error) => {
+        console.error("Error al obtener precios de la divisa:", error);
+        return null;
+      });
+  }
+
+  function actualizarPlaceholderTasa(precios) {
+    const tipoTransaccion = document.getElementById("tipo-transaccion").value;
+    if (!precios) {
+      tasaCambioInput.placeholder = "Tasa de cambio";
+      return;
+    }
+
+    if (tipoTransaccion === "compra") {
+      tasaCambioInput.placeholder = precios.compra ? precios.compra.toFixed(2) : "Tasa de cambio";
+    } else if (tipoTransaccion === "venta") {
+      tasaCambioInput.placeholder = precios.venta ? precios.venta.toFixed(2) : "Tasa de cambio";
+    } else {
+      tasaCambioInput.placeholder = "Tasa de cambio";
+    }
+  }
 });
 
 function mostrarModalAdvertencia({mensaje, textoConfirmar = "Aceptar", textoCancelar = null, onConfirmar, onCancelar }) {
@@ -207,31 +232,6 @@ function mostrarModalAdvertencia({mensaje, textoConfirmar = "Aceptar", textoCanc
     modal.classList.add("hidden");
     if (onCancelar) onCancelar();
   };
-}
-
-function obtenerPreciosDivisa(divisaID) {
-  return fetch(`https://cambiosorion.cl/data/nueva-tr.php?divisa_id=${divisaID}`)
-    .then((res) => res.json())
-    .catch((error) => {
-      console.error("Error al obtener precios de la divisa:", error);
-      return null;
-    });
-}
-
-function actualizarPlaceholderTasa(precios) {
-  const tipoTransaccion = document.getElementById("tipo-transaccion").value;
-  if (!precios) {
-    tasaCambioInput.placeholder = "Tasa de cambio";
-    return;
-  }
-
-  if (tipoTransaccion === "compra") {
-    tasaCambioInput.placeholder = precios.compra ? precios.compra.toFixed(2) : "Tasa de cambio";
-  } else if (tipoTransaccion === "venta") {
-    tasaCambioInput.placeholder = precios.venta ? precios.venta.toFixed(2) : "Tasa de cambio";
-  } else {
-    tasaCambioInput.placeholder = "Tasa de cambio";
-  }
 }
 
 function mostrarModalError({ titulo, mensaje, textoConfirmar = "Aceptar", textoCancelar = null, onConfirmar, onCancelar }) {
