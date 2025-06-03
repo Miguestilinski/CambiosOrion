@@ -232,7 +232,6 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
       alert("Error: " + resultado.error);
     } else {
       mostrarModalExitoso();
-      location.href = "https://caja.cambiosorion.cl/transacciones";
     }
   } catch (err) {
     console.error(err);

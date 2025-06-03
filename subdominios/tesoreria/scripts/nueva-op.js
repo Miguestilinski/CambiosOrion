@@ -416,7 +416,7 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
     if (!divisaId || !nombre) {
       mostrarModal({
         titulo: "❌ Error",
-        mensaje: `Selecciona una divisa válida desde la lista (autocompletado).`,
+        mensaje: `Selecciona una divisa válida.`,
         textoConfirmar: "Entendido"
       });
       validacionFallida = true;
