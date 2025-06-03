@@ -1,3 +1,20 @@
+let usuarioSesion = null;
+
+// Obtener datos del usuario desde session_status.php
+(async () => {
+  try {
+    const res = await fetch("https://cambiosorion.cl/data/session_status.php", {
+      credentials: "include"
+    });
+    if (!res.ok) throw new Error("No se pudo obtener la sesión.");
+    const data = await res.json();
+    usuarioSesion = data;
+    console.log("Usuario autenticado:", usuarioSesion);
+  } catch (error) {
+    console.error("Error obteniendo la sesión:", error);
+  }
+})();
+
 document.addEventListener("DOMContentLoaded", function () {
   const form = document.getElementById("form-nueva-tr");
   const montoInput = document.getElementById("monto");
@@ -5,11 +22,9 @@ document.addEventListener("DOMContentLoaded", function () {
   const totalSpan = document.getElementById("total-transaccion");
   const cancelarBtn = document.getElementById("cancelar-transaccion");
 
-  // Referencias para IDs reales de cliente y divisa
   let clienteID = null;
   let divisaID = null;
 
-  // Formatea con punto como separador de miles
   function formatearMiles(valor) {
     return valor.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
@@ -25,7 +40,6 @@ document.addEventListener("DOMContentLoaded", function () {
     totalSpan.textContent = total.toFixed(2);
   }
 
-  // Reaccionar a entrada en monto para dar formato de miles
   montoInput.addEventListener("input", function (e) {
     let valor = limpiarFormato(e.target.value);
     if (!/^\d*$/.test(valor)) return;
@@ -40,6 +54,15 @@ document.addEventListener("DOMContentLoaded", function () {
   form.addEventListener("submit", function (e) {
     e.preventDefault();
 
+    if (!usuarioSesion || !usuarioSesion.isAuthenticated) {
+      mostrarModalError({
+        titulo: "❌ Error",
+        mensaje: "No se pudo validar al usuario.",
+        textoConfirmar: "Entendido"
+      });
+      return;
+    }
+
     const datos = {
       tipo_transaccion: document.getElementById("tipo-transaccion").value,
       tipo_documento: document.getElementById("tipo-documento").value,
@@ -48,6 +71,10 @@ document.addEventListener("DOMContentLoaded", function () {
       divisa: divisaID,
       tasa: parseFloat(tasaCambioInput.value) || 0,
       monto: parseFloat(limpiarFormato(montoInput.value)) || 0,
+      vendedor: {
+        id: usuarioSesion.equipo_id,
+        nombre: usuarioSesion.equipo_nombre
+      }
     };
 
     fetch("https://cambiosorion.cl/data/nueva-tr.php", {
@@ -60,36 +87,36 @@ document.addEventListener("DOMContentLoaded", function () {
       .then((res) => res.json())
       .then((respuesta) => {
         if (respuesta.exito) {
-            mostrarModalExitoso();
+          mostrarModalExitoso();
         } else {
-            mostrarModalError({
-                titulo: "❌ Error",
-                mensaje: `Error del servidor: ${respuesta.mensaje}`,
-                textoConfirmar: "Entendido"
-            });
+          mostrarModalError({
+            titulo: "❌ Error",
+            mensaje: `Error del servidor: ${respuesta.mensaje}`,
+            textoConfirmar: "Entendido"
+          });
         }
       })
       .catch((error) => {
         console.error("Error al enviar:", error);
         mostrarModalError({
-            titulo: "❌ Error",
-            mensaje: `Error al enviar los datos ${error}`,
-            textoConfirmar: "Entendido"
+          titulo: "❌ Error",
+          mensaje: `Error al enviar los datos ${error}`,
+          textoConfirmar: "Entendido"
         });
       });
   });
 
   cancelarBtn.addEventListener("click", function () {
     mostrarModalError({
-        mensaje: `¿Seguro que quieres cancelar la transacción?`,
-        textoConfirmar: "Cancelar",
-        textoCancelar: "Volver",
-        onConfirmar: () => {
+      mensaje: `¿Seguro que quieres cancelar la transacción?`,
+      textoConfirmar: "Cancelar",
+      textoCancelar: "Volver",
+      onConfirmar: () => {
         form.reset();
         totalSpan.textContent = "0.00";
         clienteID = null;
         divisaID = null;
-        }
+      }
     });
   });
 
@@ -101,7 +128,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Autocompletado para cliente
   const clienteInput = document.getElementById("cliente");
   const resultadoClientes = document.getElementById("resultado-clientes");
 
@@ -138,7 +164,6 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   });
 
-  // Autocompletado para divisa
   const divisaInput = document.getElementById("divisa");
   const sugerenciasDivisas = document.getElementById("sugerencias-divisas");
 
