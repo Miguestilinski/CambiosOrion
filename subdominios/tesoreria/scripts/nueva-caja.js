@@ -19,27 +19,36 @@ document.addEventListener("DOMContentLoaded", () => {
     botonAgregar.innerText = tablaContainer.classList.contains("hidden") ? "Agregar Divisas" : "Ocultar Divisas";
   });
 
-    let divisas = [];
+  let divisas = [];
 
-    cargarDivisas();
+  cargarDivisas();
 
-    function cargarDivisas() {
+  function cargarDivisas() {
     fetch("https://cambiosorion.cl/data/nueva-caja.php", {
         method: "GET"
     })
-        .then(res => res.json())
-        .then(data => {
-        if (data.error) {
-            console.log("Error al cargar divisas: " + data.error);
-            return;
+    .then(res => {
+        console.log("Respuesta status:", res.status);
+        return res.text();  // primero leer como texto
+    })
+    .then(text => {
+        console.log("Respuesta textual:", text);
+        try {
+            const data = JSON.parse(text);
+            if (data.error) {
+                console.error("Error al cargar divisas: " + data.error);
+                return;
+            }
+            divisas = data.divisas || [];
+            mostrarDivisas();
+        } catch(e) {
+            console.error("JSON inválido:", e);
         }
-        divisas = data.divisas || [];
-        mostrarDivisas();
-        })
-        .catch(err => {
+    })
+    .catch(err => {
         console.error("Error al obtener divisas:", err);
-        });
-    }
+    });
+  }
 
   // Cargar tabla
   function mostrarDivisas() {
