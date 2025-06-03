@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(res => res.json())
         .then(data => {
         if (data.error) {
-            alert("Error al cargar divisas: " + data.error);
+            console.log("Error al cargar divisas: " + data.error);
             return;
         }
         divisas = data.divisas || [];
