@@ -81,10 +81,10 @@ document.addEventListener("click", (e) => {
 });
 
 // Divisa única
-const montoInput = divisaItem.querySelector("monto");
-const tasaInput = divisaItem.querySelector("tasa-cambio");
-const divisaInput = divisaItem.querySelector("divisa");
-const sugerenciasUl = divisaItem.querySelector("sugerencias-divisas");
+const montoInput = document.getElementById("monto");
+const tasaInput = document.getElementById("tasa-cambio");
+const divisaInput = document.getElementById("divisa");
+const sugerenciasUl = document.getElementById("sugerencias-divisas");
 const totalOperacion = document.getElementById("total-transaccion");
 
 function calcularTotalOperacion() {
