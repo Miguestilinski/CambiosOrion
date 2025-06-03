@@ -166,18 +166,22 @@
                       class="absolute z-10 bg-white border border-gray-600 text-gray-700 rounded-lg mt-1 hidden w-full max-h-60 overflow-auto shadow-lg"></ul>
                 </div>
 
-                <!-- Tasa de Cambio -->
-                <div class="flex-1">
-                  <label for="tasa" class="block mb-1 text-sm text-white">Tasa de Cambio</label>
-                  <input type="number" step="0.01" id="tasa" placeholder="Tasa de cambio"
-                    class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700" />
-                </div>
-
                 <!-- Monto -->
                 <div class="flex-1">
                   <label for="monto" class="block mb-1 text-sm text-white">Monto</label>
                   <input type="number" id="monto" placeholder="Monto"
                     class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700" />
+                </div>
+
+                <!-- Tasa de Cambio -->
+                <div class="flex-1">
+                  <label for="tasa-cambio" class="block mb-1 text-sm text-white">Tasa de Cambio</label>
+                  <input 
+                    type="text"
+                    inputmode="decimal"
+                    pattern="^\d+(\.\d{0,2})?$"
+                    placeholder="Tasa de cambio"
+                    class="divisa-tasa block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"/>
                 </div>
               </div>
 

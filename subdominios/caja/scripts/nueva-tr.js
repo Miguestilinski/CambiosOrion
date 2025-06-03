@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
   const form = document.getElementById("form-nueva-tr");
   const montoInput = document.getElementById("monto");
-  const tasaInput = document.getElementById("tasa");
+  const tasaCambioInput = document.getElementById("tasa-cambio");
   const totalSpan = document.getElementById("total-transaccion");
   const cancelarBtn = document.getElementById("cancelar-transaccion");
 
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function actualizarTotal() {
     const monto = parseFloat(limpiarFormato(montoInput.value)) || 0;
-    const tasa = parseFloat(tasaInput.value) || 0;
+    const tasa = parseFloat(tasaCambioInput.value) || 0;
     const total = monto * tasa;
     totalSpan.textContent = total.toFixed(2);
   }
@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
     actualizarTotal();
   });
 
-  tasaInput.addEventListener("input", actualizarTotal);
+  tasaCambioInput.addEventListener("input", actualizarTotal);
 
   form.addEventListener("submit", function (e) {
     e.preventDefault();
@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
       cliente: clienteID,
       email: document.getElementById("email").value,
       divisa: divisaID,
-      tasa: parseFloat(tasaInput.value) || 0,
+      tasa: parseFloat(tasaCambioInput.value) || 0,
       monto: parseFloat(limpiarFormato(montoInput.value)) || 0,
     };
 
@@ -91,6 +91,14 @@ document.addEventListener("DOMContentLoaded", function () {
         divisaID = null;
         }
     });
+  });
+
+  document.getElementById("tipo-transaccion").addEventListener("change", () => {
+    if (divisaID) {
+      obtenerPreciosDivisa(divisaID).then((precios) => {
+        actualizarPlaceholderTasa(precios);
+      });
+    }
   });
 
   // Autocompletado para cliente
@@ -159,6 +167,9 @@ document.addEventListener("DOMContentLoaded", function () {
             divisaInput.value = divisa.nombre;
             divisaID = divisa.id;
             sugerenciasDivisas.classList.add("hidden");
+            obtenerPreciosDivisa(divisaID).then((precios) => {
+              actualizarPlaceholderTasa(precios);
+            });
           });
           sugerenciasDivisas.appendChild(li);
         });
@@ -196,6 +207,31 @@ function mostrarModalAdvertencia({mensaje, textoConfirmar = "Aceptar", textoCanc
     modal.classList.add("hidden");
     if (onCancelar) onCancelar();
   };
+}
+
+function obtenerPreciosDivisa(divisaID) {
+  return fetch(`https://cambiosorion.cl/data/nueva-tr.php?divisa_id=${divisaID}`)
+    .then((res) => res.json())
+    .catch((error) => {
+      console.error("Error al obtener precios de la divisa:", error);
+      return null;
+    });
+}
+
+function actualizarPlaceholderTasa(precios) {
+  const tipoTransaccion = document.getElementById("tipo-transaccion").value;
+  if (!precios) {
+    tasaCambioInput.placeholder = "Tasa de cambio";
+    return;
+  }
+
+  if (tipoTransaccion === "compra") {
+    tasaCambioInput.placeholder = precios.compra ? precios.compra.toFixed(2) : "Tasa de cambio";
+  } else if (tipoTransaccion === "venta") {
+    tasaCambioInput.placeholder = precios.venta ? precios.venta.toFixed(2) : "Tasa de cambio";
+  } else {
+    tasaCambioInput.placeholder = "Tasa de cambio";
+  }
 }
 
 function mostrarModalError({ titulo, mensaje, textoConfirmar = "Aceptar", textoCancelar = null, onConfirmar, onCancelar }) {
