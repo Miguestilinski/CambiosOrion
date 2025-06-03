@@ -220,7 +220,7 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
     estado: "Vigente",
     email: document.getElementById("email").value,
     total: subtotal,
-    detalles: [{
+    divisa: [{
       divisa_id: divisaId,
       nombre,
       monto,
