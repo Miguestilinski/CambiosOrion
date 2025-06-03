@@ -81,24 +81,24 @@ document.addEventListener("click", (e) => {
 });
 
 // Divisa única
-const divisaItem = document.querySelector(".divisa-item");
-const montoInput = divisaItem.querySelector(".divisa-monto");
-const tasaInput = divisaItem.querySelector(".divisa-tasa");
-const subtotalSpan = divisaItem.querySelector(".divisa-subtotal");
-const divisaInput = divisaItem.querySelector(".divisa-nombre");
-const sugerenciasUl = divisaItem.querySelector(".divisa-sugerencias");
+const montoInput = divisaItem.querySelector("monto");
+const tasaInput = divisaItem.querySelector("tasa-cambio");
+const divisaInput = divisaItem.querySelector("divisa");
+const sugerenciasUl = divisaItem.querySelector("sugerencias-divisas");
+const totalOperacion = document.getElementById("total-transaccion");
 
-function calcularSubtotal() {
-  const monto = parseInt(montoInput.value) || 0;
+function calcularTotalOperacion() {
+  const monto = parseFloat(montoInput.value) || 0;
   const tasa = parseFloat(tasaInput.value) || 0;
-  const subtotal = Math.round(monto * tasa);
-  subtotalSpan.textContent = `Subtotal: $${new Intl.NumberFormat('es-CL').format(subtotal)}`;
-  document.getElementById("total-operacion").textContent = `${new Intl.NumberFormat('es-CL').format(subtotal)}`;
+  const total = Math.round(monto * tasa);
+  if (totalOperacion) {
+    totalOperacion.textContent = `${new Intl.NumberFormat('es-CL').format(total)}`;
+  }
 }
 
 montoInput.addEventListener("input", (e) => {
   e.target.value = e.target.value.replace(/[^0-9]/g, '');
-  calcularSubtotal();
+  calcularTotalOperacion();
 });
 
 tasaInput.addEventListener("input", (e) => {
@@ -108,7 +108,7 @@ tasaInput.addEventListener("input", (e) => {
   } else {
     e.target.value = value.slice(0, -1);
   }
-  calcularSubtotal();
+  calcularTotalOperacion();
 });
 
 divisaInput.addEventListener("input", async (e) => {
