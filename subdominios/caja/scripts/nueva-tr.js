@@ -167,41 +167,52 @@ document.addEventListener("DOMContentLoaded", function () {
   const divisaInput = document.getElementById("divisa");
   const sugerenciasDivisas = document.getElementById("sugerencias-divisas");
 
-  divisaInput.addEventListener("input", function () {
-    const query = divisaInput.value.trim();
-    if (query.length < 1) {
-      sugerenciasDivisas.classList.add("hidden");
-      return;
-    }
-
-    fetch(`https://cambiosorion.cl/data/nueva-tr.php?buscar_divisa=${encodeURIComponent(query)}`)
-      .then((res) => res.json())
-      .then((data) => {
-        sugerenciasDivisas.innerHTML = "";
-        if (data.length === 0) {
-          sugerenciasDivisas.classList.add("hidden");
-          return;
+    divisaInput.addEventListener("input", async (e) => {
+        const query = e.target.value.trim();
+        if (query.length < 1) {
+        sugerenciasUl.classList.add("hidden");
+        return;
         }
+        try {
+        const res = await fetch(`https://cambiosorion.cl/data/nueva-tr.php?buscar_divisa=${encodeURIComponent(query)}`);
+        const divisas = await res.json();
+        sugerenciasUl.innerHTML = "";
+        divisas.forEach((divisa) => {
+            const li = document.createElement("li");
+            li.textContent = divisa.nombre;
+            li.classList.add("px-2", "py-1", "hover:bg-gray-200", "cursor-pointer");
+            li.addEventListener("click", async () => {
+              divisaInput.value = divisa.nombre;
+              divisaInput.dataset.id = divisa.id;
+              sugerenciasUl.classList.add("hidden");
+              console.log(`Divisa seleccionada: ${divisa.nombre}, ID: ${divisa.id}`);
 
-        data.forEach((divisa) => {
-          const li = document.createElement("li");
-          li.textContent = divisa.nombre;
-          li.dataset.id = divisa.id;
-          li.classList.add("px-2", "py-1", "hover:bg-gray-200", "cursor-pointer");
-          li.addEventListener("click", () => {
-            divisaInput.value = divisa.nombre;
-            divisaID = divisa.id;
-            sugerenciasDivisas.classList.add("hidden");
-            obtenerPreciosDivisa(divisaID).then((precios) => {
-              actualizarPlaceholderTasa(precios);
+              // Actualizar inmediatamente el placeholder al seleccionar divisa
+              const tipoOperacion = document.getElementById("tipo-transaccion").value;
+              try {
+                  const res = await fetch(`https://cambiosorion.cl/data/nueva-tr.php?precio_divisa=${encodeURIComponent(divisa.nombre)}&tipo=${tipoOperacion}`);
+                  const data = await res.json();
+                  if (data && data.precio) {
+                      const precio = parseFloat(data.precio);
+                      const precioFormateado = Number.isInteger(precio)
+                          ? new Intl.NumberFormat('es-CL').format(precio)
+                          : new Intl.NumberFormat('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(precio);
+                      nuevaDivisa.querySelector(".divisa-tasa").placeholder = `≈ ${precioFormateado}`;
+                  } else {
+                      nuevaDivisa.querySelector(".divisa-tasa").placeholder = "Tasa de cambio";
+                  }
+              } catch (err) {
+                  console.error("Error al obtener tasa:", err);
+                  nuevaDivisa.querySelector(".divisa-tasa").placeholder = "Tasa de cambio";
+              }
             });
-          });
-          sugerenciasDivisas.appendChild(li);
+            sugerenciasUl.appendChild(li);
         });
-
-        sugerenciasDivisas.classList.remove("hidden");
-      });
-  });
+        sugerenciasUl.classList.remove("hidden");
+        } catch (err) {
+        console.error(err);
+        }
+    });
 
   function obtenerPreciosDivisa(divisaID) {
     return fetch(`https://cambiosorion.cl/data/nueva-tr.php?divisa_id=${divisaID}`)
