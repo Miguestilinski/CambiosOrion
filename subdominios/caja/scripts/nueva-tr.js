@@ -43,8 +43,7 @@ clienteInput.addEventListener("input", async (e) => {
     });
     resultadoClientes.classList.remove("hidden");
   } catch (error) {
-    console.error(error);
-    alert("Error al buscar cliente.");
+    console.error("Error al buscar cliente.", error);
   }
 });
 
@@ -164,12 +163,20 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
   e.preventDefault();
 
   if (!clienteSeleccionado) {
-    alert("Selecciona un cliente válido.");
+    mostrarModalError({
+      titulo: "❌ Error",
+      mensaje: "Selecciona un cliente válido.",
+      textoConfirmar: "Entendido"
+    });
     return;
   }
 
   if (!usuarioSesion || !usuarioSesion.isAuthenticated) {
-    alert("No se pudo validar al usuario.");
+    mostrarModalError({
+      titulo: "❌ Error",
+      mensaje: "No se pudo validar al usuario.",
+      textoConfirmar: "Entendido"
+    });
     return;
   }
 
@@ -180,7 +187,11 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
   const subtotal = Math.round(monto * tasa);
 
   if (!divisaId || !nombre) {
-    alert("Selecciona una divisa válida.");
+    mostrarModalError({
+      titulo: "❌ Error",
+      mensaje: "Selecciona una divisa válida.",
+      textoConfirmar: "Entendido"
+    });
     return;
   }
 
@@ -220,12 +231,16 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
     if (resultado.error) {
       alert("Error: " + resultado.error);
     } else {
-      alert("✅ Transacción registrada exitosamente.");
+      mostrarModalExitoso();
       location.href = "https://caja.cambiosorion.cl/transacciones";
     }
   } catch (err) {
     console.error(err);
-    alert("Error al registrar transacción.");
+    mostrarModalError({
+      titulo: "❌ Error",
+      mensaje: `Error al registrar transacción: ${err}`,
+      textoConfirmar: "Entendido"
+    });
   }
 });
 
