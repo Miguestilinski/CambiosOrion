@@ -50,8 +50,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // Cargar tabla
   function mostrarDivisas() {
     tablaDivisas.querySelector("tbody").innerHTML = divisas.map(divisa => `
-      <tr>
-        <td class="px-4 py-2"><input type="checkbox" class="check-divisa" data-id="${divisa.codigo}" /></td>
+      <tr class="border-b bg-white border-gray-700 text-gray-700">
+        <td class="px-4 py-2">
+          <input type="checkbox" class="check-divisa form-checkbox h-4 w-4 text-blue-600" data-id="${divisa.codigo}" />
+        </td>
         <td class="px-4 py-2">${divisa.codigo}</td>
         <td class="px-4 py-2">${divisa.nombre}</td>
       </tr>
