@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const clienteInput = document.getElementById("cliente");
   const resultadoClientes = document.getElementById("resultado-clientes");
   const cuentaClienteInput = document.getElementById("cuenta-cliente");
-  const resultadoCuentas = document.getElementById("resultado-cuentas");
   const divisasContainer = document.getElementById("divisas-container");
   const form = document.getElementById("form-nuevo-ingreso");
 
@@ -87,32 +86,35 @@ document.addEventListener("DOMContentLoaded", () => {
             option.textContent = `${cuenta.nombre_cliente} - ${cuenta.codigo_divisa}`;
             selectCuenta.appendChild(option);
             });
-            selectCuenta.addEventListener("change", () => {
-                
-            const selectedOption = selectCuenta.options[selectCuenta.selectedIndex];
-            const selectedText = selectedOption.textContent;
 
-            // Extraer código de divisa (asumiendo que está al final del texto)
-            const codigoDivisa = selectedText.split(" - ").pop();
+            selectCuenta.dispatchEvent(new Event("change"));
 
-            // Buscar el input de divisa correspondiente (ajusta el selector si es necesario)
-            const inputDivisa = divisasContainer.querySelector(".divisa-nombre");
-
-            if (inputDivisa) {
-                inputDivisa.value = codigoDivisa;
-                inputDivisa.readOnly = true; // Desactiva edición
-                inputDivisa.classList.add("bg-gray-100", "cursor-not-allowed"); // Opcional: estilo visual
-                inputDivisa.removeAttribute("data-id"); // Limpiar ID previa si la hubo
-            }
-
-            // Oculta las sugerencias, por si quedaron visibles
-            const sugerenciasList = inputDivisa?.nextElementSibling;
-            if (sugerenciasList) sugerenciasList.classList.add("hidden");
-            });
         } catch (error) {
             console.error("Error cargando cuentas cliente:", error);
         }
     }
+
+    // Manejar el cambio de cuenta para actualizar input de divisa
+    document.getElementById("cuenta-cliente").addEventListener("change", () => {
+        const selectCuenta = document.getElementById("cuenta-cliente");
+        const selectedOption = selectCuenta.options[selectCuenta.selectedIndex];
+        const selectedText = selectedOption.textContent;
+
+        const codigoDivisa = selectedText.split(" - ").pop(); // Extrae la divisa
+
+        // Input de divisa (ajustar selector si hay varios)
+        const inputDivisa = divisasContainer.querySelector(".divisa-nombre");
+
+        if (inputDivisa) {
+            inputDivisa.value = codigoDivisa;
+            inputDivisa.readOnly = true;
+            inputDivisa.classList.add("bg-gray-100", "cursor-not-allowed");
+            inputDivisa.removeAttribute("data-id");
+            
+            const sugerenciasList = inputDivisa.nextElementSibling;
+            if (sugerenciasList) sugerenciasList.classList.add("hidden");
+        }
+    });
 
   // Ocultar sugerencias al hacer click afuera
   document.addEventListener("click", (e) => {
