@@ -54,8 +54,11 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="px-4 py-2">
           <input type="checkbox" class="check-divisa rounded form-checkbox h-4 w-4 text-blue-600" data-id="${divisa.codigo}" />
         </td>
-        <td class="px-4 py-2">${divisa.codigo}</td>
+        <td class="px-4 py-2">
+            <img src="${divisa.icono}" alt="Icono" class="w-6 h-6 rounded-full border border-gray-400" />
+        </td>
         <td class="px-4 py-2">${divisa.nombre}</td>
+        <td class="px-4 py-2">${divisa.codigo}</td>
       </tr>
     `).join("");
     actualizarContador();
