@@ -87,61 +87,38 @@ document.addEventListener("DOMContentLoaded", () => {
             option.textContent = `${cuenta.nombre_cliente} - ${cuenta.codigo_divisa}`;
             selectCuenta.appendChild(option);
             });
+            selectCuenta.addEventListener("change", () => {
+                
+            const selectedOption = selectCuenta.options[selectCuenta.selectedIndex];
+            const selectedText = selectedOption.textContent;
+
+            // Extraer código de divisa (asumiendo que está al final del texto)
+            const codigoDivisa = selectedText.split(" - ").pop();
+
+            // Buscar el input de divisa correspondiente (ajusta el selector si es necesario)
+            const inputDivisa = divisasContainer.querySelector(".divisa-nombre");
+
+            if (inputDivisa) {
+                inputDivisa.value = codigoDivisa;
+                inputDivisa.readOnly = true; // Desactiva edición
+                inputDivisa.classList.add("bg-gray-100", "cursor-not-allowed"); // Opcional: estilo visual
+                inputDivisa.removeAttribute("data-id"); // Limpiar ID previa si la hubo
+            }
+
+            // Oculta las sugerencias, por si quedaron visibles
+            const sugerenciasList = inputDivisa?.nextElementSibling;
+            if (sugerenciasList) sugerenciasList.classList.add("hidden");
+            });
         } catch (error) {
             console.error("Error cargando cuentas cliente:", error);
         }
     }
-
-  // Manejo de búsqueda de divisas en cada input de divisa-nombre
-  divisasContainer.addEventListener("input", async (e) => {
-    if (!e.target.classList.contains("divisa-nombre")) return;
-
-    const inputDivisa = e.target;
-    const query = inputDivisa.value.trim();
-    const sugerenciasList = inputDivisa.nextElementSibling; // ul.divisa-sugerencias
-
-    if (query.length < 2) {
-      sugerenciasList.classList.add("hidden");
-      sugerenciasList.innerHTML = "";
-      return;
-    }
-
-    try {
-      const res = await fetch(`https://cambiosorion.cl/data/nuevo-ing.php?buscar_divisa=${encodeURIComponent(query)}`);
-      const divisas = await res.json();
-      sugerenciasList.innerHTML = "";
-      if (divisas.length === 0) {
-        sugerenciasList.innerHTML = "<li class='p-2'>No hay resultados</li>";
-      } else {
-        divisas.forEach(divisa => {
-          const li = document.createElement("li");
-          li.textContent = divisa.nombre;
-          li.dataset.id = divisa.id;
-          li.classList.add("p-2", "cursor-pointer", "hover:bg-gray-200");
-          li.addEventListener("click", () => {
-            inputDivisa.value = divisa.nombre;
-            inputDivisa.dataset.id = divisa.id;
-            sugerenciasList.classList.add("hidden");
-          });
-          sugerenciasList.appendChild(li);
-        });
-      }
-      sugerenciasList.classList.remove("hidden");
-    } catch (error) {
-      console.error("Error buscando divisas:", error);
-    }
-  });
 
   // Ocultar sugerencias al hacer click afuera
   document.addEventListener("click", (e) => {
     if (!clienteInput.contains(e.target)) {
       resultadoClientes.classList.add("hidden");
     }
-    divisasContainer.querySelectorAll(".divisa-sugerencias").forEach(ul => {
-      if (!ul.previousElementSibling.contains(e.target)) {
-        ul.classList.add("hidden");
-      }
-    });
   });
 
   // Manejar submit del formulario
