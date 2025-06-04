@@ -16,7 +16,7 @@ function initializePage() {
 function loadCurrenciesWithSSE() {
     showDropdownSkeleton("dropdown1");
     showDropdownSkeleton("dropdown2");
-    const eventSource = new EventSource('https://cambiosorion.cl/api/divisas/stream/stream_divisas.php');
+    const eventSource = new EventSource('https://cambiosorion.cl/api/stream/stream_divisas.php');
 
     eventSource.onopen = () => {};
 

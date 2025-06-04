@@ -5,7 +5,7 @@ let eventSource;
 
 // Función para establecer la conexión
 function initSSE() {
-  eventSource = new EventSource('https://cambiosorion.cl/api/divisas/stream/stream_divisas.php');
+  eventSource = new EventSource('https://cambiosorion.cl/api/stream/stream_divisas.php');
 
   eventSource.onmessage = (event) => {
     try {

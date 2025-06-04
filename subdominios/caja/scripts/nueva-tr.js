@@ -202,6 +202,7 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
     tipo_documento: document.getElementById("tipo-documento").value,
     numero_documento: "DOC-" + Math.floor(100000 + Math.random() * 900000),
     numero_nota: "NOTA-" + Math.floor(1000 + Math.random() * 9000),
+    metodo_pago: document.getElementById("metodo-pago").value,
     estado: "Vigente",
     email: document.getElementById("email").value,
     total: subtotal,
