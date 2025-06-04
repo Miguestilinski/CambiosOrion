@@ -120,7 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
           li.classList.add("p-2", "cursor-pointer", "hover:bg-gray-200");
           li.addEventListener("click", () => {
             inputDivisa.value = divisa.nombre;
-            inputDivisa.dataset.id = divisa.id; // Guardar id
+            inputDivisa.dataset.id = divisa.id;
             sugerenciasList.classList.add("hidden");
           });
           sugerenciasList.appendChild(li);
@@ -136,9 +136,6 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("click", (e) => {
     if (!clienteInput.contains(e.target)) {
       resultadoClientes.classList.add("hidden");
-    }
-    if (!cuentaClienteInput.contains(e.target)) {
-      resultadoCuentas.classList.add("hidden");
     }
     divisasContainer.querySelectorAll(".divisa-sugerencias").forEach(ul => {
       if (!ul.previousElementSibling.contains(e.target)) {
@@ -175,8 +172,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Por ahora vamos a enviar sólo la primera divisa con monto (puedes extender para enviar varios ingresos)
-    // Busca la primera divisa que tenga monto > 0 y un divisa_id válido
     let divisa_id = null;
     let monto = null;
 
