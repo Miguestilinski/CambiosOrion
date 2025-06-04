@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="px-4 py-2">${operacion.numero_documento}</td>
                 <td class="px-4 py-2">${operacion.numero_nota}</td>
                 <td class="px-4 py-2">${operacion.tipo_transaccion}</td>
-                <td class="px-4 py-2">${divisas.map(d => `<div>${d},</div>`).join('')}</td>
+                <td class="px-4 py-2">${divisas.map((d, i) => `<div>${d}${i < divisas.length - 1 ? ',' : ''}</div>`).join('')}</td>
                 <td class="px-4 py-2">${formatearNumero(operacion.monto_total)}</td>
                 <td class="px-4 py-2">${divisaTasaHTML}</td>
                 <td class="px-4 py-2">${formatearNumero(operacion.total)}</td>
