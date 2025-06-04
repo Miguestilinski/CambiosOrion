@@ -99,7 +99,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const btnDesactivar = document.createElement('button');
             btnDesactivar.textContent = 'Desactivar';
             btnDesactivar.className = 'text-white bg-red-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1';
-    
+            
+            // Procesar divisas y tasas como listas tabuladas
+            const divisas = operacion.divisas.split(', ');
+            const tasas = operacion.tasas_cambio.split(', ');
+
+            let divisaTasaHTML = '';
+            for (let i = 0; i < divisas.length; i++) {
+                divisaTasaHTML += `<div>${divisas[i]}: ${formatearNumero(parseFloat(tasas[i]))}</div>`;
+            }
+
             tr.innerHTML = `
                 <td class="px-4 py-2">${operacion.fecha}</td>
                 <td class="px-4 py-2">${operacion.id}</td>
@@ -108,9 +117,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="px-4 py-2">${operacion.numero_documento}</td>
                 <td class="px-4 py-2">${operacion.numero_nota}</td>
                 <td class="px-4 py-2">${operacion.tipo_transaccion}</td>
-                <td class="px-4 py-2">${operacion.divisas}</td>
+                <td class="px-4 py-2">${divisas.map(d => `<div>${d}</div>`).join('')}</td>
                 <td class="px-4 py-2">${formatearNumero(operacion.monto_total)}</td>
-                <td class="px-4 py-2">${operacion.tasas_cambio}</td>
+                <td class="px-4 py-2">${divisaTasaHTML}</td>
                 <td class="px-4 py-2">${formatearNumero(operacion.total)}</td>
                 <td class="px-4 py-2">${operacion.estado}</td>
                 <td class="px-4 py-2 mostrar-btn-cell"></td>
