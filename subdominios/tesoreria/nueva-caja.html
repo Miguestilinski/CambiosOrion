@@ -118,7 +118,7 @@
               <h1 class="text-2xl font-medium mr-4 leading-none text-white">Crear Nueva Caja</h1>
             </div>
       
-            <!-- Formulario Nueva Operación -->
+            <!-- Formulario Nueva Caja -->
             <form id="form-nueva-caja" class="grid grid-cols-1 gap-6 mb-6">
       
               <!-- Tipo de Caja -->
@@ -143,13 +143,24 @@
       
                 <!-- Selección de Divisas -->
                 <div>
-                    <h2 class="block mb-2 text-sm text-white">Divisas a incluir</h2>
+                    <h2 class="block mb-2 text-lg font-medium text-white">Divisas a incluir</h2>
+
+                    <!-- Botón para mostrar/ocultar divisas -->
+                    <button
+                        type="button"
+                        id="btn-agregar-divisas"
+                        class="mb-2 bg-green-700 hover:bg-green-800 text-white font-medium rounded-lg text-sm px-4 py-2"
+                        >
+                        Agregar Divisas
+                    </button>
 
                     <!-- Contador -->
-                    <p class="text-sm text-white mb-2">Divisas seleccionadas: <span id="contador-divisas" class="font-bold">0</span></p>
+                    <p id="contador-divisas-container" class="text-sm text-white mb-2 hidden">
+                        Divisas seleccionadas: <span id="contador-divisas" class="font-bold">0</span>
+                    </p>
 
                     <!-- Tabla de Divisas -->
-                    <div class="overflow-x-auto w-1/2">
+                    <div id="tabla-divisas-container" class="overflow-x-auto w-1/2 hidden">
                         <table id="tabla-divisas" class="w-full text-sm text-left text-gray-700 bg-white border border-gray-400 rounded-lg">
                         <thead class="bg-gray-200 text-gray-700 text-sm uppercase">
                             <tr>
@@ -162,13 +173,6 @@
                         </thead>
                         <tbody>
                             <!-- Aquí se insertarán dinámicamente las divisas desde JS -->
-                            <!-- Ejemplo temporal:
-                            <tr>
-                            <td class="px-4 py-2"><input type="checkbox" class="check-divisa" data-id="USD" /></td>
-                            <td class="px-4 py-2">USD</td>
-                            <td class="px-4 py-2">Dólar Estadounidense</td>
-                            </tr>
-                            -->
                         </tbody>
                         </table>
                     </div>
@@ -191,6 +195,7 @@
                 </button>
               </div>
             </form>
+
             <!-- Modal de advertencia -->
             <div id="modal-advertencia" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
               <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">

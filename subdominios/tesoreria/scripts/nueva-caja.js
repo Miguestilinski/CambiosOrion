@@ -4,19 +4,20 @@ document.addEventListener("DOMContentLoaded", () => {
   const checkTodas = document.getElementById("check-todas-divisas");
   const formCaja = document.getElementById("form-nueva-caja");
 
-  // Botón para mostrar/ocultar tabla
-  const botonAgregar = document.createElement("button");
-  botonAgregar.innerText = "Agregar Divisas";
-  botonAgregar.type = "button";
-  botonAgregar.className = "mb-4 bg-green-700 hover:bg-green-800 text-white font-medium rounded-lg text-sm px-4 py-2";
-  tablaDivisas.closest("div").insertBefore(botonAgregar, tablaDivisas.closest("div").firstChild);
+  const btnAgregarDivisas = document.getElementById("btn-agregar-divisas");
+  const tablaContainer = document.getElementById("tabla-divisas-container");
 
-  const tablaContainer = tablaDivisas.closest("div");
-  tablaContainer.classList.add("hidden");
-
-  botonAgregar.addEventListener("click", () => {
-    tablaContainer.classList.toggle("hidden");
-    botonAgregar.innerText = tablaContainer.classList.contains("hidden") ? "Agregar Divisas" : "Ocultar Divisas";
+  btnAgregarDivisas.addEventListener("click", () => {
+    const isHidden = tablaContainer.classList.contains("hidden");
+    if (isHidden) {
+      tablaContainer.classList.remove("hidden");
+      contadorContainer.classList.remove("hidden");
+      btnAgregarDivisas.innerText = "Ocultar Divisas";
+    } else {
+      tablaContainer.classList.add("hidden");
+      contadorContainer.classList.add("hidden");
+      btnAgregarDivisas.innerText = "Agregar Divisas";
+    }
   });
 
   let divisas = [];
@@ -27,12 +28,8 @@ document.addEventListener("DOMContentLoaded", () => {
     fetch("https://cambiosorion.cl/data/nueva-caja.php", {
         method: "GET"
     })
-    .then(res => {
-        console.log("Respuesta status:", res.status);
-        return res.text();  // primero leer como texto
-    })
+    .then(res => res.text())
     .then(text => {
-        console.log("Respuesta textual:", text);
         try {
             const data = JSON.parse(text);
             if (data.error) {
@@ -52,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Cargar tabla
   function mostrarDivisas() {
-    tablaDivisas.innerHTML = divisas.map(divisa => `
+    tablaDivisas.querySelector("tbody").innerHTML = divisas.map(divisa => `
       <tr>
         <td class="px-4 py-2"><input type="checkbox" class="check-divisa" data-id="${divisa.codigo}" /></td>
         <td class="px-4 py-2">${divisa.codigo}</td>
@@ -73,10 +70,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.target.classList.contains("check-divisa")) {
       actualizarContador();
 
-      // Si se desmarca una, desactiva el check de "todas"
       if (!e.target.checked) checkTodas.checked = false;
 
-      // Si se marcan todas individualmente, marcar "todas"
       const total = document.querySelectorAll(".check-divisa").length;
       const marcadas = document.querySelectorAll(".check-divisa:checked").length;
       if (total === marcadas) checkTodas.checked = true;
@@ -110,35 +105,28 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     fetch("https://cambiosorion.cl/data/nueva-caja.php", {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-        nombre,
-        tipo: tipoCaja,
-        divisas: seleccionadas
-    })
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nombre, tipo: tipoCaja, divisas: seleccionadas })
     })
     .then(res => res.json())
     .then(data => {
-    if (data.error) {
+      if (data.error) {
         alert("Error: " + data.error);
-    } else {
+      } else {
         alert("Caja creada correctamente con ID: " + data.caja_id);
         formCaja.reset();
         actualizarContador();
         checkTodas.checked = false;
-    }
+        // Opcional: ocultar tabla y contador después de crear la caja
+        tablaContainer.classList.add("hidden");
+        contadorContainer.classList.add("hidden");
+        btnAgregarDivisas.innerText = "Agregar Divisas";
+      }
     })
     .catch(err => {
-    console.error("Error al enviar datos:", err);
-    alert("Error inesperado al crear la caja.");
+      console.error("Error al enviar datos:", err);
+      alert("Error inesperado al crear la caja.");
     });
-
-    formCaja.reset();
-    actualizarContador();
-    checkTodas.checked = false;
   });
-
 });
