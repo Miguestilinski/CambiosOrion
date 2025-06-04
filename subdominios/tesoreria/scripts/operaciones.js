@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let divisaTasaHTML = '';
             for (let i = 0; i < divisas.length; i++) {
-                divisaTasaHTML += `<div>${divisas[i]}: ${formatearNumero(parseFloat(tasas[i]))}</div>`;
+                divisaTasaHTML += `<div>${formatearNumero(parseFloat(tasas[i]))}</div>`;
             }
 
             tr.innerHTML = `
