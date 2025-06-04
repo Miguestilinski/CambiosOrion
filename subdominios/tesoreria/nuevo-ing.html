@@ -138,15 +138,6 @@
                 </select>
                 </div>
         
-                <!-- Tipo de Documento -->
-                <div>
-                <label class="block mb-1 text-sm text-white">Tipo de Documento</label>
-                <select id="tipo-documento" class="block w-1/2 px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
-                    <option value="boleta">Boleta</option>
-                    <option value="factura">Factura</option>
-                </select>
-                </div>
-        
                 <!-- Cliente -->
                 <div class="relative">
                 <label for="cliente" class="block mb-1 text-sm text-white">Cliente</label>
@@ -165,24 +156,16 @@
                 <!-- Cuenta Cliente -->
                 <div class="relative">
                 <label for="cuenta-cliente" class="block mb-1 text-sm text-white">Cuenta Cliente</label>
-                <input
-                    type="text"
-                    id="cuenta-cliente"
-                    placeholder="Buscar cuenta por nombre"
-                    autocomplete="off"
-                    class="block w-1/2 px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
-                />
-                <ul 
-                    id="resultado-cuentas" 
-                    class="resultado-clientes bg-white border border-gray-600 text-gray-700 w-1/2 rounded-lg mt-1 hidden"></ul>
-                </div>
+                <select id="cuenta-cliente" class="block w-1/2 px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
+                    <option value="">Selecciona una cuenta</option>
+                </select>
       
               <!-- Sección de Divisas -->
               <div id="divisas-container" class="space-y-4">
-                <label class="block text-lg text-white font-medium mb-2">Divisas</label>
+                <label class="block text-lg text-white font-medium mb-2">Divisa</label>
       
                 <!-- Divisa Template -->
-                <div class="divisa-item grid grid-cols-1 md:grid-cols-4 gap-4 items-end hidden">
+                <div class="divisa-item grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                   <!-- Nombre Divisa -->
                   <div class="relative w-full">
                     <label for="divisa" class="block mb-1 text-sm text-white">Divisa</label>

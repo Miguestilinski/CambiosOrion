@@ -64,43 +64,33 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 300);
   });
 
-  // Cargar cuentas del cliente seleccionado
-  async function cargarCuentasCliente(clienteId) {
-    try {
-      const res = await fetch(`https://cambiosorion.cl/data/nuevo-ing.php?cliente_id=${clienteId}`);
-      const cuentas = await res.json();
-      resultadoCuentas.innerHTML = "";
-      cuentaClienteInput.value = "";
-      cuentaClienteInput.dataset.id = "";
-      if (cuentas.length === 0) {
-        resultadoCuentas.innerHTML = "<li class='p-2'>No hay cuentas activas para este cliente</li>";
-        resultadoCuentas.classList.remove("hidden");
-        return;
-      }
-      cuentas.forEach(cuenta => {
-        const li = document.createElement("li");
-        li.textContent = `Cuenta #${cuenta.id} - Divisa: ${cuenta.divisa_id} - Debo: ${cuenta.debo}`;
-        li.dataset.id = cuenta.id;
-        li.classList.add("p-2", "cursor-pointer", "hover:bg-gray-200");
-        li.addEventListener("click", () => {
-          cuentaClienteInput.value = li.textContent;
-          cuentaClienteInput.dataset.id = cuenta.id;
-          resultadoCuentas.classList.add("hidden");
-        });
-        resultadoCuentas.appendChild(li);
-      });
-      resultadoCuentas.classList.remove("hidden");
-    } catch (error) {
-      console.error("Error cargando cuentas cliente:", error);
-    }
-  }
+    // Cargar cuentas del cliente seleccionado
+    async function cargarCuentasCliente(clienteId) {
+        try {
+            const res = await fetch(`https://cambiosorion.cl/data/nuevo-ing.php?cliente_id=${clienteId}`);
+            const cuentas = await res.json();
+            const selectCuenta = document.getElementById("cuenta-cliente");
+            selectCuenta.innerHTML = "";  // limpiar opciones
 
-  // Sugerencias para cuenta cliente
-  cuentaClienteInput.addEventListener("input", () => {
-    // Si quieres, podrías implementar búsqueda en cuentas aquí,
-    // pero en este diseño sólo se permite seleccionar de la lista cargada.
-    resultadoCuentas.classList.add("hidden");
-  });
+            if (cuentas.length === 0) {
+            // Si quieres, puedes agregar una opción deshabilitada:
+            const option = document.createElement("option");
+            option.textContent = "No hay cuentas activas para este cliente";
+            option.disabled = true;
+            selectCuenta.appendChild(option);
+            return;
+            }
+
+            cuentas.forEach(cuenta => {
+            const option = document.createElement("option");
+            option.value = cuenta.id; // id de la cuenta
+            option.textContent = `${cuenta.nombre_cliente} - ${cuenta.codigo_divisa}`;
+            selectCuenta.appendChild(option);
+            });
+        } catch (error) {
+            console.error("Error cargando cuentas cliente:", error);
+        }
+    }
 
   // Manejo de búsqueda de divisas en cada input de divisa-nombre
   divisasContainer.addEventListener("input", async (e) => {
