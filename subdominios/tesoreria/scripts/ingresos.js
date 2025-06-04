@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (nuevoIngresoBtn) {
         nuevoIngresoBtn.addEventListener('click', () => {
-            window.location.href = 'https://tesoreria.cambiosorion.cl/nuevo-ingreso';
+            window.location.href = 'https://tesoreria.cambiosorion.cl/nuevo-ing';
         });
     }
 
