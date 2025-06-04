@@ -229,7 +229,11 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
 
     const resultado = await res.json();
     if (resultado.error) {
-      alert("Error: " + resultado.error);
+      mostrarModalError({
+        titulo: "❌ Error",
+        mensaje: ("Error: " + resultado.error),
+        textoConfirmar: "Entendido"
+      });
     } else {
       mostrarModalExitoso();
     }
