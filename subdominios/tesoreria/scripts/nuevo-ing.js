@@ -84,6 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const option = document.createElement("option");
             option.value = cuenta.id; // id de la cuenta
             option.textContent = `${cuenta.nombre_cliente} - ${cuenta.codigo_divisa}`;
+            option.dataset.nombreDivisa = cuenta.nombre_divisa;
             selectCuenta.appendChild(option);
             });
 
@@ -98,15 +99,13 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("cuenta-cliente").addEventListener("change", () => {
         const selectCuenta = document.getElementById("cuenta-cliente");
         const selectedOption = selectCuenta.options[selectCuenta.selectedIndex];
-        const selectedText = selectedOption.textContent;
-
-        const codigoDivisa = selectedText.split(" - ").pop(); // Extrae la divisa
+        const nombreDivisa = selectedOption.dataset.nombreDivisa;
 
         // Input de divisa (ajustar selector si hay varios)
         const inputDivisa = divisasContainer.querySelector(".divisa-nombre");
 
         if (inputDivisa) {
-            inputDivisa.value = codigoDivisa;
+            inputDivisa.value = nombreDivisa || "";
             inputDivisa.readOnly = true;
             inputDivisa.classList.add("bg-gray-100", "cursor-not-allowed");
             inputDivisa.removeAttribute("data-id");
