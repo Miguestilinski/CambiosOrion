@@ -11,18 +11,25 @@ document.addEventListener("DOMContentLoaded", function() {
 
         if (!correo) {
             console.warn("Correo vacío");
-            alert("Por favor, ingresa un correo válido.");
+            mostrarModalError({
+                titulo: "❌ Error",
+                mensaje: "Por favor, ingresa un correo válido.",
+                textoConfirmar: "Entendido"
+            });
             return;
         }
     
         if (!password) {
             console.warn("Contraseña vacía");
-            alert("Por favor, ingresa tu contraseña.");
+            mostrarModalError({
+                titulo: "❌ Error",
+                mensaje: "Por favor, ingresa tu contraseña.",
+                textoConfirmar: "Entendido"
+            });
             return;
         }
 
         const formData = new FormData(loginForm);
-        formData.set("correo", correo);
 
         try {
             const response = await fetch('https://cambiosorion.cl/data/login_admin.php', {
@@ -35,7 +42,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
             if (!response.ok) {
                 console.log("Error en la respuesta del servidor:", response.status);
-                throw new Error("Error en la conexión con el servidor");
+                mostrarModalError({
+                    titulo: "❌ Error",
+                    mensaje: `Error en la conexión con el servidor: ${esponse.status}`,
+                    textoConfirmar: "Entendido"
+                });
             }
 
             const result = await response.json();
@@ -46,11 +57,19 @@ document.addEventListener("DOMContentLoaded", function() {
                 window.location.href = "https://admin.cambiosorion.cl/";
             } else {
                 console.warn("Error en login:", result.message);
-                alert(result.message);
+                mostrarModalError({
+                    titulo: "❌ Error",
+                    mensaje: `Error en login: ${result.message}`,
+                    textoConfirmar: "Entendido"
+                });
             }
         } catch (error) {
-            console.error("Error en la solicitud AJAX:", error);
-            alert("Hubo un problema al conectar con el servidor.");
+            console.error("Error en la solicitud:", error);
+            mostrarModalError({
+                titulo: "❌ Error",
+                mensaje: "Hubo un problema al conectar con el servidor.",
+                textoConfirmar: "Entendido"
+            });
         }
     });
 });
@@ -80,4 +99,36 @@ function setErrorStyles(field) {
         if (passwordInput) passwordInput.classList.add('bg-red-50', 'border-red-500', 'text-red-900');
         if (passwordError) passwordError.classList.remove('hidden');
     }
+}
+
+function mostrarModalError({ titulo, mensaje, textoConfirmar = "Aceptar", textoCancelar = null, onConfirmar, onCancelar }) {
+  const modal = document.getElementById("modal-error");
+  const tituloElem = document.getElementById("modal-error-titulo");
+  const mensajeElem = document.getElementById("modal-error-mensaje");
+  const btnConfirmar = document.getElementById("modal-error-confirmar");
+  const btnCancelar = document.getElementById("modal-error-cancelar");
+
+  tituloElem.textContent = titulo;
+  mensajeElem.textContent = mensaje;
+  btnConfirmar.textContent = textoConfirmar;
+
+  if (textoCancelar) {
+    btnCancelar.classList.remove("hidden");
+    btnCancelar.textContent = textoCancelar;
+  } else {
+    btnCancelar.classList.add("hidden");
+  }
+
+  modal.classList.remove("hidden");
+
+  // Remover handlers anteriores
+  btnConfirmar.onclick = () => {
+    modal.classList.add("hidden");
+    if (onConfirmar) onConfirmar();
+  };
+
+  btnCancelar.onclick = () => {
+    modal.classList.add("hidden");
+    if (onCancelar) onCancelar();
+  };
 }
