@@ -71,12 +71,13 @@ document.addEventListener("DOMContentLoaded", function() {
             console.log("Procesado como:", rol);
             
             if (result.success) {
+                const rol = result.rol?.toLowerCase().trim();
                 console.log("Rol recibido del backend:", result.rol);
                 console.log("Procesado como:", rol);
+                alert("ROL: " + rol);
 
                 console.log("Login exitoso, redirigiendo...");
                 localStorage.setItem('sessionActive', 'true');
-                const rol = result.rol?.toLowerCase().trim();
 
                 if (rol === 'socio') {
                     window.location.href = "https://admin.cambiosorion.cl/info-per-socios";
