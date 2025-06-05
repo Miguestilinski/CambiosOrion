@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function() {
             if (result.success) {
                 console.log("Login exitoso, redirigiendo...");
                 localStorage.setItem('sessionActive', 'true');
-                window.location.href = "https://admin.cambiosorion.cl/";
+                window.location.href = "https://admin.cambiosorion.cl/info-per";
             } else {
                 console.warn("Error en login:", result.message);
                 mostrarModalError({
