@@ -154,44 +154,48 @@
                 </div>
 
                 <!-- Cuenta Cliente -->
-                <div class="relative">
-                <label for="cuenta-cliente" class="block mb-1 text-sm text-white">Cuenta Cliente</label>
-                <select id="cuenta-cliente" class="block w-1/2 px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
-                    <option value="">Selecciona una cuenta</option>
-                </select>
-                <p id="deuda-actual" class="text-sm text-yellow-300 mt-1">Debe: —</p>
+                <div class="relative flex items-center gap-4">
+                    <div class="w-1/2">
+                        <label for="cuenta-cliente" class="block mb-1 text-sm text-white">Cuenta Cliente</label>
+                        <select id="cuenta-cliente" class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
+                        <option value="">Selecciona una cuenta</option>
+                        </select>
+                    </div>
+                    <p id="deuda-actual" class="text-sm text-yellow-300 mt-6">Debe: —</p>
                 </div>
-                    
+
                 <!-- Sección de Divisas -->
                 <div id="divisas-container" class="space-y-4 mt-4 mb-8">
-                <label class="block text-lg text-white font-medium mb-2">Divisa</label>
-        
-                <!-- Divisa Template -->
-                <div class="divisa-item grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-                    <!-- Nombre Divisa -->
-                    <div class="relative w-full">
-                    <label for="divisa" class="block mb-1 text-sm text-white">Divisa</label>
-                    <input
-                        type="text"
-                        placeholder="Buscar divisa"
-                        class="divisa-nombre block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
-                        autocomplete="off"
-                    />
-                    <ul class="divisa-sugerencias absolute z-10 w-full bg-white border border-gray-600 text-gray-700 rounded-lg mt-1 hidden max-h-48 overflow-y-auto"></ul>
+                    <label class="block text-lg text-white font-medium mb-2">Divisa</label>
+
+                    <!-- Divisa Template -->
+                    <div class="divisa-item grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                        <!-- Nombre Divisa -->
+                        <div class="relative w-full">
+                        <label for="divisa" class="block mb-1 text-sm text-white">Divisa</label>
+                        <input
+                            type="text"
+                            placeholder="Buscar divisa"
+                            class="divisa-nombre block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
+                            autocomplete="off"
+                        />
+                        <ul class="divisa-sugerencias absolute z-10 w-full bg-white border border-gray-600 text-gray-700 rounded-lg mt-1 hidden max-h-48 overflow-y-auto"></ul>
+                        </div>
+
+                        <!-- Monto + Deuda futura -->
+                        <div class="flex items-center gap-4">
+                        <div class="w-full">
+                            <label for="monto" class="block mb-1 text-sm text-white">Monto</label>
+                            <input
+                            id="monto-ingreso"
+                            type="number"
+                            placeholder="Monto"
+                            class="divisa-monto block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
+                            />
+                        </div>
+                        <p id="deuda-futura" class="text-sm text-green-300 mt-6">Deberá: —</p>
+                        </div>
                     </div>
-        
-                    <!-- Monto -->
-                    <div>
-                    <label for="monto" class="block mb-1 text-sm text-white">Monto</label>
-                    <input
-                        id="monto-ingreso"
-                        type="number"
-                        placeholder="Monto"
-                        class="divisa-monto block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
-                    />
-                    <p id="deuda-futura" class="text-sm text-green-300 mt-1">Deberá: —</p>
-                    </div>
-                </div>
                 </div>
       
                 <!-- Botones Finales -->
