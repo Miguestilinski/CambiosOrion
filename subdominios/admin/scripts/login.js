@@ -70,9 +70,6 @@ document.addEventListener("DOMContentLoaded", function() {
             console.log("Respuesta cruda del servidor:", text);
             try {
                 const result = JSON.parse(text);
-
-                console.log("Rol recibido del backend:", result.rol);
-                console.log("Procesado como:", rol);
             
                 if (result.success) {
                     const rol = result.rol?.toLowerCase().trim();
