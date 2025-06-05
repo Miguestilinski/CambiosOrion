@@ -159,54 +159,59 @@
                 <select id="cuenta-cliente" class="block w-1/2 px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
                     <option value="">Selecciona una cuenta</option>
                 </select>
-      
-              <!-- Sección de Divisas -->
-              <div id="divisas-container" class="space-y-4 mt-4 mb-8">
+                <p id="deuda-actual" class="text-sm text-yellow-300 mt-1">Debe: —</p>
+                </div>
+                    
+                <!-- Sección de Divisas -->
+                <div id="divisas-container" class="space-y-4 mt-4 mb-8">
                 <label class="block text-lg text-white font-medium mb-2">Divisa</label>
-      
+        
                 <!-- Divisa Template -->
                 <div class="divisa-item grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-                  <!-- Nombre Divisa -->
-                  <div class="relative w-full">
+                    <!-- Nombre Divisa -->
+                    <div class="relative w-full">
                     <label for="divisa" class="block mb-1 text-sm text-white">Divisa</label>
                     <input
-                      type="text"
-                      placeholder="Buscar divisa"
-                      class="divisa-nombre block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
-                      autocomplete="off"
+                        type="text"
+                        placeholder="Buscar divisa"
+                        class="divisa-nombre block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
+                        autocomplete="off"
                     />
                     <ul class="divisa-sugerencias absolute z-10 w-full bg-white border border-gray-600 text-gray-700 rounded-lg mt-1 hidden max-h-48 overflow-y-auto"></ul>
-                  </div>
-      
-                  <!-- Monto -->
-                  <div>
+                    </div>
+        
+                    <!-- Monto -->
+                    <div>
                     <label for="monto" class="block mb-1 text-sm text-white">Monto</label>
                     <input
-                      type="number"
-                      placeholder="Monto"
-                      class="divisa-monto block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
+                        id="monto-ingreso"
+                        type="number"
+                        placeholder="Monto"
+                        class="divisa-monto block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
                     />
-                  </div>
+                    <p id="deuda-futura" class="text-sm text-green-300 mt-1">Deberá: —</p>
+                    </div>
                 </div>
-              </div>
+                </div>
       
-              <!-- Botones Finales -->
-              <div class="flex space-x-4">
+                <!-- Botones Finales -->
+                <div class="flex space-x-4">
                 <button
-                  type="submit"
-                  class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
+                    type="submit"
+                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
                 >
-                  Crear Ingreso
+                    Crear Ingreso
                 </button>
                 <button
-                  type="button"
-                  id="cancelar"
-                  class="text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5"
+                    type="button"
+                    id="cancelar"
+                    class="text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5"
                 >
-                  Cancelar
+                    Cancelar
                 </button>
-              </div>
+                </div>
             </form>
+
             <!-- Modal de advertencia -->
             <div id="modal-advertencia" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
               <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">

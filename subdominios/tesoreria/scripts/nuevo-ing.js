@@ -85,6 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
             option.value = cuenta.id; // id de la cuenta
             option.textContent = `${cuenta.nombre_cliente} - ${cuenta.codigo_divisa}`;
             option.dataset.nombreDivisa = cuenta.nombre_divisa;
+            option.dataset.deuda = cuenta.me_deben;
             selectCuenta.appendChild(option);
             });
 
@@ -100,6 +101,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const selectCuenta = document.getElementById("cuenta-cliente");
         const selectedOption = selectCuenta.options[selectCuenta.selectedIndex];
         const nombreDivisa = selectedOption.dataset.nombreDivisa;
+        const deuda = parseFloat(selectedOption.dataset.deuda || 0);
+
+        // Mostrar deuda actual
+        document.getElementById("deuda-actual").textContent = `Debe: ${deuda.toLocaleString()} ${nombreDivisa || ''}`;
 
         // Input de divisa (ajustar selector si hay varios)
         const inputDivisa = divisasContainer.querySelector(".divisa-nombre");
@@ -113,7 +118,24 @@ document.addEventListener("DOMContentLoaded", () => {
             const sugerenciasList = inputDivisa.nextElementSibling;
             if (sugerenciasList) sugerenciasList.classList.add("hidden");
         }
+        actualizarDeudaFutura();
     });
+
+    document.getElementById("monto-ingreso").addEventListener("input", actualizarDeudaFutura);
+
+    function actualizarDeudaFutura() {
+        const selectCuenta = document.getElementById("cuenta-cliente");
+        const selectedOption = selectCuenta.options[selectCuenta.selectedIndex];
+        const deudaActual = parseFloat(selectedOption.dataset.deuda || 0);
+        const montoInput = document.getElementById("monto-ingreso");
+        const monto = parseFloat(montoInput.value || 0);
+        const nombreDivisa = selectedOption.dataset.nombreDivisa || '';
+
+        const deudaFutura = deudaActual - monto;
+        document.getElementById("deuda-futura").textContent =
+            `Deberá: ${deudaFutura.toLocaleString()} ${nombreDivisa}`;
+    }
+
 
   // Ocultar sugerencias al hacer click afuera
   document.addEventListener("click", (e) => {
