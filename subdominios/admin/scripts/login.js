@@ -1,5 +1,15 @@
 document.addEventListener("DOMContentLoaded", function() {
     const loginForm = document.getElementById("loginForm");
+    const rememberCheckbox = document.getElementById("remember");
+    const correoInput = document.getElementById("correo");
+
+    // Leer del localStorage si ya se guardó el correo antes
+    const savedEmail = localStorage.getItem("rememberedEmail");
+    if (savedEmail) {
+        correoInput.value = savedEmail;
+        rememberCheckbox.checked = true;
+    }
+
     loginForm.addEventListener("submit", async function(event) {
         event.preventDefault();
 
@@ -27,6 +37,13 @@ document.addEventListener("DOMContentLoaded", function() {
                 textoConfirmar: "Entendido"
             });
             return;
+        }
+
+        // Guardar o eliminar correo dependiendo del checkbox
+        if (rememberCheckbox.checked) {
+            localStorage.setItem("rememberedEmail", correo);
+        } else {
+            localStorage.removeItem("rememberedEmail");
         }
 
         const formData = new FormData(loginForm);
