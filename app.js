@@ -80,6 +80,7 @@ app.use((req, res, next) => {
 
 // Ruta principal para cada subdominio
 app.get('/', (req, res) => {
+  console.log('Subdominio detectado:', req.subdomain);
   switch (req.subdomain) {
     case 'pizarras':
       res.sendFile(path.join(__dirname, 'subdominios/pizarras', 'index.html'));
@@ -87,8 +88,14 @@ app.get('/', (req, res) => {
     case 'clientes':
       res.sendFile(path.join(__dirname, 'subdominios/clientes', 'index.html'));
       break;
+    case 'caja':
+      res.sendFile(path.join(__dirname, 'subdominios/caja', 'nueva-tr.html'));
+      break;
+    case 'tesoreria':
+      res.sendFile(path.join(__dirname, 'subdominios/tesoreria', 'operaciones.html'));
+      break;
     case 'admin':
-      res.sendFile(path.join(__dirname, 'subdominios/admin', 'index.html'));
+      res.sendFile(path.join(__dirname, 'subdominios/admin', 'info-per.html'));
       break;
     default:
       res.sendFile(path.join(__dirname, 'public', 'landing.html'));
