@@ -1,61 +1,23 @@
 document.addEventListener("DOMContentLoaded", function() {
-    const clienteTab = document.getElementById('clienteTab');
-    const administrativoTab = document.getElementById('administrativoTab');
-    const clienteForm = document.getElementById('cliente-form');
-    const administrativoForm = document.getElementById('administrativo-form');
-    
-    // Establecer "Cliente" como la pestaña predeterminada
-    clienteTab.classList.add('active');
-    clienteForm.classList.add('active');
-    
-    // Cambiar entre Cliente y Administrativo
-    clienteTab.addEventListener('click', function() {
-        cambiarVista('cliente');
-    });
+    const rutInput = document.getElementById("rut");
+    const rememberCheckbox = document.getElementById("remember");
 
-    administrativoTab.addEventListener('click', function() {
-        cambiarVista('administrativo');
-    });
-
-    function cambiarVista(tipo) {
-        if (tipo === 'cliente') {
-            clienteTab.classList.add('active');
-            administrativoTab.classList.remove('active');
-            clienteForm.classList.add('active');
-            administrativoForm.classList.remove('active');
-            document.getElementById('rut').setAttribute('required', 'required');
-            document.getElementById('correo').removeAttribute('required');
-            document.getElementById('tipoUsuario').value = 'cliente';
-        } else {
-            administrativoTab.classList.add('active');
-            clienteTab.classList.remove('active');
-            administrativoForm.classList.add('active');
-            clienteForm.classList.remove('active');
-            document.getElementById('correo').setAttribute('required', 'required');
-            document.getElementById('rut').removeAttribute('required');
-            document.getElementById('tipoUsuario').value = 'administrativo';
-        }
+    // Pre-cargar RUT si está guardado
+    const rutGuardado = localStorage.getItem("rutRecordado");
+    if (rutGuardado) {
+        rutInput.value = rutGuardado;
+        rememberCheckbox.checked = true;
     }
 
-    const rutInput = document.getElementById("rut");
-
     rutInput.addEventListener("blur", function() {
-        // Eliminar puntos, guiones y espacios del RUT ingresado
         let rut = rutInput.value.replace(/[^\dKk]/g, "").toUpperCase();
-
-        // Si el RUT tiene menos de 2 caracteres, no es válido para formatear
         if (rut.length < 2) {
-            rutInput.value = rut; // Mostrarlo tal cual si no es formateable
+            rutInput.value = rut;
             return;
         }
-
         const cuerpo = rut.slice(0, -1);
         const dv = rut.slice(-1);
-
-        // Formatear el cuerpo del RUT con puntos cada tres dígitos
         const cuerpoFormateado = cuerpo.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-
-        // Actualizar el campo con el formato completo
         rutInput.value = `${cuerpoFormateado}-${dv}`;
     });
 
@@ -63,33 +25,38 @@ document.addEventListener("DOMContentLoaded", function() {
     loginForm.addEventListener("submit", async function(event) {
         event.preventDefault();
 
-        const tipoUsuario = document.querySelector('.tab-button.active').dataset.tipoUsuario;
-        let rut = rutInput.value.trim().replace(/[^\dKk]/g, '').toUpperCase(); // Limpieza final del RUT
-        let correo = document.getElementById("correo").value.trim().toLowerCase();
+        const rut = rutInput.value.trim().replace(/[^\dKk]/g, '').toUpperCase();
         const password = document.getElementById("password").value.trim();
 
-        // Convertir el correo a minúsculas automáticamente
-        correo = correo.toLowerCase();
-
-        // Validación de RUT si es un cliente
-        if (tipoUsuario === 'cliente' && !validarRUT(rut)) {
-            alert("El RUT no es válido.");
-            return;
-        } else if (tipoUsuario === 'administrativo' && correo === "") {
-            alert("Por favor, ingresa un correo válido.");
+        if (!validarRUT(rut)) {
+            mostrarModalError({
+                titulo: "❌ Error",
+                mensaje: "El RUT no es válido.",
+                textoConfirmar: "Entendido"
+            });
             return;
         }
-    
+
         if (password === "") {
-            alert("Por favor, ingresa tu contraseña.");
+            mostrarModalError({
+                titulo: "❌ Error",
+                mensaje: "Por favor, ingresa tu contraseña.",
+                textoConfirmar: "Entendido"
+            });
             return;
+        }
+
+        // Guardar o eliminar RUT en localStorage
+        if (rememberCheckbox.checked) {
+            localStorage.setItem("rutRecordado", rutInput.value);
+        } else {
+            localStorage.removeItem("rutRecordado");
         }
 
         const formData = new FormData(loginForm);
-        formData.set("correo", correo);
 
         try {
-            const response = await fetch('https://cambiosorion.cl/data/login.php', {
+            const response = await fetch('https://cambiosorion.cl/data/login_cliente.php', {
                 method: 'POST',
                 body: formData,
             });
@@ -100,41 +67,36 @@ document.addEventListener("DOMContentLoaded", function() {
             
             if (result.success) {
                 localStorage.setItem('sessionActive', 'true');
-                if (tipoUsuario === 'cliente') {
-                    window.location.href = "https://clientes.cambiosorion.cl/";
-                } else if (tipoUsuario === 'administrativo') {
-                    window.location.href = "https://admin.cambiosorion.cl/";
-                }
+                window.location.href = "https://clientes.cambiosorion.cl/";
             } else {
                 alert(result.message);
             }
         } catch (error) {
-            console.error("Error en la solicitud AJAX:", error);
-            alert("Hubo un problema al conectar con el servidor.");
+            console.error("Error en la solicitud:", error);
+            mostrarModalError({
+                titulo: "❌ Error",
+                mensaje: "Hubo un problema al conectar con el servidor.",
+                textoConfirmar: "Entendido"
+            });
         }
     });
 
     // Funciones de validación
     function validarRUT(rut) {
         rut = rut.replace(/[^\dKk]/g, '').toUpperCase();
-    
         if (rut.length < 2) return false;
     
         const cuerpo = rut.slice(0, -1);
         const dv = rut.slice(-1);
-    
         if (!/^\d+$/.test(cuerpo)) return false;
     
-        let suma = 0;
-        let multiplo = 2;
-    
+        let suma = 0, multiplo = 2;
         for (let i = cuerpo.length - 1; i >= 0; i--) {
             suma += cuerpo.charAt(i) * multiplo;
             multiplo = multiplo === 7 ? 2 : multiplo + 1;
         }
         const dvCalculado = 11 - (suma % 11);
         const dvCorrecto = dvCalculado === 10 ? 'K' : dvCalculado === 11 ? '0' : dvCalculado.toString();
-        
         return dv === dvCorrecto;
     }
 });
@@ -162,15 +124,42 @@ function setErrorStyles(field) {
         const rutError = document.getElementById('rut-error');
         if (rutInput) rutInput.classList.add('bg-red-50', 'border-red-500', 'text-red-900');
         if (rutError) rutError.classList.remove('hidden');
-    } else if (field === 'correo') {
-        const correoInput = document.getElementById('correo');
-        const correoError = document.getElementById('correo-error');
-        if (correoInput) correoInput.classList.add('bg-red-50', 'border-red-500', 'text-red-900');
-        if (correoError) correoError.classList.remove('hidden');
     } else if (field === 'password') {
         const passwordInput = document.getElementById('password');
         const passwordError = document.getElementById('password-error');
         if (passwordInput) passwordInput.classList.add('bg-red-50', 'border-red-500', 'text-red-900');
         if (passwordError) passwordError.classList.remove('hidden');
     }
+}
+
+function mostrarModalError({ titulo, mensaje, textoConfirmar = "Aceptar", textoCancelar = null, onConfirmar, onCancelar }) {
+  const modal = document.getElementById("modal-error");
+  const tituloElem = document.getElementById("modal-error-titulo");
+  const mensajeElem = document.getElementById("modal-error-mensaje");
+  const btnConfirmar = document.getElementById("modal-error-confirmar");
+  const btnCancelar = document.getElementById("modal-error-cancelar");
+
+  tituloElem.textContent = titulo;
+  mensajeElem.textContent = mensaje;
+  btnConfirmar.textContent = textoConfirmar;
+
+  if (textoCancelar) {
+    btnCancelar.classList.remove("hidden");
+    btnCancelar.textContent = textoCancelar;
+  } else {
+    btnCancelar.classList.add("hidden");
+  }
+
+  modal.classList.remove("hidden");
+
+  // Remover handlers anteriores
+  btnConfirmar.onclick = () => {
+    modal.classList.add("hidden");
+    if (onConfirmar) onConfirmar();
+  };
+
+  btnCancelar.onclick = () => {
+    modal.classList.add("hidden");
+    if (onCancelar) onCancelar();
+  };
 }
