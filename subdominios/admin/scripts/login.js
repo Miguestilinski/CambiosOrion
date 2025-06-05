@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 });
             }
 
-            const result = await response.json();
+            const text = await response.text();
             console.log("Respuesta cruda del servidor:", text);
             try {
                 const result = JSON.parse(text);
