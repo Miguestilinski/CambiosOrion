@@ -67,28 +67,40 @@ document.addEventListener("DOMContentLoaded", function() {
             }
 
             const result = await response.json();
-            console.log("Rol recibido del backend:", result.rol);
-            console.log("Procesado como:", rol);
-            
-            if (result.success) {
-                const rol = result.rol?.toLowerCase().trim();
+            console.log("Respuesta cruda del servidor:", text);
+            try {
+                const result = JSON.parse(text);
+
                 console.log("Rol recibido del backend:", result.rol);
                 console.log("Procesado como:", rol);
-                alert("ROL: " + rol);
+            
+                if (result.success) {
+                    const rol = result.rol?.toLowerCase().trim();
+                    console.log("Rol recibido del backend:", result.rol);
+                    console.log("Procesado como:", rol);
+                    alert("ROL: " + rol);
 
-                console.log("Login exitoso, redirigiendo...");
-                localStorage.setItem('sessionActive', 'true');
+                    console.log("Login exitoso, redirigiendo...");
+                    localStorage.setItem('sessionActive', 'true');
 
-                if (rol === 'socio') {
-                    window.location.href = "https://admin.cambiosorion.cl/info-per-socios";
+                    if (rol === 'socio') {
+                        window.location.href = "https://admin.cambiosorion.cl/info-per-socios";
+                    } else {
+                        window.location.href = "https://admin.cambiosorion.cl/info-per";
+                    }
                 } else {
-                    window.location.href = "https://admin.cambiosorion.cl/info-per";
+                    console.warn("Error en login:", result.message);
+                    mostrarModalError({
+                        titulo: "❌ Error",
+                        mensaje: `Error en login: ${result.message}`,
+                        textoConfirmar: "Entendido"
+                    });
                 }
-            } else {
-                console.warn("Error en login:", result.message);
+            } catch (e) {
+                console.error("No se pudo parsear JSON:", e);
                 mostrarModalError({
                     titulo: "❌ Error",
-                    mensaje: `Error en login: ${result.message}`,
+                    mensaje: "Respuesta inesperada del servidor, no es JSON válido.",
                     textoConfirmar: "Entendido"
                 });
             }
