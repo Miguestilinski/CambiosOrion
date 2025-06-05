@@ -67,11 +67,14 @@ document.addEventListener("DOMContentLoaded", function() {
             }
 
             const result = await response.json();
+            console.log("Rol recibido del backend:", result.rol);
+            console.log("Procesado como:", rol);
             
             if (result.success) {
-                console.log("Login exitoso, redirigiendo...");
                 console.log("Rol recibido del backend:", result.rol);
                 console.log("Procesado como:", rol);
+
+                console.log("Login exitoso, redirigiendo...");
                 localStorage.setItem('sessionActive', 'true');
                 const rol = result.rol?.toLowerCase().trim();
 
