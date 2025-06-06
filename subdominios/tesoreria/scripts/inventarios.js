@@ -12,6 +12,23 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    function cargarCajas() {
+        fetch("https://cambiosorion.cl/data/inventarios.php?action=cajas")
+            .then(res => res.json())
+            .then(cajas => {
+                const cajaSelect = document.getElementById("caja");
+                cajaSelect.innerHTML = `<option value="0">Tesorería</option>`;  // Siempre dejar Tesorería
+
+                cajas.forEach(caja => {
+                    const option = document.createElement("option");
+                    option.value = caja.id;
+                    option.textContent = caja.nombre;
+                    cajaSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error("Error al cargar cajas:", error));
+    }
+
     function cargarDivisas() {
         fetch("https://cambiosorion.cl/data/inventarios.php")
             .then(res => res.text())  // Leer respuesta como texto
@@ -83,7 +100,8 @@ document.addEventListener("DOMContentLoaded", () => {
     [cajaInput, divisaInput, buscarInput, mostrarRegistros].forEach(el => {
         el.addEventListener("input", cargarInventarios);
     });
-
+    
+    cargarCajas();
     cargarDivisas();
     cargarInventarios();
 });
