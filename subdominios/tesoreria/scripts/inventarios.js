@@ -39,7 +39,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Mostrar opciones filtradas en el dropdown
     function mostrarOpciones(filtro) {
-        const filtroMinusculas = filtro.toLowerCase();
+        const filtroMinusculas = filtro.toLowerCase().trim();
+
+        // Si no hay texto, ocultar y salir
+        if (filtroMinusculas.length === 0) {
+            divisaList.classList.add("hidden");
+            divisaList.innerHTML = "";
+            return;
+        }
 
         const filtradas = divisas
             .filter(d => d.nombre && d.nombre.toLowerCase().includes(filtroMinusculas));
@@ -51,7 +58,8 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        filtradas.forEach(d => {
+        // Mostrar máximo 4 opciones
+        filtradas.slice(0, 4).forEach(d => {
             const li = document.createElement("li");
             li.textContent = d.nombre;
             li.dataset.id = d.id;
