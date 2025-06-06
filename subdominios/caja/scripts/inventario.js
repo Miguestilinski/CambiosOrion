@@ -1,10 +1,40 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
     const mostrarRegistros = document.getElementById("mostrar-registros");
     const buscarInput = document.getElementById("buscar");
     const cajaInput = document.getElementById("caja");
     const divisaInput = document.getElementById("divisa");
     const tablaInventarios = document.querySelector("table tbody");
     const exportarBtn = document.getElementById("exportar");
+
+    let cajaIdSesion = null;
+
+    try {
+        const res = await fetch("https://cambiosorion.cl/data/session_status.php", {
+            credentials: "include",
+        });
+        if (!res.ok) throw new Error("No se pudo obtener la sesión.");
+        const data = await res.json();
+        if (data && data.caja_id) {
+            cajaIdSesion = data.caja_id;
+            console.log("ID de caja desde sesión:", cajaIdSesion);
+
+            if (cajaInput) {
+                // Limpiar opciones anteriores si las hay
+                cajaInput.innerHTML = "";
+
+                // Crear y asignar la opción con el nombre de la caja
+                const opcionCaja = document.createElement("option");
+                opcionCaja.value = cajaIdSesion;
+                opcionCaja.textContent = data.caja_nombre || `Caja ${cajaIdSesion}`;
+                cajaInput.appendChild(opcionCaja);
+
+                // Deshabilitar el select para que no se pueda cambiar
+                cajaInput.disabled = true;
+            }
+        }
+    } catch (error) {
+        console.error("Error al obtener la sesión:", error);
+    }
 
     if (exportarBtn) {
         exportarBtn.addEventListener("click", () => {
