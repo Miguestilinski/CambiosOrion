@@ -165,4 +165,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             })
             .catch(error => console.error("Error al cargar inventarios:", error));
     }
+
+    divisaInput.addEventListener("input", cargarInventarios);
+    buscarInput.addEventListener("input", cargarInventarios);
+    mostrarRegistros.addEventListener("input", cargarInventarios);
 });
