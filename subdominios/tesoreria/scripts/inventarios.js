@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
 
                 // Seleccionar automáticamente la opción Tesorería si existe
-                const tesoreria = cajas.find(c => c.nombre.toLowerCase() === "tesorería");
+                const tesoreria = cajas.find(c => c.nombre.toLowerCase() === "tesoreria");
                 if (tesoreria) {
                     cajaSelect.value = tesoreria.id;
                 }
