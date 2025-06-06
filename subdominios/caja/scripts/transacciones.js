@@ -70,9 +70,9 @@ document.addEventListener('DOMContentLoaded', () => {
             tr.className = 'border-b bg-white border-gray-700 text-gray-700';
 
             // Color según tipo
-            if (trx.tipo_transaccion === 'Ingreso') {
+            if (trx.tipo_transaccion === 'Compra') {
                 tr.style.backgroundColor = '#c3e8f1'; // celeste
-            } else if (trx.tipo_transaccion === 'Egreso') {
+            } else if (trx.tipo_transaccion === 'Venta') {
                 tr.style.backgroundColor = '#dbf599'; // verde claro
             }
 
