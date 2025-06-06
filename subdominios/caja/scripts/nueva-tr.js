@@ -210,8 +210,7 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
       divisa_id: divisaId,
       nombre,
       monto,
-      tasa_cambio: tasa,
-      subtotal
+      tasa_cambio: tasa
     }],
     vendedor: {
       id: usuarioSesion.equipo_id,
@@ -244,7 +243,7 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
       });
       return;
     }
-    
+
     if (resultado.error) {
       mostrarModalError({
         titulo: "❌ Error",
