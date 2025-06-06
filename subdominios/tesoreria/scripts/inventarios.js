@@ -19,20 +19,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 const cajaSelect = document.getElementById("caja");
                 cajaSelect.innerHTML = ""; // Limpiar opciones antes
 
-                // Añadir Tesorería como primera opción y seleccionada por defecto
-                const tesoreriaOption = document.createElement("option");
-                tesoreriaOption.value = "0";
-                tesoreriaOption.textContent = "Tesoreria";
-                tesoreriaOption.selected = true;
-                cajaSelect.appendChild(tesoreriaOption);
-
-                // Agregar las cajas activas después
+                // Agregar las cajas activas
                 cajas.forEach(caja => {
                     const option = document.createElement("option");
                     option.value = caja.id;
                     option.textContent = caja.nombre;
                     cajaSelect.appendChild(option);
                 });
+
+                // Seleccionar automáticamente la opción Tesorería si existe
+                const tesoreria = cajas.find(c => c.nombre.toLowerCase() === "tesorería");
+                if (tesoreria) {
+                    cajaSelect.value = tesoreria.id;
+                }
             })
             .catch(error => console.error("Error al cargar cajas:", error));
     }
