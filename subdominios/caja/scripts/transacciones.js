@@ -38,8 +38,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        console.log('Parámetros enviados:', params.toString());
-
         fetch(`https://cambiosorion.cl/data/transacciones.php?${params.toString()}`)
             .then(response => response.json())
             .then(data => {
@@ -87,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             tr.innerHTML = `
                 <td class="px-4 py-2">${trx.fecha}</td>
-                <td class="px-4 py-2">${trx.numero}</td>
+                <td class="px-4 py-2">${trx.id}</td>
                 <td class="px-4 py-2">${trx.cliente}</td>
                 <td class="px-4 py-2">${trx.tipo_doc}</td>
                 <td class="px-4 py-2">${trx.n_doc}</td>
