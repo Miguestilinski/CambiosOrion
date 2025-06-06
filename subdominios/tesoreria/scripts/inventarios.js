@@ -133,7 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function cargarInventarios() {
         const params = new URLSearchParams();
-        if (cajaInput.value) params.set("caja", cajaInput.value);
+        if (cajaInput.value !== "") params.set("caja", cajaInput.value);;
         if (divisaInput.value) params.set("divisa", divisaInput.value);
         if (buscarInput.value) params.set("buscar", buscarInput.value);
         if (mostrarRegistros.value) params.set("limite", mostrarRegistros.value);
