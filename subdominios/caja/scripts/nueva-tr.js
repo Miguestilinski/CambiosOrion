@@ -61,9 +61,16 @@ const sugerenciasUl = document.getElementById("sugerencias-divisas");
 const totalOperacion = document.getElementById("total-transaccion");
 
 function calcularTotalOperacion() {
-  const monto = parseFloat(montoInput.value) || 0;
-  const tasa = parseFloat(tasaInput.value) || 0;
-  const total = Math.round(monto * tasa);
+  const monto = parseFloat(montoInput.value);
+  const tasa = parseFloat(tasaInput.value);
+  const divisaId = divisaInput.dataset.id;
+
+  let total = 0;
+
+  if (!isNaN(monto) && !isNaN(tasa) && divisaId) {
+    total = Math.round(monto * tasa);
+  }
+
   if (totalOperacion) {
     totalOperacion.textContent = `${new Intl.NumberFormat('es-CL').format(total)}`;
   }
