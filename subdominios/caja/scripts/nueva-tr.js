@@ -85,6 +85,8 @@ tasaInput.addEventListener("input", (e) => {
 });
 
 divisaInput.addEventListener("input", async (e) => {
+  tasaInput.value = "";
+
   const query = e.target.value.trim();
   if (query.length < 1) {
     sugerenciasUl.classList.add("hidden");
@@ -296,7 +298,7 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
 
     if (subtotalUSD >= 3000) {
       mostrarModalAdvertencia({
-        mensaje: "El monto supera los 3000 USD. Recuerda solicitar el carnet (ID) al cliente.",
+        mensaje: "El monto supera los $3000 USD. Recuerda solicitar el Carnet de Identidad al cliente.",
         textoConfirmar: "Continuar",
         textoCancelar: "Cancelar",
         onConfirmar: async () => {
