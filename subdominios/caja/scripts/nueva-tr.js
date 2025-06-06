@@ -65,11 +65,9 @@ function calcularTotalOperacion() {
   const tasa = parseFloat(tasaInput.value);
   const divisaId = divisaInput.dataset.id;
 
-  let total = 0;
+  const todosValidos = !isNaN(monto) && !isNaN(tasa) && divisaId && divisaId !== "";
 
-  if (!isNaN(monto) && !isNaN(tasa) && divisaId) {
-    total = Math.round(monto * tasa);
-  }
+  const total = todosValidos ? Math.round(monto * tasa) : 0;
 
   if (totalOperacion) {
     totalOperacion.textContent = `${new Intl.NumberFormat('es-CL').format(total)}`;
@@ -97,6 +95,7 @@ divisaInput.addEventListener("input", async (e) => {
   const query = e.target.value.trim();
   if (query.length < 1) {
     sugerenciasUl.classList.add("hidden");
+    calcularTotalOperacion();
     return;
   }
   try {
@@ -129,6 +128,7 @@ divisaInput.addEventListener("input", async (e) => {
           console.error("Error al obtener tasa:", err);
           tasaInput.placeholder = "Tasa de cambio";
         }
+        calcularTotalOperacion();
       });
       sugerenciasUl.appendChild(li);
     });
