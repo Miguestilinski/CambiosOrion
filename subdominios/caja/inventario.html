@@ -113,10 +113,10 @@
     <div class="main-content">
         <div id="sidebar-container"></div>
         <main id="dashboard-content" class="dashboard-content">
-            <section id="inventarios" class="content-section active">
+            <section id="inventario" class="content-section active">
                 <!-- Título y botón Nueva Operación -->
                 <div class="flex items-center mb-6">
-                    <h1 class="text-2xl font-medium mr-4 leading-none text-white">Inventarios</h1>
+                    <h1 class="text-2xl font-medium mr-4 leading-none text-white">Inventario</h1>
                     <button type="button" id="exportar" href="#"
                         class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
                         Exportar Excel
@@ -130,8 +130,6 @@
                         <select id="caja"
                             class="select-list block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                             <option value="">Seleccionar</option>
-                            <option value="boleta">Caja</option>
-                            <option value="factura">Tesoreria</option>
                         </select>
                     </div>
                     <div>
@@ -177,9 +175,10 @@
                         <thead class="text-xs uppercase bg-gray-800 text-white">
                             <tr>
                                 <th class="px-4 py-2">Caja</th>
+                                <th class="px-4 py-2">Icono</th>
                                 <th class="px-4 py-2">Divisa</th>
                                 <th class="px-4 py-2">Cantidad</th>
-                                <th class="px-4 py-2">PMP</th>
+                                <th class="px-4 py-2">PMP  (Precio Medio Ponderado)</th>
                                 <th class="px-4 py-2"></th>
                             </tr>
                         </thead>
@@ -245,7 +244,7 @@
 
     <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
     <script type="module" src="https://cambiosorion.cl/orionapp/public/scripts/header.js" crossorigin="anonymous"></script>
-    <script type="module" src="./scripts/index.js"></script>
+    <script type="module" src="./scripts/inventario.js"></script>
     <script>
         fetch('sidebar.html')
             .then(response => response.text())
