@@ -20,13 +20,18 @@ document.addEventListener("DOMContentLoaded", () => {
     // Función para cargar divisas desde API
     function cargarDivisas() {
         fetch(`https://cambiosorion.cl/data/inventarios.php?action=divisas&caja=${cajaInput.value}`)
-            .then(res => res.json())  // Mejor JSON directo
-            .then(data => {
-                if (Array.isArray(data)) {
-                    divisas = data;
-                    mostrarOpciones("");
-                } else {
-                    console.warn("No es un array de divisas:", data);
+            .then(res => res.text())
+            .then(text => {
+                try {
+                    const data = JSON.parse(text);
+                    if (Array.isArray(data)) {
+                        divisas = data;
+                        mostrarOpciones("");
+                    } else {
+                        console.warn("Respuesta no válida:", data);
+                    }
+                } catch (e) {
+                    console.error("Respuesta no es JSON válido:", text);
                 }
             })
             .catch(error => console.error("Error al cargar divisas:", error));
