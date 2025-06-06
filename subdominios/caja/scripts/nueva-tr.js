@@ -228,7 +228,23 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
       body: JSON.stringify(payload)
     });
 
-    const resultado = await res.json();
+    const rawText = await res.text();
+    console.log("Respuesta cruda:", rawText);
+
+    let resultado;
+    try {
+      resultado = JSON.parse(rawText); // intentar parsear si es posible
+    } catch (jsonError) {
+      console.error("Error al parsear JSON:", jsonError);
+      console.error("Respuesta del servidor:", rawText);
+      mostrarModalError({
+        titulo: "❌ Error",
+        mensaje: `Respuesta inesperada del servidor:\n\n${rawText}`,
+        textoConfirmar: "Entendido"
+      });
+      return;
+    }
+    
     if (resultado.error) {
       mostrarModalError({
         titulo: "❌ Error",
