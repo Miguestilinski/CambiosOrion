@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Función para cargar divisas desde API
     function cargarDivisas() {
-        fetch(`https://cambiosorion.cl/data/inventarios.php?caja=${cajaInput.value}`)
+        fetch(`https://cambiosorion.cl/data/inventarios.php?action=divisas&caja=${cajaInput.value}`)
             .then(res => res.json())  // Mejor JSON directo
             .then(data => {
                 if (Array.isArray(data)) {
@@ -36,7 +36,8 @@ document.addEventListener("DOMContentLoaded", () => {
     function mostrarOpciones(filtro) {
         const filtroMinusculas = filtro.toLowerCase();
 
-        const filtradas = divisas.filter(d => d.nombre.toLowerCase().includes(filtroMinusculas));
+        const filtradas = divisas
+            .filter(d => d.nombre && d.nombre.toLowerCase().includes(filtroMinusculas));
 
         divisaList.innerHTML = "";
 
