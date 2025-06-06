@@ -162,7 +162,7 @@ document.getElementById("tipo-transaccion").addEventListener("change", async () 
 document.querySelector("button[type='submit']").addEventListener("click", async (e) => {
   e.preventDefault();
 
-  if (!clienteSeleccionado) {
+  if (!clienteSeleccionado && clienteInput.value.trim() !== "") {
     mostrarModalError({
       titulo: "❌ Error",
       mensaje: "Selecciona un cliente válido.",
