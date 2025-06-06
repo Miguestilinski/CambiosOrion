@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Añadir Tesorería como primera opción y seleccionada por defecto
                 const tesoreriaOption = document.createElement("option");
                 tesoreriaOption.value = "0";
-                tesoreriaOption.textContent = "Tesorería";
+                tesoreriaOption.textContent = "Tesoreria";
                 tesoreriaOption.selected = true;
                 cajaSelect.appendChild(tesoreriaOption);
 
