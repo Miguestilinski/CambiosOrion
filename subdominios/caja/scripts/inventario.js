@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function cargarDivisas() {
-        fetch("https://cambiosorion.cl/data/inventarios.php")
+        fetch("https://cambiosorion.cl/data/inv-caja.php")
             .then(res => res.text())  // Leer respuesta como texto
             .then(text => {
                 try {
@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if(buscarInput.value) params.set("buscar", buscarInput.value);
         if(mostrarRegistros.value) params.set("limite", mostrarRegistros.value);
 
-        fetch(`https://cambiosorion.cl/data/inventarios.php?${params.toString()}`)
+        fetch(`https://cambiosorion.cl/data/inv-caja.php?${params.toString()}`)
             .then(res => res.text())  // Leer respuesta como texto
             .then(text => {
                 try {
