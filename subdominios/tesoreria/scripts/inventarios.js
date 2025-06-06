@@ -17,7 +17,16 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(res => res.json())
             .then(cajas => {
                 const cajaSelect = document.getElementById("caja");
+                cajaSelect.innerHTML = ""; // Limpiar opciones antes
 
+                // Añadir Tesorería como primera opción y seleccionada por defecto
+                const tesoreriaOption = document.createElement("option");
+                tesoreriaOption.value = "0";
+                tesoreriaOption.textContent = "Tesorería";
+                tesoreriaOption.selected = true;
+                cajaSelect.appendChild(tesoreriaOption);
+
+                // Agregar las cajas activas después
                 cajas.forEach(caja => {
                     const option = document.createElement("option");
                     option.value = caja.id;
