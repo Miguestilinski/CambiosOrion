@@ -2,7 +2,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const mostrarRegistros = document.getElementById("mostrar-registros");
     const buscarInput = document.getElementById("buscar");
     const cajaInput = document.getElementById("caja");
-    const divisaInput = document.getElementById("divisa");
     const tablaInventarios = document.querySelector("table tbody");
     const exportarBtn = document.getElementById("exportar");
 
@@ -11,6 +10,75 @@ document.addEventListener("DOMContentLoaded", () => {
             window.location.href = "https://cambiosorion.cl/data/exportar_inventarios_excel.php";
         });
     }
+
+    const divisaInput = document.getElementById("divisa-input");
+    const divisaList = document.getElementById("divisa-list");
+    const divisaHidden = document.getElementById("divisa");
+
+    let divisas = [];
+
+    // Función para cargar divisas desde API
+    function cargarDivisas() {
+        fetch("https://cambiosorion.cl/data/inventarios.php")
+            .then(res => res.json())  // Mejor JSON directo
+            .then(data => {
+                if (Array.isArray(data)) {
+                    divisas = data;
+                    mostrarOpciones("");
+                } else {
+                    console.warn("No es un array de divisas:", data);
+                }
+            })
+            .catch(error => console.error("Error al cargar divisas:", error));
+    }
+
+    // Mostrar opciones filtradas en el dropdown
+    function mostrarOpciones(filtro) {
+        const filtroMinusculas = filtro.toLowerCase();
+
+        const filtradas = divisas.filter(d => d.nombre.toLowerCase().includes(filtroMinusculas));
+
+        divisaList.innerHTML = "";
+
+        if (filtradas.length === 0) {
+            divisaList.classList.add("hidden");
+            return;
+        }
+
+        filtradas.forEach(d => {
+            const li = document.createElement("li");
+            li.textContent = d.nombre;
+            li.dataset.id = d.id;
+            li.className = "px-2 py-1 hover:bg-blue-600 hover:text-white cursor-pointer";
+
+            li.addEventListener("click", () => {
+                divisaInput.value = d.nombre;
+                divisaHidden.value = d.id;
+                divisaList.classList.add("hidden");
+                cargarInventarios();
+            });
+
+            divisaList.appendChild(li);
+        });
+
+        divisaList.classList.remove("hidden");
+    }
+
+    // Eventos input para filtrar opciones
+    divisaInput.addEventListener("input", () => {
+        mostrarOpciones(divisaInput.value);
+        divisaHidden.value = "";  // Limpiar selección si cambia el texto
+    });
+
+    // Cerrar dropdown si clic afuera
+    document.addEventListener("click", (e) => {
+        if (!divisaInput.contains(e.target) && !divisaList.contains(e.target)) {
+            divisaList.classList.add("hidden");
+        }
+    });
+
+    // Inicializar divisas
+    cargarDivisas();
 
     function cargarCajas() {
         fetch("https://cambiosorion.cl/data/inventarios.php?action=cajas")
