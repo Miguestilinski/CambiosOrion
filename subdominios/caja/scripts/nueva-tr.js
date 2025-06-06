@@ -195,71 +195,117 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
     return;
   }
 
-  const payload = {
-    caja: usuarioSesion.caja_id,
-    cliente_id: clienteSeleccionado.id,
-    tipo_transaccion: document.getElementById("tipo-transaccion").value,
-    tipo_documento: document.getElementById("tipo-documento").value,
-    numero_documento: "DOC-" + Math.floor(100000 + Math.random() * 900000),
-    numero_nota: "NOTA-" + Math.floor(1000 + Math.random() * 9000),
-    metodo_pago: document.getElementById("metodo-pago").value,
-    estado: "Vigente",
-    email: document.getElementById("email").value,
-    total: subtotal,
-    divisa: [{
-      divisa_id: divisaId,
-      nombre,
-      monto,
-      tasa_cambio: tasa
-    }],
-    vendedor: {
-      id: usuarioSesion.equipo_id,
-      nombre: usuarioSesion.equipo_nombre,
-    }
-  };
+  await procesarVenta(subtotal);
 
-  try {
-    const res = await fetch("https://cambiosorion.cl/data/nueva-tr.php", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(payload)
-    });
-
-    const rawText = await res.text();
-    console.log("Respuesta cruda:", rawText);
-
-    let resultado;
+  async function obtenerTasaCambio(nombreDivisa, tipo) {
     try {
-      resultado = JSON.parse(rawText); // intentar parsear si es posible
-    } catch (jsonError) {
-      console.error("Error al parsear JSON:", jsonError);
-      console.error("Respuesta del servidor:", rawText);
+      const response = await fetch(`https://cambiosorion.cl/data/nueva-tr.php?precio_divisa=${encodeURIComponent(nombreDivisa)}&tipo=${encodeURIComponent(tipo)}`);
+      const data = await response.json();
+      return data.precio ? parseFloat(data.precio) : null;
+    } catch (error) {
+      console.error("Error al obtener la tasa de cambio:", error);
+      return null;
+    }
+  }
+
+  async function enviarTransaccion() {
+    const payload = {
+      caja: usuarioSesion.caja_id,
+      cliente_id: clienteSeleccionado.id,
+      tipo_transaccion: document.getElementById("tipo-transaccion").value,
+      tipo_documento: document.getElementById("tipo-documento").value,
+      numero_documento: "DOC-" + Math.floor(100000 + Math.random() * 900000),
+      numero_nota: "NOTA-" + Math.floor(1000 + Math.random() * 9000),
+      metodo_pago: document.getElementById("metodo-pago").value,
+      estado: "Vigente",
+      email: document.getElementById("email").value,
+      total: subtotal,
+      divisa: [{
+        divisa_id: divisaId,
+        nombre,
+        monto,
+        tasa_cambio: tasa
+      }],
+      vendedor: {
+        id: usuarioSesion.equipo_id,
+        nombre: usuarioSesion.equipo_nombre,
+      }
+    };
+
+    try {
+      const res = await fetch("https://cambiosorion.cl/data/nueva-tr.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const rawText = await res.text();
+      console.log("Respuesta cruda:", rawText);
+
+      let resultado;
+      try {
+        resultado = JSON.parse(rawText); // intentar parsear si es posible
+      } catch (jsonError) {
+        console.error("Error al parsear JSON:", jsonError);
+        console.error("Respuesta del servidor:", rawText);
+        mostrarModalError({
+          titulo: "❌ Error",
+          mensaje: `Respuesta inesperada del servidor:\n\n${rawText}`,
+          textoConfirmar: "Entendido"
+        });
+        return;
+      }
+
+      if (resultado.error) {
+        mostrarModalError({
+          titulo: "❌ Error",
+          mensaje: ("Error: " + resultado.error),
+          textoConfirmar: "Entendido"
+        });
+      } else {
+        mostrarModalExitoso();
+      }
+    } catch (err) {
+      console.error(err);
       mostrarModalError({
         titulo: "❌ Error",
-        mensaje: `Respuesta inesperada del servidor:\n\n${rawText}`,
+        mensaje: `Error al registrar transacción: ${err}`,
         textoConfirmar: "Entendido"
+      });
+    }
+  }
+  
+  // Uso en tu función principal:
+  async function procesarVenta(subtotalCLP) {
+    // Supongamos que quieres la tasa de venta para USD
+    const tasaUSD = await obtenerTasaCambio("Dólar", "venta"); // Ajusta "Dólar" según nombre en divisas_internas
+
+    if (!tasaUSD) {
+      alert("No se pudo obtener la tasa de cambio. Intenta de nuevo más tarde.");
+      return;
+    }
+
+    const subtotalUSD = subtotalCLP / tasaUSD;
+
+    if (subtotalUSD >= 3000) {
+      mostrarModalAdvertencia({
+        mensaje: "El monto supera los 3000 USD. Recuerda solicitar el carnet (ID) al cliente.",
+        textoConfirmar: "Continuar",
+        textoCancelar: "Cancelar",
+        onConfirmar: async () => {
+          await enviarTransaccion();
+        },
+        onCancelar: () => {
+          // No hacer nada
+        }
       });
       return;
     }
 
-    if (resultado.error) {
-      mostrarModalError({
-        titulo: "❌ Error",
-        mensaje: ("Error: " + resultado.error),
-        textoConfirmar: "Entendido"
-      });
-    } else {
-      mostrarModalExitoso();
-    }
-  } catch (err) {
-    console.error(err);
-    mostrarModalError({
-      titulo: "❌ Error",
-      mensaje: `Error al registrar transacción: ${err}`,
-      textoConfirmar: "Entendido"
-    });
+    // Si no supera los 3000 USD, enviamos normalmente
+    await enviarTransaccion();
   }
 });
 
