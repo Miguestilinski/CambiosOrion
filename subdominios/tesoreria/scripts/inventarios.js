@@ -17,7 +17,6 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(res => res.json())
             .then(cajas => {
                 const cajaSelect = document.getElementById("caja");
-                cajaSelect.innerHTML = `<option value="0">Tesorería</option>`;  // Siempre dejar Tesorería
 
                 cajas.forEach(caja => {
                     const option = document.createElement("option");
@@ -100,7 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
     [cajaInput, divisaInput, buscarInput, mostrarRegistros].forEach(el => {
         el.addEventListener("input", cargarInventarios);
     });
-    
+
     cargarCajas();
     cargarDivisas();
     cargarInventarios();
