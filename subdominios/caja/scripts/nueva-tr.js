@@ -276,14 +276,19 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
       });
     }
   }
-  
+
   // Uso en tu función principal:
   async function procesarVenta(subtotalCLP) {
-    // Supongamos que quieres la tasa de venta para USD
-    const tasaUSD = await obtenerTasaCambio("Dólar", "venta"); // Ajusta "Dólar" según nombre en divisas_internas
+    const tipoTransaccion = document.getElementById("tipo-transaccion").value;
+
+    const tasaUSD = await obtenerTasaCambio("USD", tipoTransaccion);
 
     if (!tasaUSD) {
-      alert("No se pudo obtener la tasa de cambio. Intenta de nuevo más tarde.");
+      mostrarModalError({
+        titulo: "❌ Error",
+        mensaje: "No se pudo obtener la tasa de cambio.",
+        textoConfirmar: "Entendido"
+      });
       return;
     }
 
