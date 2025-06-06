@@ -76,10 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
             divisaList.classList.add("hidden");
         }
     });
-
-    // Inicializar divisas
-    cargarDivisas();
-
+    
     function cargarCajas() {
         fetch("https://cambiosorion.cl/data/inventarios.php?action=cajas")
             .then(res => res.json())
@@ -104,31 +101,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 cargarInventarios();
             })
             .catch(error => console.error("Error al cargar cajas:", error));
-    }
-
-    function cargarDivisas() {
-        fetch("https://cambiosorion.cl/data/inventarios.php")
-            .then(res => res.text())
-            .then(text => {
-                try {
-                    const data = JSON.parse(text);
-                    divisaInput.innerHTML = `<option value="">Seleccionar</option>`;
-
-                    if (Array.isArray(data)) {
-                        data.forEach(divisa => {
-                            const opt = document.createElement("option");
-                            opt.value = divisa.id;
-                            opt.textContent = divisa.nombre;
-                            divisaInput.appendChild(opt);
-                        });
-                    } else {
-                        console.warn("No es un array de divisas:", data);
-                    }
-                } catch(e) {
-                    console.error("Error parseando JSON divisas:", e);
-                }
-            })
-            .catch(error => console.error("Error al cargar divisas:", error));
     }
 
     function cargarInventarios() {
