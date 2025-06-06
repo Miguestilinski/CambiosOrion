@@ -17,9 +17,8 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(res => res.json())
             .then(cajas => {
                 const cajaSelect = document.getElementById("caja");
-                cajaSelect.innerHTML = ""; // Limpiar opciones antes
+                cajaSelect.innerHTML = "";
 
-                // Agregar las cajas activas
                 cajas.forEach(caja => {
                     const option = document.createElement("option");
                     option.value = caja.id;
@@ -27,28 +26,36 @@ document.addEventListener("DOMContentLoaded", () => {
                     cajaSelect.appendChild(option);
                 });
 
-                // Seleccionar automáticamente la opción Tesorería si existe
                 const tesoreria = cajas.find(c => c.nombre.toLowerCase() === "tesoreria");
                 if (tesoreria) {
                     cajaSelect.value = tesoreria.id;
                 }
+
+                // Cargar divisas e inventarios para la caja seleccionada (Tesorería o la que sea)
+                cargarDivisas();
+                cargarInventarios();
             })
             .catch(error => console.error("Error al cargar cajas:", error));
     }
 
     function cargarDivisas() {
         fetch("https://cambiosorion.cl/data/inventarios.php")
-            .then(res => res.text())  // Leer respuesta como texto
+            .then(res => res.text())
             .then(text => {
                 try {
                     const data = JSON.parse(text);
                     divisaInput.innerHTML = `<option value="">Seleccionar</option>`;
-                    data.forEach(divisa => {
-                        const opt = document.createElement("option");
-                        opt.value = divisa.id;
-                        opt.textContent = divisa.nombre;
-                        divisaInput.appendChild(opt);
-                    });
+
+                    if (Array.isArray(data)) {
+                        data.forEach(divisa => {
+                            const opt = document.createElement("option");
+                            opt.value = divisa.id;
+                            opt.textContent = divisa.nombre;
+                            divisaInput.appendChild(opt);
+                        });
+                    } else {
+                        console.warn("No es un array de divisas:", data);
+                    }
                 } catch(e) {
                     console.error("Error parseando JSON divisas:", e);
                 }
@@ -58,45 +65,47 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function cargarInventarios() {
         const params = new URLSearchParams();
-        if(cajaInput.value) params.set("caja", cajaInput.value);
-        if(divisaInput.value) params.set("divisa", divisaInput.value);
-        if(buscarInput.value) params.set("buscar", buscarInput.value);
-        if(mostrarRegistros.value) params.set("limite", mostrarRegistros.value);
+        if (cajaInput.value) params.set("caja", cajaInput.value);
+        if (divisaInput.value) params.set("divisa", divisaInput.value);
+        if (buscarInput.value) params.set("buscar", buscarInput.value);
+        if (mostrarRegistros.value) params.set("limite", mostrarRegistros.value);
 
         fetch(`https://cambiosorion.cl/data/inventarios.php?${params.toString()}`)
-            .then(res => res.text())  // Leer respuesta como texto
+            .then(res => res.text())
             .then(text => {
                 try {
                     const inventarios = JSON.parse(text);
                     tablaInventarios.innerHTML = "";
 
-                    inventarios.forEach(inv => {
-                        const tr = document.createElement("tr");
-                        tr.classList.add("border-b", "bg-white", "border-gray-700", "text-gray-700");
+                    if (Array.isArray(inventarios)) {
+                        inventarios.forEach(inv => {
+                            const tr = document.createElement("tr");
+                            tr.classList.add("border-b", "bg-white", "border-gray-700", "text-gray-700");
 
-                        const btnMostrar = document.createElement("button");
-                        btnMostrar.textContent = "Mostrar";
-                        btnMostrar.className = "text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1";
-                        btnMostrar.addEventListener("click", () => {
-                            window.location.href = `https://cambiosorion.cl/data/detalle-inv?id=${inv.id}`;
+                            const btnMostrar = document.createElement("button");
+                            btnMostrar.textContent = "Mostrar";
+                            btnMostrar.className = "text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1";
+                            btnMostrar.addEventListener("click", () => {
+                                window.location.href = `https://cambiosorion.cl/data/detalle-inv?id=${inv.id}`;
+                            });
+
+                            tr.innerHTML = `
+                                <td class="px-4 py-2">${inv.nombre_caja}</td>
+                                <td class="px-4 py-2">
+                                    <img src="${inv.icono}" alt="Icono" class="w-6 h-6 rounded-full border border-gray-400" />
+                                </td>
+                                <td class="px-4 py-2">${inv.divisa}</td>
+                                <td class="px-4 py-2">${Number(inv.cantidad).toLocaleString("es-CL")}</td>
+                                <td class="px-4 py-2">${Number(inv.pmp).toLocaleString("es-CL")}</td>
+                                <td class="px-4 py-2 mostrar-btn-cell"></td>
+                            `;
+
+                            tr.querySelector('.mostrar-btn-cell').appendChild(btnMostrar);
+                            tablaInventarios.appendChild(tr);
                         });
-
-                        Number(inv.cantidad).toLocaleString("es-CL", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-
-                        tr.innerHTML = `
-                            <td class="px-4 py-2">${inv.nombre_caja}</td>
-                            <td class="px-4 py-2">
-                                <img src="${inv.icono}" alt="Icono" class="w-6 h-6 rounded-full border border-gray-400" />
-                            </td>
-                            <td class="px-4 py-2">${inv.divisa}</td>
-                            <td class="px-4 py-2">${Number(inv.cantidad).toLocaleString("es-CL")}</td>
-                            <td class="px-4 py-2">${Number(inv.pmp).toLocaleString("es-CL")}</td>
-                            <td class="px-4 py-2 mostrar-btn-cell"></td>
-                        `;
-
-                        tr.querySelector('.mostrar-btn-cell').appendChild(btnMostrar);
-                        tablaInventarios.appendChild(tr);
-                    });
+                    } else {
+                        console.warn("No es un array de inventarios:", inventarios);
+                    }
                 } catch(e) {
                     console.error("Error parseando JSON inventarios:", e);
                 }
@@ -104,11 +113,15 @@ document.addEventListener("DOMContentLoaded", () => {
             .catch(error => console.error("Error al cargar inventarios:", error));
     }
 
-    [cajaInput, divisaInput, buscarInput, mostrarRegistros].forEach(el => {
-        el.addEventListener("input", cargarInventarios);
+    // Cuando cambie la caja, recargar inventarios (y quizás divisas)
+    cajaInput.addEventListener("input", () => {
+        cargarDivisas();
+        cargarInventarios();
     });
 
+    divisaInput.addEventListener("input", cargarInventarios);
+    buscarInput.addEventListener("input", cargarInventarios);
+    mostrarRegistros.addEventListener("input", cargarInventarios);
+
     cargarCajas();
-    cargarDivisas();
-    cargarInventarios();
 });
