@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Función para cargar divisas desde API
     function cargarDivisas() {
-        fetch("fetch(`https://cambiosorion.cl/data/inventarios.php?caja=${cajaInput.value}`)")
+        fetch(`https://cambiosorion.cl/data/inventarios.php?caja=${cajaInput.value}`)
             .then(res => res.json())  // Mejor JSON directo
             .then(data => {
                 if (Array.isArray(data)) {
