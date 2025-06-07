@@ -193,7 +193,7 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
   const nombre = divisaInput.value.trim();
   const monto = parseInt(montoInput.value) || 0;
   const tasa = parseFloat(tasaInput.value) || 0;
-  const subtotal = Math.round(monto * tasa);
+  const total = Math.round(monto * tasa);
 
   if (!divisaId || !nombre) {
     mostrarModalError({
@@ -204,7 +204,7 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
     return;
   }
 
-  await procesarVenta(subtotal);
+  await procesarVenta(total);
 
   async function obtenerTasaCambio(nombreDivisa, tipo) {
     try {
@@ -228,11 +228,11 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
       metodo_pago: document.getElementById("metodo-pago").value,
       estado: "Vigente",
       email: document.getElementById("email").value,
-      total: subtotal,
+      total: total,
       divisa: [{
         divisa_id: divisaId,
         nombre,
-        monto,
+        monto: monto,
         tasa_cambio: tasa
       }],
       vendedor: {
@@ -249,6 +249,8 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
         },
         body: JSON.stringify(payload)
       });
+      
+      console.log("Payload enviado:", JSON.stringify(payload, null, 2));
 
       const rawText = await res.text();
       console.log("Respuesta cruda:", rawText);
