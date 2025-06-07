@@ -220,7 +220,7 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
   async function enviarTransaccion() {
     const payload = {
       caja: usuarioSesion.caja_id,
-      cliente_id: clienteSeleccionado.id,
+      cliente_id: clienteSeleccionado ? clienteSeleccionado.id : null,
       tipo_transaccion: document.getElementById("tipo-transaccion").value,
       tipo_documento: document.getElementById("tipo-documento").value,
       numero_documento: "DOC-" + Math.floor(100000 + Math.random() * 900000),
