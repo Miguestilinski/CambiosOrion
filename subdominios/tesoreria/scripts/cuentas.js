@@ -120,9 +120,6 @@ document.addEventListener('DOMContentLoaded', () => {
   
     // Cerrar dropdown al clickear fuera
     document.addEventListener("click", (e) => {
-        if (!clienteInput.contains(e.target) && !resultadoClientes.contains(e.target)) {
-            resultadoClientes.classList.add("hidden");
-        }
         if (!divisaInput.contains(e.target) && !divisaSugerencias.contains(e.target)) {
             divisaSugerencias.classList.add("hidden");
         }
