@@ -342,7 +342,7 @@ function mostrarModalExitoso() {
 
   document.getElementById("nueva-cuenta").onclick = () => {
     modal.classList.add("hidden");
-    document.getElementById("form-nueva-tr").reset();
+    document.getElementById("form-nueva-cuenta").reset();
     // Resetear también estado adicional si es necesario
   };
 
