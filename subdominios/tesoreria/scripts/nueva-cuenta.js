@@ -248,8 +248,8 @@ document.getElementById("form-nueva-cuenta").addEventListener("submit", async (e
 function mostrarModalAdvertencia({mensaje, textoConfirmar = "Aceptar", textoCancelar = null, onConfirmar, onCancelar }) {
   const modal = document.getElementById("modal-advertencia");
   const mensajeElem = document.getElementById("modal-advertencia-mensaje");
-  const btnConfirmar = document.getElementById("modal-advertencia-confirmar");
-  const btnCancelar = document.getElementById("modal-advertencia-cancelar");
+  const btnConfirmar = document.getElementById("advertencia-confirmar");
+  const btnCancelar = document.getElementById("advertencia-cancelar");
 
   mensajeElem.textContent = mensaje;
   btnConfirmar.textContent = textoConfirmar;
