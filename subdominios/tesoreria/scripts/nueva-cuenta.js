@@ -190,7 +190,7 @@ document.getElementById("form-nueva-cuenta").addEventListener("submit", async (e
       body: JSON.stringify(body),
     });
 
-    if (respuesta.success === false && respuesta.warning) {
+    if (res.success === false && res.warning) {
       mostrarModalAdvertencia({
         mensaje: "⚠️ Este cliente ya tiene una cuenta con la divisa seleccionada.",
         textoConfirmar: "Entendido"
