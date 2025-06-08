@@ -19,11 +19,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function limpiarTexto(valor) {
+        return valor === null || valor === undefined ? '' : valor;
+    }
+
     // Función para obtener las cuentas con los filtros aplicados
     function obtenerCuentas() {
         const params = new URLSearchParams();
         params.set('id', idInput.value);
-        params.set('nombre_cliente', nombreInput.value);
+        params.set('nombre', nombreInput.value);
         params.set('divisa', divisaInput.value);
         params.set('por_cobrar', porCobrarSelect.value);
         params.set('por_pagar', porPagarSelect.value);
@@ -47,14 +51,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const tr = document.createElement('tr');
             tr.classList.add('border-b', 'bg-white', 'border-gray-700', 'text-gray-700');
             tr.innerHTML = `
-                <td class="px-4 py-2">${cuenta.id}</td>
-                <td class="px-4 py-2">${cuenta.nombre_cliente}</td>
-                <td class="px-4 py-2">${cuenta.divisa}</td>
+                <td class="px-4 py-2">${limpiarTexto(cuenta.id)}</td>
+                <td class="px-4 py-2">${limpiarTexto(cuenta.nombre)}</td>
+                <td class="px-4 py-2">${limpiarTexto(cuenta.divisa)}</td>
                 <td class="px-4 py-2">${cuenta.me_deben}</td>
                 <td class="px-4 py-2">${cuenta.debo}</td>
-                <td class="px-4 py-2">${cuenta.por_cobrar_texto}</td>
-                <td class="px-4 py-2">${cuenta.por_pagar_texto}</td>
-                <td class="px-4 py-2">${cuenta.activa_texto}</td>
+                <td class="px-4 py-2">${limpiarTexto(cuenta.por_cobrar_texto)}</td>
+                <td class="px-4 py-2">${limpiarTexto(cuenta.por_pagar_texto)}</td>
+                <td class="px-4 py-2">${limpiarTexto(cuenta.activa_texto)}</td>
                 <td class="px-4 py-2">
                     <button class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1">
                         Mostrar
