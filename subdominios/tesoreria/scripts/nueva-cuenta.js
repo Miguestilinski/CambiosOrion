@@ -4,6 +4,8 @@ const divisaInput = document.getElementById("divisa");
 const divisaSugerencias = document.getElementById("divisa-sugerencias");
 const cancelarBtn = document.getElementById('cancelar');
 const nombreCuentaInput = document.getElementById("nombre-cuenta");
+const esAdministrativaCheckbox = document.getElementById("es-administrativa");
+const mensajeFuncionario = document.getElementById("mensaje-funcionario");
 
 let clienteSeleccionado = null;
 let divisaSeleccionada = null;
@@ -60,11 +62,18 @@ clienteInput.addEventListener("input", async (e) => {
       const li = document.createElement("li");
       li.textContent = cliente.nombre;
       li.classList.add("px-2", "py-1", "hover:bg-gray-200", "cursor-pointer");
-      li.addEventListener("click", () => {
+      li.addEventListener("click", async () => {
         clienteInput.value = cliente.nombre;
         clienteSeleccionado = cliente;
         resultadoClientes.classList.add("hidden");
         actualizarNombreCuenta();
+        // Verificar si es funcionario consultando al servidor
+        const esFuncionario = await verificarFuncionario(cliente.rut);
+        if (esFuncionario) {
+          mensajeFuncionario.classList.remove("hidden");
+        } else {
+          mensajeFuncionario.classList.add("hidden");
+        }
       });
       resultadoClientes.appendChild(li);
     });
@@ -80,6 +89,17 @@ clienteInput.addEventListener("input", async (e) => {
     });
   }
 });
+
+async function verificarFuncionario(rut) {
+  try {
+    const res = await fetch(`https://cambiosorion.cl/data/nueva-cuenta.php?rut=${encodeURIComponent(rut)}`);
+    const data = await res.json();
+    return data.es_funcionario === true; // Suponiendo que retorna { es_funcionario: true }
+  } catch (error) {
+    console.error("Error al verificar funcionario:", error);
+    return false;
+  }
+}
 
 // Buscar divisa
 divisaInput.addEventListener("input", async (e) => {
@@ -146,6 +166,25 @@ document.addEventListener("click", (e) => {
   }
 });
 
+function determinarTipoCuenta() {
+  const tieneCliente = clienteSeleccionado !== null;
+  const esFuncionario = mensajeFuncionario && !mensajeFuncionario.classList.contains("hidden");
+
+  if (!tieneCliente) {
+    return "administrativa"; // Si no hay cliente seleccionado => administrativa
+  }
+
+  if (tieneCliente && esFuncionario) {
+    return "funcionario";
+  }
+
+  if (tieneCliente && !esFuncionario) {
+    return "cliente";
+  }
+
+  return "general"; // Solo nombre y divisa, sin cliente (en desuso si administrativa ya lo cubre)
+}
+
 // Enviar formulario
 document.getElementById("form-nueva-cuenta").addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -171,16 +210,20 @@ document.getElementById("form-nueva-cuenta").addEventListener("submit", async (e
     return;
   }
 
-  // Preparamos el cuerpo del request
-  const body = {
-    nombre_cuenta: nombreCuenta,
-    divisa_id: divisaSeleccionada.id,
-  };
-
   // Si hay cliente seleccionado, enviamos también el cliente_id
   if (clienteSeleccionado) {
     body.cliente_id = clienteSeleccionado.id;
   }
+
+  const tipoCuenta = determinarTipoCuenta();
+
+  // Preparamos el cuerpo del request
+  const body = {
+    cliente_id: clienteSeleccionado ? clienteSeleccionado.id : null,
+    divisa_id: divisaSeleccionada ? divisaSeleccionada.id : null,
+    nombre_cuenta: nombreCuentaInput.value.trim(),
+    tipo_cuenta: tipoCuenta,
+  };
 
   try {
     console.log("Datos enviados:", body);
