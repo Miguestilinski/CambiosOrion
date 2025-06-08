@@ -208,15 +208,40 @@ document.getElementById("form-nueva-cuenta").addEventListener("submit", async (e
     const data = JSON.parse(textResponse);
 
     if (data.success) {
-      if (data.warning) {
+      mostrarModalExitoso();
+    } else if (data.warning && data.continue_possible) {
         mostrarModalAdvertencia({
           mensaje: data.warning,
-          textoConfirmar: "Continuar"
+          textoConfirmar: "Crear",
+          textoCancelar: "Cancelar",
+          onConfirmar: async () => {
+            // Hacer segundo request con fuerza para crear la cuenta igual
+            try {
+              const res2 = await fetch("https://cambiosorion.cl/data/nueva-cuenta.php?forzar=1", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data.body),
+              });
+              const response2 = await res2.json();
+              if (response2.success) {
+                mostrarModalExitoso();
+              } else {
+                mostrarModalError({
+                  titulo: "❌ Error",
+                  mensaje: response2.error || "No se pudo crear la cuenta.",
+                  textoConfirmar: "Cerrar"
+                });
+              }
+            } catch (err) {
+              mostrarModalError({
+                titulo: "❌ Error",
+                mensaje: "No se pudo completar la creación forzada.",
+                textoConfirmar: "Cerrar"
+              });
+            }
+          }
         });
       } else {
-        mostrarModalExitoso();
-      }
-    } else {
       mostrarModalError({
         titulo: "❌ Error",
         mensaje: `Error al crear la cuenta: ${data.error || data.message || 'desconocido'}`,
