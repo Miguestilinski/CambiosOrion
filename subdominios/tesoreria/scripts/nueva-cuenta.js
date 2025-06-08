@@ -222,7 +222,9 @@ document.getElementById("form-nueva-cuenta").addEventListener("submit", async (e
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data.body),
               });
-              const response2 = await res2.json();
+              const text2 = await res2.text();
+              console.log("Respuesta cruda del segundo intento:", text2);
+              const response2 = JSON.parse(text2);
               if (response2.success) {
                 mostrarModalExitoso();
               } else {
