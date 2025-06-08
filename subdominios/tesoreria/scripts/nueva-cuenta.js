@@ -3,6 +3,7 @@ const resultadoClientes = document.getElementById("resultado-clientes");
 const divisaInput = document.getElementById("divisa");
 const divisaSugerencias = document.getElementById("divisa-sugerencias");
 const cancelarBtn = document.getElementById('cancelar');
+const nombreCuentaInput = document.getElementById("nombre-cuenta");
 
 let clienteSeleccionado = null;
 let divisaSeleccionada = null;
