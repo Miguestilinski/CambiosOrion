@@ -121,116 +121,120 @@
             <!-- Formulario Nuevo Integrante -->
             <form id="form-nuevo-int" class="gap-6 mb-6 max-w-7xl ml-4">
 
-            <div class="flex-1">
-            <!-- Datos Personales -->
-            <fieldset class="md:col-span-2 border border-gray-600 rounded-lg p-4 h-full">
-                <legend class="text-white font-semibold mb-2">Datos Personales</legend>
+            <!-- Contenedor Flex para fieldsets -->
+            <div class="flex flex-col md:flex-row gap-6">
 
-                <div class="mb-4">
-                <label for="rut" class="block mb-1 text-sm text-white">RUT</label>
-                <input type="text" id="rut" required placeholder="12.345.678-9" class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
+                <div class="flex-1">
+                <!-- Datos Personales -->
+                <fieldset class="md:col-span-2 border border-gray-600 rounded-lg p-4 h-full">
+                    <legend class="text-white font-semibold mb-2">Datos Personales</legend>
+
+                    <div class="mb-4">
+                    <label for="rut" class="block mb-1 text-sm text-white">RUT</label>
+                    <input type="text" id="rut" required placeholder="12.345.678-9" class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
+                    </div>
+
+                    <div class="mb-4">
+                    <label for="nombre" class="block mb-1 text-sm text-white">Nombre Completo</label>
+                    <input type="text" id="nombre" required class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
+                    </div>
+
+                    <div class="mb-4">
+                    <label for="estadoCivil" class="block mb-1 text-sm text-white">Estado Civil</label>
+                    <select id="estadoCivil" class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Seleccione</option>
+                        <option value="soltero">Soltero/a</option>
+                        <option value="casado">Casado/a</option>
+                        <option value="vuido">Viudo/a</option>
+                        <option value="divorciado">Divorciado/a</option>
+                        <option value="conviviente-civil">Conviviente Civil</option>
+                        <option value="separado">Separado Judicialmente</option>
+                    </select>
+                    </div>
+
+                    <div class="mb-4">
+                    <label for="fechaNacimiento" class="block mb-1 text-sm text-white">Fecha de Nacimiento</label>
+                    <input type="date" id="fechaNacimiento" required class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
+                    </div>
+
+                    <div class="mb-4">
+                    <label for="direccion" class="block mb-1 text-sm text-white">Dirección</label>
+                    <input type="text" id="direccion" required placeholder="Ej: Calle 123" class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
+                    </div>
+
+                    <div class="mb-4">
+                    <label for="telefono" class="block mb-1 text-sm text-white">Teléfono (opcional)</label>
+                    <input type="text" id="telefono" placeholder="Ej: +56912345678" class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
+                    </div>
+
+                    <div>
+                    <label for="email" class="block mb-1 text-sm text-white">Email</label>
+                    <input type="email" id="email" required placeholder="correo@cambiosorion.cl" class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
+                    </div>
+                </fieldset>
                 </div>
 
-                <div class="mb-4">
-                <label for="nombre" class="block mb-1 text-sm text-white">Nombre Completo</label>
-                <input type="text" id="nombre" required class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
+                <div class="flex-1 flex flex-col gap-6">
+                <!-- Datos Laborales -->
+                <fieldset class="md:col-span-2 border border-gray-600 rounded-lg p-4">
+                    <legend class="text-white font-semibold mb-2">Datos Laborales</legend>
+
+                    <div class="mb-4">
+                    <label for="fechaIngreso" class="block mb-1 text-sm text-white">Fecha de Ingreso</label>
+                    <input type="date" id="fechaIngreso" required class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
+                    </div>
+
+                    <div class="mb-4">
+                    <label for="rol" class="block mb-1 text-sm text-white">Rol</label>
+                    <select id="rol" required class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Seleccione un rol</option>
+                        <option value="socio">Socio</option>
+                        <option value="admin">Admin</option>
+                        <option value="caja">Caja</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                    </div>
+
+                    <div class="mb-4">
+                    <label for="tipoContrato" class="block mb-1 text-sm text-white">Tipo de Contrato</label>
+                    <select id="tipoContrato" required class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Seleccione tipo</option>
+                        <option value="contratado">Contratado</option>
+                        <option value="honorarios">Honorarios</option>
+                    </select>
+                    </div>
+
+                    <div>
+                    <label for="sueldoLiquido" class="block mb-1 text-sm text-white">Sueldo Líquido</label>
+                    <input type="number" id="sueldoLiquido" required class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
+                    </div>
+                </fieldset>
+
+                <!-- Datos Bancarios -->
+                <fieldset class="md:col-span-2 border border-gray-600 rounded-lg p-4">
+                    <legend class="text-white font-semibold mb-2">Datos Bancarios</legend>
+
+                    <div class="mb-4">
+                    <label for="banco" class="block mb-1 text-sm text-white">Banco</label>
+                    <input type="text" id="banco" required placeholder="Ej: BancoEstado" class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
+                    </div>
+
+                    <div class="mb-4">
+                    <label for="tipoCuenta" class="block mb-1 text-sm text-white">Tipo de Cuenta Bancaria</label>
+                    <select id="tipoCuenta" required class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Seleccione tipo</option>
+                        <option value="corriente">Cuenta Corriente</option>
+                        <option value="vista-rut">Cuenta Vista/RUT</option>
+                        <option value="ahorro">Cuenta de Ahorro</option>
+                    </select>
+                    </div>
+
+                    <div>
+                    <label for="numeroCuenta" class="block mb-1 text-sm text-white">Número de Cuenta Bancaria</label>
+                    <input type="text" id="numeroCuenta" required placeholder="Ej: 123456789" class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
+                    </div>
+                </fieldset>
                 </div>
-
-                <div class="mb-4">
-                <label for="estadoCivil" class="block mb-1 text-sm text-white">Estado Civil</label>
-                <select id="estadoCivil" class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    <option value="">Seleccione</option>
-                    <option value="soltero">Soltero/a</option>
-                    <option value="casado">Casado/a</option>
-                    <option value="vuido">Viudo/a</option>
-                    <option value="divorciado">Divorciado/a</option>
-                    <option value="conviviente-civil">Conviviente Civil</option>
-                    <option value="separado">Separado Judicialmente</option>
-                </select>
-                </div>
-
-                <div class="mb-4">
-                <label for="fechaNacimiento" class="block mb-1 text-sm text-white">Fecha de Nacimiento</label>
-                <input type="date" id="fechaNacimiento" required class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
-                </div>
-
-                <div class="mb-4">
-                <label for="direccion" class="block mb-1 text-sm text-white">Dirección</label>
-                <input type="text" id="direccion" required placeholder="Ej: Calle 123" class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
-                </div>
-
-                <div class="mb-4">
-                <label for="telefono" class="block mb-1 text-sm text-white">Teléfono (opcional)</label>
-                <input type="text" id="telefono" placeholder="Ej: +56912345678" class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
-                </div>
-
-                <div>
-                <label for="email" class="block mb-1 text-sm text-white">Email</label>
-                <input type="email" id="email" required placeholder="correo@cambiosorion.cl" class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
-                </div>
-            </fieldset>
-            </div>
-
-            <div class="flex-1 flex flex-col gap-6">
-            <!-- Datos Laborales -->
-            <fieldset class="md:col-span-2 border border-gray-600 rounded-lg p-4">
-                <legend class="text-white font-semibold mb-2">Datos Laborales</legend>
-
-                <div class="mb-4">
-                <label for="fechaIngreso" class="block mb-1 text-sm text-white">Fecha de Ingreso</label>
-                <input type="date" id="fechaIngreso" required class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
-                </div>
-
-                <div class="mb-4">
-                <label for="rol" class="block mb-1 text-sm text-white">Rol</label>
-                <select id="rol" required class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    <option value="">Seleccione un rol</option>
-                    <option value="socio">Socio</option>
-                    <option value="admin">Admin</option>
-                    <option value="caja">Caja</option>
-                    <option value="otro">Otro</option>
-                </select>
-                </div>
-
-                <div class="mb-4">
-                <label for="tipoContrato" class="block mb-1 text-sm text-white">Tipo de Contrato</label>
-                <select id="tipoContrato" required class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    <option value="">Seleccione tipo</option>
-                    <option value="contratado">Contratado</option>
-                    <option value="honorarios">Honorarios</option>
-                </select>
-                </div>
-
-                <div>
-                <label for="sueldoLiquido" class="block mb-1 text-sm text-white">Sueldo Líquido</label>
-                <input type="number" id="sueldoLiquido" required class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
-                </div>
-            </fieldset>
-
-            <!-- Datos Bancarios -->
-            <fieldset class="md:col-span-2 border border-gray-600 rounded-lg p-4">
-                <legend class="text-white font-semibold mb-2">Datos Bancarios</legend>
-
-                <div class="mb-4">
-                <label for="banco" class="block mb-1 text-sm text-white">Banco</label>
-                <input type="text" id="banco" required placeholder="Ej: BancoEstado" class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
-                </div>
-
-                <div class="mb-4">
-                <label for="tipoCuenta" class="block mb-1 text-sm text-white">Tipo de Cuenta Bancaria</label>
-                <select id="tipoCuenta" required class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    <option value="">Seleccione tipo</option>
-                    <option value="corriente">Cuenta Corriente</option>
-                    <option value="vista-rut">Cuenta Vista/RUT</option>
-                    <option value="ahorro">Cuenta de Ahorro</option>
-                </select>
-                </div>
-
-                <div>
-                <label for="numeroCuenta" class="block mb-1 text-sm text-white">Número de Cuenta Bancaria</label>
-                <input type="text" id="numeroCuenta" required placeholder="Ej: 123456789" class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
-                </div>
-            </fieldset>
             </div>
 
             <!-- Botones -->
