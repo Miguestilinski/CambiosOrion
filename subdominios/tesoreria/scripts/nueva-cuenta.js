@@ -152,14 +152,22 @@ document.getElementById("form-nueva-cuenta").addEventListener("submit", async (e
 
     // Validar divisa siempre
   if (!divisaSeleccionada) {
-    alert("Debes seleccionar una divisa.");
+    mostrarModalError({
+      titulo: "❌ Error",
+      mensaje: "Debes seleccionar una divisa.",
+      textoConfirmar: "Cerrar"
+    });
     return;
   }
 
   // Validar nombre cuenta
   const nombreCuenta = nombreCuentaInput.value.trim();
   if (nombreCuenta.length === 0) {
-    alert("Debes ingresar un nombre para la cuenta.");
+    mostrarModalError({
+      titulo: "❌ Error",
+      mensaje: "Debes ingresar un nombre para la cuenta.",
+      textoConfirmar: "Cerrar"
+    });
     return;
   }
 
