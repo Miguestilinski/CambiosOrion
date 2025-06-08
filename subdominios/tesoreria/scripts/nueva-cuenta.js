@@ -217,7 +217,7 @@ document.getElementById("form-nueva-cuenta").addEventListener("submit", async (e
       window.location.href = "https://tesoreria.cambiosorion.cl/cuentas";
     }
      else {
-        mostrarModalError({
+      mostrarModalError({
         titulo: "❌ Error",
         mensaje: `Error al crear la cuenta: ${data.error}`,
         textoConfirmar: "Cerrar"
@@ -238,8 +238,12 @@ document.getElementById("form-nueva-cuenta").addEventListener("submit", async (e
         console.error("No se pudo leer la respuesta del servidor.");
       }
     }
-  
-    alert(errorMessage);
+
+    mostrarModalError({
+      titulo: "❌ Error",
+      mensaje: `Error al crear la cuenta: ${errorMessage}`,
+      textoConfirmar: "Cerrar"
+    });
   }  
 });
 
