@@ -3,8 +3,24 @@ const resultadoClientes = document.getElementById("resultado-clientes");
 const divisaInput = document.getElementById("divisa");
 const divisaSugerencias = document.getElementById("divisa-sugerencias");
 const cancelarBtn = document.getElementById('cancelar');
+
 let clienteSeleccionado = null;
 let divisaSeleccionada = null;
+
+// Función para actualizar el nombre de cuenta según cliente y divisa
+function actualizarNombreCuenta() {
+  if (clienteSeleccionado && divisaSeleccionada) {
+    nombreCuentaInput.value = `${clienteSeleccionado.nombre} ${divisaSeleccionada.nombre}`;
+    nombreCuentaInput.disabled = true;  // Se deshabilita porque se genera automáticamente
+  } else {
+    nombreCuentaInput.disabled = false; // Se habilita para que el usuario pueda escribir
+    if (!clienteSeleccionado) {
+      // Solo se borra si no hay cliente (opcional)
+      // Si quieres que mantenga lo que usuario escribió, comentar la línea siguiente:
+      // nombreCuentaInput.value = "";
+    }
+  }
+}
 
 // Redirigir al hacer clic en "Nueva Operacion"
 if (cancelarBtn) {
@@ -16,6 +32,8 @@ if (cancelarBtn) {
 // Buscar cliente
 clienteInput.addEventListener("input", async (e) => {
   const query = e.target.value.trim();
+  clienteSeleccionado = null;
+  actualizarNombreCuenta();
   if (query.length < 2) {
     resultadoClientes.classList.add("hidden");
     return;
@@ -43,6 +61,7 @@ clienteInput.addEventListener("input", async (e) => {
         clienteInput.value = cliente.nombre;
         clienteSeleccionado = cliente;
         resultadoClientes.classList.add("hidden");
+        actualizarNombreCuenta();
       });
       resultadoClientes.appendChild(li);
     });
@@ -58,6 +77,8 @@ clienteInput.addEventListener("input", async (e) => {
 // Buscar divisa
 divisaInput.addEventListener("input", async (e) => {
   const query = e.target.value.trim();
+  divisaSeleccionada = null;
+  actualizarNombreCuenta();
   if (query.length < 1) {
     divisaSugerencias.classList.add("hidden");
     return;
@@ -87,6 +108,7 @@ divisaInput.addEventListener("input", async (e) => {
         console.log(`ID de divisas_interna seleccionado: ${divisa.id}`);
         console.log(`Valor asignado a divisa_id: ${divisa.id}`);
         divisaSugerencias.classList.add("hidden");
+        actualizarNombreCuenta();
       });      
       divisaSugerencias.appendChild(li);
     });
@@ -113,15 +135,29 @@ document.addEventListener("click", (e) => {
 document.getElementById("form-nueva-cuenta").addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  if (!clienteSeleccionado || !divisaSeleccionada) {
-    alert("Debes seleccionar un cliente y una divisa.");
+    // Validar divisa siempre
+  if (!divisaSeleccionada) {
+    alert("Debes seleccionar una divisa.");
     return;
   }
 
+  // Validar nombre cuenta
+  const nombreCuenta = nombreCuentaInput.value.trim();
+  if (nombreCuenta.length === 0) {
+    alert("Debes ingresar un nombre para la cuenta.");
+    return;
+  }
+
+  // Preparamos el cuerpo del request
   const body = {
-    cliente_id: clienteSeleccionado.id,
+    nombre_cuenta: nombreCuenta,
     divisa_id: divisaSeleccionada.id,
   };
+
+  // Si hay cliente seleccionado, enviamos también el cliente_id
+  if (clienteSeleccionado) {
+    body.cliente_id = clienteSeleccionado.id;
+  }
 
   try {
     console.log("Datos enviados:", body);
