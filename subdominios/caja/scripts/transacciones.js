@@ -47,6 +47,10 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(error => console.error('Error al obtener transacciones:', error));
     }
 
+    function limpiarTexto(valor) {
+        return valor === null || valor === undefined ? '' : valor;
+    }
+
     function formatearNumero(numero) {
         if (numero === null || numero === undefined || numero === '') return '';
         const opciones = { minimumFractionDigits: 0, maximumFractionDigits: 3 };
@@ -84,18 +88,18 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             tr.innerHTML = `
-                <td class="px-4 py-2">${trx.fecha}</td>
-                <td class="px-4 py-2">${trx.id}</td>
-                <td class="px-4 py-2">${trx.cliente}</td>
-                <td class="px-4 py-2">${trx.tipo_doc}</td>
-                <td class="px-4 py-2">${trx.n_doc}</td>
-                <td class="px-4 py-2">${trx.n_nota}</td>
-                <td class="px-4 py-2">${trx.tipo_transaccion}</td>
-                <td class="px-4 py-2">${trx.divisa}</td>
+                <td class="px-4 py-2">${limpiarTexto(trx.fecha)}</td>
+                <td class="px-4 py-2">${limpiarTexto(trx.id)}</td>
+                <td class="px-4 py-2">${limpiarTexto(trx.cliente)}</td>
+                <td class="px-4 py-2">${limpiarTexto(trx.tipo_doc)}</td>
+                <td class="px-4 py-2">${limpiarTexto(trx.n_doc)}</td>
+                <td class="px-4 py-2">${limpiarTexto(trx.n_nota)}</td>
+                <td class="px-4 py-2">${limpiarTexto(trx.tipo_transaccion)}</td>
+                <td class="px-4 py-2">${limpiarTexto(trx.divisa)}</td>
                 <td class="px-4 py-2">${formatearNumero(trx.monto)}</td>
                 <td class="px-4 py-2">${formatearNumero(trx.tasa_cambio)}</td>
                 <td class="px-4 py-2">${formatearNumero(trx.total)}</td>
-                <td class="px-4 py-2">${trx.estado}</td>
+                <td class="px-4 py-2">${limpiarTexto(trx.estado)}</td>
                 <td class="px-4 py-2 mostrar-btn-cell"></td>
             `;
 

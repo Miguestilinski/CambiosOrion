@@ -58,7 +58,10 @@ document.addEventListener('DOMContentLoaded', () => {
             .toLocaleString('es-CL', opciones)  // Chile usa punto para miles y coma para decimales
             .replace(/\u00A0/g, ''); // Elimina el espacio no separable que agrega en algunos navegadores
     }
-    
+
+    function limpiarTexto(valor) {
+        return valor === null || valor === undefined ? '' : valor;
+    }
 
     // Función para mostrar los resultados en la tabla
     function mostrarResultados(operaciones) {
@@ -110,18 +113,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             tr.innerHTML = `
-                <td class="px-4 py-2">${operacion.fecha}</td>
-                <td class="px-4 py-2">${operacion.id}</td>
-                <td class="px-4 py-2">${operacion.nombre_cliente}</td>
-                <td class="px-4 py-2">${operacion.tipo_documento}</td>
-                <td class="px-4 py-2">${operacion.numero_documento}</td>
-                <td class="px-4 py-2">${operacion.numero_nota}</td>
-                <td class="px-4 py-2">${operacion.tipo_transaccion}</td>
+                <td class="px-4 py-2">${limpiarTexto(operacion.fecha)}</td>
+                <td class="px-4 py-2">${limpiarTexto(operacion.id)}</td>
+                <td class="px-4 py-2">${limpiarTexto(operacion.nombre_cliente)}</td>
+                <td class="px-4 py-2">${limpiarTexto(operacion.tipo_documento)}</td>
+                <td class="px-4 py-2">${limpiarTexto(operacion.numer_documento)}</td>
+                <td class="px-4 py-2">${limpiarTexto(operacion.numero_nota)}</td>
+                <td class="px-4 py-2">${limpiarTexto(operacion.tipo_transaccion)}</td>
                 <td class="px-4 py-2">${divisas.map((d, i) => `<div>${d}${i < divisas.length - 1 ? ',' : ''}</div>`).join('')}</td>
                 <td class="px-4 py-2">${formatearNumero(operacion.monto_total)}</td>
                 <td class="px-4 py-2">${divisaTasaHTML}</td>
                 <td class="px-4 py-2">${formatearNumero(operacion.total)}</td>
-                <td class="px-4 py-2">${operacion.estado}</td>
+                <td class="px-4 py-2">${limpiarTexto(operacion.estado)}</td>
                 <td class="px-4 py-2 mostrar-btn-cell"></td>
             `;
     
