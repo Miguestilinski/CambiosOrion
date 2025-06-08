@@ -120,31 +120,36 @@
       
             <!-- Formulario Nueva Cuenta -->
             <form id="form-nueva-cuenta">
-
                 <!-- Cliente -->
-                <div class="w-1/2 mb-2">
+                <div class="w-1/2 mb-2 relative">
                     <label for="cliente" class="block mb-1 text-sm text-white">Cliente (Opcional)</label>
                     <input
-                    type="text"
-                    id="cliente"
-                    placeholder="Buscar cliente por nombre"
-                    autocomplete="off"
-                    class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                        type="text"
+                        id="cliente"
+                        placeholder="Buscar cliente por nombre"
+                        autocomplete="off"
+                        class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
                     />
-                    <ul id="resultado-clientes" class="bg-white border border-gray-600 text-gray-700 rounded-lg mt-1 hidden"></ul>
+                    <ul
+                        id="resultado-clientes"
+                        class="absolute z-50 w-full bg-white border border-gray-600 text-gray-700 rounded-lg mt-1 max-h-52 overflow-auto hidden"
+                    ></ul>
                 </div>
 
                 <!-- Divisa -->
-                <div class="w-1/2 mb-2">
+                <div class="w-1/2 mb-2 relative">
                     <label for="divisa" class="block mb-1 text-sm text-white">Divisa</label>
                     <input
-                    type="text"
-                    id="divisa"
-                    placeholder="Buscar divisa por nombre"
-                    autocomplete="off"
-                    class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                        type="text"
+                        id="divisa"
+                        placeholder="Buscar divisa por nombre"
+                        autocomplete="off"
+                        class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
                     />
-                    <ul id="divisa-sugerencias" class="bg-white border border-gray-600 text-gray-700 rounded-lg mt-1 hidden"></ul>
+                    <ul
+                        id="divisa-sugerencias"
+                        class="absolute z-50 w-full bg-white border border-gray-600 text-gray-700 rounded-lg mt-1 max-h-52 overflow-auto hidden"
+                    ></ul>
                 </div>
 
                 <!-- Nombre Cuenta -->
@@ -158,7 +163,7 @@
                         class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
                     />
                 </div>
-      
+
                 <!-- Botones -->
                 <div class="md:col-span-2 flex space-x-4">
                     <button
