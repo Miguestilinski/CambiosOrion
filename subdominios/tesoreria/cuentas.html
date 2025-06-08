@@ -139,13 +139,13 @@
                         <input type="text" id="nombre" 
                             class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                     </div>
-                    <div>
+                    <div style="position: relative; width: fit-content; max-width: 300px;">
                         <label for="divisa" class="block mb-1 text-sm text-white">Divisa</label>
                         <input type="text" id="divisa"
                             class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
                             autocomplete="off"
                         />
-                        <ul id="divisa-sugerencias" class="bg-white border border-gray-300 mt-1 max-h-40 overflow-y-auto absolute z-10 hidden"></ul>
+                        <ul id="divisa-sugerencias" class="border border-gray-600 max-h-40 overflow-y-auto bg-white rounded-lg mt-1 absolute z-10 w-full hidden"></ul>
                     </div>
                     <div>
                         <label for="por-cobrar" class="block mb-1 text-sm text-white">Por Cobrar</label>
@@ -209,8 +209,8 @@
                                 <th class="px-4 py-2">Código</th>
                                 <th class="px-4 py-2">Nombre</th>
                                 <th class="px-4 py-2">Divisa</th>
-                                <th class="px-4 py-2">Me Deben</th>
-                                <th class="px-4 py-2">Debo</th>
+                                <th class="px-4 py-2">Me Deben (+)</th>
+                                <th class="px-4 py-2">Debo (-)</th>
                                 <th class="px-4 py-2">Por Cobrar</th>
                                 <th class="px-4 py-2">Por Pagar</th>
                                 <th class="px-4 py-2">Activa</th>
