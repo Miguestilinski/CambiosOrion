@@ -45,7 +45,11 @@ clienteInput.addEventListener("input", async (e) => {
   // Verificar si la respuesta es exitosa
   if (!res.ok) {
     console.error('Error al buscar cliente', res.statusText);
-    alert("Hubo un problema con la conexión al servidor. Intenta nuevamente.");
+    mostrarModalError({
+      titulo: "❌ Error de conexión",
+      mensaje: `No se pudo obtener la lista de clientes: ${res.statusText}`,
+      textoConfirmar: "Entendido"
+    });
     return;
   }
 
@@ -69,7 +73,11 @@ clienteInput.addEventListener("input", async (e) => {
     console.error("Error al procesar la respuesta de los clientes", error);
     const text = await res.text();
     console.error("Respuesta del servidor:", text);
-    alert("Error al procesar la respuesta del servidor. Intenta nuevamente.");
+    mostrarModalError({
+      titulo: "❌ Error inesperado",
+      mensaje: `Ocurrió un error al procesar los datos del servidor.`,
+      textoConfirmar: "Entendido"
+    });
   }
 });
 
@@ -90,7 +98,11 @@ divisaInput.addEventListener("input", async (e) => {
   // Verificar si la respuesta es exitosa
   if (!res.ok) {
     console.error('Error al buscar divisa', res.statusText);
-    alert("Hubo un problema con la conexión al servidor. Intenta nuevamente.");
+    mostrarModalError({
+      titulo: "❌ Error de conexión",
+      mensaje: `No se pudo obtener la lista de divisas: ${res.statusText}`,
+      textoConfirmar: "Ok"
+    });
     return;
   }
 
@@ -116,7 +128,11 @@ divisaInput.addEventListener("input", async (e) => {
     console.error("Error al procesar la respuesta de las divisas", error);
     const text = await res.text();
     console.error("Respuesta del servidor:", text);
-    alert("Error al procesar la respuesta del servidor. Intenta nuevamente.");
+    mostrarModalError({
+      titulo: "❌ Error inesperado",
+      mensaje: "Ocurrió un problema al procesar la información del servidor.",
+      textoConfirmar: "Cerrar"
+    });
   }
 });
 
@@ -166,11 +182,22 @@ document.getElementById("form-nueva-cuenta").addEventListener("submit", async (e
       body: JSON.stringify(body),
     });
 
+    if (respuesta.success === false && respuesta.warning) {
+      mostrarModalAdvertencia({
+        mensaje: "⚠️ Este cliente ya tiene una cuenta con la divisa seleccionada.",
+        textoConfirmar: "Entendido"
+      });
+    }
+
     // Verificar si la respuesta es exitosa
     if (!res.ok) {
       const errorText = await res.text();
       console.error('Error de respuesta del servidor:', errorText);
-      alert("Hubo un problema con la conexión al servidor.");
+      mostrarModalError({
+        titulo: "❌ Error inesperado",
+        mensaje: "Hubo un problema con la conexión al servidor.",
+        textoConfirmar: "Cerrar"
+      });
       return;
     }
 
@@ -182,7 +209,11 @@ document.getElementById("form-nueva-cuenta").addEventListener("submit", async (e
       window.location.href = "https://tesoreria.cambiosorion.cl/cuentas";
     }
      else {
-      alert(data.error || "Error al crear la cuenta.");
+        mostrarModalError({
+        titulo: "❌ Error",
+        mensaje: `Error al crear la cuenta: ${data.error}`,
+        textoConfirmar: "Cerrar"
+      });
     }
 
   } catch (error) {
@@ -203,3 +234,80 @@ document.getElementById("form-nueva-cuenta").addEventListener("submit", async (e
     alert(errorMessage);
   }  
 });
+
+function mostrarModalAdvertencia({mensaje, textoConfirmar = "Aceptar", textoCancelar = null, onConfirmar, onCancelar }) {
+  const modal = document.getElementById("modal-advertencia");
+  const mensajeElem = document.getElementById("modal-advertencia-mensaje");
+  const btnConfirmar = document.getElementById("modal-advertencia-confirmar");
+  const btnCancelar = document.getElementById("modal-advertencia-cancelar");
+
+  mensajeElem.textContent = mensaje;
+  btnConfirmar.textContent = textoConfirmar;
+
+  if (textoCancelar) {
+    btnCancelar.classList.remove("hidden");
+    btnCancelar.textContent = textoCancelar;
+  } else {
+    btnCancelar.classList.add("hidden");
+  }
+
+  modal.classList.remove("hidden");
+
+  // Remover handlers anteriores
+  btnConfirmar.onclick = () => {
+    modal.classList.add("hidden");
+    if (onConfirmar) onConfirmar();
+  };
+
+  btnCancelar.onclick = () => {
+    modal.classList.add("hidden");
+    if (onCancelar) onCancelar();
+  };
+}
+
+function mostrarModalError({ titulo, mensaje, textoConfirmar = "Aceptar", textoCancelar = null, onConfirmar, onCancelar }) {
+  const modal = document.getElementById("modal-error");
+  const tituloElem = document.getElementById("modal-error-titulo");
+  const mensajeElem = document.getElementById("modal-error-mensaje");
+  const btnConfirmar = document.getElementById("modal-error-confirmar");
+  const btnCancelar = document.getElementById("modal-error-cancelar");
+
+  tituloElem.textContent = titulo;
+  mensajeElem.textContent = mensaje;
+  btnConfirmar.textContent = textoConfirmar;
+
+  if (textoCancelar) {
+    btnCancelar.classList.remove("hidden");
+    btnCancelar.textContent = textoCancelar;
+  } else {
+    btnCancelar.classList.add("hidden");
+  }
+
+  modal.classList.remove("hidden");
+
+  // Remover handlers anteriores
+  btnConfirmar.onclick = () => {
+    modal.classList.add("hidden");
+    if (onConfirmar) onConfirmar();
+  };
+
+  btnCancelar.onclick = () => {
+    modal.classList.add("hidden");
+    if (onCancelar) onCancelar();
+  };
+}
+
+function mostrarModalExitoso() {
+  const modal = document.getElementById("modal-exitoso");
+  modal.classList.remove("hidden");
+
+  document.getElementById("nueva-cuenta").onclick = () => {
+    modal.classList.add("hidden");
+    document.getElementById("form-nueva-tr").reset();
+    // Resetear también estado adicional si es necesario
+  };
+
+  document.getElementById("volver").onclick = () => {
+    window.location.href = "https://tesoreia.cambiosorion.cl/cuentas";
+  };
+}

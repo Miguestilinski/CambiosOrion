@@ -181,6 +181,41 @@
                     </button>
                 </div>
             </form>
+            <!-- Modal de advertencia -->
+            <div id="modal-advertencia" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+              <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
+                <h2 class="text-lg font-semibold mb-4">⚠️ Advertencia</h2>
+                <p id="modal-advertencia-mensaje" class="mb-4">Mensaje</p>
+                <div class="flex justify-end space-x-4">
+                  <button id="advertencia-cancelar" class="bg-gray-300 text-gray-700 px-4 py-2 rounded">Cancelar</button>
+                  <button id="advertencia-confirmar" class="bg-blue-600 text-white px-4 py-2 rounded">Continuar</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Modal de error -->
+            <div id="modal-error" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+              <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
+                <h2 id="modal-error-titulo" class="text-lg font-semibold mb-4">Título</h2>
+                <p id="modal-error-mensaje" class="mb-4">Mensaje</p>
+                <div class="flex justify-end space-x-4">
+                  <button id="modal-error-cancelar" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hidden">Cancelar</button>
+                  <button id="modal-error-confirmar" class="bg-blue-600 text-white px-4 py-2 rounded">Aceptar</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Modal exitoso -->
+            <div id="modal-exitoso" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+              <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
+                <h2 class="text-lg font-semibold mb-4">✅ Cuenta generada</h2>
+                <p class="mb-4">La cuenta se ha generado correctamente.</p>
+                <div class="flex justify-end space-x-4">
+                  <button id="nueva-cuenta" class="bg-green-600 text-white px-4 py-2 rounded">Nueva Cuenta</button>
+                  <button id="volver" class="bg-gray-300 text-gray-700 px-4 py-2 rounded">Volver</button>
+                </div>
+              </div>
+            </div>
           </section>
         </main>
     </div>

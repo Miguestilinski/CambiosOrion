@@ -323,11 +323,11 @@ function calcularTotal() {
 agregarDivisa();
 
 function mostrarModal({ titulo, mensaje, textoConfirmar = "Aceptar", textoCancelar = null, onConfirmar, onCancelar }) {
-  const modal = document.getElementById("modal-generico");
-  const tituloElem = document.getElementById("modal-generico-titulo");
-  const mensajeElem = document.getElementById("modal-generico-mensaje");
-  const btnConfirmar = document.getElementById("modal-generico-confirmar");
-  const btnCancelar = document.getElementById("modal-generico-cancelar");
+  const modal = document.getElementById("modal-error");
+  const tituloElem = document.getElementById("modal-error-titulo");
+  const mensajeElem = document.getElementById("modal-error-mensaje");
+  const btnConfirmar = document.getElementById("error-confirmar");
+  const btnCancelar = document.getElementById("error-cancelar");
 
   tituloElem.textContent = titulo;
   mensajeElem.textContent = mensaje;
@@ -354,8 +354,8 @@ function mostrarModal({ titulo, mensaje, textoConfirmar = "Aceptar", textoCancel
   };
 }
 
-function mostrarModalOperacionExitosa() {
-  const modal = document.getElementById("modal-operacion-exitosa");
+function mostrarModalExitoso() {
+  const modal = document.getElementById("modal-exitoso");
   modal.classList.remove("hidden");
 
   document.getElementById("nueva-operacion").onclick = () => {
@@ -364,7 +364,7 @@ function mostrarModalOperacionExitosa() {
     // Resetear también estado adicional si es necesario
   };
 
-  document.getElementById("volver-operaciones").onclick = () => {
+  document.getElementById("volver").onclick = () => {
     window.location.href = "https://tesoreria.cambiosorion.cl/operaciones";
   };
 }
@@ -485,7 +485,7 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
         textoConfirmar: "Entendido"
       });
     } else {
-      mostrarModalOperacionExitosa();
+      mostrarModalExitoso();
     }
   } catch (err) {
     console.error(err);
