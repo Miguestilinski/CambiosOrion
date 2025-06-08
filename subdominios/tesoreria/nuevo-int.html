@@ -120,65 +120,122 @@
       
             <!-- Formulario Nuevo Integrante -->
             <form id="form-nuevo-int" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 max-w-4xl ml-4">
-              <!-- Nombre -->
-              <div>
-                <label for="nombre" class="block mb-1 text-sm text-white">Nombre Completo</label>
-                <input type="text" id="nombre" required placeholder="Ej: Juan Pérez" class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
-              </div>
-      
-              <!-- RUT -->
-              <div>
+
+            <!-- Datos Personales -->
+            <fieldset class="md:col-span-2 border border-gray-600 rounded-lg p-4">
+                <legend class="text-white font-semibold mb-4">Datos Personales</legend>
+
+                <div>
                 <label for="rut" class="block mb-1 text-sm text-white">RUT</label>
-                <input type="text" id="rut" required placeholder="Ej: 12.345.678-9" class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
-              </div>
-      
-              <!-- Fecha de Ingreso -->
-              <div>
-                <label for="fechaIngreso" class="block mb-1 text-sm text-white">Fecha de Ingreso</label>
-                <input type="date" id="fechaIngreso" required class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
-              </div>
-      
-              <!-- Rol (Select) -->
-              <div>
-                <label for="rol" class="block mb-1 text-sm text-white">Rol</label>
-                <select id="rol" required class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                  <option value="">Seleccione un rol</option>
-                  <option value="socio">Socio</option>
-                  <option value="admin">Admin</option>
-                  <option value="caja">Caja</option>
-                  <option value="otro">Otro</option>
+                <input type="text" id="rut" required placeholder="12.345.678-9" class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
+                </div>
+
+                <div>
+                <label for="nombre" class="block mb-1 text-sm text-white">Nombre Completo</label>
+                <input type="text" id="nombre" required class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
+                </div>
+
+                <div>
+                <label for="estadoCivil" class="block mb-1 text-sm text-white">Estado Civil</label>
+                <select id="estadoCivil" class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="">Seleccione</option>
+                    <option value="soltero">Soltero/a</option>
+                    <option value="casado">Casado/a</option>
+                    <option value="vuido">Viudo/a</option>
+                    <option value="divorciado">Divorciado/a</option>
+                    <option value="conviviente-civil">Conviviente Civil</option>
+                    <option value="separado">Separado Judicialmente</option>
                 </select>
-              </div>
-      
-              <!-- Tipo de Contrato -->
-              <div>
-                <label for="tipoContrato" class="block mb-1 text-sm text-white">Tipo de Contrato</label>
-                <input type="text" id="tipoContrato" required placeholder="Ej: Plazo fijo, indefinido" class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
-              </div>
-      
-              <!-- Sueldo Líquido -->
-              <div>
-                <label for="sueldoLiquido" class="block mb-1 text-sm text-white">Sueldo Líquido</label>
-                <input type="number" id="sueldoLiquido" required placeholder="Ej: 550000" class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
-              </div>
-      
-              <!-- Email -->
-              <div>
-                <label for="email" class="block mb-1 text-sm text-white">Email</label>
-                <input type="email" id="email" required placeholder="correo@ejemplo.com" class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
-              </div>
-      
-              <!-- Teléfono -->
-              <div>
+                </div>
+
+                <div>
+                <label for="fechaNacimiento" class="block mb-1 text-sm text-white">Fecha de Nacimiento</label>
+                <input type="date" id="fechaNacimiento" required class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
+                </div>
+
+                <div>
+                <label for="direccion" class="block mb-1 text-sm text-white">Dirección</label>
+                <input type="text" id="direccion" required placeholder="Ej: Calle 123" class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
+                </div>
+
+                <div>
                 <label for="telefono" class="block mb-1 text-sm text-white">Teléfono (opcional)</label>
                 <input type="text" id="telefono" placeholder="Ej: +56912345678" class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
-              </div>
-      
-              <!-- Botones -->
-              <div class="md:col-span-2 flex space-x-4">
+                </div>
+
+                <div>
+                <label for="email" class="block mb-1 text-sm text-white">Email</label>
+                <input type="email" id="email" required placeholder="correo@cambiosorion.cl" class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
+                </div>
+            </fieldset>
+
+            <!-- Datos Laborales -->
+            <fieldset class="md:col-span-2 border border-gray-600 rounded-lg p-4">
+                <legend class="text-white font-semibold mb-4">Datos Laborales</legend>
+
+                <div>
+                <label for="fechaIngreso" class="block mb-1 text-sm text-white">Fecha de Ingreso</label>
+                <input type="date" id="fechaIngreso" required class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
+                </div>
+
+                <div>
+                <label for="rol" class="block mb-1 text-sm text-white">Rol</label>
+                <select id="rol" required class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="">Seleccione un rol</option>
+                    <option value="socio">Socio</option>
+                    <option value="admin">Admin</option>
+                    <option value="caja">Caja</option>
+                    <option value="otro">Otro</option>
+                </select>
+                </div>
+
+                <div>
+                <label for="tipoContrato" class="block mb-1 text-sm text-white">Tipo de Contrato</label>
+                <select id="tipoContrato" required class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="">Seleccione tipo</option>
+                    <option value="contratado">Contratado</option>
+                    <option value="honorarios">Honorarios</option>
+                </select>
+                </div>
+
+                <div>
+                <label for="sueldoLiquido" class="block mb-1 text-sm text-white">Sueldo Líquido</label>
+                <input type="number" id="sueldoLiquido" required class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
+                </div>
+            </fieldset>
+
+            <!-- Datos Bancarios -->
+            <fieldset class="md:col-span-2 border border-gray-600 rounded-lg p-4">
+                <legend class="text-white font-semibold mb-4">Datos Bancarios</legend>
+
+                <div>
+                <label for="banco" class="block mb-1 text-sm text-white">Banco</label>
+                <input type="text" id="banco" required placeholder="Ej: BancoEstado" class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
+                </div>
+
+                <div>
+                <label for="tipoCuenta" class="block mb-1 text-sm text-white">Tipo de Cuenta Bancaria</label>
+                <input type="text" id="tipoCuenta" required class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
+                <select id="tipoCuenta" required class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="">Seleccione tipo</option>
+                    <option value="corriente">Cuenta Corriente</option>
+                    <option value="vista-rut">Cuenta Vista/RUT</option>
+                    <option value="ahorro">Cuenta de Ahorro</option>
+                </select>
+                </div>
+
+                <div>
+                <label for="numeroCuenta" class="block mb-1 text-sm text-white">Número de Cuenta Bancaria</label>
+                <input type="text" id="numeroCuenta" required placeholder="Ej: 123456789" class="block w-full p-2 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
+                </div>
+            </fieldset>
+
+            <!-- Botones -->
+            <div class="md:col-span-2 flex space-x-4">
                 <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">Agregar Integrante</button>
                 <button type="button" id="cancelar" class="text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5">Cancelar</button>
-              </div>
+            </div>
+
             </form>
           </section>
         </main>
