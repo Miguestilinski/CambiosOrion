@@ -27,7 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function obtenerCuentas() {
         const params = new URLSearchParams();
         params.set('id', idInput.value);
-        params.set('nombre', nombreInput.value);
+        if (nombreInput.value.trim() !== '') {
+            params.set('nombre', nombreInput.value);
+        }
         params.set('divisa', divisaInput.value);
         params.set('por_cobrar', porCobrarSelect.value);
         params.set('por_pagar', porPagarSelect.value);
