@@ -211,13 +211,13 @@ document.getElementById("form-nueva-cuenta").addEventListener("submit", async (e
       mostrarModalExitoso();
     } else if (data.warning) {
       mostrarModalAdvertencia({
-        mensaje: "⚠️ Este cliente ya tiene una cuenta con la divisa seleccionada.",
+        mensaje: `⚠️ ${data.warning}`,
         textoConfirmar: "Entendido"
       });
     } else {
       mostrarModalError({
         titulo: "❌ Error",
-        mensaje: `Error al crear la cuenta: ${data.error || 'desconocido'}`,
+        mensaje: `Error al crear la cuenta: ${data.error || data.message || 'desconocido'}`,
         textoConfirmar: "Cerrar"
       });
     }
