@@ -11,15 +11,13 @@ let divisaSeleccionada = null;
 // Función para actualizar el nombre de cuenta según cliente y divisa
 function actualizarNombreCuenta() {
   if (clienteSeleccionado && divisaSeleccionada) {
-    nombreCuentaInput.value = `${clienteSeleccionado.nombre} ${divisaSeleccionada.nombre}`;
-    nombreCuentaInput.disabled = true;  // Se deshabilita porque se genera automáticamente
+    // Usa código de divisa, no nombre
+    nombreCuentaInput.value = `${clienteSeleccionado.nombre} ${divisaSeleccionada.codigo}`;
+    // nombreCuentaInput.disabled = true;  // Comentar o eliminar para que siempre se pueda editar
   } else {
-    nombreCuentaInput.disabled = false; // Se habilita para que el usuario pueda escribir
-    if (!clienteSeleccionado) {
-      // Solo se borra si no hay cliente (opcional)
-      // Si quieres que mantenga lo que usuario escribió, comentar la línea siguiente:
-      // nombreCuentaInput.value = "";
-    }
+    nombreCuentaInput.disabled = false; // Siempre habilitado
+    // Si quieres que mantenga lo que usuario escribió cuando no hay cliente, no limpiar aquí
+    // nombreCuentaInput.value = "";
   }
 }
 
