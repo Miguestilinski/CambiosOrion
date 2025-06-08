@@ -208,12 +208,14 @@ document.getElementById("form-nueva-cuenta").addEventListener("submit", async (e
     const data = JSON.parse(textResponse);
 
     if (data.success) {
-      mostrarModalExitoso();
-    } else if (data.warning) {
-      mostrarModalAdvertencia({
-        mensaje: `⚠️ ${data.warning}`,
-        textoConfirmar: "Entendido"
-      });
+      if (data.warning) {
+        mostrarModalAdvertencia({
+          mensaje: data.warning,
+          textoConfirmar: "Continuar"
+        });
+      } else {
+        mostrarModalExitoso();
+      }
     } else {
       mostrarModalError({
         titulo: "❌ Error",
