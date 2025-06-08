@@ -190,12 +190,8 @@ document.getElementById("form-nueva-cuenta").addEventListener("submit", async (e
       body: JSON.stringify(body),
     });
 
-    if (res.success === false && res.warning) {
-      mostrarModalAdvertencia({
-        mensaje: "⚠️ Este cliente ya tiene una cuenta con la divisa seleccionada.",
-        textoConfirmar: "Entendido"
-      });
-    }
+    const textResponse = await res.text();
+    console.log("Respuesta cruda del servidor:", textResponse);   
 
     // Verificar si la respuesta es exitosa
     if (!res.ok) {
@@ -207,19 +203,21 @@ document.getElementById("form-nueva-cuenta").addEventListener("submit", async (e
         textoConfirmar: "Cerrar"
       });
       return;
-    }
-
-    const textResponse = await res.text();
-    console.log("Respuesta cruda del servidor:", textResponse);    
+    } 
 
     const data = JSON.parse(textResponse);
+
     if (data.success) {
-      window.location.href = "https://tesoreria.cambiosorion.cl/cuentas";
-    }
-     else {
+      mostrarModalExitoso();
+    } else if (data.warning) {
+      mostrarModalAdvertencia({
+        mensaje: "⚠️ Este cliente ya tiene una cuenta con la divisa seleccionada.",
+        textoConfirmar: "Entendido"
+      });
+    } else {
       mostrarModalError({
         titulo: "❌ Error",
-        mensaje: `Error al crear la cuenta: ${data.error}`,
+        mensaje: `Error al crear la cuenta: ${data.error || 'desconocido'}`,
         textoConfirmar: "Cerrar"
       });
     }
