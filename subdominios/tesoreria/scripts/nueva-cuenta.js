@@ -21,8 +21,9 @@ if (cancelarBtn) {
 clienteInput.addEventListener("input", async (e) => {
   const query = e.target.value.trim();
   clienteSeleccionado = null;
-  actualizarNombreCuenta();
+  esAdministrativaCheckbox.disabled = false;
   actualizarTipoCuentaVisualmente();
+  actualizarNombreCuenta();
 
   if (query.length < 2) {
     resultadoClientes.classList.add("hidden");
@@ -335,26 +336,41 @@ function actualizarInteraccionClienteYAdministrativa() {
   actualizarNombreCuenta();
 }
 
-// Listener cuando se marca o desmarca "es administrativa"
+// Relación entre checkbox y cliente seleccionado
 esAdministrativaCheckbox.addEventListener("change", () => {
-  actualizarInteraccionClienteYAdministrativa();
+  if (esAdministrativaCheckbox.checked) {
+    clienteInput.value = "";
+    clienteInput.disabled = true;
+    clienteSeleccionado = null;
+    actualizarTipoCuentaVisualmente();
+    actualizarNombreCuenta();
+  } else {
+    clienteInput.disabled = false;
+  }
 });
 
-// Llamar cada vez que se selecciona un cliente
+// Al seleccionar cliente
 function seleccionarCliente(cliente) {
-  clienteInput.value = cliente.nombre;
   clienteSeleccionado = cliente;
+  clienteInput.value = cliente.nombre;
   resultadoClientes.classList.add("hidden");
-  actualizarInteraccionClienteYAdministrativa();
+
+  // Si se selecciona un cliente, se debe deshabilitar y deschequear el checkbox
+  esAdministrativaCheckbox.checked = false;
+  esAdministrativaCheckbox.disabled = true;
+  clienteInput.disabled = false;
+
   actualizarTipoCuentaVisualmente();
-  verificarFuncionario(cliente.rut).then((esFuncionario) => {
-    if (esFuncionario) {
+  actualizarNombreCuenta();
+
+  // Verificar si el cliente es funcionario
+  verificarFuncionario(cliente.rut).then((esFunc) => {
+    if (esFunc) {
       mensajeFuncionario.classList.remove("hidden");
     } else {
       mensajeFuncionario.classList.add("hidden");
     }
   });
-  actualizarNombreCuenta();
 }
 
 function mostrarModalAdvertencia({mensaje, textoConfirmar = "Aceptar", textoCancelar = null, onConfirmar, onCancelar }) {
