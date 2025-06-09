@@ -22,15 +22,7 @@ clienteInput.addEventListener("input", async (e) => {
   const query = e.target.value.trim();
   clienteSeleccionado = null;
   actualizarNombreCuenta();
-  
-  // Actualizar el checkbox según tipo de cuenta
-  const tipo = determinarTipoCuenta();
-  esAdministrativaCheckbox.checked = tipo === "administrativa";
-
-  // Ocultar mensaje funcionario si corresponde
-  if (mensajeFuncionario) {
-    mensajeFuncionario.classList.add("hidden");
-  }
+  actualizarTipoCuentaVisualmente();
 
   if (query.length < 2) {
     resultadoClientes.classList.add("hidden");
@@ -317,6 +309,14 @@ function actualizarNombreCuenta() {
   }
 }
 
+function actualizarTipoCuentaVisualmente() {
+  const tipo = determinarTipoCuenta();
+  esAdministrativaCheckbox.checked = tipo === "administrativa";
+  if (mensajeFuncionario) {
+    mensajeFuncionario.classList.toggle("hidden", tipo !== "funcionario");
+  }
+}
+
 // Sincronizar comportamiento entre cliente y checkbox "es-administrativa"
 function actualizarInteraccionClienteYAdministrativa() {
   if (clienteSeleccionado) {
@@ -346,6 +346,7 @@ function seleccionarCliente(cliente) {
   clienteSeleccionado = cliente;
   resultadoClientes.classList.add("hidden");
   actualizarInteraccionClienteYAdministrativa();
+  actualizarTipoCuentaVisualmente();
   verificarFuncionario(cliente.rut).then((esFuncionario) => {
     if (esFuncionario) {
       mensajeFuncionario.classList.remove("hidden");
