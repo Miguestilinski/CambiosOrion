@@ -11,12 +11,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const habilitados = document.getElementById('habilitados');
     const borrarFiltrosBtn = document.getElementById('borrar-filtros');
     const tablaClientes = document.querySelector('#clientes table tbody');
-    const nuevaFichaBtn = document.getElementById('nueva-ficha');
+    const nuevoClienteBtn = document.getElementById('nuevo-cliente');
 
-    // Redirigir al hacer clic en "Nueva Ficha Cliente"
-    if (nuevaFichaBtn) {
-        nuevaFichaBtn.addEventListener('click', () => {
-            window.location.href = nuevaFichaBtn.getAttribute('href');
+    // Redirigir al hacer clic en "Nuevo Cliente"
+    if (nuevoClienteBtn) {
+        nuevoClienteBtn.addEventListener('click', () => {
+            window.location.href = 'https://tesoreria.cambiosorion.cl/nuevo-cliente';
         });
     }
 
