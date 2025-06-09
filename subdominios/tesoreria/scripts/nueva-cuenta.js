@@ -10,19 +10,6 @@ const mensajeFuncionario = document.getElementById("mensaje-funcionario");
 let clienteSeleccionado = null;
 let divisaSeleccionada = null;
 
-// Función para actualizar el nombre de cuenta según cliente y divisa
-function actualizarNombreCuenta() {
-  if (clienteSeleccionado && divisaSeleccionada) {
-    // Usa código de divisa, no nombre
-    nombreCuentaInput.value = `${clienteSeleccionado.nombre} ${divisaSeleccionada.codigo}`;
-    // nombreCuentaInput.disabled = true;  // Comentar o eliminar para que siempre se pueda editar
-  } else {
-    nombreCuentaInput.disabled = false; // Siempre habilitado
-    // Si quieres que mantenga lo que usuario escribió cuando no hay cliente, no limpiar aquí
-    // nombreCuentaInput.value = "";
-  }
-}
-
 // Redirigir al hacer clic en "Nueva Operacion"
 if (cancelarBtn) {
   cancelarBtn.addEventListener('click', () => {
@@ -62,18 +49,8 @@ clienteInput.addEventListener("input", async (e) => {
       const li = document.createElement("li");
       li.textContent = cliente.nombre;
       li.classList.add("px-2", "py-1", "hover:bg-gray-200", "cursor-pointer");
-      li.addEventListener("click", async () => {
-        clienteInput.value = cliente.nombre;
-        clienteSeleccionado = cliente;
-        resultadoClientes.classList.add("hidden");
-        actualizarNombreCuenta();
-        // Verificar si es funcionario consultando al servidor
-        const esFuncionario = await verificarFuncionario(cliente.rut);
-        if (esFuncionario) {
-          mensajeFuncionario.classList.remove("hidden");
-        } else {
-          mensajeFuncionario.classList.add("hidden");
-        }
+      li.addEventListener("click", () => {
+        seleccionarCliente(cliente);
       });
       resultadoClientes.appendChild(li);
     });
@@ -316,6 +293,58 @@ document.getElementById("form-nueva-cuenta").addEventListener("submit", async (e
     });
   }  
 });
+
+// Función para actualizar el nombre de cuenta según cliente y divisa
+function actualizarNombreCuenta() {
+  if (clienteSeleccionado && divisaSeleccionada) {
+    // Usa código de divisa, no nombre
+    nombreCuentaInput.value = `${clienteSeleccionado.nombre} ${divisaSeleccionada.codigo}`;
+    // nombreCuentaInput.disabled = true;  // Comentar o eliminar para que siempre se pueda editar
+  } else {
+    nombreCuentaInput.disabled = false; // Siempre habilitado
+    // Si quieres que mantenga lo que usuario escribió cuando no hay cliente, no limpiar aquí
+    // nombreCuentaInput.value = "";
+  }
+}
+
+// Sincronizar comportamiento entre cliente y checkbox "es-administrativa"
+function actualizarInteraccionClienteYAdministrativa() {
+  if (clienteSeleccionado) {
+    esAdministrativaCheckbox.checked = false;
+    esAdministrativaCheckbox.disabled = true;
+  } else {
+    esAdministrativaCheckbox.disabled = false;
+  }
+
+  if (esAdministrativaCheckbox.checked) {
+    clienteInput.value = "";
+    clienteSeleccionado = null;
+    resultadoClientes.classList.add("hidden");
+    mensajeFuncionario.classList.add("hidden");
+  }
+  actualizarNombreCuenta();
+}
+
+// Listener cuando se marca o desmarca "es administrativa"
+esAdministrativaCheckbox.addEventListener("change", () => {
+  actualizarInteraccionClienteYAdministrativa();
+});
+
+// Llamar cada vez que se selecciona un cliente
+function seleccionarCliente(cliente) {
+  clienteInput.value = cliente.nombre;
+  clienteSeleccionado = cliente;
+  resultadoClientes.classList.add("hidden");
+  actualizarInteraccionClienteYAdministrativa();
+  verificarFuncionario(cliente.rut).then((esFuncionario) => {
+    if (esFuncionario) {
+      mensajeFuncionario.classList.remove("hidden");
+    } else {
+      mensajeFuncionario.classList.add("hidden");
+    }
+  });
+  actualizarNombreCuenta();
+}
 
 function mostrarModalAdvertencia({mensaje, textoConfirmar = "Aceptar", textoCancelar = null, onConfirmar, onCancelar }) {
   const modal = document.getElementById("modal-advertencia");
