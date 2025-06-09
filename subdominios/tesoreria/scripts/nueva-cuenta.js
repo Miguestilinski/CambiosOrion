@@ -22,6 +22,16 @@ clienteInput.addEventListener("input", async (e) => {
   const query = e.target.value.trim();
   clienteSeleccionado = null;
   actualizarNombreCuenta();
+  
+  // Actualizar el checkbox según tipo de cuenta
+  const tipo = determinarTipoCuenta();
+  esAdministrativaCheckbox.checked = tipo === "administrativa";
+
+  // Ocultar mensaje funcionario si corresponde
+  if (mensajeFuncionario) {
+    mensajeFuncionario.classList.add("hidden");
+  }
+
   if (query.length < 2) {
     resultadoClientes.classList.add("hidden");
     return;
