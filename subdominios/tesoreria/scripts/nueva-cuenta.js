@@ -21,8 +21,6 @@ if (cancelarBtn) {
 clienteInput.addEventListener("input", async (e) => {
   const query = e.target.value.trim();
   clienteSeleccionado = null;
-  esAdministrativaCheckbox.disabled = false;
-  actualizarTipoCuentaVisualmente();
   actualizarNombreCuenta();
 
   if (query.length < 2) {
@@ -54,6 +52,9 @@ clienteInput.addEventListener("input", async (e) => {
       li.classList.add("px-2", "py-1", "hover:bg-gray-200", "cursor-pointer");
       li.addEventListener("click", () => {
         seleccionarCliente(cliente);
+          esAdministrativaCheckbox.disabled = false;
+          actualizarTipoCuentaVisualmente();
+          actualizarNombreCuenta();
       });
       resultadoClientes.appendChild(li);
     });
@@ -355,13 +356,8 @@ function seleccionarCliente(cliente) {
   clienteInput.value = cliente.nombre;
   resultadoClientes.classList.add("hidden");
 
-  // Si se selecciona un cliente, se debe deshabilitar y deschequear el checkbox
-  esAdministrativaCheckbox.checked = false;
-  esAdministrativaCheckbox.disabled = true;
-  clienteInput.disabled = false;
-
-  actualizarTipoCuentaVisualmente();
-  actualizarNombreCuenta();
+  // Activar checkbox si corresponde
+  esAdministrativaCheckbox.disabled = false;
 
   // Verificar si el cliente es funcionario
   verificarFuncionario(cliente.rut).then((esFunc) => {
