@@ -123,72 +123,74 @@
 
                 <!-- Contenedor Flex para fieldsets -->
                 <div class="flex flex-col md:flex-row gap-6">
+                    
+                    <fieldset class="md:col-span-2 border border-gray-600 rounded-lg p-4 h-full">
+                        <!-- Tipo -->
+                        <div class="w-1/2 mb-4">
+                            <label for="tipo" class="block mb-1 text-sm text-white">Tipo <span class="text-red-500">*</span></label>
+                            <select
+                            id="tipo"
+                            name="tipo"
+                            required
+                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                            >
+                            <option value="">Seleccione tipo</option>
+                            <option value="Persona Juridica">Persona Jurídica</option>
+                            <option value="Persona Natural">Persona Natural</option>
+                            <option value="Extranjero">Extranjero</option>
+                            </select>
+                        </div>
 
-                    <!-- Tipo -->
-                    <div class="w-1/2 mb-4">
-                        <label for="tipo" class="block mb-1 text-sm text-white">Tipo <span class="text-red-500">*</span></label>
-                        <select
-                        id="tipo"
-                        name="tipo"
-                        required
-                        class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                        >
-                        <option value="">Seleccione tipo</option>
-                        <option value="Persona Juridica">Persona Jurídica</option>
-                        <option value="Persona Natural">Persona Natural</option>
-                        <option value="Extranjero">Extranjero</option>
-                        </select>
-                    </div>
+                        <!-- Razón Social -->
+                        <div class="w-1/2 mb-4">
+                            <label for="razon_social" class="block mb-1 text-sm text-white">Razón Social <span class="text-red-500">*</span></label>
+                            <input
+                            type="text"
+                            id="razon_social"
+                            name="razon_social"
+                            required
+                            placeholder="Ej: Inversiones XYZ Ltda."
+                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                            />
+                        </div>
 
-                    <!-- Razón Social -->
-                    <div class="w-1/2 mb-4">
-                        <label for="razon_social" class="block mb-1 text-sm text-white">Razón Social <span class="text-red-500">*</span></label>
-                        <input
-                        type="text"
-                        id="razon_social"
-                        name="razon_social"
-                        required
-                        placeholder="Ej: Inversiones XYZ Ltda."
-                        class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                        />
-                    </div>
+                        <!-- RUT -->
+                        <div class="w-1/2 mb-4">
+                            <label for="rut" class="block mb-1 text-sm text-white">RUT <span class="text-red-500">*</span></label>
+                            <input
+                            type="text"
+                            id="rut"
+                            name="rut"
+                            required
+                            placeholder="Ej: 12.345.678-9"
+                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                            />
+                        </div>
 
-                    <!-- RUT -->
-                    <div class="w-1/2 mb-4">
-                        <label for="rut" class="block mb-1 text-sm text-white">RUT <span class="text-red-500">*</span></label>
-                        <input
-                        type="text"
-                        id="rut"
-                        name="rut"
-                        required
-                        placeholder="Ej: 12.345.678-9"
-                        class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                        />
-                    </div>
+                        <!-- Correo -->
+                        <div class="w-1/2 mb-4">
+                            <label for="correo" class="block mb-1 text-sm text-white">Correo <span class="text-red-500">*</span></label>
+                            <input
+                            type="email"
+                            id="correo"
+                            name="correo"
+                            placeholder="Ej: contacto@empresa.cl"
+                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                            />
+                        </div>
 
-                    <!-- Correo -->
-                    <div class="w-1/2 mb-4">
-                        <label for="correo" class="block mb-1 text-sm text-white">Correo <span class="text-red-500">*</span></label>
-                        <input
-                        type="email"
-                        id="correo"
-                        name="correo"
-                        placeholder="Ej: contacto@empresa.cl"
-                        class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                        />
-                    </div>
-
-                    <!-- Teléfono -->
-                    <div class="w-1/2 mb-6">
-                        <label for="fono" class="block mb-1 text-sm text-white">Teléfono</label>
-                        <input
-                        type="text"
-                        id="fono"
-                        name="fono"
-                        placeholder="Ej: +56 9 1234 5678"
-                        class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                        />
-                    </div>
+                        <!-- Teléfono -->
+                        <div class="w-1/2 mb-6">
+                            <label for="fono" class="block mb-1 text-sm text-white">Teléfono</label>
+                            <input
+                            type="text"
+                            id="fono"
+                            name="fono"
+                            placeholder="Ej: +56 9 1234 5678"
+                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                            />
+                        </div>
+                    </fieldset>
 
                     <fieldset class="md:col-span-2 border border-gray-600 rounded-lg p-4 h-full">
                         <legend class="text-white font-semibold mb-2">Dirección</legend>
