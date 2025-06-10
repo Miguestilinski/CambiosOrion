@@ -192,13 +192,13 @@
                         </div>
                     </fieldset>
 
-                    <fieldset id="fieldset-direccion" class="md:col-span-2 border border-gray-600 rounded-lg p-4 h-full hidden">
+                    <fieldset id="fieldset-direccion" class="w-full md:w-1/2 border border-gray-600 rounded-lg p-4 h-full hidden">
                         <legend class="text-white font-semibold mb-2">Dirección</legend>
 
                         <!-- Campos adicionales que dependen del tipo -->
-                        <div id="campos-direccion" class="w-full flex flex-wrap gap-4 mb-6">
+                        <div id="campos-direccion" class="mb-6">
                             <!-- País (solo para extranjero) -->
-                            <div id="pais" class="w-1/2">
+                            <div id="pais" class="mb-4">
                                 <label for="pais" class="block mb-1 text-sm text-white">País</label>
                                 <input
                                 type="text"
@@ -210,7 +210,7 @@
                             </div>
 
                             <!-- Región -->
-                            <div id="region" class="w-1/2">
+                            <div id="region" class="mb-4">
                                 <label for="region" class="block mb-1 text-sm text-white">Región</label>
                                 <input
                                 type="text"
@@ -222,7 +222,7 @@
                             </div>
 
                             <!-- Ciudad -->
-                            <div id="ciudad" class="w-1/2">
+                            <div id="ciudad" class="mb-4">
                                 <label for="ciudad" class="block mb-1 text-sm text-white">Ciudad</label>
                                 <input
                                 type="text"
@@ -234,7 +234,7 @@
                             </div>
 
                             <!-- Comuna (solo para chilenos) -->
-                            <div id="comuna" class="w-1/2">
+                            <div id="comuna" class="mb-4">
                                 <label for="comuna" class="block mb-1 text-sm text-white">Comuna</label>
                                 <input
                                 type="text"
@@ -246,7 +246,7 @@
                             </div>
 
                             <!-- Calle y número (dirección) -->
-                            <div id="calle" class="w-1/2">
+                            <div id="calle" class="mb-4">
                                 <label for="direccion_detalle" class="block mb-1 text-sm text-white">Dirección (Calle y Número)</label>
                                 <input
                                 type="text"
