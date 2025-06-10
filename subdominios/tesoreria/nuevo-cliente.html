@@ -124,7 +124,7 @@
                 <!-- Contenedor Flex para fieldsets -->
                 <div class="flex flex-col md:flex-row gap-6 w-full">
 
-                    <fieldset class="w-full md:w-1/2 border border-gray-600 rounded-lg p-4 h-full mb-6">
+                    <fieldset class="w-full md:w-1/2 rounded-lg p-4 h-full mb-4">
                         <!-- Tipo -->
                         <div class="mb-4">
                             <label for="tipo" class="block mb-1 text-sm text-white">Tipo <span class="text-red-500">*</span></label>
@@ -192,11 +192,11 @@
                         </div>
                     </fieldset>
 
-                    <fieldset id="campos-dinamicos" class="md:col-span-2 border border-gray-600 rounded-lg p-4 h-full">
+                    <fieldset id="fieldset-direccion" class="md:col-span-2 border border-gray-600 rounded-lg p-4 h-full hidden">
                         <legend class="text-white font-semibold mb-2">Dirección</legend>
 
                         <!-- Campos adicionales que dependen del tipo -->
-                        <div id="campos-direccion" class="w-full flex flex-wrap gap-4 mb-6 hidden">
+                        <div id="campos-direccion" class="w-full flex flex-wrap gap-4 mb-6">
                             <!-- País (solo para extranjero) -->
                             <div id="pais" class="w-1/2">
                                 <label for="pais" class="block mb-1 text-sm text-white">País</label>
@@ -261,7 +261,7 @@
                 </div>
 
                 <!-- Botones -->
-                <div class="md:col-span-2 flex space-x-4">
+                <div class="md:col-span-2 flex space-x-4 ml-4">
                     <button
                     type="submit"
                     class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
