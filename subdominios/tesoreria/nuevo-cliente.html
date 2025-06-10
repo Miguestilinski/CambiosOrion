@@ -122,7 +122,7 @@
             <form id="form-nuevo-cliente">
                 <!-- Tipo -->
                 <div class="w-1/2 mb-4">
-                    <label for="tipo" class="block mb-1 text-sm text-white">Tipo</label>
+                    <label for="tipo" class="block mb-1 text-sm text-white">Tipo <span class="text-red-500">*</span></label>
                     <select
                     id="tipo"
                     name="tipo"
@@ -138,7 +138,7 @@
 
                 <!-- Razón Social -->
                 <div class="w-1/2 mb-4">
-                    <label for="razon_social" class="block mb-1 text-sm text-white">Razón Social</label>
+                    <label for="razon_social" class="block mb-1 text-sm text-white">Razón Social <span class="text-red-500">*</span></label>
                     <input
                     type="text"
                     id="razon_social"
@@ -151,7 +151,7 @@
 
                 <!-- RUT -->
                 <div class="w-1/2 mb-4">
-                    <label for="rut" class="block mb-1 text-sm text-white">RUT</label>
+                    <label for="rut" class="block mb-1 text-sm text-white">RUT <span class="text-red-500">*</span></label>
                     <input
                     type="text"
                     id="rut"
@@ -164,24 +164,12 @@
 
                 <!-- Correo -->
                 <div class="w-1/2 mb-4">
-                    <label for="correo" class="block mb-1 text-sm text-white">Correo</label>
+                    <label for="correo" class="block mb-1 text-sm text-white">Correo <span class="text-red-500">*</span></label>
                     <input
                     type="email"
                     id="correo"
                     name="correo"
                     placeholder="Ej: contacto@empresa.cl"
-                    class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                    />
-                </div>
-
-                <!-- Dirección -->
-                <div class="w-1/2 mb-4">
-                    <label for="direccion" class="block mb-1 text-sm text-white">Dirección</label>
-                    <input
-                    type="text"
-                    id="direccion"
-                    name="direccion"
-                    placeholder="Ej: Av. Siempre Viva 742"
                     class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
                     />
                 </div>
@@ -196,6 +184,69 @@
                     placeholder="Ej: +56 9 1234 5678"
                     class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
                     />
+                </div>
+
+                <!-- Campos adicionales que dependen del tipo -->
+                <div id="campos-dinamicos" class="w-full flex flex-wrap gap-4 mb-6 hidden">
+                    <!-- País (solo para extranjero) -->
+                    <div id="pais" class="w-1/2">
+                        <label for="pais" class="block mb-1 text-sm text-white">País</label>
+                        <input
+                        type="text"
+                        id="pais"
+                        name="pais"
+                        placeholder="Ej: Argentina"
+                        class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                        />
+                    </div>
+
+                    <!-- Región -->
+                    <div id="region" class="w-1/2">
+                        <label for="region" class="block mb-1 text-sm text-white">Región</label>
+                        <input
+                        type="text"
+                        id="region"
+                        name="region"
+                        placeholder="Ej: Metropolitana"
+                        class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                        />
+                    </div>
+
+                    <!-- Ciudad -->
+                    <div id="ciudad" class="w-1/2">
+                        <label for="ciudad" class="block mb-1 text-sm text-white">Ciudad</label>
+                        <input
+                        type="text"
+                        id="ciudad"
+                        name="ciudad"
+                        placeholder="Ej: Santiago"
+                        class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                        />
+                    </div>
+
+                    <!-- Comuna (solo para chilenos) -->
+                    <div id="comuna" class="w-1/2">
+                        <label for="comuna" class="block mb-1 text-sm text-white">Comuna</label>
+                        <input
+                        type="text"
+                        id="comuna"
+                        name="comuna"
+                        placeholder="Ej: Providencia"
+                        class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                        />
+                    </div>
+
+                    <!-- Calle y número (dirección) -->
+                    <div id="calle" class="w-full">
+                        <label for="direccion_detalle" class="block mb-1 text-sm text-white">Dirección (Calle y Número)</label>
+                        <input
+                        type="text"
+                        id="direccion_detalle"
+                        name="direccion_detalle"
+                        placeholder="Ej: Av. Las Condes 1234"
+                        class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                        />
+                    </div>
                 </div>
 
                 <!-- Botones -->
