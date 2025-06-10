@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     const tipoSelect = document.getElementById("tipo");
-    const camposDinamicos = document.getElementById("campos-dinamicos");
+    const camposDireccion = document.getElementById("campos-direccion");
     const campoPais = document.getElementById("pais");
     const campoComuna = document.getElementById("comuna");
 
@@ -8,15 +8,15 @@ document.addEventListener("DOMContentLoaded", () => {
         const tipo = tipoSelect.value;
 
         if (tipo === "Persona Juridica" || tipo === "Persona Natural") {
-        camposDinamicos.classList.remove("hidden");
+        camposDireccion.classList.remove("hidden");
         campoPais.classList.add("hidden");
         campoComuna.classList.remove("hidden");
         } else if (tipo === "Extranjero") {
-        camposDinamicos.classList.remove("hidden");
+        camposDireccion.classList.remove("hidden");
         campoPais.classList.remove("hidden");
         campoComuna.classList.add("hidden");
         } else {
-        camposDinamicos.classList.add("hidden");
+        camposDireccion.classList.add("hidden");
         }
     });
 
