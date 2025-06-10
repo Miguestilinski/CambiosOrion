@@ -1,6 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-    e.preventDefault();
-
     const tipoSelect = document.getElementById("tipo");
     const camposDinamicos = document.getElementById("campos-dinamicos");
     const campoPais = document.getElementById("pais");
@@ -24,6 +22,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Validación de campos requeridos
     document.getElementById("form-nuevo-cliente").addEventListener("submit", (e) => {
+        e.preventDefault();
+
         const tipo = tipoSelect.value.trim();
         const razonSocial = document.getElementById("razon_social").value.trim();
         const rut = document.getElementById("rut").value.trim();
@@ -32,46 +32,45 @@ document.addEventListener("DOMContentLoaded", () => {
         const direccion = document.getElementById("direccion_detalle").value.trim();
 
 
-    if (!tipo || !razonSocial || !rut || !correo) {
-      e.preventDefault();
-        mostrarModalError({
-            titulo: "❌ Error",
-            mensaje: `Campos requeridos incompletos. Por favor complete todos los campos marcados con *.`,
-            textoConfirmar: "Cerrar"
-        });
-    }
+        if (!tipo || !razonSocial || !rut || !correo) {
+            mostrarModalError({
+                titulo: "❌ Error",
+                mensaje: `Campos requeridos incompletos. Por favor complete todos los campos marcados con *.`,
+                textoConfirmar: "Cerrar"
+            });
+        }
 
-    const datosCliente = {
-        razon_social: razonSocial,
-        rut: rut,
-        correo: correo,
-        telefono: telefono,
-        direccion: direccion,
-    };
+        const datosCliente = {
+            razon_social: razonSocial,
+            rut: rut,
+            correo: correo,
+            telefono: telefono,
+            direccion: direccion,
+        };
 
-    fetch('https://cambiosorion.cl/data/nuevo-cliente.php', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(datosCliente)
-    })
-    .then(response => response.json())
-    .then(data => {
-    if (data.success) {
-        mostrarModalExitoso()
-    } else if (data.error) {
-        mostrarModalError({
-            titulo: "❌ Error",
-            mensaje: `Error al crear cliente: ${data.error}`,
-            textoConfirmar: "Cerrar"
+        fetch('https://cambiosorion.cl/data/nuevo-cliente.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(datosCliente)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                mostrarModalExitoso()
+            } else if (data.error) {
+                mostrarModalError({
+                    titulo: "❌ Error",
+                    mensaje: `Error al crear cliente: ${data.error}`,
+                    textoConfirmar: "Cerrar"
+                });
+            }
+        })
+        .catch(error => {
+        console.error("Error en la solicitud:", error);
         });
-    }
-    })
-    .catch(error => {
-    console.error("Error en la solicitud:", error);
     });
-
 });
 
 function mostrarModalError({ titulo, mensaje, textoConfirmar = "Aceptar", textoCancelar = null, onConfirmar, onCancelar }) {
