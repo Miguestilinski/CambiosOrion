@@ -10,6 +10,7 @@ const mensajeFuncionario = document.getElementById("mensaje-funcionario");
 let clienteSeleccionado = null;
 let divisaSeleccionada = null;
 let esFuncionarioSeleccionado = false;
+let ultimaVerificacionId = 0;
 
 // Redirigir al hacer clic en "Nueva Operacion"
 if (cancelarBtn) {
@@ -74,8 +75,13 @@ clienteInput.addEventListener("input", async (e) => {
         esAdministrativaCheckbox.disabled = false;
         actualizarNombreCuenta();
 
-        // Mover esta lógica después de obtener el resultado
+        const verificacionIdActual = ++ultimaVerificacionId;
+
         const resultadoFuncionario = await verificarFuncionario(cliente.rut);
+
+        // Ignorar si esta no es la verificación más reciente
+        if (verificacionIdActual !== ultimaVerificacionId) return;
+
         esFuncionarioSeleccionado = resultadoFuncionario.esFuncionario;
         console.log("¿Es funcionario?", esFuncionarioSeleccionado); 
 
