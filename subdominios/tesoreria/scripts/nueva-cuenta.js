@@ -9,6 +9,7 @@ const mensajeFuncionario = document.getElementById("mensaje-funcionario");
 
 let clienteSeleccionado = null;
 let divisaSeleccionada = null;
+let esFuncionarioSeleccionado = false;
 
 // Redirigir al hacer clic en "Nueva Operacion"
 if (cancelarBtn) {
@@ -25,14 +26,14 @@ function determinarTipoCuenta() {
     return "administrativa"; // Si no hay cliente seleccionado => administrativa
   }
 
-  if (tieneCliente && esFuncionario) {
+  if (tieneCliente && esFuncionarioSeleccionado) {
     return "funcionario";
   }
 
-  if (tieneCliente && !esFuncionario) {
+  if (tieneCliente && !esFuncionarioSeleccionado) {
     return "cliente";
   }
-
+  
   return "general"; // Solo nombre y divisa, sin cliente (en desuso si administrativa ya lo cubre)
 }
 
@@ -77,11 +78,14 @@ clienteInput.addEventListener("input", async (e) => {
 
         mensajeFuncionario.classList.add("hidden");
 
-        const { esFuncionario } = await verificarFuncionario(cliente.rut);
-        console.log("¿Es funcionario?", esFuncionario); 
+        const resultadoFuncionario = await verificarFuncionario(cliente.rut);
+        esFuncionarioSeleccionado = resultadoFuncionario.esFuncionario;
+        console.log("¿Es funcionario?", esFuncionarioSeleccionado); 
 
-        if (esFuncionario === true) {
+        if (esFuncionarioSeleccionado === true) {
           mensajeFuncionario.classList.remove("hidden");
+        } else {
+          mensajeFuncionario.classList.add("hidden");
         }
 
         actualizarTipoCuentaVisualmente();
