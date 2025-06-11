@@ -41,6 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const datosCliente = {
+            tipo: tipo,
             razon_social: razonSocial,
             rut: rut,
             correo: correo,
