@@ -77,7 +77,9 @@ clienteInput.addEventListener("input", async (e) => {
         actualizarNombreCuenta();
 
         const esFuncionario = await verificarFuncionario(cliente.rut);
+
         if (esFuncionario) {
+          mensajeFuncionario.textContent = `✅ Funcionario registrado (${resultado.total} coincidencia${resultado.total > 1 ? 's' : ''})`;
           mensajeFuncionario.classList.remove("hidden");
         } else {
           mensajeFuncionario.classList.add("hidden");
@@ -103,16 +105,11 @@ async function verificarFuncionario(rut) {
     const res = await fetch(`https://cambiosorion.cl/data/nueva-cuenta.php?rut=${encodeURIComponent(rut)}`);
     const data = await res.json();
     console.log("Total encontrados:", data.total);
-    return data.es_funcionario === true;
+    return { esFuncionario: data.es_funcionario, total: data.total }; // retorna objeto
   } catch (error) {
     console.error("Error al verificar funcionario:", error);
-    return false;
+    return { esFuncionario: false, total: 0 };
   }
-}
-
-if (esFuncionario) {
-  mensajeFuncionario.textContent = `✅ Funcionario registrado (${data.total} coincidencia${data.total > 1 ? 's' : ''})`;
-  mensajeFuncionario.classList.remove("hidden");
 }
 
 // Buscar divisa
