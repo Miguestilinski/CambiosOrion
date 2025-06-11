@@ -79,7 +79,6 @@ clienteInput.addEventListener("input", async (e) => {
         const esFuncionario = await verificarFuncionario(cliente.rut);
 
         if (esFuncionario) {
-          mensajeFuncionario.textContent = `✅ Funcionario registrado (${resultado.total} coincidencia${resultado.total > 1 ? 's' : ''})`;
           mensajeFuncionario.classList.remove("hidden");
         } else {
           mensajeFuncionario.classList.add("hidden");
@@ -104,11 +103,10 @@ async function verificarFuncionario(rut) {
   try {
     const res = await fetch(`https://cambiosorion.cl/data/nueva-cuenta.php?rut=${encodeURIComponent(rut)}`);
     const data = await res.json();
-    console.log("Total encontrados:", data.total);
-    return { esFuncionario: data.es_funcionario, total: data.total }; // retorna objeto
+    return { esFuncionario: data.es_funcionario};
   } catch (error) {
     console.error("Error al verificar funcionario:", error);
-    return { esFuncionario: false, total: 0 };
+    return { esFuncionario: false};
   }
 }
 
