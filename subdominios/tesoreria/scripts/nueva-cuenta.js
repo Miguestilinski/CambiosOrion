@@ -76,12 +76,12 @@ clienteInput.addEventListener("input", async (e) => {
         actualizarTipoCuentaVisualmente();
         actualizarNombreCuenta();
 
+        mensajeFuncionario.classList.add("hidden");
+        
         const { esFuncionario } = await verificarFuncionario(cliente.rut);
 
         if (esFuncionario) {
           mensajeFuncionario.classList.remove("hidden");
-        } else {
-          mensajeFuncionario.classList.add("hidden");
         }
       });
       resultadoClientes.appendChild(li);
