@@ -83,7 +83,8 @@ async function verificarFuncionario(rut) {
   try {
     const res = await fetch(`https://cambiosorion.cl/data/nueva-cuenta.php?rut=${encodeURIComponent(rut)}`);
     const data = await res.json();
-    return data.es_funcionario === true; // Suponiendo que retorna { es_funcionario: true }
+    console.log("Total encontrados:", data.total);
+    return data.es_funcionario === true;
   } catch (error) {
     console.error("Error al verificar funcionario:", error);
     return false;
