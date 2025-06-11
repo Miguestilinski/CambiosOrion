@@ -20,7 +20,6 @@ if (cancelarBtn) {
 
 function determinarTipoCuenta() {
   const tieneCliente = clienteSeleccionado !== null;
-  const esFuncionario = mensajeFuncionario && !mensajeFuncionario.classList.contains("hidden");
 
   if (!tieneCliente) {
     return "administrativa"; // Si no hay cliente seleccionado => administrativa
@@ -33,7 +32,7 @@ function determinarTipoCuenta() {
   if (tieneCliente && !esFuncionarioSeleccionado) {
     return "cliente";
   }
-  
+
   return "general"; // Solo nombre y divisa, sin cliente (en desuso si administrativa ya lo cubre)
 }
 
@@ -42,7 +41,6 @@ clienteInput.addEventListener("input", async (e) => {
   const query = e.target.value.trim();
   clienteSeleccionado = null;
   actualizarNombreCuenta();
-  mensajeFuncionario.classList.add("hidden");
 
   if (query.length < 2) {
     resultadoClientes.classList.add("hidden");
