@@ -45,6 +45,13 @@ clienteInput.addEventListener("input", async (e) => {
 
   if (query.length < 2) {
     resultadoClientes.classList.add("hidden");
+    
+    // Ocultar mensaje funcionario y resetear estado
+    mensajeFuncionario.classList.add("hidden");
+    esFuncionarioSeleccionado = false;
+    clienteSeleccionado = null;
+    
+    actualizarTipoCuentaVisualmente();
     return;
   }
 
