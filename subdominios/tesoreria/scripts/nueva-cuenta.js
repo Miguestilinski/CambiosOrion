@@ -17,6 +17,25 @@ if (cancelarBtn) {
   });
 }
 
+function determinarTipoCuenta() {
+  const tieneCliente = clienteSeleccionado !== null;
+  const esFuncionario = mensajeFuncionario && !mensajeFuncionario.classList.contains("hidden");
+
+  if (!tieneCliente) {
+    return "administrativa"; // Si no hay cliente seleccionado => administrativa
+  }
+
+  if (tieneCliente && esFuncionario) {
+    return "funcionario";
+  }
+
+  if (tieneCliente && !esFuncionario) {
+    return "cliente";
+  }
+
+  return "general"; // Solo nombre y divisa, sin cliente (en desuso si administrativa ya lo cubre)
+}
+
 // Buscar cliente
 clienteInput.addEventListener("input", async (e) => {
   const query = e.target.value.trim();
@@ -160,25 +179,6 @@ document.addEventListener("click", (e) => {
     divisaSugerencias.classList.add("hidden");
   }
 });
-
-function determinarTipoCuenta() {
-  const tieneCliente = clienteSeleccionado !== null;
-  const esFuncionario = mensajeFuncionario && !mensajeFuncionario.classList.contains("hidden");
-
-  if (!tieneCliente) {
-    return "administrativa"; // Si no hay cliente seleccionado => administrativa
-  }
-
-  if (tieneCliente && esFuncionario) {
-    return "funcionario";
-  }
-
-  if (tieneCliente && !esFuncionario) {
-    return "cliente";
-  }
-
-  return "general"; // Solo nombre y divisa, sin cliente (en desuso si administrativa ya lo cubre)
-}
 
 // Enviar formulario
 document.getElementById("form-nueva-cuenta").addEventListener("submit", async (e) => {
