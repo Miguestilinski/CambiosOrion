@@ -22,6 +22,7 @@ clienteInput.addEventListener("input", async (e) => {
   const query = e.target.value.trim();
   clienteSeleccionado = null;
   actualizarNombreCuenta();
+  mensajeFuncionario.classList.add("hidden");
 
   if (query.length < 2) {
     resultadoClientes.classList.add("hidden");
@@ -50,11 +51,18 @@ clienteInput.addEventListener("input", async (e) => {
       const li = document.createElement("li");
       li.textContent = cliente.nombre;
       li.classList.add("px-2", "py-1", "hover:bg-gray-200", "cursor-pointer");
-      li.addEventListener("click", () => {
+      li.addEventListener("click", async () => {
         seleccionarCliente(cliente);
-          esAdministrativaCheckbox.disabled = false;
-          actualizarTipoCuentaVisualmente();
-          actualizarNombreCuenta();
+        esAdministrativaCheckbox.disabled = false;
+        actualizarTipoCuentaVisualmente();
+        actualizarNombreCuenta();
+
+        const esFuncionario = await verificarFuncionario(cliente.rut);
+        if (esFuncionario) {
+          mensajeFuncionario.classList.remove("hidden");
+        } else {
+          mensajeFuncionario.classList.add("hidden");
+        }
       });
       resultadoClientes.appendChild(li);
     });
