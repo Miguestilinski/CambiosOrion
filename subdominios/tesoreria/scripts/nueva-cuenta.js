@@ -76,7 +76,7 @@ clienteInput.addEventListener("input", async (e) => {
         actualizarTipoCuentaVisualmente();
         actualizarNombreCuenta();
 
-        const esFuncionario = await verificarFuncionario(cliente.rut);
+        const { esFuncionario } = await verificarFuncionario(cliente.rut);
 
         if (esFuncionario) {
           mensajeFuncionario.classList.remove("hidden");
