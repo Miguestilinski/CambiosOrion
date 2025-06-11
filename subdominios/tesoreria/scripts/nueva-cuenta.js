@@ -91,6 +91,11 @@ async function verificarFuncionario(rut) {
   }
 }
 
+if (esFuncionario) {
+  mensajeFuncionario.textContent = `✅ Funcionario registrado (${data.total} coincidencia${data.total > 1 ? 's' : ''})`;
+  mensajeFuncionario.classList.remove("hidden");
+}
+
 // Buscar divisa
 divisaInput.addEventListener("input", async (e) => {
   const query = e.target.value.trim();
