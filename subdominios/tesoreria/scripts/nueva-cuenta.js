@@ -74,13 +74,12 @@ clienteInput.addEventListener("input", async (e) => {
         esAdministrativaCheckbox.disabled = false;
         actualizarNombreCuenta();
 
-        mensajeFuncionario.classList.add("hidden");
-
+        // Mover esta lógica después de obtener el resultado
         const resultadoFuncionario = await verificarFuncionario(cliente.rut);
         esFuncionarioSeleccionado = resultadoFuncionario.esFuncionario;
         console.log("¿Es funcionario?", esFuncionarioSeleccionado); 
 
-        if (esFuncionarioSeleccionado === true) {
+        if (esFuncionarioSeleccionado) {
           mensajeFuncionario.classList.remove("hidden");
         } else {
           mensajeFuncionario.classList.add("hidden");
