@@ -50,22 +50,31 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         fetch('https://cambiosorion.cl/data/nuevo-cliente.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(datosCliente)
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(datosCliente)
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                mostrarModalExitoso()
-            } else if (data.error) {
-                mostrarModalError({
-                    titulo: "❌ Error",
-                    mensaje: `Error al crear cliente: ${data.error}`,
-                    textoConfirmar: "Cerrar"
-                });
+        .then(response => response.text())
+        .then(rawText => {
+            console.log("Respuesta cruda del servidor:", rawText);
+
+            // Luego intentar parsear como JSON manualmente
+            try {
+                const data = JSON.parse(rawText);
+                if (data.success) {
+                    mostrarModalExitoso();
+                } else if (data.error) {
+                    mostrarModalError({
+                        titulo: "❌ Error",
+                        mensaje: `Error al crear cliente: ${data.error}`,
+                        textoConfirmar: "Cerrar"
+                    });
+                }
+            } catch (err) {
+                console.error("No se pudo parsear JSON:", err);
+                console.error("Texto recibido:", rawText);
             }
         })
         .catch(error => {
