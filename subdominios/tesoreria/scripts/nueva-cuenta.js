@@ -103,7 +103,7 @@ clienteInput.addEventListener("input", async (e) => {
           // Ya está oculto, así que no se muestra ningún mensaje aquí
         }
 
-        //actualizarTipoCuentaVisualmente();
+        actualizarTipoCuentaVisualmente();
       });
       resultadoClientes.appendChild(li);
     });
