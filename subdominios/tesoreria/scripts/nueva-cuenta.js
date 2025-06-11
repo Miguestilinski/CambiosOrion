@@ -73,7 +73,6 @@ clienteInput.addEventListener("input", async (e) => {
       li.addEventListener("click", async () => {
         seleccionarCliente(cliente);
         esAdministrativaCheckbox.disabled = false;
-        actualizarTipoCuentaVisualmente();
         actualizarNombreCuenta();
 
         mensajeFuncionario.classList.add("hidden");
@@ -84,6 +83,8 @@ clienteInput.addEventListener("input", async (e) => {
         if (esFuncionario === true) {
           mensajeFuncionario.classList.remove("hidden");
         }
+
+        actualizarTipoCuentaVisualmente();
       });
       resultadoClientes.appendChild(li);
     });
