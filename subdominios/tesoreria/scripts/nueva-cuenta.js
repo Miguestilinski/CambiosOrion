@@ -75,21 +75,28 @@ clienteInput.addEventListener("input", async (e) => {
         esAdministrativaCheckbox.disabled = false;
         actualizarNombreCuenta();
 
+        // Incrementamos la verificación actual
         const verificacionIdActual = ++ultimaVerificacionId;
 
-        // Ocultar mensaje antes de verificar
+        // Ocultar inmediatamente el mensaje, sin condiciones
         mensajeFuncionario.classList.add("hidden");
+        esFuncionarioSeleccionado = false;
 
-        const resultadoFuncionario = await verificarFuncionario(cliente.rut);
+        try {
+          const resultadoFuncionario = await verificarFuncionario(cliente.rut);
 
-        // Ignorar si esta no es la verificación más reciente
-        if (verificacionIdActual !== ultimaVerificacionId) return;
+          // Ignorar si esta no es la verificación más reciente
+          if (verificacionIdActual !== ultimaVerificacionId) return;
 
-        esFuncionarioSeleccionado = resultadoFuncionario.esFuncionario;
-        console.log("¿Es funcionario?", esFuncionarioSeleccionado); 
+          // Guardar el estado solo si es la verificación más reciente
+          esFuncionarioSeleccionado = resultadoFuncionario.esFuncionario;
 
-        if (esFuncionarioSeleccionado) {
-          mensajeFuncionario.classList.remove("hidden");
+          if (esFuncionarioSeleccionado) {
+            mensajeFuncionario.classList.remove("hidden");
+          }
+        } catch (error) {
+          console.error("Error al verificar funcionario:", error);
+          // Ya está oculto, así que no se muestra ningún mensaje aquí
         }
 
         actualizarTipoCuentaVisualmente();
