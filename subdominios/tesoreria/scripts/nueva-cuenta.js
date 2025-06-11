@@ -77,6 +77,9 @@ clienteInput.addEventListener("input", async (e) => {
 
         const verificacionIdActual = ++ultimaVerificacionId;
 
+        // Ocultar mensaje antes de verificar
+        mensajeFuncionario.classList.add("hidden");
+
         const resultadoFuncionario = await verificarFuncionario(cliente.rut);
 
         // Ignorar si esta no es la verificación más reciente
@@ -87,8 +90,6 @@ clienteInput.addEventListener("input", async (e) => {
 
         if (esFuncionarioSeleccionado) {
           mensajeFuncionario.classList.remove("hidden");
-        } else {
-          mensajeFuncionario.classList.add("hidden");
         }
 
         actualizarTipoCuentaVisualmente();
@@ -108,6 +109,7 @@ clienteInput.addEventListener("input", async (e) => {
   }
 });
 
+mensajeFuncionario.classList.add("hidden");
 async function verificarFuncionario(rut) {
   try {
     const res = await fetch(`https://cambiosorion.cl/data/nueva-cuenta.php?rut=${encodeURIComponent(rut)}`);
