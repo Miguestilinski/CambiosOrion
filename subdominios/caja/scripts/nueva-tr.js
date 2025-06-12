@@ -144,12 +144,36 @@ document.addEventListener("click", (e) => {
   }
 });
 
-document.getElementById("tipo-transaccion").addEventListener("change", async () => {
+const tipoTransaccionSelect = document.getElementById("tipo-transaccion");
+const metodoPagoSelect = document.getElementById("metodo-pago");
+
+// Lógica para habilitar/deshabilitar opciones según el tipo de transacción
+tipoTransaccionSelect.addEventListener("change", async () => {
+  const tipo = tipoTransaccionSelect.value;
+
+  // Si es compra, solo se permite efectivo
+  if (tipo === "compra") {
+    for (const option of metodoPagoSelect.options) {
+      if (option.value !== "efectivo") {
+        option.disabled = true;
+      } else {
+        option.disabled = false;
+        option.selected = true;
+      }
+    }
+  } else {
+    // Si es compra, habilita todas las opciones
+    for (const option of metodoPagoSelect.options) {
+      option.disabled = false;
+    }
+  }
+
+  // Actualización de tasa
   const nombre = divisaInput.value.trim();
   if (!nombre) return;
 
   try {
-    const res = await fetch(`https://cambiosorion.cl/data/nueva-tr.php?precio_divisa=${encodeURIComponent(nombre)}&tipo=${document.getElementById("tipo-transaccion").value}`);
+    const res = await fetch(`https://cambiosorion.cl/data/nueva-tr.php?precio_divisa=${encodeURIComponent(nombre)}&tipo=${tipo}`);
     const data = await res.json();
 
     if (data && data.precio) {
