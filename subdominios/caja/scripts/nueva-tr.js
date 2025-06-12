@@ -326,7 +326,6 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
 
     // Obtener tasa CLP/USD en vez de CLP/BRL u otra
     const tasaUSDCLP = await obtenerTasaCambio("Dolar USA", tipoTransaccion);
-    const tasaCambio = await obtenerTasaCambio(nombre, tipoTransaccion);
 
     if (!tasaUSDCLP) {
       mostrarModalError({
