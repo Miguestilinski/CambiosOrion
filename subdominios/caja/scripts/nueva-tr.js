@@ -324,9 +324,11 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
   async function procesarVenta(subtotalCLP) {
     const tipoTransaccion = document.getElementById("tipo-transaccion").value;
 
+    // Obtener tasa CLP/USD en vez de CLP/BRL u otra
+    const tasaUSDCLP = await obtenerTasaCambio("Dolar USA", tipoTransaccion);
     const tasaCambio = await obtenerTasaCambio(nombre, tipoTransaccion);
 
-    if (!tasaCambio) {
+    if (!tasaUSDCLP) {
       mostrarModalError({
         titulo: "❌ Error",
         mensaje: "No se pudo obtener la tasa de cambio.",
@@ -335,7 +337,7 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
       return;
     }
 
-    const subtotalUSD = subtotalCLP / tasaCambio;
+    const subtotalUSD = subtotalCLP / tasaUSDCLP;
 
     if (subtotalUSD >= 3000) {
       mostrarModalAdvertencia({
