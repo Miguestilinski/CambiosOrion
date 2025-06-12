@@ -123,31 +123,16 @@
                     </button>
                 </div>
                 
-                <!-- Filtros de fecha y botón Borrar Filtros -->
-                <div class="flex items-center mb-6 space-x-4">
-                    <div class="flex">
-                        <div class="mr-2">
-                            <label for="fecha-inicio" class="block mb-1 text-sm text-white">Desde</label>
-                            <input type="date" id="fecha-inicio" 
-                                class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                        </div>
-                        <div>
-                            <label for="fecha-fin" class="block mb-1 text-sm text-white">Hasta</label>
-                            <input type="date" id="fecha-fin" 
-                                class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                        </div>
-                    </div>
-                    <button type="button" id="borrar-filtros" 
-                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mt-6">
-                    Borrar Filtros
-                </button>
-                </div>
-                
-                <!-- Filtros avanzados -->
+                <!-- Filtros -->
                 <div class="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-6">
                     <div>
-                        <label for="numero" class="block mb-1 text-sm text-white">Número</label>
+                        <label for="numero" class="block mb-1 text-sm text-white">Nº</label>
                         <input type="text" id="numero" 
+                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label for="fecha" class="block mb-1 text-sm text-white">Fecha</label>
+                        <input type="text" id="fecha" 
                             class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                     </div>
                     <div>
@@ -220,8 +205,8 @@
                     <table class="w-full text-sm text-left text-white bg-gray-800">
                         <thead class="text-xs uppercase bg-gray-800 text-white">
                             <tr>
-                                <th class="px-4 py-2">Fecha</th>
                                 <th class="px-4 py-2">Número</th>
+                                <th class="px-4 py-2">Fecha</th>
                                 <th class="px-4 py-2">Transacción</th>
                                 <th class="px-4 py-2">Origen</th>
                                 <th class="px-4 py-2">Destino</th>
@@ -232,9 +217,9 @@
                             </tr>
                         </thead>
                         <tbody id="tabla-transacciones">
-                            <tr class="border-b border-gray-700 text-gray-700">
-                                <td class="px-4 py-2">2025-01-28</td>
+                            <tr class="bg-white border-b border-gray-700 text-gray-700">
                                 <td class="px-4 py-2">12345</td>
+                                <td class="px-4 py-2">2025-01-28</td>
                                 <td class="px-4 py-2">54321</td>
                                 <td class="px-4 py-2">Tesoreria</td>
                                 <td class="px-4 py-2">Caja 1</td>
