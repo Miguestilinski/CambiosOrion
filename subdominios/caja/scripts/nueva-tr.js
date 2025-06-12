@@ -147,8 +147,8 @@ document.addEventListener("click", (e) => {
 const tipoTransaccionSelect = document.getElementById("tipo-transaccion");
 const metodoPagoSelect = document.getElementById("metodo-pago");
 
-// Lógica para habilitar/deshabilitar opciones según el tipo de transacción
-tipoTransaccionSelect.addEventListener("change", async () => {
+// Función que aplica la lógica según el tipo de transacción
+function actualizarMetodoPago() {
   const tipo = tipoTransaccionSelect.value;
 
   // Si es compra, solo se permite efectivo
@@ -162,18 +162,23 @@ tipoTransaccionSelect.addEventListener("change", async () => {
       }
     }
   } else {
-    // Si es compra, habilita todas las opciones
+    // Si es venta, habilita todas las opciones
     for (const option of metodoPagoSelect.options) {
       option.disabled = false;
     }
   }
+}
+
+// Escuchar cambios en tipo de transacción
+tipoTransaccionSelect.addEventListener("change", async () => {
+  actualizarMetodoPago();
 
   // Actualización de tasa
   const nombre = divisaInput.value.trim();
   if (!nombre) return;
 
   try {
-    const res = await fetch(`https://cambiosorion.cl/data/nueva-tr.php?precio_divisa=${encodeURIComponent(nombre)}&tipo=${tipo}`);
+    const res = await fetch(`https://cambiosorion.cl/data/nueva-tr.php?precio_divisa=${encodeURIComponent(nombre)}&tipo=${tipoTransaccionSelect.value}`);
     const data = await res.json();
 
     if (data && data.precio) {
@@ -191,6 +196,9 @@ tipoTransaccionSelect.addEventListener("change", async () => {
     tasaInput.placeholder = "Tasa de cambio";
   }
 });
+
+// Aplicar lógica inicial al cargar la página
+actualizarMetodoPago();
 
 document.querySelector("button[type='submit']").addEventListener("click", async (e) => {
   e.preventDefault();
