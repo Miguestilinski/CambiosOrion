@@ -57,12 +57,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         fetch(`https://cambiosorion.cl/data/traspasos.php?${params.toString()}`)
-            .then(response => response.json())
-            .then(data => {
-                console.log('Traspasos recibidos:', data);
-                mostrarResultados(data);
+            .then(response => response.text()) // cambia a .text() en lugar de .json()
+            .then(rawText => {
+                console.log("Respuesta cruda del servidor:");
+                console.log(rawText);
+
+                try {
+                    const data = JSON.parse(rawText);
+                    console.log('Traspasos recibidos:', data);
+                    mostrarResultados(data);
+                } catch (e) {
+                    console.error("Error al parsear JSON:", e);
+                }
             })
             .catch(error => console.error('Error al obtener traspasos:', error));
+
     }
 
     function limpiarTexto(valor) {
