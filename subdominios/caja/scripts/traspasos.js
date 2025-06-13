@@ -1,3 +1,24 @@
+let usuarioSesion = null;
+
+(async () => {
+  try {
+    const res = await fetch("https://cambiosorion.cl/data/session_status.php", {
+      credentials: "include"
+    });
+    if (!res.ok) throw new Error("No se pudo obtener la sesión.");
+    const data = await res.json();
+    usuarioSesion = data;
+    console.log("Usuario autenticado:", usuarioSesion);
+
+    if (usuarioSesion && usuarioSesion.caja_id) {
+      filtros.caja_id = { value: usuarioSesion.caja_id };  // agrega esto para incluirlo en los filtros
+      obtenerTraspasos(); // cargar traspasos una vez obtenida la sesión
+    }
+  } catch (error) {
+    console.error("Error obteniendo la sesión:", error);
+  }
+})();
+
 document.addEventListener('DOMContentLoaded', () => {
     const nuevoTraspasoBtn = document.getElementById('nuevo-tp');
     const tabla = document.getElementById('tabla-transacciones');
@@ -89,5 +110,4 @@ document.addEventListener('DOMContentLoaded', () => {
         input.addEventListener('change', obtenerTraspasos);
     });
 
-    obtenerTraspasos();
 });
