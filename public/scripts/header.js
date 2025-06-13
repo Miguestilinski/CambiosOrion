@@ -145,6 +145,17 @@ function showUserUI(data) {
         userNameMobile.textContent = data.nombre;
         userEmailMobile.textContent = data.correo;
     }
+
+    // Mostrar notificación de traspasos solo si es administrativo
+    const traspasosBadge = document.getElementById('traspasos-badge');
+    if (data.tipo === 'administrativo' && traspasosBadge) {
+        if (data.traspasos_pendientes && data.traspasos_pendientes > 0) {
+            traspasosBadge.textContent = `(${data.traspasos_pendientes})`;
+            traspasosBadge.classList.remove('hidden');
+        } else {
+            traspasosBadge.classList.add('hidden');
+        }
+    }
 }
   
 // Mostrar la interfaz de usuario para invitados
