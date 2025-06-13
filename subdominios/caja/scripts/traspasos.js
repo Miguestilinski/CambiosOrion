@@ -45,7 +45,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         const params = new URLSearchParams();
 
         for (const [clave, input] of Object.entries(filtros)) {
-            params.set(clave, input.value.trim());
+            let valor = input.value;
+            if (typeof valor === 'string') {
+                valor = valor.trim();
+            } else if (valor === null || valor === undefined) {
+                valor = '';
+            } else {
+                valor = String(valor);
+            }
+            params.set(clave, valor);
         }
 
         fetch(`https://cambiosorion.cl/data/traspasos.php?${params.toString()}`)
