@@ -69,6 +69,36 @@ function setupEventListeners() {
             dropdown.classList.add('hidden');
         }
     });
+
+        // --- NUEVO: Manejo botón y dropdown de notificaciones ---
+    const notificationsButton = document.getElementById('notifications-button');
+    const notificationsDropdown = document.getElementById('notifications-dropdown');
+
+    if (notificationsButton && notificationsDropdown) {
+        notificationsButton.addEventListener('click', (e) => {
+            e.stopPropagation(); // para que no cierre inmediatamente con el document click
+            const isHidden = notificationsDropdown.classList.contains('hidden');
+            // Cerrar dropdown de perfil si está abierto
+            const dropdownInformation = document.getElementById('dropdownInformation');
+            if (dropdownInformation) dropdownInformation.classList.add('hidden');
+
+            if (isHidden) {
+                notificationsDropdown.classList.remove('hidden');
+            } else {
+                notificationsDropdown.classList.add('hidden');
+            }
+        });
+
+        // Cerrar dropdown de notificaciones si clic fuera
+        document.addEventListener('click', (event) => {
+            if (
+                !notificationsDropdown.contains(event.target) &&
+                event.target !== notificationsButton
+            ) {
+                notificationsDropdown.classList.add('hidden');
+            }
+        });
+    }
 }
 
 // Función para comprobar el estado de sesión con AJAX
@@ -146,15 +176,50 @@ function showUserUI(data) {
         userEmailMobile.textContent = data.correo;
     }
 
-    // Mostrar notificación de traspasos solo si es administrativo
-    const traspasosBadge = document.getElementById('traspasos-badge');
-    if (data.tipo === 'administrativo' && traspasosBadge) {
-        if (data.traspasos_pendientes && data.traspasos_pendientes > 0) {
-            traspasosBadge.textContent = `(${data.traspasos_pendientes})`;
-            traspasosBadge.classList.remove('hidden');
+    // --- NUEVO: Mostrar notificaciones de traspasos en botón y dropdown ---
+    const notificationsBadge = document.getElementById('notifications-badge');
+    const notificationsList = document.getElementById('notifications-list');
+
+    function updateNotificationsUI(notifications = []) {
+        if (!notifications.length) {
+            if (notificationsBadge) notificationsBadge.classList.add('hidden');
+            if (notificationsList) notificationsList.innerHTML = '<li class="px-4 py-2">No hay notificaciones</li>';
         } else {
-            traspasosBadge.classList.add('hidden');
+            if (notificationsBadge) {
+                notificationsBadge.textContent = notifications.length;
+                notificationsBadge.classList.remove('hidden');
+            }
+            if (notificationsList) {
+                notificationsList.innerHTML = '';
+                notifications.forEach(n => {
+                    const li = document.createElement('li');
+                    li.className = 'px-4 py-2 hover:bg-gray-100 cursor-pointer';
+                    li.textContent = n.text;
+                    if (n.url) {
+                        li.addEventListener('click', () => {
+                            window.location.href = n.url;
+                        });
+                    }
+                    notificationsList.appendChild(li);
+                });
+            }
         }
+    }
+
+    if (data.tipo === 'administrativo') {
+        const traspasosCount = data.traspasos_pendientes || 0;
+        if (traspasosCount > 0) {
+            updateNotificationsUI([
+                {
+                    text: `Traspasos pendientes (${traspasosCount})`,
+                    url: 'https://caja.cambiosorion.cl/traspasos'
+                }
+            ]);
+        } else {
+            updateNotificationsUI([]);
+        }
+    } else {
+        updateNotificationsUI([]);
     }
 }
   

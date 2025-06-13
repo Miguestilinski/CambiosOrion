@@ -83,6 +83,26 @@
         <div class="header-actions">
             <!-- User actions -->
             <div id="user-actions" style="display:none;">
+                <!-- Botón de notificaciones -->
+                <button id="notifications-button" class="relative text-white bg-transparent hover:bg-gray-200 focus:outline-none mr-4">
+                    <img src="https://cambiosorion.cl/orionapp/icons/bell-white.png" alt="Notificaciones" />
+                    <span id="notifications-badge" 
+                        class="absolute top-0 right-0 -mt-1 -mr-1 text-xs font-bold text-white bg-red-600 rounded-full px-2 py-0.5 hidden">
+                        0
+                    </span>
+                </button>
+                
+                <!-- Dropdown de notificaciones -->
+                <div id="notifications-dropdown" class="hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-56 absolute right-0 mt-2 z-50">
+                    <div class="px-4 py-3 text-sm text-gray-900 font-semibold">
+                        Notificaciones
+                    </div>
+                    <ul id="notifications-list" class="max-h-60 overflow-y-auto text-sm text-gray-700">
+                        <!-- Aquí se insertan las notificaciones dinámicamente -->
+                        <li class="px-4 py-2">No hay notificaciones</li>
+                    </ul>
+                </div>
+
                 <button id="profile-menu-button" class="text-white bg-transparent hover:bg-gray-200 focus:outline-none">
                     <img src="https://cambiosorion.cl/orionapp/icons/profile-white.png" alt="Profile">
                 </button>
@@ -92,6 +112,7 @@
                         <div id="user-name">Nombre del usuario</div>
                         <div id="user-email" class="mail font-medium truncate">Correo del usuario</div>
                     </div>
+                    
                     <!-- Dentro del menú de navegación o en algún botón -->
                     <a href="https://caja.cambiosorion.cl/traspasos" class="relative flex items-center">
                         Traspasos
