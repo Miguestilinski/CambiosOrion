@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
 
             tr.innerHTML = `
-                <td class="px-4 py-2">${limpiarTexto(tp.numero)}</td>
+                <td class="px-4 py-2">${limpiarTexto(tp.id)}</td>
                 <td class="px-4 py-2">${limpiarTexto(tp.fecha)}</td>
                 <td class="px-4 py-2">${limpiarTexto(tp.transaccion)}</td>
                 <td class="px-4 py-2">${limpiarTexto(tp.origen)}</td>
