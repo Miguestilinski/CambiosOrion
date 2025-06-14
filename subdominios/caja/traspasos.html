@@ -108,7 +108,7 @@
                 <button id="profile-menu-button" class="text-white bg-transparent hover:bg-gray-200 focus:outline-none">
                     <img src="https://cambiosorion.cl/orionapp/icons/profile-white.png" alt="Profile">
                 </button>
-                
+
                 <!-- Menú desplegable -->
                 <div id="dropdownInformation" class="hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
                     <div class="px-4 py-3 text-sm text-gray-900">
@@ -144,6 +144,24 @@
                     <button type="button" id="nuevo-tp"
                         class="text-white bg-blue-700 mr-4 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
                         Nuevo Traspaso
+                    </button>
+                    <button type="button" id="activar-completado"
+                        class="text-white bg-yellow-600 hover:bg-yellow-700 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5">
+                        Completar Traspasos Pendientes
+                    </button>
+                </div>
+
+                <!-- Sección resumen seleccionados -->
+                <div id="resumen-completado" class="hidden mb-4 text-white">
+                    <label class="flex items-center mb-2">
+                        <input type="checkbox" id="check-todos" class="mr-2"> Seleccionar todos los pendientes
+                    </label>
+                    <p id="resumen-totales" class="text-sm"></p>
+                    <button id="btn-completar-seleccionados" class="mt-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded hidden">
+                        Completar Seleccionados
+                    </button>
+                    <button id="cancelar-completado" class="mt-2 ml-2 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded hidden">
+                        Cancelar
                     </button>
                 </div>
                 

@@ -1,8 +1,12 @@
 let usuarioSesion = null;
+let modoCompletarPendientes = false;
+let totalesPorDivisa = {};
 
 document.addEventListener('DOMContentLoaded', async () => {
     const nuevoTraspasoBtn = document.getElementById('nuevo-tp');
     const tabla = document.getElementById('tabla-transacciones');
+    const totalesDiv = document.getElementById('totales-div');
+    const contenedorAcciones = document.getElementById('acciones-traspasos');
 
     const filtros = {
         numero: document.getElementById("numero"),
@@ -39,6 +43,44 @@ document.addEventListener('DOMContentLoaded', async () => {
         nuevoTraspasoBtn.addEventListener('click', () => {
             window.location.href = 'https://caja.cambiosorion.cl/nuevo-tp';
         });
+    }
+    if (completarPendientesBtn) {
+        completarPendientesBtn.addEventListener('click', () => {
+            modoCompletarPendientes = !modoCompletarPendientes;
+            actualizarModoCompletar();
+        });
+    }
+
+    function actualizarModoCompletar() {
+        const checkboxes = tabla.querySelectorAll('.checkbox-completar');
+        const botonesIndividuales = tabla.querySelectorAll('.btn-completar-individual');
+        const selectAllRow = document.getElementById('fila-select-todos');
+
+        if (modoCompletarPendientes) {
+            completarPendientesBtn.textContent = 'Cancelar';
+            contenedorAcciones.classList.remove('hidden');
+            checkboxes.forEach(cb => cb.classList.remove('hidden'));
+            botonesIndividuales.forEach(btn => btn.classList.remove('hidden'));
+            if (selectAllRow) selectAllRow.classList.remove('hidden');
+        } else {
+            completarPendientesBtn.textContent = 'Completar Traspasos Pendientes';
+            contenedorAcciones.classList.add('hidden');
+            checkboxes.forEach(cb => cb.classList.add('hidden'));
+            botonesIndividuales.forEach(btn => btn.classList.add('hidden'));
+            if (selectAllRow) selectAllRow.classList.add('hidden');
+        }
+
+        // Resetear selección y totales
+        tabla.querySelectorAll('.checkbox-completar input[type="checkbox"]').forEach(cb => cb.checked = false);
+        totalesPorDivisa = {};
+        actualizarTotales();
+    }
+
+    function actualizarTotales() {
+        const totalHtml = Object.entries(totalesPorDivisa).map(([divisa, monto]) => {
+            return `<span class="block">${divisa}: ${formatearNumero(monto)}</span>`;
+        }).join('');
+        totalesDiv.innerHTML = totalHtml;
     }
 
     function obtenerTraspasos() {
@@ -93,6 +135,20 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
+        const filaSelectTodos = document.createElement('tr');
+        filaSelectTodos.id = 'fila-select-todos';
+        filaSelectTodos.className = 'bg-gray-700 hidden';
+        filaSelectTodos.innerHTML = '<td colspan="9" class="px-4 py-2"><label class="text-white"><input type="checkbox" id="checkbox-select-todos" class="mr-2">Seleccionar todos los traspasos pendientes</label></td>';
+        tabla.appendChild(filaSelectTodos);
+
+        document.getElementById('checkbox-select-todos').addEventListener('change', (e) => {
+            const checked = e.target.checked;
+            tabla.querySelectorAll('.checkbox-completar input[type="checkbox"]').forEach(cb => {
+                cb.checked = checked;
+                cb.dispatchEvent(new Event('change'));
+            });
+        });
+
         traspasos.forEach(tp => {
             const tr = document.createElement('tr');
             tr.className = 'bg-white border-b border-gray-700 text-gray-700';
@@ -104,8 +160,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 window.location.href = `detalle-tp?id=${tp.id}`;
             });
 
+            const esPendiente = tp.estado.toLowerCase() === 'Pendiente';
+
             tr.innerHTML = `
-                <td class="px-4 py-2">${limpiarTexto(tp.id)}</td>
+                <td class="px-4 py-2">
+                    <input type="checkbox" class="check-pendiente hidden" data-id="${tp.id}" data-monto="${tp.monto}" data-divisa="${tp.divisa}">
+                    ${limpiarTexto(tp.id)}
+                </td>
                 <td class="px-4 py-2">${limpiarTexto(tp.fecha)}</td>
                 <td class="px-4 py-2">${limpiarTexto(tp.transaccion_id)}</td>
                 <td class="px-4 py-2">${limpiarTexto(tp.origen)}</td>
@@ -113,12 +174,48 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <td class="px-4 py-2">${limpiarTexto(tp.divisa)}</td>
                 <td class="px-4 py-2">${formatearNumero(tp.monto)}</td>
                 <td class="px-4 py-2">${limpiarTexto(tp.estado)}</td>
-                <td class="px-4 py-2 mostrar-btn-cell"></td>
+                <td class="px-4 py-2 acciones-cell"></td>
             `;
 
-            tr.querySelector('.mostrar-btn-cell').appendChild(btnMostrar);
+            const accionesCell = tr.querySelector('.acciones-cell');
+
+            if (esPendiente) {
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.className = 'checkbox-completar hidden mr-2';
+                checkbox.addEventListener('change', () => {
+                    const monto = parseFloat(tp.monto);
+                    const divisa = tp.divisa;
+                    if (checkbox.checked) {
+                        totalesPorDivisa[divisa] = (totalesPorDivisa[divisa] || 0) + monto;
+                    } else {
+                        totalesPorDivisa[divisa] = (totalesPorDivisa[divisa] || 0) - monto;
+                        if (totalesPorDivisa[divisa] <= 0) delete totalesPorDivisa[divisa];
+                    }
+                    actualizarTotales();
+                });
+
+                const btnCompletar = document.createElement('button');
+                btnCompletar.textContent = 'Completar';
+                btnCompletar.className = 'btn-completar-individual hidden bg-green-600 text-white px-3 py-1 rounded';
+                btnCompletar.addEventListener('click', () => {
+                    completarTraspasos([tp.id]);
+                });
+
+                accionesCell.appendChild(checkbox);
+                accionesCell.appendChild(btnCompletar);
+            } else {
+                accionesCell.appendChild(btnMostrar);
+            }
+
             tabla.appendChild(tr);
         });
+    }
+
+    function completarTraspasos(ids) {
+        // Aquí va la lógica de envío al servidor para completar los traspasos por ID
+        console.log('Completar traspasos:', ids);
+        // Ejemplo POST a completar-traspasos.php
     }
 
     // Event listeners para filtros visibles
