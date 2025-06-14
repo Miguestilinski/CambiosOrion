@@ -106,6 +106,15 @@ nav ul li.selected a {
     margin-right: 1.5rem;
 }
 
+#notifications-button {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    margin-right: 1.5rem;
+}
+
 #dropdownInformation {
     position: absolute;
     z-index: 999;
