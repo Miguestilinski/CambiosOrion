@@ -4,6 +4,7 @@ let totalesPorDivisa = {};
 
 document.addEventListener('DOMContentLoaded', async () => {
     const nuevoTraspasoBtn = document.getElementById('nuevo-tp');
+    const completarPendientesBtn = document.getElementById('activar-completado');
     const tabla = document.getElementById('tabla-transacciones');
     const totalesDiv = document.getElementById('totales-div');
     const contenedorAcciones = document.getElementById('acciones-traspasos');
@@ -19,7 +20,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         estado: document.getElementById("estado"),
         mostrar: document.getElementById("mostrar-registros"),
         buscar: document.getElementById("buscar"),
-        caja_id: { value: "" } // este es virtual, no es un input real
+        caja_id: { value: "" }
     };
 
     try {
