@@ -59,12 +59,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         fetch(`https://cambiosorion.cl/data/traspasos.php?${params.toString()}`)
             .then(response => response.text()) // cambia a .text() en lugar de .json()
             .then(rawText => {
-                console.log("Respuesta cruda del servidor:");
-                console.log(rawText);
+                //console.log("Respuesta cruda del servidor:");
+                //console.log(rawText);
 
                 try {
                     const data = JSON.parse(rawText);
-                    console.log('Traspasos recibidos:', data);
+                    //console.log('Traspasos recibidos:', data);
                     mostrarResultados(data);
                 } catch (e) {
                     console.error("Error al parsear JSON:", e);
