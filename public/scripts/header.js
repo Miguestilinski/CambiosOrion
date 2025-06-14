@@ -163,14 +163,17 @@ function showUserUI(data) {
         menuCliente.style.display = 'none';
         menuAdmin.style.display = 'block';
 
-        const traspasosBadge = document.getElementById('traspasos-badge');
-        if (traspasosBadge) {
-            if (traspasosCount > 0) {
-                traspasosBadge.textContent = `(${traspasosCount})`;
-                traspasosBadge.classList.remove('hidden');
-            } else {
-                traspasosBadge.classList.add('hidden');
-            }
+        const traspasosCount = data.traspasos_pendientes || 0;
+
+        if (traspasosCount > 0) {
+            updateNotificationsUI([
+                {
+                    text: `Traspasos (${traspasosCount})`,
+                    url: 'https://caja.cambiosorion.cl/traspasos'
+                }
+            ]);
+        } else {
+            updateNotificationsUI([]);
         }
 
     } else if (data.tipo === 'cliente'){
