@@ -158,26 +158,13 @@ function showUserUI(data) {
             <div class="text-sm text-gray-500">${data.tipo}</div>
         `;
     }
-
-    if (data.tipo === 'administrativo') {
-        console.log('User UI: Administrativo');
-        // Mostrar el menú administrativo
-        menuCliente.style.display = 'none';
-        menuAdmin.style.display = 'block';
-
-    } else if (data.tipo === 'cliente'){
-        // Mostrar el menú cliente
-        menuCliente.style.display = 'block';
-        menuAdmin.style.display = 'none';
-    }
-
+    
     console.log('User UI continúa');
 
     // Actualiza la información en la versión móvil
     const userNameMobile = document.querySelector('#user-actions-mobile #user-name');
     const userEmailMobile = document.querySelector('#user-actions-mobile #user-email');
     if (userNameMobile && userEmailMobile) {
-        console.log('Datos admin cambiados');
         userNameMobile.textContent = data.nombre;
         userEmailMobile.textContent = data.correo;
     }
