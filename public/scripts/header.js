@@ -171,6 +171,8 @@ function showUserUI(data) {
         menuAdmin.style.display = 'none';
     }
 
+    console.log('User UI continúa');
+
     // Actualiza la información en la versión móvil
     const userNameMobile = document.querySelector('#user-actions-mobile #user-name');
     const userEmailMobile = document.querySelector('#user-actions-mobile #user-email');
