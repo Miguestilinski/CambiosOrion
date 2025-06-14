@@ -187,6 +187,7 @@ function showUserUI(data) {
         } else {
             if (notificationsBadge) {
                 notificationsBadge.textContent = notifications.length;
+                console.log('Actualizado badge:', notificationsBadge.textContent);
                 notificationsBadge.classList.remove('hidden');
             }
             if (notificationsList) {

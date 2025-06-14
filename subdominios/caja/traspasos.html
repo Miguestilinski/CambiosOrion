@@ -85,13 +85,15 @@
             <div id="user-actions" style="display:none;">
                 <!-- Botón de notificaciones -->
                 <button id="notifications-button" class="relative text-white bg-transparent hover:bg-gray-200 focus:outline-none mr-4">
-                    <img src="https://cambiosorion.cl/orionapp/icons/bell-white.png" alt="Notificaciones" />
-                    <span id="notifications-badge" 
-                        class="absolute top-0 right-0 -mt-1 -mr-1 text-xs font-bold text-white bg-red-600 rounded-full px-2 py-0.5 hidden">
-                        0
-                    </span>
+                    <div class="relative inline-block">
+                        <img src="https://cambiosorion.cl/orionapp/icons/bell-white.png" alt="Notificaciones" class="w-6 h-6" />
+                        <span id="notifications-badge"
+                            class="absolute -top-1 -right-1 text-xs font-bold text-white bg-red-600 rounded-full px-1.5 py-0.5 hidden">
+                            0
+                        </span>
+                    </div>
                 </button>
-                
+
                 <!-- Dropdown de notificaciones -->
                 <div id="notifications-dropdown" class="hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-56 absolute right-0 mt-2 z-50">
                     <div class="px-4 py-3 text-sm text-gray-900 font-semibold">
