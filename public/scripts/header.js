@@ -126,7 +126,6 @@ function checkSession() {
 
 // Mostrar la interfaz de usuario para usuarios autenticados
 function showUserUI(data) {
-    console.log('User UI');
     const userActions = document.getElementById('user-actions');
     const userActionsMobile = document.getElementById('user-actions-mobile');
     const guestActions = document.getElementById('guest-actions');
@@ -141,8 +140,6 @@ function showUserUI(data) {
 
     // Actualiza el dropdown con los datos del usuario
     const dropdownInformation = document.getElementById('dropdownInformation');
-    const menuCliente = document.getElementById('menu-cliente');
-    const menuAdmin = document.getElementById('menu-admin');
     if (dropdownInformation) {
         dropdownInformation.querySelector('div:first-child').innerHTML = `
             <div>${data.nombre}</div>
@@ -158,8 +155,6 @@ function showUserUI(data) {
             <div class="text-sm text-gray-500">${data.tipo}</div>
         `;
     }
-    
-    console.log('User UI continúa');
 
     // Actualiza la información en la versión móvil
     const userNameMobile = document.querySelector('#user-actions-mobile #user-name');
@@ -171,8 +166,6 @@ function showUserUI(data) {
 
     const notifications = [];
 
-    console.log('Evaluando notificaciones con tipo:', data.tipo, 'y traspasos:', data.traspasos_pendientes);
-
     const traspasos = parseInt(data.traspasos_pendientes);
     if (
         data.tipo &&
@@ -181,7 +174,7 @@ function showUserUI(data) {
         traspasos > 0
     ) {
         notifications.push({
-            text: `Traspasos pendientes (${traspasos})`,
+            text: `Traspasos Pendientes: ${traspasos}`,
             url: 'https://caja.cambiosorion.cl/traspasos'
         });
     }
@@ -193,8 +186,6 @@ function showUserUI(data) {
 function updateNotificationsUI(notifications = []) {
     const notificationsBadge = document.getElementById('notifications-badge');
     const notificationsList = document.getElementById('notifications-list');
-
-    console.log('🔔 updateNotificationsUI() - Recibidas:', notifications);
     
     if (!notifications.length) {
         if (notificationsBadge) notificationsBadge.classList.add('hidden');
@@ -202,10 +193,7 @@ function updateNotificationsUI(notifications = []) {
     } else {
         if (notificationsBadge) {
             notificationsBadge.textContent = notifications.length;
-            console.log('✅ Mostrando badge:', notifications.length);
             notificationsBadge.classList.remove('hidden');
-        } else {
-            console.warn('⚠️ notificationsBadge no encontrado');
         }
         if (notificationsList) {
             notificationsList.innerHTML = '';
@@ -220,8 +208,6 @@ function updateNotificationsUI(notifications = []) {
                 }
                 notificationsList.appendChild(li);
             });
-        } else {
-            console.warn('⚠️ notificationsList no encontrado');
         }
     }
 }
