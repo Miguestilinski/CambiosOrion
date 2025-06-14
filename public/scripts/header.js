@@ -126,6 +126,7 @@ function checkSession() {
 
 // Mostrar la interfaz de usuario para usuarios autenticados
 function showUserUI(data) {
+    console.log('User UI');
     const userActions = document.getElementById('user-actions');
     const userActionsMobile = document.getElementById('user-actions-mobile');
     const guestActions = document.getElementById('guest-actions');
@@ -159,6 +160,7 @@ function showUserUI(data) {
     }
 
     if (data.tipo === 'administrativo') {
+        console.log('User UI: Administrativo');
         // Mostrar el menú administrativo
         menuCliente.style.display = 'none';
         menuAdmin.style.display = 'block';
@@ -173,6 +175,7 @@ function showUserUI(data) {
     const userNameMobile = document.querySelector('#user-actions-mobile #user-name');
     const userEmailMobile = document.querySelector('#user-actions-mobile #user-email');
     if (userNameMobile && userEmailMobile) {
+        console.log('Datos admin cambiados');
         userNameMobile.textContent = data.nombre;
         userEmailMobile.textContent = data.correo;
     }
