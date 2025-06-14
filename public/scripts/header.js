@@ -162,6 +162,17 @@ function showUserUI(data) {
         // Mostrar el menú administrativo
         menuCliente.style.display = 'none';
         menuAdmin.style.display = 'block';
+
+        const traspasosBadge = document.getElementById('traspasos-badge');
+        if (traspasosBadge) {
+            if (traspasosCount > 0) {
+                traspasosBadge.textContent = `(${traspasosCount})`;
+                traspasosBadge.classList.remove('hidden');
+            } else {
+                traspasosBadge.classList.add('hidden');
+            }
+        }
+
     } else if (data.tipo === 'cliente'){
         // Mostrar el menú cliente
         menuCliente.style.display = 'block';
