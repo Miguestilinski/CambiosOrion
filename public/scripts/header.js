@@ -163,18 +163,18 @@ function showUserUI(data) {
         menuCliente.style.display = 'none';
         menuAdmin.style.display = 'block';
 
+        const notifications = [];
+
         const traspasosCount = data.traspasos_pendientes || 0;
 
         if (traspasosCount > 0) {
-            updateNotificationsUI([
-                {
-                    text: `Traspasos (${traspasosCount})`,
-                    url: 'https://caja.cambiosorion.cl/traspasos'
-                }
-            ]);
-        } else {
-            updateNotificationsUI([]);
+            notifications.push({
+                text: `Traspasos pendientes (${traspasosCount})`,
+                count: traspasosCount,
+                url: 'https://caja.cambiosorion.cl/traspasos'
+            });
         }
+        updateNotificationsUI(notifications);
 
     } else if (data.tipo === 'cliente'){
         // Mostrar el menú cliente
@@ -188,37 +188,6 @@ function showUserUI(data) {
     if (userNameMobile && userEmailMobile) {
         userNameMobile.textContent = data.nombre;
         userEmailMobile.textContent = data.correo;
-    }
-
-    // --- NUEVO: Mostrar notificaciones de traspasos en botón y dropdown ---
-    const notificationsBadge = document.getElementById('notifications-badge');
-    const notificationsList = document.getElementById('notifications-list');
-
-    function updateNotificationsUI(notifications = []) {
-        if (!notifications.length) {
-            if (notificationsBadge) notificationsBadge.classList.add('hidden');
-            if (notificationsList) notificationsList.innerHTML = '<li class="px-4 py-2">No hay notificaciones</li>';
-        } else {
-            if (notificationsBadge) {
-                notificationsBadge.textContent = notifications.length;
-                console.log('Actualizado badge:', notificationsBadge.textContent);
-                notificationsBadge.classList.remove('hidden');
-            }
-            if (notificationsList) {
-                notificationsList.innerHTML = '';
-                notifications.forEach(n => {
-                    const li = document.createElement('li');
-                    li.className = 'px-4 py-2 hover:bg-gray-100 cursor-pointer';
-                    li.textContent = n.text;
-                    if (n.url) {
-                        li.addEventListener('click', () => {
-                            window.location.href = n.url;
-                        });
-                    }
-                    notificationsList.appendChild(li);
-                });
-            }
-        }
     }
 
     if (data.tipo === 'administrativo') {
@@ -235,6 +204,37 @@ function showUserUI(data) {
         }
     } else {
         updateNotificationsUI([]);
+    }
+}
+
+// --- NUEVO: Mostrar notificaciones de traspasos en botón y dropdown ---
+function updateNotificationsUI(notifications = []) {
+    const notificationsBadge = document.getElementById('notifications-badge');
+    const notificationsList = document.getElementById('notifications-list');
+    
+    if (!notifications.length) {
+        if (notificationsBadge) notificationsBadge.classList.add('hidden');
+        if (notificationsList) notificationsList.innerHTML = '<li class="px-4 py-2">No hay notificaciones</li>';
+    } else {
+        if (notificationsBadge) {
+            notificationsBadge.textContent = notifications.length;
+            console.log('Actualizado badge:', notificationsBadge.textContent);
+            notificationsBadge.classList.remove('hidden');
+        }
+        if (notificationsList) {
+            notificationsList.innerHTML = '';
+            notifications.forEach(n => {
+                const li = document.createElement('li');
+                li.className = 'px-4 py-2 hover:bg-gray-100 cursor-pointer';
+                li.textContent = n.text;
+                if (n.url) {
+                    li.addEventListener('click', () => {
+                        window.location.href = n.url;
+                    });
+                }
+                notificationsList.appendChild(li);
+            });
+        }
     }
 }
   
