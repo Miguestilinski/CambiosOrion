@@ -277,7 +277,14 @@ function closeMenu(menu) {
 function toggleHeaderDropdown(event) {
     event.stopPropagation(); // Prevenir propagación del evento
     const dropdown = document.getElementById('dropdownInformation');
+    const notificationsDropdown = document.getElementById('notifications-dropdown');
 
+    // Cerrar el dropdown de notificaciones si está abierto
+    if (notificationsDropdown) {
+        notificationsDropdown.classList.add('hidden');
+    }
+
+    // Alternar el dropdown de perfil
     if (dropdown) {
         dropdown.classList.toggle('hidden');
     }
