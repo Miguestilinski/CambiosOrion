@@ -163,19 +163,6 @@ function showUserUI(data) {
         menuCliente.style.display = 'none';
         menuAdmin.style.display = 'block';
 
-        const notifications = [];
-
-        const traspasosCount = data.traspasos_pendientes || 0;
-
-        if (traspasosCount > 0) {
-            notifications.push({
-                text: `Traspasos pendientes (${traspasosCount})`,
-                count: traspasosCount,
-                url: 'https://caja.cambiosorion.cl/traspasos'
-            });
-        }
-        updateNotificationsUI(notifications);
-
     } else if (data.tipo === 'cliente'){
         // Mostrar el menú cliente
         menuCliente.style.display = 'block';
