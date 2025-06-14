@@ -70,7 +70,7 @@ function setupEventListeners() {
         }
     });
 
-        // --- NUEVO: Manejo botón y dropdown de notificaciones ---
+    // --- NUEVO: Manejo botón y dropdown de notificaciones ---
     const notificationsButton = document.getElementById('notifications-button');
     const notificationsDropdown = document.getElementById('notifications-dropdown');
 
@@ -181,9 +181,15 @@ function showUserUI(data) {
 
     console.log('Evaluando notificaciones con tipo:', data.tipo, 'y traspasos:', data.traspasos_pendientes);
 
-    if (data.tipo && data.tipo.trim().toLowerCase() === 'administrativo' && parseInt(data.traspasos_pendientes) > 0) {
+    const traspasos = parseInt(data.traspasos_pendientes);
+    if (
+        data.tipo &&
+        data.tipo.trim().toLowerCase() === 'administrativo' &&
+        !isNaN(traspasos) &&
+        traspasos > 0
+    ) {
         notifications.push({
-            text: `Traspasos pendientes (${data.traspasos_pendientes})`,
+            text: `Traspasos pendientes (${traspasos})`,
             url: 'https://caja.cambiosorion.cl/traspasos'
         });
     }
@@ -195,6 +201,8 @@ function showUserUI(data) {
 function updateNotificationsUI(notifications = []) {
     const notificationsBadge = document.getElementById('notifications-badge');
     const notificationsList = document.getElementById('notifications-list');
+
+    console.log('🔔 updateNotificationsUI() - Recibidas:', notifications);
     
     if (!notifications.length) {
         if (notificationsBadge) notificationsBadge.classList.add('hidden');
@@ -202,8 +210,10 @@ function updateNotificationsUI(notifications = []) {
     } else {
         if (notificationsBadge) {
             notificationsBadge.textContent = notifications.length;
-            console.log('Actualizado badge:', notificationsBadge.textContent);
+            console.log('✅ Mostrando badge:', notifications.length);
             notificationsBadge.classList.remove('hidden');
+        } else {
+            console.warn('⚠️ notificationsBadge no encontrado');
         }
         if (notificationsList) {
             notificationsList.innerHTML = '';
@@ -218,6 +228,8 @@ function updateNotificationsUI(notifications = []) {
                 }
                 notificationsList.appendChild(li);
             });
+        } else {
+            console.warn('⚠️ notificationsList no encontrado');
         }
     }
 }
