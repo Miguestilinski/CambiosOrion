@@ -179,7 +179,9 @@ function showUserUI(data) {
 
     const notifications = [];
 
-    if (data.tipo === 'administrativo' && data.traspasos_pendientes > 0) {
+    console.log('Evaluando notificaciones con tipo:', data.tipo, 'y traspasos:', data.traspasos_pendientes);
+
+    if (data.tipo && data.tipo.trim().toLowerCase() === 'administrativo' && parseInt(data.traspasos_pendientes) > 0) {
         notifications.push({
             text: `Traspasos pendientes (${data.traspasos_pendientes})`,
             url: 'https://caja.cambiosorion.cl/traspasos'
