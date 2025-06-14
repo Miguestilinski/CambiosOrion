@@ -190,21 +190,16 @@ function showUserUI(data) {
         userEmailMobile.textContent = data.correo;
     }
 
-    if (data.tipo === 'administrativo') {
-        const traspasosCount = data.traspasos_pendientes || 0;
-        if (traspasosCount > 0) {
-            updateNotificationsUI([
-                {
-                    text: `Traspasos pendientes (${traspasosCount})`,
-                    url: 'https://caja.cambiosorion.cl/traspasos'
-                }
-            ]);
-        } else {
-            updateNotificationsUI([]);
-        }
-    } else {
-        updateNotificationsUI([]);
+    const notifications = [];
+
+    if (data.tipo === 'administrativo' && data.traspasos_pendientes > 0) {
+        notifications.push({
+            text: `Traspasos pendientes (${data.traspasos_pendientes})`,
+            url: 'https://caja.cambiosorion.cl/traspasos'
+        });
     }
+
+    updateNotificationsUI(notifications);
 }
 
 // --- NUEVO: Mostrar notificaciones de traspasos en botón y dropdown ---
