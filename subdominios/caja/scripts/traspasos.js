@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const completarPendientesBtn = document.getElementById('activar-completado');
     const tabla = document.getElementById('tabla-transacciones');
     const totalesDiv = document.getElementById('totales-div');
-    const contenedorAcciones = document.getElementById('acciones-traspasos');
+    const contenedorAcciones = document.getElementById('resumen-completado');
 
     const filtros = {
         numero: document.getElementById("numero"),
