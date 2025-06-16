@@ -83,9 +83,32 @@
         <div class="header-actions">
             <!-- User actions -->
             <div id="user-actions" style="display:none;">
+                <!-- Botón de notificaciones -->
+                <button id="notifications-button" class="relative text-white bg-transparent hover:bg-gray-200 focus:outline-none mr-4">
+                    <div class="relative inline-block">
+                        <img src="https://cambiosorion.cl/orionapp/icons/bell-white.png" alt="Notificaciones" class="w-7 h-7" />
+                        <span id="notifications-badge"
+                            class="absolute -top-1 -right-1 text-xs font-bold text-white bg-red-600 rounded-full px-1.5 py-0.5 hidden">
+                            0
+                        </span>
+                    </div>
+                </button>
+
+                <!-- Dropdown de notificaciones -->
+                <div id="notifications-dropdown" class="hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-56 absolute right-0 mt-2 z-50">
+                    <div class="px-4 py-3 text-sm text-gray-900 font-semibold">
+                        Notificaciones
+                    </div>
+                    <ul id="notifications-list" class="max-h-60 overflow-y-auto text-sm text-gray-700">
+                        <!-- Aquí se insertan las notificaciones dinámicamente -->
+                        <li class="px-4 py-2">No hay notificaciones</li>
+                    </ul>
+                </div>
+
                 <button id="profile-menu-button" class="text-white bg-transparent hover:bg-gray-200 focus:outline-none">
                     <img src="https://cambiosorion.cl/orionapp/icons/profile-white.png" alt="Profile">
                 </button>
+
                 <!-- Menú desplegable -->
                 <div id="dropdownInformation" class="hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
                     <div class="px-4 py-3 text-sm text-gray-900">
