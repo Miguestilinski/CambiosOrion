@@ -63,12 +63,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             contenedorAcciones.classList.remove('hidden');
             checkboxes.forEach(cb => cb.classList.remove('hidden'));
             botonesIndividuales.forEach(btn => btn.classList.remove('hidden'));
-            const ths = thead.querySelectorAll('th');
-            if (ths.length === 9) {
+            const filaEncabezado = thead.querySelector('tr');
+            if (filaEncabezado && filaEncabezado.children.length === 9) {
                 const nuevaColumna = document.createElement('th');
                 nuevaColumna.className = 'px-4 py-2';
                 nuevaColumna.textContent = '';
-                thead.appendChild(nuevaColumna);
+                filaEncabezado.insertBefore(nuevaColumna, filaEncabezado.firstElementChild);
             }
             if (selectAllRow) selectAllRow.classList.remove('hidden');
         } else {
@@ -76,9 +76,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             contenedorAcciones.classList.add('hidden');
             checkboxes.forEach(cb => cb.classList.add('hidden'));
             botonesIndividuales.forEach(btn => btn.classList.add('hidden'));
-            const ths = thead.querySelectorAll('th');
-            if (ths.length === 10 && ths[ths.length - 1].textContent.trim() === '') {
-                thead.removeChild(ths[ths.length - 1]);
+            if (ths.length === 10 && ths[0].textContent.trim() === '') {
+                thead.querySelector('tr').removeChild(ths[0]);
             }
             if (selectAllRow) selectAllRow.classList.add('hidden');
         }
