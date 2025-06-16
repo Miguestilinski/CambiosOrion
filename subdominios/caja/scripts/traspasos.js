@@ -159,23 +159,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             filaSelectTodos.id = 'fila-select-todos';
             filaSelectTodos.className = 'bg-gray-700';
             filaSelectTodos.innerHTML = `
-                <td class="px-4 py-2">
-                    <input type="checkbox" id="checkbox-select-todos" class="rounded mr-2">
-                </td>
-                <td class="px-4 py-2 text-white">
-                    <label>
-                        Seleccionar todos
+                <td colspan="9" class="px-4 py-2 text-white">
+                    <label class="flex items-center">
+                        <input type="checkbox" id="checkbox-select-todos" class="rounded mr-2">
+                        Seleccionar todos los traspasos pendientes
                     </label>
                 </td>
-                <td class="px-4 py-2"></td>
-                <td class="px-4 py-2"></td>
-                <td class="px-4 py-2"></td>
-                <td class="px-4 py-2"></td>
-                <td class="px-4 py-2"></td>
-                <td class="px-4 py-2"></td>
-                <td class="px-4 py-2"></td>
-                <td class="text-right px-4 py-2 pr-4">
-                    <button id="btn-completar-masivo" class="bg-green-600 hover:bg-green-700 text-white font-semibold px-2 py-1.5 rounded">
+                <td class="px-4 py-2 text-right">
+                    <button id="btn-completar-masivo" class="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-1 rounded">
                         Completar Traspasos
                     </button>
                 </td>
