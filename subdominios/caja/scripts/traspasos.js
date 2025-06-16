@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (ths.length === 9) {
                 const nuevaColumna = document.createElement('th');
                 nuevaColumna.className = 'px-4 py-2';
-                nuevaColumna.textContent = 'Seleccionar';
+                nuevaColumna.textContent = '';
                 thead.appendChild(nuevaColumna);
             }
             if (selectAllRow) selectAllRow.classList.remove('hidden');
@@ -76,6 +76,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             contenedorAcciones.classList.add('hidden');
             checkboxes.forEach(cb => cb.classList.add('hidden'));
             botonesIndividuales.forEach(btn => btn.classList.add('hidden'));
+            const ths = thead.querySelectorAll('th');
+            if (ths.length === 10 && ths[ths.length - 1].textContent.trim() === '') {
+                thead.removeChild(ths[ths.length - 1]);
+            }
             if (selectAllRow) selectAllRow.classList.add('hidden');
         }
 
@@ -188,12 +192,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             const accionesCell = tr.querySelector('.acciones-cell');
 
             if (esPendiente) {
+                const tdCheckbox = document.createElement('td');
                 const checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
                 checkbox.className = 'checkbox-completar hidden mr-2';
-                const tdCheckbox = document.createElement('td');
+                checkbox.setAttribute('data-id', tp.id);
+                checkbox.setAttribute('data-monto', tp.monto);
+                checkbox.setAttribute('data-divisa', tp.divisa);
                 tdCheckbox.appendChild(checkbox);
-                tr.appendChild(tdCheckbox);
+                tr.insertBefore(tdCheckbox, tr.children[0]);
 
                 checkbox.addEventListener('change', () => {
                     const monto = parseFloat(tp.monto);
