@@ -194,7 +194,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                         const seleccionados = Array.from(tabla.querySelectorAll('.checkbox-completar:checked'));
                         const ids = seleccionados.map(cb => cb.dataset.id);
                         if (ids.length === 0) {
-                            alert('No hay traspasos seleccionados para completar.');
+                            mostrarModalError({
+                                titulo: "❌ Error",
+                                mensaje: `No hay traspasos seleccionados para completar.`,
+                                textoConfirmar: "Entendido"
+                            });
                             return;
                         }
                         completarTraspasos(ids);
@@ -309,15 +313,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         .then(res => res.json())
         .then(data => {
             if (data.exito) {
-                alert('Traspasos completados con éxito');
-                cargarTraspasos(); // refresca tabla
+                mostrarModalExitoso()
             } else {
-                alert('Error: ' + data.mensaje);
+                mostrarModalError({
+                    titulo: "❌ Error",
+                    mensaje: `Hubo un error del servidor: ${data.mensaje}`,
+                    textoConfirmar: "Entendido"
+                });
             }
         })
         .catch(err => {
-            console.error('Error en completarTraspasos:', err);
-            alert('Hubo un error de red o de servidor');
+            mostrarModalError({
+                titulo: "❌ Error",
+                mensaje: `Hubo un error del servidor: ${err}`,
+                textoConfirmar: "Entendido"
+            });
         });
     }
 
@@ -329,3 +339,46 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 });
+
+function mostrarModalError({ titulo, mensaje, textoConfirmar = "Aceptar", textoCancelar = null, onConfirmar, onCancelar }) {
+  const modal = document.getElementById("modal-error");
+  const tituloElem = document.getElementById("modal-error-titulo");
+  const mensajeElem = document.getElementById("modal-error-mensaje");
+  const btnConfirmar = document.getElementById("modal-error-confirmar");
+  const btnCancelar = document.getElementById("modal-error-cancelar");
+
+  tituloElem.textContent = titulo;
+  mensajeElem.textContent = mensaje;
+  btnConfirmar.textContent = textoConfirmar;
+
+  if (textoCancelar) {
+    btnCancelar.classList.remove("hidden");
+    btnCancelar.textContent = textoCancelar;
+  } else {
+    btnCancelar.classList.add("hidden");
+  }
+
+  modal.classList.remove("hidden");
+
+  // Remover handlers anteriores
+  btnConfirmar.onclick = () => {
+    modal.classList.add("hidden");
+    if (onConfirmar) onConfirmar();
+  };
+
+  btnCancelar.onclick = () => {
+    modal.classList.add("hidden");
+    if (onCancelar) onCancelar();
+  };
+}
+
+function mostrarModalExitoso() {
+  const modal = document.getElementById("modal-exitoso");
+  modal.classList.remove("hidden");
+
+  document.getElementById("volver").onclick = () => {
+    modal.classList.add("hidden");
+    obtenerTraspasos();
+  };
+
+}
