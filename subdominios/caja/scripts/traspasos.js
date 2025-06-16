@@ -76,6 +76,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             contenedorAcciones.classList.add('hidden');
             checkboxes.forEach(cb => cb.classList.add('hidden'));
             botonesIndividuales.forEach(btn => btn.classList.add('hidden'));
+            const ths = thead.querySelectorAll('th');
             if (ths.length === 10 && ths[0].textContent.trim() === '') {
                 thead.querySelector('tr').removeChild(ths[0]);
             }
