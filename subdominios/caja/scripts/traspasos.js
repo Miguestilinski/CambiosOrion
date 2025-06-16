@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 try {
                     const data = JSON.parse(rawText);
-                    //console.log('Traspasos recibidos:', data);
+                    console.log('Traspasos recibidos:', data);
                     mostrarResultados(data);
                 } catch (e) {
                     console.error("Error al parsear JSON:", e);
