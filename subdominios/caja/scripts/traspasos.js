@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         document.getElementById('checkbox-select-todos').addEventListener('change', (e) => {
             const checked = e.target.checked;
-            tabla.querySelectorAll('.checkbox-completar input[type="checkbox"]').forEach(cb => {
+            tabla.querySelectorAll('.checkbox-completar').forEach(cb => {
                 cb.checked = checked;
                 cb.dispatchEvent(new Event('change'));
             });
@@ -193,6 +193,19 @@ document.addEventListener('DOMContentLoaded', async () => {
             const accionesCell = tr.querySelector('.acciones-cell');
 
             if (esPendiente) {
+                const btnCompletar = document.createElement('button');
+                btnCompletar.textContent = 'Completar';
+                btnCompletar.className = 'btn-completar-individual hidden bg-green-600 text-white px-3 py-1 rounded';
+                btnCompletar.addEventListener('click', () => {
+                    completarTraspasos([tp.id]);
+                });
+
+                accionesCell.appendChild(btnCompletar);
+            } else {
+                accionesCell.appendChild(btnMostrar);
+            }
+
+            if (esPendiente && modoCompletarPendientes) {
                 const tdCheckbox = document.createElement('td');
                 const checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
@@ -215,16 +228,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     actualizarTotales();
                 });
 
-                const btnCompletar = document.createElement('button');
-                btnCompletar.textContent = 'Completar';
-                btnCompletar.className = 'btn-completar-individual hidden bg-green-600 text-white px-3 py-1 rounded';
-                btnCompletar.addEventListener('click', () => {
-                    completarTraspasos([tp.id]);
-                });
 
-                accionesCell.appendChild(btnCompletar);
-            } else {
-                accionesCell.appendChild(btnMostrar);
             }
 
             tabla.appendChild(tr);
