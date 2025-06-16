@@ -76,9 +76,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             contenedorAcciones.classList.add('hidden');
             checkboxes.forEach(cb => cb.classList.add('hidden'));
             botonesIndividuales.forEach(btn => btn.classList.add('hidden'));
-            const ths = thead.querySelectorAll('th');
-            if (ths.length === 10 && ths[0].textContent.trim() === '') {
-                thead.querySelector('tr').removeChild(ths[0]);
+            const filaEncabezado = thead.querySelector('tr');
+            const ths = filaEncabezado ? filaEncabezado.querySelectorAll('th') : [];
+            if (ths.length > 0 && ths[0].textContent.trim() === '') {
+                filaEncabezado.removeChild(ths[0]);
             }
             if (selectAllRow) selectAllRow.classList.add('hidden');
         }
