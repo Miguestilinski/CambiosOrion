@@ -53,6 +53,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function actualizarModoCompletar() {
+        const thead = tabla.closest('table').querySelector('thead');
         const checkboxes = tabla.querySelectorAll('.checkbox-completar');
         const botonesIndividuales = tabla.querySelectorAll('.btn-completar-individual');
         const selectAllRow = document.getElementById('fila-select-todos');
