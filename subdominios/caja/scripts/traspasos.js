@@ -159,22 +159,23 @@ document.addEventListener('DOMContentLoaded', async () => {
             filaSelectTodos.id = 'fila-select-todos';
             filaSelectTodos.className = 'bg-gray-700';
             filaSelectTodos.innerHTML = `
-                <td colspan="1" class="px-4 py-2 text-white" colspan="1">
+                <td class="px-4 py-2">
+                    <input type="checkbox" id="checkbox-select-todos" class="rounded mr-2">
+                </td>
+                <td class="px-4 py-2 text-white">
                     <label>
-                        <input type="checkbox" id="checkbox-select-todos" class="rounded mr-2">
                         Seleccionar todos
                     </label>
                 </td>
-                <td colspan="1"></td>
-                <td colspan="1"></td>
-                <td colspan="1"></td>
-                <td colspan="1"></td>
-                <td colspan="1"></td>
-                <td colspan="1"></td>
-                <td colspan="1"></td>
-                <td colspan="1"></td>
-                <td colspan="1" class="text-right pr-4">
-                    <button id="btn-completar-masivo" class="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-1 rounded">
+                <td class="px-4 py-2"></td>
+                <td class="px-4 py-2"></td>
+                <td class="px-4 py-2"></td>
+                <td class="px-4 py-2"></td>
+                <td class="px-4 py-2"></td>
+                <td class="px-4 py-2"></td>
+                <td class="px-4 py-2"></td>
+                <td class="text-right px-4 py-2 pr-4">
+                    <button id="btn-completar-masivo" class="bg-green-600 hover:bg-green-700 text-white font-semibold px-2 py-1.5 rounded">
                         Completar Traspasos
                     </button>
                 </td>
