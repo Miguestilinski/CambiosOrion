@@ -159,15 +159,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             filaSelectTodos.id = 'fila-select-todos';
             filaSelectTodos.className = 'bg-gray-700';
             filaSelectTodos.innerHTML = `
-                <td colspan="9" class="px-4 py-2 text-white">
+                <td colspan="7" class="px-4 py-2 text-white">
                     <label class="flex items-center">
                         <input type="checkbox" id="checkbox-select-todos" class="rounded mr-2">
                         Seleccionar todos los traspasos pendientes
                     </label>
                 </td>
-                <td class="px-4 py-2 text-right">
-                    <button id="btn-completar-masivo" class="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-1 rounded">
-                        Completar Traspasos
+                <td colspan="3" class="px-4 py-2 text-right">
+                    <button id="btn-completar-masivo" class="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-1.5 rounded">
+                        Completar Traspasos Seleccionados
                     </button>
                 </td>
             `;
