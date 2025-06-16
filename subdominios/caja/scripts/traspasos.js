@@ -151,7 +151,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const filaSelectTodos = document.createElement('tr');
         filaSelectTodos.id = 'fila-select-todos';
         filaSelectTodos.className = 'bg-gray-700 hidden';
-        filaSelectTodos.innerHTML = '<td colspan="9" class="px-4 py-2"><label class="text-white"><input type="checkbox" id="checkbox-select-todos" class="mr-2">Seleccionar todos los traspasos pendientes</label></td>';
+        filaSelectTodos.innerHTML = '<td colspan="10" class="px-4 py-2"><label class="text-white"><input type="checkbox" id="checkbox-select-todos" class="rounded mr-2">Seleccionar todos los traspasos pendientes</label></td>';
         tabla.appendChild(filaSelectTodos);
 
         document.getElementById('checkbox-select-todos').addEventListener('change', (e) => {
@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (esPendiente) {
                     const checkbox = document.createElement('input');
                     checkbox.type = 'checkbox';
-                    checkbox.className = 'checkbox-completar mr-2';
+                    checkbox.className = 'checkbox-completar mrl-2 rounded';
                     checkbox.setAttribute('data-id', tp.id);
                     checkbox.setAttribute('data-monto', tp.monto);
                     checkbox.setAttribute('data-divisa', tp.divisa);
