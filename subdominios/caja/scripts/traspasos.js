@@ -62,9 +62,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (modoCompletarPendientes) {
             completarPendientesBtn.textContent = 'Cancelar';
+
+            completarPendientesBtn.classList.remove(
+                'bg-yellow-600', 'hover:bg-yellow-700', 'focus:ring-yellow-300'
+            );
+            completarPendientesBtn.classList.add(
+                'bg-red-600', 'hover:bg-red-700', 'focus:ring-red-300'
+            );
+
             contenedorAcciones.classList.remove('hidden');
             checkboxes.forEach(cb => cb.classList.remove('hidden'));
             botonesIndividuales.forEach(btn => btn.classList.remove('hidden'));
+
             const filaEncabezado = thead.querySelector('tr');
             if (filaEncabezado && filaEncabezado.children.length === 9) {
                 const nuevaColumna = document.createElement('th');
@@ -75,9 +84,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (selectAllRow) selectAllRow.classList.remove('hidden');
         } else {
             completarPendientesBtn.textContent = 'Completar Traspasos Pendientes';
+
+            completarPendientesBtn.classList.remove(
+                'bg-red-600', 'hover:bg-red-700', 'focus:ring-red-300'
+            );
+            completarPendientesBtn.classList.add(
+                'bg-yellow-600', 'hover:bg-yellow-700', 'focus:ring-yellow-300'
+            );
+
             contenedorAcciones.classList.add('hidden');
             checkboxes.forEach(cb => cb.classList.add('hidden'));
             botonesIndividuales.forEach(btn => btn.classList.add('hidden'));
+
             const filaEncabezado = thead.querySelector('tr');
             const ths = filaEncabezado ? filaEncabezado.querySelectorAll('th') : [];
             if (ths.length > 0 && ths[0].textContent.trim() === '') {
