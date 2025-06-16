@@ -173,7 +173,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 window.location.href = `detalle-tp?id=${tp.id}`;
             });
 
-            const esPendiente = tp.estado.toLowerCase() === 'Pendiente';
+            const esPendiente = tp.estado.toLowerCase() === 'pendiente';
 
             tr.innerHTML = `
                 <td class="px-4 py-2">
