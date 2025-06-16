@@ -200,17 +200,28 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             // Celdas de datos
-            tr.innerHTML += `
-                <td class="px-4 py-2">${limpiarTexto(tp.id)}</td>
-                <td class="px-4 py-2">${limpiarTexto(tp.fecha)}</td>
-                <td class="px-4 py-2">${limpiarTexto(tp.transaccion_id)}</td>
-                <td class="px-4 py-2">${limpiarTexto(tp.origen)}</td>
-                <td class="px-4 py-2">${limpiarTexto(tp.destino)}</td>
-                <td class="px-4 py-2">${limpiarTexto(tp.divisa)}</td>
-                <td class="px-4 py-2">${formatearNumero(tp.monto)}</td>
-                <td class="px-4 py-2">${limpiarTexto(tp.estado)}</td>
-                <td class="px-4 py-2 acciones-cell"></td>
-            `;
+            const celdas = [
+                limpiarTexto(tp.id),
+                limpiarTexto(tp.fecha),
+                limpiarTexto(tp.transaccion_id),
+                limpiarTexto(tp.origen),
+                limpiarTexto(tp.destino),
+                limpiarTexto(tp.divisa),
+                formatearNumero(tp.monto),
+                limpiarTexto(tp.estado)
+            ];
+
+            celdas.forEach(texto => {
+                const td = document.createElement('td');
+                td.className = 'px-4 py-2';
+                td.textContent = texto;
+                tr.appendChild(td);
+            });
+
+            // Última celda (acciones)
+            const tdAcciones = document.createElement('td');
+            tdAcciones.className = 'px-4 py-2 acciones-cell';
+            tr.appendChild(tdAcciones);
 
             // Botón de acción según estado
             const accionesCell = tr.querySelector('.acciones-cell');
