@@ -166,20 +166,42 @@ document.addEventListener('DOMContentLoaded', async () => {
             const tr = document.createElement('tr');
             tr.className = 'bg-white border-b border-gray-700 text-gray-700';
 
-            const btnMostrar = document.createElement('button');
-            btnMostrar.textContent = 'Mostrar';
-            btnMostrar.className = 'text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1';
-            btnMostrar.addEventListener('click', () => {
-                window.location.href = `detalle-tp?id=${tp.id}`;
-            });
-
             const esPendiente = tp.estado.toLowerCase() === 'pendiente';
 
-            tr.innerHTML = `
-                <td class="px-4 py-2">
-                    <input type="checkbox" class="check-pendiente hidden" data-id="${tp.id}" data-monto="${tp.monto}" data-divisa="${tp.divisa}">
-                    ${limpiarTexto(tp.id)}
-                </td>
+            // Crear celda del checkbox (solo visible si modoCompletarPendientes está activo)
+            if (modoCompletarPendientes) {
+                const tdCheckbox = document.createElement('td');
+                if (esPendiente) {
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.className = 'checkbox-completar mr-2';
+                    checkbox.setAttribute('data-id', tp.id);
+                    checkbox.setAttribute('data-monto', tp.monto);
+                    checkbox.setAttribute('data-divisa', tp.divisa);
+                    tdCheckbox.appendChild(checkbox);
+
+                    checkbox.addEventListener('change', () => {
+                        const monto = parseFloat(tp.monto);
+                        const divisa = tp.divisa;
+                        if (checkbox.checked) {
+                            totalesPorDivisa[divisa] = (totalesPorDivisa[divisa] || 0) + monto;
+                        } else {
+                            totalesPorDivisa[divisa] = (totalesPorDivisa[divisa] || 0) - monto;
+                            if (totalesPorDivisa[divisa] <= 0) delete totalesPorDivisa[divisa];
+                        }
+                        actualizarTotales();
+                    });
+                }
+                tr.appendChild(tdCheckbox);
+            } else {
+                // si no está en modo completar, insertar una celda vacía al inicio para mantener las columnas alineadas
+                const tdVacio = document.createElement('td');
+                tr.appendChild(tdVacio);
+            }
+
+            // Celdas de datos
+            tr.innerHTML += `
+                <td class="px-4 py-2">${limpiarTexto(tp.id)}</td>
                 <td class="px-4 py-2">${limpiarTexto(tp.fecha)}</td>
                 <td class="px-4 py-2">${limpiarTexto(tp.transaccion_id)}</td>
                 <td class="px-4 py-2">${limpiarTexto(tp.origen)}</td>
@@ -190,45 +212,35 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <td class="px-4 py-2 acciones-cell"></td>
             `;
 
+            // Botón de acción según estado
             const accionesCell = tr.querySelector('.acciones-cell');
 
             if (esPendiente) {
-                const btnCompletar = document.createElement('button');
-                btnCompletar.textContent = 'Completar';
-                btnCompletar.className = 'btn-completar-individual hidden bg-green-600 text-white px-3 py-1 rounded';
-                btnCompletar.addEventListener('click', () => {
-                    completarTraspasos([tp.id]);
-                });
-
-                accionesCell.appendChild(btnCompletar);
+                if (modoCompletarPendientes) {
+                    const btnCompletar = document.createElement('button');
+                    btnCompletar.textContent = 'Completar';
+                    btnCompletar.className = 'btn-completar-individual bg-green-600 text-white px-3 py-1 rounded';
+                    btnCompletar.addEventListener('click', () => {
+                        completarTraspasos([tp.id]);
+                    });
+                    accionesCell.appendChild(btnCompletar);
+                } else {
+                    const btnCompletar = document.createElement('button');
+                    btnCompletar.textContent = 'Completar';
+                    btnCompletar.className = 'bg-green-600 text-white px-3 py-1 rounded';
+                    btnCompletar.addEventListener('click', () => {
+                        completarTraspasos([tp.id]);
+                    });
+                    accionesCell.appendChild(btnCompletar);
+                }
             } else {
-                accionesCell.appendChild(btnMostrar);
-            }
-
-            if (esPendiente && modoCompletarPendientes) {
-                const tdCheckbox = document.createElement('td');
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.className = 'checkbox-completar hidden mr-2';
-                checkbox.setAttribute('data-id', tp.id);
-                checkbox.setAttribute('data-monto', tp.monto);
-                checkbox.setAttribute('data-divisa', tp.divisa);
-                tdCheckbox.appendChild(checkbox);
-                tr.insertBefore(tdCheckbox, tr.children[0]);
-
-                checkbox.addEventListener('change', () => {
-                    const monto = parseFloat(tp.monto);
-                    const divisa = tp.divisa;
-                    if (checkbox.checked) {
-                        totalesPorDivisa[divisa] = (totalesPorDivisa[divisa] || 0) + monto;
-                    } else {
-                        totalesPorDivisa[divisa] = (totalesPorDivisa[divisa] || 0) - monto;
-                        if (totalesPorDivisa[divisa] <= 0) delete totalesPorDivisa[divisa];
-                    }
-                    actualizarTotales();
+                const btnMostrar = document.createElement('button');
+                btnMostrar.textContent = 'Mostrar';
+                btnMostrar.className = 'text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1';
+                btnMostrar.addEventListener('click', () => {
+                    window.location.href = `detalle-tp?id=${tp.id}`;
                 });
-
-
+                accionesCell.appendChild(btnMostrar);
             }
 
             tabla.appendChild(tr);
