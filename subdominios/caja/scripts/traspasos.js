@@ -297,9 +297,26 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function completarTraspasos(ids) {
-        // Aquí va la lógica de envío al servidor para completar los traspasos por ID
-        console.log('Completar traspasos:', ids);
-        // Ejemplo POST a completar-traspasos.php
+        fetch('https://cambiosorion.cl/data/traspasos.php?caja_id=' + caja_id, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ ids })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.exito) {
+                alert('Traspasos completados con éxito');
+                cargarTraspasos(); // refresca tabla
+            } else {
+                alert('Error: ' + data.mensaje);
+            }
+        })
+        .catch(err => {
+            console.error('Error en completarTraspasos:', err);
+            alert('Hubo un error de red o de servidor');
+        });
     }
 
     // Event listeners para filtros visibles
