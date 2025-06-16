@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const tdCheckbox = document.createElement('td');
                 const checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
-                checkbox.className = 'checkbox-completar mrl-2 rounded';
+                checkbox.className = 'checkbox-completar ml-4 rounded';
                 checkbox.setAttribute('data-id', tp.id);
                 checkbox.setAttribute('data-monto', tp.monto);
                 checkbox.setAttribute('data-divisa', tp.divisa);
