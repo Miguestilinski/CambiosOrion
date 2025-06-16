@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 try {
                     const data = JSON.parse(rawText);
-                    console.log('Traspasos recibidos:', data);
+                    //console.log('Traspasos recibidos:', data);
                     mostrarResultados(data);
                 } catch (e) {
                     console.error("Error al parsear JSON:", e);
@@ -149,19 +149,38 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
-        const filaSelectTodos = document.createElement('tr');
-        filaSelectTodos.id = 'fila-select-todos';
-        filaSelectTodos.className = 'bg-gray-700 hidden';
-        filaSelectTodos.innerHTML = '<td colspan="10" class="px-4 py-2"><label class="text-white"><input type="checkbox" id="checkbox-select-todos" class="rounded mr-2">Seleccionar todos los traspasos pendientes</label></td>';
-        tabla.appendChild(filaSelectTodos);
+        // Eliminar fila previa si existe
+        const filaSelectTodosExistente = document.getElementById('fila-select-todos');
+        if (filaSelectTodosExistente) filaSelectTodosExistente.remove();
 
-        document.getElementById('checkbox-select-todos').addEventListener('change', (e) => {
-            const checked = e.target.checked;
-            tabla.querySelectorAll('.checkbox-completar').forEach(cb => {
-                cb.checked = checked;
-                cb.dispatchEvent(new Event('change'));
-            });
-        });
+        // Solo crear si el modo está activo
+        if (modoCompletarPendientes) {
+            const filaSelectTodos = document.createElement('tr');
+            filaSelectTodos.id = 'fila-select-todos';
+            filaSelectTodos.className = 'bg-gray-700';
+            filaSelectTodos.innerHTML = `
+                <td colspan="10" class="px-4 py-2">
+                    <label class="text-white">
+                        <input type="checkbox" id="checkbox-select-todos" class="rounded mr-2">
+                        Seleccionar todos los traspasos pendientes
+                    </label>
+                </td>`;
+            tabla.appendChild(filaSelectTodos);
+
+            // Agrega evento después de insertar en el DOM
+            setTimeout(() => {
+                const selectAllCheckbox = document.getElementById('checkbox-select-todos');
+                if (selectAllCheckbox) {
+                    selectAllCheckbox.addEventListener('change', (e) => {
+                        const checked = e.target.checked;
+                        tabla.querySelectorAll('.checkbox-completar').forEach(cb => {
+                            cb.checked = checked;
+                            cb.dispatchEvent(new Event('change'));
+                        });
+                    });
+                }
+            }, 0);
+        }
 
         traspasos.forEach(tp => {
             const tr = document.createElement('tr');
@@ -170,32 +189,31 @@ document.addEventListener('DOMContentLoaded', async () => {
             const esPendiente = (tp.estado || '').toLowerCase() === 'pendiente';
 
             // Crear celda del checkbox (solo visible si modoCompletarPendientes está activo)
-            if (modoCompletarPendientes) {
+            if (modoCompletarPendientes && esPendiente) {
                 const tdCheckbox = document.createElement('td');
-                if (esPendiente) {
-                    const checkbox = document.createElement('input');
-                    checkbox.type = 'checkbox';
-                    checkbox.className = 'checkbox-completar mrl-2 rounded';
-                    checkbox.setAttribute('data-id', tp.id);
-                    checkbox.setAttribute('data-monto', tp.monto);
-                    checkbox.setAttribute('data-divisa', tp.divisa);
-                    tdCheckbox.appendChild(checkbox);
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.className = 'checkbox-completar mrl-2 rounded';
+                checkbox.setAttribute('data-id', tp.id);
+                checkbox.setAttribute('data-monto', tp.monto);
+                checkbox.setAttribute('data-divisa', tp.divisa);
+                tdCheckbox.appendChild(checkbox);
 
-                    checkbox.addEventListener('change', () => {
-                        const monto = parseFloat(tp.monto);
-                        const divisa = tp.divisa;
-                        if (checkbox.checked) {
-                            totalesPorDivisa[divisa] = (totalesPorDivisa[divisa] || 0) + monto;
-                        } else {
-                            totalesPorDivisa[divisa] = (totalesPorDivisa[divisa] || 0) - monto;
-                            if (totalesPorDivisa[divisa] <= 0) delete totalesPorDivisa[divisa];
-                        }
-                        actualizarTotales();
-                    });
-                }
+                checkbox.addEventListener('change', () => {
+                    const monto = parseFloat(tp.monto);
+                    const divisa = tp.divisa;
+                    if (checkbox.checked) {
+                        totalesPorDivisa[divisa] = (totalesPorDivisa[divisa] || 0) + monto;
+                    } else {
+                        totalesPorDivisa[divisa] = (totalesPorDivisa[divisa] || 0) - monto;
+                        if (totalesPorDivisa[divisa] <= 0) delete totalesPorDivisa[divisa];
+                    }
+                    actualizarTotales();
+                });
+
                 tr.appendChild(tdCheckbox);
-            } else {
-                // si no está en modo completar, insertar una celda vacía al inicio para mantener las columnas alineadas
+            } else if (modoCompletarPendientes && !esPendiente) {
+                // Mantener alineación con celda vacía si modo está activo pero no es pendiente
                 const tdVacio = document.createElement('td');
                 tr.appendChild(tdVacio);
             }
