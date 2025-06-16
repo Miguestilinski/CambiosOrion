@@ -62,6 +62,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             contenedorAcciones.classList.remove('hidden');
             checkboxes.forEach(cb => cb.classList.remove('hidden'));
             botonesIndividuales.forEach(btn => btn.classList.remove('hidden'));
+            const ths = thead.querySelectorAll('th');
+            if (ths.length === 9) {
+                const nuevaColumna = document.createElement('th');
+                nuevaColumna.className = 'px-4 py-2';
+                nuevaColumna.textContent = 'Seleccionar';
+                thead.appendChild(nuevaColumna);
+            }
             if (selectAllRow) selectAllRow.classList.remove('hidden');
         } else {
             completarPendientesBtn.textContent = 'Completar Traspasos Pendientes';
@@ -71,8 +78,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (selectAllRow) selectAllRow.classList.add('hidden');
         }
 
-        // Resetear selección y totales
-        tabla.querySelectorAll('.checkbox-completar input[type="checkbox"]').forEach(cb => cb.checked = false);
+        tabla.querySelectorAll('.checkbox-completar').forEach(cb => cb.checked = false);
         totalesPorDivisa = {};
         actualizarTotales();
     }
@@ -184,6 +190,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
                 checkbox.className = 'checkbox-completar hidden mr-2';
+                const tdCheckbox = document.createElement('td');
+                tdCheckbox.appendChild(checkbox);
+                tr.appendChild(tdCheckbox);
+
                 checkbox.addEventListener('change', () => {
                     const monto = parseFloat(tp.monto);
                     const divisa = tp.divisa;
