@@ -87,6 +87,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         tabla.querySelectorAll('.checkbox-completar').forEach(cb => cb.checked = false);
         totalesPorDivisa = {};
         actualizarTotales();
+        obtenerTraspasos();
     }
 
     function actualizarTotales() {
@@ -166,7 +167,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const tr = document.createElement('tr');
             tr.className = 'bg-white border-b border-gray-700 text-gray-700';
 
-            const esPendiente = tp.estado.toLowerCase() === 'pendiente';
+            const esPendiente = (tp.estado || '').toLowerCase() === 'pendiente';
 
             // Crear celda del checkbox (solo visible si modoCompletarPendientes está activo)
             if (modoCompletarPendientes) {
