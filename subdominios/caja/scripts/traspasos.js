@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const nuevoTraspasoBtn = document.getElementById('nuevo-tp');
     const completarPendientesBtn = document.getElementById('activar-completado');
     const tabla = document.getElementById('tabla-transacciones');
-    const totalesDiv = document.getElementById('totales-div');
+    const resumenTotales = document.getElementById('resumen-totales');
     const contenedorAcciones = document.getElementById('resumen-completado');
 
     const filtros = {
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const totalHtml = Object.entries(totalesPorDivisa).map(([divisa, monto]) => {
             return `<span class="block">${divisa}: ${formatearNumero(monto)}</span>`;
         }).join('');
-        totalesDiv.innerHTML = totalHtml;
+        resumenTotales.innerHTML = totalHtml;
     }
 
     function obtenerTraspasos() {
