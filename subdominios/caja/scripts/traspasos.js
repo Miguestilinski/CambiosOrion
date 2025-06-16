@@ -222,7 +222,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     completarTraspasos([tp.id]);
                 });
 
-                accionesCell.appendChild(checkbox);
                 accionesCell.appendChild(btnCompletar);
             } else {
                 accionesCell.appendChild(btnMostrar);
