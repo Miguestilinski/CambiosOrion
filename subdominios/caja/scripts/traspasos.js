@@ -1,4 +1,5 @@
 let usuarioSesion = null;
+let caja_id = null;
 let modoCompletarPendientes = false;
 let totalesPorDivisa = {};
 
@@ -33,6 +34,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.log("Usuario autenticado:", usuarioSesion);
 
         if (usuarioSesion && usuarioSesion.caja_id !== undefined) {
+            caja_id = usuarioSesion.caja_id;
             filtros.caja_id.value = usuarioSesion.caja_id;
             obtenerTraspasos();
         }
