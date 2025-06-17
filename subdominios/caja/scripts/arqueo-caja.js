@@ -28,7 +28,8 @@ async function cargarDivisas(cajaId) {
         let response = await fetch(`https://cambiosorion.cl/data/arqueo-caja.php?caja_id=${cajaId}`);
         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
         
-        let divisas = await response.json();
+        let data = await response.json();
+        let divisas = data.divisas;
         
         // Filtrar divisas duplicadas (basado en código)
         divisas = divisas.filter((value, index, self) =>
