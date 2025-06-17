@@ -118,8 +118,7 @@ async function cargarDivisas(cajaId) {
                 if (totalArqueo === 0 && totalSistema !== 0) {
                     diferencia = -totalSistema;
                 }
-                
-                console.log(`Divisa: ${divisa.codigo} | Arqueo: ${totalArqueo} | Sistema: ${divisa.total_sistema}`);
+
                 actualizarListaDivisas(divisa.codigo, totalArqueo, diferencia, divisa.simbolo);
             }
         });
@@ -268,15 +267,23 @@ function calcularTotal(codigoDivisa, simboloDivisa) {
         diferencia = -totalSistema; // La diferencia será el valor negativo de Total Sistema
     }
 
-    let diferenciaFormateada = (diferencia > 0 ? "+" : "-") + formatoNumero(Math.abs(diferencia));
+    const diferenciaCajaElem = document.getElementById('diferencia-caja');
+    diferenciaCajaElem.classList.remove("text-gray-700", "text-green-600", "text-red-600");
 
-    // Mostrar la diferencia
-    document.getElementById('diferencia-caja').textContent = `${simboloDivisa} ${diferenciaFormateada}`;
-    document.getElementById('diferencia-caja').classList.remove("text-gray-700", "text-green-600", "text-red-600");
-    document.getElementById('diferencia-caja').classList.add(diferencia === 0 ? "text-green-600" : "text-red-600");
+    let diferenciaFormateada = "";
+
+    if (diferencia === 0) {
+        diferenciaFormateada = `${simboloDivisa} ${formatoNumero(0)}`;
+        diferenciaCajaElem.classList.add("text-green-600");
+    } else {
+        const signo = diferencia > 0 ? "+" : "-";
+        diferenciaFormateada = `${simboloDivisa} ${signo}${formatoNumero(Math.abs(diferencia))}`;
+        diferenciaCajaElem.classList.add("text-red-600");
+    }
+
+    diferenciaCajaElem.textContent = diferenciaFormateada;
 
     localStorage.setItem(codigoDivisa, JSON.stringify(cantidades));
-
     actualizarListaDivisas(codigoDivisa, totalArqueo, diferencia, simboloDivisa);
 }
 
