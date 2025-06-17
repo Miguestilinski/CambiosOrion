@@ -338,6 +338,7 @@ function guardarCuadratura(divisas, observacion) {
   fetch("https://cambiosorion.cl/data/arqueo-caja.php", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
+    credentials: "include",
     body: JSON.stringify({ divisas: divisas, observacion: observacion })
   })
   .then(response => response.text())
