@@ -179,6 +179,49 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Modal de advertencia -->
+                <div id="modal-advertencia" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+                    <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
+                        <h2 class="text-lg font-semibold mb-4">⚠️ Advertencia</h2>
+                        <p id="modal-advertencia-mensaje" class="mb-4">Mensaje</p>
+
+                        <!-- Campo de observación opcional -->
+                        <div id="observacion-container" class="mb-4 hidden">
+                            <label for="observacion" class="block text-sm font-medium text-gray-700 mb-1">Agrega una observación</label>
+                            <textarea id="observacion" rows="3" class="w-full border rounded p-2 text-sm" placeholder="Escribe tu observación aquí..."></textarea>
+                        </div>
+
+                        <div class="flex justify-end space-x-4">
+                        <button id="modal-advertencia-cancelar" class="bg-gray-300 text-gray-700 px-4 py-2 rounded">Cancelar</button>
+                        <button id="modal-advertencia-confirmar" class="bg-blue-600 text-white px-4 py-2 rounded">Continuar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Error -->
+                <div id="modal-error" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+                    <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
+                        <h2 id="modal-error-titulo" class="text-lg font-semibold mb-4">Título</h2>
+                        <p id="modal-error-mensaje" class="mb-4">Mensaje</p>
+                        <div class="flex justify-end space-x-4">
+                        <button id="modal-error-cancelar" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hidden">Cancelar</button>
+                        <button id="modal-error-confirmar" class="bg-blue-600 text-white px-4 py-2 rounded">Aceptar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal de cuadratura exitosa -->
+                <div id="modal-exitoso" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+                    <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
+                        <h2 class="text-lg font-semibold mb-4">✅ Cuadratura registrada</h2>
+                        <p class="mb-4">La cuadratura se ha registrado correctamente.</p>
+                        <div class="flex justify-end space-x-4">
+                        <!-- <button id="nueva-cuadratura" class="bg-green-600 text-white px-4 py-2 rounded">Nueva Cuadratura</button> -->
+                        <button id="volver" class="bg-gray-300 text-gray-700 px-4 py-2 rounded">Volver</button>
+                        </div>
+                    </div>
+                </div>
             </section>
         </main>
     </div>

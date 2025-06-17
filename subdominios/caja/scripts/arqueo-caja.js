@@ -178,7 +178,6 @@ function generarTablaArqueo(divisa) {
     }
 
     const cantidadesGuardadas = JSON.parse(localStorage.getItem(divisa.codigo)) || {};
-    console.log(cantidadesGuardadas);
 
     if (divisa.fraccionable && denominaciones.length > 0) {
         denominaciones.forEach((denominacion, index) => {
@@ -301,30 +300,145 @@ function actualizarListaDivisas(codigoDivisa, totalArqueo, diferencia, simboloDi
 }
 
 document.getElementById("guardar-arqueo").addEventListener("click", function() {
-    fetch("https://cambiosorion.cl/data/arqueo-caja.php")
-        .then(response => response.json())
-        .then(divisas => {
-            let todasCero = divisas.every(divisa => parseFloat(document.getElementById(`diferencia-${divisa.codigo}`).textContent) === 0);
-            
-            if (!todasCero) {
-                alert("Aún hay diferencias en las divisas. No se puede guardar la cuadratura.");
-                return;
-            }
-            guardarCuadratura(divisas);
-        })
-        .catch(error => console.error("Error al verificar diferencias:", error));
+  fetch("https://cambiosorion.cl/data/arqueo-caja.php")
+    .then(response => response.json())
+    .then(data => {
+      let divisas = data.divisas || [];
+
+      let todasCero = divisas.every(divisa => {
+        const diferenciaTexto = document.getElementById(`diferencia-${divisa.codigo}`)?.textContent || "";
+        const diferenciaNumerica = parseFloat(diferenciaTexto.replace(/[^0-9,-]/g, "").replace(",", "."));
+        return diferenciaNumerica === 0;
+      });
+
+      if (!todasCero) {
+        mostrarModalAdvertencia({
+          mensaje: "Aún hay diferencias en las divisas. ¿Deseas guardar igualmente la cuadratura?",
+          textoConfirmar: "Guardar",
+          textoCancelar: "Cancelar",
+          requiereObservacion: true,
+          onConfirmar: function(observacion) {
+            guardarCuadratura(divisas, observacion);
+          }
+        });
+      } else {
+        guardarCuadratura(divisas, null);
+      }
+    })
+    .catch(error => {
+      console.error("Error al verificar diferencias:", error);
+      mostrarModalError({
+        titulo: "❌ Error",
+        mensaje: "No se pudieron verificar las diferencias de cuadratura."
+      });
+    });
 });
 
-function guardarCuadratura(divisas) {
-    fetch("https://cambiosorion.cl/data/arqueo-caja.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ divisas: divisas })
-    })
-    .then(response => response.text())
-    .then(data => {
-        alert("Cuadratura guardada exitosamente.");
-        console.log(data);
-    })
-    .catch(error => console.error("Error al guardar la cuadratura:", error));
+function guardarCuadratura(divisas, observacion) {
+  fetch("https://cambiosorion.cl/data/arqueo-caja.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ divisas: divisas, observacion: observacion })
+  })
+  .then(response => response.text())
+  .then(data => {
+    mostrarModalExitoso();
+    console.log("Respuesta del servidor:", data);
+  })
+  .catch(error => {
+    console.error("Error al guardar la cuadratura:", error);
+    mostrarModalError({
+      titulo: "❌ Error",
+      mensaje: "Ocurrió un problema al guardar la cuadratura."
+    });
+  });
+}
+
+function mostrarModalAdvertencia({mensaje, textoConfirmar = "Aceptar", textoCancelar = null, onConfirmar, onCancelar }) {
+  const modal = document.getElementById("modal-advertencia");
+  const mensajeElem = document.getElementById("modal-advertencia-mensaje");
+  const observacionContainer = document.getElementById("observacion-container");
+  const observacionInput = document.getElementById("observacion");
+  const btnConfirmar = document.getElementById("modal-advertencia-confirmar");
+  const btnCancelar = document.getElementById("modal-advertencia-cancelar");
+
+  mensajeElem.textContent = mensaje;
+  btnConfirmar.textContent = textoConfirmar;
+
+  observacionInput.value = "";
+  observacionContainer.classList.toggle("hidden", !requiereObservacion);
+
+  if (textoCancelar) {
+    btnCancelar.classList.remove("hidden");
+    btnCancelar.textContent = textoCancelar;
+  } else {
+    btnCancelar.classList.add("hidden");
+  }
+
+  modal.classList.remove("hidden");
+
+  // Remover handlers anteriores
+  btnConfirmar.onclick = () => {
+    if (requiereObservacion && observacionInput.value.trim() === "") {
+        mostrarModalError({
+        titulo: "❌ Error",
+        mensaje: "Por favor, escribe una observación antes de continuar."
+        });
+        return;
+    }
+    modal.classList.add("hidden");
+    if (onConfirmar) onConfirmar(observacionInput.value.trim());
+  };
+
+  btnCancelar.onclick = () => {
+    modal.classList.add("hidden");
+    if (onCancelar) onCancelar();
+  };
+}
+
+function mostrarModalError({ titulo, mensaje, textoConfirmar = "Aceptar", textoCancelar = null, onConfirmar, onCancelar }) {
+  const modal = document.getElementById("modal-error");
+  const tituloElem = document.getElementById("modal-error-titulo");
+  const mensajeElem = document.getElementById("modal-error-mensaje");
+  const btnConfirmar = document.getElementById("modal-error-confirmar");
+  const btnCancelar = document.getElementById("modal-error-cancelar");
+
+  tituloElem.textContent = titulo;
+  mensajeElem.textContent = mensaje;
+  btnConfirmar.textContent = textoConfirmar;
+
+  if (textoCancelar) {
+    btnCancelar.classList.remove("hidden");
+    btnCancelar.textContent = textoCancelar;
+  } else {
+    btnCancelar.classList.add("hidden");
+  }
+
+  modal.classList.remove("hidden");
+
+  // Remover handlers anteriores
+  btnConfirmar.onclick = () => {
+    modal.classList.add("hidden");
+    if (onConfirmar) onConfirmar();
+  };
+
+  btnCancelar.onclick = () => {
+    modal.classList.add("hidden");
+    if (onCancelar) onCancelar();
+  };
+}
+
+function mostrarModalExitoso() {
+  const modal = document.getElementById("modal-exitoso");
+  modal.classList.remove("hidden");
+
+  document.getElementById("nueva-cuadratura").onclick = () => {
+    modal.classList.add("hidden");
+    //document.getElementById("form-nueva-tr").reset();
+    // Resetear totales e imputs adicional si es necesario
+  };
+
+  document.getElementById("volver").onclick = () => {
+    window.location.href = "https://caja.cambiosorion.cl/arqueo-caja";
+  };
 }
