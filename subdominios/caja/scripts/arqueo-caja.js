@@ -91,11 +91,12 @@ async function cargarDivisas(cajaId) {
                 </div>
                 <div class="resumen flex text-sm">
                     <span class="text-sm">Arqueo:</span>
-                    <span class="text-md" id="arqueo-${divisa.codigo}">${formatoNumero(divisa.arqueo || 0)}</span>
+                    <span class="text-md" id="arqueo-${divisa.codigo}">${divisa.simbolo} ${formatoNumero(divisa.arqueo || 0)}</span>
                 </div>
                 <div class="resumen flex text-sm">
                     <span class="text-sm">Diferencia:</span>
-                    <span class="text-md" id="diferencia-${divisa.codigo}">${formatoNumero(divisa.diferencia || 0)}</span>
+                    <span class="text-md" id="diferencia-${divisa.codigo}">${divisa.simbolo} ${formatoNumero(divisa.diferencia || 0)}</span>
+
                 </div>
             `;
 
