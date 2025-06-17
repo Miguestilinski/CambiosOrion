@@ -432,11 +432,11 @@ function mostrarModalExitoso() {
   const modal = document.getElementById("modal-exitoso");
   modal.classList.remove("hidden");
 
-  document.getElementById("nueva-cuadratura").onclick = () => {
-    modal.classList.add("hidden");
+  //document.getElementById("nueva-cuadratura").onclick = () => {
+    //modal.classList.add("hidden");
     //document.getElementById("form-nueva-tr").reset();
     // Resetear totales e imputs adicional si es necesario
-  };
+  //};
 
   document.getElementById("volver").onclick = () => {
     window.location.href = "https://caja.cambiosorion.cl/arqueo-caja";
