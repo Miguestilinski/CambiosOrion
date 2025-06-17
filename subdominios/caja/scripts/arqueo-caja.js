@@ -160,7 +160,9 @@ function generarTablaArqueo(divisa) {
             let cantidadGuardada = cantidadesGuardadas[claveDenominacion] || 0;
             
             filaTotal.innerHTML = `
-                <td class="p-3 text-center">${index === 0 ? `${divisa.simbolo} ${formatoNumero(sistemaTotal)}` : ''}</td>
+                <td class="p-3 text-center" ${index === 0 ? 'id="total-sistema"' : ''}>
+                    ${index === 0 ? `${divisa.simbolo} ${formatoNumero(sistemaTotal)}` : ''}
+                </td>
                 <td class="p-3 text-center">${formatoNumero(denominacion)}</td>
                 <td class="p-3 text-center">
                     <input type="number" class="w-16 p-1 bg-white border border-gray-600 text-gray-700 text-center"
