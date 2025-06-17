@@ -247,28 +247,24 @@ function calcularTotal(codigoDivisa, simboloDivisa) {
     }
 
     // Mostrar la diferencia
-    document.getElementById('diferencia-caja').textContent = `${simboloDivisa} ${formatoNumero(diferencia.toFixed(2))}`;
+    document.getElementById('diferencia-caja').textContent = `${simboloDivisa} ${formatoNumero(diferencia)}`;
     document.getElementById('diferencia-caja').classList.remove("text-gray-700", "text-green-600", "text-red-600");
     document.getElementById('diferencia-caja').classList.add(diferencia === 0 ? "text-green-600" : "text-red-600");
 
     localStorage.setItem(codigoDivisa, JSON.stringify(cantidades));
 }
 
-function actualizarListaDivisas(codigoDivisa, totalArqueo, diferencia) {
-    const divisas = document.querySelectorAll("#divisas-lista > div");
-    divisas.forEach(divisa => {
-        if (divisa.getAttribute("data-codigo") === codigoDivisa) {
-            const arqueoElement = divisa.querySelector(".resumen > span:nth-child(2)");
-            const diferenciaElement = divisa.querySelector(".resumen > span:last-child");
-            
-            // Verificamos que los elementos existan antes de actualizar
-            if (arqueoElement && diferenciaElement) {
-                // Actualizar solo el contenido de arqueo y diferencia
-                arqueoElement.textContent = `Arqueo: ${simboloDivisa} ${formatoNumero(totalArqueo)}`;
-                diferenciaElement.textContent = `Diferencia: ${simboloDivisa} ${formatoNumero(diferencia)}`;
-            }
+function actualizarListaDivisas(codigoDivisa, totalArqueo, diferencia, simboloDivisa) {
+    const div = document.querySelector(`#divisas-lista > div[data-codigo="${codigoDivisa}"]`);
+    if (div) {
+        const arqueoElement = div.querySelector(`#arqueo-${codigoDivisa}`);
+        const diferenciaElement = div.querySelector(`#diferencia-${codigoDivisa}`);
+
+        if (arqueoElement && diferenciaElement) {
+            arqueoElement.textContent = `${simboloDivisa} ${formatoNumero(totalArqueo)}`;
+            diferenciaElement.textContent = `${simboloDivisa} ${formatoNumero(diferencia)}`;
         }
-    });
+    }
 }
 
 document.getElementById("guardar-arqueo").addEventListener("click", function() {
