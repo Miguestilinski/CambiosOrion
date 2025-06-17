@@ -103,6 +103,10 @@ async function cargarDivisas(cajaId) {
             lista.appendChild(div);
         });
 
+        // Agregar barra de desplazamiento
+        lista.style.maxHeight = '31rem';
+        lista.style.overflowY = 'auto';
+
         let cantidadesGuardadas = localStorage.getItem(divisa.codigo);
         if (cantidadesGuardadas) {
             cantidadesGuardadas = JSON.parse(cantidadesGuardadas);
@@ -122,10 +126,6 @@ async function cargarDivisas(cajaId) {
 
             actualizarListaDivisas(divisa.codigo, totalArqueo, diferencia, divisa.simbolo);
         }
-
-        // Agregar barra de desplazamiento
-        lista.style.maxHeight = '31rem';
-        lista.style.overflowY = 'auto';
 
     } catch (error) {
         console.error("Error al cargar divisas:", error);
@@ -276,7 +276,7 @@ function calcularTotal(codigoDivisa, simboloDivisa) {
         diferencia = -totalSistema; // La diferencia será el valor negativo de Total Sistema
     }
 
-    let diferenciaFormateada = (diferencia > 0 ? "+" : "") + formatoNumero(Math.abs(diferencia));
+    let diferenciaFormateada = (diferencia > 0 ? "+" : "-") + formatoNumero(Math.abs(diferencia));
 
     // Mostrar la diferencia
     document.getElementById('diferencia-caja').textContent = `${simboloDivisa} ${diferenciaFormateada}`;
