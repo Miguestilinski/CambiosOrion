@@ -200,7 +200,7 @@ function generarTablaArqueo(divisa) {
             input.value = cantidadesGuardadas[claveDenominacion] || 0;
         }
     });
-    
+
     calcularTotal(divisa.codigo, divisa.simbolo);
 }
 
@@ -231,7 +231,14 @@ function calcularTotal(codigoDivisa, simboloDivisa) {
     // Obtener el total del sistema
     const totalSistemaElem = document.getElementById('total-sistema');
     if (!totalSistemaElem) return; // Evita el error si el elemento no existe
-    const totalSistema = parseFloat(totalSistemaElem.textContent.replace(simboloDivisa, "").trim()) || 0;
+    const totalSistema = Number(
+        totalSistemaElem.textContent
+            .replace(simboloDivisa, "")  // quita el símbolo
+            .replace(/\./g, "")          // elimina puntos de miles
+            .replace(",", ".")           // si tuvieras decimal con coma
+            .trim()
+    ) || 0;
+
     
     // Calcular la diferencia
     let diferencia = totalArqueo - totalSistema;
