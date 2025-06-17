@@ -1,10 +1,31 @@
+let caja_id = null;
+let usuarioSesion = null;
+
 document.addEventListener("DOMContentLoaded", function() {
-    cargarDivisas();
+    obtenerSesion();
 });
 
-async function cargarDivisas() {
+async function obtenerSesion() {
     try {
-        let response = await fetch("https://cambiosorion.cl/data/get_divisas_internas.php");
+        const res = await fetch("https://cambiosorion.cl/data/session_status.php", {
+            credentials: "include",
+        });
+        if (!res.ok) throw new Error("No se pudo obtener la sesión.");
+
+        const data = await res.json();
+        usuarioSesion = data;
+        caja_id = usuarioSesion.caja_id;
+
+        console.log("Caja ID desde sesión:", caja_id);
+        await cargarDivisas(caja_id);
+    } catch (error) {
+        console.error("Error al obtener la sesión:", error);
+    }
+}
+
+async function cargarDivisas(cajaId) {
+    try {
+        let response = await fetch(`https://cambiosorion.cl/data/arqueo-caja.php?caja_id=${cajaId}`);
         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
         
         let divisas = await response.json();
@@ -237,7 +258,7 @@ function actualizarListaDivisas(codigoDivisa, totalArqueo, diferencia) {
 }
 
 document.getElementById("guardar-arqueo").addEventListener("click", function() {
-    fetch("https://cambiosorion.cl/data/get_divisas_internas.php")
+    fetch("https://cambiosorion.cl/data/arqueo-caja.php")
         .then(response => response.json())
         .then(divisas => {
             let todasCero = divisas.every(divisa => parseFloat(document.getElementById(`diferencia-${divisa.codigo}`).textContent) === 0);
@@ -252,7 +273,7 @@ document.getElementById("guardar-arqueo").addEventListener("click", function() {
 });
 
 function guardarCuadratura(divisas) {
-    fetch("https://cambiosorion.cl/data/guardar_arqueo.php", {
+    fetch("https://cambiosorion.cl/data/arqueo-caja.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ divisas: divisas })
