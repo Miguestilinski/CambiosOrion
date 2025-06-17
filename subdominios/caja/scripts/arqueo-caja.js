@@ -91,11 +91,11 @@ async function cargarDivisas(cajaId) {
                 </div>
                 <div class="resumen flex text-sm">
                     <span class="text-sm">Arqueo:</span>
-                    <span class="text-md" id="arqueo-${divisa.codigo}">${divisa.arqueo !== undefined ? divisa.arqueo : 0}</span>
+                    <span class="text-md" id="arqueo-${divisa.codigo}">${formatoNumero(divisa.arqueo || 0)}</span>
                 </div>
                 <div class="resumen flex text-sm">
                     <span class="text-sm">Diferencia:</span>
-                    <span class="text-md" id="diferencia-${divisa.codigo}">${divisa.diferencia !== undefined ? divisa.diferencia : 0}</span>
+                    <span class="text-md" id="diferencia-${divisa.codigo}">${formatoNumero(divisa.diferencia || 0)}</span>
                 </div>
             `;
 
@@ -160,8 +160,8 @@ function generarTablaArqueo(divisa) {
             let cantidadGuardada = cantidadesGuardadas[claveDenominacion] || 0;
             
             filaTotal.innerHTML = `
-                <td class="p-3 text-center">${index === 0 ? `${divisa.simbolo} ${sistemaTotal}` : ''}</td>
-                <td class="p-3 text-center">${denominacion}</td>
+                <td class="p-3 text-center">${index === 0 ? `${divisa.simbolo} ${formatoNumero(sistemaTotal)}` : ''}</td>
+                <td class="p-3 text-center">${formatoNumero(denominacion)}</td>
                 <td class="p-3 text-center">
                     <input type="number" class="w-16 p-1 bg-white border border-gray-600 text-gray-700 text-center"
                         oninput="calcularTotal('${divisa.codigo}', '${divisa.simbolo}')"
@@ -180,7 +180,7 @@ function generarTablaArqueo(divisa) {
         let cantidadGuardada = cantidadesGuardadas[1] || 0;
 
         fila.innerHTML = `
-            <td class="p-3 text-center" id="total-sistema">${divisa.simbolo} ${sistemaTotal}</td>
+            <td class="p-3 text-center" id="total-sistema">${divisa.simbolo} ${formatoNumero(sistemaTotal)}</td>
             <td class="p-3 text-center">1</td>
             <td class="p-3 text-center">
                 <input type="number" class="w-16 p-1 bg-white border border-gray-600 text-gray-700 text-center"
@@ -202,6 +202,10 @@ function generarTablaArqueo(divisa) {
     });    
 }
 
+function formatoNumero(valor) {
+    return Number(valor).toLocaleString("es-CL");
+}
+
 function calcularTotal(codigoDivisa, simboloDivisa) {
     let totalArqueo = 0;
     const inputs = document.querySelectorAll('#tbody-arqueo input');
@@ -220,7 +224,7 @@ function calcularTotal(codigoDivisa, simboloDivisa) {
     });
 
     // Mostrar el total del arqueo
-    document.getElementById('total-arqueo').textContent = `${simboloDivisa} ${totalArqueo}`;
+    document.getElementById('total-arqueo').textContent = `${simboloDivisa} ${formatoNumero(totalArqueo)}`;
 
     // Obtener el total del sistema
     const totalSistemaElem = document.getElementById('total-sistema');
@@ -234,7 +238,7 @@ function calcularTotal(codigoDivisa, simboloDivisa) {
     }
 
     // Mostrar la diferencia
-    document.getElementById('diferencia-caja').textContent = `${simboloDivisa} ${diferencia.toFixed(2)}`;
+    document.getElementById('diferencia-caja').textContent = `${simboloDivisa} ${formatoNumero(diferencia.toFixed(2))}`;
     document.getElementById('diferencia-caja').classList.remove("text-gray-700", "text-green-600", "text-red-600");
     document.getElementById('diferencia-caja').classList.add(diferencia === 0 ? "text-green-600" : "text-red-600");
 
@@ -251,8 +255,8 @@ function actualizarListaDivisas(codigoDivisa, totalArqueo, diferencia) {
             // Verificamos que los elementos existan antes de actualizar
             if (arqueoElement && diferenciaElement) {
                 // Actualizar solo el contenido de arqueo y diferencia
-                arqueoElement.textContent = `Arqueo: ${simboloDivisa} ${totalArqueo}`;
-                diferenciaElement.textContent = `Diferencia: ${simboloDivisa} ${diferencia}`;
+                arqueoElement.textContent = `Arqueo: ${simboloDivisa} ${formatoNumero(totalArqueo)}`;
+                diferenciaElement.textContent = `Diferencia: ${simboloDivisa} ${formatoNumero(diferencia)}`;
             }
         }
     });
