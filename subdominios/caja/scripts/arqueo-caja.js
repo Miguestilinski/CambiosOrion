@@ -199,7 +199,9 @@ function generarTablaArqueo(divisa) {
             const claveDenominacion = denominacion.toFixed(2); // Asegura formato consistente
             input.value = cantidadesGuardadas[claveDenominacion] || 0;
         }
-    });    
+    });
+    
+    calcularTotal(divisa.codigo, divisa.simbolo);
 }
 
 function formatoNumero(valor) {
