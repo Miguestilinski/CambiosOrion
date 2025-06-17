@@ -219,7 +219,7 @@ function calcularTotal(codigoDivisa, simboloDivisa) {
 
     // Calcular el total de arqueo
     filas.forEach((fila, index) => {
-        let denominacion = parseFloat(fila.cells[1].textContent.trim()) || 1;
+        let denominacion = parseFloat(fila.cells[1].textContent.trim().replace(/\./g, "")) || 1;
         let claveDenominacion = denominacion.toFixed(2); // Consistencia en localStorage
         let cantidad = parseInt(inputs[index].value) || 0;
 
