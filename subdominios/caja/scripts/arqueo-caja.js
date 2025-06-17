@@ -118,7 +118,8 @@ async function cargarDivisas(cajaId) {
                 if (totalArqueo === 0 && totalSistema !== 0) {
                     diferencia = -totalSistema;
                 }
-
+                
+                console.log(`Divisa: ${divisa.codigo} | Arqueo: ${totalArqueo} | Sistema: ${divisa.total_sistema}`);
                 actualizarListaDivisas(divisa.codigo, totalArqueo, diferencia, divisa.simbolo);
             }
         });
@@ -280,7 +281,6 @@ function calcularTotal(codigoDivisa, simboloDivisa) {
 }
 
 function actualizarListaDivisas(codigoDivisa, totalArqueo, diferencia, simboloDivisa) {
-    console.log(`Divisa: ${divisa.codigo} | Arqueo: ${totalArqueo} | Sistema: ${divisa.total_sistema}`);
     const div = document.querySelector(`#divisas-lista > div[data-codigo="${codigoDivisa}"]`);
     if (div) {
         const arqueoElement = div.querySelector(`#arqueo-${codigoDivisa}`);
