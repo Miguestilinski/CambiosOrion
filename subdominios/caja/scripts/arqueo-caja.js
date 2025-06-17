@@ -248,8 +248,10 @@ function calcularTotal(codigoDivisa, simboloDivisa) {
         diferencia = -totalSistema; // La diferencia será el valor negativo de Total Sistema
     }
 
+    let diferenciaFormateada = (diferencia > 0 ? "+ " : "") + formatoNumero(Math.abs(diferencia));
+
     // Mostrar la diferencia
-    document.getElementById('diferencia-caja').textContent = `${simboloDivisa} ${formatoNumero(diferencia)}`;
+    document.getElementById('diferencia-caja').textContent = `${simboloDivisa} ${diferenciaFormateada}`;
     document.getElementById('diferencia-caja').classList.remove("text-gray-700", "text-green-600", "text-red-600");
     document.getElementById('diferencia-caja').classList.add(diferencia === 0 ? "text-green-600" : "text-red-600");
 
