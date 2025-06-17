@@ -112,6 +112,13 @@ async function cargarDivisas(cajaId) {
 }
 
 function seleccionarDivisa(divisa) {
+    const divisaActual = document.querySelector('#titulo-divisa').textContent.match(/\((\w+)\)/);
+    if (divisaActual && divisaActual[1]) {
+        const codigoActual = divisaActual[1];
+        const simboloActual = document.getElementById('total-arqueo')?.textContent?.trim()?.substring(0, 1) || "$";
+        calcularTotal(codigoActual, simboloActual); // Guarda en localStorage
+    }
+
     document.getElementById('titulo-divisa').textContent = `Detalles de ${divisa.nombre} (${divisa.codigo})`;
     document.getElementById('tabla-arqueo').classList.remove('hidden');
     document.getElementById('detalle').classList.remove('hidden');
@@ -248,7 +255,7 @@ function calcularTotal(codigoDivisa, simboloDivisa) {
         diferencia = -totalSistema; // La diferencia será el valor negativo de Total Sistema
     }
 
-    let diferenciaFormateada = (diferencia > 0 ? "+ " : "") + formatoNumero(Math.abs(diferencia));
+    let diferenciaFormateada = (diferencia > 0 ? "+" : "") + formatoNumero(Math.abs(diferencia));
 
     // Mostrar la diferencia
     document.getElementById('diferencia-caja').textContent = `${simboloDivisa} ${diferenciaFormateada}`;
@@ -256,6 +263,8 @@ function calcularTotal(codigoDivisa, simboloDivisa) {
     document.getElementById('diferencia-caja').classList.add(diferencia === 0 ? "text-green-600" : "text-red-600");
 
     localStorage.setItem(codigoDivisa, JSON.stringify(cantidades));
+
+    actualizarListaDivisas(codigoDivisa, totalArqueo, diferencia, simboloDivisa);
 }
 
 function actualizarListaDivisas(codigoDivisa, totalArqueo, diferencia, simboloDivisa) {
