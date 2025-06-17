@@ -138,7 +138,7 @@ function generarTablaArqueo(divisa) {
     tbody.innerHTML = ""; // Limpiar la tabla antes de generarla
 
     // Simulación de un total sistema (debe configurarse dinámicamente)
-    const sistemaTotal = 1000; // Valor de prueba
+    const sistemaTotal = divisa.total_sistema || 0;
     document.getElementById('tabla-arqueo').classList.remove('hidden'); // Mostrar tabla
     document.getElementById('titulo-divisa').textContent = `Arqueo de ${divisa.nombre}`;
 
