@@ -361,6 +361,44 @@ function reconstruirDivisasConDatos(divisasBase) {
     );
 }
 
+function limpiarArqueoLocalStorage() {
+    Object.keys(localStorage).forEach(key => {
+        if (/^[A-Z]{2,4}$/.test(key)) {
+            localStorage.removeItem(key);
+        }
+    });
+}
+
+function restaurarParcial(divisasParciales) {
+    divisasParciales.forEach(divisa => {
+        const codigo = divisa.codigo;
+        let denomObj;
+        try {
+            denomObj = JSON.parse(divisa.denominaciones_json || "{}");
+        } catch {
+            denomObj = {};
+        }
+        localStorage.setItem(codigo, JSON.stringify(denomObj));
+    });
+}
+
+document.getElementById("guardar-parcial").addEventListener("click", function () {
+    const divisas = reconstruirDivisasConDatos(divisasBase);
+    const hoy = new Date().toISOString().split("T")[0]; // formato YYYY-MM-DD
+    const clave = `arqueo_parcial_caja_${caja_id}`;
+
+    const snapshot = {
+        fecha: hoy,
+        divisas: divisas
+    };
+
+    localStorage.setItem(clave, JSON.stringify(snapshot));
+    mostrarModalError({
+        titulo: "✅ Cuadratura Parcial registrada",
+        mensaje: "La cuadratura parcial guardada correctamente."
+    });
+});
+
 document.getElementById("guardar-arqueo").addEventListener("click", function() {
     const divisas = reconstruirDivisasConDatos(divisasBase); // <- usa una variable global con las divisas cargadas al inicio
     let todasCero = divisas.every(divisa => {
@@ -427,46 +465,6 @@ function guardarCuadratura(divisas, observacion) {
     });
   });
 }
-
-function limpiarArqueoLocalStorage() {
-    Object.keys(localStorage).forEach(key => {
-        if (/^[A-Z]{2,4}$/.test(key)) {
-            localStorage.removeItem(key);
-        }
-    });
-}
-
-function restaurarParcial(divisasParciales) {
-    divisasParciales.forEach(divisa => {
-        const codigo = divisa.codigo;
-        let denomObj;
-        try {
-            denomObj = JSON.parse(divisa.denominaciones_json || "{}");
-        } catch {
-            denomObj = {};
-        }
-        localStorage.setItem(codigo, JSON.stringify(denomObj));
-    });
-}
-
-document.getElementById("guardar-parcial").addEventListener("click", function () {
-    const divisas = reconstruirDivisasConDatos(divisasBase);
-    const hoy = new Date().toISOString().split("T")[0]; // formato YYYY-MM-DD
-    const clave = `arqueo_parcial_caja_${caja_id}`;
-
-    const snapshot = {
-        fecha: hoy,
-        divisas: divisas
-    };
-
-    localStorage.setItem(clave, JSON.stringify(snapshot));
-    mostrarModalExitoso("¡Cuadratura parcial guardada correctamente!");
-    mostrarModalError({
-        titulo: "✅ Cuadratura Parcial registrada",
-        mensaje: "La cuadratura parcial guardada correctamente."
-    });
-});
-
 
 function mostrarModalAdvertencia({mensaje, textoConfirmar = "Aceptar", textoCancelar = null, requiereObservacion = false, onConfirmar, onCancelar }) {
   const modal = document.getElementById("modal-advertencia");
