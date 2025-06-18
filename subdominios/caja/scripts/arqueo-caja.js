@@ -335,11 +335,17 @@ document.getElementById("guardar-arqueo").addEventListener("click", function() {
 });
 
 function guardarCuadratura(divisas, observacion) {
+  const payload = {
+    divisas: divisas,
+    observacion: observacion,
+    usuario_id: usuarioSesion.usuario_id,
+    caja_id: usuarioSesion.caja_id
+  };
+
   fetch("https://cambiosorion.cl/data/arqueo-caja.php", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify({ divisas: divisas, observacion: observacion })
+    body: JSON.stringify(payload)
   })
   .then(async response => {
     const text = await response.text();
