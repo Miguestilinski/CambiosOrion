@@ -308,32 +308,30 @@ function actualizarListaDivisas(codigoDivisa, totalArqueo, diferencia, simboloDi
 function reconstruirDivisasConDatos(divisasBase) {
     return divisasBase.map(divisa => {
         const codigo = divisa.codigo;
-        const divisa_id = divisa.id;
         const fraccionable = divisa.fraccionable ?? 1;
-
-        // Leer arqueo desde el DOM
-        const arqueoText = document.getElementById(`arqueo-${codigo}`)?.textContent || "0";
-        const total_arqueo = parseFloat(arqueoText.replace(/[^0-9,-]/g, "").replace(",", ".")) || 0;
-
-        // Leer sistema desde el DOM
-        const sistemaText = document.getElementById(`sistema-${codigo}`)?.textContent || "0";
-        const total_sistema = parseFloat(sistemaText.replace(/[^0-9,-]/g, "").replace(",", ".")) || 0;
 
         // Leer denominaciones desde localStorage
         const denominaciones = JSON.parse(localStorage.getItem(codigo) || "{}");
 
+        // Calcular total arqueo desde las denominaciones
+        let total_arqueo = 0;
+        for (let denom in denominaciones) {
+            total_arqueo += parseFloat(denom) * denominaciones[denom];
+        }
+
+        const total_sistema = divisa.total_sistema || 0;
+
         return {
-            divisa_id: divisa_id,
+            divisa_id: divisa.id,
             codigo: codigo,
             fraccionable: fraccionable,
             total_arqueo: total_arqueo,
             total_sistema: total_sistema,
             denominaciones: denominaciones
         };
-    })
-    .filter(divisa =>
+    }).filter(divisa =>
         !(divisa.total_arqueo === 0 && divisa.total_sistema === 0)
-    )
+    );
 }
 
 document.getElementById("guardar-arqueo").addEventListener("click", function() {
@@ -352,11 +350,23 @@ document.getElementById("guardar-arqueo").addEventListener("click", function() {
             requiereObservacion: true,
             onConfirmar: function(observacion) {
                 const divisasConDatos = reconstruirDivisasConDatos(divisasBase);
+                console.table(divisas.map(d => ({
+                    codigo: d.codigo,
+                    total_arqueo: d.total_arqueo,
+                    total_sistema: d.total_sistema,
+                    diferencia: d.total_arqueo - d.total_sistema
+                })));
                 guardarCuadratura(divisasConDatos, observacion);
             }
         });
     } else {
         const divisasConDatos = reconstruirDivisasConDatos(divisasBase);
+        console.table(divisas.map(d => ({
+            codigo: d.codigo,
+            total_arqueo: d.total_arqueo,
+            total_sistema: d.total_sistema,
+            diferencia: d.total_arqueo - d.total_sistema
+        })));
         guardarCuadratura(divisasConDatos, null);
     }
 });
