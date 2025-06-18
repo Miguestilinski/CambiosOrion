@@ -126,6 +126,8 @@ async function cargarDivisas(cajaId) {
             }
         });
 
+        divisasBase = divisas;
+
         // Agregar barra de desplazamiento
         lista.style.maxHeight = '31rem';
         lista.style.overflowY = 'auto';
@@ -374,7 +376,7 @@ function guardarCuadratura(divisas, observacion) {
       console.error("Respuesta del servidor:", text);
       throw new Error("Error en la respuesta del servidor");
     }
-    
+
     console.log("Payload enviado:", JSON.stringify(payload, null, 2));
     console.log("Respuesta del servidor:", text);
     mostrarModalExitoso();
