@@ -456,6 +456,7 @@ function guardarCuadratura(divisas, observacion) {
     mostrarModalExitoso();
 
     localStorage.removeItem(`arqueo_parcial_caja_${caja_id}`);
+    limpiarArqueoLocalStorage();
     
     const inputs = document.querySelectorAll('#tbody-arqueo input[type="number"]');
     inputs.forEach(input => input.value = 0);
