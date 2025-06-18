@@ -331,7 +331,7 @@ function reconstruirDivisasConDatos(divisasBase) {
         };
     })
     .filter(divisa =>
-        !(divisa.total_arqueo === 0 && divisa.total_sistema === 0 && (divisa.total_arqueo - divisa.total_sistema) === 0)
+        !(divisa.total_arqueo === 0 && divisa.total_sistema === 0)
     )
 }
 
