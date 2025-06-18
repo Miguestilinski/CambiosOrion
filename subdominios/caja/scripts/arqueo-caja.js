@@ -341,10 +341,15 @@ function guardarCuadratura(divisas, observacion) {
     credentials: "include",
     body: JSON.stringify({ divisas: divisas, observacion: observacion })
   })
-  .then(response => response.text())
-  .then(data => {
+  .then(async response => {
+    const text = await response.text();
+    if (!response.ok) {
+      console.error("Respuesta del servidor:", text);
+      throw new Error("Error en la respuesta del servidor");
+    }
+
+    console.log("Respuesta del servidor:", text);
     mostrarModalExitoso();
-    console.log("Respuesta del servidor:", data);
   })
   .catch(error => {
     console.error("Error al guardar la cuadratura:", error);
