@@ -351,12 +351,12 @@ document.getElementById("guardar-arqueo").addEventListener("click", function() {
             textoCancelar: "Cancelar",
             requiereObservacion: true,
             onConfirmar: function(observacion) {
-                const divisasConDatos = reconstruirDivisasConDatos(divisas);
+                const divisasConDatos = reconstruirDivisasConDatos(divisasBase);
                 guardarCuadratura(divisasConDatos, observacion);
             }
         });
     } else {
-        const divisasConDatos = reconstruirDivisasConDatos(divisas);
+        const divisasConDatos = reconstruirDivisasConDatos(divisasBase);
         guardarCuadratura(divisasConDatos, null);
     }
 });
