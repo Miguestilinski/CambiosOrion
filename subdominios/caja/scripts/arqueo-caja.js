@@ -20,7 +20,7 @@ async function obtenerSesion() {
         equipo_id = usuarioSesion.equipo_id;
 
         console.log("Caja ID desde sesión:", caja_id);
-        
+
         const claveParcial = `arqueo_parcial_caja_${caja_id}`;
         const parcialGuardado = localStorage.getItem(claveParcial);
         if (parcialGuardado) {
@@ -461,6 +461,10 @@ document.getElementById("guardar-parcial").addEventListener("click", function ()
 
     localStorage.setItem(clave, JSON.stringify(snapshot));
     mostrarModalExitoso("¡Cuadratura parcial guardada correctamente!");
+    mostrarModalError({
+        titulo: "✅ Cuadratura Parcial registrada",
+        mensaje: "La cuadratura parcial guardada correctamente."
+    });
 });
 
 
