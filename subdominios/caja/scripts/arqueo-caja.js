@@ -331,9 +331,8 @@ function reconstruirDivisasConDatos(divisasBase) {
         };
     })
     .filter(divisa =>
-        // Se filtran las que NO estén en cero total y diferencia
-        !(divisa.total_arqueo === 0 && divisa.total_sistema === 0 && calcularDiferencia(divisa) === 0)
-    );
+        !(divisa.total_arqueo === 0 && divisa.total_sistema === 0 && (divisa.total_arqueo - divisa.total_sistema) === 0)
+    )
 }
 
 document.getElementById("guardar-arqueo").addEventListener("click", function() {
