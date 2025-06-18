@@ -127,6 +127,7 @@ async function cargarDivisas(cajaId) {
         });
 
         divisasBase = divisas;
+        console.log("divisasBase:", divisasBase);
 
         // Agregar barra de desplazamiento
         lista.style.maxHeight = '31rem';
@@ -368,7 +369,7 @@ function guardarCuadratura(divisas, observacion) {
     caja_id: usuarioSesion.caja_id
   };
   console.log("Payload:", JSON.stringify(payload, null, 2));
-  
+
   fetch("https://cambiosorion.cl/data/arqueo-caja.php", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
