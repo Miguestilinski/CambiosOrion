@@ -311,12 +311,12 @@ function reconstruirDivisasConDatos(divisasBase) {
         const fraccionable = divisa.fraccionable ?? 1;
 
         // Leer denominaciones desde localStorage
-        const denominaciones = JSON.parse(localStorage.getItem(codigo) || "{}");
+        const denominacionesObj = JSON.parse(localStorage.getItem(codigo) || "{}");
 
         // Calcular total arqueo desde las denominaciones
         let total_arqueo = 0;
-        for (let denom in denominaciones) {
-            total_arqueo += parseFloat(denom) * denominaciones[denom];
+        for (let denom in denominacionesObj) {
+            total_arqueo += parseFloat(denom) * denominacionesObj[denom];
         }
 
         const total_sistema = divisa.total_sistema || 0;
@@ -327,7 +327,7 @@ function reconstruirDivisasConDatos(divisasBase) {
             fraccionable: fraccionable,
             total_arqueo: total_arqueo,
             total_sistema: total_sistema,
-            denominaciones: denominaciones
+            denominaciones_json: JSON.stringify(denominacionesObj) 
         };
     }).filter(divisa =>
         !(divisa.total_arqueo === 0 && divisa.total_sistema === 0)
@@ -350,12 +350,6 @@ document.getElementById("guardar-arqueo").addEventListener("click", function() {
             requiereObservacion: true,
             onConfirmar: function(observacion) {
                 const divisasConDatos = reconstruirDivisasConDatos(divisasBase);
-                console.table(divisas.map(d => ({
-                    codigo: d.codigo,
-                    total_arqueo: d.total_arqueo,
-                    total_sistema: d.total_sistema,
-                    diferencia: d.total_arqueo - d.total_sistema
-                })));
                 guardarCuadratura(divisasConDatos, observacion);
             }
         });
