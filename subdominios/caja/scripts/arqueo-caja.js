@@ -307,7 +307,7 @@ function actualizarListaDivisas(codigoDivisa, totalArqueo, diferencia, simboloDi
 function reconstruirDivisasConDatos(divisasBase) {
     return divisasBase.map(divisa => {
         const codigo = divisa.codigo;
-        const divisa_id = divisa.id;
+        const divisa_id = divisa.divisa_id;
         const fraccionable = divisa.fraccionable ?? 1;
 
         // Leer arqueo desde el DOM
