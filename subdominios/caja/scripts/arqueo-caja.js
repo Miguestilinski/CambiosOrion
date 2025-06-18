@@ -301,6 +301,34 @@ function actualizarListaDivisas(codigoDivisa, totalArqueo, diferencia, simboloDi
     }
 }
 
+function reconstruirDivisasConDatos(divisasBase) {
+    return divisasBase.map(divisa => {
+        const codigo = divisa.codigo;
+        const id = divisa.id;
+        const fraccionable = divisa.fraccionable ?? 1;
+
+        // Leer arqueo desde el DOM
+        const arqueoText = document.getElementById(`arqueo-${codigo}`)?.textContent || "0";
+        const total_arqueo = parseFloat(arqueoText.replace(/[^0-9,-]/g, "").replace(",", ".")) || 0;
+
+        // Leer sistema desde el DOM
+        const sistemaText = document.getElementById(`sistema-${codigo}`)?.textContent || "0";
+        const total_sistema = parseFloat(sistemaText.replace(/[^0-9,-]/g, "").replace(",", ".")) || 0;
+
+        // Leer denominaciones desde localStorage
+        const denominaciones = JSON.parse(localStorage.getItem(codigo) || "{}");
+
+        return {
+            id: id,
+            codigo: codigo,
+            fraccionable: fraccionable,
+            arqueo: total_arqueo,
+            total_sistema: total_sistema,
+            denominaciones: denominaciones
+        };
+    });
+}
+
 document.getElementById("guardar-arqueo").addEventListener("click", function() {
   fetch("https://cambiosorion.cl/data/arqueo-caja.php")
     .then(response => response.json())
@@ -321,11 +349,14 @@ document.getElementById("guardar-arqueo").addEventListener("click", function() {
                 textoCancelar: "Cancelar",
                 requiereObservacion: true,
                 onConfirmar: function(observacion) {
-                    guardarCuadratura(divisas, observacion);
+                    const divisasConDatos = reconstruirDivisasConDatos(divisas);
+                    guardarCuadratura(divisasConDatos, observacion);
                 }
             });
         } else {
             guardarCuadratura(divisas, null);
+            const divisasConDatos = reconstruirDivisasConDatos(divisas);
+            guardarCuadratura(divisasConDatos, null);
         }
     })
     .catch(error => {
@@ -359,6 +390,9 @@ function guardarCuadratura(divisas, observacion) {
 
     console.log("Respuesta del servidor:", text);
     mostrarModalExitoso();
+    //divisasConDatos.forEach(divisa => {
+    //    localStorage.removeItem(divisa.codigo);
+    //});
   })
   .catch(error => {
     console.error("Error al guardar la cuadratura:", error);
