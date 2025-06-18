@@ -454,8 +454,15 @@ function guardarCuadratura(divisas, observacion) {
     console.log("Payload enviado:", JSON.stringify(payload, null, 2));
     console.log("Respuesta del servidor:", text);
     mostrarModalExitoso();
-    localStorage.removeItem(`arqueo_parcial_caja_${caja_id}`);
 
+    localStorage.removeItem(`arqueo_parcial_caja_${caja_id}`);
+    
+    const inputs = document.querySelectorAll('#tbody-arqueo input[type="number"]');
+    inputs.forEach(input => input.value = 0);
+
+    divisas.forEach(divisa => {
+        actualizarListaDivisas(divisa.codigo, 0, -divisa.total_sistema, divisa.simbolo || "$");
+    });
   })
   .catch(error => {
     console.error("Error al guardar la cuadratura:", error);
