@@ -1,6 +1,7 @@
 let caja_id = null;
 let equipo_id = null;
 let usuarioSesion = null;
+let divisasBase = [];
 
 document.addEventListener("DOMContentLoaded", function() {
     obtenerSesion();
@@ -330,42 +331,28 @@ function reconstruirDivisasConDatos(divisasBase) {
 }
 
 document.getElementById("guardar-arqueo").addEventListener("click", function() {
-  fetch("https://cambiosorion.cl/data/arqueo-caja.php")
-    .then(response => response.json())
-    .then(data => {
-        console.log("Datos recibidos:", data);
-        let divisas = data.divisas || [];
-
-        let todasCero = divisas.every(divisa => {
-            const diferenciaTexto = document.getElementById(`diferencia-${divisa.codigo}`)?.textContent || "";
-            const diferenciaNumerica = parseFloat(diferenciaTexto.replace(/[^0-9,-]/g, "").replace(",", "."));
-            return diferenciaNumerica === 0;
-        });
-
-        if (!todasCero) {
-            mostrarModalAdvertencia({
-                mensaje: "Aún hay diferencias en las divisas. ¿Deseas guardar igualmente la cuadratura?",
-                textoConfirmar: "Guardar",
-                textoCancelar: "Cancelar",
-                requiereObservacion: true,
-                onConfirmar: function(observacion) {
-                    const divisasConDatos = reconstruirDivisasConDatos(divisas);
-                    guardarCuadratura(divisasConDatos, observacion);
-                }
-            });
-        } else {
-            guardarCuadratura(divisas, null);
-            const divisasConDatos = reconstruirDivisasConDatos(divisas);
-            guardarCuadratura(divisasConDatos, null);
-        }
-    })
-    .catch(error => {
-      console.error("Error al verificar diferencias:", error);
-      mostrarModalError({
-        titulo: "❌ Error",
-        mensaje: "No se pudieron verificar las diferencias de cuadratura."
-      });
+    const divisas = reconstruirDivisasConDatos(divisasBase); // <- usa una variable global con las divisas cargadas al inicio
+    let todasCero = divisas.every(divisa => {
+        const diferenciaTexto = document.getElementById(`diferencia-${divisa.codigo}`)?.textContent || "";
+        const diferenciaNumerica = parseFloat(diferenciaTexto.replace(/[^0-9,-]/g, "").replace(",", "."));
+        return diferenciaNumerica === 0;
     });
+
+    if (!todasCero) {
+        mostrarModalAdvertencia({
+            mensaje: "Aún hay diferencias en las divisas. ¿Deseas guardar igualmente la cuadratura?",
+            textoConfirmar: "Guardar",
+            textoCancelar: "Cancelar",
+            requiereObservacion: true,
+            onConfirmar: function(observacion) {
+                const divisasConDatos = reconstruirDivisasConDatos(divisas);
+                guardarCuadratura(divisasConDatos, observacion);
+            }
+        });
+    } else {
+        const divisasConDatos = reconstruirDivisasConDatos(divisas);
+        guardarCuadratura(divisasConDatos, null);
+    }
 });
 
 function guardarCuadratura(divisas, observacion) {
