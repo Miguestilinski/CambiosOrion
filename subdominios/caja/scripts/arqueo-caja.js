@@ -1,4 +1,5 @@
 let caja_id = null;
+let equipo_id = null;
 let usuarioSesion = null;
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -15,6 +16,7 @@ async function obtenerSesion() {
         const data = await res.json();
         usuarioSesion = data;
         caja_id = usuarioSesion.caja_id;
+        equipo_id = usuarioSesion.equipo_id;
 
         console.log("Caja ID desde sesión:", caja_id);
         await cargarDivisas(caja_id);
@@ -338,7 +340,7 @@ function guardarCuadratura(divisas, observacion) {
   const payload = {
     divisas: divisas,
     observacion: observacion,
-    usuario_id: usuarioSesion.usuario_id,
+    equipo_id: usuarioSesion.equipo_id,
     caja_id: usuarioSesion.caja_id
   };
 
@@ -451,6 +453,7 @@ function mostrarModalExitoso() {
   //};
 
   document.getElementById("volver").onclick = () => {
-    window.location.href = "https://caja.cambiosorion.cl/arqueo-caja";
+    modal.classList.add("hidden");
+    //window.location.href = "https://caja.cambiosorion.cl/arqueo-caja";
   };
 }
