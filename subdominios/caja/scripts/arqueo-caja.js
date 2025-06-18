@@ -307,7 +307,7 @@ function actualizarListaDivisas(codigoDivisa, totalArqueo, diferencia, simboloDi
 function reconstruirDivisasConDatos(divisasBase) {
     return divisasBase.map(divisa => {
         const codigo = divisa.codigo;
-        const divisa_id = divisa.divisa_id;
+        const divisa_id = divisa.id;
         const fraccionable = divisa.fraccionable ?? 1;
 
         // Leer arqueo desde el DOM
@@ -367,7 +367,8 @@ function guardarCuadratura(divisas, observacion) {
     equipo_id: usuarioSesion.equipo_id,
     caja_id: usuarioSesion.caja_id
   };
-
+  console.log("Payload:", JSON.stringify(payload, null, 2));
+  
   fetch("https://cambiosorion.cl/data/arqueo-caja.php", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
