@@ -374,7 +374,8 @@ function guardarCuadratura(divisas, observacion) {
       console.error("Respuesta del servidor:", text);
       throw new Error("Error en la respuesta del servidor");
     }
-
+    
+    console.log("Payload enviado:", JSON.stringify(payload, null, 2));
     console.log("Respuesta del servidor:", text);
     mostrarModalExitoso();
     //divisasConDatos.forEach(divisa => {
@@ -390,7 +391,7 @@ function guardarCuadratura(divisas, observacion) {
   });
 }
 
-function mostrarModalAdvertencia({mensaje, textoConfirmar = "Aceptar", textoCancelar = null, onConfirmar, onCancelar }) {
+function mostrarModalAdvertencia({mensaje, textoConfirmar = "Aceptar", textoCancelar = null, requiereObservacion = false, onConfirmar, onCancelar }) {
   const modal = document.getElementById("modal-advertencia");
   const mensajeElem = document.getElementById("modal-advertencia-mensaje");
   const observacionContainer = document.getElementById("observacion-container");
