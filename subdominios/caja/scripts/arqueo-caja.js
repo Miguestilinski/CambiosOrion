@@ -20,6 +20,20 @@ async function obtenerSesion() {
         equipo_id = usuarioSesion.equipo_id;
 
         console.log("Caja ID desde sesión:", caja_id);
+        
+        const claveParcial = `arqueo_parcial_caja_${caja_id}`;
+        const parcialGuardado = localStorage.getItem(claveParcial);
+        if (parcialGuardado) {
+            const data = JSON.parse(parcialGuardado);
+            const hoy = new Date().toISOString().split("T")[0];
+            if (data.fecha === hoy && Array.isArray(data.divisas)) {
+                console.log("Restaurando arqueo parcial guardado:", data);
+                restaurarParcial(data.divisas);
+            } else {
+                localStorage.removeItem(claveParcial); // Expirado
+            }
+        }
+
         await cargarDivisas(caja_id);
     } catch (error) {
         console.error("Error al obtener la sesión:", error);
@@ -143,7 +157,7 @@ function seleccionarDivisa(divisa) {
     if (divisaActual && divisaActual[1]) {
         const codigoActual = divisaActual[1];
         const simboloActual = document.getElementById('total-arqueo')?.textContent?.trim()?.substring(0, 1) || "$";
-        calcularTotal(codigoActual, simboloActual); // Guarda en localStorage
+        calcularTotal(codigoActual, simboloActual);
     }
 
     document.getElementById('titulo-divisa').textContent = `Detalles de ${divisa.nombre} (${divisa.codigo})`;
@@ -402,9 +416,8 @@ function guardarCuadratura(divisas, observacion) {
     console.log("Payload enviado:", JSON.stringify(payload, null, 2));
     console.log("Respuesta del servidor:", text);
     mostrarModalExitoso();
-    //divisasConDatos.forEach(divisa => {
-    //    localStorage.removeItem(divisa.codigo);
-    //});
+    localStorage.removeItem(`arqueo_parcial_caja_${caja_id}`);
+
   })
   .catch(error => {
     console.error("Error al guardar la cuadratura:", error);
@@ -422,6 +435,34 @@ function limpiarArqueoLocalStorage() {
         }
     });
 }
+
+function restaurarParcial(divisasParciales) {
+    divisasParciales.forEach(divisa => {
+        const codigo = divisa.codigo;
+        let denomObj;
+        try {
+            denomObj = JSON.parse(divisa.denominaciones_json || "{}");
+        } catch {
+            denomObj = {};
+        }
+        localStorage.setItem(codigo, JSON.stringify(denomObj));
+    });
+}
+
+document.getElementById("guardar-parcial").addEventListener("click", function () {
+    const divisas = reconstruirDivisasConDatos(divisasBase);
+    const hoy = new Date().toISOString().split("T")[0]; // formato YYYY-MM-DD
+    const clave = `arqueo_parcial_caja_${caja_id}`;
+
+    const snapshot = {
+        fecha: hoy,
+        divisas: divisas
+    };
+
+    localStorage.setItem(clave, JSON.stringify(snapshot));
+    mostrarModalExitoso("¡Cuadratura parcial guardada correctamente!");
+});
+
 
 function mostrarModalAdvertencia({mensaje, textoConfirmar = "Aceptar", textoCancelar = null, requiereObservacion = false, onConfirmar, onCancelar }) {
   const modal = document.getElementById("modal-advertencia");
