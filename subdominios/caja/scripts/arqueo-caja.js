@@ -305,6 +305,7 @@ document.getElementById("guardar-arqueo").addEventListener("click", function() {
   fetch("https://cambiosorion.cl/data/arqueo-caja.php")
     .then(response => response.json())
     .then(data => {
+        console.log("Datos recibidos:", data);
       let divisas = data.divisas || [];
 
       let todasCero = divisas.every(divisa => {
