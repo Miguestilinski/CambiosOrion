@@ -310,8 +310,19 @@ function reconstruirDivisasConDatos(divisasBase) {
         const codigo = divisa.codigo;
         const fraccionable = divisa.fraccionable ?? 1;
 
-        // Leer denominaciones desde localStorage
-        const denominacionesObj = JSON.parse(localStorage.getItem(codigo) || "{}");
+        let denominacionesObj;
+        try {
+            denominacionesObj = JSON.parse(localStorage.getItem(codigo) || "{}");
+        } catch {
+            denominacionesObj = {};
+        }
+
+        for (let denom in denominacionesObj) {
+            const cantidad = denominacionesObj[denom];
+            if (isNaN(cantidad) || cantidad < 0) {
+                denominacionesObj[denom] = 0;
+            }
+        }
 
         // Calcular total arqueo desde las denominaciones
         let total_arqueo = 0;
@@ -320,6 +331,7 @@ function reconstruirDivisasConDatos(divisasBase) {
         }
 
         const total_sistema = divisa.total_sistema || 0;
+        const diferencia = total_arqueo - total_sistema;
 
         return {
             divisa_id: divisa.id,
@@ -327,6 +339,7 @@ function reconstruirDivisasConDatos(divisasBase) {
             fraccionable: fraccionable,
             total_arqueo: total_arqueo,
             total_sistema: total_sistema,
+            diferencia: diferencia,
             denominaciones_json: JSON.stringify(denominacionesObj) 
         };
     }).filter(divisa =>
@@ -400,6 +413,14 @@ function guardarCuadratura(divisas, observacion) {
       mensaje: "Ocurrió un problema al guardar la cuadratura."
     });
   });
+}
+
+function limpiarArqueoLocalStorage() {
+    Object.keys(localStorage).forEach(key => {
+        if (/^[A-Z]{2,4}$/.test(key)) {
+            localStorage.removeItem(key);
+        }
+    });
 }
 
 function mostrarModalAdvertencia({mensaje, textoConfirmar = "Aceptar", textoCancelar = null, requiereObservacion = false, onConfirmar, onCancelar }) {
