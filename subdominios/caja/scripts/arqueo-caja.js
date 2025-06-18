@@ -307,7 +307,7 @@ function actualizarListaDivisas(codigoDivisa, totalArqueo, diferencia, simboloDi
 function reconstruirDivisasConDatos(divisasBase) {
     return divisasBase.map(divisa => {
         const codigo = divisa.codigo;
-        const id = divisa.id;
+        const divisa_id = divisa.id;
         const fraccionable = divisa.fraccionable ?? 1;
 
         // Leer arqueo desde el DOM
@@ -322,14 +322,18 @@ function reconstruirDivisasConDatos(divisasBase) {
         const denominaciones = JSON.parse(localStorage.getItem(codigo) || "{}");
 
         return {
-            id: id,
+            divisa_id: divisa_id,
             codigo: codigo,
             fraccionable: fraccionable,
-            arqueo: total_arqueo,
+            total_arqueo: total_arqueo,
             total_sistema: total_sistema,
             denominaciones: denominaciones
         };
-    });
+    })
+    .filter(divisa =>
+        // Se filtran las que NO estén en cero total y diferencia
+        !(divisa.total_arqueo === 0 && divisa.total_sistema === 0 && calcularDiferencia(divisa) === 0)
+    );
 }
 
 document.getElementById("guardar-arqueo").addEventListener("click", function() {
