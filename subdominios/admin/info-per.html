@@ -130,35 +130,78 @@
                     <p id="role-type" class="text-lg font-medium text-white">Rol</p>
                 </div>
             
-                <form id="personal-info-form" class="grid gap-4 mb-4 sm:grid-cols-2">
-                    <!-- RUT (Visible solo para Clientes) -->
-                    <div id="rut-group" class="hidden flex">
-                        <label for="rut" class="block mb-2 mr-2 text-lg font-medium text-white">RUT:</label>
-                        <div id="rut" class="ml-2 text-lg font-medium text-white"></div>
-                    </div>
-            
-                    <!-- Correo -->
-                    <div>
-                        <label for="email" class="block text-lg font-medium text-white">Correo:</label>
-                        <input type="email" id="email" name="email" placeholder="Ingresa tu correo" readonly class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg block w-full p-2.5">
-                    </div>
+                <form id="personal-info-form" class="gap-6 mb-6 max-w-4xl">
 
-                    <div id="password-group" class="flex mt-4">
-                        <!-- Contraseña -->
-                        <div id="new_pass" class="w-1/2 pr-4">
-                            <label for="password" class="block mb-2 text-lg font-medium text-white">Nueva Contraseña:</label>
-                            <input type="password" id="password" name="password" placeholder="•••••••••" class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg block w-full p-2.5">
-                        </div>
-                
-                        <!-- Confirmar Contraseña -->
-                        <div id="confirm_pass" class="w-1/2 pl-4">
-                            <label for="confirm-password" class="block mb-2 text-lg font-medium text-white">Confirmar Contraseña:</label>
-                            <input type="password" id="confirm-password" name="confirm-password" placeholder="•••••••••" class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg block w-full p-2.5">
-                        </div>
-                    </div>
+                    <!-- Fieldset: Información de Cuenta -->
+                    <fieldset class="border border-gray-600 rounded-lg p-4 mb-6">
+                        <legend class="text-white font-semibold mb-2">Información de Cuenta</legend>
 
-                    <!-- Botón Guardar Cambios -->
-                    <div class="sm:col-span-2">
+                        <!-- RUT (Visible solo para Clientes) -->
+                        <div id="rut-group" class="hidden mb-4">
+                            <label for="rut" class="block mb-1 text-sm text-white">RUT</label>
+                            <div id="rut" class="text-white text-sm"></div>
+                        </div>
+
+                        <!-- Correo -->
+                        <div class="mb-4">
+                            <label for="email" class="block mb-1 text-sm text-white">Correo:</label>
+                            <input type="email" id="email" name="email" placeholder="Ingresa tu correo" readonly class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg block w-full p-2.5">
+                        </div>
+
+                        <!-- Contraseñas -->
+                        <div class="flex flex-col md:flex-row gap-4">
+                            <div class="w-full">
+                                <label for="password" class="block mb-1 text-sm text-white">Nueva Contraseña:</label>
+                                <input type="password" id="password" name="password" placeholder="•••••••••" class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg block w-full p-2.5">
+                            </div>
+                            <div class="w-full">
+                                <label for="confirm-password" class="block mb-1 text-sm text-white">Confirmar Contraseña:</label>
+                                <input type="password" id="confirm-password" name="confirm-password" placeholder="•••••••••" class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg block w-full p-2.5">
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!-- Fieldset: Información Personal -->
+                    <fieldset class="border border-gray-600 rounded-lg p-4 mb-6">
+                        <legend class="text-white font-semibold mb-2">Información Personal</legend>
+
+                        <div class="mb-4">
+                            <label for="telefono" class="block mb-1 text-sm text-white">Teléfono:</label>
+                            <input type="text" id="telefono" name="telefono" readonly class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg block w-full p-2.5">
+                        </div>
+
+                        <div>
+                            <label for="direccion" class="block mb-1 text-sm text-white">Dirección:</label>
+                            <input type="text" id="direccion" name="direccion" readonly class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg block w-full p-2.5">
+                        </div>
+                    </fieldset>
+
+                    <!-- Fieldset: Información Bancaria -->
+                    <fieldset class="border border-gray-600 rounded-lg p-4 mb-6">
+                        <legend class="text-white font-semibold mb-2">Información Bancaria</legend>
+
+                        <div class="mb-4">
+                            <label for="banco" class="block mb-1 text-sm text-white">Banco:</label>
+                            <input type="text" id="banco" name="banco" readonly class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg block w-full p-2.5">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="tipo_cuenta" class="block mb-1 text-sm text-white">Tipo de Cuenta:</label>
+                            <input type="text" id="tipo_cuenta" name="tipo_cuenta" readonly class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg block w-full p-2.5">
+                        </div>
+
+                        <div>
+                            <label for="numero_cuenta" class="block mb-1 text-sm text-white">Número de Cuenta:</label>
+                            <input type="text" id="numero_cuenta" name="numero_cuenta" readonly class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg block w-full p-2.5">
+                        </div>
+                    </fieldset>
+
+                    <!-- Botones -->
+                    <div class="flex justify-between">
+                        <button type="button" id="edit-button" class="text-yellow-500 border border-yellow-500 hover:bg-yellow-500 hover:text-white focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-4 py-2 text-center">
+                            Editar Datos
+                        </button>
+
                         <button id="save_changes" type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                             Guardar Cambios
                         </button>
@@ -166,7 +209,7 @@
                 </form>
             </section>
         </main>
-    </div> 
+    </div>
 
     <footer>
         <div class="footer-container">
@@ -243,7 +286,7 @@
 
     <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
     <script type="module" src="https://cambiosorion.cl/orionapp/public/scripts/header.js" crossorigin="anonymous"></script>
-    <script type="module" src="https://admin.cambiosorion.cl/scripts/index.js"></script>
+    <script type="module" src="https://admin.cambiosorion.cl/scripts/info-per.js"></script>
     <script>
         fetch('sidebar.html')
             .then(response => response.text())
