@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function getUserData() {
-        fetch('https://cambiosorion.cl/data/info-per.php', {
+        fetch(`https://cambiosorion.cl/data/info-per.php?equipo_id=${equipoId}`, {
             method: 'GET',
             credentials: 'include'
         })
