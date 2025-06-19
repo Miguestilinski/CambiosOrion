@@ -1,125 +1,89 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const menuItems = document.querySelectorAll('.menu-item');
-    const sections = document.querySelectorAll('.content-section');
-
-    // Funcionalidad de menú para mostrar las secciones correspondientes
-    menuItems.forEach(item => {
-        item.addEventListener('click', () => {
-            menuItems.forEach(menu => menu.classList.remove('active'));
-            sections.forEach(section => section.classList.remove('active'));
-            item.classList.add('active');
-
-            const sectionId = item.getAttribute('data-section');
-            const targetSection = document.getElementById(sectionId);
-            if (targetSection) {
-                targetSection.classList.add('active');
-            } else {
-                console.error(`No se encontró la sección con id: ${sectionId}`);
-            }
-        });
-    });
-
     const userTypeElement = document.getElementById('user-type');
     const userNameElement = document.getElementById('user-name-dashboard');
     const roleTypeElement = document.getElementById('role-type');
-    const emailElement = document.getElementById('email');
     const rutGroupElement = document.getElementById('rut-group');
     const rutElement = document.getElementById('rut');
 
-    // Función para obtener los datos del usuario
+    const editableFields = [
+        { id: 'email', type: 'email' },
+        { id: 'telefono', type: 'text' },
+        { id: 'direccion', type: 'text' },
+        { id: 'estado_civil', type: 'text' },
+        { id: 'fecha_nacimiento', type: 'date' },
+        { id: 'banco', type: 'text' },
+        { id: 'tipo_cuenta', type: 'text' },
+        { id: 'numero_cuenta', type: 'text' }
+    ];
+
+    let isEditing = false;
+
     function getUserData() {
         fetch('https://cambiosorion.cl/data/get_user_data.php', {
             method: 'GET',
-            credentials: 'include' // Asegura que se envíen las cookies de sesión
+            credentials: 'include'
         })
-            .then(response => response.json()) // Parsear directamente como JSON
+            .then(res => res.json())
             .then(data => {
-                if (data.success) {
-                    const { nombre, correo, rut, tipo_cliente, rol, telefono, direccion, banco, tipo_cuenta, numero_cuenta } = data.user;
-
-                    // Actualiza la UI
-                    userNameElement.textContent = nombre || "Usuario desconocido";
-                    emailElement.placeholder = correo || "Correo no disponible";
-                    rutElement.textContent = rut || "RUT no disponible";
-                    emailElement.value = "";
-
-                    fillPersonalFields(data.user);
-
-                    if (tipo_cliente === 'persona') {
-                        userTypeElement.textContent = "Cliente";
-                        roleTypeElement.textContent = "Persona";
-                        rutGroupElement.classList.remove('hidden');
-                    } else if (tipo_cliente === 'empresa') {
-                        userTypeElement.textContent = "Cliente";
-                        roleTypeElement.textContent = "Empresa";
-                        rutGroupElement.classList.remove('hidden');
-                    } else if (rol === 'caja') {
-                        userTypeElement.textContent = "Administrativo";
-                        roleTypeElement.textContent = "Caja";
-                    } else if (rol === 'admin') {
-                        userTypeElement.textContent = "Administrativo";
-                        roleTypeElement.textContent = "Admin";
-                    } else if (rol === 'socio') {
-                        userTypeElement.textContent = "Administrativo";
-                        roleTypeElement.textContent = "Socio";
-                    } else if (rol === 'otro') {
-                        userTypeElement.textContent = "Administrativo";
-                        roleTypeElement.textContent = "Otro";
-                    } else {
-                        userTypeElement.textContent = "Tipo desconocido";
-                        rutGroupElement.classList.add('hidden');
-                    }
-
-                } else {
-                    console.error('Error: ', data.message);
+                if (!data.success) {
                     window.location.href = 'https://cambiosorion.cl/sin-acceso';
+                    return;
                 }
+
+                const user = data.user;
+                fillUserData(user);
+
+                if (user.tipo_cliente === 'persona' || user.tipo_cliente === 'empresa') {
+                    userTypeElement.textContent = "Cliente";
+                    roleTypeElement.textContent = user.tipo_cliente === 'persona' ? "Persona" : "Empresa";
+                    rutGroupElement.classList.remove('hidden');
+                    rutElement.textContent = user.rut || "RUT no disponible";
+                } else {
+                    userTypeElement.textContent = "Administrativo";
+                    roleTypeElement.textContent = capitalizeFirstLetter(user.rol || "Otro");
+                    rutGroupElement.classList.add('hidden');
+                }
+
+                userNameElement.textContent = user.nombre || "Usuario desconocido";
             })
-            .catch(error => {
-                console.error('Error al cargar los datos del usuario:', error);
-            });
+            .catch(error => console.error('Error al cargar los datos del usuario:', error));
+    }
+
+    function fillUserData(user) {
+        editableFields.forEach(field => {
+            const container = document.getElementById(field.id);
+            const span = document.createElement('span');
+            span.classList.add('field-text');
+            span.textContent = user[field.id] || '—';
+            container.innerHTML = '';
+            container.appendChild(span);
+        });
+    }
+
+    document.getElementById('edit-button').addEventListener('click', () => {
+        if (isEditing) return;
+        isEditing = true;
+
+        editableFields.forEach(field => {
+            const container = document.getElementById(field.id);
+            const currentValue = container.querySelector('.field-text')?.textContent || '';
+            container.innerHTML = '';
+
+            const input = document.createElement('input');
+            input.type = field.type;
+            input.name = field.id;
+            input.id = field.id;
+            input.placeholder = currentValue;
+            input.className = 'bg-gray-50 border border-gray-300 text-white text-sm rounded-lg block w-full p-2.5';
+            input.value = '';
+
+            container.appendChild(input);
+        });
+    });
+
+    function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
     }
 
     getUserData();
-
-    function fillPersonalFields(user) {
-        document.getElementById('telefono').value = user.telefono || "";
-        document.getElementById('direccion').value = user.direccion || "";
-        document.getElementById('banco').value = user.banco || "";
-        document.getElementById('tipo_cuenta').value = user.tipo_cuenta || "";
-        document.getElementById('numero_cuenta').value = user.numero_cuenta || "";
-    }
-
-    // Evento para editar campos
-    document.getElementById('edit-button').addEventListener('click', () => {
-        const editableFields = ['telefono', 'direccion', 'banco', 'tipo_cuenta', 'numero_cuenta'];
-        editableFields.forEach(id => {
-            const input = document.getElementById(id);
-            if (input) input.removeAttribute('readonly');
-        });
-    });
-
-    
-    // Manejar la selección y eliminación de archivos
-    document.querySelectorAll('input[type="file"]').forEach(input => {
-        const fileListContainer = document.getElementById(`${input.id}-file-list`);
-        const dataTransfer = new DataTransfer(); // Para mantener los archivos acumulados
-
-        input.addEventListener('change', event => {
-            const newFiles = Array.from(event.target.files);
-            console.log(`Archivos seleccionados: ${newFiles.length}`, newFiles);
-
-            // Añadir los nuevos archivos al DataTransfer
-            newFiles.forEach(file => {
-                dataTransfer.items.add(file);
-            });
-
-            // Actualizar el objeto FileList del input
-            input.files = dataTransfer.files;
-            console.log(`Archivos en input después de agregar: ${input.files.length}`);
-
-            // Llamar a la función para actualizar la lista visual
-            updateFileList(input.id); // Actualiza la lista de archivos al cambiar el input
-        });
-    });
 });
