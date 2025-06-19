@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const roleTypeElement = document.getElementById('role-type');
     const rutGroupElement = document.getElementById('rut-group');
     const rutElement = document.getElementById('rut');
+    const editButton = document.getElementById('edit-button');
+    const saveButton = document.getElementById('save_changes');
 
     const editableFields = [
         { id: 'email', viewId: 'email-view', inputId: 'email' },
@@ -103,4 +105,29 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     getSession();
+
+    editButton.addEventListener('click', () => {
+        isEditing = !isEditing;
+
+        editableFields.forEach(field => {
+            const view = document.getElementById(field.viewId);
+            const input = document.getElementById(field.inputId);
+
+            if (view && input) {
+                if (isEditing) {
+                    input.value = view.textContent === '—' ? '' : view.textContent;
+                    view.classList.add('hidden');
+                    input.classList.remove('hidden');
+                } else {
+                    input.classList.add('hidden');
+                    view.classList.remove('hidden');
+                }
+            }
+        });
+
+        // Cambiar texto del botón
+        editButton.textContent = isEditing ? 'Cancelar' : 'Editar Datos';
+        // Mostrar u ocultar botón de guardar
+        saveButton.classList.toggle('hidden', !isEditing);
+    });
 });
