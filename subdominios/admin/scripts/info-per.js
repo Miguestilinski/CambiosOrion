@@ -79,29 +79,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (input) {
                 input.classList.add('hidden');
-                view.classList.remove('hidden');
             }
         });
-    }
-
-    document.getElementById('edit-button').addEventListener('click', () => {
-        if (isEditing) return;
-        isEditing = true;
-
-        editableFields.forEach(field => {
-            const view = document.getElementById(field.viewId);
-            const input = document.getElementById(field.inputId);
-
-            if (view && input) {
-                input.value = view.textContent === '—' ? '' : view.textContent;
-                view.classList.add('hidden');
-                input.classList.remove('hidden');
-            }
-        });
-    });
-
-    function capitalizeFirstLetter(string) {
-        return string.charAt(0).toUpperCase() + string.slice(1);
     }
 
     getSession();
