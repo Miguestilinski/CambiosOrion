@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 const user = data.user;
+                currentUser = user;
                 fillUserData(user);
 
                 if (user.tipo_cliente === 'persona' || user.tipo_cliente === 'empresa') {
@@ -91,7 +92,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (input) {
                 input.classList.add('hidden');
-                input.placeholder = value || defaultPlaceholders[field.id] || '';
+
+                // Para selects: seleccionar la opción correcta
+                if (input.tagName === 'SELECT') {
+                    input.value = value;
+                } else {
+                    input.placeholder = value || defaultPlaceholders[field.id] || '';
+                }
             }
         });
     }
@@ -105,13 +112,20 @@ document.addEventListener('DOMContentLoaded', () => {
     editButton.addEventListener('click', () => {
         isEditing = !isEditing;
 
+        const passwordGroup = document.getElementById('password-group');
+        passwordGroup.classList.toggle('hidden', !isEditing);
+
         editableFields.forEach(field => {
             const view = document.getElementById(field.viewId);
             const input = document.getElementById(field.inputId);
 
             if (view && input) {
                 if (isEditing) {
-                    input.value = view.textContent === '—' ? '' : view.textContent;
+                    if (input.tagName === 'SELECT') {
+                        input.value = currentUser[field.id] || '';
+                    } else {
+                        input.value = view.textContent === '—' ? '' : view.textContent;
+                    }
                     view.classList.add('hidden');
                     input.classList.remove('hidden');
                 } else {

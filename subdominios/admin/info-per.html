@@ -126,7 +126,7 @@
                     <p id="role-type" class="text-lg font-medium text-white">Rol</p>
                 </div>
 
-                <form id="personal-info-form" class="gap-6 mb-6 max-w-4xl">
+                <form id="personal-info-form" class="gap-6 mb-6 max-w-xl">
 
                     <!-- Fieldset: Información de Cuenta -->
                     <fieldset class="border border-gray-600 rounded-lg p-4 mb-6">
@@ -143,14 +143,14 @@
                             <input type="email" id="email" name="email" placeholder="Correo" class="hidden bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg w-full p-2.5 flex-1">
                         </div>
 
-                        <div class="flex flex-col md:flex-row gap-4">
+                        <div id="password-group" class="hidden flex flex-col md:flex-row gap-4 mt-4">
                             <div class="w-full">
                                 <label for="password" class="block mb-1 text-sm text-white">Nueva Contraseña:</label>
-                                <input type="password" id="password" name="password" placeholder="•••••••••" class="bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg block w-full p-2.5">
+                                <input type="password" id="password" name="password" placeholder="•••••••••" class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg block w-full p-2.5">
                             </div>
                             <div class="w-full">
                                 <label for="confirm-password" class="block mb-1 text-sm text-white">Confirmar Contraseña:</label>
-                                <input type="password" id="confirm-password" name="confirm-password" placeholder="•••••••••" class="bg-gray-50 border border-gray-700 text-gray-300 text-sm rounded-lg block w-full p-2.5">
+                                <input type="password" id="confirm-password" name="confirm-password" placeholder="•••••••••" class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg block w-full p-2.5">
                             </div>
                         </div>
                     </fieldset>
@@ -174,7 +174,15 @@
                         <div class="mb-4 flex items-center gap-4">
                             <label class="text-sm text-white w-40">Estado Civil:</label>
                             <p id="estado_civil-view" class="text-white text-sm flex-1"></p>
-                            <input type="text" id="estado_civil" name="estado_civil" class="hidden bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg w-full p-2.5 flex-1">
+                            <select id="estado_civil" name="estado_civil" class="hidden bg-white border border-gray-300 text-gray-700 text-sm rounded-lg w-full p-2.5 flex-1">
+                                <option value="">Seleccione</option>
+                                <option value="soltero">Soltero/a</option>
+                                <option value="casado">Casado/a</option>
+                                <option value="viudo">Viudo/a</option>
+                                <option value="divorciado">Divorciado/a</option>
+                                <option value="conviviente-civil">Conviviente Civil</option>
+                                <option value="separado">Separado Judicialmente</option>
+                            </select>
                         </div>
 
                         <div class="mb-4 flex items-center gap-4">
@@ -197,7 +205,12 @@
                         <div class="mb-4 flex items-center gap-4">
                             <label class="text-sm text-white w-40">Tipo de Cuenta:</label>
                             <p id="tipo_cuenta-view" class="text-white text-sm flex-1"></p>
-                            <input type="text" id="tipo_cuenta" name="tipo_cuenta" class="hidden bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg w-full p-2.5 flex-1">
+                            <select id="tipo_cuenta" name="tipo_cuenta" class="hidden bg-white border border-gray-300 text-gray-700 text-sm rounded-lg w-full p-2.5 flex-1">
+                                <option value="">Seleccione</option>
+                                <option value="corriente">Corriente</option>
+                                <option value="vista-rut">Vista/RUT</option>
+                                <option value="ahorro">Ahorro</option>
+                            </select>
                         </div>
 
                         <div class="mb-4 flex items-center gap-4">
