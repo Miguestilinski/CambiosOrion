@@ -17,9 +17,26 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     let isEditing = false;
+    let equipoId = null;
+
+    async function getSession() {
+        try {
+            const res = await fetch("https://cambiosorion.cl/data/session_status.php", {
+                credentials: "include"
+            });
+            if (!res.ok) throw new Error("No se pudo obtener la sesión.");
+            const data = await res.json();
+            equipoId = data.equipo_id;
+            if (!equipoId) throw new Error("No se encontró equipo_id en sesión");
+            getUserData();
+        } catch (error) {
+            console.error("Error obteniendo la sesión:", error);
+            window.location.href = 'https://cambiosorion.cl/sin-acceso';
+        }
+    }
 
     function getUserData() {
-        fetch('https://cambiosorion.cl/data/get_user_data.php', {
+        fetch('https://cambiosorion.cl/data/info-per.php', {
             method: 'GET',
             credentials: 'include'
         })
@@ -85,5 +102,5 @@ document.addEventListener('DOMContentLoaded', () => {
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
 
-    getUserData();
+    getSession();
 });
