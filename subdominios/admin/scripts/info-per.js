@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveButton = document.getElementById('save_changes');
 
     const editableFields = [
-        { id: 'email', viewId: 'email-view', inputId: 'email' },
+        { id: 'correo', viewId: 'email-view', inputId: 'email' },
         { id: 'telefono', viewId: 'telefono-view', inputId: 'telefono' },
         { id: 'direccion', viewId: 'direccion-view', inputId: 'direccion' },
         { id: 'estado_civil', viewId: 'estado_civil-view', inputId: 'estado_civil' },
