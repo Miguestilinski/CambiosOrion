@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const userTypeElement = document.getElementById('user-type');
     const userNameElement = document.getElementById('user-name-dashboard');
     const roleTypeElement = document.getElementById('role-type');
+    const rutGroupElement = document.getElementById('rut-group');
     const rutElement = document.getElementById('rut');
     const editButton = document.getElementById('edit-button');
     const saveButton = document.getElementById('save_changes');
@@ -53,16 +54,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentUser = user;
                 fillUserData(user);
 
-                if (user.tipo_cliente === 'persona' || user.tipo_cliente === 'empresa') {
-                    userTypeElement.textContent = "Cliente";
-                    roleTypeElement.textContent = user.tipo_cliente === 'persona' ? "Persona" : "Empresa";
-                    rutGroupElement.classList.remove('hidden');
-                    rutElement.textContent = user.rut || "RUT no disponible";
-                } else {
-                    userTypeElement.textContent = "Administrativo";
-                    roleTypeElement.textContent = capitalizeFirstLetter(user.rol || "Otro");
-                    rutGroupElement.classList.add('hidden');
-                }
+                // Ya no diferenciamos clientes, es siempre administrativo
+                userTypeElement.textContent = "Administrativo";
+                roleTypeElement.textContent = capitalizeFirstLetter(user.rol || "Otro");
+
+                // Mostrar siempre el RUT
+                rutElement.textContent = user.rut || "RUT no disponible";
 
                 userNameElement.textContent = user.nombre || "Usuario desconocido";
             })
