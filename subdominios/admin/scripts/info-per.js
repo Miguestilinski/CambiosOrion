@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const userTypeElement = document.getElementById('user-type');
     const userNameElement = document.getElementById('user-name-dashboard');
     const roleTypeElement = document.getElementById('role-type');
-    const rutGroupElement = document.getElementById('rut-group');
     const rutElement = document.getElementById('rut');
     const editButton = document.getElementById('edit-button');
     const saveButton = document.getElementById('save_changes');
