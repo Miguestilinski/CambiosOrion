@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let isEditing = false;
     let equipoId = null;
+    let currentUser = null;
 
     async function getSession() {
         try {
