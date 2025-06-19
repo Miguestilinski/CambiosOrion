@@ -126,108 +126,115 @@
                     <p id="role-type" class="text-lg font-medium text-white">Rol</p>
                 </div>
 
-                <form id="personal-info-form" class="gap-6 mb-6 max-w-xl">
+                <form id="personal-info-form" class="flex gap-6 mb-6">
 
-                    <!-- Fieldset: Información de Cuenta -->
-                    <fieldset class="border border-gray-600 rounded-lg p-4 mb-6">
-                        <legend class="text-white font-semibold mb-2">Información de Cuenta</legend>
+                    <!-- Columna Izquierda -->
+                    <div class="flex flex-col gap-6 max-w-xl flex-1">
 
-                        <div id="rut-group" class="hidden mb-4">
-                            <label class="block mb-1 text-sm text-white">RUT:</label>
-                            <p id="rut" class="text-white text-sm"></p>
-                        </div>
+                        <!-- Fieldset: Información de Cuenta -->
+                        <fieldset class="border border-gray-600 rounded-lg p-4 mb-6">
+                            <legend class="text-white font-semibold mb-2">Información de Cuenta</legend>
 
-                        <div class="mb-4 flex items-center gap-4">
-                            <label class="text-sm text-white w-40">Correo:</label>
-                            <p id="email-view" class="text-white text-sm flex-1"></p>
-                            <input type="email" id="email" name="email" placeholder="Correo" class="hidden bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg w-full p-2.5 flex-1">
-                        </div>
-
-                        <div id="password-group" class="hidden flex flex-col md:flex-row gap-4 mt-4">
-                            <div class="w-full">
-                                <label for="password" class="block mb-1 text-sm text-white">Nueva Contraseña:</label>
-                                <input type="password" id="password" name="password" placeholder="•••••••••" class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg block w-full p-2.5">
+                            <div id="rut-group" class="hidden mb-4">
+                                <label class="block mb-1 text-sm text-white">RUT:</label>
+                                <p id="rut" class="text-white text-sm"></p>
                             </div>
-                            <div class="w-full">
-                                <label for="confirm-password" class="block mb-1 text-sm text-white">Confirmar Contraseña:</label>
-                                <input type="password" id="confirm-password" name="confirm-password" placeholder="•••••••••" class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg block w-full p-2.5">
+
+                            <div class="mb-4 flex items-center gap-4">
+                                <label class="text-sm text-white w-40">Correo:</label>
+                                <p id="email-view" class="text-white text-sm flex-1"></p>
+                                <input type="email" id="email" name="email" placeholder="Correo" class="hidden bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg w-full p-2.5 flex-1">
                             </div>
+
+                            <div id="password-group" class="hidden flex flex-col md:flex-row gap-4 mt-4">
+                                <div class="w-full">
+                                    <label for="password" class="block mb-1 text-sm text-white">Nueva Contraseña:</label>
+                                    <input type="password" id="password" name="password" placeholder="•••••••••" class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg block w-full p-2.5">
+                                </div>
+                                <div class="w-full">
+                                    <label for="confirm-password" class="block mb-1 text-sm text-white">Confirmar Contraseña:</label>
+                                    <input type="password" id="confirm-password" name="confirm-password" placeholder="•••••••••" class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg block w-full p-2.5">
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <!-- Fieldset: Información Personal -->
+                        <fieldset class="border border-gray-600 rounded-lg p-4 mb-6">
+                            <legend class="text-white font-semibold mb-2">Información Personal</legend>
+
+                            <div class="mb-4 flex items-center gap-4">
+                                <label class="text-sm text-white w-40">Teléfono:</label>
+                                <p id="telefono-view" class="text-white text-sm flex-1"></p>
+                                <input type="text" id="telefono" name="telefono" class="hidden bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg w-full p-2.5 flex-1">
+                            </div>
+
+                            <div class="mb-4 flex items-center gap-4">
+                                <label class="text-sm text-white w-40">Dirección:</label>
+                                <p id="direccion-view" class="text-white text-sm flex-1"></p>
+                                <input type="text" id="direccion" name="direccion" class="hidden bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg w-full p-2.5 flex-1">
+                            </div>
+
+                            <div class="mb-4 flex items-center gap-4">
+                                <label class="text-sm text-white w-40">Estado Civil:</label>
+                                <p id="estado_civil-view" class="text-white text-sm flex-1"></p>
+                                <select id="estado_civil" name="estado_civil" class="hidden bg-white border border-gray-300 text-gray-700 text-sm rounded-lg w-full p-2.5 flex-1">
+                                    <option value="">Seleccione</option>
+                                    <option value="soltero">Soltero/a</option>
+                                    <option value="casado">Casado/a</option>
+                                    <option value="viudo">Viudo/a</option>
+                                    <option value="divorciado">Divorciado/a</option>
+                                    <option value="conviviente-civil">Conviviente Civil</option>
+                                    <option value="separado">Separado Judicialmente</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-4 flex items-center gap-4">
+                                <label class="text-sm text-white w-40">Fecha de Nacimiento:</label>
+                                <p id="fecha_nacimiento-view" class="text-white text-sm flex-1"></p>
+                                <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" class="hidden bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg w-full p-2.5 flex-1">
+                            </div>
+                        </fieldset>
+                        <div class="flex justify-between">
+                            <button type="button" id="edit-button" class="text-yellow-500 border border-yellow-500 hover:bg-yellow-500 hover:text-white focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-4 py-2 text-center">
+                                Editar Datos
+                            </button>
+
+                            <button id="save_changes" type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center hidden">
+                                Guardar Cambios
+                            </button>
                         </div>
-                    </fieldset>
+                    </div>
 
-                    <!-- Fieldset: Información Personal -->
-                    <fieldset class="border border-gray-600 rounded-lg p-4 mb-6">
-                        <legend class="text-white font-semibold mb-2">Información Personal</legend>
+                    <!-- Columna Derecha -->
+                    <div class="border border-gray-600 rounded-lg p-4 h-fit self-start min-w-[320px]">
 
-                        <div class="mb-4 flex items-center gap-4">
-                            <label class="text-sm text-white w-40">Teléfono:</label>
-                            <p id="telefono-view" class="text-white text-sm flex-1"></p>
-                            <input type="text" id="telefono" name="telefono" class="hidden bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg w-full p-2.5 flex-1">
-                        </div>
+                        <!-- Fieldset: Información Bancaria -->
+                        <fieldset class="border border-gray-600 rounded-lg p-4 mb-6">
+                            <legend class="text-white font-semibold mb-2">Información Bancaria</legend>
 
-                        <div class="mb-4 flex items-center gap-4">
-                            <label class="text-sm text-white w-40">Dirección:</label>
-                            <p id="direccion-view" class="text-white text-sm flex-1"></p>
-                            <input type="text" id="direccion" name="direccion" class="hidden bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg w-full p-2.5 flex-1">
-                        </div>
+                            <div class="mb-4 flex items-center gap-4">
+                                <label class="text-sm text-white w-40">Banco:</label>
+                                <p id="banco-view" class="text-white text-sm flex-1"></p>
+                                <input type="text" id="banco" name="banco" class="hidden bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg w-full p-2.5 flex-1">
+                            </div>
 
-                        <div class="mb-4 flex items-center gap-4">
-                            <label class="text-sm text-white w-40">Estado Civil:</label>
-                            <p id="estado_civil-view" class="text-white text-sm flex-1"></p>
-                            <select id="estado_civil" name="estado_civil" class="hidden bg-white border border-gray-300 text-gray-700 text-sm rounded-lg w-full p-2.5 flex-1">
-                                <option value="">Seleccione</option>
-                                <option value="soltero">Soltero/a</option>
-                                <option value="casado">Casado/a</option>
-                                <option value="viudo">Viudo/a</option>
-                                <option value="divorciado">Divorciado/a</option>
-                                <option value="conviviente-civil">Conviviente Civil</option>
-                                <option value="separado">Separado Judicialmente</option>
-                            </select>
-                        </div>
+                            <div class="mb-4 flex items-center gap-4">
+                                <label class="text-sm text-white w-40">Tipo de Cuenta:</label>
+                                <p id="tipo_cuenta-view" class="text-white text-sm flex-1"></p>
+                                <select id="tipo_cuenta" name="tipo_cuenta" class="hidden bg-white border border-gray-300 text-gray-700 text-sm rounded-lg w-full p-2.5 flex-1">
+                                    <option value="">Seleccione</option>
+                                    <option value="corriente">Corriente</option>
+                                    <option value="vista-rut">Vista/RUT</option>
+                                    <option value="ahorro">Ahorro</option>
+                                </select>
+                            </div>
 
-                        <div class="mb-4 flex items-center gap-4">
-                            <label class="text-sm text-white w-40">Fecha de Nacimiento:</label>
-                            <p id="fecha_nacimiento-view" class="text-white text-sm flex-1"></p>
-                            <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" class="hidden bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg w-full p-2.5 flex-1">
-                        </div>
-                    </fieldset>
-
-                    <!-- Fieldset: Información Bancaria -->
-                    <fieldset class="border border-gray-600 rounded-lg p-4 mb-6">
-                        <legend class="text-white font-semibold mb-2">Información Bancaria</legend>
-
-                        <div class="mb-4 flex items-center gap-4">
-                            <label class="text-sm text-white w-40">Banco:</label>
-                            <p id="banco-view" class="text-white text-sm flex-1"></p>
-                            <input type="text" id="banco" name="banco" class="hidden bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg w-full p-2.5 flex-1">
-                        </div>
-
-                        <div class="mb-4 flex items-center gap-4">
-                            <label class="text-sm text-white w-40">Tipo de Cuenta:</label>
-                            <p id="tipo_cuenta-view" class="text-white text-sm flex-1"></p>
-                            <select id="tipo_cuenta" name="tipo_cuenta" class="hidden bg-white border border-gray-300 text-gray-700 text-sm rounded-lg w-full p-2.5 flex-1">
-                                <option value="">Seleccione</option>
-                                <option value="corriente">Corriente</option>
-                                <option value="vista-rut">Vista/RUT</option>
-                                <option value="ahorro">Ahorro</option>
-                            </select>
-                        </div>
-
-                        <div class="mb-4 flex items-center gap-4">
-                            <label class="text-sm text-white w-40">Número de Cuenta:</label>
-                            <p id="numero_cuenta-view" class="text-white text-sm flex-1"></p>
-                            <input type="text" id="numero_cuenta" name="numero_cuenta" class="hidden bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg w-full p-2.5 flex-1">
-                        </div>
-                    </fieldset>
-
-                    <div class="flex justify-between">
-                        <button type="button" id="edit-button" class="text-yellow-500 border border-yellow-500 hover:bg-yellow-500 hover:text-white focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-4 py-2 text-center">
-                            Editar Datos
-                        </button>
-
-                        <button id="save_changes" type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center hidden">
-                            Guardar Cambios
-                        </button>
+                            <div class="mb-4 flex items-center gap-4">
+                                <label class="text-sm text-white w-40">Número de Cuenta:</label>
+                                <p id="numero_cuenta-view" class="text-white text-sm flex-1"></p>
+                                <input type="text" id="numero_cuenta" name="numero_cuenta" class="hidden bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg w-full p-2.5 flex-1">
+                            </div>
+                        </fieldset>
                     </div>
                 </form>
             </section>
