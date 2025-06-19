@@ -6,14 +6,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const rutElement = document.getElementById('rut');
 
     const editableFields = [
-        { id: 'email', type: 'email' },
-        { id: 'telefono', type: 'text' },
-        { id: 'direccion', type: 'text' },
-        { id: 'estado_civil', type: 'text' },
-        { id: 'fecha_nacimiento', type: 'date' },
-        { id: 'banco', type: 'text' },
-        { id: 'tipo_cuenta', type: 'text' },
-        { id: 'numero_cuenta', type: 'text' }
+        { id: 'email', viewId: 'email-view', inputId: 'email' },
+        { id: 'telefono', viewId: 'telefono-view', inputId: 'telefono' },
+        { id: 'direccion', viewId: 'direccion-view', inputId: 'direccion' },
+        { id: 'estado_civil', viewId: 'estado_civil-view', inputId: 'estado_civil' },
+        { id: 'fecha_nacimiento', viewId: 'fecha_nacimiento-view', inputId: 'fecha_nacimiento' },
+        { id: 'banco', viewId: 'banco-view', inputId: 'banco' },
+        { id: 'tipo_cuenta', viewId: 'tipo_cuenta-view', inputId: 'tipo_cuenta' },
+        { id: 'numero_cuenta', viewId: 'numero_cuenta-view', inputId: 'numero_cuenta' }
     ];
 
     let isEditing = false;
@@ -68,12 +68,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function fillUserData(user) {
         editableFields.forEach(field => {
-            const container = document.getElementById(field.id);
-            const span = document.createElement('span');
-            span.classList.add('field-text');
-            span.textContent = user[field.id] || '—';
-            container.innerHTML = '';
-            container.appendChild(span);
+            const view = document.getElementById(field.viewId);
+            const input = document.getElementById(field.inputId);
+
+            if (view) {
+                view.textContent = user[field.id] || '—';
+            }
+
+            if (input) {
+                input.classList.add('hidden');
+                view.classList.remove('hidden');
+            }
         });
     }
 
@@ -82,19 +87,14 @@ document.addEventListener('DOMContentLoaded', () => {
         isEditing = true;
 
         editableFields.forEach(field => {
-            const container = document.getElementById(field.id);
-            const currentValue = container.querySelector('.field-text')?.textContent || '';
-            container.innerHTML = '';
+            const view = document.getElementById(field.viewId);
+            const input = document.getElementById(field.inputId);
 
-            const input = document.createElement('input');
-            input.type = field.type;
-            input.name = field.id;
-            input.id = field.id;
-            input.placeholder = currentValue;
-            input.className = 'bg-gray-50 border border-gray-300 text-white text-sm rounded-lg block w-full p-2.5';
-            input.value = '';
-
-            container.appendChild(input);
+            if (view && input) {
+                input.value = view.textContent === '—' ? '' : view.textContent;
+                view.classList.add('hidden');
+                input.classList.remove('hidden');
+            }
         });
     });
 
