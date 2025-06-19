@@ -73,12 +73,25 @@ document.addEventListener('DOMContentLoaded', () => {
             const view = document.getElementById(field.viewId);
             const input = document.getElementById(field.inputId);
 
+            const value = user[field.id] || '';
+            const defaultPlaceholders = {
+                correo: 'Ej: correo@dominio.cl',
+                telefono: 'Ej: +56 9 1234 5678',
+                direccion: 'Ej: Agustinas 1035',
+                estado_civil: 'Ej: Soltero, Casado',
+                fecha_nacimiento: 'Selecciona una fecha',
+                banco: 'Nombre del banco',
+                tipo_cuenta: 'Corriente, Vista, etc.',
+                numero_cuenta: 'Ej: 1234567890'
+            };
+
             if (view) {
-                view.textContent = user[field.id] || '—';
+                view.textContent = value || '—';
             }
 
             if (input) {
                 input.classList.add('hidden');
+                input.placeholder = value || defaultPlaceholders[field.id] || '';
             }
         });
     }
