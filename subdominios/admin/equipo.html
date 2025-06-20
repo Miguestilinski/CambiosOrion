@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Socios</title>
+    <title>Equipo</title>
     <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/header.css">
     <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/footer.css">
     <link rel="stylesheet" href="https://admin.cambiosorion.cl/styles/index.css">
@@ -35,7 +35,7 @@
         <!-- Menús desplegables para móvil -->
         <div id="nav-mobile-menu" class="mobile-menu hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
             <ul class="py-2 text-sm text-gray-700">
-                <li><a href="https://admin.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Portal Admin</a></li>
+                <li><a href="https://admin.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Portal Socios</a></li>
             </ul>
             <ul class="py-2 text-sm text-gray-700">
                 <li><a href="https://pizarras.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Pizarras</a></li>
@@ -113,11 +113,121 @@
     <div class="main-content">
         <div id="sidebar-container"></div>
         <main id="dashboard-content" class="dashboard-content">
-            <section id="equipo" class="content-section active">
-                <h1 class="mb-4 text-2xl font-medium text-white">Gestión de Equipo</h1>
-                <button id="add-member" class="mb-4 px-4 py-2 bg-green-600 rounded text-white">+ Agregar Integrante</button>
-                <div id="team-list" class="space-y-4"></div>
-            </section>
+                        <section id="equipo" class="content-section active">
+                <!-- Título y botón Nueva Operación -->
+                <div class="flex items-center mb-6">
+                    <h1 class="text-2xl font-medium mr-4 leading-none text-white">Equipo</h1>
+                    <button type="button" id="nuevo-int"
+                        class="text-white mr-2 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
+                        Nuevo Integrante
+                    </button>
+                </div>
+                
+                <!-- Filtros avanzados -->
+                <div class="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-6">
+                    <div>
+                        <label for="nombre" class="block mb-1 text-sm text-white">Nombre</label>
+                        <input type="text" id="nombre" 
+                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label for="rut" class="block mb-1 text-sm text-white">RUT</label>
+                        <input type="text" id="rut" 
+                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label for="fecha_ingreso" class="block mb-1 text-sm text-white">Fecha de Ingreso</label>
+                        <input type="text" id="fecha_ingreso" 
+                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label for="rol" class="block mb-1 text-sm text-white">Rol</label>
+                        <select id="rol"
+                            class="select-list block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Seleccionar</option>
+                            <option value="caja">Caja</option>
+                            <option value="tesoreria">Tesorería</option>
+                            <option value="socio">Socio</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="contrato" class="block mb-1 text-sm text-white">Contrato</label>
+                        <select id="contrato"
+                            class="select-list block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Seleccionar</option>
+                            <option value="contratado">Contratado</option>
+                            <option value="apoyo">Apoyo</option>
+                            <option value="practicante">Practicante</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="sueldo" class="block mb-1 text-sm text-white">Sueldo Líquido</label>
+                        <input type="text" id="sueldo" 
+                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label for="habilitados" class="block mb-1 text-sm text-white">Habilitados</label>
+                        <select id="habilitados"
+                            class="select-list block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Seleccionar</option>
+                            <option value="0">No Habilitado</option>
+                            <option value="1">Habilitado</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Mostrar registros y buscar -->
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center space-x-2">
+                        <label for="mostrar-registros" class="text-sm text-white">Mostrar</label>
+                        <select id="mostrar-registros"
+                            class="block px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                        <span class="text-sm text-white">registros</span>
+                    </div>
+                    <div>
+                        <input type="text" id="buscar" placeholder="Buscar" 
+                            class="block w-64 px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                </div>
+                
+                <!-- Tabla de operaciones -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left text-white bg-gray-800">
+                        <thead class="text-xs uppercase bg-gray-800 text-white">
+                            <tr>
+                                <th class="px-4 py-2">Nombre</th>
+                                <th class="px-4 py-2">RUT</th>
+                                <th class="px-4 py-2">Fecha de Ingreso</th>
+                                <th class="px-4 py-2">Rol</th>
+                                <th class="px-4 py-2">Tipo de Contrato</th>
+                                <th class="px-4 py-2">Sueldo Líquido</th>
+                                <th class="px-4 py-2"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b bg-white border-gray-700 text-gray-700">
+                                <td class="px-4 py-2">Integrante</td>
+                                <td class="px-4 py-2">12.345.678-9</td>
+                                <td class="px-4 py-2">2025-01</td>
+                                <td class="px-4 py-2">Caja</td>
+                                <td class="px-4 py-2">Contratado</td>
+                                <td class="px-4 py-2">$100.000</td>
+                                <td class="px-4 py-2">
+                                    <button class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1">
+                                        Mostrar
+                                    </button>
+                                </td>
+                            </tr>
+                            <!-- Más filas -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>  
         </main>
     </div> 
 
@@ -193,7 +303,7 @@
             © 2025 Cambios Orion. Todos los derechos reservados.
         </div>
     </footer>
-
+    
     <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
     <script type="module" src="https://cambiosorion.cl/orionapp/public/scripts/header.js" crossorigin="anonymous"></script>
     <script type="module" src="https://admin.cambiosorion.cl/scripts/index.js"></script>

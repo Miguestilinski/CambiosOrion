@@ -102,7 +102,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const data = JSON.parse(text);
 
         if (data.success) {
-        window.location.href = "https://tesoreria.cambiosorion.cl/remuneraciones";
+        window.location.href = "https://admin.cambiosorion.cl/remuneraciones";
         } else {
         alert(data.error || "Error al guardar remuneración.");
         }

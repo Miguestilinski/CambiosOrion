@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Redirigir al hacer clic en "Nueva Remuneracion"
    if (nuevaRemuneracionBtn) {
     nuevaRemuneracionBtn.addEventListener('click', () => {
-        window.location.href = 'https://tesoreria.cambiosorion.cl/nueva-rem';
+        window.location.href = 'https://admin.cambiosorion.cl/nueva-rem';
     });
 }
 

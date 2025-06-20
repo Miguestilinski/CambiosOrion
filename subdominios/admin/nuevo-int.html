@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Nuevo Integrante</title>
-        <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/header.css">
-        <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/footer.css">
-        <link rel="stylesheet" href="./styles/index.css">
-        <link href="https://cambiosorion.cl/orionapp/public/styles/output.css" rel="stylesheet">
-        <link rel="icon" href="https://cambiosorion.cl/orionapp/icons/IsotipoOrion-blue.svg" type="image/png">
-        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">  
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuevo Integrante</title>
+    <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/header.css">
+    <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/footer.css">
+    <link rel="stylesheet" href="https://admin.cambiosorion.cl/styles/index.css">
+    <link href="https://cambiosorion.cl/orionapp/public/styles/output.css" rel="stylesheet">
+    <link rel="icon" href="https://cambiosorion.cl/orionapp/icons/IsotipoOrion-blue.svg" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">  
+</head>
 <body>
     <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js" crossorigin="anonymous"></script>
     <header>
@@ -35,16 +35,16 @@
         <!-- Menús desplegables para móvil -->
         <div id="nav-mobile-menu" class="mobile-menu hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
             <ul class="py-2 text-sm text-gray-700">
+                <li><a href="https://admin.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Portal Socios</a></li>
+            </ul>
+            <ul class="py-2 text-sm text-gray-700">
+                <li><a href="https://pizarras.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Pizarras</a></li>
+            </ul>
+            <ul class="py-2 text-sm text-gray-700">
                 <li><a href="https://caja.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Sist. Caja</a></li>
             </ul>
             <ul class="py-2 text-sm text-gray-700">
                 <li><a href="https://tesoreria.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Sist. Tesoreria</a></li>
-            </ul>
-            <ul class="py-2 text-sm text-gray-700">
-                <li><a href="https://admin.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Portal Admin</a></li>
-            </ul>
-            <ul class="py-2 text-sm text-gray-700">
-                <li><a href="https://pizarras.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Pizarras</a></li>
             </ul>
         </div>
     
@@ -60,7 +60,7 @@
                     <div id="user-email" class="mail font-medium truncate">Correo del usuario</div>
                 </div>
                 <ul class="py-2 text-sm text-gray-700" id="menu-admin-mobile" style="display: none;">
-                    <li><a href="https://admin.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Portal Admin</a></li>
+                    <li><a href="https://admin.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Portal Socios</a></li>
                     <li><a href="https://cambiosorion.cl/webmail" class="block px-4 py-2 hover:bg-gray-100">Correo</a></li>
                 </ul>
                 <ul class="py-2 text-sm text-gray-700">
@@ -72,10 +72,10 @@
         <!-- Menú de navegación para escritorio -->
         <nav>
             <ul>
-                <li><a href="https://caja.cambiosorion.cl/">Sist. Cajas</a></li>
-                <li class="selected"><a href="https://tesoreria.cambiosorion.cl/tesoreria">Sist. Tesorería</a></li>
-                <li><a href="https://admin.cambiosorion.cl/">Portal Admin</a></li>
+                <li class="selected"><a href="https://admin.cambiosorion.cl/">Portal Socios</a></li>
                 <li><a href="https://pizarras.cambiosorion.cl/">Pizarras</a></li>
+                <li><a href="https://caja.cambiosorion.cl/">Sist. Caja</a></li>
+                <li><a href="https://tesoreria.cambiosorion.cl/">Sist. Tesoreria</a></li>
             </ul>
         </nav>
     
@@ -93,7 +93,7 @@
                         <div id="user-email" class="mail font-medium truncate">Correo del usuario</div>
                     </div>
                     <ul class="py-2 text-sm text-gray-700" id="menu-admin" style="display: none;">
-                        <li><a href="https://admin.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Portal Admin</a></li>
+                        <li><a href="https://admin.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Portal Socios</a></li>
                         <li><a href="https://cambiosorion.cl/webmail" class="block px-4 py-2 hover:bg-gray-100">Correo</a></li>
                     </ul>
                     <ul class="py-2 text-sm text-gray-700">
@@ -282,7 +282,40 @@
             </div>
             <!-- Información de contacto -->
             <div class="footer-contact flex flex-wrap justify-between">
-            </div>         
+                <div class="contact-info">
+                    <!-- Dirección -->
+                    <div class="contact-item">
+                        <a href="https://maps.app.goo.gl/6fQ31ySCJWSButxQ9" target="_blank">
+                            <img src="https://cambiosorion.cl/orionapp/icons/location-white.png" alt="Icono de ubicación" class="icon">
+                        </a>
+                        <div>
+                            <a href="https://maps.app.goo.gl/6fQ31ySCJWSButxQ9" target="_blank"><p>Agustinas 1035 Of 13, Santiago</p></a>
+                            <small>Lunes a Viernes 09:00 a 17:00 hrs</small>
+                        </div>
+                    </div> 
+                    <!-- Teléfono -->
+                    <div class="contact-item">
+                        <img src="https://cambiosorion.cl/orionapp/icons/phone-white.png" alt="Icono de teléfono" class="icon">
+                        <div>
+                            <p>+56 9 7184 6048</p>
+                        </div>
+                    </div>
+                    <!-- Correo -->
+                    <div class="contact-item">
+                        <img src="https://cambiosorion.cl/orionapp/icons/email-white.png" alt="Icono de correo" class="icon">
+                        <div>
+                            <p>contacto@cambiosorion.cl</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Redes Sociales -->
+            <div class="social-media flex gap-4">
+                <a href="https://wa.me/+56971846048?text=Hola,%20necesito%20consultar%20con%20un%20ejecutivo." target="_blank"><img src="https://cambiosorion.cl/orionapp/icons/whatsapp-white.png" alt="WhatsApp" class="icon"></a>
+                <a href="https://www.facebook.com/CambiosOrion" target="_blank"><img src="https://cambiosorion.cl/orionapp/icons/facebook-white.png" alt="Facebook" class="icon"></a>
+                <a href="https://www.instagram.com/CambiosOrion.cl" target="_blank"><img src="https://cambiosorion.cl/orionapp/icons/instagram-white.png" alt="Instagram" class="icon"></a>
+                <a href="https://www.tiktok.com/@cambios.orion" target="_blank"><img src="https://cambiosorion.cl/orionapp/icons/tik-tok-white.png" alt="TikTok" class="icon"></a>
+            </div>            
         </div>
         <div class="footer-bottom text-xs text-center p-4">
             © 2025 Cambios Orion. Todos los derechos reservados.
