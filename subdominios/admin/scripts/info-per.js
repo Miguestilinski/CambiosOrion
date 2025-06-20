@@ -103,8 +103,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
 
-    getSession();
-
     editButton.addEventListener('click', () => {
         isEditing = !isEditing;
 
@@ -136,4 +134,51 @@ document.addEventListener('DOMContentLoaded', () => {
         // Mostrar u ocultar botón de guardar
         saveButton.classList.toggle('hidden', !isEditing);
     });
+
+    saveButton.addEventListener('click', async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData();
+        formData.append('equipo_id', equipoId);
+
+        editableFields.forEach(field => {
+            const input = document.getElementById(field.inputId);
+            if (input) {
+                formData.append(field.id, input.value.trim());
+            }
+        });
+
+        const password = document.getElementById('password').value.trim();
+        const confirmPassword = document.getElementById('confirm-password').value.trim();
+        if (password && password === confirmPassword) {
+            formData.append('password', password);
+        } else if (password !== confirmPassword) {
+            alert('Las contraseñas no coinciden');
+            return;
+        }
+
+        try {
+            const res = await fetch('https://cambiosorion.cl/data/info-per.php', {
+                method: 'POST',
+                credentials: 'include',
+                body: formData
+            });
+
+            const data = await res.json();
+            if (data.success) {
+                alert('Datos actualizados correctamente');
+                isEditing = false;
+                editButton.textContent = 'Editar Datos';
+                saveButton.classList.add('hidden');
+                getUserData();
+            } else {
+                alert('Error al guardar los cambios: ' + data.message);
+            }
+        } catch (error) {
+            console.error('Error al guardar los cambios:', error);
+            alert('Error de red al intentar guardar los cambios');
+        }
+    });
+
+    getSession();
 });
