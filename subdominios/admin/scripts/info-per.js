@@ -166,6 +166,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const res = await fetch('https://cambiosorion.cl/data/info-per.php', {
                 method: 'POST',
                 credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify(dataToSend)
             });
 
@@ -173,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('Respuesta cruda del backend:', raw);
 
             let data;
-            
+
             try {
                 data = JSON.parse(raw);
             } catch (err) {
