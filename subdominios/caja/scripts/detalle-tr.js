@@ -43,6 +43,40 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
 
+            // Mostrar información general
+            const infoHTML = `
+                <div class="text-white space-y-2">
+                    <p><strong>Estado:</strong> <span style="color: ${color}">${info.estado}</span></p>
+                    <p><strong>Fecha:</strong> ${new Date(info.fecha).toLocaleString("es-CL")}</p>
+                    <p><strong>Cliente:</strong> ${info.nombre_cliente || "Sin cliente"}</p>
+                    <p><strong>Vendedor:</strong> ${info.vendedor}</p>
+                    <p><strong>Caja:</strong> ${info.caja}</p>
+                    <p><strong>Tipo:</strong> ${info.tipo_transaccion}</p>
+                    <p><strong>Total:</strong> ${formatToCLP(info.total)}</p>
+                    <p><strong>Método de pago:</strong> ${info.metodo_pago}</p>
+                </div>
+            `;
+            document.getElementById("info-transaccion").innerHTML = infoHTML;
+
+            // Mostrar divisas
+            const contenedorDetalles = document.getElementById("detalle-divisas");
+            contenedorDetalles.innerHTML = "";
+
+            data.detalles.forEach(det => {
+                const html = `
+                    <div class="flex items-center gap-4 bg-gray-800 text-white px-4 py-3 rounded mb-2">
+                        <img src="${det.divisa_icono}" alt="${det.divisa}" class="w-6 h-6 rounded-full" />
+                        <div class="flex-1">
+                            <p class="font-semibold">${det.divisa}</p>
+                            <p>Monto: ${formatToCLP(det.monto)}</p>
+                            <p>Tasa: ${formatNumber(det.tasa_cambio)}</p>
+                            <p>Subtotal: ${formatToCLP(det.subtotal)}</p>
+                        </div>
+                    </div>
+                `;
+                contenedorDetalles.innerHTML += html;
+            });
+
             // Mostrar info general de la transacción
             const info = data.transaccion;
             const color = colorEstado(info.estado);
@@ -145,7 +179,7 @@ document.addEventListener("DOMContentLoaded", () => {
             fetch(`https://cambiosorion.cl/data/detalle-tr.php`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id: info.id_transaccion })
+                body: JSON.stringify({ id: info.id })
             })
             .then(res => res.json())
             .then(res => {
