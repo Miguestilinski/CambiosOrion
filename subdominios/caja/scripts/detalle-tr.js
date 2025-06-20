@@ -46,43 +46,49 @@ document.addEventListener("DOMContentLoaded", () => {
             // Mostrar info general de la transacción
             const info = data.transaccion;
             const color = colorEstado(info.estado);
-            const totalTransaccion = parseFloat(info.total);
-            let abonado = parseFloat(info.monto_pagado || 0);
-            let restante = totalTransaccion - abonado;
 
             // Mostrar información general
             const infoHTML = `
-                <div class="text-white space-y-2">
-                    <p><strong>Estado:</strong> <span style="color: ${color}">${info.estado}</span></p>
-                    <p><strong>Fecha:</strong> ${new Date(info.fecha).toLocaleString("es-CL")}</p>
-                    <p><strong>Cliente:</strong> ${info.nombre_cliente || "Sin cliente"}</p>
-                    <p><strong>Vendedor:</strong> ${info.vendedor}</p>
-                    <p><strong>Caja:</strong> ${info.caja}</p>
-                    <p><strong>Tipo:</strong> ${info.tipo_transaccion}</p>
-                    <p><strong>Total:</strong> ${formatToCLP(info.total)}</p>
-                    <p><strong>Método de pago:</strong> ${info.metodo_pago}</p>
+                <div><span class="font-semibold text-gray-300">Número de transacción:</span> ${info.id}</div>
+                <div><span class="font-semibold text-gray-300">Vendedor:</span> ${info.vendedor}</div>
+                <div><span class="font-semibold text-gray-300">Caja:</span> ${info.caja}</div>
+                <div><span class="font-semibold text-gray-300">Cliente:</span> ${info.nombre_cliente || "Sin cliente"}</div> 
+                <div><span class="font-semibold text-gray-300">Tipo de Transacción:</span> ${info.tipo_transaccion}</div>
+                <div><span class="font-semibold text-gray-300">Método de Pago:</span> ${info.metodo_pago}</div>
+                <div><span class="font-semibold text-gray-300">Total:</span> ${formatToCLP(info.total)}</div>
+                <div><span class="font-semibold text-gray-300">Observaciones:</span> ${info.observaciones || "—"}</div>
+                <div>
+                    <span class="font-semibold text-gray-300">Estado:</span> 
+                    <span style="color: ${color}; font-weight: 700;">${info.estado}</span>
                 </div>
             `;
             document.getElementById("info-transaccion").innerHTML = infoHTML;
 
             // Mostrar divisas
-            const contenedorDetalles = document.getElementById("detalle-divisas");
-            contenedorDetalles.innerHTML = "";
-
-            data.detalles.forEach(det => {
-                const html = `
-                    <div class="flex items-center gap-4 bg-gray-800 text-white px-4 py-3 rounded mb-2">
-                        <img src="${det.divisa_icono}" alt="${det.divisa}" class="w-6 h-6 rounded-full" />
-                        <div class="flex-1">
-                            <p class="font-semibold">${det.divisa}</p>
-                            <p>Monto: ${formatToCLP(det.monto)}</p>
-                            <p>Tasa: ${formatNumber(det.tasa_cambio)}</p>
-                            <p>Subtotal: ${formatToCLP(det.subtotal)}</p>
+            const detallesHTML = `
+                <div class="overflow-x-auto w-full mt-4">
+                    <div class="min-w-max border border-gray-300 rounded-lg bg-white shadow-md">
+                        <div class="grid grid-cols-4 rounded-t-lg text-sm font-medium text-gray-700 bg-gray-100 border-b border-black text-center">
+                            <div class="p-2">Divisa</div>
+                            <div class="p-2">Monto</div>
+                            <div class="p-2">Tasa de cambio</div>
+                            <div class="p-2">Subtotal</div>
                         </div>
+                        ${data.detalles.map(det => `
+                            <div class="grid grid-cols-4 rounded-lg text-sm text-center text-gray-800 border-b border-gray-200">
+                                <div class="p-2 flex items-center justify-center gap-2">
+                                    <img src="${det.divisa_icono}" alt="${det.divisa}" class="w-5 h-5 inline-block" />
+                                    <span>${det.divisa}</span>
+                                </div>
+                                <div class="p-2">${formatNumber(det.monto)}</div>
+                                <div class="p-2">${formatNumber(det.tasa_cambio)}</div>
+                                <div class="p-2">$${formatNumber(det.subtotal)}</div>
+                            </div>
+                        `).join("")}
                     </div>
-                `;
-                contenedorDetalles.innerHTML += html;
-            });
+                </div>
+            `;
+            document.getElementById("detalle-divisas").innerHTML = detallesHTML;
 
             // --- Funcionalidad Botón Anular (el rojo en la fila superior) ---
             document.getElementById("anular").addEventListener("click", () => {
