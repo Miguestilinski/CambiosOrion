@@ -169,7 +169,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(dataToSend)
             });
 
-            const data = await res.json();
+            const raw = await res.text();
+            console.log('Respuesta cruda del backend:', raw);
+
+            let data;
+            
+            try {
+                data = JSON.parse(raw);
+            } catch (err) {
+                mostrarModalError({
+                    titulo: "❌ Error",
+                    mensaje: "La respuesta del servidor no es un JSON válido. Revisa la consola para más detalles."
+                });
+                return;
+            }
+
             if (data.success) {
                 mostrarModalExitoso();
                 isEditing = false;
