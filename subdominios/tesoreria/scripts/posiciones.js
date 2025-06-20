@@ -13,11 +13,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     <td class="px-4 py-2">${Number(item.cantidad).toLocaleString("es-CL")}</td>
                     <td class="px-4 py-2">$ ${Number(item.pmp).toLocaleString("es-CL", { minimumFractionDigits: 4 })}</td>
                     <td class="px-4 py-2">$ ${Number(item.total).toLocaleString("es-CL")}</td>
-                    <td class="px-4 py-2">
-                        <button class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1">
-                            Ver
-                        </button>
-                    </td>
                 `;
                 tbody.appendChild(tr);
             });
