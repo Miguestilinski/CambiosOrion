@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    fetch(`https://cambiosorion.cl/data/detalle-op.php?id=${id}`)
+    fetch(`https://cambiosorion.cl/data/detalle-tr.php?id=${id}`)
         .then(async res => {
             const text = await res.text();
             console.log("Respuesta cruda:", text);
