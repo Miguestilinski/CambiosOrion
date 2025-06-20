@@ -138,22 +138,27 @@ document.addEventListener('DOMContentLoaded', () => {
     saveButton.addEventListener('click', async (e) => {
         e.preventDefault();
 
-        const formData = new FormData();
-        formData.append('equipo_id', equipoId);
+        const dataToSend = {
+            equipo_id: equipoId
+        };
 
         editableFields.forEach(field => {
             const input = document.getElementById(field.inputId);
             if (input) {
-                formData.append(field.id, input.value.trim());
+                dataToSend[field.id] = input.value.trim();
             }
         });
 
         const password = document.getElementById('password').value.trim();
         const confirmPassword = document.getElementById('confirm-password').value.trim();
+
         if (password && password === confirmPassword) {
-            formData.append('password', password);
+            dataToSend.password = password;
         } else if (password !== confirmPassword) {
-            alert('Las contraseñas no coinciden');
+            mostrarModalError({
+                titulo: "❌ Error",
+                mensaje: "Las contraseñas no coinciden."
+            });
             return;
         }
 
@@ -161,24 +166,71 @@ document.addEventListener('DOMContentLoaded', () => {
             const res = await fetch('https://cambiosorion.cl/data/info-per.php', {
                 method: 'POST',
                 credentials: 'include',
-                body: formData
+                body: JSON.stringify(dataToSend)
             });
 
             const data = await res.json();
             if (data.success) {
-                alert('Datos actualizados correctamente');
+                mostrarModalExitoso();
                 isEditing = false;
                 editButton.textContent = 'Editar Datos';
                 saveButton.classList.add('hidden');
                 getUserData();
             } else {
-                alert('Error al guardar los cambios: ' + data.message);
+                mostrarModalError({
+                    titulo: "❌ Error",
+                    mensaje: `Error al guardar los cambios: ${data.message}`
+                });
             }
         } catch (error) {
             console.error('Error al guardar los cambios:', error);
-            alert('Error de red al intentar guardar los cambios');
+            mostrarModalError({
+                titulo: "❌ Error",
+                mensaje: "Ocurrió un al intentar guardar los cambios."
+            });
         }
     });
 
     getSession();
 });
+
+function mostrarModalError({ titulo, mensaje, textoConfirmar = "Aceptar", textoCancelar = null, onConfirmar, onCancelar }) {
+  const modal = document.getElementById("modal-error");
+  const tituloElem = document.getElementById("modal-error-titulo");
+  const mensajeElem = document.getElementById("modal-error-mensaje");
+  const btnConfirmar = document.getElementById("modal-error-confirmar");
+  const btnCancelar = document.getElementById("modal-error-cancelar");
+
+  tituloElem.textContent = titulo;
+  mensajeElem.textContent = mensaje;
+  btnConfirmar.textContent = textoConfirmar;
+
+  if (textoCancelar) {
+    btnCancelar.classList.remove("hidden");
+    btnCancelar.textContent = textoCancelar;
+  } else {
+    btnCancelar.classList.add("hidden");
+  }
+
+  modal.classList.remove("hidden");
+
+  // Remover handlers anteriores
+  btnConfirmar.onclick = () => {
+    modal.classList.add("hidden");
+    if (onConfirmar) onConfirmar();
+  };
+
+  btnCancelar.onclick = () => {
+    modal.classList.add("hidden");
+    if (onCancelar) onCancelar();
+  };
+}
+
+function mostrarModalExitoso() {
+  const modal = document.getElementById("modal-exitoso");
+  modal.classList.remove("hidden");
+
+  document.getElementById("volver").onclick = () => {
+    modal.classList.add("hidden");
+  };
+}
