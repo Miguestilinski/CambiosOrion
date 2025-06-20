@@ -43,6 +43,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
 
+            // Mostrar info general de la transacción
+            const info = data.transaccion;
+            const color = colorEstado(info.estado);
+            const totalTransaccion = parseFloat(info.total);
+            let abonado = parseFloat(info.monto_pagado || 0);
+            let restante = totalTransaccion - abonado;
+
             // Mostrar información general
             const infoHTML = `
                 <div class="text-white space-y-2">
@@ -76,13 +83,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 `;
                 contenedorDetalles.innerHTML += html;
             });
-
-            // Mostrar info general de la transacción
-            const info = data.transaccion;
-            const color = colorEstado(info.estado);
-            const totalTransaccion = parseFloat(info.total);
-            let abonado = parseFloat(info.monto_pagado || 0);
-            let restante = totalTransaccion - abonado;
 
             // --- Funcionalidad Botón Anular (el rojo en la fila superior) ---
             document.getElementById("anular").addEventListener("click", () => {
