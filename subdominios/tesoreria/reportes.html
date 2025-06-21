@@ -257,6 +257,22 @@
                 <!-- Tabla y gráfico de compras por divisa -->
                 <div class="mb-10">
                     <h2 class="text-white text-lg font-medium mb-2">Compras por Divisa</h2>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-2">
+                            <label for="mostrar-posiciones" class="text-sm text-white">Mostrar</label>
+                            <select id="mostrar-posiciones"
+                                class="block px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100" selected>100</option>
+                            </select>
+                            <span class="text-sm text-white">registros</span>
+                        </div>
+                        <div>
+                            <input type="text" id="buscar-posiciones" placeholder="Buscar..."
+                                class="block w-64 px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
+                        </div>
+                    </div>
                     <div class="grid grid-cols-2 gap-12">
                         <div>
                             <table class="w-full text-sm text-left text-white bg-gray-800">
@@ -282,6 +298,22 @@
                 <!-- Tabla y gráfico de ventas por divisa -->
                 <div class="mb-10">
                     <h2 class="text-white text-lg font-medium mb-2">Ventas por Divisa</h2>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-2">
+                            <label for="mostrar-posiciones" class="text-sm text-white">Mostrar</label>
+                            <select id="mostrar-posiciones"
+                                class="block px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100" selected>100</option>
+                            </select>
+                            <span class="text-sm text-white">registros</span>
+                        </div>
+                        <div>
+                            <input type="text" id="buscar-posiciones" placeholder="Buscar..."
+                                class="block w-64 px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
+                        </div>
+                    </div>
                     <div class="grid grid-cols-2 gap-12">
                         <div>
                             <table class="w-full text-sm text-left text-white bg-gray-800">
