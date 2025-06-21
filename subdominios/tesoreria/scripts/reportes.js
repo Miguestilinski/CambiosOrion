@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
       n_periodos: nPeriodos
     });
 
-    const res = await fetch(`reportes-utilidad.php?${params.toString()}`);
+    const res = await fetch(`https://cambiosorion.cl/data/reportes.php?${params.toString()}`);
     const data = await res.json();
 
     const labels = data.map(d => d.label);
