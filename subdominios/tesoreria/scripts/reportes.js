@@ -129,16 +129,27 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        tabla.innerHTML = datos.map(d => `
-            <tr>
-                <td>${d.divisa_id}</td>
-                <td>${d.cantidad}</td>
-                <td>${d.promedio}</td>
-                <td>${(d.cantidad * d.promedio).toLocaleString()}</td>
-                <td>-</td>
-                <td>-</td>
-            </tr>
-        `).join("");
+        tabla.innerHTML = ""; // Limpiar contenido previo
+
+        datos.forEach(d => {
+            const iconoHTML = d.icono
+                ? `<img src="${d.icono}" alt="${d.nombre}" class="w-6 h-6 rounded-full border border-gray-400" />`
+                : "";
+
+            const tr = document.createElement("tr");
+            tr.className = "border-b bg-white border-gray-700 text-gray-700";
+
+            tr.innerHTML = `
+                <td class="px-4 py-2 flex items-center gap-2">${iconoHTML}<span>${d.nombre}</span></td>
+                <td class="px-4 py-2">${Number(d.cantidad).toLocaleString("es-CL")}</td>
+                <td class="px-4 py-2">${Number(d.promedio).toLocaleString("es-CL")}</td>
+                <td class="px-4 py-2">${Number(d.cantidad * d.promedio).toLocaleString("es-CL")}</td>
+                <td class="px-4 py-2">-</td>
+                <td class="px-4 py-2">-</td>
+            `;
+
+            tabla.appendChild(tr);
+        });
 
         const canvas = document.getElementById(`grafico-${tipo}`);
         const ctx = canvas.getContext("2d");
