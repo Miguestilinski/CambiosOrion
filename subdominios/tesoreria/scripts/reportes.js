@@ -55,7 +55,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const utilidades = data.map(d => d.utilidad);
 
         const canvas = document.getElementById("grafico-utilidad");
-        canvas.setAttribute("height", "300");
         const ctx = canvas.getContext("2d");
 
         if (graficoUtilidad !== null) {
@@ -63,26 +62,24 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         graficoUtilidad = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [{
-            label: 'Utilidad (CLP)',
-            data: utilidades,
-            backgroundColor: 'rgba(59, 130, 246, 0.7)',
-            borderColor: 'rgba(59, 130, 246, 1)',
-            borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            scales: {
-            y: {
-                beginAtZero: true
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'Utilidad (CLP)',
+                    data: utilidades,
+                    backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    y: { beginAtZero: true }
+                }
             }
-            }
-        }
         });
     }
 
