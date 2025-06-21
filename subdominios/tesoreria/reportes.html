@@ -257,39 +257,51 @@
                 <!-- Tabla y gráfico de compras por divisa -->
                 <div class="mb-10">
                     <h2 class="text-white text-lg font-medium mb-2">Compras por Divisa</h2>
-                    <canvas id="grafico-compras" height="150" class="mb-4"></canvas>
-                    <table class="w-full text-sm text-left text-white bg-gray-800">
-                        <thead class="text-xs uppercase bg-gray-800 text-white">
-                            <tr>
-                                <th class="px-4 py-2">Divisa</th>
-                                <th class="px-4 py-2">Monto</th>
-                                <th class="px-4 py-2">PMP</th>
-                                <th class="px-4 py-2">Total CLP</th>
-                                <th class="px-4 py-2">Nºtrans.</th>
-                                <th class="px-4 py-2">Utilidad</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabla-compras"></tbody>
-                    </table>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="flex items-center justify-center">
+                            <canvas id="grafico-compras" class="w-72 h-72"></canvas>
+                        </div>
+                        <div>
+                            <table class="w-full text-sm text-left text-white bg-gray-800">
+                                <thead class="text-xs uppercase bg-gray-800 text-white">
+                                    <tr>
+                                        <th class="px-4 py-2">Divisa</th>
+                                        <th class="px-4 py-2">Monto</th>
+                                        <th class="px-4 py-2">PMP</th>
+                                        <th class="px-4 py-2">Total CLP</th>
+                                        <th class="px-4 py-2">Nºtrans.</th>
+                                        <th class="px-4 py-2">Utilidad</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla-compras"></tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Tabla y gráfico de ventas por divisa -->
                 <div class="mb-10">
                     <h2 class="text-white text-lg font-medium mb-2">Ventas por Divisa</h2>
-                    <canvas id="grafico-ventas" height="150" class="mb-4"></canvas>
-                    <table class="w-full text-sm text-left text-white bg-gray-800">
-                        <thead class="text-xs uppercase bg-gray-800 text-white">
-                            <tr>
-                                <th class="px-4 py-2">Divisa</th>
-                                <th class="px-4 py-2">Monto</th>
-                                <th class="px-4 py-2">PMP</th>
-                                <th class="px-4 py-2">Total CLP</th>
-                                <th class="px-4 py-2">Nºtrans.</th>
-                                <th class="px-4 py-2">Utilidad</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabla-ventas"></tbody>
-                    </table>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="flex items-center justify-center">
+                            <canvas id="grafico-ventas" class="w-72 h-72"></canvas>
+                        </div>
+                        <div>
+                            <table class="w-full text-sm text-left text-white bg-gray-800">
+                                <thead class="text-xs uppercase bg-gray-800 text-white">
+                                    <tr>
+                                        <th class="px-4 py-2">Divisa</th>
+                                        <th class="px-4 py-2">Monto</th>
+                                        <th class="px-4 py-2">PMP</th>
+                                        <th class="px-4 py-2">Total CLP</th>
+                                        <th class="px-4 py-2">Nºtrans.</th>
+                                        <th class="px-4 py-2">Utilidad</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla-ventas"></tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </section>        
         </main>

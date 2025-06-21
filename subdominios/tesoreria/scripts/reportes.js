@@ -102,14 +102,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function renderGraficoYTabla(tipo, datos) {
         const canvas = document.getElementById(`grafico-${tipo}`);
-        const container = canvas.parentElement;
-        const dpr = window.devicePixelRatio || 1;
-        canvas.style.width = container.clientWidth + "px";
-        canvas.style.height = container.clientHeight + "px";
-        canvas.width = container.clientWidth * dpr;
-        canvas.height = container.clientHeight * dpr;
 
         const ctx = canvas.getContext("2d");
+        canvas.width = 300;
+        canvas.height = 300;
+
         const chart = tipo === "compras" ? graficoCompras : graficoVentas;
         if (chart) chart.destroy();
 
@@ -135,7 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             label: function (context) {
                                 const label = context.label || '';
                                 const value = context.raw;
-                                const total = context.chart._metasets[0].total || 1;
+                                const total = context.dataset.data.reduce((sum, val) => sum + val, 0);
                                 const percentage = ((value / total) * 100).toFixed(1);
                                 return `${label}: ${value.toLocaleString()} CLP (${percentage}%)`;
                             }
@@ -149,20 +146,22 @@ document.addEventListener("DOMContentLoaded", () => {
         if (tipo === "ventas") graficoVentas = nuevoChart;
 
         const tabla = document.getElementById(`tabla-${tipo}`);
+
+        if (datos.length === 0) {
+            tabla.innerHTML = `<tr><td colspan="6" class="text-center py-4">Sin datos disponibles</td></tr>`;
+            return;
+        }
+
         tabla.innerHTML = datos.map(d => `
             <tr>
                 <td>${d.divisa_id}</td>
                 <td>${d.cantidad}</td>
                 <td>${d.promedio}</td>
                 <td>${(d.cantidad * d.promedio).toLocaleString()}</td>
-                <td>-</td> <!-- Número de transacciones: pendiente -->
-                <td>-</td> <!-- Utilidad: pendiente -->
+                <td>-</td>
+                <td>-</td>
             </tr>
         `).join("");
-        if (datos.length === 0) {
-            tabla.innerHTML = `<tr><td colspan="6" class="text-center py-4">Sin datos disponibles</td></tr>`;
-            return;
-        }
     }
 
     periodoRadios.forEach(radio => {
