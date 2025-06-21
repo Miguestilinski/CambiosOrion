@@ -114,22 +114,33 @@ document.addEventListener("DOMContentLoaded", () => {
         if (chart) chart.destroy();
 
         const nuevoChart = new Chart(ctx, {
-            type: 'bar',
+            type: 'pie',
             data: {
                 labels: datos.map(d => d.divisa_id),
                 datasets: [{
                     label: `${tipo === 'compras' ? 'Compras' : 'Ventas'} (CLP)`,
-                    data: datos.map(d => d.total),
-                    backgroundColor: tipo === 'compras' ? 'rgba(16, 185, 129, 0.7)' : 'rgba(239, 68, 68, 0.7)',
-                    borderColor: tipo === 'compras' ? 'rgba(16, 185, 129, 1)' : 'rgba(239, 68, 68, 1)',
+                    data: datos.map(d => d.cantidad * d.promedio), // Total en CLP
+                    backgroundColor: datos.map((_, i) =>
+                        `hsl(${(i * 50) % 360}, 70%, 60%)` // colores variados
+                    ),
+                    borderColor: 'white',
                     borderWidth: 1
                 }]
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: true,
-                scales: {
-                    y: { beginAtZero: true }
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                const label = context.label || '';
+                                const value = context.raw;
+                                const total = context.chart._metasets[0].total || 1;
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return `${label}: ${value.toLocaleString()} CLP (${percentage}%)`;
+                            }
+                        }
+                    }
                 }
             }
         });
@@ -143,12 +154,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 <td>${d.divisa_id}</td>
                 <td>${d.cantidad}</td>
                 <td>${d.promedio}</td>
-                <td>${(d.cantidad * d.promedio).toFixed(0)}</td>
-                <td>?</td> <!-- Número de transacciones (si no lo tienes aún, pon 1 o 0) -->
-                <td>?</td> <!-- Utilidad (puedes dejar 0 temporalmente) -->
+                <td>${(d.cantidad * d.promedio).toLocaleString()}</td>
+                <td>-</td> <!-- Número de transacciones: pendiente -->
+                <td>-</td> <!-- Utilidad: pendiente -->
             </tr>
         `).join("");
-
+        if (datos.length === 0) {
+            tabla.innerHTML = `<tr><td colspan="6" class="text-center py-4">Sin datos disponibles</td></tr>`;
+            return;
+        }
     }
 
     periodoRadios.forEach(radio => {
