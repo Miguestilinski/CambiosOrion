@@ -154,16 +154,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const canvas = document.getElementById(`grafico-${tipo}`);
         const ctx = canvas.getContext("2d");
 
-        // Ajustar tamaño del canvas para hacerlo más pequeño
-        canvas.style.width = "150px";
-        canvas.style.height = "150px";
-
-        // Ajusta tamaño interno del canvas para alta resolución (retina)
-        const dpr = window.devicePixelRatio || 1;
-        canvas.width = 150 * dpr;
-        canvas.height = 150 * dpr;
-        ctx.scale(dpr, dpr);
-
         const chart = tipo === "compras" ? graficoCompras : graficoVentas;
         if (chart) chart.destroy();
 
@@ -183,6 +173,7 @@ document.addEventListener("DOMContentLoaded", () => {
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: true,
                 plugins: {
                     legend: {
                         position: 'right', // Opcional, para mejorar estética
