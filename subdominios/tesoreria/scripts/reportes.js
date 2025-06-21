@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false, // Está bien, pero el height debe ser explícito
+            maintainAspectRatio: true,
             scales: {
             y: {
                 beginAtZero: true
