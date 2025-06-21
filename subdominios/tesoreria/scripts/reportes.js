@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
     año: ["año"]
   };
 
-  // Crear input trimestre si no existe
+  // Crear input de trimestre si no existe
   let trimestreInput = document.getElementById("trimestre");
   if (!trimestreInput) {
     const contenedor = document.createElement("div");
@@ -38,10 +38,8 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   function getPeriodoSeleccionado() {
-    for (let radio of periodoRadios) {
-      if (radio.checked) return radio.value;
-    }
-    return "dia"; // Default
+    const seleccionado = periodoRadios.find(radio => radio.checked);
+    return seleccionado ? seleccionado.value : "dia";
   }
 
   function actualizarVisibilidadInputs() {
@@ -59,7 +57,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Escuchar cambios en los radio buttons
   periodoRadios.forEach(radio => {
     radio.addEventListener("change", actualizarVisibilidadInputs);
   });
