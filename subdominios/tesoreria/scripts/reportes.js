@@ -92,6 +92,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 <td>${p.cantidad}</td>
                 <td>${p.pmp}</td>
                 <td>${p.valor_clp}</td>
+                <td>${p.cantidad}</td> <!-- Saldo final (igual que actual) -->
+                <td>${p.pmp}</td>      <!-- Prom. final (igual que actual) -->
+                <td>${p.valor_clp}</td><!-- Saldo CLP final -->
+                <td>0</td>             <!-- Utilidad (0 por ahora) -->
             </tr>
         `).join("");
     }
@@ -137,9 +141,14 @@ document.addEventListener("DOMContentLoaded", () => {
         tabla.innerHTML = datos.map(d => `
             <tr>
                 <td>${d.divisa_id}</td>
-                <td>${d.total}</td>
+                <td>${d.cantidad}</td>
+                <td>${d.promedio}</td>
+                <td>${(d.cantidad * d.promedio).toFixed(0)}</td>
+                <td>?</td> <!-- Número de transacciones (si no lo tienes aún, pon 1 o 0) -->
+                <td>?</td> <!-- Utilidad (puedes dejar 0 temporalmente) -->
             </tr>
         `).join("");
+
     }
 
     periodoRadios.forEach(radio => {
