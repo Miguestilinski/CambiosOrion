@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const periodoRadios = document.getElementsByName("filtro-periodo");
+  const periodoRadios = Array.from(document.querySelectorAll('input[name="filtro-periodo"]'));
   const diaInput = document.getElementById("dia");
   const mesInput = document.getElementById("mes");
   const añoInput = document.getElementById("año");
