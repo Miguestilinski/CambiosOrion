@@ -90,29 +90,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function renderTablaPosiciones(posiciones) {
         const contenedor = document.getElementById("tabla-posiciones");
+
         if (!posiciones.length) {
             contenedor.innerHTML = `<tr><td colspan="8" class="text-center py-4">Sin datos disponibles</td></tr>`;
             return;
         }
 
-        contenedor.innerHTML = posiciones.map(p => {
-            const iconoHTML = p.icono
-                ? `<img src="${p.icono}" alt="${p.nombre}" class="inline h-5 w-5 mr-1 rounded-full align-middle">`
-                : '';
+        contenedor.innerHTML = ""; // Limpiar contenido anterior
 
-            return `
-                <tr>
-                    <td class="flex items-center gap-2">${iconoHTML}<span>${p.nombre}</span></td>
-                    <td>${p.cantidad}</td>
-                    <td>${p.pmp}</td>
-                    <td>${p.valor_clp}</td>
-                    <td>${p.cantidad}</td> <!-- Saldo final -->
-                    <td>${p.pmp}</td>      <!-- Prom. final -->
-                    <td>${p.valor_clp}</td><!-- Saldo CLP final -->
-                    <td>0</td>             <!-- Utilidad (0 por ahora) -->
-                </tr>
+        posiciones.forEach(p => {
+            const tr = document.createElement("tr");
+            tr.className = "border-b bg-white border-gray-700 text-gray-700";
+
+            const iconoHTML = p.icono
+                ? `<img src="${p.icono}" alt="${p.nombre}" class="w-6 h-6 rounded-full border border-gray-400" />`
+                : "";
+
+            tr.innerHTML = `
+                <td class="px-4 py-2 flex items-center gap-2">${iconoHTML}<span>${p.nombre}</span></td>
+                <td class="px-4 py-2">${Number(p.cantidad).toLocaleString("es-CL")}</td>
+                <td class="px-4 py-2">${Number(p.pmp).toLocaleString("es-CL")}</td>
+                <td class="px-4 py-2">${Number(p.valor_clp).toLocaleString("es-CL")}</td>
+                <td class="px-4 py-2">${Number(p.cantidad).toLocaleString("es-CL")}</td>
+                <td class="px-4 py-2">${Number(p.pmp).toLocaleString("es-CL")}</td>
+                <td class="px-4 py-2">${Number(p.valor_clp).toLocaleString("es-CL")}</td>
+                <td class="px-4 py-2">0</td>
             `;
-        }).join("");
+
+            contenedor.appendChild(tr);
+        });
     }
 
     function renderGraficoYTabla(tipo, datos) {
