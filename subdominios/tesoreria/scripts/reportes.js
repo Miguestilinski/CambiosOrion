@@ -55,6 +55,15 @@ document.addEventListener("DOMContentLoaded", () => {
         const utilidades = data.map(d => d.utilidad);
 
         const canvas = document.getElementById("grafico-utilidad");
+        const container = canvas.parentElement;
+
+        // Sincronizar tamaño canvas con contenedor
+        const dpr = window.devicePixelRatio || 1;
+        canvas.style.width = container.clientWidth + "px";
+        canvas.style.height = container.clientHeight + "px";
+        canvas.width = container.clientWidth * dpr;
+        canvas.height = container.clientHeight * dpr;
+
         const ctx = canvas.getContext("2d");
 
         if (graficoUtilidad !== null) {
