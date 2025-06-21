@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     let graficoUtilidad = null;
+    let graficoCompras = null;
+    let graficoVentas = null;
 
     const periodoRadios = Array.from(document.querySelectorAll('input[name="filtro-periodo"]'));
     const diaWrapper = document.getElementById("dia").closest("div");
@@ -24,14 +26,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const seleccionado = getPeriodoSeleccionado();
         const activos = inputsPorPeriodo[seleccionado];
 
-        // Primero ocultar todos
         [diaWrapper, mesWrapper, añoWrapper, trimestreWrapper].forEach(w => w.classList.add("hidden"));
-
-        // Mostrar los activos
         activos.forEach(w => w.classList.remove("hidden"));
     }
 
-    async function cargarGraficoUtilidad() {
+    async function cargarReportes() {
+        const tipo = document.getElementById("tipo-reporte").value;
         const periodo = getPeriodoSeleccionado();
         const dia = document.getElementById("dia").value;
         const mes = document.getElementById("mes").value;
@@ -39,25 +39,19 @@ document.addEventListener("DOMContentLoaded", () => {
         const año = document.getElementById("año").value;
         const nPeriodos = nPeriodosInput.value;
 
-        const params = new URLSearchParams({
-        periodo,
-        dia,
-        mes,
-        trimestre,
-        año,
-        n_periodos: nPeriodos
-        });
-
+        const params = new URLSearchParams({ tipo, periodo, dia, mes, trimestre, año, n_periodos: nPeriodos });
         const res = await fetch(`https://cambiosorion.cl/data/reportes.php?${params.toString()}`);
         const data = await res.json();
 
-        const labels = data.map(d => d.label);
-        const utilidades = data.map(d => d.utilidad);
+        renderGraficoUtilidad(data.utilidad_por_periodo);
+        renderTablaPosiciones(data.posiciones_divisas);
+        renderGraficoYTabla("compras", data.compras_divisas);
+        renderGraficoYTabla("ventas", data.ventas_divisas);
+    }
 
+    function renderGraficoUtilidad(datos) {
         const canvas = document.getElementById("grafico-utilidad");
         const container = canvas.parentElement;
-
-        // Sincronizar tamaño canvas con contenedor
         const dpr = window.devicePixelRatio || 1;
         canvas.style.width = container.clientWidth + "px";
         canvas.style.height = container.clientHeight + "px";
@@ -66,17 +60,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const ctx = canvas.getContext("2d");
 
-        if (graficoUtilidad !== null) {
-            graficoUtilidad.destroy();
-        }
+        if (graficoUtilidad !== null) graficoUtilidad.destroy();
 
         graficoUtilidad = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels,
+                labels: datos.map(d => d.label),
                 datasets: [{
                     label: 'Utilidad (CLP)',
-                    data: utilidades,
+                    data: datos.map(d => d.utilidad),
                     backgroundColor: 'rgba(59, 130, 246, 0.7)',
                     borderColor: 'rgba(59, 130, 246, 1)',
                     borderWidth: 1
@@ -92,18 +84,76 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    function renderTablaPosiciones(posiciones) {
+        const contenedor = document.getElementById("tabla-posiciones");
+        contenedor.innerHTML = posiciones.map(p => `
+            <tr>
+                <td>${p.divisa_id}</td>
+                <td>${p.cantidad}</td>
+                <td>${p.pmp}</td>
+                <td>${p.valor_clp}</td>
+            </tr>
+        `).join("");
+    }
+
+    function renderGraficoYTabla(tipo, datos) {
+        const canvas = document.getElementById(`grafico-${tipo}`);
+        const container = canvas.parentElement;
+        const dpr = window.devicePixelRatio || 1;
+        canvas.style.width = container.clientWidth + "px";
+        canvas.style.height = container.clientHeight + "px";
+        canvas.width = container.clientWidth * dpr;
+        canvas.height = container.clientHeight * dpr;
+
+        const ctx = canvas.getContext("2d");
+        const chart = tipo === "compras" ? graficoCompras : graficoVentas;
+        if (chart) chart.destroy();
+
+        const nuevoChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: datos.map(d => d.divisa_id),
+                datasets: [{
+                    label: `${tipo === 'compras' ? 'Compras' : 'Ventas'} (CLP)`,
+                    data: datos.map(d => d.total),
+                    backgroundColor: tipo === 'compras' ? 'rgba(16, 185, 129, 0.7)' : 'rgba(239, 68, 68, 0.7)',
+                    borderColor: tipo === 'compras' ? 'rgba(16, 185, 129, 1)' : 'rgba(239, 68, 68, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        if (tipo === "compras") graficoCompras = nuevoChart;
+        if (tipo === "ventas") graficoVentas = nuevoChart;
+
+        const tabla = document.getElementById(`tabla-${tipo}`);
+        tabla.innerHTML = datos.map(d => `
+            <tr>
+                <td>${d.divisa_id}</td>
+                <td>${d.total}</td>
+            </tr>
+        `).join("");
+    }
+
     periodoRadios.forEach(radio => {
         radio.addEventListener("change", () => {
-        actualizarVisibilidadInputs();
-        cargarGraficoUtilidad();
+            actualizarVisibilidadInputs();
+            cargarReportes();
         });
     });
 
-    ["dia", "mes", "trimestre", "año", "n-periodos"].forEach(id => {
+    ["dia", "mes", "trimestre", "año", "n-periodos", "tipo-reporte"].forEach(id => {
         const el = document.getElementById(id);
-        if (el) el.addEventListener("change", cargarGraficoUtilidad);
+        if (el) el.addEventListener("change", cargarReportes);
     });
 
     actualizarVisibilidadInputs();
-    cargarGraficoUtilidad();
+    cargarReportes();
 });
