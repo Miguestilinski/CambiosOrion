@@ -155,8 +155,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const ctx = canvas.getContext("2d");
 
         // Ajustar tamaño del canvas para hacerlo más pequeño
-        canvas.width = 100; 
-        canvas.height = 100;
+        canvas.width = 50; 
+        canvas.height = 50;
 
         const chart = tipo === "compras" ? graficoCompras : graficoVentas;
         if (chart) chart.destroy();
