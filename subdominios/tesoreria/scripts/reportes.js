@@ -26,7 +26,10 @@ document.addEventListener("DOMContentLoaded", () => {
       </select>
     `;
     contenedor.className = "trimestre-wrapper hidden";
-    document.querySelector(".grid").appendChild(contenedor);
+
+    const gridContainer = document.querySelector(".grid");
+    const añoWrapper = añoInput.closest("div");
+    gridContainer.insertBefore(contenedor, añoWrapper);
     trimestreInput = document.getElementById("trimestre");
   }
 
