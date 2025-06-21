@@ -155,8 +155,14 @@ document.addEventListener("DOMContentLoaded", () => {
         const ctx = canvas.getContext("2d");
 
         // Ajustar tamaño del canvas para hacerlo más pequeño
-        canvas.width = 50; 
-        canvas.height = 50;
+        canvas.style.width = "150px";
+        canvas.style.height = "150px";
+
+        // Ajusta tamaño interno del canvas para alta resolución (retina)
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = 150 * dpr;
+        canvas.height = 150 * dpr;
+        ctx.scale(dpr, dpr);
 
         const chart = tipo === "compras" ? graficoCompras : graficoVentas;
         if (chart) chart.destroy();
