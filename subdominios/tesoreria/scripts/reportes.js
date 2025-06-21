@@ -42,6 +42,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const params = new URLSearchParams({ tipo, periodo, dia, mes, trimestre, año, n_periodos: nPeriodos });
         const res = await fetch(`https://cambiosorion.cl/data/reportes.php?${params.toString()}`);
         const data = await res.json();
+        
+        console.log("Data recibida:", data);
 
         renderGraficoUtilidad(data.utilidad_por_periodo);
         renderTablaPosiciones(data.posiciones_divisas);
@@ -86,14 +88,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function renderTablaPosiciones(posiciones) {
         const contenedor = document.getElementById("tabla-posiciones");
+        if (!posiciones.length) {
+            contenedor.innerHTML = `<tr><td colspan="8" class="text-center py-4">Sin datos disponibles</td></tr>`;
+            return;
+        }
+
         contenedor.innerHTML = posiciones.map(p => `
             <tr>
                 <td>${p.divisa_id}</td>
                 <td>${p.cantidad}</td>
                 <td>${p.pmp}</td>
                 <td>${p.valor_clp}</td>
-                <td>${p.cantidad}</td> <!-- Saldo final (igual que actual) -->
-                <td>${p.pmp}</td>      <!-- Prom. final (igual que actual) -->
+                <td>${p.cantidad}</td> <!-- Saldo final -->
+                <td>${p.pmp}</td>      <!-- Prom. final -->
                 <td>${p.valor_clp}</td><!-- Saldo CLP final -->
                 <td>0</td>             <!-- Utilidad (0 por ahora) -->
             </tr>
@@ -101,8 +108,25 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function renderGraficoYTabla(tipo, datos) {
-        const canvas = document.getElementById(`grafico-${tipo}`);
+        const tabla = document.getElementById(`tabla-${tipo}`);
 
+        if (datos.length === 0) {
+            tabla.innerHTML = `<tr><td colspan="6" class="text-center py-4">Sin datos disponibles</td></tr>`;
+            return;
+        }
+
+        tabla.innerHTML = datos.map(d => `
+            <tr>
+                <td>${d.divisa_id}</td>
+                <td>${d.cantidad}</td>
+                <td>${d.promedio}</td>
+                <td>${(d.cantidad * d.promedio).toLocaleString()}</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+        `).join("");
+
+        const canvas = document.getElementById(`grafico-${tipo}`);
         const ctx = canvas.getContext("2d");
         canvas.width = 300;
         canvas.height = 300;
@@ -144,24 +168,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (tipo === "compras") graficoCompras = nuevoChart;
         if (tipo === "ventas") graficoVentas = nuevoChart;
-
-        const tabla = document.getElementById(`tabla-${tipo}`);
-
-        if (datos.length === 0) {
-            tabla.innerHTML = `<tr><td colspan="6" class="text-center py-4">Sin datos disponibles</td></tr>`;
-            return;
-        }
-
-        tabla.innerHTML = datos.map(d => `
-            <tr>
-                <td>${d.divisa_id}</td>
-                <td>${d.cantidad}</td>
-                <td>${d.promedio}</td>
-                <td>${(d.cantidad * d.promedio).toLocaleString()}</td>
-                <td>-</td>
-                <td>-</td>
-            </tr>
-        `).join("");
     }
 
     periodoRadios.forEach(radio => {
