@@ -153,8 +153,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const canvas = document.getElementById(`grafico-${tipo}`);
         const ctx = canvas.getContext("2d");
-        canvas.width = 300;
-        canvas.height = 300;
+
+        // Ajustar tamaño del canvas para hacerlo más pequeño
+        canvas.width = 100; 
+        canvas.height = 100;
 
         const chart = tipo === "compras" ? graficoCompras : graficoVentas;
         if (chart) chart.destroy();
@@ -162,12 +164,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const nuevoChart = new Chart(ctx, {
             type: 'pie',
             data: {
-                labels: datos.map(d => d.divisa_id),
+                labels: datos.map(d => d.nombre), // Mostrar nombre en la leyenda
                 datasets: [{
                     label: `${tipo === 'compras' ? 'Compras' : 'Ventas'} (CLP)`,
-                    data: datos.map(d => d.cantidad * d.promedio), // Total en CLP
+                    data: datos.map(d => d.cantidad * d.promedio),
                     backgroundColor: datos.map((_, i) =>
-                        `hsl(${(i * 50) % 360}, 70%, 60%)` // colores variados
+                        `hsl(${(i * 50) % 360}, 70%, 60%)`
                     ),
                     borderColor: 'white',
                     borderWidth: 1
@@ -176,6 +178,13 @@ document.addEventListener("DOMContentLoaded", () => {
             options: {
                 responsive: true,
                 plugins: {
+                    legend: {
+                        position: 'right', // Opcional, para mejorar estética
+                        labels: {
+                            boxWidth: 12,
+                            padding: 10,
+                        }
+                    },
                     tooltip: {
                         callbacks: {
                             label: function (context) {
