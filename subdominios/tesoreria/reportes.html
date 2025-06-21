@@ -124,17 +124,29 @@
                         <select id="tipo-reporte"
                             class="select-list block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
                             <option value="operaciones">Operaciones</option>
+                            <option value="transacciones">Transacciones</option>
                         </select>
                     </div>
                     <div>
-                        <label for="filtro-periodo" class="block mb-1 text-sm text-white">Periodo</label>
-                        <select id="filtro-periodo"
-                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
-                            <option value="dia">Día</option>
-                            <option value="mes">Mes</option>
-                            <option value="trimestre">Trimestre</option>
-                            <option value="anio">Año</option>
-                        </select>
+                        <label class="block mb-1 text-sm text-white">Periodo</label>
+                        <div id="filtro-periodo" class="flex flex-col space-y-1 text-sm text-white">
+                            <label class="inline-flex items-center space-x-2">
+                            <input type="radio" name="filtro-periodo" value="dia" checked class="text-blue-600 focus:ring-blue-500">
+                            <span>Día</span>
+                            </label>
+                            <label class="inline-flex items-center space-x-2">
+                            <input type="radio" name="filtro-periodo" value="mes" class="text-blue-600 focus:ring-blue-500">
+                            <span>Mes</span>
+                            </label>
+                            <label class="inline-flex items-center space-x-2">
+                            <input type="radio" name="filtro-periodo" value="trimestre" class="text-blue-600 focus:ring-blue-500">
+                            <span>Trimestre</span>
+                            </label>
+                            <label class="inline-flex items-center space-x-2">
+                            <input type="radio" name="filtro-periodo" value="año" class="text-blue-600 focus:ring-blue-500">
+                            <span>Año</span>
+                            </label>
+                        </div>
                     </div>
                     <div>
                         <label for="dia" class="block mb-1 text-sm text-white">Día</label>
@@ -148,7 +160,7 @@
                             <option value="3">Marzo</option>
                             <option value="4">Abril</option>
                             <option value="5">Mayo</option>
-                            <option value="6" selected>Junio</option>
+                            <option value="6">Junio</option>
                             <option value="7">Julio</option>
                             <option value="8">Agosto</option>
                             <option value="9">Septiembre</option>
@@ -158,8 +170,8 @@
                         </select>
                     </div>
                     <div>
-                        <label for="anio" class="block mb-1 text-sm text-white">Año</label>
-                        <input type="number" id="anio" value="2025" class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
+                        <label for="año" class="block mb-1 text-sm text-white">Año</label>
+                        <input type="number" id="año" value="2025" class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
                     </div>
                     <div>
                         <label for="n-periodos" class="block mb-1 text-sm text-white">Nºperiodos</label>
