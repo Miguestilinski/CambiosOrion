@@ -119,52 +119,52 @@
 
                 <!-- Filtros de reporte agrupados con borde -->
                 <div class="border border-gray-600 rounded-lg p-4 mb-2">
-                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
+                    <div class="border border-gray-600 rounded-lg p-4 mb-2 inline-flex flex-wrap gap-4">
                     <!-- Tipo de Reporte -->
-                    <div>
-                    <label for="tipo-reporte" class="block mb-1 text-sm text-white">Tipo Reporte</label>
-                    <select id="tipo-reporte"
+                    <div class="flex-shrink-0" style="width: 12rem;">
+                        <label for="tipo-reporte" class="block mb-1 text-sm text-white">Tipo Reporte</label>
+                        <select id="tipo-reporte"
                         class="select-list block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
                         <option value="operaciones">Operaciones</option>
                         <option value="transacciones">Transacciones</option>
-                    </select>
+                        </select>
                     </div>
 
                     <!-- Periodo con radios -->
-                    <div class="col-span-1">
-                    <label class="block mb-1 text-sm text-white">Periodo</label>
-                    <div id="filtro-periodo"
+                    <div class="flex-shrink-0" style="width: 12rem;">
+                        <label class="block mb-1 text-sm text-white">Periodo</label>
+                        <div id="filtro-periodo"
                         class="flex flex-col space-y-1 text-sm text-white border border-gray-600 rounded-lg p-4">
                         <label class="inline-flex items-center space-x-2">
-                        <input type="radio" name="filtro-periodo" value="dia" checked class="form-radio text-blue-600">
-                        <span>Día</span>
+                            <input type="radio" name="filtro-periodo" value="dia" checked class="form-radio text-blue-600">
+                            <span>Día</span>
                         </label>
                         <label class="inline-flex items-center space-x-2">
-                        <input type="radio" name="filtro-periodo" value="mes" class="form-radio text-blue-600">
-                        <span>Mes</span>
+                            <input type="radio" name="filtro-periodo" value="mes" class="form-radio text-blue-600">
+                            <span>Mes</span>
                         </label>
                         <label class="inline-flex items-center space-x-2">
-                        <input type="radio" name="filtro-periodo" value="trimestre" class="form-radio text-blue-600">
-                        <span>Trimestre</span>
+                            <input type="radio" name="filtro-periodo" value="trimestre" class="form-radio text-blue-600">
+                            <span>Trimestre</span>
                         </label>
                         <label class="inline-flex items-center space-x-2">
-                        <input type="radio" name="filtro-periodo" value="año" class="form-radio text-blue-600">
-                        <span>Año</span>
+                            <input type="radio" name="filtro-periodo" value="año" class="form-radio text-blue-600">
+                            <span>Año</span>
                         </label>
-                    </div>
+                        </div>
                     </div>
 
                     <!-- Día -->
-                    <div>
-                    <label for="dia" class="block mb-1 text-sm text-white">Día</label>
-                    <input type="number" id="dia"
+                    <div class="flex-shrink-0" style="width: 12rem;">
+                        <label for="dia" class="block mb-1 text-sm text-white">Día</label>
+                        <input type="number" id="dia"
                         class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
                     </div>
 
                     <!-- Mes -->
-                    <div>
-                    <label for="mes" class="block mb-1 text-sm text-white">Mes</label>
-                    <select id="mes"
+                    <div class="flex-shrink-0" style="width: 12rem;">
+                        <label for="mes" class="block mb-1 text-sm text-white">Mes</label>
+                        <select id="mes"
                         class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
                         <option value="1">Enero</option>
                         <option value="2">Febrero</option>
@@ -178,26 +178,37 @@
                         <option value="10">Octubre</option>
                         <option value="11">Noviembre</option>
                         <option value="12">Diciembre</option>
-                    </select>
+                        </select>
                     </div>
 
-                    <!-- Trimestre: este se inserta dinámicamente con JS justo antes del año -->
+                    <!-- Trimestre -->
+                    <div class="flex-shrink-0 hidden" id="trimestre-wrapper" style="width: 12rem;">
+                        <label for="trimestre" class="block mb-1 text-sm text-white">Trimestre</label>
+                        <select id="trimestre"
+                        class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        </select>
+                    </div>
+
                     <!-- Año -->
-                    <div>
-                    <label for="año" class="block mb-1 text-sm text-white">Año</label>
-                    <input type="number" id="año" value="2025"
+                    <div class="flex-shrink-0" style="width: 12rem;">
+                        <label for="año" class="block mb-1 text-sm text-white">Año</label>
+                        <input type="number" id="año" value="2025"
                         class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
                     </div>
-                </div>
+                    </div>
                 </div>
 
                 <!-- Nº Periodos en una línea inferior y por fuera -->
                 <div class="mb-6">
-                <div class="w-36">
-                    <label for="n-periodos" class="block mb-1 text-sm text-white">Nº Periodos</label>
-                    <input type="number" id="n-periodos" value="5" min="1" max="30"
-                    class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
-                </div>
+                    <div class="w-36">
+                        <label for="n-periodos" class="block mb-1 text-sm text-white">Nº Periodos</label>
+                        <input type="number" id="n-periodos" value="5" min="1" max="30"
+                        class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
+                    </div>
                 </div>
 
                 <!-- Gráfico de utilidad por periodo -->
