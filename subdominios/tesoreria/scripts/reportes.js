@@ -67,22 +67,42 @@ document.addEventListener("DOMContentLoaded", () => {
         if (graficoUtilidad !== null) graficoUtilidad.destroy();
 
         graficoUtilidad = new Chart(ctx, {
-            type: 'bar',
+            type: 'line',  // Cambiado a gráfico de líneas
             data: {
                 labels: datos.map(d => d.label),
                 datasets: [{
                     label: 'Utilidad (CLP)',
                     data: datos.map(d => d.utilidad),
-                    backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                    fill: false, // sin relleno debajo de la línea
                     borderColor: 'rgba(59, 130, 246, 1)',
-                    borderWidth: 1
+                    backgroundColor: 'rgba(59, 130, 246, 0.7)', // color para puntos
+                    tension: 0.3, // suaviza las curvas, puedes ajustar o quitar
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                    borderWidth: 2
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: true,
                 scales: {
-                    y: { beginAtZero: true }
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString('es-CL');
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.parsed.y.toLocaleString('es-CL') + ' CLP';
+                            }
+                        }
+                    }
                 }
             }
         });
