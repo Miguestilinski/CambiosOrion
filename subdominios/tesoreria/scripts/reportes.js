@@ -54,35 +54,35 @@ document.addEventListener("DOMContentLoaded", () => {
         const labels = data.map(d => d.label);
         const utilidades = data.map(d => d.utilidad);
 
-        const ctx = document.getElementById("grafico-utilidad").getContext("2d");
+        const canvas = document.getElementById("grafico-utilidad");
+        canvas.setAttribute("height", "300");
+        const ctx = canvas.getContext("2d");
 
-        // 🔥 Destruir el gráfico anterior si existe
         if (graficoUtilidad !== null) {
             graficoUtilidad.destroy();
         }
 
-        // 🎯 Crear nuevo gráfico
         graficoUtilidad = new Chart(ctx, {
-            type: 'bar',
-            data: {
+        type: 'bar',
+        data: {
             labels: labels,
             datasets: [{
-                label: 'Utilidad (CLP)',
-                data: utilidades,
-                backgroundColor: 'rgba(59, 130, 246, 0.7)',
-                borderColor: 'rgba(59, 130, 246, 1)',
-                borderWidth: 1
+            label: 'Utilidad (CLP)',
+            data: utilidades,
+            backgroundColor: 'rgba(59, 130, 246, 0.7)',
+            borderColor: 'rgba(59, 130, 246, 1)',
+            borderWidth: 1
             }]
-            },
-            options: {
+        },
+        options: {
             responsive: true,
-            maintainAspectRatio: false,
+            maintainAspectRatio: false, // Está bien, pero el height debe ser explícito
             scales: {
-                y: {
+            y: {
                 beginAtZero: true
-                }
             }
             }
+        }
         });
     }
 
