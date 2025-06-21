@@ -39,10 +39,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const año = document.getElementById("año").value;
         const nPeriodos = nPeriodosInput.value;
 
+        console.log(`Pidiendo reporte: tipo=${tipo}, periodo=${periodo}, dia=${dia}, mes=${mes}, trimestre=${trimestre}, año=${año}, n_periodos=${nPeriodos}`);
+
         const params = new URLSearchParams({ tipo, periodo, dia, mes, trimestre, año, n_periodos: nPeriodos });
         const res = await fetch(`https://cambiosorion.cl/data/reportes.php?${params.toString()}`);
         const data = await res.json();
-        
+
         console.log("Data recibida:", data);
 
         renderGraficoUtilidad(data.utilidad_por_periodo);
