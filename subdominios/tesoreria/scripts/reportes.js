@@ -95,18 +95,24 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        contenedor.innerHTML = posiciones.map(p => `
-            <tr>
-                <td>${iconoHTML}${p.nombre}</td>
-                <td>${p.cantidad}</td>
-                <td>${p.pmp}</td>
-                <td>${p.valor_clp}</td>
-                <td>${p.cantidad}</td> <!-- Saldo final -->
-                <td>${p.pmp}</td>      <!-- Prom. final -->
-                <td>${p.valor_clp}</td><!-- Saldo CLP final -->
-                <td>0</td>             <!-- Utilidad (0 por ahora) -->
-            </tr>
-        `).join("");
+        contenedor.innerHTML = posiciones.map(p => {
+            const iconoHTML = p.icono
+                ? `<img src="${p.icono}" alt="${p.nombre}" class="inline h-5 w-5 mr-1 rounded-full align-middle">`
+                : '';
+
+            return `
+                <tr>
+                    <td class="flex items-center gap-2">${iconoHTML}<span>${p.nombre}</span></td>
+                    <td>${p.cantidad}</td>
+                    <td>${p.pmp}</td>
+                    <td>${p.valor_clp}</td>
+                    <td>${p.cantidad}</td> <!-- Saldo final -->
+                    <td>${p.pmp}</td>      <!-- Prom. final -->
+                    <td>${p.valor_clp}</td><!-- Saldo CLP final -->
+                    <td>0</td>             <!-- Utilidad (0 por ahora) -->
+                </tr>
+            `;
+        }).join("");
     }
 
     function renderGraficoYTabla(tipo, datos) {
