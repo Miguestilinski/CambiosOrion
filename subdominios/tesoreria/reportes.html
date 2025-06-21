@@ -118,34 +118,36 @@
                 <h1 class="text-2xl font-medium mb-6 leading-none text-white">Reportes</h1>
 
                 <!-- Filtros de reporte -->
-                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-6">
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-2">
+                    <!-- Tipo de Reporte -->
                     <div>
                         <label for="tipo-reporte" class="block mb-1 text-sm text-white">Tipo Reporte</label>
                         <select id="tipo-reporte"
-                            class="select-list block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
-                            <option value="operaciones">Operaciones</option>
-                            <option value="transacciones">Transacciones</option>
+                        class="select-list block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
+                        <option value="operaciones">Operaciones</option>
+                        <option value="transacciones">Transacciones</option>
                         </select>
                     </div>
 
-                    <!-- Periodo (Radio Buttons) -->
-                    <div class="col-span-2 md:col-span-2 lg:col-span-2">
+                    <!-- Periodo con radios -->
+                    <div class="col-span-2">
                         <label class="block mb-1 text-sm text-white">Periodo</label>
-                        <div id="filtro-periodo" class="flex flex-col space-y-1 text-sm text-white border border-gray-600 rounded-lg p-4">
+                        <div id="filtro-periodo"
+                        class="flex flex-col space-y-1 text-sm text-white border border-gray-600 rounded-lg p-4 bg-gray-700">
                         <label class="inline-flex items-center space-x-2">
-                            <input type="radio" name="filtro-periodo" value="dia" checked class="focus:ring-blue-500">
+                            <input type="radio" name="filtro-periodo" value="dia" checked class="form-radio text-blue-600">
                             <span>Día</span>
                         </label>
                         <label class="inline-flex items-center space-x-2">
-                            <input type="radio" name="filtro-periodo" value="mes" class="focus:ring-blue-500">
+                            <input type="radio" name="filtro-periodo" value="mes" class="form-radio text-blue-600">
                             <span>Mes</span>
                         </label>
                         <label class="inline-flex items-center space-x-2">
-                            <input type="radio" name="filtro-periodo" value="trimestre" class="focus:ring-blue-500">
+                            <input type="radio" name="filtro-periodo" value="trimestre" class="form-radio text-blue-600">
                             <span>Trimestre</span>
                         </label>
                         <label class="inline-flex items-center space-x-2">
-                            <input type="radio" name="filtro-periodo" value="año" class="focus:ring-blue-500">
+                            <input type="radio" name="filtro-periodo" value="año" class="form-radio text-blue-600">
                             <span>Año</span>
                         </label>
                         </div>
@@ -186,13 +188,12 @@
                     </div>
                     </div>
 
-                    <!-- Nº de Periodos -->
+                    <!-- Nº Periodos en una línea inferior -->
                     <div class="mb-6">
-                    <div class="w-full md:w-1/4">
+                    <div class="w-full md:w-1/3">
                         <label for="n-periodos" class="block mb-1 text-sm text-white">Nº Periodos</label>
                         <input type="number" id="n-periodos" value="5" min="1" max="30"
                         class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
-                    </div>
                     </div>
                 </div>
 
@@ -275,7 +276,6 @@
                         <tbody id="tabla-ventas"></tbody>
                     </table>
                 </div>
-
             </section>        
         </main>
     </div>
