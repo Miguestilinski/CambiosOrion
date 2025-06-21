@@ -180,6 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         labels: {
                             boxWidth: 12,
                             padding: 10,
+                            color: 'white'
                         }
                     },
                     tooltip: {
