@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         contenedor.innerHTML = posiciones.map(p => `
             <tr>
-                <td>${p.divisa_id}</td>
+                <td>${iconoHTML}${p.nombre}</td>
                 <td>${p.cantidad}</td>
                 <td>${p.pmp}</td>
                 <td>${p.valor_clp}</td>
