@@ -397,7 +397,6 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
 
   // Generar datos de prueba para número de documento y número de nota
   const numeroDocumento = "DOC-" + Math.floor(100000 + Math.random() * 900000); // ejemplo: DOC-123456
-  const numeroNota = "NOTA-" + Math.floor(1000 + Math.random() * 9000); // ejemplo: NOTA-3456
 
   let totalOperacion = 0;
   let divisas = [];
@@ -443,7 +442,6 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
     tipo_transaccion: tipoTransaccion,
     tipo_documento: tipoDocumento,
     numero_documento: numeroDocumento,
-    numero_nota: numeroNota,
     estado: "Vigente",
     observaciones,
     total: totalOperacion,
@@ -462,7 +460,6 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
   console.log("Tipo de documento:", tipoDocumento);
   console.log("Observaciones:", observaciones);
   console.log("Número de documento:", numeroDocumento);
-  console.log("Número de nota:", numeroNota);
   console.log("Total operación:", totalOperacion);
   console.log("Detalles:", divisas);
   console.log("Vendedor:", usuarioSesion.equipo_nombre);
