@@ -110,6 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
             btnDesactivar.className = 'text-white bg-red-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1';
             
             // Procesar divisas y tasas como listas tabuladas
+            const divisas = operacion.divisas.split(' ');
             const tasas = operacion.tasas_cambio.split('| ');
             const montos = operacion.montos_por_divisa.split('| ');
 
