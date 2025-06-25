@@ -49,6 +49,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const totalOperacion = parseFloat(info.total);
             let abonado = parseFloat(info.monto_pagado || 0);
             let restante = totalOperacion - abonado;
+            let margenTotal = 0;
+            data.detalles.forEach(det => {
+                margenTotal += parseFloat(det.margen || 0);
+            });
 
             // --- Funcionalidad Botón Exportar PDF ---
             document.getElementById("exportar-pdf").addEventListener("click", () => {
@@ -438,7 +442,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div><span class="font-semibold text-gray-300">Caja:</span> ${info.caja}</div>
                 <div><span class="font-semibold text-gray-300">Cliente:</span> ${info.nombre_cliente}</div>
                 <div><span class="font-semibold text-gray-300">Tipo de Transacción:</span> ${info.tipo_transaccion}</div>
-                <div><span class="font-semibold text-gray-300">Margen:</span> ${info.margen}</div>
+                <div><span class="font-semibold text-gray-300">Margen:</span> ${formatCLP(margenTotal)}</div>
                 <div><span class="font-semibold text-gray-300">Observaciones:</span> ${info.observaciones}</div>
                 <div>
                     <span class="font-semibold text-gray-300">Estado:</span> 
