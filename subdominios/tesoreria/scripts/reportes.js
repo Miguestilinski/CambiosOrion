@@ -126,15 +126,20 @@ document.addEventListener("DOMContentLoaded", () => {
                 ? `<img src="${p.icono}" alt="${p.nombre}" class="w-6 h-6 rounded-full border border-gray-400" />`
                 : "";
 
+            // Calculamos los valores CLP inicial y final por si no vienen ya precalculados
+            const valorCLPInicial = (p.saldo_inicial ?? 0) * (p.promedio_inicial ?? 0);
+            const valorCLPFinal = (p.cantidad ?? 0) * (p.pmp ?? 0);
+            const utilidad = p.utilidad ?? 0;
+
             tr.innerHTML = `
                 <td class="px-4 py-2 flex items-center gap-2">${iconoHTML}<span>${p.nombre}</span></td>
-                <td class="px-4 py-2">${Number(p.cantidad).toLocaleString("es-CL")}</td>
-                <td class="px-4 py-2">${Number(p.pmp).toLocaleString("es-CL")}</td>
-                <td class="px-4 py-2">${Number(p.valor_clp).toLocaleString("es-CL")}</td>
-                <td class="px-4 py-2">${Number(p.cantidad).toLocaleString("es-CL")}</td>
-                <td class="px-4 py-2">${Number(p.pmp).toLocaleString("es-CL")}</td>
-                <td class="px-4 py-2">${Number(p.valor_clp).toLocaleString("es-CL")}</td>
-                <td class="px-4 py-2">0</td>
+                <td class="px-4 py-2">${Number(p.saldo_inicial ?? 0).toLocaleString("es-CL")}</td>
+                <td class="px-4 py-2">${Number(p.promedio_inicial ?? 0).toLocaleString("es-CL")}</td>
+                <td class="px-4 py-2">${Number(valorCLPInicial).toLocaleString("es-CL")}</td>
+                <td class="px-4 py-2">${Number(p.cantidad ?? 0).toLocaleString("es-CL")}</td>
+                <td class="px-4 py-2">${Number(p.pmp ?? 0).toLocaleString("es-CL")}</td>
+                <td class="px-4 py-2">${Number(valorCLPFinal).toLocaleString("es-CL")}</td>
+                <td class="px-4 py-2">${Number(utilidad).toLocaleString("es-CL")}</td>
             `;
 
             contenedor.appendChild(tr);
