@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="px-4 py-2">${limpiarTexto(operacion.numer_documento)}</td>
                 <td class="px-4 py-2">${limpiarTexto(operacion.numero_nota)}</td>
                 <td class="px-4 py-2">${limpiarTexto(operacion.tipo_transaccion)}</td>
-                <td class="px-4 py-2">${divisas.map((d, i) => `<div>${d}${i < divisas.length - 1 ? '|' : ''}</div>`).join('')}</td>
+                <td class="px-4 py-2">${divisas.map((d, i) => `<div>${d}${i < divisas.length - 1 ? ',' : ''}</div>`).join('')}</td>
                 <td class="px-4 py-2">
                     ${montos.map(monto => `<div>${formatearNumero(monto)}</div>`).join('')}
                 </td>
