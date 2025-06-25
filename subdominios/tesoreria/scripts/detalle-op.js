@@ -290,6 +290,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const divisaSelect = document.getElementById("divisa-select");
 
+            console.log("Total operación (info.total):", info.total);
+            console.log("Pagos existentes:", data.pagos);
+
             divisaSelect.addEventListener("change", () => {
                 const divisaSeleccionada = divisaSelect.value;
                 let sugerido = 0;
@@ -313,6 +316,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 inputPago.placeholder = formatToCLP(sugerido);
             });
+
+            divisaSelect.dispatchEvent(new Event('change'));
 
             //inputPago.placeholder = `$${formatNumber(restante)}`;
 
