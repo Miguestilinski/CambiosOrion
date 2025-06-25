@@ -48,15 +48,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function formatearNumero(numero) {
         if (numero === null || numero === undefined || numero === '') return '';
-        
-        const opciones = {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 3
-        };
-    
-        return Number(numero)
-            .toLocaleString('es-CL', opciones)  // Chile usa punto para miles y coma para decimales
-            .replace(/\u00A0/g, ''); // Elimina el espacio no separable que agrega en algunos navegadores
+
+        const num = parseFloat(numero);
+        if (isNaN(num)) return '';
+
+        // Redondear a máximo 3 decimales, sin ceros innecesarios
+        const redondeado = Math.round(num * 1000) / 1000;
+
+        return redondeado
+            .toLocaleString('es-CL', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 3
+            })
+            .replace(/\u00A0/g, '');
     }
 
     function limpiarTexto(valor) {
@@ -124,10 +128,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="px-4 py-2">${limpiarTexto(operacion.tipo_transaccion)}</td>
                 <td class="px-4 py-2">${divisas.map((d, i) => `<div>${d}${i < divisas.length - 1 ? ',' : ''}</div>`).join('')}</td>
                 <td class="px-4 py-2">
-                    ${operacion.montos_por_divisa.split(', ').map(m => {
-                        const [divisa, monto] = m.split(':');
-                        return `<div>${divisa}: ${formatearNumero(monto)}</div>`;
-                    }).join('')}
+                    ${operacion.montos_por_divisa
+                        .split(', ')
+                        .map(monto => `<div>${formatearNumero(monto)}</div>`)
+                        .join('')}
                 </td>
                 <td class="px-4 py-2">${divisaTasaHTML}</td>
                 <td class="px-4 py-2">${formatearNumero(operacion.total)}</td>
