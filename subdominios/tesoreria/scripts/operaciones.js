@@ -79,12 +79,12 @@ document.addEventListener('DOMContentLoaded', () => {
             tr.classList.add('border-b', 'bg-white', 'border-gray-700', 'text-gray-700');
 
             // Colores según tipo de transacción
-            if (operacion.tipo_transaccion === 'Compra') {
+            if (operacion.estado === 'Anulado') {
+                tr.style.backgroundColor = '#f9b8a3'; // rojo
+            } else if (operacion.tipo_transaccion === 'Compra') {
                 tr.style.backgroundColor = '#c3e8f1'; // celeste
             } else if (operacion.tipo_transaccion === 'Venta') {
                 tr.style.backgroundColor = '#dbf599'; // verde claro
-            } else if (operacion.estado === 'Anulado') {
-                tr.style.backgroundColor = '#f9b8a3'; // rojo
             }
 
             // Crear botón Mostrar
