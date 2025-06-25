@@ -295,11 +295,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
             divisaSelect.addEventListener("change", () => {
                 const divisaSeleccionada = divisaSelect.value;
+                console.log("Divisa seleccionada:", `"${divisaSeleccionada}"`);
                 let sugerido = 0;
 
-                if (divisaSeleccionada === "CLP") {
+                if (divisaSeleccionada === "D47") {
                     const pagosCLP = data.pagos
-                        .filter(p => p.divisa.trim() === "CLP")
+                        .filter(p => p.divisa.trim() === "D47")
                         .reduce((sum, p) => sum + parseFloat(p.monto), 0);
                     sugerido = pagosCLP > 0 ? (info.total - pagosCLP) : info.total;
                 } else if (data.detalles) {
