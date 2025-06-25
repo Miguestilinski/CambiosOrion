@@ -123,7 +123,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="px-4 py-2">${limpiarTexto(operacion.numero_nota)}</td>
                 <td class="px-4 py-2">${limpiarTexto(operacion.tipo_transaccion)}</td>
                 <td class="px-4 py-2">${divisas.map((d, i) => `<div>${d}${i < divisas.length - 1 ? ',' : ''}</div>`).join('')}</td>
-                <td class="px-4 py-2">${operacion.montos_por_divisa.split(', ').map(m => `<div>${m}</div>`).join('')}</td>
+                <td class="px-4 py-2">
+                    ${operacion.montos_por_divisa.split(', ').map(m => {
+                        const [divisa, monto] = m.split(':');
+                        return `<div>${divisa}: ${formatearNumero(monto)}</div>`;
+                    }).join('')}
+                </td>
                 <td class="px-4 py-2">${divisaTasaHTML}</td>
                 <td class="px-4 py-2">${formatearNumero(operacion.total)}</td>
                 <td class="px-4 py-2">${limpiarTexto(operacion.estado)}</td>
