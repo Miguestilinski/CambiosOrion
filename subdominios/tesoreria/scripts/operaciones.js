@@ -83,6 +83,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 tr.style.backgroundColor = '#c3e8f1'; // celeste
             } else if (operacion.tipo_transaccion === 'Venta') {
                 tr.style.backgroundColor = '#dbf599'; // verde claro
+            } else if (operacion.estado === 'Anulado') {
+                tr.style.backgroundColor = '#f9b8a3'; // rojo
             }
 
             // Crear botón Mostrar
