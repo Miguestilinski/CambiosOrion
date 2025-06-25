@@ -430,14 +430,14 @@ document.addEventListener("DOMContentLoaded", () => {
                     mostrarModal({
                         titulo: "❌ Pago inválido",
                         mensaje: `Para una operación de ${tipoOperacion.toLowerCase()}, el ${
-                            origenPago === "cliente" ? "cliente" : "equipo Orion"
+                            origenPago === "cliente" ? "cliente" : "Orion"
                         } solo puede pagar en ${
                             tipoOperacion === "Compra"
                                 ? origenPago === "cliente"
                                     ? "Pesos Chilenos"
-                                    : "divisas extranjeras"
+                                    : "Divisas Extranjeras"
                                 : origenPago === "cliente"
-                                    ? "divisas extranjeras"
+                                    ? "Divisas Extranjeras"
                                     : "Pesos Chilenos"
                         }.`,
                         textoConfirmar: "Entendido"
