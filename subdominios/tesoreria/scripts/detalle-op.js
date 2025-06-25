@@ -611,36 +611,67 @@ document.addEventListener("DOMContentLoaded", () => {
     btnNuevoPago.addEventListener("click", () => {
         const isHidden = formNuevoPago.classList.contains("hidden");
 
-        // Mostrar u ocultar el formulario
         formNuevoPago.classList.toggle("hidden");
 
-        // Cambiar el texto del botón y del título
         if (isHidden) {
             btnNuevoPago.textContent = "Cancelar Pago";
             document.getElementById("titulo-pago").textContent = "Nuevo Pago";
+
+            const tipoOperacion = info.tipo_transaccion; // "Compra" o "Venta"
+            const quienPaga = document.getElementById("origen-pago").value; // "cliente" u "orion"
+
+            if (!quienPaga) {
+                mostrarModal({
+                    titulo: "⚠️ Selecciona un origen",
+                    mensaje: "Debes seleccionar si el pago es del cliente o de Orion.",
+                    textoConfirmar: "Entendido"
+                });
+                return;
+            }
+
+            cargarDivisas(id, tipoOperacion, quienPaga);
+
         } else {
             btnNuevoPago.textContent = "Nuevo Pago";
             document.getElementById("titulo-pago").textContent = "Pagos";
         }
-        
-        cargarDivisas(id);
     });
 
-    async function cargarDivisas(operacionId) {
+    async function cargarDivisas(operacionId, tipoOperacion, quienPaga) {
         const divisaSelect = document.getElementById("divisa-select");
 
         try {
             const res = await fetch(`https://cambiosorion.cl/data/detalle-op.php?buscar_divisas=1&operacion_id=${operacionId}`);
             const divisas = await res.json();
 
-            // Limpiar y agregar opciones
+            // Limpiar select
             divisaSelect.innerHTML = '<option value="">Seleccione una divisa</option>';
-            divisas.forEach(divisa => {
+
+            // Filtrar según lógica de negocio
+            const divisasFiltradas = divisas.filter(divisa => {
+                const esCLP = divisa.id === "D47";
+
+                if (tipoOperacion === "Compra" && quienPaga === "Orion") {
+                    return esCLP;
+                } else if (tipoOperacion === "Compra" && quienPaga === "Cliente") {
+                    return !esCLP;
+                } else if (tipoOperacion === "Venta" && quienPaga === "Orion") {
+                    return !esCLP;
+                } else if (tipoOperacion === "Venta" && quienPaga === "Cliente") {
+                    return esCLP;
+                }
+
+                return false; // Por seguridad, si no calza con ningún caso.
+            });
+
+            // Agregar al select
+            divisasFiltradas.forEach(divisa => {
                 const option = document.createElement("option");
                 option.value = divisa.id;
                 option.textContent = divisa.nombre;
                 divisaSelect.appendChild(option);
             });
+
         } catch (err) {
             console.error("Error al cargar divisas:", err);
             divisaSelect.innerHTML = '<option value="">Error al cargar</option>';
