@@ -675,21 +675,26 @@ document.addEventListener("DOMContentLoaded", () => {
             divisaSelect.innerHTML = '<option value="">Error al cargar</option>';
         }
     }
-
+    
     document.querySelectorAll(".origen-card").forEach(card => {
         card.addEventListener("click", () => {
             document.getElementById("origen-pago").value = card.dataset.origen;
 
             document.querySelectorAll(".origen-card").forEach(c => {
-            c.classList.remove("border-blue-500", "bg-blue-600", "text-white");
-            c.classList.add("border-gray-500", "bg-transparent", "text-gray-300");
+                c.classList.remove("border-blue-500", "bg-blue-600", "text-white");
+                c.classList.add("border-gray-500", "bg-transparent", "text-gray-300");
             });
 
             card.classList.remove("border-gray-500", "bg-transparent", "text-gray-300");
             card.classList.add("border-blue-500", "bg-blue-600", "text-white");
+
+            // 👇 Esta línea fuerza la recarga del select cuando se elige un origen
+            const tipoOperacion = info?.tipo_transaccion;
+            if (tipoOperacion && id) {
+                cargarDivisas(id, tipoOperacion, card.dataset.origen);
+            }
         });
     });
-
 
 });
 
