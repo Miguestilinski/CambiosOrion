@@ -635,13 +635,13 @@ document.addEventListener("DOMContentLoaded", () => {
             const divisasFiltradas = divisas.filter(divisa => {
                 const esCLP = divisa.id === "D47";
 
-                if (tipoOperacion === "Compra" && quienPaga === "Orion") {
+                if (tipoOperacionLower === "compra" && quienPagaLower === "orion") {
                     return esCLP;
-                } else if (tipoOperacion === "Compra" && quienPaga === "Cliente") {
+                } else if (tipoOperacionLower === "compra" && quienPagaLower === "cliente") {
                     return !esCLP;
-                } else if (tipoOperacion === "Venta" && quienPaga === "Orion") {
+                } else if (tipoOperacionLower === "venta" && quienPagaLower === "orion") {
                     return !esCLP;
-                } else if (tipoOperacion === "Venta" && quienPaga === "Cliente") {
+                } else if (tipoOperacionLower === "venta" && quienPagaLower === "cliente") {
                     return esCLP;
                 }
 
