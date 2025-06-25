@@ -297,16 +297,15 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             function formatToCLP(value) {
-                if (!value) return "";
-                // Quitar todo lo que no sea número o coma/punto decimal
-                const cleanValue = value.toString().replace(/[^0-9]/g, "");
-                if (cleanValue === "") return "";
+                if (value === null || value === undefined || value === "") return "";
 
-                const number = parseInt(cleanValue, 10);
+                const number = parseFloat(value);
                 if (isNaN(number)) return "";
 
-                // Formatear usando Intl.NumberFormat para Chile
-                return "$" + number.toLocaleString("es-CL");
+                return "$" + number.toLocaleString("es-CL", {
+                    minimumFractionDigits: number % 1 === 0 ? 0 : 2,
+                    maximumFractionDigits: 2
+                });
             }
 
             inputPago.addEventListener("input", (e) => {
