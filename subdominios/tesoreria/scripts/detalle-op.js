@@ -295,22 +295,22 @@ document.addEventListener("DOMContentLoaded", () => {
                 let sugerido = 0;
 
                 if (divisaSeleccionada === "CLP") {
-                    // Total menos lo pagado en CLP
+                    console.log("info.total:", info.total);
                     const pagosCLP = data.pagos
-                        .filter(p => p.divisa === "CLP")
+                        .filter(p => p.divisa.trim() === "CLP") // trim para evitar espacios extra
                         .reduce((sum, p) => sum + parseFloat(p.monto), 0);
+                    console.log("pagosCLP:", pagosCLP);
                     sugerido = info.total - pagosCLP;
                 } else if (data.detalles) {
                     const detalle = data.detalles.find(det => det.divisa_id === divisaSeleccionada);
                     if (detalle) {
                         const pagosDivisa = data.pagos
-                            .filter(p => p.divisa === detalle.divisa)
+                            .filter(p => p.divisa.trim() === detalle.divisa.trim())
                             .reduce((sum, p) => sum + parseFloat(p.monto), 0);
                         sugerido = detalle.monto - pagosDivisa;
                     }
                 }
 
-                // Nunca mostrar valores negativos
                 sugerido = sugerido < 0 ? 0 : sugerido;
 
                 inputPago.placeholder = formatToCLP(sugerido);
