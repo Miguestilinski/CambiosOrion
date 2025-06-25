@@ -422,10 +422,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 const divisaSeleccionada = document.getElementById("divisa-select").value;
 
                 if (
-                    (tipoOperacion === "Compra" && origenPago === "cliente" && divisaSeleccionada !== "D47") ||
-                    (tipoOperacion === "Compra" && origenPago === "orion" && divisaSeleccionada === "D47") ||
-                    (tipoOperacion === "Venta" && origenPago === "cliente" && divisaSeleccionada === "D47") ||
-                    (tipoOperacion === "Venta" && origenPago === "orion" && divisaSeleccionada !== "D47")
+                    (tipoOperacion === "Compra" && origenPago === "orion" && divisaSeleccionada !== "D47") ||
+                    (tipoOperacion === "Compra" && origenPago === "cliente" && divisaSeleccionada === "D47") ||
+                    (tipoOperacion === "Venta" && origenPago === "orion" && divisaSeleccionada === "D47") ||
+                    (tipoOperacion === "Venta" && origenPago === "cliente" && divisaSeleccionada !== "D47")
                 ) {
                     mostrarModal({
                         titulo: "❌ Pago inválido",
@@ -433,10 +433,10 @@ document.addEventListener("DOMContentLoaded", () => {
                             origenPago === "cliente" ? "cliente" : "Orion"
                         } solo puede pagar en ${
                             tipoOperacion === "Compra"
-                                ? origenPago === "cliente"
+                                ? origenPago === "orion"
                                     ? "Pesos Chilenos"
                                     : "Divisas Extranjeras"
-                                : origenPago === "cliente"
+                                : origenPago === "orion"
                                     ? "Divisas Extranjeras"
                                     : "Pesos Chilenos"
                         }.`,
