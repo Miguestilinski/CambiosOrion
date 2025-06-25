@@ -110,8 +110,8 @@ document.addEventListener('DOMContentLoaded', () => {
             btnDesactivar.className = 'text-white bg-red-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1';
             
             // Procesar divisas y tasas como listas tabuladas
-            const divisas = operacion.divisas.split(', ');
-            const tasas = operacion.tasas_cambio.split(', ');
+            const tasas = operacion.tasas_cambio.split('| ');
+            const montos = operacion.montos_por_divisa.split('| ');
 
             let divisaTasaHTML = '';
             for (let i = 0; i < divisas.length; i++) {
@@ -126,12 +126,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="px-4 py-2">${limpiarTexto(operacion.numer_documento)}</td>
                 <td class="px-4 py-2">${limpiarTexto(operacion.numero_nota)}</td>
                 <td class="px-4 py-2">${limpiarTexto(operacion.tipo_transaccion)}</td>
-                <td class="px-4 py-2">${divisas.map((d, i) => `<div>${d}${i < divisas.length - 1 ? ',' : ''}</div>`).join('')}</td>
+                <td class="px-4 py-2">${divisas.map((d, i) => `<div>${d}${i < divisas.length - 1 ? '|' : ''}</div>`).join('')}</td>
                 <td class="px-4 py-2">
-                    ${operacion.montos_por_divisa
-                        .split(', ')
-                        .map(monto => `<div>${formatearNumero(monto)}</div>`)
-                        .join('')}
+                    ${montos.map(monto => `<div>${formatearNumero(monto)}</div>`).join('')}
                 </td>
                 <td class="px-4 py-2">${divisaTasaHTML}</td>
                 <td class="px-4 py-2">${formatearNumero(operacion.total)}</td>
