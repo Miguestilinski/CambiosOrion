@@ -288,7 +288,35 @@ document.addEventListener("DOMContentLoaded", () => {
             const inputPago = document.getElementById("input-pago");
             const btnPago = document.getElementById("btn-registrar-pago");
 
-            inputPago.placeholder = `$${formatNumber(restante)}`;
+            const divisaSelect = document.getElementById("divisa-select");
+
+            divisaSelect.addEventListener("change", () => {
+                const divisaSeleccionada = divisaSelect.value;
+                let sugerido = 0;
+
+                if (divisaSeleccionada === "CLP") {
+                    // Total menos lo pagado en CLP
+                    const pagosCLP = data.pagos
+                        .filter(p => p.divisa === "CLP")
+                        .reduce((sum, p) => sum + parseFloat(p.monto), 0);
+                    sugerido = info.total - pagosCLP;
+                } else if (data.detalles) {
+                    const detalle = data.detalles.find(det => det.divisa_id === divisaSeleccionada);
+                    if (detalle) {
+                        const pagosDivisa = data.pagos
+                            .filter(p => p.divisa === detalle.divisa)
+                            .reduce((sum, p) => sum + parseFloat(p.monto), 0);
+                        sugerido = detalle.monto - pagosDivisa;
+                    }
+                }
+
+                // Nunca mostrar valores negativos
+                sugerido = sugerido < 0 ? 0 : sugerido;
+
+                inputPago.placeholder = formatToCLP(sugerido);
+            });
+
+            //inputPago.placeholder = `$${formatNumber(restante)}`;
 
             if (info.estado === "Pagado") {
                 inputPago.disabled = true;
