@@ -14,7 +14,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     </td>
                     <td class="px-4 py-2">${item.divisa}</td>
                     <td class="px-4 py-2">${Number(item.cantidad).toLocaleString("es-CL")}</td>
-                    <td class="px-4 py-2">$ ${Number(item.pmp).toLocaleString("es-CL", { minimumFractionDigits: 4 })}</td>
+                    <td class="px-4 py-2">$ ${Number(item.pmp).toLocaleString("es-CL", {
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 6
+                    })}</td>
                     <td class="px-4 py-2">$ ${Number(item.total).toLocaleString("es-CL")}</td>
                 `;
                 tbody.appendChild(tr);
