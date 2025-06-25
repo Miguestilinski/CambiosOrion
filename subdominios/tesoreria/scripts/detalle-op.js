@@ -295,19 +295,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 let sugerido = 0;
 
                 if (divisaSeleccionada === "CLP") {
-                    console.log("info.total:", info.total);
                     const pagosCLP = data.pagos
-                        .filter(p => p.divisa.trim() === "CLP") // trim para evitar espacios extra
+                        .filter(p => p.divisa.trim() === "CLP")
                         .reduce((sum, p) => sum + parseFloat(p.monto), 0);
-                    console.log("pagosCLP:", pagosCLP);
-                    sugerido = info.total - pagosCLP;
+                    sugerido = pagosCLP > 0 ? (info.total - pagosCLP) : info.total;
                 } else if (data.detalles) {
                     const detalle = data.detalles.find(det => det.divisa_id === divisaSeleccionada);
                     if (detalle) {
                         const pagosDivisa = data.pagos
                             .filter(p => p.divisa.trim() === detalle.divisa.trim())
                             .reduce((sum, p) => sum + parseFloat(p.monto), 0);
-                        sugerido = detalle.monto - pagosDivisa;
+                        sugerido = pagosDivisa > 0 ? (detalle.monto - pagosDivisa) : detalle.monto;
                     }
                 }
 
