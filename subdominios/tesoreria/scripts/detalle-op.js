@@ -631,6 +631,9 @@ document.addEventListener("DOMContentLoaded", () => {
             // Limpiar select
             divisaSelect.innerHTML = '<option value="">Seleccione una divisa</option>';
 
+            const tipoOperacionLower = tipoOperacion.toLowerCase();
+            const quienPagaLower = quienPaga.toLowerCase();
+
             // Filtrar según lógica de negocio
             const divisasFiltradas = divisas.filter(divisa => {
                 const esCLP = divisa.id === "D47";
