@@ -419,6 +419,34 @@ document.addEventListener("DOMContentLoaded", () => {
                     return;
                 }
 
+                const tipoOperacion = info.tipo_transaccion; // "Compra" o "Venta"
+                const origenPago = document.getElementById("origen-pago").value;
+                const divisaSeleccionada = document.getElementById("divisa-select").value;
+
+                if (
+                    (tipoOperacion === "Compra" && origenPago === "cliente" && divisaSeleccionada !== "D47") ||
+                    (tipoOperacion === "Compra" && origenPago === "orion" && divisaSeleccionada === "D47") ||
+                    (tipoOperacion === "Venta" && origenPago === "cliente" && divisaSeleccionada === "D47") ||
+                    (tipoOperacion === "Venta" && origenPago === "orion" && divisaSeleccionada !== "D47")
+                ) {
+                    mostrarModal({
+                        titulo: "❌ Pago inválido",
+                        mensaje: `Para una operación de ${tipoOperacion.toLowerCase()}, el ${
+                            origenPago === "cliente" ? "cliente" : "equipo Orion"
+                        } solo puede pagar en ${
+                            tipoOperacion === "Compra"
+                                ? origenPago === "cliente"
+                                    ? "Pesos Chilenos"
+                                    : "divisas extranjeras"
+                                : origenPago === "cliente"
+                                    ? "divisas extranjeras"
+                                    : "Pesos Chilenos"
+                        }.`,
+                        textoConfirmar: "Entendido"
+                    });
+                    return;
+                }
+
                 // Nuevo estado
                 let nuevoEstado = "Abonado";
                 if (montoIngresado === restante) {
