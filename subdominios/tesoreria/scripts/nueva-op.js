@@ -476,19 +476,34 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
       body: JSON.stringify(payload)
     });
 
-    const resultado = await res.json();
-    console.log("Respuesta del servidor:", resultado);
+    const texto = await res.text(); // <- leer como texto crudo
+    console.log("Respuesta cruda del servidor:", texto);
+
+    let resultado;
+    try {
+      resultado = JSON.parse(texto);
+    } catch (jsonError) {
+      console.error("La respuesta no es JSON válido:", jsonError);
+      mostrarModal({
+        titulo: "❌ Error en la respuesta",
+        mensaje: "El servidor devolvió una respuesta no válida:\n\n" + texto,
+        textoConfirmar: "Entendido"
+      });
+      return;
+    }
+
     if (resultado.error) {
       mostrarModal({
         titulo: "❌ Error",
-        mensaje: ("Error: " + resultado.error),
+        mensaje: "Error: " + resultado.error,
         textoConfirmar: "Entendido"
       });
     } else {
       mostrarModalExitoso();
     }
+
   } catch (err) {
-    console.error(err);
+    console.error("Error de red u otro:", err);
     mostrarModal({
       titulo: "❌ Error",
       mensaje: "Hubo un problema al registrar la operación.",
