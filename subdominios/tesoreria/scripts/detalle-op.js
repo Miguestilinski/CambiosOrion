@@ -442,7 +442,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div><span class="font-semibold text-gray-300">Caja:</span> ${info.caja}</div>
                 <div><span class="font-semibold text-gray-300">Cliente:</span> ${info.nombre_cliente}</div>
                 <div><span class="font-semibold text-gray-300">Tipo de Transacción:</span> ${info.tipo_transaccion}</div>
-                <div><span class="font-semibold text-gray-300">Margen:</span> ${formatCLP(margenTotal)}</div>
+                <div><span class="font-semibold text-gray-300">Margen:</span> ${formatToCLP(margenTotal)}</div>
                 <div><span class="font-semibold text-gray-300">Observaciones:</span> ${info.observaciones}</div>
                 <div>
                     <span class="font-semibold text-gray-300">Estado:</span> 
