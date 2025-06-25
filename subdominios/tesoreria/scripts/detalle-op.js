@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     const params = new URLSearchParams(window.location.search);
     const id = params.get("id");
+    let info = null;
 
     if (!id) {
         document.getElementById("info-operacion").innerHTML = "<p>ID de operación no proporcionado.</p>";
@@ -44,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             // Mostrar info general de la operación
-            const info = data.operacion;
+            info = data.operacion;
             const color = colorEstado(info.estado);
             const totalOperacion = parseFloat(info.total);
             let abonado = parseFloat(info.monto_pagado || 0);
@@ -289,9 +290,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const btnPago = document.getElementById("btn-registrar-pago");
 
             const divisaSelect = document.getElementById("divisa-select");
-
-            console.log("Total operación (info.total):", info.total);
-            console.log("Pagos existentes:", data.pagos);
 
             divisaSelect.addEventListener("change", () => {
                 const divisaSeleccionada = divisaSelect.value;
