@@ -614,21 +614,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (isHidden) {
             btnNuevoPago.textContent = "Cancelar Pago";
             document.getElementById("titulo-pago").textContent = "Nuevo Pago";
-
-            const tipoOperacion = info.tipo_transaccion; // "Compra" o "Venta"
-            const quienPaga = document.getElementById("origen-pago").value; // "cliente" u "orion"
-
-            if (!quienPaga) {
-                mostrarModal({
-                    titulo: "⚠️ Selecciona un origen",
-                    mensaje: "Debes seleccionar si el pago es del cliente o de Orion.",
-                    textoConfirmar: "Entendido"
-                });
-                return;
-            }
-
-            cargarDivisas(id, tipoOperacion, quienPaga);
-
+            // NO validar ni cargar divisas aquí
         } else {
             btnNuevoPago.textContent = "Nuevo Pago";
             document.getElementById("titulo-pago").textContent = "Pagos";
@@ -678,7 +664,9 @@ document.addEventListener("DOMContentLoaded", () => {
     
     document.querySelectorAll(".origen-card").forEach(card => {
         card.addEventListener("click", () => {
-            document.getElementById("origen-pago").value = card.dataset.origen;
+            const origen = card.dataset.origen;
+
+            document.getElementById("origen-pago").value = origen;
 
             document.querySelectorAll(".origen-card").forEach(c => {
                 c.classList.remove("border-blue-500", "bg-blue-600", "text-white");
@@ -688,10 +676,9 @@ document.addEventListener("DOMContentLoaded", () => {
             card.classList.remove("border-gray-500", "bg-transparent", "text-gray-300");
             card.classList.add("border-blue-500", "bg-blue-600", "text-white");
 
-            // 👇 Esta línea fuerza la recarga del select cuando se elige un origen
-            const tipoOperacion = info?.tipo_transaccion;
-            if (tipoOperacion && id) {
-                cargarDivisas(id, tipoOperacion, card.dataset.origen);
+            // Aquí cargas las divisas solo si el formulario está visible
+            if (!formNuevoPago.classList.contains("hidden")) {
+                cargarDivisas(id, info.tipo_transaccion, origen);
             }
         });
     });
