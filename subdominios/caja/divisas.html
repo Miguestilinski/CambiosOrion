@@ -136,70 +136,51 @@
     <div class="main-content">
         <div id="sidebar-container"></div>
         <main id="dashboard-content" class="dashboard-content">
-            <section id="remuneraciones" class="content-section active">
+            <section id="divisas-int" class="content-section active">
                 <!-- Título y botón Nueva Operación -->
                 <div class="flex items-center mb-6">
-                    <h1 class="text-2xl font-medium mr-4 leading-none text-white">Remuneraciones</h1>
-                    <button type="button" id="nuevo-remuneracion" href="./nuevo-remuneracion"
-                        class="text-white mr-2 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
-                        Nuevo Remuneración
-                    </button>
-                    <button type="button" id="remuneraciones" href="#"
-                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
-                        Remuneraciones
-                    </button>
+                    <h1 class="text-2xl font-medium mr-4 leading-none text-white">Divisas Internas</h1>
                 </div>
                 
                 <!-- Filtros avanzados -->
                 <div class="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-6">
                     <div>
-                        <label for="periodo" class="block mb-1 text-sm text-white">Nombre</label>
-                        <input type="text" id="periodo" 
+                        <label for="nombre" class="block mb-1 text-sm text-white">Nombre</label>
+                        <input type="text" id="nombre" 
+                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                    </div> 
+                    <div>
+                        <label for="pais" class="block mb-1 text-sm text-white">Pais</label>
+                        <input type="text" id="pais" 
                             class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                     </div>
                     <div>
-                        <label for="integrante" class="block mb-1 text-sm text-white">RUT</label>
-                        <input type="text" id="integrante" 
+                        <label for="codigo" class="block mb-1 text-sm text-white">Codigo</label>
+                        <input type="text" id="codigo" 
                             class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                     </div>
                     <div>
-                        <label for="monto" class="block mb-1 text-sm text-white">Fecha de Ingreso</label>
-                        <input type="text" id="monto" 
+                        <label for="simbolo" class="block mb-1 text-sm text-white">Simbolo</label>
+                        <input type="text" id="simbolo" 
                             class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                     </div>
                     <div>
-                        <label for="cargo" class="block mb-1 text-sm text-white">Cargo</label>
-                        <select id="cargo"
+                        <label for="tipo" class="block mb-1 text-sm text-white">Tipo de Divisa</label>
+                        <select id="tipo"
                             class="select-list block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                             <option value="">Seleccionar</option>
-                            <option value="">Caja</option>
-                            <option value="">Tesorería</option>
-                            <option value="">Socio</option>
+                            <option value="">Divisa</option>
+                            <option value="">Moneda</option>
                             <option value="">Otro</option>
                         </select>
                     </div>
                     <div>
-                        <label for="contrato" class="block mb-1 text-sm text-white">Contrato</label>
-                        <select id="estado"
+                        <label for="fraccionable" class="block mb-1 text-sm text-white">Fraccionable</label>
+                        <select id="fraccionable"
                             class="select-list block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                             <option value="">Seleccionar</option>
-                            <option value="">Contratado</option>
-                            <option value="">Apoyo</option>
-                            <option value="">Practicante</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="sueldo" class="block mb-1 text-sm text-white">Sueldo Líquido</label>
-                        <input type="text" id="sueldo" 
-                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label for="habilitados" class="block mb-1 text-sm text-white">Habilitados</label>
-                        <select id="habilitados"
-                            class="select-list block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Seleccionar</option>
-                            <option value="">No Habilitado</option>
-                            <option value="">Habilitado</option>
+                            <option value="">Si</option>
+                            <option value="">No</option>
                         </select>
                     </div>
                 </div>
@@ -227,23 +208,26 @@
                     <table class="w-full text-sm text-left text-white bg-gray-800">
                         <thead class="text-xs uppercase bg-gray-800 text-white">
                             <tr>
+                                <th class="px-4 py-2">Icono</th>
                                 <th class="px-4 py-2">Nombre</th>
-                                <th class="px-4 py-2">RUT</th>
-                                <th class="px-4 py-2">Fecha de Ingreso</th>
-                                <th class="px-4 py-2">Rol</th>
-                                <th class="px-4 py-2">Tipo de Contrato</th>
-                                <th class="px-4 py-2">Sueldo Líquido</th>
+                                <th class="px-4 py-2">Pais</th>
+                                <th class="px-4 py-2">Codigo</th>
+                                <th class="px-4 py-2">Simbolo</th>
+                                <th class="px-4 py-2">Tipo de Divisa</th>
+                                <th class="px-4 py-2">Fraccionable</th>
+                                <th class="px-4 py-2">Estado</th>
                                 <th class="px-4 py-2"></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr class="border-b bg-white border-gray-700 text-gray-700">
-                                <td class="px-4 py-2">Integrante</td>
-                                <td class="px-4 py-2">12.345.678-9</td>
-                                <td class="px-4 py-2">2025-01</td>
-                                <td class="px-4 py-2">Caja</td>
-                                <td class="px-4 py-2">Contratado</td>
-                                <td class="px-4 py-2">$100.000</td>
+                                <td class="px-4 py-2"></td>
+                                <td class="px-4 py-2">Dolar USA</td>
+                                <td class="px-4 py-2">USA</td>
+                                <td class="px-4 py-2">USD</td>
+                                <td class="px-4 py-2">US$</td>
+                                <td class="px-4 py-2">Divisa</td>
+                                <td class="px-4 py-2">Si</td>
                                 <td class="px-4 py-2">
                                     <button class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1">
                                         Mostrar
@@ -257,7 +241,6 @@
             </section>        
         </main>
     </div>
-
     <footer>
         <div class="footer-container">
             <!-- Sección del logo -->
@@ -300,7 +283,7 @@
 
     <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
     <script type="module" src="https://cambiosorion.cl/orionapp/public/scripts/header.js" crossorigin="anonymous"></script>
-    <script type="module" src="./scripts/index.js"></script>
+    <script type="module" src="./scripts/divisas.js"></script>
     <script>
         fetch('sidebar.html')
             .then(response => response.text())
