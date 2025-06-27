@@ -159,6 +159,11 @@ tr.compra {
     background-color: #c3e8f1;
 }
 
+.detalle {
+    justify-items: end;
+    margin-right: 0.5rem;
+}
+
 @media (max-width: 887px) {
     .main-content {
         flex-direction: column; /* Ajusta a diseño vertical en pantallas pequeñas */
