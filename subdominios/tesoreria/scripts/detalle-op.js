@@ -296,6 +296,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.log("Divisa seleccionada:", `"${divisaSeleccionada}"`);
                 let sugerido = 0;
 
+                if (tipoPagoSelect.value === "cuenta") {
+                    tipoPagoSelect.dispatchEvent(new Event("change"));
+                }
+
                 if (divisaSeleccionada === "D47") {
                     const pagosCLP = data.pagos
                         .filter(p => p.divisa.trim() === "D47")
