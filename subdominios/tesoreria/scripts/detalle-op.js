@@ -318,6 +318,42 @@ document.addEventListener("DOMContentLoaded", () => {
 
             divisaSelect.dispatchEvent(new Event('change'));
 
+            const tipoPagoSelect = document.getElementById("tipo-pago");
+            const campoAdicionalPago = document.getElementById("campo-adicional-pago");
+
+            tipoPagoSelect.addEventListener("change", async () => {
+                const tipo = tipoPagoSelect.value;
+                campoAdicionalPago.innerHTML = ""; // Limpiar campo
+
+                if (tipo === "cuenta") {
+                    // Input para seleccionar cuenta de cliente
+                    campoAdicionalPago.innerHTML = `
+                        <label for="cuenta-cliente" class="block text-gray-300 mb-1">Cuenta del cliente:</label>
+                        <input type="text" id="cuenta-cliente" placeholder="Buscar cuenta..." class="bg-white border border-gray-600 text-gray-700 px-2 py-2.5 text-sm rounded-lg w-full">
+                    `;
+                    // Opcional: podrías implementar un autocompletado acá con cuentas del cliente desde tu backend
+
+                } else if (tipo === "transferencia" || tipo === "tarjeta") {
+                    // Fetch cuentas de Orion desde tu backend
+                    const res = await fetch("https://cambiosorion.cl/data/cuentas.php");
+                    const cuentas = await res.json();
+
+                    if (cuentas.success && Array.isArray(cuentas.data)) {
+                        const opciones = cuentas.data.map(c => `<option value="${c.id}">${c.banco} - ${c.tipo_cuenta} (${c.numero})</option>`).join("");
+
+                        campoAdicionalPago.innerHTML = `
+                            <label for="cuenta-orion" class="block text-gray-300 mb-1">Cuenta de destino (Orion):</label>
+                            <select id="cuenta-orion" class="bg-white border border-gray-600 text-gray-700 px-2 py-2.5 text-sm rounded-lg w-full">
+                                <option value="">Seleccione una cuenta</option>
+                                ${opciones}
+                            </select>
+                        `;
+                    } else {
+                        campoAdicionalPago.innerHTML = `<p class="text-red-500">⚠️ Error al cargar cuentas bancarias de Orion</p>`;
+                    }
+                }
+            });
+
             //inputPago.placeholder = `$${formatNumber(restante)}`;
 
             if (info.estado === "Pagado") {
@@ -451,6 +487,34 @@ document.addEventListener("DOMContentLoaded", () => {
                     nuevoEstado = "Pagado";
                 }
 
+                let cuenta_id = null;
+
+                const tipoPago = document.getElementById("tipo-pago").value;
+
+                if (tipoPago === "cuenta") {
+                    const cuentaCliente = document.getElementById("cuenta-cliente")?.value;
+                    if (!cuentaCliente) {
+                        mostrarModal({
+                            titulo: "❌ Error",
+                            mensaje: "Debes ingresar la cuenta del cliente",
+                            textoConfirmar: "Entendido"
+                        });
+                        return;
+                    }
+                    cuenta_id = cuentaCliente;
+                } else if (tipoPago === "transferencia" || tipoPago === "tarjeta") {
+                    const cuentaOrion = document.getElementById("cuenta-orion")?.value;
+                    if (!cuentaOrion) {
+                        mostrarModal({
+                            titulo: "❌ Error",
+                            mensaje: "Selecciona una cuenta de Orion",
+                            textoConfirmar: "Entendido"
+                        });
+                        return;
+                    }
+                    cuenta_id = cuentaOrion;
+                }
+
                 const payload = {
                     id: info.id,
                     estado: nuevoEstado,
@@ -459,7 +523,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     tipo_pago: document.getElementById("tipo-pago").value,
                     divisa: document.getElementById("divisa-select").value,
                     origen: document.getElementById("origen-pago").value,
-                    cliente_id: info.cliente_id
+                    cliente_id: info.cliente_id,
+                    cuenta_id: cuenta_id
                 };
 
                 console.log("Enviando payload:", payload);
