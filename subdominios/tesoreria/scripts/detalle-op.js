@@ -346,7 +346,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         const cuentas = await res.json();
 
                         if (Array.isArray(cuentas) && cuentas.length > 0) {
-                            const opciones = cuentas.data.map(c => `
+                            const opciones = cuentas.map(c => `
                                 <option value="${c.id}">${c.nombre} — ${c.divisa_id}</option>
                             `).join("");
 
