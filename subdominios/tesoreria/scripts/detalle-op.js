@@ -351,7 +351,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                         if (Array.isArray(cuentas) && cuentas.length > 0) {
                             const opciones = cuentas.map(c => `
-                                <option value="${c.id}">${c.nombre} — ${c.divisa_id}</option>
+                                <option value="${c.id}">${c.nombre}</option>
                             `).join("");
 
                             inputCuenta.innerHTML = `
@@ -371,7 +371,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 } else if (tipo === "transferencia" || tipo === "tarjeta") {
                     // Lógica original para cuentas bancarias Orion
-                    const res = await fetch("https://cambiosorion.cl/data/cuentas.php?tipo=cuenta_bancaria_orion");
+                    const res = await fetch("https://cambiosorion.cl/data/cuentas.php?activa=1&tipo_cuenta=administrativa");
                     const cuentas = await res.json();
 
                     if (cuentas.success && Array.isArray(cuentas.data)) {
@@ -385,7 +385,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             </select>
                         `;
                     } else {
-                        inputCuenta.innerHTML = `<p class="text-red-500">⚠️ Error al cargar cuentas bancarias de Orion</p>`;
+                        inputCuenta.innerHTML = `<p class="text-red-500">⚠️ Error al cargar cuentas de Orion</p>`;
                     }
                 }
             });
