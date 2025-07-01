@@ -5,6 +5,6 @@
         "react/socket": "^1.16",
         "ratchet/pawl": "^0.4.1",
         "phpmailer/phpmailer": "^6.9",
-        "phpoffice/phpspreadsheet": "^4.4"
+        "phpoffice/phpspreadsheet": "^1.29"
     }
 }
