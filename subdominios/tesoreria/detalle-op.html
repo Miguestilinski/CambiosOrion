@@ -171,6 +171,16 @@
                         <!-- Inputs en fila -->
                         <div class="flex flex-wrap gap-4 mb-2">
 
+                            <!-- Divisa -->
+                            <div class="flex-1 min-w-[150px]">
+                                <label for="divisa-select" class="block text-gray-300 mb-1">Divisa:</label>
+                                <select
+                                    id="divisa-select"
+                                    class="divisa-nombre block bg-white border border-gray-600 text-gray-700 px-2 py-2.5 text-sm rounded-lg w-full">
+                                    <option value="">Cargando divisas...</option>
+                                </select>
+                            </div>
+
                             <!-- Tipo de pago -->
                             <div class="flex-1 min-w-[150px]">
                                 <label for="tipo-pago" class="block text-gray-300 mb-1">Tipo de pago:</label>
@@ -184,15 +194,7 @@
                                 </select>
                             </div>
 
-                            <div class="flex-1 min-w-[150px]">
-                                <label for="divisa-select" class="block text-gray-300 mb-1">Divisa:</label>
-                                <select
-                                    id="divisa-select"
-                                    class="divisa-nombre block bg-white border border-gray-600 text-gray-700 px-2 py-2.5 text-sm rounded-lg w-full">
-                                    <option value="">Cargando divisas...</option>
-                                </select>
-                            </div>
-
+                            <!-- Monto -->
                             <div class="flex-1 min-w-[150px]">
                                 <label for="input-pago" class="block text-gray-300 mb-1">Monto:</label>
                                 <input type="text" id="input-pago" class="bg-white border border-gray-600 text-gray-700 px-2 py-2.5 text-sm rounded-lg w-full" placeholder="$0">
