@@ -319,37 +319,69 @@ document.addEventListener("DOMContentLoaded", () => {
             divisaSelect.dispatchEvent(new Event('change'));
 
             const tipoPagoSelect = document.getElementById("tipo-pago");
-            const campoAdicionalPago = document.getElementById("campo-adicional-pago");
+            const inputCuenta = document.getElementById("input-cuenta");
 
             tipoPagoSelect.addEventListener("change", async () => {
                 const tipo = tipoPagoSelect.value;
-                campoAdicionalPago.innerHTML = ""; // Limpiar campo
+                inputCuenta.innerHTML = "";
 
                 if (tipo === "cuenta") {
-                    // Input para seleccionar cuenta de cliente
-                    campoAdicionalPago.innerHTML = `
-                        <label for="cuenta-cliente" class="block text-gray-300 mb-1">Cuenta del cliente:</label>
-                        <input type="text" id="cuenta-cliente" placeholder="Buscar cuenta..." class="bg-white border border-gray-600 text-gray-700 px-2 py-2.5 text-sm rounded-lg w-full">
-                    `;
-                    // Opcional: podrías implementar un autocompletado acá con cuentas del cliente desde tu backend
+                    // Obtener divisa actual
+                    const divisaSeleccionada = divisaSelect.value;
+
+                    // Determinar si es pago de cliente o de Orion
+                    const origen = document.getElementById("origen-pago").value;
+                    const clienteId = info.cliente_id;
+
+                    // Armar el query según si es cliente o interno (orion)
+                    let url = `https://cambiosorion.cl/data/cuentas.php?activa=1&divisa_id=${divisaSeleccionada}`;
+                    if (origen === "cliente") {
+                        url += `&cliente_id=${clienteId}`;
+                    } else if (origen === "orion") {
+                        url += `&tipo_cuenta=administrativa`;
+                    }
+
+                    try {
+                        const res = await fetch(url);
+                        const cuentas = await res.json();
+
+                        if (cuentas.success && Array.isArray(cuentas.data) && cuentas.data.length > 0) {
+                            const opciones = cuentas.data.map(c => `
+                                <option value="${c.id}">${c.nombre} — ${c.divisa_id}</option>
+                            `).join("");
+
+                            inputCuenta.innerHTML = `
+                                <label for="cuenta-cliente" class="block text-gray-300 mb-1">Selecciona la cuenta contable:</label>
+                                <select id="cuenta-cliente" class="bg-white border border-gray-600 text-gray-700 px-2 py-2.5 text-sm rounded-lg w-full">
+                                    <option value="">Seleccione una cuenta</option>
+                                    ${opciones}
+                                </select>
+                            `;
+                        } else {
+                            inputCuenta.innerHTML = `<p class="text-yellow-500 italic">⚠️ No hay cuentas contables disponibles para esta divisa.</p>`;
+                        }
+                    } catch (err) {
+                        inputCuenta.innerHTML = `<p class="text-red-500">⚠️ Error al cargar cuentas contables.</p>`;
+                        console.error("Error al cargar cuentas:", err);
+                    }
 
                 } else if (tipo === "transferencia" || tipo === "tarjeta") {
-                    // Fetch cuentas de Orion desde tu backend
-                    const res = await fetch("https://cambiosorion.cl/data/cuentas.php");
+                    // Lógica original para cuentas bancarias Orion
+                    const res = await fetch("https://cambiosorion.cl/data/cuentas.php?tipo=cuenta_bancaria_orion");
                     const cuentas = await res.json();
 
                     if (cuentas.success && Array.isArray(cuentas.data)) {
                         const opciones = cuentas.data.map(c => `<option value="${c.id}">${c.banco} - ${c.tipo_cuenta} (${c.numero})</option>`).join("");
 
-                        campoAdicionalPago.innerHTML = `
-                            <label for="cuenta-orion" class="block text-gray-300 mb-1">Cuenta de destino (Orion):</label>
+                        inputCuenta.innerHTML = `
+                            <label for="cuenta-orion" class="block text-gray-300 mb-1">Cuenta bancaria Orion:</label>
                             <select id="cuenta-orion" class="bg-white border border-gray-600 text-gray-700 px-2 py-2.5 text-sm rounded-lg w-full">
                                 <option value="">Seleccione una cuenta</option>
                                 ${opciones}
                             </select>
                         `;
                     } else {
-                        campoAdicionalPago.innerHTML = `<p class="text-red-500">⚠️ Error al cargar cuentas bancarias de Orion</p>`;
+                        inputCuenta.innerHTML = `<p class="text-red-500">⚠️ Error al cargar cuentas bancarias de Orion</p>`;
                     }
                 }
             });
