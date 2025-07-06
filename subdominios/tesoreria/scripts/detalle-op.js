@@ -189,7 +189,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             function renderTabla(contenedor, titulo, pagos, origen) {
                 if (pagos.length === 0) {
-                    contenedor.innerHTML = `<p class="text-gray-400 italic">No se han realizado pagos de ${titulo.toLowerCase()}.</p>`;
+                    contenedor.innerHTML = `<p class="text-gray-400 italic">No se han realizado ${titulo.toLowerCase()}.</p>`;
                     return;
                 }
 
@@ -411,8 +411,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             inputPago.addEventListener("input", (e) => {
-                const cursorPosition = inputPago.selectionStart;
-
                 const onlyNumbers = inputPago.value.replace(/[^0-9]/g, "");
 
                 let numero = parseInt(onlyNumbers, 10);
@@ -429,6 +427,15 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             btnPago.addEventListener("click", () => {
+
+                document.getElementById("btn-pago-cliente").addEventListener("click", () => {
+                    registrarPagoCompleto("cliente");
+                });
+
+                document.getElementById("btn-pago-orion").addEventListener("click", () => {
+                    registrarPagoCompleto("orion");
+                });
+
                 if (!document.getElementById("origen-pago").value) {
                     mostrarModal({
                         titulo: "❌ Error",
@@ -704,23 +711,72 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("info-operacion").innerHTML = "<p>Error al cargar la operación.</p>";
     });
 
-    const btnNuevoPago = document.getElementById("btn-nuevo-pago");
     const formNuevoPago = document.getElementById("form-nuevo-pago");
 
-    btnNuevoPago.addEventListener("click", () => {
-        const isHidden = formNuevoPago.classList.contains("hidden");
+    function registrarPagoCompleto(origen) {
+        // Lógica de validación de divisa permitida
+        const esCompra = info.tipo_transaccion === "Compra";
+        const esVenta = info.tipo_transaccion === "Venta";
+        let divisaPermitida = null;
 
-        formNuevoPago.classList.toggle("hidden");
-
-        if (isHidden) {
-            btnNuevoPago.textContent = "Cancelar Pago";
-            document.getElementById("titulo-pago").textContent = "Nuevo Pago";
-            // NO validar ni cargar divisas aquí
-        } else {
-            btnNuevoPago.textContent = "Nuevo Pago";
-            document.getElementById("titulo-pago").textContent = "Pagos";
+        if (esCompra && origen === "orion") {
+            divisaPermitida = "D47"; // CLP
+        } else if (esCompra && origen === "cliente") {
+            divisaPermitida = data.detalles.find(d => d.divisa_id !== "D47")?.divisa_id;
+        } else if (esVenta && origen === "cliente") {
+            divisaPermitida = "D47";
+        } else if (esVenta && origen === "orion") {
+            divisaPermitida = data.detalles.find(d => d.divisa_id !== "D47")?.divisa_id;
         }
-    });
+
+        if (!divisaPermitida) {
+            mostrarModal({
+                titulo: "❌ Error",
+                mensaje: "No se pudo determinar la divisa permitida para este origen.",
+                textoConfirmar: "Entendido"
+            });
+            return;
+        }
+
+        const payload = {
+            id: info.id,
+            estado: "Pagado",
+            pagos: restante,
+            caja_id: 99,
+            tipo_pago: "efectivo",
+            divisa: divisaPermitida,
+            origen: origen,
+            cliente_id: info.cliente_id,
+            cuenta_id: null
+        };
+
+        fetch(`https://cambiosorion.cl/data/detalle-op.php`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(res => {
+            if (res.success) {
+                mostrarModalPagoExitoso();
+            } else {
+                mostrarModal({
+                    titulo: "❌ Error",
+                    mensaje: "Error al registrar pago completo: " + (res.message ?? "Respuesta inválida del servidor"),
+                    textoConfirmar: "Entendido"
+                });
+                console.error("Respuesta del servidor:", res);
+            }
+        })
+        .catch(error => {
+            mostrarModal({
+                titulo: "❌ Error",
+                mensaje: "Error de red o respuesta inválida: " + error,
+                textoConfirmar: "Entendido"
+            });
+            console.error("Error en el fetch:", error);
+        });
+    }
 
     async function cargarDivisas(operacionId, tipoOperacion, quienPaga) {
         const divisaSelect = document.getElementById("divisa-select");

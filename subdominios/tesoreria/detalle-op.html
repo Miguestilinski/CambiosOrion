@@ -139,12 +139,17 @@
                 <div id="seccion-documento"></div>
                 <div id="estado-operacion" class="mt-6 bg-gray-800 border border-gray-600 p-4 rounded text-white space-y-3">
 
-                    <!-- Encabezado y botón en la misma línea -->
-                    <div class="flex items-center mb-3">
-                        <h2 id="titulo-pago" class="mr-4 text-xl font-semibold text-white">Pagos</h2>
-                        <button id="btn-nuevo-pago" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white">
-                        Nuevo Pago
-                        </button>
+                    <!-- Encabezado con botones -->
+                    <div class="flex items-center mb-3 justify-between">
+                        <h2 id="titulo-pago" class="text-xl font-semibold text-white">Pagos</h2>
+                        <div class="flex gap-2">
+                            <button id="btn-pago-cliente" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white">
+                                Pago Completo Cliente
+                            </button>
+                            <button id="btn-pago-orion" class="bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded text-white">
+                                Pago Completo Orion
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Formulario encima de la tabla -->
