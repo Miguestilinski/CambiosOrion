@@ -427,11 +427,11 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             document.getElementById("btn-pago-cliente").addEventListener("click", () => {
-                registrarPagoCompleto("cliente", data);
+                registrarPagoCompleto("cliente", data, restante);
             });
 
             document.getElementById("btn-pago-orion").addEventListener("click", () => {
-                registrarPagoCompleto("orion", data);
+                registrarPagoCompleto("orion", data, restante);
             });
 
             btnPago.addEventListener("click", () => {
@@ -713,7 +713,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const formNuevoPago = document.getElementById("form-nuevo-pago");
 
-    function registrarPagoCompleto(origen, data) {
+    function registrarPagoCompleto(origen, data, restante) {
         // Lógica de validación de divisa permitida
         const esCompra = info.tipo_transaccion === "Compra";
         const esVenta = info.tipo_transaccion === "Venta";
