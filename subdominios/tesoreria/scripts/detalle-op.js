@@ -426,15 +426,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 inputPago.selectionStart = inputPago.selectionEnd = inputPago.value.length;
             });
 
+            document.getElementById("btn-pago-cliente").addEventListener("click", () => {
+                registrarPagoCompleto("cliente");
+            });
+
+            document.getElementById("btn-pago-orion").addEventListener("click", () => {
+                registrarPagoCompleto("orion");
+            });
+
             btnPago.addEventListener("click", () => {
-
-                document.getElementById("btn-pago-cliente").addEventListener("click", () => {
-                    registrarPagoCompleto("cliente");
-                });
-
-                document.getElementById("btn-pago-orion").addEventListener("click", () => {
-                    registrarPagoCompleto("orion");
-                });
 
                 if (!document.getElementById("origen-pago").value) {
                     mostrarModal({
