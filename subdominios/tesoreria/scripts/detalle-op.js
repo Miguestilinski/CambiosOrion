@@ -290,6 +290,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const btnPago = document.getElementById("btn-registrar-pago");
 
             const divisaSelect = document.getElementById("divisa-select");
+            const tipoPagoSelect = document.getElementById("tipo-pago");
 
             divisaSelect.addEventListener("change", () => {
                 const divisaSeleccionada = divisaSelect.value;
@@ -322,7 +323,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             divisaSelect.dispatchEvent(new Event('change'));
 
-            const tipoPagoSelect = document.getElementById("tipo-pago");
             const inputCuenta = document.getElementById("input-cuenta");
 
             tipoPagoSelect.addEventListener("change", async () => {
