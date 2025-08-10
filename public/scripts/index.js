@@ -11,6 +11,7 @@ function initializePage() {
     fetchIndicators();
     fetchClosingRates();
     updateLastUpdatedTimestamp();
+    carrouselSlides();
 }
 
 function loadCurrenciesWithSSE() {
@@ -590,6 +591,31 @@ function updateLastUpdatedTimestamp(fecha) {
     }
 }
 
+function carrouselSlides(){
+    let currentSlide = 0;
+    const slidesContainer = document.getElementById("carousel-slides");
+    const totalSlides = slidesContainer.children.length;
+
+    function showSlide(index) {
+        if (index >= totalSlides) currentSlide = 0;
+        else if (index < 0) currentSlide = totalSlides - 1;
+        else currentSlide = index;
+
+        slidesContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
+    }
+
+    function nextSlide() {
+        showSlide(currentSlide + 1);
+    }
+
+    function prevSlide() {
+        showSlide(currentSlide - 1);
+    }
+
+    // Rotación automática cada 5 segundos
+    setInterval(nextSlide, 5000);
+}
+
 function toggleDropdown(dropdownId, event) {
     event.stopPropagation();
     const dropdown = document.getElementById(dropdownId);
@@ -656,7 +682,6 @@ document.addEventListener("DOMContentLoaded", () => {
     toggleEditModeState(); // Garantiza que el estado inicial sea correcto
 });
 
-
 document.addEventListener("click", function (event) {
     // Verifica si el clic está fuera del dropdown activo y del elemento de activación
     if (
@@ -698,7 +723,6 @@ function toggleEditMode() {
     toggleEditModeState(); // Actualiza las columnas visibles
 }
 window.toggleEditMode = toggleEditMode;
-
 
 document.querySelectorAll(".edit-column").forEach(col => {
     if (isEditMode) {
