@@ -591,19 +591,32 @@ function updateLastUpdatedTimestamp(fecha) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+  const carouselEl = document.getElementById('hero-carousel');
   const slidesContainer = document.getElementById('carousel-slides');
-  const slides = Array.from(slidesContainer.children);
-  const totalSlides = slides.length;
-  const indicators = Array.from(document.querySelectorAll('#carousel-indicators [data-slide]'));
+  const slides = Array.from(slidesContainer.querySelectorAll('.carousel-slide'));
+  const indicators = Array.from(document.querySelectorAll('#carousel-indicators .dot'));
   const btnNext = document.getElementById('carousel-next');
   const btnPrev = document.getElementById('carousel-prev');
+
+  if (!carouselEl || slides.length === 0) return;
 
   let current = 0;
   let intervalId = null;
   const AUTOPLAY_MS = 5000;
 
-  function update() {
-    slidesContainer.style.transform = `translateX(-${current * 100}%)`;
+  // fija anchos en píxeles para evitar problemas con porcentajes
+  function setWidths() {
+    const w = Math.round(carouselEl.clientWidth);
+    slides.forEach(slide => {
+      slide.style.minWidth = w + 'px';
+      slide.style.width = w + 'px';
+    });
+    slidesContainer.style.width = (w * slides.length) + 'px';
+    // aplicar transform en px (más consistente)
+    slidesContainer.style.transform = `translateX(-${current * w}px)`;
+  }
+
+  function updateIndicators() {
     indicators.forEach((dot, i) => {
       if (i === current) {
         dot.classList.remove('bg-white/30');
@@ -615,37 +628,66 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Funciones globales para compatibilidad si alguien las llama desde HTML
-  window.nextSlide = function () { current = (current + 1) % totalSlides; update(); resetAutoplay(); };
-  window.prevSlide = function () { current = (current - 1 + totalSlides) % totalSlides; update(); resetAutoplay(); };
-  window.goToSlide = function (index) { current = ((index % totalSlides) + totalSlides) % totalSlides; update(); resetAutoplay(); };
+  function goTo(index) {
+    const w = Math.round(carouselEl.clientWidth);
+    current = ((index % slides.length) + slides.length) % slides.length;
+    slidesContainer.style.transform = `translateX(-${current * w}px)`;
+    updateIndicators();
+    resetAutoplay();
+  }
 
-  // Event listeners
-  btnNext.addEventListener('click', window.nextSlide);
-  btnPrev.addEventListener('click', window.prevSlide);
+  function nextSlide() { goTo(current + 1); }
+  function prevSlide() { goTo(current - 1); }
+
+  // listeners
+  btnNext.addEventListener('click', nextSlide);
+  btnPrev.addEventListener('click', prevSlide);
   indicators.forEach(dot => {
     dot.addEventListener('click', (e) => {
       const idx = Number(e.currentTarget.getAttribute('data-slide'));
-      window.goToSlide(idx);
+      goTo(idx);
     });
   });
 
-  // Autoplay
+  // autoplay
   function startAutoplay() {
     if (intervalId) return;
-    intervalId = setInterval(() => { current = (current + 1) % totalSlides; update(); }, AUTOPLAY_MS);
+    intervalId = setInterval(() => { goTo(current + 1); }, AUTOPLAY_MS);
   }
-  function stopAutoplay() { if (intervalId) { clearInterval(intervalId); intervalId = null; } }
+  function stopAutoplay() {
+    if (intervalId) { clearInterval(intervalId); intervalId = null; }
+  }
   function resetAutoplay() { stopAutoplay(); startAutoplay(); }
 
-  // Pause on hover (over the whole carousel)
-  const carouselEl = document.getElementById('hero-carousel');
+  // pausa al hover
   carouselEl.addEventListener('mouseenter', stopAutoplay);
   carouselEl.addEventListener('mouseleave', startAutoplay);
 
-  // Init
-  update();
+  // recalcular en resize (debounce)
+  let resizeTimer = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      setWidths();
+    }, 120);
+  });
+
+  // inicialización: esperar load para asegurar medidas (imágenes background ya aplican pero por si acaso)
+  window.addEventListener('load', () => {
+    setWidths();
+    updateIndicators();
+    startAutoplay();
+  });
+
+  // fallback si ya cargó antes
+  setWidths();
+  updateIndicators();
   startAutoplay();
+
+  // exportar globalmente por compatibilidad si se llaman desde HTML
+  window.nextSlide = nextSlide;
+  window.prevSlide = prevSlide;
+  window.goToSlide = goTo;
 });
 
 function toggleDropdown(dropdownId, event) {
