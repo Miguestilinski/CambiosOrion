@@ -301,7 +301,17 @@ button.swap-button{
 }
 
 #hero-carousel {
-  height: 600px; /* O la altura que quieras */
+  position: relative; /* ya lo tienes, pero reafirmamos */
+  height: 600px;
+  overflow: hidden;
+}
+
+#carousel-slides {
+  height: 100%; /* que tome toda la altura del contenedor */
+}
+
+.carousel-slide {
+  height: 100% !important; /* override para que sea 600px igual que el contenedor */
 }
 
 #carousel-prev, #carousel-next {
