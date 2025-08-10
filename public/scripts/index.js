@@ -616,17 +616,15 @@ document.addEventListener('DOMContentLoaded', function () {
     slidesContainer.style.transform = `translateX(-${current * w}px)`;
   }
 
-  function updateIndicators() {
+    function updateIndicators() {
     indicators.forEach((dot, i) => {
-      if (i === current) {
-        dot.classList.remove('bg-white/30');
-        dot.classList.add('bg-white/90', 'scale-105');
-      } else {
-        dot.classList.add('bg-white/30');
-        dot.classList.remove('bg-white/90', 'scale-105');
-      }
+        if (i === current) {
+        dot.classList.add('active');
+        } else {
+        dot.classList.remove('active');
+        }
     });
-  }
+    }
 
   function goTo(index) {
     const w = Math.round(carouselEl.clientWidth);

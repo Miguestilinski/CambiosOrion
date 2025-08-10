@@ -300,14 +300,61 @@ button.swap-button{
     animation: pulse 1s infinite ease-in-out;
 }
 
-#carousel-prev, #carousel-next, #carousel-indicators {
-  opacity: 1 !important;
-  pointer-events: auto !important;
-  z-index: 9999 !important;
-  background-color: rgba(0,0,0,0.7) !important;
-  border: 2px solid white !important;
-  display: flex !important;
+#hero-carousel {
+  height: 600px; /* O la altura que quieras */
 }
+
+#carousel-prev, #carousel-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  background-color: rgba(0,0,0,0.6);
+  color: white;
+  border: 2px solid white;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  z-index: 10000;
+  opacity: 1;
+}
+
+#carousel-prev {
+  left: 10px;
+}
+
+#carousel-next {
+  right: 10px;
+}
+
+#carousel-indicators {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 10000;
+}
+
+#carousel-indicators .dot {
+  width: 12px;
+  height: 12px;
+  background-color: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+#carousel-indicators .dot.active {
+  background-color: rgba(255, 255, 255, 0.9);
+  transform: scale(1.2);
+}
+
 
 @keyframes pulse {
     0% {
