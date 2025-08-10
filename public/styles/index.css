@@ -300,6 +300,15 @@ button.swap-button{
     animation: pulse 1s infinite ease-in-out;
 }
 
+#carousel-prev, #carousel-next, #carousel-indicators {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  z-index: 9999 !important;
+  background-color: rgba(0,0,0,0.7) !important;
+  border: 2px solid white !important;
+  display: flex !important;
+}
+
 @keyframes pulse {
     0% {
         background-color: #d4d4d4;
