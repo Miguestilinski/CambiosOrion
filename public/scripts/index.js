@@ -596,7 +596,7 @@ function carrouselSlides(){
     const slidesContainer = document.getElementById("carousel-slides");
     const totalSlides = slidesContainer.children.length;
 
-    function showSlide(index) {
+    window.showSlide = function(index) {
         if (index >= totalSlides) currentSlide = 0;
         else if (index < 0) currentSlide = totalSlides - 1;
         else currentSlide = index;
@@ -604,16 +604,16 @@ function carrouselSlides(){
         slidesContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
     }
 
-    function nextSlide() {
+    window.nextSlide = function() {
         showSlide(currentSlide + 1);
     }
 
-    function prevSlide() {
+    window.prevSlide = function() {
         showSlide(currentSlide - 1);
     }
 
     // Rotación automática cada 5 segundos
-    setInterval(nextSlide, 5000);
+    setInterval(window.nextSlide, 5000);
 }
 
 function toggleDropdown(dropdownId, event) {
