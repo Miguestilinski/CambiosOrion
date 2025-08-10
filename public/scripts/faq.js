@@ -21,6 +21,18 @@ document.addEventListener("DOMContentLoaded", () => {
             question: "¿Cómo se calculan los tipos de cambio?",
             answer: "Los tipos de cambio se actualizan en tiempo real y se basan en el mercado internacional de divisas. Puedes consultar el tipo actual antes de realizar tu operación."
         },
+        {
+            question: "¿Puedo reservar un tipo de cambio para asegurar el valor?",
+            answer: "Sí, puedes congelar el valor actual de una operación usando nuestro sistema de reservas. Al hacerlo, recibirás un correo con un código QR para presentar en nuestra sucursal y validar la operación."
+        },
+        {
+            question: "¿Qué pasa si no quiero reservar, pero me interesa un precio específico?",
+            answer: "Puedes crear una alerta de precio y te avisaremos por correo cuando la divisa alcance el valor que definiste. Así podrás venir a nuestra sucursal en el mejor momento para ti."
+        },
+        {
+            question: "¿Qué significa que estén comprando o vendiendo una divisa?",
+            answer: "En ciertos momentos del día, o días completos, Cambios Orion puede estar solo comprando o solo vendiendo una divisa específica. Esto depende de nuestra disponibilidad y políticas internas. Siempre revisa si estamos en modo 'comprador' o 'vendedor' para saber si es buen momento para tu operación."
+        },
     ];
 
     const faqContainer = document.getElementById("faq-accordion");
