@@ -606,7 +606,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // fija anchos en píxeles para evitar problemas con porcentajes
   function setWidths() {
-    const w = Math.max(500, Math.round(carouselEl.clientWidth));
+    const w = Math.max(400, Math.round(carouselEl.clientWidth));
     slides.forEach(slide => {
       slide.style.minWidth = w + 'px';
       slide.style.width = w + 'px';

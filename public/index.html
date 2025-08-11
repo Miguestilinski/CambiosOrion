@@ -120,88 +120,56 @@
 
     <div class="header-divider"></div>
     <div class="main-content">
-        <main>
-            
-        <!-- ===== BANNER (CARRUSEL) ===== -->
-        <section id="hero-carousel" class="relative w-full overflow-hidden">
-        <!-- Slides wrapper -->
-        <div id="carousel-slides" class="flex flex-nowrap transition-transform duration-700 ease-in-out">
-            <!-- Slide 1 -->
-            <div class="carousel-slide flex-shrink-0 h-[500px] bg-center bg-cover flex items-center justify-center text-white"
-                style="background-image: url('/orionapp/assets/image1.jpg');">
-            <div class="bg-black/40 p-6 rounded-lg text-center max-w-xl mx-4">
-                <h2 class="text-2xl md:text-4xl font-bold mb-2">Mejores tasas del mercado</h2>
-                <p class="mb-4">Consulta y reserva tu tipo de cambio en segundos.</p>
-                <a href="#currency-converter" class="bg-white text-black px-4 py-2 rounded-lg font-semibold hover:bg-gray-200">Cotizar ahora</a>
-            </div>
-            </div>
+        <main> 
+            <!-- ===== BANNER (CARRUSEL) ===== -->
+            <section id="hero-carousel" class="relative w-full overflow-hidden">
+                <!-- Slides wrapper -->
+                <div id="carousel-slides" class="flex flex-nowrap transition-transform duration-700 ease-in-out">
+                    <!-- Slide 1 -->
+                    <div class="carousel-slide flex-shrink-0 h-[500px] bg-center bg-cover flex items-center justify-center text-white"
+                        style="background-image: url('/orionapp/assets/image1.jpg');">
+                    <div class="bg-black/40 p-6 rounded-lg text-center max-w-xl mx-4">
+                        <h2 class="text-2xl md:text-4xl font-bold mb-2">Mejores tasas del mercado</h2>
+                        <p class="mb-4">Consulta y reserva tu tipo de cambio en segundos.</p>
+                        <a href="#currency-converter" class="bg-white text-black px-4 py-2 rounded-lg font-semibold hover:bg-gray-200">Cotizar ahora</a>
+                    </div>
+                    </div>
 
-            <!-- Slide 2 -->
-            <div class="carousel-slide flex-shrink-0 h-[500px] bg-center bg-cover flex items-center justify-center text-white"
-                style="background-image: url('/orionapp/assets/image2.jpg');">
-            <div class="bg-black/40 p-6 rounded-lg text-center max-w-xl mx-4">
-                <h2 class="text-2xl md:text-4xl font-bold mb-2">Reserva tu cambio</h2>
-                <p class="mb-4">Asegura el precio de hoy para tu próxima operación.</p>
-                <a href="#reservas" class="bg-white text-black px-4 py-2 rounded-lg font-semibold hover:bg-gray-200">Reservar</a>
-            </div>
-            </div>
+                    <!-- Slide 2 -->
+                    <div class="carousel-slide flex-shrink-0 h-[500px] bg-center bg-cover flex items-center justify-center text-white"
+                        style="background-image: url('/orionapp/assets/image2.jpg');">
+                    <div class="bg-black/40 p-6 rounded-lg text-center max-w-xl mx-4">
+                        <h2 class="text-2xl md:text-4xl font-bold mb-2">Reserva tu cambio</h2>
+                        <p class="mb-4">Asegura el precio de hoy para tu próxima operación.</p>
+                        <a href="#reservas" class="bg-white text-black px-4 py-2 rounded-lg font-semibold hover:bg-gray-200">Reservar</a>
+                    </div>
+                    </div>
 
-            <!-- Slide 3 -->
-            <div class="carousel-slide flex-shrink-0 h-[500px] bg-center bg-cover flex items-center justify-center text-white"
-                style="background-image: url('/orionapp/assets/image3.jpg');">
-            <div class="bg-black/40 p-6 rounded-lg text-center max-w-xl mx-4">
-                <h2 class="text-2xl md:text-4xl font-bold mb-2">Alertas personalizadas</h2>
-                <p class="mb-4">Recibe notificaciones cuando el tipo de cambio sea el que buscas.</p>
-                <a href="#alertas" class="bg-white text-black px-4 py-2 rounded-lg font-semibold hover:bg-gray-200">Crear alerta</a>
-            </div>
-            </div>
-        </div>
-
-        <!-- Controles Prev / Next (z-index alto para que se vean) -->
-        <button id="carousel-prev" aria-label="Anterior" class="z-50 absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white rounded-full p-2 hover:bg-black/70 focus:outline-none">
-            &#10094;
-        </button>
-        <button id="carousel-next" aria-label="Siguiente" class="z-50 absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white rounded-full p-2 hover:bg-black/70 focus:outline-none">
-            &#10095;
-        </button>
-
-        <!-- Indicadores (dots) -->
-        <div id="carousel-indicators" class="z-50 absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
-            <button class="dot w-3 h-3 rounded-full bg-white/60" data-slide="0" aria-label="Slide 1"></button>
-            <button class="dot w-3 h-3 rounded-full bg-white/30" data-slide="1" aria-label="Slide 2"></button>
-            <button class="dot w-3 h-3 rounded-full bg-white/30" data-slide="2" aria-label="Slide 3"></button>
-        </div>
-        </section>
-
-
-            <!-- ===== HERRAMIENTAS RÁPIDAS (2x2 centradas) ===== -->
-            <section id="quick-tools" class="bg-white py-8">
-            <div class="max-w-md mx-auto px-6">
-                <h2 class="text-2xl font-bold text-gray-800 text-center mb-6">Herramientas rápidas</h2>
-
-                <!-- Grid 2x2 pequeño y centrado -->
-                <div class="grid grid-cols-2 gap-4 justify-items-center">
-                <a href="#lista-precios" class="w-36 h-24 flex flex-col items-center justify-center bg-gray-50 p-2 rounded-lg shadow hover:shadow-md transition">
-                    <div class="text-2xl mb-1">📊</div>
-                    <span class="text-sm font-medium text-gray-800">Lista de precios</span>
-                </a>
-
-                <a href="#alertas" class="w-36 h-24 flex flex-col items-center justify-center bg-gray-50 p-2 rounded-lg shadow hover:shadow-md transition">
-                    <div class="text-2xl mb-1">🔔</div>
-                    <span class="text-sm font-medium text-gray-800">Alertas</span>
-                </a>
-
-                <a href="#reservas" class="w-36 h-24 flex flex-col items-center justify-center bg-gray-50 p-2 rounded-lg shadow hover:shadow-md transition">
-                    <div class="text-2xl mb-1">📅</div>
-                    <span class="text-sm font-medium text-gray-800">Reservas</span>
-                </a>
-
-                <a href="#historial" class="w-36 h-24 flex flex-col items-center justify-center bg-gray-50 p-2 rounded-lg shadow hover:shadow-md transition">
-                    <div class="text-2xl mb-1">📜</div>
-                    <span class="text-sm font-medium text-gray-800">Historial</span>
-                </a>
+                    <!-- Slide 3 -->
+                    <div class="carousel-slide flex-shrink-0 h-[500px] bg-center bg-cover flex items-center justify-center text-white"
+                        style="background-image: url('/orionapp/assets/image3.jpg');">
+                    <div class="bg-black/40 p-6 rounded-lg text-center max-w-xl mx-4">
+                        <h2 class="text-2xl md:text-4xl font-bold mb-2">Alertas personalizadas</h2>
+                        <p class="mb-4">Recibe notificaciones cuando el tipo de cambio sea el que buscas.</p>
+                        <a href="#alertas" class="bg-white text-black px-4 py-2 rounded-lg font-semibold hover:bg-gray-200">Crear alerta</a>
+                    </div>
+                    </div>
                 </div>
-            </div>
+
+                <!-- Controles Prev / Next (z-index alto para que se vean) -->
+                <button id="carousel-prev" aria-label="Anterior" class="z-50 absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white rounded-full p-2 hover:bg-black/70 focus:outline-none">
+                    &#10094;
+                </button>
+                <button id="carousel-next" aria-label="Siguiente" class="z-50 absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white rounded-full p-2 hover:bg-black/70 focus:outline-none">
+                    &#10095;
+                </button>
+
+                <!-- Indicadores (dots) -->
+                <div id="carousel-indicators" class="z-50 absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
+                    <button class="dot w-3 h-3 rounded-full bg-white/60" data-slide="0" aria-label="Slide 1"></button>
+                    <button class="dot w-3 h-3 rounded-full bg-white/30" data-slide="1" aria-label="Slide 2"></button>
+                    <button class="dot w-3 h-3 rounded-full bg-white/30" data-slide="2" aria-label="Slide 3"></button>
+                </div>
             </section>
 
             <!-- Conversor de divisas -->
@@ -290,6 +258,36 @@
             <div id="ticker">
                 <div id="ticker-content"></div>
             </div>
+
+            <!-- ===== HERRAMIENTAS RÁPIDAS (2x2 centradas) ===== -->
+            <section id="quick-tools" class="bg-white py-8">
+            <div class="max-w-md mx-auto px-6">
+                <h2 class="text-2xl font-bold text-gray-800 text-center mb-6">Herramientas rápidas</h2>
+
+                <!-- Grid 2x2 pequeño y centrado -->
+                <div class="grid grid-cols-2 gap-4 justify-items-center">
+                <a href="#lista-precios" class="w-36 h-24 flex flex-col items-center justify-center bg-gray-50 p-2 rounded-lg shadow hover:shadow-md transition">
+                    <div class="text-2xl mb-1">📊</div>
+                    <span class="text-sm font-medium text-gray-800">Lista de precios</span>
+                </a>
+
+                <a href="#alertas" class="w-36 h-24 flex flex-col items-center justify-center bg-gray-50 p-2 rounded-lg shadow hover:shadow-md transition">
+                    <div class="text-2xl mb-1">🔔</div>
+                    <span class="text-sm font-medium text-gray-800">Alertas</span>
+                </a>
+
+                <a href="#reservas" class="w-36 h-24 flex flex-col items-center justify-center bg-gray-50 p-2 rounded-lg shadow hover:shadow-md transition">
+                    <div class="text-2xl mb-1">📅</div>
+                    <span class="text-sm font-medium text-gray-800">Reservas</span>
+                </a>
+
+                <a href="#historial" class="w-36 h-24 flex flex-col items-center justify-center bg-gray-50 p-2 rounded-lg shadow hover:shadow-md transition">
+                    <div class="text-2xl mb-1">📜</div>
+                    <span class="text-sm font-medium text-gray-800">Historial</span>
+                </a>
+                </div>
+            </div>
+            </section>
 
             <!-- Envío de Dinero -->
             <section id="sending-money" class="sending-money-section bg-white w-full shadow-lg p-8">
