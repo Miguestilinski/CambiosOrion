@@ -302,7 +302,7 @@ button.swap-button{
 
 #hero-carousel {
   position: relative; /* ya lo tienes, pero reafirmamos */
-  height: 500px;
+  height: 400px;
   overflow: hidden;
 }
 
