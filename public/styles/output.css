@@ -1618,6 +1618,10 @@ input:checked + .toggle-bg {
   justify-content: space-between;
 }
 
+.gap-2 {
+  gap: 0.5rem;
+}
+
 .gap-4 {
   gap: 1rem;
 }
