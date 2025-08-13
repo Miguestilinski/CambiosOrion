@@ -181,14 +181,6 @@
 
             <!-- Conversor de divisas -->
             <section class="max-w-2xl mx-auto my-10 bg-white p-8 mb-12 rounded-xl shadow-lg">
-                <!-- Ícono en esquina superior derecha -->
-                <a href="/ruta-a-lista-precios" aria-label="Catálogo de Divisas" 
-                    class="absolute top-4 right-4 text-white bg-black bg-opacity-60 rounded-full p-2 hover:bg-opacity-80 transition">
-                    <!-- Ícono simple de lista (puedes cambiarlo por otro SVG) -->
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                </a>
                 <h2 class="text-center text-2xl font-semibold text-gray-800 mb-6">Cotiza y Reserva</h2>
                 <div id="currency-converter" class="currency-converter flex justify-between">
                     <!-- Columna izquierda -->
@@ -259,41 +251,39 @@
                     <button onclick="abrirFormularioReserva()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow">
                         Reservar
                     </button>
-                    <button onclick="abrirFormularioAlerta()" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg shadow">
-                        Crear alerta de precio
-                    </button>
                 </div>
                 <span id="last-updated1" class="date-converter text-white text-xs">
                     Última actualización: --
                 </span>  
             </section>
 
-            <!-- ===== HERRAMIENTAS RÁPIDAS (2x2 centradas) ===== -->
-            <section id="quick-tools" class="bg-white py-8">
-            <div class="max-w-md mx-auto px-6">
-                <h2 class="text-2xl font-bold text-gray-800 text-center mb-6">Herramientas rápidas</h2>
+            <!-- Herramientas Rapidas -->
+            <section id="quick-tools" class="bg-white py-10">
+            <div class="max-w-4xl mx-auto px-6">
+                <h2 class="text-3xl font-extrabold text-gray-900 text-center mb-10 tracking-tight">Herramientas rápidas</h2>
 
-                <!-- Grid 2x2 pequeño y centrado -->
-                <div class="grid grid-cols-2 gap-4 justify-items-center">
-                <a href="#lista-precios" class="w-36 h-24 flex flex-col items-center justify-center bg-gray-50 p-2 rounded-lg shadow hover:shadow-md transition">
-                    <div class="text-2xl mb-1">📊</div>
-                    <span class="text-sm font-medium text-gray-800">Lista de precios</span>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 justify-items-center">
+                
+                <a href="#lista-precios" class="flex flex-col items-center justify-center bg-gray-50 p-6 rounded-xl shadow-lg hover:shadow-2xl hover:-translate-y-1 transform transition duration-300">
+                    <div class="text-4xl mb-4">📊</div>
+                    <span class="text-lg font-semibold text-gray-900">Lista de precios</span>
                 </a>
 
-                <a href="#alertas" class="w-36 h-24 flex flex-col items-center justify-center bg-gray-50 p-2 rounded-lg shadow hover:shadow-md transition">
-                    <div class="text-2xl mb-1">🔔</div>
-                    <span class="text-sm font-medium text-gray-800">Alertas</span>
+                <a href="#alertas" class="flex flex-col items-center justify-center bg-gray-50 p-6 rounded-xl shadow-lg hover:shadow-2xl hover:-translate-y-1 transform transition duration-300">
+                    <div class="text-4xl mb-4">🔔</div>
+                    <span class="text-lg font-semibold text-gray-900">Alertas</span>
                 </a>
 
-                <a href="#reservas" class="w-36 h-24 flex flex-col items-center justify-center bg-gray-50 p-2 rounded-lg shadow hover:shadow-md transition">
-                    <div class="text-2xl mb-1">📅</div>
-                    <span class="text-sm font-medium text-gray-800">Reservas</span>
+                <a href="#reservas" class="flex flex-col items-center justify-center bg-gray-50 p-6 rounded-xl shadow-lg hover:shadow-2xl hover:-translate-y-1 transform transition duration-300">
+                    <div class="text-4xl mb-4">📅</div>
+                    <span class="text-lg font-semibold text-gray-900">Reservas</span>
                 </a>
 
-                <a href="#historial" class="w-36 h-24 flex flex-col items-center justify-center bg-gray-50 p-2 rounded-lg shadow hover:shadow-md transition">
-                    <div class="text-2xl mb-1">📜</div>
-                    <span class="text-sm font-medium text-gray-800">Historial</span>
+                <a href="#historial" class="flex flex-col items-center justify-center bg-gray-50 p-6 rounded-xl shadow-lg hover:shadow-2xl hover:-translate-y-1 transform transition duration-300">
+                    <div class="text-4xl mb-4">📜</div>
+                    <span class="text-lg font-semibold text-gray-900">Historial</span>
                 </a>
+
                 </div>
             </div>
             </section>
