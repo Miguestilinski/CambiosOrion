@@ -259,33 +259,35 @@
 
             <!-- Herramientas Rapidas -->
             <section id="quick-tools" class="bg-white py-10">
-            <div class="max-w-4xl mx-auto px-6">
-                <h2 class="text-3xl font-extrabold text-gray-900 text-center mb-10 tracking-tight">Herramientas rápidas</h2>
+                <div class="max-w-3xl mx-auto px-6">
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 justify-items-center">
-                
-                <a href="#lista-precios" class="flex flex-col items-center justify-center bg-gray-50 p-6 rounded-xl shadow-lg hover:shadow-2xl hover:-translate-y-1 transform transition duration-300">
-                    <div class="text-4xl mb-4">📊</div>
-                    <span class="text-lg font-semibold text-gray-900">Lista de precios</span>
-                </a>
+                    <!-- Catálogo de Divisas (ancho completo arriba) -->
+                    <a href="#lista-precios" 
+                    class="block bg-gray-50 p-6 rounded-xl shadow-lg hover:shadow-2xl hover:-translate-y-1 transform transition duration-300 mb-8 text-center text-lg font-semibold text-gray-900">
+                    <!-- Ícono pequeño al lado izquierdo, opcional -->
+                    <span class="inline-block mr-2 text-xl align-middle">📊</span>
+                    Catálogo de Divisas
+                    </a>
 
-                <a href="#alertas" class="flex flex-col items-center justify-center bg-gray-50 p-6 rounded-xl shadow-lg hover:shadow-2xl hover:-translate-y-1 transform transition duration-300">
-                    <div class="text-4xl mb-4">🔔</div>
-                    <span class="text-lg font-semibold text-gray-900">Alertas</span>
-                </a>
+                    <!-- Contenedor para Reserva y Alerta lado a lado -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
 
-                <a href="#reservas" class="flex flex-col items-center justify-center bg-gray-50 p-6 rounded-xl shadow-lg hover:shadow-2xl hover:-translate-y-1 transform transition duration-300">
-                    <div class="text-4xl mb-4">📅</div>
-                    <span class="text-lg font-semibold text-gray-900">Reservas</span>
-                </a>
+                    <a href="#reservas" 
+                        class="flex items-center justify-center bg-gray-50 p-6 rounded-xl shadow-lg hover:shadow-2xl hover:-translate-y-1 transform transition duration-300 text-lg font-semibold text-gray-900">
+                        <!-- Opcional ícono pequeño -->
+                        <span class="inline-block mr-2 text-xl">📅</span>
+                        Reserva
+                    </a>
 
-                <a href="#historial" class="flex flex-col items-center justify-center bg-gray-50 p-6 rounded-xl shadow-lg hover:shadow-2xl hover:-translate-y-1 transform transition duration-300">
-                    <div class="text-4xl mb-4">📜</div>
-                    <span class="text-lg font-semibold text-gray-900">Historial</span>
-                </a>
+                    <a href="#alertas" 
+                        class="flex items-center justify-center bg-gray-50 p-6 rounded-xl shadow-lg hover:shadow-2xl hover:-translate-y-1 transform transition duration-300 text-lg font-semibold text-gray-900">
+                        <!-- Opcional ícono pequeño -->
+                        <span class="inline-block mr-2 text-xl">🔔</span>
+                        Alerta de Precio
+                    </a>
 
+                    </div>
                 </div>
-            </div>
             </section>
 
             <!-- Envío de Dinero -->
