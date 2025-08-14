@@ -804,9 +804,6 @@ function showStep3Summary() {
         operationType = "Cambio"; // Caso especial divisa-divisa
     }
 
-    // Datos previos
-    const currencyName = currency1;
-    const currencyIcon = document.getElementById("icon-currency1")?.outerHTML || '';
     const amount = parseFloat(document.getElementById("amount1").dataset.rawValue || '0');
 
     // Precio numérico y texto
@@ -814,18 +811,28 @@ function showStep3Summary() {
     const tradePrice = Number(tradePriceElem.dataset.price || '0');
     const tradePriceText = `${formatWithThousandsSeparator(tradePrice)} CLP`;
 
+    let currencyName, currencyIcon, payText, getText;
+
     const name = document.getElementById("user-name")?.value || 'No indicado';
     const email = document.getElementById("user-email")?.value || 'No indicado'
 
     // Calcular montos
-    let payText, getText;
     if (operationType === "Venta") {
-        payText = `${formatWithThousandsSeparator(Math.round(amount * tradePrice))} CLP`;
-        getText = `${formatWithThousandsSeparator(amount)} ${currencyName}`;
+        // Cliente entrega CLP y recibe divisa extranjera (currency2)
+        currencyName = currency2;
+        currencyIcon = document.getElementById("icon-currency2")?.outerHTML || '';
+        payText = `${formatWithThousandsSeparator(amount)} CLP`;
+        getText = `${formatWithThousandsSeparator((amount / tradePrice).toFixed(0))} ${currencyName}`;
     } else if (operationType === "Compra") {
+        // Cliente entrega divisa extranjera (currency1) y recibe CLP
+        currencyName = currency1;
+        currencyIcon = document.getElementById("icon-currency1")?.outerHTML || '';
         payText = `${formatWithThousandsSeparator(amount)} ${currencyName}`;
-        getText = `${formatWithThousandsSeparator(Math.round(amount * tradePrice))} CLP`;
+        getText = `${formatWithThousandsSeparator((amount * tradePrice).toFixed(0))} CLP`;
     } else {
+        // Cambio divisa-divisa
+        currencyName = currency1;
+        currencyIcon = document.getElementById("icon-currency1")?.outerHTML || '';
         payText = `${formatWithThousandsSeparator(amount)} ${currencyName}`;
         getText = "Conversión a otra divisa";
     }
