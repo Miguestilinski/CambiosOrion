@@ -754,10 +754,6 @@ document.getElementById('prevStep').addEventListener('click', () => {
     toggleButtons();
 });
 
-if (currentStep === 3) {
-    showStep3Summary();
-}
-
 function toggleButtons() {
     const nextBtn = document.getElementById('nextStep');
     const prevBtn = document.getElementById('prevStep');
@@ -781,6 +777,10 @@ function toggleButtons() {
     } else {
         btnContainer.classList.remove('justify-center');
         btnContainer.classList.add('justify-between');
+    }
+
+    if (currentStep === 3) {
+        showStep3Summary();
     }
 }
 
