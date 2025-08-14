@@ -10,6 +10,13 @@ body {
     z-index: 1;
 }
 
+/* Aplicar Inter globalmente */
+body, html, input, textarea, button, select {
+    font-family: 'Inter';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
 /* Degradado solo en la imagen de fondo */
 body::before {
     content: "";
