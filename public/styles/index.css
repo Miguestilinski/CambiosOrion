@@ -580,7 +580,7 @@ button:hover {
 
 #last-updated2 {
     position: absolute;
-    left: -29rem;
+    right: 1.4rem;
     color: white;
     font-size: 0.75rem;
 }
