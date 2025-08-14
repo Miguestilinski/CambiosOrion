@@ -757,6 +757,7 @@ document.getElementById('prevStep').addEventListener('click', () => {
 function toggleButtons() {
     const nextBtn = document.getElementById('nextStep');
     const prevBtn = document.getElementById('prevStep');
+    const btnContainer = nextBtn.parentElement; // el div que contiene los botones
 
     prevBtn.classList.toggle('hidden', currentStep === 1);
 
@@ -767,6 +768,15 @@ function toggleButtons() {
         nextBtn.textContent = 'Finalizar';
     } else {
         nextBtn.textContent = 'Siguiente';
+    }
+
+    // Ajustar la alineación del contenedor según el paso
+    if (currentStep === 1) {
+        btnContainer.classList.remove('justify-between');
+        btnContainer.classList.add('justify-center');
+    } else {
+        btnContainer.classList.remove('justify-center');
+        btnContainer.classList.add('justify-between');
     }
 }
 
