@@ -4,6 +4,7 @@ let iconsLoaded = {};
 let isEditMode = false;
 let activeDropdown = null;
 let displayedCurrencies = ["CLP", "USD", "EUR", "ARS"];
+let currencyList = [];
 
 function initializePage() {
     showSkeleton();
@@ -29,6 +30,8 @@ function loadCurrenciesWithSSE() {
                 console.error('Formato de datos inesperado:', responseData);
                 return;
             }
+
+            currencyList = responseData;
 
             const dropdown1 = document.getElementById("dropdown1");
             const dropdown2 = document.getElementById("dropdown2");
@@ -69,6 +72,7 @@ function loadCurrenciesWithSSE() {
             updateAddCurrencyDropdown();
             hideSkeleton();
             fillCurrencyTable();
+            fillReservationCurrencySelector();
 
             // Capturar la fecha de última actualización
             if (responseData.length && responseData[0].fecha_actualizacion) {
@@ -687,6 +691,29 @@ document.addEventListener('DOMContentLoaded', function () {
   window.prevSlide = prevSlide;
   window.goToSlide = goTo;
 });
+
+function fillReservationCurrencySelector() {
+    const divisaInput = document.getElementById("divisa");
+    if (!divisaInput) return;
+
+    // Convertimos el input simple en un <datalist> con iconos
+    let datalistId = "currencyDatalist";
+    let datalist = document.getElementById(datalistId);
+    if (!datalist) {
+        datalist = document.createElement("datalist");
+        datalist.id = datalistId;
+        document.body.appendChild(datalist);
+        divisaInput.setAttribute("list", datalistId);
+    }
+
+    datalist.innerHTML = ""; // Limpiar antes de poblar
+    currencyList.forEach(divisa => {
+        const option = document.createElement("option");
+        option.value = divisa.nombre;
+        option.textContent = divisa.nombre;
+        datalist.appendChild(option);
+    });
+}
 
 function abrirFormularioReserva() {
     document.getElementById('formulario-reserva').classList.remove('hidden');
