@@ -382,19 +382,19 @@ function convertCurrency() {
             priceNumber = exchangeRates[currency2].venta;
             actionText = `Estás comprando ${currency2}`;
             actionColor = 'text-green-600';
-            priceText = `${formatWithThousandsSeparator(priceNumber)} CLP`;
+            priceText = `Precio: ${formatWithThousandsSeparator(priceNumber)} CLP`;
         } else if (currency2 === "CLP" && currency1 !== "CLP") {
             result = amount1 * exchangeRates[currency1].compra;
             priceNumber = exchangeRates[currency1].compra;
             actionText = `Estás vendiendo ${currency1}`;
             actionColor = 'text-red-600';
-            priceText = `${formatWithThousandsSeparator(priceNumber)} CLP`;
+            priceText = `Precio: ${formatWithThousandsSeparator(priceNumber)} CLP`;
         } else {
             result = amount1 * exchangeRates[currency1].compra / exchangeRates[currency2].venta;
             priceNumber = exchangeRates[currency1].compra / exchangeRates[currency2].venta;
             actionText = `Estás cambiando ${currency1} a ${currency2}`;
             actionColor = 'text-blue-600';
-            priceText = `${formatWithThousandsSeparator(priceNumber)}`;
+            priceText = `Precio: ${formatWithThousandsSeparator(priceNumber)}`;
         }
 
         // Mostrar el resultado en amount2
@@ -403,6 +403,7 @@ function convertCurrency() {
         // Actualizar texto dinámico y precio
         tradeInfo.textContent = actionText;
         tradeInfo.className = `mb-1 text-center font-semibold text-md ${actionColor}`;
+        tradePrice.className = `text-center text-gray-600 text-sm`;
         tradePrice.textContent = priceText;
         tradePrice.dataset.price = priceNumber;
 
@@ -796,9 +797,9 @@ function showStep3Summary() {
     let operationType = "";
 
     if (currency1 === "CLP" && currency2 !== "CLP") {
-        operationType = "Compra";
-    } else if (currency2 === "CLP" && currency1 !== "CLP") {
         operationType = "Venta";
+    } else if (currency2 === "CLP" && currency1 !== "CLP") {
+        operationType = "Compra";
     } else {
         operationType = "Cambio"; // Caso especial divisa-divisa
     }
