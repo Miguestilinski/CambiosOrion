@@ -43,8 +43,8 @@ function loadCurrenciesWithSSE() {
 
                 // Redondear tasas de cambio a enteros
                 exchangeRates[divisa.nombre] = {
-                    compra: Math.round(parseFloat(divisa.compra)),
-                    venta: Math.round(parseFloat(divisa.venta)),
+                    compra: parseFloat(divisa.compra),
+                    venta: parseFloat(divisa.venta),
                     icono: circularIcon
                 };
 
@@ -757,7 +757,7 @@ document.getElementById('prevStep').addEventListener('click', () => {
 function toggleButtons() {
     const nextBtn = document.getElementById('nextStep');
     const prevBtn = document.getElementById('prevStep');
-    const btnContainer = nextBtn.parentElement; // el div que contiene los botones
+    const btnContainer = document.getElementById('stepperButtons'); // el div que contiene los botones
 
     prevBtn.classList.toggle('hidden', currentStep === 1);
 
