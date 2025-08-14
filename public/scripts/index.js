@@ -368,25 +368,39 @@ function convertCurrency() {
     const currency1 = document.getElementById("currency1-text").textContent;
     const currency2 = document.getElementById("currency2-text").textContent;
 
+    const tradeInfo = document.getElementById("trade-info");
+
     if (amount1 && exchangeRates[currency1] && exchangeRates[currency2]) {
         let result;
+        let actionText = '';
+        let actionColor = '';
 
         if (currency1 === "CLP" && currency2 !== "CLP") {
-            // Si la moneda base es CLP, usar el precio de venta de la moneda objetivo
+            // Compra de divisa extranjera
             result = amount1 / exchangeRates[currency2].venta;
+            actionText = `Estás comprando ${currency2}`;
+            actionColor = 'text-green-600';
         } else if (currency2 === "CLP" && currency1 !== "CLP") {
-            // Si la moneda objetivo es CLP, usar el precio de compra de la moneda base
+            // Venta de divisa extranjera
             result = amount1 * exchangeRates[currency1].compra;
+            actionText = `Estás vendiendo ${currency1}`;
+            actionColor = 'text-red-600';
         } else {
-            // Para otras conversiones, usar el valor de la venta o compra
+            // Conversión entre divisas no CLP
             result = amount1 * exchangeRates[currency1].compra / exchangeRates[currency2].venta;
+            actionText = `Estás cambiando ${currency1} a ${currency2}`;
+            actionColor = 'text-blue-600';
         }
 
-        // Mostrar el resultado en el campo amount2 con formato
+        // Mostrar el resultado en amount2
         document.getElementById("amount2").value = formatWithThousandsSeparator(Math.round(result));
+
+        // Actualizar texto dinámico
+        tradeInfo.textContent = actionText;
+        tradeInfo.className = `mb-4 text-right font-semibold text-lg ${actionColor}`;
     } else {
-        // Limpiar el campo si no hay datos válidos
         document.getElementById("amount2").value = '';
+        tradeInfo.textContent = '';
     }
 }
 
@@ -733,8 +747,19 @@ document.getElementById('prevStep').addEventListener('click', () => {
 });
 
 function toggleButtons() {
-    document.getElementById('prevStep').classList.toggle('hidden', currentStep === 1);
-    document.getElementById('nextStep').textContent = currentStep === totalSteps ? 'Finalizar' : 'Siguiente';
+    const nextBtn = document.getElementById('nextStep');
+    const prevBtn = document.getElementById('prevStep');
+
+    prevBtn.classList.toggle('hidden', currentStep === 1);
+
+    // Cambiar texto del botón según el paso
+    if (currentStep === 1) {
+        nextBtn.textContent = 'Reservar';
+    } else if (currentStep === totalSteps) {
+        nextBtn.textContent = 'Finalizar';
+    } else {
+        nextBtn.textContent = 'Siguiente';
+    }
 }
 
 // Función para actualizar la clase de última columna visible

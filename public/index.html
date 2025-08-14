@@ -251,17 +251,12 @@
                                 <!-- Agrega más opciones según sea necesario -->
                             </ul>
                         </div>
-                    </div>  
+                    </div>
+                    <!-- Texto dinámico de compra/venta -->
+                    <div id="trade-info" class="mb-4 text-right font-semibold text-lg text-gray-700">
+                        Estás comprando USD
+                    </div> 
                 </div>
-                <!-- Botones de acción -->
-                <div class="mt-4 flex justify-center space-x-4">
-                    <button onclick="abrirFormularioReserva()" class="bg-[#1e3a8a] hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow">
-                        Reservar
-                    </button>
-                </div>
-                <span id="last-updated1" class="date-converter text-white text-xs">
-                    Última actualización: --
-                </span>
             </div>
 
             <!-- Paso 2: Formulario de reserva -->
@@ -283,8 +278,12 @@
             <!-- Botones de navegación -->
             <div class="flex justify-between mt-6">
                 <button id="prevStep" class="bg-gray-300 px-4 py-2 rounded hidden">Anterior</button>
-                <button id="nextStep" class="bg-blue-600 text-white px-4 py-2 rounded">Siguiente</button>
+                <button id="nextStep" class="bg-[#1e3a8a] hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow">Reservar</button>
             </div> 
+
+            <span id="last-updated1" class="date-converter text-white text-xs">
+                Última actualización: --
+            </span>
         </section>
 
         <!-- Herramientas Rapidas -->
