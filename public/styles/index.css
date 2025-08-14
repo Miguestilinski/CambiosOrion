@@ -1,6 +1,6 @@
 /* Estilos globales */
 body {
-    @apply font-sans bg-white;
+    @apply bg-white;
     margin: 0;
     padding: 0;
     background: rgba(0, 0, 0, 0.45) url('https://cambiosorion.cl/orionapp/assets/FondoOrion.jpg') no-repeat center top;
