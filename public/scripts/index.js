@@ -882,9 +882,38 @@ function showStep3Summary() {
 }
 
 // Evento click para confirmar
-document.getElementById("confirmReservation").addEventListener('click', () => {
-    alert("✅ ¡Reserva confirmada! Se ha enviado el QR al correo indicado.");
-    document.getElementById("reservation-status").textContent = "Tu reserva está activa hasta las 17:00 de hoy.";
+document.getElementById("confirmReservation").addEventListener('click', async () => {
+    const reservaData = {
+        nombre: window.reservaNombre,
+        email: window.reservaEmail,
+        fecha: document.getElementById("summary-date").textContent,
+        hora: document.getElementById("summary-time").textContent,
+        operacion: document.getElementById("summary-operation").textContent,
+        divisa_id: document.getElementById("currency1-text").textContent.trim(), // ID de divisa
+        total: parseInt(document.getElementById("summary-pay").textContent.replace(/\D/g,'')), // solo números
+        tasa_cambio: parseFloat(document.getElementById("trade-price").dataset.price),
+        monto: parseInt(document.getElementById("summary-get").textContent.replace(/\D/g,'')) // solo números
+    };
+
+    try {
+        const response = await fetch('https://cambiosorion.cl/data/reserva.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(reservaData)
+        });
+
+        const result = await response.json();
+
+        if(result.success){
+            alert("✅ ¡Reserva confirmada! Revisa tu correo con el QR.");
+            document.getElementById("reservation-status").textContent = "Tu reserva está activa hasta las 17:00 de hoy.";
+        } else {
+            alert("❌ Error al confirmar reserva: " + result.message);
+        }
+    } catch (error) {
+        console.error(error);
+        alert("❌ Error en la comunicación con el servidor.");
+    }
 });
 
 // Función para actualizar la clase de última columna visible
