@@ -819,10 +819,10 @@ function showStep3Summary() {
 
     // Calcular montos
     let payText, getText;
-    if (operationType === "Compra") {
+    if (operationType === "Venta") {
         payText = `${formatWithThousandsSeparator(Math.round(amount * tradePrice))} CLP`;
         getText = `${formatWithThousandsSeparator(amount)} ${currencyName}`;
-    } else if (operationType === "Venta") {
+    } else if (operationType === "Compra") {
         payText = `${formatWithThousandsSeparator(amount)} ${currencyName}`;
         getText = `${formatWithThousandsSeparator(Math.round(amount * tradePrice))} CLP`;
     } else {
