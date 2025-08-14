@@ -753,9 +753,6 @@ document.getElementById('nextStep').addEventListener('click', () => {
                 alert("Por favor, completa tu nombre y correo antes de continuar.");
                 return;
             }
-
-            console.log("Nombre capturado:", window.reservaNombre);
-            console.log("Email capturado:", window.reservaEmail);
         }
 
         document.getElementById(`step-${currentStep}`).classList.add('hidden');
