@@ -746,8 +746,13 @@ document.getElementById('nextStep').addEventListener('click', () => {
             const nameInput = document.getElementById("user-name");
             const emailInput = document.getElementById("user-email");
 
-            window.reservaNombre = nameInput.value.trim();
-            window.reservaEmail = emailInput.value.trim();
+            window.reservaNombre = nameInput?.value?.trim() || "";
+            window.reservaEmail = emailInput?.value?.trim() || "";
+
+            if (!window.reservaNombre || !window.reservaEmail) {
+                alert("Por favor, completa tu nombre y correo antes de continuar.");
+                return; // Detiene el avance
+            }
 
             console.log("Nombre capturado:", window.reservaNombre);
             console.log("Email capturado:", window.reservaEmail);
