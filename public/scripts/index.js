@@ -402,7 +402,7 @@ function convertCurrency() {
 
         // Actualizar texto dinámico y precio
         tradeInfo.textContent = actionText;
-        tradeInfo.className = `mb-1 text-right font-semibold text-lg ${actionColor}`;
+        tradeInfo.className = `mb-1 text-center font-semibold text-md ${actionColor}`;
         tradePrice.textContent = priceText;
 
     } else {
