@@ -746,8 +746,15 @@ document.getElementById('nextStep').addEventListener('click', () => {
             const nameInput = document.getElementById("user-name");
             const emailInput = document.getElementById("user-email");
 
-            window.reservaNombre = nameInput ? nameInput.value.trim() : "";
-            window.reservaEmail = emailInput ? emailInput.value.trim() : "";
+            console.log("Name Input:", nameInput);
+            console.log("Email Input:", emailInput);
+
+            window.reservaNombre = (nameInput && typeof nameInput.value === "string") 
+                ? nameInput.value.trim() 
+                : "";
+            window.reservaEmail = (emailInput && typeof emailInput.value === "string") 
+                ? emailInput.value.trim() 
+                : "";
         }
 
         document.getElementById(`step-${currentStep}`).classList.add('hidden');
