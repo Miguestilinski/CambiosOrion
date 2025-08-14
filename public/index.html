@@ -274,14 +274,40 @@
                 </form>
             </div>
 
-            <!-- Paso 3: Confirmación -->
+            <!-- Paso 3: Confirmación / Resumen -->
             <div id="step-3" class="mt-6 hidden">
-                <p class="text-green-700">✅ ¡Reserva confirmada!</p>
+                <h2 class="text-lg font-semibold mb-4">Resumen de tu reserva</h2>
+                
+                <!-- Resumen de datos -->
+                <div id="reservation-summary" class="mb-4 p-4 border rounded bg-gray-50">
+                    <p><strong>Divisa a comprar:</strong> <span id="summary-currency1">--</span></p>
+                    <p><strong>Divisa a vender:</strong> <span id="summary-currency2">--</span></p>
+                    <p><strong>Monto:</strong> <span id="summary-amount1">--</span></p>
+                    <p><strong>Precio:</strong> <span id="summary-price">--</span></p>
+                    <p><strong>Correo de envío QR:</strong> <span id="summary-email">--</span></p>
+                </div>
+
+                <!-- Instrucciones -->
+                <p class="mb-4 text-yellow-700">
+                    ⚠️ Recuerda que debes realizar la operación dentro del horario de atención de Orion (9:00 a 17:00) 
+                    en el local ubicado en Agustinas 1035 Of. 13. 
+                    La reserva será válida hasta el cierre del horario de atención del día (17:00). 
+                    Si llegas después, deberás realizar una nueva reserva ya que los precios pueden cambiar.
+                </p>
+
+                <!-- Botón Confirmar -->
+                <div class="flex justify-center">
+                    <button id="confirmReservation" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg shadow disabled:opacity-50" disabled>
+                        Confirmar Reserva
+                    </button>
+                </div>
+
+                <p id="reservation-status" class="mt-2 text-center text-sm text-gray-600"></p>
             </div>
 
             <!-- Botones de navegación -->
-            <div id="stepperButtons" class="flex justify-between mt-6">
-                <button id="prevStep" class="bg-gray-300 px-4 py-2 rounded hidden">Anterior</button>
+            <div id="stepperButtons" class="flex justify-center mt-6">
+                <button id="prevStep" class="bg-gray-300 px-4 py-2 rounded-lg hidden">Anterior</button>
                 <button id="nextStep" class="bg-[#1e3a8a] hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow">Reservar</button>
             </div>
 

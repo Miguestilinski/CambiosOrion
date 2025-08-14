@@ -780,6 +780,41 @@ function toggleButtons() {
     }
 }
 
+function showStep3Summary() {
+    const currency1 = document.getElementById("currency1-text").textContent;
+    const currency2 = document.getElementById("currency2-text").textContent;
+    const amount1 = document.getElementById("amount1").dataset.rawValue || '0';
+    const tradePriceText = document.getElementById("trade-price").textContent;
+    const email = document.getElementById("user-email")?.value || 'tu correo';
+
+    // Actualizar resumen
+    document.getElementById("summary-currency1").textContent = currency1;
+    document.getElementById("summary-currency2").textContent = currency2;
+    document.getElementById("summary-amount1").textContent = formatWithThousandsSeparator(amount1);
+    document.getElementById("summary-price").textContent = tradePriceText;
+    document.getElementById("summary-email").textContent = email;
+
+    // Verificar horario de atención
+    const now = new Date();
+    const currentHour = now.getHours();
+    const confirmBtn = document.getElementById("confirmReservation");
+    const statusText = document.getElementById("reservation-status");
+
+    if (currentHour >= 9 && currentHour < 17) {
+        confirmBtn.disabled = false;
+        statusText.textContent = "✅ Puedes confirmar tu reserva.";
+    } else {
+        confirmBtn.disabled = true;
+        statusText.textContent = "⛔ Fuera de horario de atención. No puedes confirmar la reserva.";
+    }
+}
+
+// Evento click para confirmar
+document.getElementById("confirmReservation").addEventListener('click', () => {
+    alert("✅ ¡Reserva confirmada! Se ha enviado el QR al correo indicado.");
+    document.getElementById("reservation-status").textContent = "Tu reserva está activa hasta las 17:00 de hoy.";
+});
+
 // Función para actualizar la clase de última columna visible
 function updateLastVisibleColumn() {
     document.querySelectorAll(".currency-row").forEach(row => {
