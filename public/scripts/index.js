@@ -4,7 +4,8 @@ let iconsLoaded = {};
 let isEditMode = false;
 let activeDropdown = null;
 let displayedCurrencies = ["CLP", "USD", "EUR", "ARS"];
-let currencyList = [];
+let currentStep = 1;
+const totalSteps = 3;
 
 function initializePage() {
     showSkeleton();
@@ -30,8 +31,6 @@ function loadCurrenciesWithSSE() {
                 console.error('Formato de datos inesperado:', responseData);
                 return;
             }
-
-            currencyList = responseData;
 
             const dropdown1 = document.getElementById("dropdown1");
             const dropdown2 = document.getElementById("dropdown2");
@@ -72,7 +71,6 @@ function loadCurrenciesWithSSE() {
             updateAddCurrencyDropdown();
             hideSkeleton();
             fillCurrencyTable();
-            fillReservationCurrencySelector();
 
             // Capturar la fecha de última actualización
             if (responseData.length && responseData[0].fecha_actualizacion) {
@@ -326,7 +324,6 @@ function swapCurrencies() {
 
     convertCurrency(); // Realizar la conversión tras intercambiar divisas
 }
-
 
 // Modificar los inputs para formatear y validar el contenido
 document.addEventListener('DOMContentLoaded', () => {
@@ -692,68 +689,6 @@ document.addEventListener('DOMContentLoaded', function () {
   window.goToSlide = goTo;
 });
 
-function fillReservationCurrencySelector() {
-    const divisaInput = document.getElementById("divisa");
-    if (!divisaInput) return;
-
-    // Convertimos el input simple en un <datalist> con iconos
-    let datalistId = "currencyDatalist";
-    let datalist = document.getElementById(datalistId);
-    if (!datalist) {
-        datalist = document.createElement("datalist");
-        datalist.id = datalistId;
-        document.body.appendChild(datalist);
-        divisaInput.setAttribute("list", datalistId);
-    }
-
-    datalist.innerHTML = ""; // Limpiar antes de poblar
-    currencyList.forEach(divisa => {
-        const option = document.createElement("option");
-        option.value = divisa.nombre;
-        option.textContent = divisa.nombre;
-        datalist.appendChild(option);
-    });
-}
-
-function abrirFormularioReserva() {
-    document.getElementById('formulario-reserva').classList.remove('hidden');
-    mostrarPaso(1);
-
-    // Si el conversor tiene datos, autocompletar
-    const divisa1 = document.getElementById('currency1-text').innerText;
-    const divisa2 = document.getElementById('currency2-text').innerText;
-    const monto1 = document.getElementById('amount1').value;
-    if(monto1) {
-        document.getElementById('monto').value = monto1;
-        document.getElementById('divisa').value = divisa2;
-    }
-}
-
-function mostrarPaso(num) {
-    document.querySelectorAll('.step').forEach(s => s.classList.add('hidden'));
-    document.getElementById(`paso${num}`).classList.remove('hidden');
-}
-
-function finalizarReserva() {
-    const op = document.getElementById('operacion').value;
-    const divisa = document.getElementById('divisa').value;
-    const monto = document.getElementById('monto').value;
-    const nombre = document.getElementById('nombre').value;
-    const apellido = document.getElementById('apellido').value;
-    const correo = document.getElementById('correo').value;
-    const fecha = new Date().toLocaleString();
-
-    document.getElementById('resumen').innerHTML = `
-        <p><strong>Operación:</strong> ${op}</p>
-        <p><strong>Divisa:</strong> ${divisa}</p>
-        <p><strong>Monto:</strong> ${monto}</p>
-        <p><strong>Cliente:</strong> ${nombre} ${apellido}</p>
-        <p><strong>Correo:</strong> ${correo}</p>
-        <p><strong>Fecha y hora:</strong> ${fecha}</p>
-    `;
-    mostrarPaso(3);
-}
-
 function toggleDropdown(dropdownId, event) {
     event.stopPropagation();
     const dropdown = document.getElementById(dropdownId);
@@ -778,6 +713,29 @@ function toggleDropdown(dropdownId, event) {
 }
 
 window.toggleDropdown = toggleDropdown;
+
+document.getElementById('nextStep').addEventListener('click', () => {
+    if (currentStep < totalSteps) {
+        document.getElementById(`step-${currentStep}`).classList.add('hidden');
+        currentStep++;
+        document.getElementById(`step-${currentStep}`).classList.remove('hidden');
+    }
+    toggleButtons();
+});
+
+document.getElementById('prevStep').addEventListener('click', () => {
+    if (currentStep > 1) {
+        document.getElementById(`step-${currentStep}`).classList.add('hidden');
+        currentStep--;
+        document.getElementById(`step-${currentStep}`).classList.remove('hidden');
+    }
+    toggleButtons();
+});
+
+function toggleButtons() {
+    document.getElementById('prevStep').classList.toggle('hidden', currentStep === 1);
+    document.getElementById('nextStep').textContent = currentStep === totalSteps ? 'Finalizar' : 'Siguiente';
+}
 
 // Función para actualizar la clase de última columna visible
 function updateLastVisibleColumn() {
