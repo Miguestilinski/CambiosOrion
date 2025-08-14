@@ -688,6 +688,45 @@ document.addEventListener('DOMContentLoaded', function () {
   window.goToSlide = goTo;
 });
 
+function abrirFormularioReserva() {
+    document.getElementById('formulario-reserva').classList.remove('hidden');
+    mostrarPaso(1);
+
+    // Si el conversor tiene datos, autocompletar
+    const divisa1 = document.getElementById('currency1-text').innerText;
+    const divisa2 = document.getElementById('currency2-text').innerText;
+    const monto1 = document.getElementById('amount1').value;
+    if(monto1) {
+        document.getElementById('monto').value = monto1;
+        document.getElementById('divisa').value = divisa2;
+    }
+}
+
+function mostrarPaso(num) {
+    document.querySelectorAll('.step').forEach(s => s.classList.add('hidden'));
+    document.getElementById(`paso${num}`).classList.remove('hidden');
+}
+
+function finalizarReserva() {
+    const op = document.getElementById('operacion').value;
+    const divisa = document.getElementById('divisa').value;
+    const monto = document.getElementById('monto').value;
+    const nombre = document.getElementById('nombre').value;
+    const apellido = document.getElementById('apellido').value;
+    const correo = document.getElementById('correo').value;
+    const fecha = new Date().toLocaleString();
+
+    document.getElementById('resumen').innerHTML = `
+        <p><strong>Operación:</strong> ${op}</p>
+        <p><strong>Divisa:</strong> ${divisa}</p>
+        <p><strong>Monto:</strong> ${monto}</p>
+        <p><strong>Cliente:</strong> ${nombre} ${apellido}</p>
+        <p><strong>Correo:</strong> ${correo}</p>
+        <p><strong>Fecha y hora:</strong> ${fecha}</p>
+    `;
+    mostrarPaso(3);
+}
+
 function toggleDropdown(dropdownId, event) {
     event.stopPropagation();
     const dropdown = document.getElementById(dropdownId);
