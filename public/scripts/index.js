@@ -378,23 +378,23 @@ function convertCurrency() {
         let priceText = '';
 
         if (currency1 === "CLP" && currency2 !== "CLP") {
-            // Compra de divisa extranjera
             result = amount1 / exchangeRates[currency2].venta;
+            priceNumber = exchangeRates[currency2].venta;
             actionText = `Estás comprando ${currency2}`;
             actionColor = 'text-green-600';
-            priceText = `Precio de venta: ${formatWithThousandsSeparator(exchangeRates[currency2].venta)} CLP`;
+            priceText = `${formatWithThousandsSeparator(priceNumber)} CLP`;
         } else if (currency2 === "CLP" && currency1 !== "CLP") {
-            // Venta de divisa extranjera
             result = amount1 * exchangeRates[currency1].compra;
+            priceNumber = exchangeRates[currency1].compra;
             actionText = `Estás vendiendo ${currency1}`;
             actionColor = 'text-red-600';
-            priceText = `Precio de compra: ${formatWithThousandsSeparator(exchangeRates[currency1].compra)} CLP`;
+            priceText = `${formatWithThousandsSeparator(priceNumber)} CLP`;
         } else {
-            // Conversión entre divisas no CLP
             result = amount1 * exchangeRates[currency1].compra / exchangeRates[currency2].venta;
+            priceNumber = exchangeRates[currency1].compra / exchangeRates[currency2].venta;
             actionText = `Estás cambiando ${currency1} a ${currency2}`;
             actionColor = 'text-blue-600';
-            priceText = `Tipo de cambio: ${formatWithThousandsSeparator(exchangeRates[currency1].compra / exchangeRates[currency2].venta)}`;
+            priceText = `${formatWithThousandsSeparator(priceNumber)}`;
         }
 
         // Mostrar el resultado en amount2
@@ -409,7 +409,8 @@ function convertCurrency() {
     } else {
         document.getElementById("amount2").value = '';
         tradeInfo.textContent = '';
-        tradePrice.textContent = 'Precio: --';
+        tradePrice.textContent = '--';
+        tradePrice.dataset.price = '0';
     }
 }
 
@@ -809,20 +810,20 @@ function showStep3Summary() {
 
     // Precio numérico y texto
     const tradePriceElem = document.getElementById("trade-price");
-    const tradePrice = parseFloat(tradePriceElem.dataset.price || '0');
-    const tradePriceText = tradePriceElem.textContent;
+    const tradePrice = Number(tradePriceElem.dataset.price || '0');
+    const tradePriceText = `${formatWithThousandsSeparator(tradePrice)} CLP`;
 
-    const name = document.getElementById("nombre")?.value || 'No indicado';
-    const email = document.getElementById("correo")?.value || 'No indicado';
+    const name = document.getElementById("user-name")?.value || 'No indicado';
+    const email = document.getElementById("user-email")?.value || 'No indicado'
 
     // Calcular montos
     let payText, getText;
     if (operationType === "Compra") {
-        payText = `${formatWithThousandsSeparator((amount * tradePrice).toFixed(0))} CLP`;
+        payText = `${formatWithThousandsSeparator(Math.round(amount * tradePrice))} CLP`;
         getText = `${formatWithThousandsSeparator(amount)} ${currencyName}`;
     } else if (operationType === "Venta") {
         payText = `${formatWithThousandsSeparator(amount)} ${currencyName}`;
-        getText = `${formatWithThousandsSeparator((amount * tradePrice).toFixed(0))} CLP`;
+        getText = `${formatWithThousandsSeparator(Math.round(amount * tradePrice))} CLP`;
     } else {
         payText = `${formatWithThousandsSeparator(amount)} ${currencyName}`;
         getText = "Conversión a otra divisa";
@@ -835,8 +836,7 @@ function showStep3Summary() {
 
     // Actualizar DOM
     document.getElementById("summary-operation").textContent = operationType;
-    document.getElementById("summary-currency-icon").innerHTML = currencyIcon;
-    document.getElementById("summary-currency-name").textContent = currencyName;
+    document.getElementById("summary-currency-name").innerHTML = `${currencyIcon} ${currencyName}`;
     document.getElementById("summary-pay").textContent = payText;
     document.getElementById("summary-get").textContent = getText;
     document.getElementById("summary-price").textContent = tradePriceText;
