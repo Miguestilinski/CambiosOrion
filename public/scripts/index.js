@@ -743,15 +743,15 @@ document.getElementById('nextStep').addEventListener('click', () => {
     if (currentStep < totalSteps) {
         // Guardar nombre/email justo antes de cambiar paso
         if (currentStep === 2) {
-            const nameInput = document.getElementById("user-name");
-            const emailInput = document.getElementById("user-email");
+            const nameInput = document.getElementById("reserva-nombre");
+            const emailInput = document.getElementById("reserva-email");
 
             window.reservaNombre = nameInput?.value?.trim() || "";
             window.reservaEmail = emailInput?.value?.trim() || "";
 
             if (!window.reservaNombre || !window.reservaEmail) {
                 alert("Por favor, completa tu nombre y correo antes de continuar.");
-                return; // Detiene el avance
+                return;
             }
 
             console.log("Nombre capturado:", window.reservaNombre);
