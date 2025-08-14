@@ -785,24 +785,43 @@ function toggleButtons() {
 }
 
 function showStep3Summary() {
-    // Datos previos capturados
-    const operationType = document.getElementById("operation-type").value; // "Compra" o "Venta"
-    const currencyName = document.getElementById("currency1-text").textContent.trim();
-    const currencyIcon = document.getElementById("currency1-icon")?.outerHTML || ''; // Si tienes un <img> o <svg>
+    // Detectar operación automáticamente
+    const currency1 = document.getElementById("currency1-text").textContent.trim();
+    const currency2 = document.getElementById("currency2-text").textContent.trim();
+    let operationType = "";
+
+    if (currency1 === "CLP" && currency2 !== "CLP") {
+        operationType = "Compra";
+    } else if (currency2 === "CLP" && currency1 !== "CLP") {
+        operationType = "Venta";
+    } else {
+        operationType = "Cambio"; // Caso especial divisa-divisa
+    }
+
+    // Datos previos
+    const currencyName = currency1;
+    const currencyIcon = document.getElementById("currency1-icon")?.outerHTML || '';
     const amount = parseFloat(document.getElementById("amount1").dataset.rawValue || '0');
-    const tradePrice = parseFloat(document.getElementById("trade-price").dataset.price || '0'); // Precio numérico
-    const tradePriceText = document.getElementById("trade-price").textContent;
+
+    // Precio numérico y texto
+    const tradePriceElem = document.getElementById("trade-price");
+    const tradePrice = parseFloat(tradePriceElem.dataset.price || '0');
+    const tradePriceText = tradePriceElem.textContent;
+
     const name = document.getElementById("user-name")?.value || 'No indicado';
     const email = document.getElementById("user-email")?.value || 'No indicado';
 
-    // Calcular lo que se paga y lo que se obtiene
+    // Calcular montos
     let payText, getText;
     if (operationType === "Compra") {
         payText = `${formatWithThousandsSeparator((amount * tradePrice).toFixed(0))} CLP`;
         getText = `${formatWithThousandsSeparator(amount)} ${currencyName}`;
-    } else { // Venta
+    } else if (operationType === "Venta") {
         payText = `${formatWithThousandsSeparator(amount)} ${currencyName}`;
         getText = `${formatWithThousandsSeparator((amount * tradePrice).toFixed(0))} CLP`;
+    } else {
+        payText = `${formatWithThousandsSeparator(amount)} ${currencyName}`;
+        getText = "Conversión a otra divisa";
     }
 
     // Fecha y hora actual
