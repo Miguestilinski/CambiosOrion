@@ -372,7 +372,7 @@ function convertCurrency() {
     const tradePrice = document.getElementById("trade-price");
 
     if (amount1 && exchangeRates[currency1] && exchangeRates[currency2]) {
-        let result;
+        let result, priceNumber;
         let actionText = '';
         let actionColor = '';
         let priceText = '';
