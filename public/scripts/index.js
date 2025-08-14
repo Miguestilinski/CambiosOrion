@@ -743,8 +743,11 @@ document.getElementById('nextStep').addEventListener('click', () => {
     if (currentStep < totalSteps) {
         // Guardar nombre/email justo antes de cambiar paso
         if (currentStep === 2) {
-            window.reservaNombre = document.getElementById("user-name").value.trim();
-            window.reservaEmail = document.getElementById("user-email").value.trim();
+            const nameInput = document.getElementById("user-name");
+            const emailInput = document.getElementById("user-email");
+
+            window.reservaNombre = nameInput ? nameInput.value.trim() : "";
+            window.reservaEmail = emailInput ? emailInput.value.trim() : "";
         }
 
         document.getElementById(`step-${currentStep}`).classList.add('hidden');
