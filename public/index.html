@@ -254,11 +254,11 @@
                     </div>
                 </div>
                 <!-- Texto dinámico de compra/venta -->
-                <div id="trade-info" class="mb-4 text-center font-semibold text-md text-gray-700">
+                <div id="trade-info" class="mb-4 text-center font-semibold text-md text-gray-700 hidden">
                     Estás comprando USD
                 </div>
                 <!-- Texto dinámico de precio -->
-                <div id="trade-price" class="text-center text-gray-600 text-sm">
+                <div id="trade-price" class="text-center text-gray-600 text-sm hidden">
                     Precio: --
                 </div>
             </div>
@@ -278,13 +278,25 @@
             <div id="step-3" class="mt-6 hidden">
                 <h2 class="text-lg font-semibold mb-4">Resumen de tu reserva</h2>
                 
-                <!-- Resumen de datos -->
-                <div id="reservation-summary" class="mb-4 p-4 border rounded bg-gray-50">
-                    <p><strong>Divisa a comprar:</strong> <span id="summary-currency1">--</span></p>
-                    <p><strong>Divisa a vender:</strong> <span id="summary-currency2">--</span></p>
-                    <p><strong>Monto:</strong> <span id="summary-amount1">--</span></p>
-                    <p><strong>Precio:</strong> <span id="summary-price">--</span></p>
-                    <p><strong>Correo de envío QR:</strong> <span id="summary-email">--</span></p>
+                <!-- Contenedor en dos columnas -->
+                <div id="reservation-summary" class="mb-4 p-4 border rounded bg-gray-50 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <!-- Columna Operación -->
+                    <div>
+                        <p><strong>Operación:</strong> <span id="summary-operation">--</span></p>
+                        <p><strong>Divisa:</strong> <span id="summary-currency-icon"></span> <span id="summary-currency-name">--</span></p>
+                        <p><strong>Pagas:</strong> <span id="summary-pay">--</span></p>
+                        <p><strong>Obtendrás:</strong> <span id="summary-get">--</span></p>
+                        <p><strong>Precio:</strong> <span id="summary-price">--</span></p>
+                    </div>
+                    
+                    <!-- Columna Datos Personales -->
+                    <div>
+                        <p><strong>Nombre:</strong> <span id="summary-name">--</span></p>
+                        <p><strong>Correo:</strong> <span id="summary-email">--</span></p>
+                        <p><strong>Día Reserva:</strong> <span id="summary-date">--</span></p>
+                        <p><strong>Hora Reserva:</strong> <span id="summary-time">--</span></p>
+                    </div>
                 </div>
 
                 <!-- Instrucciones -->

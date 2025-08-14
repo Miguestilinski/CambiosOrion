@@ -785,21 +785,44 @@ function toggleButtons() {
 }
 
 function showStep3Summary() {
-    const currency1 = document.getElementById("currency1-text").textContent;
-    const currency2 = document.getElementById("currency2-text").textContent;
-    const amount1 = document.getElementById("amount1").dataset.rawValue || '0';
+    // Datos previos capturados
+    const operationType = document.getElementById("operation-type").value; // "Compra" o "Venta"
+    const currencyName = document.getElementById("currency1-text").textContent.trim();
+    const currencyIcon = document.getElementById("currency1-icon")?.outerHTML || ''; // Si tienes un <img> o <svg>
+    const amount = parseFloat(document.getElementById("amount1").dataset.rawValue || '0');
+    const tradePrice = parseFloat(document.getElementById("trade-price").dataset.price || '0'); // Precio numérico
     const tradePriceText = document.getElementById("trade-price").textContent;
-    const email = document.getElementById("user-email")?.value || 'tu correo';
+    const name = document.getElementById("user-name")?.value || 'No indicado';
+    const email = document.getElementById("user-email")?.value || 'No indicado';
 
-    // Actualizar resumen
-    document.getElementById("summary-currency1").textContent = currency1;
-    document.getElementById("summary-currency2").textContent = currency2;
-    document.getElementById("summary-amount1").textContent = formatWithThousandsSeparator(amount1);
-    document.getElementById("summary-price").textContent = tradePriceText;
-    document.getElementById("summary-email").textContent = email;
+    // Calcular lo que se paga y lo que se obtiene
+    let payText, getText;
+    if (operationType === "Compra") {
+        payText = `${formatWithThousandsSeparator((amount * tradePrice).toFixed(0))} CLP`;
+        getText = `${formatWithThousandsSeparator(amount)} ${currencyName}`;
+    } else { // Venta
+        payText = `${formatWithThousandsSeparator(amount)} ${currencyName}`;
+        getText = `${formatWithThousandsSeparator((amount * tradePrice).toFixed(0))} CLP`;
+    }
 
-    // Verificar horario de atención
+    // Fecha y hora actual
     const now = new Date();
+    const date = now.toLocaleDateString('es-CL');
+    const time = now.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
+
+    // Actualizar DOM
+    document.getElementById("summary-operation").textContent = operationType;
+    document.getElementById("summary-currency-icon").innerHTML = currencyIcon;
+    document.getElementById("summary-currency-name").textContent = currencyName;
+    document.getElementById("summary-pay").textContent = payText;
+    document.getElementById("summary-get").textContent = getText;
+    document.getElementById("summary-price").textContent = tradePriceText;
+    document.getElementById("summary-name").textContent = name;
+    document.getElementById("summary-email").textContent = email;
+    document.getElementById("summary-date").textContent = date;
+    document.getElementById("summary-time").textContent = time;
+
+    // Validar horario
     const currentHour = now.getHours();
     const confirmBtn = document.getElementById("confirmReservation");
     const statusText = document.getElementById("reservation-status");
