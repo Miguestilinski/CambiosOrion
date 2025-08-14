@@ -404,6 +404,7 @@ function convertCurrency() {
         tradeInfo.textContent = actionText;
         tradeInfo.className = `mb-1 text-center font-semibold text-md ${actionColor}`;
         tradePrice.textContent = priceText;
+        tradePrice.dataset.price = priceNumber;
 
     } else {
         document.getElementById("amount2").value = '';
@@ -764,10 +765,13 @@ function toggleButtons() {
     // Cambiar texto del botón según el paso
     if (currentStep === 1) {
         nextBtn.textContent = 'Reservar';
+        nextBtn.classList.remove('hidden');
     } else if (currentStep === totalSteps) {
         nextBtn.textContent = 'Finalizar';
+        nextBtn.classList.add('hidden');
     } else {
         nextBtn.textContent = 'Siguiente';
+        nextBtn.classList.remove('hidden');
     }
 
     // Ajustar la alineación del contenedor según el paso
@@ -800,7 +804,7 @@ function showStep3Summary() {
 
     // Datos previos
     const currencyName = currency1;
-    const currencyIcon = document.getElementById("currency1-icon")?.outerHTML || '';
+    const currencyIcon = document.getElementById("icon-currency1")?.outerHTML || '';
     const amount = parseFloat(document.getElementById("amount1").dataset.rawValue || '0');
 
     // Precio numérico y texto
@@ -808,8 +812,8 @@ function showStep3Summary() {
     const tradePrice = parseFloat(tradePriceElem.dataset.price || '0');
     const tradePriceText = tradePriceElem.textContent;
 
-    const name = document.getElementById("user-name")?.value || 'No indicado';
-    const email = document.getElementById("user-email")?.value || 'No indicado';
+    const name = document.getElementById("nombre")?.value || 'No indicado';
+    const email = document.getElementById("correo")?.value || 'No indicado';
 
     // Calcular montos
     let payText, getText;
