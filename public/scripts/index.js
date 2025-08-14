@@ -896,7 +896,7 @@ document.getElementById("confirmReservation").addEventListener('click', async ()
     };
 
     try {
-        const response = await fetch('reserva.php', {
+        const response = await fetch('https://cambiosorion.cl/data/reserva.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(reservaData)
