@@ -369,38 +369,46 @@ function convertCurrency() {
     const currency2 = document.getElementById("currency2-text").textContent;
 
     const tradeInfo = document.getElementById("trade-info");
+    const tradePrice = document.getElementById("trade-price");
 
     if (amount1 && exchangeRates[currency1] && exchangeRates[currency2]) {
         let result;
         let actionText = '';
         let actionColor = '';
+        let priceText = '';
 
         if (currency1 === "CLP" && currency2 !== "CLP") {
             // Compra de divisa extranjera
             result = amount1 / exchangeRates[currency2].venta;
             actionText = `Estás comprando ${currency2}`;
             actionColor = 'text-green-600';
+            priceText = `Precio de venta: ${formatWithThousandsSeparator(exchangeRates[currency2].venta)} CLP`;
         } else if (currency2 === "CLP" && currency1 !== "CLP") {
             // Venta de divisa extranjera
             result = amount1 * exchangeRates[currency1].compra;
             actionText = `Estás vendiendo ${currency1}`;
             actionColor = 'text-red-600';
+            priceText = `Precio de compra: ${formatWithThousandsSeparator(exchangeRates[currency1].compra)} CLP`;
         } else {
             // Conversión entre divisas no CLP
             result = amount1 * exchangeRates[currency1].compra / exchangeRates[currency2].venta;
             actionText = `Estás cambiando ${currency1} a ${currency2}`;
             actionColor = 'text-blue-600';
+            priceText = `Tipo de cambio: ${formatWithThousandsSeparator(exchangeRates[currency1].compra / exchangeRates[currency2].venta)}`;
         }
 
         // Mostrar el resultado en amount2
         document.getElementById("amount2").value = formatWithThousandsSeparator(Math.round(result));
 
-        // Actualizar texto dinámico
+        // Actualizar texto dinámico y precio
         tradeInfo.textContent = actionText;
-        tradeInfo.className = `mb-4 text-right font-semibold text-lg ${actionColor}`;
+        tradeInfo.className = `mb-1 text-right font-semibold text-lg ${actionColor}`;
+        tradePrice.textContent = priceText;
+
     } else {
         document.getElementById("amount2").value = '';
         tradeInfo.textContent = '';
+        tradePrice.textContent = 'Precio: --';
     }
 }
 
