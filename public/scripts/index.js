@@ -754,6 +754,10 @@ document.getElementById('prevStep').addEventListener('click', () => {
     toggleButtons();
 });
 
+if (currentStep === 3) {
+    showStep3Summary();
+}
+
 function toggleButtons() {
     const nextBtn = document.getElementById('nextStep');
     const prevBtn = document.getElementById('prevStep');
