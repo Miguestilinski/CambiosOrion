@@ -741,6 +741,12 @@ window.toggleDropdown = toggleDropdown;
 
 document.getElementById('nextStep').addEventListener('click', () => {
     if (currentStep < totalSteps) {
+        // Guardar nombre/email justo antes de cambiar paso
+        if (currentStep === 2) {
+            window.reservaNombre = document.getElementById("user-name").value.trim();
+            window.reservaEmail = document.getElementById("user-email").value.trim();
+        }
+
         document.getElementById(`step-${currentStep}`).classList.add('hidden');
         currentStep++;
         document.getElementById(`step-${currentStep}`).classList.remove('hidden');
@@ -813,8 +819,8 @@ function showStep3Summary() {
 
     let currencyName, currencyIcon, payText, getText;
 
-    const name = document.getElementById("user-name")?.value || 'No indicado';
-    const email = document.getElementById("user-email")?.value || 'No indicado'
+    const name = window.reservaNombre || 'No indicado';
+    const email = window.reservaEmail || 'No indicado';
 
     // Calcular montos
     if (operationType === "Venta") {
