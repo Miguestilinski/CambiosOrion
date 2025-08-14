@@ -746,15 +746,17 @@ document.getElementById('nextStep').addEventListener('click', () => {
             const nameInput = document.getElementById("user-name");
             const emailInput = document.getElementById("user-email");
 
-            console.log("Name Input:", nameInput);
-            console.log("Email Input:", emailInput);
+            const getText = (el) => {
+                if (!el) return "";
+                if (typeof el.value === "string") return el.value.trim();
+                return el.textContent.trim();
+            };
 
-            window.reservaNombre = (nameInput && typeof nameInput.value === "string") 
-                ? nameInput.value.trim() 
-                : "";
-            window.reservaEmail = (emailInput && typeof emailInput.value === "string") 
-                ? emailInput.value.trim() 
-                : "";
+            window.reservaNombre = getText(nameInput);
+            window.reservaEmail = getText(emailInput);
+
+            console.log("Nombre capturado:", window.reservaNombre);
+            console.log("Email capturado:", window.reservaEmail);
         }
 
         document.getElementById(`step-${currentStep}`).classList.add('hidden');
