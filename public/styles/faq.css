@@ -1,6 +1,6 @@
 /* Estilos globales */
 body {
-    @apply font-sans bg-white;
+    @apply bg-white;
     margin: 0;
     padding: 0;
     background: rgba(0, 0, 0, 0.45) url('https://cambiosorion.cl/orionapp/assets/FondoOrion.jpg') no-repeat center top;
@@ -8,6 +8,13 @@ body {
     background-attachment: fixed;
     position: relative;
     z-index: 1;
+}
+
+/* Aplicar Inter globalmente */
+body, html, input, textarea, button, select {
+    font-family: 'Inter';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 /* Degradado solo en la imagen de fondo */
