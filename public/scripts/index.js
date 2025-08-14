@@ -746,14 +746,8 @@ document.getElementById('nextStep').addEventListener('click', () => {
             const nameInput = document.getElementById("user-name");
             const emailInput = document.getElementById("user-email");
 
-            const getText = (el) => {
-                if (!el) return "";
-                if (typeof el.value === "string") return el.value.trim();
-                return el.textContent.trim();
-            };
-
-            window.reservaNombre = getText(nameInput);
-            window.reservaEmail = getText(emailInput);
+            window.reservaNombre = nameInput.value.trim();
+            window.reservaEmail = emailInput.value.trim();
 
             console.log("Nombre capturado:", window.reservaNombre);
             console.log("Email capturado:", window.reservaEmail);
