@@ -889,10 +889,10 @@ document.getElementById("confirmReservation").addEventListener('click', async ()
         fecha: document.getElementById("summary-date").textContent,
         hora: document.getElementById("summary-time").textContent,
         operacion: document.getElementById("summary-operation").textContent,
-        divisa_id: document.getElementById("currency1-text").textContent.trim(), // ID de divisa
-        total: parseInt(document.getElementById("summary-pay").textContent.replace(/\D/g,'')), // solo números
+        divisa_id: document.getElementById("currency1-text").textContent.trim(),
+        total: parseInt(document.getElementById("summary-pay").textContent.replace(/\D/g,'')),
         tasa_cambio: parseFloat(document.getElementById("trade-price").dataset.price),
-        monto: parseInt(document.getElementById("summary-get").textContent.replace(/\D/g,'')) // solo números
+        monto: parseInt(document.getElementById("summary-get").textContent.replace(/\D/g,''))
     };
 
     try {
@@ -902,7 +902,17 @@ document.getElementById("confirmReservation").addEventListener('click', async ()
             body: JSON.stringify(reservaData)
         });
 
-        const result = await response.json();
+        // Leer como texto crudo
+        const rawText = await response.text();
+        console.log("🔎 Respuesta cruda del servidor:", rawText);
+
+        let result;
+        try {
+            result = JSON.parse(rawText);
+        } catch (e) {
+            console.warn("⚠️ La respuesta no es JSON válido, mostrando crudo en consola.");
+            return;
+        }
 
         if(result.success){
             alert("✅ ¡Reserva confirmada! Revisa tu correo con el QR.");
@@ -911,7 +921,7 @@ document.getElementById("confirmReservation").addEventListener('click', async ()
             alert("❌ Error al confirmar reserva: " + result.message);
         }
     } catch (error) {
-        console.error(error);
+        console.error("❌ Error en fetch:", error);
         alert("❌ Error en la comunicación con el servidor.");
     }
 });
