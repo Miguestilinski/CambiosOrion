@@ -883,6 +883,9 @@ function showStep3Summary() {
 
 // Evento click para confirmar
 document.getElementById("confirmReservation").addEventListener('click', async () => {
+    const confirmBtn = document.getElementById("confirmReservation");
+    const statusText = document.getElementById("reservation-status");
+
     const reservaData = {
         nombre: window.reservaNombre,
         email: window.reservaEmail,
