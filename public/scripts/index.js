@@ -911,18 +911,25 @@ document.getElementById("confirmReservation").addEventListener('click', async ()
             result = JSON.parse(rawText);
         } catch (e) {
             console.warn("⚠️ La respuesta no es JSON válido, mostrando crudo en consola.");
+            statusText.textContent = "❌ Error en el servidor, intentelo más tarde.";
+            statusText.style.color = "red";
             return;
         }
 
         if(result.success){
-            alert("✅ ¡Reserva confirmada! Revisa tu correo con el QR.");
-            document.getElementById("reservation-status").textContent = "Tu reserva está activa hasta las 17:00 de hoy.";
+            // ✅ Éxito
+            confirmBtn.style.display = "none"; // ocultar botón
+            statusText.textContent = "✅ Reserva Enviada";
+            statusText.style.color = "green";
         } else {
-            alert("❌ Error al confirmar reserva: " + result.message);
+            // ❌ Error de servidor
+            statusText.textContent = "❌ Error en el servidor, intentelo más tarde.";
+            statusText.style.color = "red";
         }
     } catch (error) {
         console.error("❌ Error en fetch:", error);
-        alert("❌ Error en la comunicación con el servidor.");
+        statusText.textContent = "❌ Error en la comunicación con el servidor.";
+        statusText.style.color = "red";
     }
 });
 
