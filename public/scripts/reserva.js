@@ -15,7 +15,7 @@ async function cargarReserva() {
 
     try {
     // Petición AJAX al backend
-    const response = await fetch(`https://cambiosorion.cl/data/reserva.php?id=${id}`);
+    const response = await fetch(`https://cambiosorion.cl/data/detalle-reserva.php?id=${id}`);
     if (!response.ok) throw new Error("Error al obtener los datos");
 
     const data = await response.json(); // asumo que devuelves JSON
