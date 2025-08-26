@@ -872,7 +872,7 @@ function showStep3Summary() {
     const confirmBtn = document.getElementById("confirmReservation");
     const statusText = document.getElementById("reservation-status");
 
-    if (currentHour >= 9 && currentHour < 18) {
+    if (currentHour >= 1 && currentHour < 24) {
         confirmBtn.disabled = false;
         statusText.textContent = "✅ Puedes confirmar tu reserva.";
     } else {
