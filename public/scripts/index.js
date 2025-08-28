@@ -854,7 +854,7 @@ function showStep3Summary() {
     // Fecha y hora actual
     const now = new Date();
     const date = now.toLocaleDateString('es-CL');
-    const time = now.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
+    const time = now.toLocaleTimeString('es-CL', { hour12: false, hour: '2-digit', minute: '2-digit' });
 
     // Actualizar DOM
     document.getElementById("summary-operation").textContent = operationType;
@@ -892,7 +892,7 @@ document.getElementById("confirmReservation").addEventListener('click', async ()
         fecha: document.getElementById("summary-date").textContent,
         hora: document.getElementById("summary-time").textContent,
         operacion: document.getElementById("summary-operation").textContent,
-        divisa_id: document.getElementById("currency1-text").textContent.trim(),
+        divisa: document.getElementById("currency1-text").textContent.trim(),
         total: parseInt(document.getElementById("summary-pay").textContent.replace(/\D/g,'')),
         tasa_cambio: parseFloat(document.getElementById("trade-price").dataset.price),
         monto: parseInt(document.getElementById("summary-get").textContent.replace(/\D/g,''))
