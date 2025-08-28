@@ -886,13 +886,22 @@ document.getElementById("confirmReservation").addEventListener('click', async ()
     const confirmBtn = document.getElementById("confirmReservation");
     const statusText = document.getElementById("reservation-status");
 
+    let divisaCodigo;
+    if(operationType === "Compra") {
+        divisaCodigo = currency1; // divisa que compras (extranjera)
+    } else if(operationType === "Venta") {
+        divisaCodigo = currency2; // divisa que vendes (extranjera)
+    } else {
+        divisaCodigo = currency1; // caso divisa-divisa, elegir la principal
+    }
+
     const reservaData = {
         nombre: window.reservaNombre,
         email: window.reservaEmail,
         fecha: document.getElementById("summary-date").textContent,
         hora: document.getElementById("summary-time").textContent,
-        operacion: document.getElementById("summary-operation").textContent,
-        divisa: document.getElementById("currency1-text").textContent.trim(),
+        operacion: operationType,
+        divisa: divisaCodigo,
         total: parseInt(document.getElementById("summary-pay").textContent.replace(/\D/g,'')),
         tasa_cambio: parseFloat(document.getElementById("trade-price").dataset.price),
         monto: parseInt(document.getElementById("summary-get").textContent.replace(/\D/g,''))
