@@ -879,6 +879,11 @@ function showStep3Summary() {
         confirmBtn.disabled = true;
         statusText.textContent = "⛔ Fuera de horario de atención. No puedes confirmar la reserva.";
     }
+
+    window.operationType = operationType;
+    window.currency1 = currency1;
+    window.currency2 = currency2;
+
 }
 
 // Evento click para confirmar
@@ -887,12 +892,12 @@ document.getElementById("confirmReservation").addEventListener('click', async ()
     const statusText = document.getElementById("reservation-status");
 
     let divisaCodigo;
-    if(operationType === "Compra") {
-        divisaCodigo = currency1; // divisa que compras (extranjera)
-    } else if(operationType === "Venta") {
-        divisaCodigo = currency2; // divisa que vendes (extranjera)
+    if(window.operationType === "Compra") {
+        divisaCodigo = window.currency1;
+    } else if(window.operationType === "Venta") {
+        divisaCodigo = window.currency2;
     } else {
-        divisaCodigo = currency1; // caso divisa-divisa, elegir la principal
+        divisaCodigo = window.currency1;
     }
 
     const reservaData = {
