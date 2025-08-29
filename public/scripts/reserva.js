@@ -18,7 +18,14 @@ async function cargarReserva() {
         const response = await fetch(`https://cambiosorion.cl/data/detalle-reserva.php?code=${code}`);
         if (!response.ok) throw new Error("Error al obtener los datos");
 
-        const data = await response.json(); // asumo que devuelves JSON
+        const text = await response.text();
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch (e) {
+            console.error("Respuesta no es JSON válido:", text);
+            throw e;
+        }
 
         // Renderizar los datos
         container.innerHTML = `
