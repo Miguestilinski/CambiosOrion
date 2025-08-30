@@ -407,6 +407,12 @@ function convertCurrency() {
         tradePrice.textContent = priceText;
         tradePrice.dataset.price = priceNumber;
 
+        // 🔑 Guardar valores globalmente para usarlos después
+        window.lastAmountCLP = currency1 === "CLP" ? amount1 : (currency2 === "CLP" ? result : 0);
+        window.lastCurrency1 = currency1;
+        window.lastCurrency2 = currency2;
+
+
     } else {
         document.getElementById("amount2").value = '';
         tradeInfo.textContent = '';
@@ -751,8 +757,8 @@ document.getElementById('nextStep').addEventListener('click', () => {
             window.reservaNombre = nameInput?.value?.trim() || "";
             window.reservaEmail = emailInput?.value?.trim() || "";
 
-            // Calcular equivalente en USD
-            const amountCLP = parseFloat(document.getElementById("amount1").dataset.rawValue || '0');
+            // 🔑 Usar monto guardado desde convertCurrency()
+            const amountCLP = window.lastAmountCLP || 0;
             const usdRate = exchangeRates["USD"]?.venta || 0;
             const equivalenteUSD = usdRate ? (amountCLP / usdRate) : 0;
 
