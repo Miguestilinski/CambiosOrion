@@ -412,7 +412,6 @@ function convertCurrency() {
         window.lastCurrency1 = currency1;
         window.lastCurrency2 = currency2;
 
-
     } else {
         document.getElementById("amount2").value = '';
         tradeInfo.textContent = '';
@@ -752,39 +751,45 @@ document.getElementById('nextStep').addEventListener('click', () => {
             const nameInput = document.getElementById("reserva-nombre");
             const emailInput = document.getElementById("reserva-email");
             const phoneInput = document.getElementById("reserva-fono");
-            const phoneContainer = document.getElementById("telefono-container");
 
             window.reservaNombre = nameInput?.value?.trim() || "";
             window.reservaEmail = emailInput?.value?.trim() || "";
-
-            // 🔑 Usar monto guardado desde convertCurrency()
-            const amountCLP = window.lastAmountCLP || 0;
-            const usdRate = exchangeRates["USD"]?.venta || 0;
-            const equivalenteUSD = usdRate ? (amountCLP / usdRate) : 0;
 
             if (!window.reservaNombre || !window.reservaEmail) {
                 alert("Por favor, completa tu nombre y correo antes de continuar.");
                 return;
             }
 
-            // Si excede 5000 USD, mostrar input de teléfono
-            if (equivalenteUSD > 5000) {
-                phoneContainer.classList.remove("hidden");
+            // Si teléfono estaba visible, asegurarse de que lo llenó
+            if (!document.getElementById("telefono-container").classList.contains("hidden")) {
                 window.reservaTelefono = phoneInput?.value?.trim() || "";
-
                 if (!window.reservaTelefono) {
                     alert("Por favor, ingresa tu número de teléfono para continuar.");
                     return;
                 }
             } else {
-                phoneContainer.classList.add("hidden"); // aseguramos que no aparezca
                 window.reservaTelefono = "";
             }
         }
 
+        // Ocultar step actual y mostrar el siguiente
         document.getElementById(`step-${currentStep}`).classList.add('hidden');
         currentStep++;
         document.getElementById(`step-${currentStep}`).classList.remove('hidden');
+
+        // 🔑 Al entrar en el Paso 2, decidir si mostrar el input teléfono
+        if (currentStep === 2) {
+            const amountCLP = window.lastAmountCLP || 0;
+            const usdRate = exchangeRates["USD"]?.venta || 0;
+            const equivalenteUSD = usdRate ? (amountCLP / usdRate) : 0;
+
+            const phoneContainer = document.getElementById("telefono-container");
+            if (equivalenteUSD > 5000) {
+                phoneContainer.classList.remove("hidden");
+            } else {
+                phoneContainer.classList.add("hidden");
+            }
+        }
     }
     toggleButtons();
 });
