@@ -745,13 +745,31 @@ document.getElementById('nextStep').addEventListener('click', () => {
         if (currentStep === 2) {
             const nameInput = document.getElementById("reserva-nombre");
             const emailInput = document.getElementById("reserva-email");
+            const phoneInput = document.getElementById("reserva-fono");
+            const phoneContainer = document.getElementById("telefono-container");
 
             window.reservaNombre = nameInput?.value?.trim() || "";
             window.reservaEmail = emailInput?.value?.trim() || "";
 
+            // Calcular monto equivalente en USD
+            const amountCLP = parseFloat(document.getElementById("amount1").dataset.rawValue || '0');
+            const usdRate = exchangeRates["USD"]?.venta || 0;
+            const equivalenteUSD = usdRate ? (amountCLP / usdRate) : 0;
+
             if (!window.reservaNombre || !window.reservaEmail) {
                 alert("Por favor, completa tu nombre y correo antes de continuar.");
                 return;
+            }
+
+            // Si es mayor a 5000 USD → pedir teléfono
+            if (equivalenteUSD > 5000) {
+                phoneContainer.classList.remove("hidden");
+                window.reservaTelefono = phoneInput?.value?.trim() || "";
+
+                if (!window.reservaTelefono) {
+                    alert("Por favor, ingresa tu número de teléfono para continuar.");
+                    return;
+                }
             }
         }
 
@@ -866,6 +884,21 @@ function showStep3Summary() {
     document.getElementById("summary-email").textContent = email;
     document.getElementById("summary-date").textContent = date;
     document.getElementById("summary-time").textContent = time;
+
+    const telefono = window.reservaTelefono || 'No indicado';
+    document.getElementById("summary-phone").textContent = telefono;
+
+    // Verificar si excede límite
+    const usdRate = exchangeRates["USD"]?.venta || 0;
+    const amountCLP = parseFloat(document.getElementById("amount1").dataset.rawValue || '0');
+    const equivalenteUSD = usdRate ? (amountCLP / usdRate) : 0;
+
+    if (equivalenteUSD > 5000) {
+        confirmBtn.style.display = "none"; // ocultar botón
+        statusText.textContent = "⚠️ Operación mayor a 5.000 USD. Un ejecutivo te contactará para confirmar la reserva.";
+        statusText.style.color = "orange";
+        return; // 👈 salir aquí para que no siga
+    }
 
     // Validar horario
     const currentHour = now.getHours();
