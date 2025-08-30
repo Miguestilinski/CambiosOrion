@@ -903,26 +903,36 @@ function showStep3Summary() {
     const phoneSummary = document.getElementById("summary-phone-container");
     document.getElementById("summary-phone").textContent = telefono || "--";
 
-    // Si es mayor a 5000 USD → mostrar resumen con teléfono
     const usdRate = exchangeRates["USD"]?.venta || 0;
     const amountCLP = parseFloat(document.getElementById("amount1").dataset.rawValue || '0');
     const equivalenteUSD = usdRate ? (amountCLP / usdRate) : 0;
 
+    const confirmBtn = document.getElementById("confirmReservation");
+    const statusText = document.getElementById("reservation-status");
+    const instrucciones = document.getElementById("reservation-instructions");
+
     if (equivalenteUSD > 5000) {
+        // Mostrar teléfono
         phoneSummary.classList.remove("hidden");
-        confirmBtn.style.display = "none"; 
-        statusText.textContent = "⚠️ Operación mayor a 5.000 USD. Un ejecutivo te contactará para confirmar la reserva.";
+
+        // Ocultar instrucciones normales
+        instrucciones.classList.add("hidden");
+
+        // Ocultar botón confirmar
+        confirmBtn.style.display = "none";
+
+        // Mostrar mensaje especial
+        statusText.textContent = "⚠️ Tu operación supera los 5.000 USD. Un ejecutivo de Cambios Orion te contactará para confirmar tu reserva.";
         statusText.style.color = "orange";
         return;
     } else {
-        phoneSummary.classList.add("hidden"); // esconder si no aplica
+        phoneSummary.classList.add("hidden");
+        instrucciones.classList.remove("hidden");
+        confirmBtn.style.display = "inline-block";
     }
 
     // Validar horario
     const currentHour = now.getHours();
-    const confirmBtn = document.getElementById("confirmReservation");
-    const statusText = document.getElementById("reservation-status");
-
     if (currentHour >= 1 && currentHour < 24) {
         confirmBtn.disabled = false;
         statusText.textContent = "✅ Puedes confirmar tu reserva.";
@@ -934,7 +944,6 @@ function showStep3Summary() {
     window.operationType = operationType;
     window.currency1 = currency1;
     window.currency2 = currency2;
-
 }
 
 // Evento click para confirmar
