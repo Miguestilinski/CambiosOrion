@@ -415,7 +415,7 @@ function convertCurrency() {
     } else {
         document.getElementById("amount2").value = '';
         tradeInfo.textContent = '';
-        tradePrice.textContent = '--';
+        tradePrice.textContent = '';
         tradePrice.dataset.price = '0';
     }
 }
@@ -744,6 +744,19 @@ function toggleDropdown(dropdownId, event) {
 
 window.toggleDropdown = toggleDropdown;
 
+function updateStepper() {
+    for (let i = 1; i <= totalSteps; i++) {
+        const stepElem = document.getElementById(`stepper-${i}`);
+        if (i === currentStep) {
+            stepElem.classList.add("text-blue-600", "font-semibold");
+            stepElem.classList.remove("text-gray-500");
+        } else {
+            stepElem.classList.remove("text-blue-600", "font-semibold");
+            stepElem.classList.add("text-gray-500");
+        }
+    }
+}
+
 document.getElementById('nextStep').addEventListener('click', () => {
     if (currentStep < totalSteps) {
         // Guardar nombre/email justo antes de cambiar paso
@@ -809,6 +822,8 @@ function toggleButtons() {
     const btnContainer = document.getElementById('stepperButtons'); // el div que contiene los botones
 
     prevBtn.classList.toggle('hidden', currentStep === 1);
+
+    updateStepper();
 
     // Cambiar texto del botón según el paso
     if (currentStep === 1) {
