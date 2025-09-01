@@ -924,6 +924,7 @@ function showStep3Summary() {
     const equivalenteUSD = usdRate ? (amountCLP / usdRate) : 0;
 
     const confirmBtn = document.getElementById("confirmReservation");
+    const contactBtn = document.getElementById("contactExecutive");
     const statusText = document.getElementById("reservation-status");
     const instrucciones = document.getElementById("reservation-instructions");
 
@@ -936,6 +937,7 @@ function showStep3Summary() {
 
         // Ocultar botón confirmar
         confirmBtn.style.display = "none";
+        contactBtn.classList.remove("hidden");
 
         // Mostrar mensaje especial
         statusText.textContent = "⚠️ Tu operación supera los 5.000 USD. Un ejecutivo de Cambios Orion te contactará para confirmar tu reserva.";
@@ -945,6 +947,7 @@ function showStep3Summary() {
         phoneSummary.classList.add("hidden");
         instrucciones.classList.remove("hidden");
         confirmBtn.style.display = "inline-block";
+        contactBtn.classList.add("hidden");
     }
 
     // Validar horario
@@ -1016,6 +1019,67 @@ document.getElementById("confirmReservation").addEventListener('click', async ()
             statusText.style.color = "green";
         } else {
             // ❌ Error de servidor
+            statusText.textContent = "❌ Error en el servidor, intentelo más tarde.";
+            statusText.style.color = "red";
+        }
+    } catch (error) {
+        console.error("❌ Error en fetch:", error);
+        statusText.textContent = "❌ Error en la comunicación con el servidor.";
+        statusText.style.color = "red";
+    }
+});
+
+document.getElementById("contactExecutive").addEventListener('click', async () => {
+    const contactBtn = document.getElementById("contactExecutive");
+    const statusText = document.getElementById("reservation-status");
+
+    let divisaCodigo;
+    if(window.operationType === "Compra") {
+        divisaCodigo = window.currency1;
+    } else if(window.operationType === "Venta") {
+        divisaCodigo = window.currency2;
+    } else {
+        divisaCodigo = window.currency1;
+    }
+
+    const reservaData = {
+        nombre: window.reservaNombre,
+        email: window.reservaEmail,
+        telefono: window.reservaTelefono, // ✅ aseguramos que lo reciba
+        fecha: document.getElementById("summary-date").textContent,
+        hora: document.getElementById("summary-time").textContent,
+        operacion: window.operationType,
+        divisa: divisaCodigo,
+        total: parseInt(document.getElementById("summary-pay").textContent.replace(/\D/g,'')),
+        tasa_cambio: parseFloat(document.getElementById("trade-price").dataset.price),
+        monto: parseInt(document.getElementById("summary-get").textContent.replace(/\D/g,'')),
+        requiereEjecutivo: true // 🔑 bandera para el backend
+    };
+
+    try {
+        const response = await fetch('https://cambiosorion.cl/data/reserva.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(reservaData)
+        });
+
+        const rawText = await response.text();
+        console.log("🔎 Respuesta cruda del servidor (ejecutivo):", rawText);
+
+        let result;
+        try {
+            result = JSON.parse(rawText);
+        } catch (e) {
+            statusText.textContent = "❌ Error en el servidor, intentelo más tarde.";
+            statusText.style.color = "red";
+            return;
+        }
+
+        if(result.success){
+            contactBtn.style.display = "none"; 
+            statusText.textContent = "✅ Solicitud enviada, un ejecutivo se contactará contigo.";
+            statusText.style.color = "green";
+        } else {
             statusText.textContent = "❌ Error en el servidor, intentelo más tarde.";
             statusText.style.color = "red";
         }
