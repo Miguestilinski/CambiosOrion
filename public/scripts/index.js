@@ -920,8 +920,17 @@ function showStep3Summary() {
     document.getElementById("summary-phone").textContent = telefono || "--";
 
     const usdRate = exchangeRates["USD"]?.venta || 0;
-    const amountCLP = parseFloat(document.getElementById("amount1").dataset.rawValue || '0');
-    const equivalenteUSD = usdRate ? (amountCLP / usdRate) : 0;
+    let equivalenteUSD = 0;
+
+    if (operationType === "Venta") {
+        equivalenteUSD = usdRate ? (amount / usdRate) : 0; 
+    } else if (operationType === "Compra") {
+        if (currency1 === "USD") {
+            equivalenteUSD = amount; 
+        } else {
+            equivalenteUSD = usdRate ? ((amount * tradePrice) / usdRate) : 0;
+        }
+    }
 
     const confirmBtn = document.getElementById("confirmReservation");
     const contactBtn = document.getElementById("contactExecutive");
