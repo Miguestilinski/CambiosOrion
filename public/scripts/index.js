@@ -13,6 +13,7 @@ function initializePage() {
     fetchIndicators();
     fetchClosingRates();
     updateLastUpdatedTimestamp();
+    updateStepper();
 }
 
 function loadCurrenciesWithSSE() {
