@@ -1096,7 +1096,7 @@ document.getElementById("contactExecutive").addEventListener('click', async () =
     };
 
     try {
-        const response = await fetch('https://cambiosorion.cl/data/contactar-orion.php', {
+        const response = await fetch('https://cambiosorion.cl/data/contacto-orion.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(reservaData)
