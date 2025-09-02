@@ -941,20 +941,43 @@ function showStep3Summary() {
         // Mostrar teléfono
         phoneSummary.classList.remove("hidden");
 
-        // Ocultar instrucciones normales
-        instrucciones.classList.add("hidden");
+        // 🔑 Actualizar el bloque de instrucciones con texto especial
+        instrucciones.classList.remove("hidden");
+        instrucciones.innerHTML = `
+            <p class="font-semibold">⚠️ Operación mayor a 5.000 USD</p>
+            <p>Tu solicitud será enviada a un ejecutivo de Cambios Orion.</p>
+            <p class="mt-2">📞 Un ejecutivo se pondrá en contacto contigo al teléfono registrado 
+            para confirmar la reserva y validar la operación.</p>
+            <p class="mt-2">📧 Una vez confirmada, recibirás un correo con tu código QR 
+            para presentar en nuestra sucursal.</p>
+            <p class="mt-2 font-semibold">⏰ Recuerda que la reserva es válida solo hasta el cierre del día (17:00 hrs).</p>
+        `;
 
-        // Ocultar botón confirmar
+        // Ocultar botón confirmar y mostrar botón ejecutivo
         confirmBtn.style.display = "none";
         contactBtn.classList.remove("hidden");
 
-        // Mostrar mensaje especial
-        statusText.textContent = "⚠️ Tu operación supera los 5.000 USD. Un ejecutivo de Cambios Orion te contactará para confirmar tu reserva.";
-        statusText.style.color = "orange";
+        statusText.textContent = "";
         return;
     } else {
         phoneSummary.classList.add("hidden");
+
+        // Restaurar instrucciones normales
         instrucciones.classList.remove("hidden");
+        instrucciones.innerHTML = `
+            <p class="font-semibold">📍 Lugar de atención:</p>
+            <p>Cambios Orion - Agustinas 1035, Oficina 13</p>
+
+            <p class="mt-2 font-semibold">🕒 Horario de atención:</p>
+            <p>Lunes a Viernes de <strong>09:00 a 17:00 hrs</strong>.</p>
+
+            <p class="mt-2">⚠️ La reserva es <strong>válida solo hasta el cierre del día</strong>. 
+            A las 17:00 hrs deja de ser válida, y al día hábil siguiente deberás generar una nueva, 
+            ya que los precios pueden cambiar.</p>
+
+            <p class="mt-2">📧 Recibirás un correo con un código QR que deberás mostrar en el local para hacer efectiva la operación.</p>
+        `;
+
         confirmBtn.style.display = "inline-block";
         contactBtn.classList.add("hidden");
     }
