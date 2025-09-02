@@ -1095,6 +1095,8 @@ document.getElementById("contactExecutive").addEventListener('click', async () =
         requiereEjecutivo: true // 🔑 bandera para el backend
     };
 
+    console.log("📦 Datos que envío al backend:", reservaData);
+
     try {
         const response = await fetch('https://cambiosorion.cl/data/contacto-orion.php', {
             method: 'POST',
