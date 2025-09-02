@@ -965,6 +965,11 @@ function showStep3Summary() {
             confirmBtn.disabled = true;
             statusText.textContent = "⛔ Fuera de horario de atención. No puedes solicitar la reserva.";
         }
+
+        window.operationType = operationType;
+        window.currency1 = currency1;
+        window.currency2 = currency2;
+        
         return;
     } else {
         phoneSummary.classList.add("hidden");
