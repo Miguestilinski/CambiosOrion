@@ -957,7 +957,14 @@ function showStep3Summary() {
         confirmBtn.style.display = "none";
         contactBtn.classList.remove("hidden");
 
-        statusText.textContent = "";
+        const currentHour = now.getHours();
+        if (currentHour >= 1 && currentHour < 24) {
+            confirmBtn.disabled = false;
+            statusText.textContent = "✅ Puedes solicitar tu reserva.";
+        } else {
+            confirmBtn.disabled = true;
+            statusText.textContent = "⛔ Fuera de horario de atención. No puedes solicitar la reserva.";
+        }
         return;
     } else {
         phoneSummary.classList.add("hidden");
@@ -1077,7 +1084,7 @@ document.getElementById("contactExecutive").addEventListener('click', async () =
     const reservaData = {
         nombre: window.reservaNombre,
         email: window.reservaEmail,
-        telefono: window.reservaTelefono, // ✅ aseguramos que lo reciba
+        telefono: window.reservaTelefono,
         fecha: document.getElementById("summary-date").textContent,
         hora: document.getElementById("summary-time").textContent,
         operacion: window.operationType,
@@ -1089,7 +1096,7 @@ document.getElementById("contactExecutive").addEventListener('click', async () =
     };
 
     try {
-        const response = await fetch('https://cambiosorion.cl/data/reserva.php', {
+        const response = await fetch('https://cambiosorion.cl/data/contactar-orion.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(reservaData)
