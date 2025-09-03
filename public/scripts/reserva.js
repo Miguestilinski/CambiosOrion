@@ -29,6 +29,11 @@ async function cargarReserva() {
     const code = getParam("code");
     const container = document.getElementById("reserva-container");
 
+    let contenido = code 
+        ? `<h2 class="text-2xl font-semibold mb-4">Reserva ${code}</h2>` 
+        : '';
+
+
     if (!code) {
         container.innerHTML = "<p class='text-red-500'>❌ No se especificó un código de reserva.</p>";
         return;
@@ -48,14 +53,12 @@ async function cargarReserva() {
         }
 
         if (data.estado === "Expirada") {
-            container.innerHTML = `<p class="text-red-500 text-lg font-semibold">⚠️ Lo sentimos, esta reserva ha expirado.</p>`;
+            container.innerHTML = contenido + `<p class="text-red-500 text-lg font-semibold">⚠️ Lo sentimos, esta reserva ha expirado.</p>`;
             return;
         }
 
         // Renderizar con estilos
-        container.innerHTML = `
-            <h2 class="text-2xl font-semibold mb-4">Reserva ${data.codigo_reserva}</h2>
-            
+        container.innerHTML = contenido + `
             <div class="space-y-2">
                 <p><span class="font-medium">👤 Cliente:</span> ${data.cliente}</p>
                 <p><span class="font-medium">📅 Fecha:</span> ${formatFecha(data.fecha)}</p>
@@ -69,7 +72,7 @@ async function cargarReserva() {
             </div>
         `;
     } catch (error) {
-        container.innerHTML = `<p class="text-red-500">⚠️ Error al cargar la reserva.</p>`;
+        container.innerHTML = contenido + `<p class="text-red-500">⚠️ Error al cargar la reserva.</p>`;
         console.error(error);
     }
 }
