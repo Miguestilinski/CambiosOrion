@@ -12,17 +12,17 @@
     <link rel="icon" href="https://cambiosorion.cl/orionapp/icons/IsotipoOrion-blue.svgon-blue.svg" type="image/png">
 </head>
 
-<body>
+<body class="min-h-screen flex flex-col">
     <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js"></script>
+
     <header>
         <!-- Logo y Nombre -->
         <div class="header-logo">
             <a href="index">
                 <img src="/orionapp/assets/LogoOrion-white.svg" alt="Logo Cambios Orion" class="logo">
             </a>
- 
         </div>
-    
+
         <!-- Botones para versión móvil -->
         <div class="mobile-buttons">
             <button class="menu-button" id="nav-menu-button">
@@ -32,7 +32,7 @@
                 <img src="/orionapp/icons/profile-white.png" alt="Sesión">
             </button>
         </div>
-    
+
         <!-- Menús desplegables para móvil -->
         <div id="nav-mobile-menu" class="mobile-menu hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
             <ul class="py-2 text-sm text-gray-700">
@@ -48,7 +48,7 @@
                 <li><a href="contacto" class="block px-4 py-2 hover:bg-gray-100">Contacto</a></li>
             </ul>
         </div>
-    
+
         <div class="mobile-menu hidden bg-white rounded-lg shadow w-44" id="session-mobile-menu">
             <div id="guest-actions-mobile" class="divide-y divide-gray-100" style="display:none;">
                 <ul class="py-2 text-sm text-gray-700">
@@ -74,7 +74,7 @@
                 </ul>
             </div>
         </div>
-    
+
         <!-- Menú de navegación para escritorio -->
         <nav>
             <ul>
@@ -84,7 +84,7 @@
                 <li><a href="contacto">Contacto</a></li>
             </ul>
         </nav>
-    
+
         <!-- Acciones para escritorio -->
         <div class="header-actions">
             <!-- User actions -->
@@ -116,34 +116,37 @@
                 <a href="registro" class="register-button">Registrarse</a>
             </div>
         </div>
-    </header>         
+    </header>
 
     <div class="header-divider"></div>
-    <div class="main-content flex flex-col items-center px-4 py-8">
-        <main>
+
+    <!-- CONTENIDO PRINCIPAL: se expande para empujar el footer abajo -->
+    <div class="main-content flex-1 w-full flex flex-col items-center px-4 py-8">
+        <main class="w-full">
             <!-- Banner -->
             <div class="banner overflow-hidden shadow-lg">
                 <img 
-                class="front-orion object-cover w-full" 
-                src="/orionapp/assets/Front-Orion.jpg" 
-                alt="Frontis Orion"
-                width="1280" 
-                height="530">
+                    class="front-orion object-cover w-full" 
+                    src="/orionapp/assets/Front-Orion.jpg" 
+                    alt="Frontis Orion"
+                    width="1280" 
+                    height="530">
             </div>
-      
-          <!-- Texto de presentación -->
-          <div class="mt-12 mb-12 text-center text-white">
-            <h1 class="text-3xl mb-6 font-bold">¿Quiénes Somos?</h1>
-            <p class="text-up bg-white text-gray-700 mt-6 p-4 leading-relaxed">
-              En <strong>Orion Financial Group SPA</strong>, nos especializamos en ofrecer un servicio confiable y seguro de cambio de divisas. 
-              Con años de experiencia en el mercado financiero, nuestra misión es brindar a nuestros clientes la mejor tasa de cambio, 
-              junto con un servicio personalizado que prioriza la transparencia y la satisfacción. 
-            </p>
-            <p class="text-down bg-white text-gray-700 p-4 leading-relaxed">
-              Escógenos porque somos sinónimo de confianza, eficiencia y compromiso. 
-              Ya sea que necesites cambiar moneda para viajar o realizar operaciones comerciales, en Cambios Orion siempre encontrarás una solución a tu medida.
-            </p>
-          </div>
+
+            <!-- Texto de presentación -->
+            <div class="mt-12 mb-12 text-center text-white">
+                <h1 class="text-3xl mb-6 font-bold">¿Quiénes Somos?</h1>
+                <p class="text-up bg-white text-gray-700 mt-6 p-4 leading-relaxed">
+                    En <strong>Orion Financial Group SPA</strong>, nos especializamos en ofrecer un servicio confiable y seguro de cambio de divisas. 
+                    Con años de experiencia en el mercado financiero, nuestra misión es brindar a nuestros clientes la mejor tasa de cambio, 
+                    junto con un servicio personalizado que prioriza la transparencia y la satisfacción. 
+                </p>
+                <p class="text-down bg-white text-gray-700 p-4 leading-relaxed">
+                    Escógenos porque somos sinónimo de confianza, eficiencia y compromiso. 
+                    Ya sea que necesites cambiar moneda para viajar o realizar operaciones comerciales, en Cambios Orion siempre encontrarás una solución a tu medida.
+                </p>
+            </div>
+
             <!-- Misión y Visión -->
             <div class="mt-12 mb-12 text-center text-white">
                 <h2 class="text-2xl font-bold">Nuestra Filosofía</h2>
@@ -152,21 +155,23 @@
                     <div class="bg-white text-gray-700 p-4 rounded-lg shadow-md">
                         <h3 class="text-xl font-bold">Misión</h3>
                         <p class="mt-4 text-sm leading-relaxed">
-                        Ofrecer un servicio confiable y seguro de cambio de divisas, priorizando la transparencia y satisfacción de nuestros clientes en cada operación.
+                            Ofrecer un servicio confiable y seguro de cambio de divisas, priorizando la transparencia y satisfacción de nuestros clientes en cada operación.
                         </p>
                     </div>
                     <!-- Visión -->
                     <div class="bg-white text-gray-700 p-4 rounded-lg shadow-md">
                         <h3 class="text-xl font-bold">Visión</h3>
                         <p class="mt-4 text-sm leading-relaxed">
-                        Convertirnos en el referente número uno en el mercado financiero nacional, reconocido por nuestra eficiencia, confianza y compromiso con la excelencia.
+                            Convertirnos en el referente número uno en el mercado financiero nacional, reconocido por nuestra eficiencia, confianza y compromiso con la excelencia.
                         </p>
                     </div>
                 </div>
             </div>
+
             <!-- Opiniones de Clientes -->
             <script src="https://static.elfsight.com/platform/platform.js" async></script>
             <div class="elfsight-app-792662a7-26ae-40e4-994e-f94a3e1f6780" data-elfsight-app-lazy></div>
+
             <!-- Mapa de Ubicación -->
             <div class="mt-4 mx-auto">
                 <h2 class="text-2xl font-bold text-center text-white">Encuéntranos Aquí</h2>
@@ -182,75 +187,75 @@
                     </iframe>
                 </div>
             </div>
+
             <!-- Botón flotante de WhatsApp -->
             <a href="https://wa.me/+56971846048?text=Hola,%20necesito%20consultar%20con%20un%20ejecutivo." 
-            class="fab fixed text-white rounded-full p-4 shadow-lg transition-all">
+               class="fab fixed bottom-6 right-6 z-50 bg-green-600 hover:bg-green-700 text-white rounded-full p-3 shadow-lg transition-all">
                 <img src="https://cambiosorion.cl/orionapp/icons/whatsapp-white.png" alt="WhatsApp" class="w-10 h-10">
             </a>
         </main>
-    </div>            
+    </div>
 
-    <footer>
-        <div class="footer-container">
+    <!-- FOOTER A ANCHO COMPLETO Y RESPONSIVO -->
+    <footer class="w-full bg-gray-900 text-white mt-12">
+        <div class="footer-container max-w-7xl mx-auto px-6 py-10">
             <!-- Sección del logo -->
-            <div class="footer-logo">
+            <div class="footer-logo mb-8">
                 <img src="/orionapp/assets/LogoOrion-white.svg" alt="Logo Orion" class="logo">
-                 
             </div>
-            <!-- Mapa de navegación -->
-            <div class="footer-navigation flex justify-between gap-12">
-                
+
+            <!-- Mapa de navegación responsivo -->
+            <div class="footer-navigation grid grid-cols-1 md:grid-cols-3 gap-12">
                 <!-- Servicios -->
                 <div class="nav-section">
-                <h3 class="font-bold text-lg inline-block border-b-4 border-white leading-tight">Servicios</h3>
-                <ul class="list-none p-0 mt-2">
-                    <li><a href="#" class="block py-1 hover:text-gray-300">Envíos</a></li>
-                    <li><a href="#" class="block py-1 hover:text-gray-300">Transferencias</a></li>
-                </ul>
+                    <h3 class="font-bold text-lg inline-block border-b-4 border-white leading-tight">Servicios</h3>
+                    <ul class="list-none p-0 mt-2">
+                        <li><a href="#" class="block py-1 hover:text-gray-300">Envíos</a></li>
+                        <li><a href="#" class="block py-1 hover:text-gray-300">Transferencias</a></li>
+                    </ul>
                 </div>
 
                 <!-- Nosotros -->
                 <div class="nav-section">
-                <h3 class="font-bold text-lg inline-block border-b-4 border-white leading-tight">Nosotros</h3>
-                <ul class="list-none p-0 mt-2">
-                    <li><a href="nosotros" class="block py-1 hover:text-gray-300">Quiénes Somos</a></li>
-                    <li><a href="nosotros#map" class="block py-1 hover:text-gray-300">Mapa</a></li>
-                </ul>
+                    <h3 class="font-bold text-lg inline-block border-b-4 border-white leading-tight">Nosotros</h3>
+                    <ul class="list-none p-0 mt-2">
+                        <li><a href="nosotros" class="block py-1 hover:text-gray-300">Quiénes Somos</a></li>
+                        <li><a href="nosotros#map" class="block py-1 hover:text-gray-300">Mapa</a></li>
+                    </ul>
                 </div>
 
                 <!-- Soporte -->
                 <div class="nav-section">
-                <h3 class="font-bold text-lg inline-block border-b-4 border-white leading-tight">Soporte</h3>
-                <ul class="list-none p-0 mt-2">
-                    <li><a href="faq" class="block py-1 hover:text-gray-300">Preguntas frecuentes</a></li>
-                    <li><a href="contacto" class="block py-1 hover:text-gray-300">Contacto</a></li>
-                </ul>
+                    <h3 class="font-bold text-lg inline-block border-b-4 border-white leading-tight">Soporte</h3>
+                    <ul class="list-none p-0 mt-2">
+                        <li><a href="faq" class="block py-1 hover:text-gray-300">Preguntas frecuentes</a></li>
+                        <li><a href="contacto" class="block py-1 hover:text-gray-300">Contacto</a></li>
+                    </ul>
                 </div>
-
             </div>
 
             <!-- Información de contacto -->
-            <div class="footer-contact flex flex-wrap justify-between">
+            <div class="footer-contact flex flex-wrap justify-between mt-10">
                 <div class="contact-info">
-                      <!-- Dirección -->
-                      <div class="contact-item">
-                          <a href="https://maps.app.goo.gl/6fQ31ySCJWSButxQ9" target="_blank">
-                              <img src="/orionapp/icons/location-white.png" alt="Icono de ubicación" class="icon">
-                          </a>
-                          <div>
-                              <a href="https://maps.app.goo.gl/6fQ31ySCJWSButxQ9" target="_blank"><p>Agustinas 1035 Of 13, Santiago</p></a>
-                              <small>Lunes a Viernes 09:00 a 17:00 hrs</small>
-                          </div>
-                      </div> 
+                    <!-- Dirección -->
+                    <div class="contact-item flex items-start gap-3 mb-4">
+                        <a href="https://maps.app.goo.gl/6fQ31ySCJWSButxQ9" target="_blank">
+                            <img src="/orionapp/icons/location-white.png" alt="Icono de ubicación" class="icon">
+                        </a>
+                        <div>
+                            <a href="https://maps.app.goo.gl/6fQ31ySCJWSButxQ9" target="_blank"><p>Agustinas 1035 Of 13, Santiago</p></a>
+                            <small>Lunes a Viernes 09:00 a 17:00 hrs</small>
+                        </div>
+                    </div>
                     <!-- Teléfono -->
-                    <div class="contact-item">
+                    <div class="contact-item flex items-start gap-3 mb-4">
                         <img src="/orionapp/icons/phone-white.png" alt="Icono de teléfono" class="icon">
                         <div>
                             <p>+56 9 7184 6048</p>
                         </div>
                     </div>
                     <!-- Correo -->
-                    <div class="contact-item">
+                    <div class="contact-item flex items-start gap-3">
                         <img src="/orionapp/icons/email-white.png" alt="Icono de correo" class="icon">
                         <div>
                             <p>contacto@cambiosorion.cl</p>
@@ -258,20 +263,23 @@
                     </div>
                 </div>
             </div>
+
             <!-- Redes Sociales -->
-              <div class="social-media flex gap-4">
-                  <a href="https://wa.me/+56971846048?text=Hola,%20necesito%20consultar%20con%20un%20ejecutivo." target="_blank"><img src="/orionapp/icons/whatsapp-white.png" alt="WhatsApp" class="icon"></a>
-                  <a href="https://www.facebook.com/CambiosOrion" target="_blank"><img src="/orionapp/icons/facebook-white.png" alt="Facebook" class="icon"></a>
-                  <a href="https://www.instagram.com/Cambios.Orion.cl" target="_blank"><img src="/orionapp/icons/instagram-white.png" alt="Instagram" class="icon"></a>
+            <div class="social-media flex gap-4 mt-8">
+                <a href="https://wa.me/+56971846048?text=Hola,%20necesito%20consultar%20con%20un%20ejecutivo." target="_blank"><img src="/orionapp/icons/whatsapp-white.png" alt="WhatsApp" class="icon"></a>
+                <a href="https://www.facebook.com/CambiosOrion" target="_blank"><img src="/orionapp/icons/facebook-white.png" alt="Facebook" class="icon"></a>
+                <a href="https://www.instagram.com/Cambios.Orion.cl" target="_blank"><img src="/orionapp/icons/instagram-white.png" alt="Instagram" class="icon"></a>
                 <a href="https://www.tiktok.com/@cambios.orion" target="_blank"><img src="/orionapp/icons/tik-tok-white.png" alt="TikTok" class="icon"></a>
-              </div>
+            </div>
         </div>
-        <div class="footer-bottom text-xs text-center p-4">
+
+        <div class="footer-bottom text-xs text-center p-4 bg-gray-950">
             © 2025 Cambios Orion. Todos los derechos reservados.
         </div>
     </footer>
+
     <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
     <script src="https://cambiosorion.cl/orionapp/public/scripts/header.js"></script>
     <script src="https://cambiosorion.cl/orionapp/public/scripts/nosotros.js"></script>
 </body>
-</html>  
+</html>
