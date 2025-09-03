@@ -47,6 +47,11 @@ async function cargarReserva() {
             throw e;
         }
 
+        if (data.estado === "Expirada") {
+            container.innerHTML = `<p class="text-red-500 text-lg font-semibold">⚠️ Lo sentimos, esta reserva ha expirado.</p>`;
+            return;
+        }
+
         // Renderizar con estilos
         container.innerHTML = `
             <h2 class="text-2xl font-semibold mb-4">Reserva ${data.codigo_reserva}</h2>
