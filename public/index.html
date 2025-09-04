@@ -400,10 +400,12 @@
             <!-- Paso 1 -->
             <div id="alerta-step-1" class="step-content">
                 <label class="block mb-2 font-semibold">Selecciona la divisa</label>
-                <div id="alerta-divisa-list" class="grid grid-cols-2 gap-4 mb-6">
-                <!-- Aquí se llenan las divisas con SSE -->
-                </div>
-                <p class="text-sm text-gray-600">Elige si deseas alerta en el <strong>precio de compra</strong> o de <strong>venta</strong>.</p>
+                <select id="alerta-divisa" class="w-full border rounded p-2 mb-4">
+                    <option value="">-- Selecciona una divisa --</option>
+                </select>
+
+                <!-- Aquí aparece la card dinámicamente -->
+                <div id="alerta-precios-card" class="hidden mt-4 p-4 border rounded-lg shadow bg-gray-50"></div>
             </div>
 
             <!-- Paso 2 -->
@@ -437,6 +439,17 @@
 
                 <p id="alerta-status" class="mt-3 text-sm text-gray-600"></p>
             </div>
+
+            <!-- Botones Stepper -->
+            <div id="alerta-stepper-buttons" class="flex justify-between mt-6">
+                <button id="alerta-prev" class="bg-gray-300 px-4 py-2 rounded-lg hover:bg-gray-400 text-black hidden">
+                    Anterior
+                </button>
+                <button id="alerta-next" class="bg-[#1e3a8a] text-white px-4 py-2 rounded-lg hover:bg-blue-700 shadow hidden">
+                    Siguiente
+                </button>
+            </div>
+
         </div>
 
         <!-- Envío de Dinero -->
