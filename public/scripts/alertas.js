@@ -1,5 +1,5 @@
 // Mostrar/ocultar formulario de alerta
-const alertaBtn = document.querySelector('a[href="https://cambiosorion.cl/index#alerta-section"]');
+const alertaBtn = document.getElementById("alertaBtn");
 const alertaSection = document.getElementById("alerta-section");
 
 alertaBtn.addEventListener("click", (e) => {
