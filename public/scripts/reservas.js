@@ -1,3 +1,6 @@
+let currentStep = 1;
+const totalSteps = 3;
+
 function updateStepper() {
     for (let i = 1; i <= totalSteps; i++) {
         const stepElem = document.getElementById(`stepper-${i}`);

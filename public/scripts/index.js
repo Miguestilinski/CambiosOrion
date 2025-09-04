@@ -4,8 +4,6 @@ let iconsLoaded = {};
 let isEditMode = false;
 let activeDropdown = null;
 let displayedCurrencies = ["CLP", "USD", "EUR", "ARS"];
-let currentStep = 1;
-const totalSteps = 3;
 
 function initializePage() {
     showSkeleton();
