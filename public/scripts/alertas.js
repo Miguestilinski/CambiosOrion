@@ -10,124 +10,6 @@ alertaBtn.addEventListener("click", (e) => {
   alertaSection.scrollIntoView({ behavior: "smooth" });
 });
 
-// Actualizar stepper UI
-function updateAlertaStepper() {
-  for (let i = 1; i <= 3; i++) {
-    const stepElem = document.getElementById(`alerta-stepper-${i}`);
-    if (i === alertaStep) {
-      stepElem.classList.add("text-blue-600", "font-semibold");
-      stepElem.classList.remove("text-gray-500");
-      document.getElementById(`alerta-step-${i}`).classList.remove("hidden");
-    } else {
-      stepElem.classList.remove("text-blue-600", "font-semibold");
-      stepElem.classList.add("text-gray-500");
-      document.getElementById(`alerta-step-${i}`).classList.add("hidden");
-    }
-  }
-}
-
-// Ir al siguiente paso
-function nextAlertaStep() {
-  if (alertaStep < 3) {
-    alertaStep++;
-    updateAlertaStepper();
-  }
-}
-
-// Paso 1: cargar divisas desde SSE
-function loadAlertaCurrencies() {
-  const eventSource = new EventSource('https://cambiosorion.cl/api/stream/stream_divisas.php');
-  const divisaSelect = document.getElementById("alerta-divisa");
-  const preciosCard = document.getElementById("alerta-precios-card");
-
-  eventSource.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    if (!Array.isArray(data)) return;
-
-    divisaSelect.innerHTML = '<option value="">-- Selecciona una divisa --</option>';
-    data.forEach(divisa => {
-      const option = document.createElement("option");
-      option.value = divisa.nombre;
-      option.innerHTML = `
-        ${divisa.nombre}
-      `;
-      option.dataset.icon = divisa.icono_circular;
-      option.dataset.compra = divisa.compra;
-      option.dataset.venta = divisa.venta;
-      divisaSelect.appendChild(option);
-    });
-  };
-
-  divisaSelect.addEventListener("change", () => {
-    const selected = divisaSelect.options[divisaSelect.selectedIndex];
-    if (!selected.value) {
-      preciosCard.classList.add("hidden");
-      return;
-    }
-
-    const icon = selected.dataset.icon;
-    const compra = selected.dataset.compra;
-    const venta = selected.dataset.venta;
-
-    preciosCard.innerHTML = `
-      <div class="flex items-center mb-2">
-        <img src="${icon}" class="w-6 h-6 mr-2">
-        <span class="font-bold">${selected.value}</span>
-      </div>
-      <div class="flex justify-between">
-        <button class="bg-green-100 px-3 py-1 rounded text-sm" data-precio="compra" data-valor="${compra}">
-          Compra: ${Math.round(compra)} CLP
-        </button>
-        <button class="bg-red-100 px-3 py-1 rounded text-sm" data-precio="venta" data-valor="${venta}">
-          Venta: ${Math.round(venta)} CLP
-        </button>
-      </div>
-    `;
-    preciosCard.classList.remove("hidden");
-
-    // Cuando clickea compra/venta → avanza al paso 2
-    preciosCard.querySelectorAll("button").forEach(btn => {
-      btn.addEventListener("click", () => {
-        alertaData.divisa = selected.value;
-        alertaData.tipoPrecio = btn.dataset.precio;
-        alertaData.precioRef = parseFloat(btn.dataset.valor);
-        nextAlertaStep(); // avanza automáticamente
-      });
-    });
-  });
-}
-
-// Paso 3: guardar alerta
-document.getElementById("guardar-alerta").addEventListener("click", async () => {
-  alertaData.condicion = document.getElementById("alerta-condicion").value;
-  alertaData.valor = parseFloat(document.getElementById("alerta-valor").value);
-  alertaData.nombre = document.getElementById("alerta-nombre").value.trim();
-  alertaData.email = document.getElementById("alerta-email").value.trim();
-
-  const statusText = document.getElementById("alerta-status");
-
-  if (!alertaData.valor || !alertaData.nombre || !alertaData.email) {
-    statusText.textContent = "❌ Debes completar todos los campos.";
-    statusText.style.color = "red";
-    return;
-  }
-
-  const response = await fetch("/data/alerta.php", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(alertaData)
-  });
-
-  const result = await response.json();
-  if (result.success) {
-    statusText.textContent = "✅ Alerta guardada, recibirás un correo cuando se cumpla.";
-    statusText.style.color = "green";
-  } else {
-    statusText.textContent = "❌ Hubo un error, intenta más tarde.";
-    statusText.style.color = "red";
-  }
-});
-
 const prevBtn = document.getElementById("alerta-prev");
 const nextBtn = document.getElementById("alerta-next");
 
@@ -167,6 +49,102 @@ function updateAlertaStepper() {
   nextBtn.classList.toggle("hidden", alertaStep === 1 || alertaStep === 3);
 }
 
+// Ir al siguiente paso
+function nextAlertaStep() {
+  if (alertaStep < 3) {
+    alertaStep++;
+    updateAlertaStepper();
+  }
+}
+
+// Paso 1: cargar divisas desde SSE en dropdown estilo conversor
+function loadAlertaCurrencies() {
+  const eventSource = new EventSource('https://cambiosorion.cl/api/stream/stream_divisas.php');
+  const dropdown = document.getElementById("alerta-divisa-dropdown");
+  const preciosCard = document.getElementById("alerta-precios-card");
+
+  eventSource.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    if (!Array.isArray(data)) return;
+
+    dropdown.innerHTML = ""; // limpiar lista
+    data.forEach(divisa => {
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <a href="#" class="px-2 py-1 hover:bg-gray-100 flex items-center">
+          <img src="${divisa.icono_circular}" alt="${divisa.nombre}" class="w-5 h-5 mr-2">
+          <span>${divisa.nombre} (${divisa.codigo})</span>
+        </a>
+      `;
+
+      li.addEventListener("click", (e) => {
+        e.preventDefault();
+
+        // guardar en memoria
+        alertaData.divisa = divisa.nombre;
+        alertaData.icono = divisa.icono_circular;
+
+        // mostrar card con precios
+        preciosCard.innerHTML = `
+          <div class="flex items-center mb-2">
+            <img src="${divisa.icono_circular}" class="w-6 h-6 mr-2">
+            <span class="font-bold">${divisa.nombre} (${divisa.codigo})</span>
+          </div>
+          <div class="flex justify-between">
+            <button class="bg-green-100 px-3 py-1 rounded text-sm" data-precio="compra" data-valor="${divisa.compra}">
+              Compra: ${Math.round(divisa.compra)} CLP
+            </button>
+            <button class="bg-red-100 px-3 py-1 rounded text-sm" data-precio="venta" data-valor="${divisa.venta}">
+              Venta: ${Math.round(divisa.venta)} CLP
+            </button>
+          </div>
+        `;
+        preciosCard.classList.remove("hidden");
+
+        preciosCard.querySelectorAll("button").forEach(btn => {
+          btn.addEventListener("click", () => {
+            alertaData.tipoPrecio = btn.dataset.precio;
+            alertaData.precioRef = parseFloat(btn.dataset.valor);
+            nextAlertaStep(); // avanza automáticamente
+          });
+        });
+      });
+
+      dropdown.appendChild(li);
+    });
+  };
+}
+
+// Paso 3: guardar alerta
+document.getElementById("guardar-alerta").addEventListener("click", async () => {
+  alertaData.condicion = document.getElementById("alerta-condicion").value;
+  alertaData.valor = parseFloat(document.getElementById("alerta-valor").value);
+  alertaData.nombre = document.getElementById("alerta-nombre").value.trim();
+  alertaData.email = document.getElementById("alerta-email").value.trim();
+
+  const statusText = document.getElementById("alerta-status");
+
+  if (!alertaData.valor || !alertaData.nombre || !alertaData.email) {
+    statusText.textContent = "❌ Debes completar todos los campos.";
+    statusText.style.color = "red";
+    return;
+  }
+
+  const response = await fetch("/data/alerta.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(alertaData)
+  });
+
+  const result = await response.json();
+  if (result.success) {
+    statusText.textContent = "✅ Alerta guardada, recibirás un correo cuando se cumpla.";
+    statusText.style.color = "green";
+  } else {
+    statusText.textContent = "❌ Hubo un error, intenta más tarde.";
+    statusText.style.color = "red";
+  }
+});
 
 // Init
 updateAlertaStepper();

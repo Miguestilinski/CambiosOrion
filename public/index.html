@@ -400,9 +400,18 @@
             <!-- Paso 1 -->
             <div id="alerta-step-1" class="step-content">
                 <label class="block mb-2 font-semibold">Selecciona la divisa</label>
-                <select id="alerta-divisa" class="w-full border rounded p-2 mb-4">
-                    <option value="">-- Selecciona una divisa --</option>
-                </select>
+                <div id="alerta-divisa-container" class="relative">
+                    <button id="alerta-divisa-button" onclick="toggleDropdown('alerta-divisa-dropdown', event)" 
+                    class="currency-selector flex items-center w-full border p-2 rounded-lg shadow bg-white">
+                    <span class="font-medium">Selecciona una divisa</span>
+                    <svg class="w-4 h-4 ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                    </svg>
+                    </button>
+                    <div id="alerta-divisa-dropdown" class="dropdown-content hidden divide-y divide-gray-100 rounded-lg shadow-md overflow-y-auto">
+                    <ul class="py-1 text-sm text-gray-700"></ul>
+                    </div>
+                </div>
 
                 <!-- Aquí aparece la card dinámicamente -->
                 <div id="alerta-precios-card" class="hidden mt-4 p-4 border rounded-lg shadow bg-gray-50"></div>
