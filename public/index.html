@@ -386,6 +386,54 @@
             </div>
         </section>
 
+        <!-- Contenedor de formulario de alerta -->
+        <div id="alerta-section" class="hidden max-w-2xl mx-auto my-6 bg-white p-6 rounded-xl shadow-lg">
+            <h2 class="text-2xl font-bold mb-4 text-[#1e3a8a]">Configura tu Alerta de Precio</h2>
+
+            <!-- Selección de divisa -->
+            <label class="block mb-2 font-semibold">Divisa</label>
+            <select id="alerta-divisa" class="w-full border rounded p-2 mb-4">
+                <option value="USD">USD - Compra: <span id="compra-usd"></span> / Venta: <span id="venta-usd"></span></option>
+                <option value="EUR">EUR - Compra: <span id="compra-eur"></span> / Venta: <span id="venta-eur"></span></option>
+            </select>
+
+            <!-- Tipo de precio -->
+            <label class="block mb-2 font-semibold">¿Sobre qué precio deseas la alerta?</label>
+            <select id="alerta-tipo-precio" class="w-full border rounded p-2 mb-4">
+                <option value="compra">Precio de Compra</option>
+                <option value="venta">Precio de Venta</option>
+            </select>
+
+            <!-- Tipo de condición -->
+            <label class="block mb-2 font-semibold">Tipo de condición</label>
+            <select id="alerta-condicion" class="w-full border rounded p-2 mb-4">
+                <option value="alcanza">Alcanza el precio</option>
+                <option value="sube">Precio sube sobre</option>
+                <option value="baja">Precio baja a</option>
+                <option value="cambio_sobre">Cambio sobre %</option>
+                <option value="cambio_bajo">Cambio por debajo %</option>
+                <option value="cambio_24h_sube">Cambio en 24h sobre %</option>
+                <option value="cambio_24h_baja">Cambio en 24h por debajo %</option>
+            </select>
+
+            <!-- Valor objetivo -->
+            <label class="block mb-2 font-semibold">Valor objetivo</label>
+            <input id="alerta-valor" type="number" step="0.01" class="w-full border rounded p-2 mb-4" placeholder="Ej: 950">
+
+            <!-- Datos del cliente -->
+            <label class="block mb-2 font-semibold">Tu Nombre</label>
+            <input id="alerta-nombre" type="text" class="w-full border rounded p-2 mb-4" placeholder="Ingresa tu nombre">
+
+            <label class="block mb-2 font-semibold">Correo electrónico</label>
+            <input id="alerta-email" type="email" class="w-full border rounded p-2 mb-4" placeholder="ejemplo@correo.com">
+
+            <button id="guardar-alerta" class="bg-[#1e3a8a] hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow">
+                Guardar Alerta
+            </button>
+
+            <p id="alerta-status" class="mt-3 text-sm text-gray-600"></p>
+        </div>
+
         <!-- Envío de Dinero -->
         <section id="sending-money" class="sending-money-section bg-white w-full shadow-lg p-8 hidden">
             <div class="sending-money-container">
