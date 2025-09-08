@@ -1148,6 +1148,10 @@ input:checked + .toggle-bg {
   left: 50%;
 }
 
+.left-12 {
+  left: 3rem;
+}
+
 .left-2 {
   left: 0.5rem;
 }
