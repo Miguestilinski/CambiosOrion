@@ -244,6 +244,11 @@ button.swap-button{
   opacity: 1;
 }
 
+/* Forzar dropdown sobre todo lo demás */
+#alerta-divisa-dropdown {
+    z-index: 9999 !important;
+}
+
 /* Dropdown sin bullets */
 #alerta-divisa-dropdown ul {
     list-style: none; /* quita los markers */
@@ -261,7 +266,7 @@ button.swap-button{
 }
 
 #alerta-divisa-dropdown li a:hover {
-    background-color: transparent; /* sin hover */
+    background-color: #f1f1f1; /* hover ligero */
 }
 
 /* Imagen dentro de opción */
@@ -269,11 +274,6 @@ button.swap-button{
     width: 20px;
     height: 20px;
     margin-right: 0.5rem;
-}
-
-/* Forzar dropdown sobre todo lo demás */
-#alerta-divisa-dropdown {
-    z-index: 9999 !important;
 }
 
 /* Sección completa */
