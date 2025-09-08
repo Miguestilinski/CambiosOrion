@@ -67,6 +67,7 @@ function nextAlertaStep() {
 // Paso 1: cargar divisas desde SSE en dropdown estilo conversor
 function loadAlertaCurrenciesFromArray() {
     const dropdown = document.getElementById("alerta-divisa-dropdown");
+    const ul = dropdown.querySelector("ul");
     const preciosCard = document.getElementById("alerta-precios-card");
 
     if (!window.exchangeRates) {
@@ -74,7 +75,7 @@ function loadAlertaCurrenciesFromArray() {
         return;
     }
 
-    dropdown.innerHTML = ""; // limpiar lista
+    ul.innerHTML = "";
 
     Object.keys(exchangeRates).forEach(nombre => {
         const divisa = exchangeRates[nombre];
@@ -121,7 +122,7 @@ function loadAlertaCurrenciesFromArray() {
             });
         });
 
-        dropdown.appendChild(li);
+        ul.appendChild(li);
     });
 }
 
