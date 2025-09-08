@@ -78,8 +78,8 @@ function loadAlertaCurrencies() {
     data.forEach(divisa => {
       const li = document.createElement("li");
       li.innerHTML = `
-        <a href="#" class="px-2 py-1 hover:bg-gray-100 flex items-center">
-          <img src="${divisa.icono_circular}" alt="${divisa.nombre}" class="w-5 h-5 mr-2">
+        <a href="#" class="flex items-center">
+          <img src="${divisa.icono_circular}" alt="${divisa.nombre}">
           <span>${divisa.nombre} (${divisa.codigo})</span>
         </a>
       `;
