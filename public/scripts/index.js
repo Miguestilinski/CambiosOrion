@@ -75,14 +75,14 @@ function loadCurrenciesWithSSE() {
             if (responseData.length && responseData[0].fecha_actualizacion) {
                 updateLastUpdatedTimestamp(responseData[0].fecha_actualizacion);
             }
+
+            if (typeof window.onCurrenciesLoaded === "function") {
+                window.onCurrenciesLoaded(); // avisar que exchangeRates ya tiene datos
+            }
         } catch (error) {
             console.error('Error procesando los datos SSE:', error);
         }
     };
-
-    if (typeof window.onCurrenciesLoaded === "function") {
-        window.onCurrenciesLoaded(); // avisar que exchangeRates ya tiene datos
-    }
 
     eventSource.onerror = (error) => {
         console.error('Error con la conexión SSE:', error);
