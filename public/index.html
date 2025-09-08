@@ -399,24 +399,24 @@
                 </ol>
 
                 <!-- Paso 1 -->
-                <div id="alerta-step-1" class="step-content flex items-start gap-4">
+                <div id="alerta-step-1" class="step-content flex gap-4">
                     <!-- Selector de divisa pequeño, sin borde ni hover -->
-                    <div id="alerta-divisa-container" class="relative flex-shrink-0">
+                    <div id="alerta-divisa-container" class="relative w-1/2">
                         <button id="alerta-divisa-button" onclick="toggleDropdown('alerta-divisa-dropdown', event)"
-                            class="currency-selector flex items-center px-2 py-1 bg-white rounded shadow-sm text-sm">
+                            class="currency-selector flex items-center px-2 py-1 bg-white rounded text-sm shadow-sm focus:outline-none">
                             <span class="font-medium">Selecciona</span>
                             <svg class="w-3 h-3 ml-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
                             </svg>
                         </button>
                         <div id="alerta-divisa-dropdown"
-                            class="dropdown-content hidden divide-y divide-gray-100 rounded shadow-md overflow-y-auto absolute left-0 mt-1 w-full bg-white z-10">
+                            class="dropdown-content hidden divide-y divide-gray-100 rounded shadow-md overflow-y-auto absolute left-0 mt-1 w-full bg-white z-50 list-none">
                             <ul class="py-1 text-sm text-gray-700"></ul>
                         </div>
                     </div>
 
                     <!-- Card de compra/venta a la derecha -->
-                    <div id="alerta-precios-card" class="hidden p-4 border rounded shadow bg-gray-50 flex-1"></div>
+                    <div id="alerta-precios-card" class="hidden p-4 border rounded shadow bg-gray-50 w-1/2"></div>
                 </div>
 
                 <!-- Paso 2 -->
