@@ -159,4 +159,7 @@ document.getElementById("guardar-alerta").addEventListener("click", async () => 
 
 // Init
 updateAlertaStepper();
-loadAlertaCurrenciesFromArray(); 
+
+window.onCurrenciesLoaded = function() {
+    loadAlertaCurrenciesFromArray();
+};

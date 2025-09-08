@@ -80,6 +80,10 @@ function loadCurrenciesWithSSE() {
         }
     };
 
+    if (typeof window.onCurrenciesLoaded === "function") {
+        window.onCurrenciesLoaded(); // avisar que exchangeRates ya tiene datos
+    }
+
     eventSource.onerror = (error) => {
         console.error('Error con la conexión SSE:', error);
         eventSource.close(); // Cierra la conexión si ocurre un error persistente
