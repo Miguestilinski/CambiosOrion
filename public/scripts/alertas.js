@@ -8,7 +8,7 @@ const alertaWrapper = document.getElementById("alerta-wrapper");
 
 alertaBtn.addEventListener("click", (e) => {
   e.preventDefault();
-  alertaWrapper.classList.toggle("show");
+  alertaWrapper.classList.toggle("hidden");
 });
 
 const prevBtn = document.getElementById("alerta-prev");
