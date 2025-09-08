@@ -8,7 +8,13 @@ const alertaWrapper = document.getElementById("alerta-wrapper");
 
 alertaBtn.addEventListener("click", (e) => {
   e.preventDefault();
-  alertaWrapper.classList.toggle("hidden");
+  if (alertaWrapper.classList.contains("max-h-0")) {
+    alertaWrapper.classList.remove("max-h-0");
+    alertaWrapper.classList.add("max-h-[1000px]"); // suficientemente grande para mostrar todo
+  } else {
+    alertaWrapper.classList.add("max-h-0");
+    alertaWrapper.classList.remove("max-h-[1000px]");
+  }
 });
 
 const prevBtn = document.getElementById("alerta-prev");

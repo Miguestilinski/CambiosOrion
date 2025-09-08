@@ -239,7 +239,6 @@ button.swap-button{
     position: relative;
 }
 
-/* Tailwind compatible */
 #alerta-wrapper {
   transition: transform 0.3s ease, opacity 0.3s ease;
   transform: translateY(-20px);
