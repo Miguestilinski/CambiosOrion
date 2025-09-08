@@ -1,4 +1,4 @@
-let exchangeRates = {};
+window.exchangeRates = {};
 let closingRates = {};
 let iconsLoaded = {};
 let isEditMode = false;
