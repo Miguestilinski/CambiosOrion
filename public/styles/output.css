@@ -1268,6 +1268,10 @@ input:checked + .toggle-bg {
   z-index: 10000;
 }
 
+.z-\[9999\] {
+  z-index: 9999;
+}
+
 .m-0 {
   margin: 0px;
 }

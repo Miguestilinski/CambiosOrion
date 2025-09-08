@@ -244,10 +244,38 @@ button.swap-button{
   opacity: 1;
 }
 
+/* Dropdown sin bullets */
 #alerta-divisa-dropdown ul {
-    max-height: 200px;
-    overflow-y: auto;
+    list-style: none; /* quita los markers */
+    padding: 0;
+    margin: 0;
 }
+
+/* Opciones del dropdown */
+#alerta-divisa-dropdown li a {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    text-decoration: none;
+    color: inherit;
+}
+
+#alerta-divisa-dropdown li a:hover {
+    background-color: transparent; /* sin hover */
+}
+
+/* Imagen dentro de opción */
+#alerta-divisa-dropdown li img {
+    width: 20px;
+    height: 20px;
+    margin-right: 0.5rem;
+}
+
+/* Forzar dropdown sobre todo lo demás */
+#alerta-divisa-dropdown {
+    z-index: 9999 !important;
+}
+
 
 /* Sección completa */
 .sending-money-section {
