@@ -1368,6 +1368,10 @@ input:checked + .toggle-bg {
   margin-left: 2.5rem;
 }
 
+.ml-14 {
+  margin-left: 3.5rem;
+}
+
 .ml-2 {
   margin-left: 0.5rem;
 }
@@ -1390,6 +1394,10 @@ input:checked + .toggle-bg {
 
 .mr-10 {
   margin-right: 2.5rem;
+}
+
+.mr-14 {
+  margin-right: 3.5rem;
 }
 
 .mr-2 {
@@ -1600,8 +1608,12 @@ input:checked + .toggle-bg {
   width: 2.25rem;
 }
 
-.w-\[200px\] {
-  width: 200px;
+.w-\[100px\] {
+  width: 100px;
+}
+
+.w-\[150px\] {
+  width: 150px;
 }
 
 .w-auto {
