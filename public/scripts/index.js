@@ -584,9 +584,9 @@ document.addEventListener("click", function (event) {
         activeDropdown = null;
     }
      // Cerrar el menú si el clic es fuera de un botón o menú
-     if (!navMenuButton.contains(event.target) && !navMobileMenu.contains(event.target)) {
-        navMobileMenu.style.display = 'none';
-    }
+    //if (!navMenuButton.contains(event.target) && !navMobileMenu.contains(event.target)) {
+    //    navMobileMenu.style.display = 'none';
+    //}
     if (!sessionMenuButton.contains(event.target) && !sessionMobileMenu.contains(event.target)) {
         sessionMobileMenu.style.display = 'none';
     }

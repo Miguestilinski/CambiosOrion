@@ -278,6 +278,14 @@ button.swap-button{
     margin-right: 0.5rem;
 }
 
+#alerta-divisa-dropdown li {
+    border-bottom: 1px solid #e5e7eb; /* línea gris clara */
+}
+
+#alerta-divisa-dropdown li:last-child {
+    border-bottom: none; /* quitar línea en la última opción */
+}
+
 /* Sección completa */
 .sending-money-section {
     background-color: white;

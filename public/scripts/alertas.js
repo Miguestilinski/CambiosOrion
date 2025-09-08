@@ -64,6 +64,12 @@ function nextAlertaStep() {
   }
 }
 
+function hideAlertaDropdown() {
+    const dropdown = document.getElementById("alerta-divisa-dropdown");
+    dropdown.classList.add("hidden");
+}
+
+// Abrir dropdown
 function showAlertaDropdown() {
     const button = document.getElementById("alerta-divisa-button");
     const dropdown = document.getElementById("alerta-divisa-dropdown");
@@ -82,6 +88,15 @@ function showAlertaDropdown() {
     dropdown.style.zIndex = 9999;
 
     dropdown.classList.remove("hidden");
+
+    // Cerrar al click fuera
+    function handleClickOutside(e) {
+        if (!dropdown.contains(e.target) && !button.contains(e.target)) {
+            hideAlertaDropdown();
+            document.removeEventListener("click", handleClickOutside);
+        }
+    }
+    document.addEventListener("click", handleClickOutside);
 }
 
 // Paso 1: cargar divisas desde SSE en dropdown estilo conversor
@@ -102,7 +117,7 @@ function loadAlertaCurrenciesFromArray() {
 
         const li = document.createElement("li");
         li.innerHTML = `
-            <a href="#" class="flex items-center">
+            <a href="#" class="flex items-center hover:bg-gray-100 inline-block">
                 <img src="${divisa.icono}" alt="${nombre}">
                 <span>${nombre}</span>
             </a>
@@ -131,6 +146,8 @@ function loadAlertaCurrenciesFromArray() {
                 </div>
             `;
             preciosCard.classList.remove("hidden");
+
+            hideAlertaDropdown(); // <-- cerrar al seleccionar
 
             preciosCard.querySelectorAll("button").forEach(btn => {
                 btn.addEventListener("click", () => {
