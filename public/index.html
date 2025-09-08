@@ -386,79 +386,81 @@
             </div>
         </section>
 
-        <!-- Contenedor de formulario de alerta -->
-        <div id="alerta-section" class="hidden max-w-2xl mx-auto my-6 bg-white p-8 rounded-xl shadow-lg">
-            <h2 class="text-2xl text-center font-bold mb-6 text-[#1e3a8a]">Configura tu Alerta de Precio</h2>
+        <div class="w-full bg-white py-8">
+            <!-- Contenedor de formulario de alerta -->
+            <div id="alerta-section" class="hidden max-w-2xl mx-auto my-6 p-8 shadow-lg">
+                <h2 class="text-2xl text-center font-bold mb-6 text-[#1e3a8a]">Configura tu Alerta de Precio</h2>
 
-            <!-- Stepper -->
-            <ol class="flex items-center w-full text-sm font-medium text-center text-gray-500 sm:text-base mb-6">
-                <li id="alerta-stepper-1" class="flex-1">1. Divisa</li>
-                <li id="alerta-stepper-2" class="flex-1">2. Condición</li>
-                <li id="alerta-stepper-3" class="flex-1">3. Datos</li>
-            </ol>
+                <!-- Stepper -->
+                <ol class="flex items-center w-full text-sm font-medium text-center text-gray-500 sm:text-base mb-6">
+                    <li id="alerta-stepper-1" class="flex-1">1. Divisa</li>
+                    <li id="alerta-stepper-2" class="flex-1">2. Condición</li>
+                    <li id="alerta-stepper-3" class="flex-1">3. Datos</li>
+                </ol>
 
-            <!-- Paso 1 -->
-            <div id="alerta-step-1" class="step-content">
-                <label class="block mb-2 font-semibold">Selecciona la divisa</label>
-                <div id="alerta-divisa-container" class="relative">
-                    <button id="alerta-divisa-button" onclick="toggleDropdown('alerta-divisa-dropdown', event)" 
-                    class="currency-selector flex items-center w-full border p-2 rounded-lg shadow bg-white">
-                    <span class="font-medium">Selecciona una divisa</span>
-                    <svg class="w-4 h-4 ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-                    </svg>
-                    </button>
-                    <div id="alerta-divisa-dropdown" class="dropdown-content hidden divide-y divide-gray-100 rounded-lg shadow-md overflow-y-auto">
-                    <ul class="py-1 text-sm text-gray-700"></ul>
+                <!-- Paso 1 -->
+                <div id="alerta-step-1" class="step-content">
+                    <label class="block mb-2 font-semibold">Selecciona la divisa</label>
+                    <div id="alerta-divisa-container" class="relative">
+                        <button id="alerta-divisa-button" onclick="toggleDropdown('alerta-divisa-dropdown', event)" 
+                        class="currency-selector flex items-center w-full border p-2 rounded-lg shadow bg-white">
+                        <span class="font-medium">Selecciona una divisa</span>
+                        <svg class="w-4 h-4 ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                        </svg>
+                        </button>
+                        <div id="alerta-divisa-dropdown" class="dropdown-content hidden divide-y divide-gray-100 rounded-lg shadow-md overflow-y-auto">
+                        <ul class="py-1 text-sm text-gray-700"></ul>
+                        </div>
                     </div>
+
+                    <!-- Aquí aparece la card dinámicamente -->
+                    <div id="alerta-precios-card" class="hidden mt-4 p-4 border rounded-lg shadow bg-gray-50"></div>
                 </div>
 
-                <!-- Aquí aparece la card dinámicamente -->
-                <div id="alerta-precios-card" class="hidden mt-4 p-4 border rounded-lg shadow bg-gray-50"></div>
+                <!-- Paso 2 -->
+                <div id="alerta-step-2" class="step-content hidden">
+                    <label class="block mb-2 font-semibold">Tipo de condición</label>
+                    <select id="alerta-condicion" class="w-full border rounded p-2 mb-4">
+                    <option value="alcanza">Alcanza el precio</option>
+                    <option value="sube">Precio sube sobre</option>
+                    <option value="baja">Precio baja a</option>
+                    <option value="cambio_sobre">Cambio sobre %</option>
+                    <option value="cambio_bajo">Cambio por debajo %</option>
+                    <option value="cambio_24h_sube">Cambio en 24h sobre %</option>
+                    <option value="cambio_24h_baja">Cambio en 24h por debajo %</option>
+                    </select>
+
+                    <label class="block mb-2 font-semibold">Valor objetivo</label>
+                    <input id="alerta-valor" type="number" step="0.01" class="w-full border rounded p-2 mb-4" placeholder="Ej: 950">
+                </div>
+
+                <!-- Paso 3 -->
+                <div id="alerta-step-3" class="step-content hidden">
+                    <label class="block mb-2 font-semibold">Tu Nombre</label>
+                    <input id="alerta-nombre" type="text" class="w-full border rounded p-2 mb-4" placeholder="Ingresa tu nombre">
+
+                    <label class="block mb-2 font-semibold">Correo electrónico</label>
+                    <input id="alerta-email" type="email" class="w-full border rounded p-2 mb-4" placeholder="ejemplo@correo.com">
+
+                    <button id="guardar-alerta" class="bg-[#1e3a8a] hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow">
+                    Crear Alerta
+                    </button>
+
+                    <p id="alerta-status" class="mt-3 text-sm text-gray-600"></p>
+                </div>
+
+                <!-- Botones Stepper -->
+                <div id="alerta-stepper-buttons" class="flex justify-between mt-6">
+                    <button id="alerta-prev" class="bg-gray-300 px-4 py-2 rounded-lg hover:bg-gray-400 text-black hidden">
+                        Anterior
+                    </button>
+                    <button id="alerta-next" class="bg-[#1e3a8a] text-white px-4 py-2 rounded-lg hover:bg-blue-700 shadow hidden">
+                        Siguiente
+                    </button>
+                </div>
+
             </div>
-
-            <!-- Paso 2 -->
-            <div id="alerta-step-2" class="step-content hidden">
-                <label class="block mb-2 font-semibold">Tipo de condición</label>
-                <select id="alerta-condicion" class="w-full border rounded p-2 mb-4">
-                <option value="alcanza">Alcanza el precio</option>
-                <option value="sube">Precio sube sobre</option>
-                <option value="baja">Precio baja a</option>
-                <option value="cambio_sobre">Cambio sobre %</option>
-                <option value="cambio_bajo">Cambio por debajo %</option>
-                <option value="cambio_24h_sube">Cambio en 24h sobre %</option>
-                <option value="cambio_24h_baja">Cambio en 24h por debajo %</option>
-                </select>
-
-                <label class="block mb-2 font-semibold">Valor objetivo</label>
-                <input id="alerta-valor" type="number" step="0.01" class="w-full border rounded p-2 mb-4" placeholder="Ej: 950">
-            </div>
-
-            <!-- Paso 3 -->
-            <div id="alerta-step-3" class="step-content hidden">
-                <label class="block mb-2 font-semibold">Tu Nombre</label>
-                <input id="alerta-nombre" type="text" class="w-full border rounded p-2 mb-4" placeholder="Ingresa tu nombre">
-
-                <label class="block mb-2 font-semibold">Correo electrónico</label>
-                <input id="alerta-email" type="email" class="w-full border rounded p-2 mb-4" placeholder="ejemplo@correo.com">
-
-                <button id="guardar-alerta" class="bg-[#1e3a8a] hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow">
-                Crear Alerta
-                </button>
-
-                <p id="alerta-status" class="mt-3 text-sm text-gray-600"></p>
-            </div>
-
-            <!-- Botones Stepper -->
-            <div id="alerta-stepper-buttons" class="flex justify-between mt-6">
-                <button id="alerta-prev" class="bg-gray-300 px-4 py-2 rounded-lg hover:bg-gray-400 text-black hidden">
-                    Anterior
-                </button>
-                <button id="alerta-next" class="bg-[#1e3a8a] text-white px-4 py-2 rounded-lg hover:bg-blue-700 shadow hidden">
-                    Siguiente
-                </button>
-            </div>
-
         </div>
 
         <!-- Envío de Dinero -->
