@@ -4,10 +4,11 @@ let alertaData = {};
 // Mostrar/ocultar form
 const alertaBtn = document.getElementById("alertaBtn");
 const alertaSection = document.getElementById("alerta-section");
+const alertaWrapper = document.getElementById("alerta-wrapper");
+
 alertaBtn.addEventListener("click", (e) => {
   e.preventDefault();
-  alertaSection.classList.toggle("hidden");
-  alertaSection.scrollIntoView({ behavior: "smooth" });
+  alertaWrapper.classList.toggle("show");
 });
 
 const prevBtn = document.getElementById("alerta-prev");
