@@ -67,7 +67,7 @@ function nextAlertaStep() {
 // Paso 1: cargar divisas desde SSE en dropdown estilo conversor
 function loadAlertaCurrenciesFromArray() {
     const dropdown = document.getElementById("alerta-divisa-dropdown");
-    const ul = dropdown.querySelector("ul");
+    const ul = dropdown.querySelector("ul"); // <-- apunta al <ul>
     const preciosCard = document.getElementById("alerta-precios-card");
 
     if (!window.exchangeRates) {
@@ -75,13 +75,12 @@ function loadAlertaCurrenciesFromArray() {
         return;
     }
 
-    ul.innerHTML = "";
+    ul.innerHTML = ""; // limpiar lista de <li>
 
     Object.keys(exchangeRates).forEach(nombre => {
         const divisa = exchangeRates[nombre];
 
         const li = document.createElement("li");
-
         li.innerHTML = `
             <a href="#" class="flex items-center">
                 <img src="${divisa.icono}" alt="${nombre}">
@@ -122,7 +121,7 @@ function loadAlertaCurrenciesFromArray() {
             });
         });
 
-        ul.appendChild(li);
+        ul.appendChild(li); // <-- agregar al <ul>
     });
 }
 
