@@ -244,16 +244,21 @@ button.swap-button{
   opacity: 1;
 }
 
-/* Forzar dropdown sobre todo lo demás */
 #alerta-divisa-dropdown {
-    z-index: 9999 !important;
+    max-height: 150px;       /* alto máximo */
+    overflow-y: auto;        /* scroll si hace falta */
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;             /* mismo ancho que botón */
+    z-index: 9999;
 }
 
 /* Dropdown sin bullets */
 #alerta-divisa-dropdown ul {
-    list-style: none; /* quita los markers */
-    padding: 0;
+    list-style: none; /* sin bullets */
     margin: 0;
+    padding: 0;
 }
 
 /* Opciones del dropdown */
@@ -263,10 +268,6 @@ button.swap-button{
     padding: 0.5rem;
     text-decoration: none;
     color: inherit;
-}
-
-#alerta-divisa-dropdown li a:hover {
-    background-color: #f1f1f1; /* hover ligero */
 }
 
 /* Imagen dentro de opción */

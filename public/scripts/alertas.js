@@ -65,62 +65,66 @@ function nextAlertaStep() {
 }
 
 // Paso 1: cargar divisas desde SSE en dropdown estilo conversor
-function loadAlertaCurrencies() {
-  const eventSource = new EventSource('https://cambiosorion.cl/api/stream/stream_divisas.php');
-  const dropdown = document.getElementById("alerta-divisa-dropdown");
-  const preciosCard = document.getElementById("alerta-precios-card");
+function loadAlertaCurrenciesFromArray() {
+    const dropdown = document.getElementById("alerta-divisa-dropdown");
+    const preciosCard = document.getElementById("alerta-precios-card");
 
-  eventSource.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    if (!Array.isArray(data)) return;
+    if (!window.exchangeRates) {
+        console.error("No existe exchangeRates, asegúrate de que index.js se cargue primero");
+        return;
+    }
 
     dropdown.innerHTML = ""; // limpiar lista
-    data.forEach(divisa => {
-      const li = document.createElement("li");
-      li.innerHTML = `
-        <a href="#" class="flex items-center">
-          <img src="${divisa.icono_circular}" alt="${divisa.nombre}">
-          <span>${divisa.nombre} (${divisa.codigo})</span>
-        </a>
-      `;
 
-      li.addEventListener("click", (e) => {
-        e.preventDefault();
+    Object.keys(exchangeRates).forEach(nombre => {
+        const divisa = exchangeRates[nombre];
 
-        // guardar en memoria
-        alertaData.divisa = divisa.nombre;
-        alertaData.icono = divisa.icono_circular;
+        const li = document.createElement("li");
 
-        // mostrar card con precios
-        preciosCard.innerHTML = `
-          <div class="flex items-center mb-2">
-            <img src="${divisa.icono_circular}" class="w-6 h-6 mr-2">
-            <span class="font-bold">${divisa.nombre} (${divisa.codigo})</span>
-          </div>
-          <div class="flex justify-between">
-            <button class="bg-green-100 px-3 py-1 rounded text-sm" data-precio="compra" data-valor="${divisa.compra}">
-              Compra: ${Math.round(divisa.compra)} CLP
-            </button>
-            <button class="bg-red-100 px-3 py-1 rounded text-sm" data-precio="venta" data-valor="${divisa.venta}">
-              Venta: ${Math.round(divisa.venta)} CLP
-            </button>
-          </div>
+        li.innerHTML = `
+            <a href="#" class="flex items-center">
+                <img src="${divisa.icono}" alt="${nombre}">
+                <span>${nombre}</span>
+            </a>
         `;
-        preciosCard.classList.remove("hidden");
 
-        preciosCard.querySelectorAll("button").forEach(btn => {
-          btn.addEventListener("click", () => {
-            alertaData.tipoPrecio = btn.dataset.precio;
-            alertaData.precioRef = parseFloat(btn.dataset.valor);
-            nextAlertaStep(); // avanza automáticamente
-          });
+        li.addEventListener("click", (e) => {
+            e.preventDefault();
+
+            // guardar en memoria
+            alertaData.divisa = nombre;
+            alertaData.icono = divisa.icono;
+
+            // mostrar card con precios
+            preciosCard.innerHTML = `
+                <div class="flex items-center mb-2">
+                    <img src="${divisa.icono}" class="w-6 h-6 mr-2">
+                    <span class="font-bold">${nombre}</span>
+                </div>
+                <div class="flex justify-between">
+                    <button class="bg-green-100 px-3 py-1 rounded text-sm" data-precio="compra" data-valor="${divisa.compra}">
+                        Compra: ${Math.round(divisa.compra)} CLP
+                    </button>
+                    <button class="bg-red-100 px-3 py-1 rounded text-sm" data-precio="venta" data-valor="${divisa.venta}">
+                        Venta: ${Math.round(divisa.venta)} CLP
+                    </button>
+                </div>
+            `;
+            preciosCard.classList.remove("hidden");
+
+            preciosCard.querySelectorAll("button").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    alertaData.tipoPrecio = btn.dataset.precio;
+                    alertaData.precioRef = parseFloat(btn.dataset.valor);
+                    nextAlertaStep(); // avanza automáticamente
+                });
+            });
         });
-      });
 
-      dropdown.appendChild(li);
+        dropdown.appendChild(li);
     });
-  };
 }
+
 
 // Paso 3: guardar alerta
 document.getElementById("guardar-alerta").addEventListener("click", async () => {
@@ -155,4 +159,4 @@ document.getElementById("guardar-alerta").addEventListener("click", async () => 
 
 // Init
 updateAlertaStepper();
-loadAlertaCurrencies();
+loadAlertaCurrenciesFromArray(); 
