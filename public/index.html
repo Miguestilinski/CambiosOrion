@@ -399,19 +399,22 @@
                 </ol>
 
                 <!-- Paso 1 -->
-                <div id="alerta-step-1" class="step-content flex gap-4">
-                    <!-- Selector de divisa pequeño, sin borde ni hover -->
+                <div id="alerta-step-1" class="step-content flex gap-4 items-start">
+                    <!-- Selector de divisa estilo conversor -->
                     <div id="alerta-divisa-container" class="relative w-1/2">
-                        <button id="alerta-divisa-button" onclick="toggleDropdown('alerta-divisa-dropdown', event)"
-                            class="currency-selector flex items-center px-2 py-1 bg-white rounded text-sm shadow-sm focus:outline-none">
-                            <span class="font-medium">Selecciona</span>
-                            <svg class="w-3 h-3 ml-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                        <div id="alerta-divisa-button" class="currency-selector flex items-center px-2 py-1 bg-white rounded text-sm shadow-sm cursor-pointer"
+                            onclick="toggleDropdown('alerta-divisa-dropdown', event)">
+                            <img id="alerta-icon" src="" alt="Icono divisa" class="w-5 h-5 mr-2 hidden">
+                            <span id="alerta-currency-text" class="font-medium">Selecciona</span>
+                            <svg class="w-4 h-4 ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
                             </svg>
-                        </button>
+                        </div>
+
+                        <!-- Dropdown -->
                         <div id="alerta-divisa-dropdown"
-                            class="dropdown-content hidden divide-y divide-gray-100 rounded shadow-md overflow-y-auto absolute left-0 mt-1 w-full bg-white z-50 list-none">
-                            <ul class="py-1 text-sm text-gray-700"></ul>
+                            class="dropdown-content hidden divide-y divide-gray-100 rounded shadow-md overflow-y-auto absolute left-0 mt-1 w-full bg-white z-50">
+                            <ul class="py-1 text-sm text-gray-700 list-none"></ul>
                         </div>
                     </div>
 
