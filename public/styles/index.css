@@ -245,12 +245,13 @@ button.swap-button{
 }
 
 #alerta-divisa-dropdown {
-    max-height: 150px;       /* alto máximo */
-    overflow-y: auto;        /* scroll si hace falta */
+    max-height: 150px;
+    max-width: 100px;
+    overflow-y: auto;
     position: absolute;
     top: 100%;
     left: 0;
-    width: 100%;             /* mismo ancho que botón */
+    width: 100%;
     z-index: 9999;
 }
 

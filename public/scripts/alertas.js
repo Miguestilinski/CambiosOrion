@@ -64,6 +64,26 @@ function nextAlertaStep() {
   }
 }
 
+function showAlertaDropdown() {
+    const button = document.getElementById("alerta-divisa-button");
+    const dropdown = document.getElementById("alerta-divisa-dropdown");
+
+    // Si ya está en body, no hacemos nada
+    if (!dropdown.parentElement.isSameNode(document.body)) {
+        document.body.appendChild(dropdown);
+    }
+
+    // Posicionar debajo del botón
+    const rect = button.getBoundingClientRect();
+    dropdown.style.position = 'absolute';
+    dropdown.style.top = `${rect.bottom + window.scrollY}px`;
+    dropdown.style.left = `${rect.left + window.scrollX}px`;
+    dropdown.style.width = `${rect.width}px`;
+    dropdown.style.zIndex = 9999;
+
+    dropdown.classList.remove("hidden");
+}
+
 // Paso 1: cargar divisas desde SSE en dropdown estilo conversor
 function loadAlertaCurrenciesFromArray() {
     const dropdown = document.getElementById("alerta-divisa-dropdown");
