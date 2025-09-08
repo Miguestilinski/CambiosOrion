@@ -10,7 +10,7 @@ alertaBtn.addEventListener("click", (e) => {
   e.preventDefault();
   if (alertaWrapper.classList.contains("max-h-0")) {
     alertaWrapper.classList.remove("max-h-0");
-    alertaWrapper.classList.add("max-h-[1000px]"); // suficientemente grande para mostrar todo
+    alertaWrapper.classList.add("max-h-[1000px]");
   } else {
     alertaWrapper.classList.add("max-h-0");
     alertaWrapper.classList.remove("max-h-[1000px]");
