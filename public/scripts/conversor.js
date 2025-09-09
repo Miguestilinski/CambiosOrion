@@ -85,20 +85,20 @@ function filterDropdownCurrencies() {
     list1.forEach(option => option.classList.remove("hidden"));
     list2.forEach(option => option.classList.remove("hidden"));
 
-    // Ocultar en dropdown1 la divisa que está en currency1 o currency2
+    // Ocultar en dropdown1 solo la currency1
     list1.forEach(option => {
         const span = option.querySelector("span");
         const divisa = span ? span.textContent.trim() : option.textContent.trim();
-        const shouldHide = (divisa === currency1 || divisa === currency2);
+        const shouldHide = (divisa === currency1); // <-- solo currency1
         console.log(`[filter][dropdown1] opcion="${divisa}" -> hide?`, shouldHide);
         if (shouldHide) option.classList.add("hidden");
     });
 
-    // Ocultar en dropdown2 la divisa que está en currency1 o currency2
+    // Ocultar en dropdown2 solo la currency2
     list2.forEach(option => {
         const span = option.querySelector("span");
         const divisa = span ? span.textContent.trim() : option.textContent.trim();
-        const shouldHide = (divisa === currency2 || divisa === currency1);
+        const shouldHide = (divisa === currency2); // <-- solo currency2
         console.log(`[filter][dropdown2] opcion="${divisa}" -> hide?`, shouldHide);
         if (shouldHide) option.classList.add("hidden");
     });
