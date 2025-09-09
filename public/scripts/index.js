@@ -587,9 +587,9 @@ document.addEventListener("click", function (event) {
     //if (!navMenuButton.contains(event.target) && !navMobileMenu.contains(event.target)) {
     //    navMobileMenu.style.display = 'none';
     //}
-    if (!sessionMenuButton.contains(event.target) && !sessionMobileMenu.contains(event.target)) {
-        sessionMobileMenu.style.display = 'none';
-    }
+    //if (!sessionMenuButton.contains(event.target) && !sessionMobileMenu.contains(event.target)) {
+    //    sessionMobileMenu.style.display = 'none';
+    //}
 });
 
 function toggleEditModeState() {

@@ -65,8 +65,8 @@ function filterDropdownCurrencies() {
     const currency2 = document.getElementById("currency2-text").textContent;
 
     // Limpiar los dropdowns antes de actualizar
-    dropdown1.querySelectorAll("li").forEach(option => option.classList.remove("hidden"));
-    dropdown2.querySelectorAll("li").forEach(option => option.classList.remove("hidden"));
+    //dropdown1.querySelectorAll("li").forEach(option => option.classList.remove("hidden"));
+    //dropdown2.querySelectorAll("li").forEach(option => option.classList.remove("hidden"));
 
     // Actualizar dropdown1: Ocultar la divisa seleccionada en currency1 o currency2
     dropdown1.querySelectorAll("li").forEach(option => {

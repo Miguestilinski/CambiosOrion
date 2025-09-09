@@ -185,7 +185,7 @@ button.swap-button{
 .dropdown-content {
     position: absolute;
     background-color: #fff;
-    top: 100%;
+    top: 95%;
     width: auto;
     max-height: 150px;
     max-width: 200px;
