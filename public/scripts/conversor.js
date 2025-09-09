@@ -1,14 +1,17 @@
 // Función para establecer currency1
 function setCurrency1(currency) {
+    console.log('[setCurrency1] seleccionado ->', currency);
     const currency2 = document.getElementById("currency2-text").textContent;
+    console.log('[setCurrency1] currency2 actual ->', currency2);
 
     if (currency === currency2) {
-        // Si se selecciona la misma que está en currency2 => swap
+        console.log('[setCurrency1] moneda igual a currency2 -> hago swap');
         swapCurrencies();
         return;
     }
 
     if (currency !== "CLP" && currency2 !== "CLP") {
+        console.log('[setCurrency1] ninguna es CLP -> pongo currency2 = CLP');
         document.getElementById("currency2-text").textContent = "CLP";
     }
 
@@ -16,19 +19,23 @@ function setCurrency1(currency) {
     updateCurrencyIcon();
     filterDropdownCurrencies();
     convertCurrency();
+    console.log('[setCurrency1] terminado. currency1 ahora ->', currency);
 }
 
 // Función para establecer currency2
 function setCurrency2(currency) {
+    console.log('[setCurrency2] seleccionado ->', currency);
     const currency1 = document.getElementById("currency1-text").textContent;
+    console.log('[setCurrency2] currency1 actual ->', currency1);
 
     if (currency === currency1) {
-        // Si se selecciona la misma que está en currency1 => swap
+        console.log('[setCurrency2] moneda igual a currency1 -> hago swap');
         swapCurrencies();
         return;
     }
 
     if (currency !== "CLP" && currency1 !== "CLP") {
+        console.log('[setCurrency2] ninguna es CLP -> pongo currency1 = CLP');
         document.getElementById("currency1-text").textContent = "CLP";
     }
 
@@ -36,11 +43,13 @@ function setCurrency2(currency) {
     updateCurrencyIcon();
     filterDropdownCurrencies();
     convertCurrency();
+    console.log('[setCurrency2] terminado. currency2 ahora ->', currency);
 }
 
 function swapCurrencies() {
     const currency1 = document.getElementById("currency1-text").textContent;
     const currency2 = document.getElementById("currency2-text").textContent;
+    console.log('[swapCurrencies] antes ->', { currency1, currency2 });
 
     document.getElementById("currency1-text").textContent = currency2;
     document.getElementById("currency2-text").textContent = currency1;
@@ -52,6 +61,10 @@ function swapCurrencies() {
     document.getElementById("icon-currency2").src = iconCurrency1;
 
     convertCurrency(); // Realizar la conversión tras intercambiar divisas
+    console.log('[swapCurrencies] después ->', {
+        currency1: document.getElementById("currency1-text").textContent,
+        currency2: document.getElementById("currency2-text").textContent
+    });
 }
 
 // Función para filtrar las opciones de divisas
@@ -59,19 +72,26 @@ function filterDropdownCurrencies() {
     const dropdown1 = document.getElementById("dropdown1");
     const dropdown2 = document.getElementById("dropdown2");
 
-    const currency1 = document.getElementById("currency1-text").textContent;
-    const currency2 = document.getElementById("currency2-text").textContent;
+    const currency1 = document.getElementById("currency1-text").textContent.trim();
+    const currency2 = document.getElementById("currency2-text").textContent.trim();
+
+    console.log('[filterDropdownCurrencies] entrada ->', { currency1, currency2 });
 
     // Primero mostrar todo
-    dropdown1.querySelectorAll("li").forEach(option => option.classList.remove("hidden"));
-    dropdown2.querySelectorAll("li").forEach(option => option.classList.remove("hidden"));
+    const list1 = dropdown1.querySelectorAll("li");
+    const list2 = dropdown2.querySelectorAll("li");
+    console.log(`[filter] items dropdown1: ${list1.length}, dropdown2: ${list2.length}`);
+
+    list1.forEach(option => option.classList.remove("hidden"));
+    list2.forEach(option => option.classList.remove("hidden"));
 
     // Ocultar en dropdown1 la divisa que está en currency1 o currency2
     dropdown1.querySelectorAll("li").forEach(option => {
         const span = option.querySelector("span");
-        if (!span) return;
-        const divisa = span.textContent.trim();
-        if (divisa === currency1 || divisa === currency2) {
+        const divisa = span ? span.textContent.trim() : option.textContent.trim();
+        const shouldHide = (divisa === currency1 || divisa === currency2);
+        console.log(`[filter][dropdown1] opcion="${divisa}" -> hide?`, shouldHide);
+        if (shouldHide) {
             option.classList.add("hidden");
         }
     });
@@ -79,9 +99,10 @@ function filterDropdownCurrencies() {
     // Ocultar en dropdown2 la divisa que está en currency1 o currency2
     dropdown2.querySelectorAll("li").forEach(option => {
         const span = option.querySelector("span");
-        if (!span) return;
-        const divisa = span.textContent.trim();
-        if (divisa === currency2 || divisa === currency1) {
+        const divisa = span ? span.textContent.trim() : option.textContent.trim();
+        const shouldHide = (divisa === currency2 || divisa === currency1);
+        console.log(`[filter][dropdown2] opcion="${divisa}" -> hide?`, shouldHide);
+        if (shouldHide) {
             option.classList.add("hidden");
         }
     });
@@ -89,13 +110,23 @@ function filterDropdownCurrencies() {
     // Asegurar que CLP esté arriba
     moveCLPToTop(dropdown1);
     moveCLPToTop(dropdown2);
+
+    console.log('[filterDropdownCurrencies] terminado');
 }
 
 // Función para mover CLP al principio
-function moveCLPToTop(dropdown, currentCurrency) {
-    const clpOption = Array.from(dropdown.children).find(option => option.textContent.trim() === "CLP");
+function moveCLPToTop(dropdown) {
+    const id = dropdown.id || 'unknown';
+    const clpOption = Array.from(dropdown.children).find(option => {
+        const span = option.querySelector("span");
+        const text = span ? span.textContent.trim() : option.textContent.trim();
+        return text === "CLP";
+    });
     if (clpOption) {
         dropdown.insertBefore(clpOption, dropdown.firstChild);
+        console.log(`[moveCLPToTop] CLP movido al inicio de ${id}`);
+    } else {
+        console.log(`[moveCLPToTop] CLP NO encontrado en ${id}`);
     }
 }
 
