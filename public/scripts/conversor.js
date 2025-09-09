@@ -66,17 +66,21 @@ function filterDropdownCurrencies() {
     dropdown1.querySelectorAll("li").forEach(option => option.classList.remove("hidden"));
     dropdown2.querySelectorAll("li").forEach(option => option.classList.remove("hidden"));
 
-    // Ocultar en dropdown1 las divisas seleccionadas en currency1 y currency2
+    // Ocultar en dropdown1 la divisa que está en currency1 o currency2
     dropdown1.querySelectorAll("li").forEach(option => {
-        const divisa = option.textContent.trim();
+        const span = option.querySelector("span");
+        if (!span) return;
+        const divisa = span.textContent.trim();
         if (divisa === currency1 || divisa === currency2) {
             option.classList.add("hidden");
         }
     });
 
-    // Ocultar en dropdown2 las divisas seleccionadas en currency1 y currency2
+    // Ocultar en dropdown2 la divisa que está en currency1 o currency2
     dropdown2.querySelectorAll("li").forEach(option => {
-        const divisa = option.textContent.trim();
+        const span = option.querySelector("span");
+        if (!span) return;
+        const divisa = span.textContent.trim();
         if (divisa === currency2 || divisa === currency1) {
             option.classList.add("hidden");
         }
