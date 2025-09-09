@@ -122,7 +122,7 @@ function loadAlertaCurrenciesFromArray() {
                 <span>${nombre}</span>
             </a>
         `;
-
+        
         li.addEventListener("click", (e) => {
             e.preventDefault();
 
@@ -130,25 +130,35 @@ function loadAlertaCurrenciesFromArray() {
             alertaData.divisa = nombre;
             alertaData.icono = divisa.icono;
 
-            // mostrar card con precios
+            // actualizar botón
+            const alertaIcon = document.getElementById("alerta-icon");
+            const alertaText = document.getElementById("alerta-currency-text");
+            alertaIcon.src = divisa.icono;
+            alertaIcon.classList.remove("hidden");
+            alertaText.textContent = nombre;
+
+            // mostrar card con precios separado Compra/Venta
             preciosCard.innerHTML = `
-                <div class="flex items-center mb-2">
-                    <img src="${divisa.icono}" class="w-6 h-6 mr-2">
-                    <span class="font-bold">${nombre}</span>
-                </div>
-                <div class="flex justify-between">
-                    <button class="bg-green-100 px-3 py-1 rounded text-sm" data-precio="compra" data-valor="${divisa.compra}">
-                        Compra: ${Math.round(divisa.compra)} CLP
-                    </button>
-                    <button class="bg-red-100 px-3 py-1 rounded text-sm" data-precio="venta" data-valor="${divisa.venta}">
-                        Venta: ${Math.round(divisa.venta)} CLP
-                    </button>
+                <div class="grid grid-cols-2 gap-4 text-center">
+                    <div>
+                        <div class="font-semibold mb-1 text-green-700">Compra</div>
+                        <button class="bg-green-100 px-3 py-1 rounded text-sm" data-precio="compra" data-valor="${divisa.compra}">
+                            ${Math.round(divisa.compra)} CLP
+                        </button>
+                    </div>
+                    <div>
+                        <div class="font-semibold mb-1 text-red-700">Venta</div>
+                        <button class="bg-red-100 px-3 py-1 rounded text-sm" data-precio="venta" data-valor="${divisa.venta}">
+                            ${Math.round(divisa.venta)} CLP
+                        </button>
+                    </div>
                 </div>
             `;
             preciosCard.classList.remove("hidden");
 
-            hideAlertaDropdown(); // <-- cerrar al seleccionar
+            hideAlertaDropdown(); // cerrar al seleccionar
 
+            // asignar acción a los botones
             preciosCard.querySelectorAll("button").forEach(btn => {
                 btn.addEventListener("click", () => {
                     alertaData.tipoPrecio = btn.dataset.precio;
