@@ -202,7 +202,6 @@ button.swap-button{
 
 /* Modificación de los elementos de la lista */
 .dropdown-content div {
-    display: flex;
     align-items: center;
     cursor: pointer;
     padding: 0.5rem;
