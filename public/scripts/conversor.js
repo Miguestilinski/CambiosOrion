@@ -243,16 +243,23 @@ function updateTradeSwitch() {
     buyButton.textContent = `Compra: ${formatWithThousandsSeparator(buyPrice)} CLP`;
     sellButton.textContent = `Venta: ${formatWithThousandsSeparator(sellPrice)} CLP`;
 
-    // Resaltar el botón activo
+    // Limpiar clases anteriores
+    buyButton.className = "flex-1 p-2 text-center border rounded-l-lg hover:bg-blue-100";
+    sellButton.className = "flex-1 p-2 text-center border-l border-r rounded-r-lg hover:bg-blue-100";
+
+    // Aplicar estilos según el botón activo
     if (currency1 === "CLP") {
-        buyButton.classList.add("bg-green-100");
-        sellButton.classList.remove("bg-green-100");
+        // Compra activo
+        buyButton.classList.add("bg-blue-600", "text-white", "border-blue-600");
+        sellButton.classList.add("border-blue-600", "text-gray-800", "bg-transparent");
     } else if (currency2 === "CLP") {
-        sellButton.classList.add("bg-red-100");
-        buyButton.classList.remove("bg-red-100");
+        // Venta activo
+        sellButton.classList.add("bg-blue-600", "text-white", "border-blue-600");
+        buyButton.classList.add("border-blue-600", "text-gray-800", "bg-transparent");
     } else {
-        buyButton.classList.remove("bg-green-100");
-        sellButton.classList.remove("bg-red-100");
+        // Ninguno activo
+        buyButton.classList.add("border-blue-600", "text-gray-800", "bg-transparent");
+        sellButton.classList.add("border-blue-600", "text-gray-800", "bg-transparent");
     }
 }
 
@@ -261,10 +268,7 @@ document.getElementById("trade-buy").addEventListener("click", () => {
     const currency1 = document.getElementById("currency1-text").textContent;
     const currency2 = document.getElementById("currency2-text").textContent;
 
-    // Si actualmente está Venta, hacemos swap
-    if (!(currency1 === "CLP")) {
-        swapCurrencies();
-    }
+    if (!(currency1 === "CLP")) swapCurrencies();
     updateTradeSwitch();
 });
 
@@ -272,9 +276,6 @@ document.getElementById("trade-sell").addEventListener("click", () => {
     const currency1 = document.getElementById("currency1-text").textContent;
     const currency2 = document.getElementById("currency2-text").textContent;
 
-    // Si actualmente está Compra, hacemos swap
-    if (!(currency2 === "CLP")) {
-        swapCurrencies();
-    }
+    if (!(currency2 === "CLP")) swapCurrencies();
     updateTradeSwitch();
 });
