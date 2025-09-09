@@ -2,42 +2,40 @@
 function setCurrency1(currency) {
     const currency2 = document.getElementById("currency2-text").textContent;
 
-    // Evitar que currency1 sea igual a currency2
     if (currency === currency2) {
-        alert("No puedes seleccionar la misma divisa en ambos dropdowns.");
-        return; // No hacer nada si las divisas son iguales
+        // Si se selecciona la misma que está en currency2 => swap
+        swapCurrencies();
+        return;
     }
 
-    // Asegurarse de que al menos una de las divisas sea CLP
     if (currency !== "CLP" && currency2 !== "CLP") {
-        document.getElementById("currency2-text").textContent = "CLP"; // Cambiar a CLP si ninguna es CLP
+        document.getElementById("currency2-text").textContent = "CLP";
     }
 
     document.getElementById("currency1-text").textContent = currency;
     updateCurrencyIcon();
-    filterDropdownCurrencies(); // Actualizar opciones visibles
-    convertCurrency(); // Realizar la conversión después de actualizar la divisa
+    filterDropdownCurrencies();
+    convertCurrency();
 }
 
 // Función para establecer currency2
 function setCurrency2(currency) {
     const currency1 = document.getElementById("currency1-text").textContent;
 
-    // Evitar que currency2 sea igual a currency1
     if (currency === currency1) {
-        alert("No puedes seleccionar la misma divisa en ambos dropdowns.");
-        return; // No hacer nada si las divisas son iguales
+        // Si se selecciona la misma que está en currency1 => swap
+        swapCurrencies();
+        return;
     }
 
-    // Asegurarse de que al menos una de las divisas sea CLP
     if (currency !== "CLP" && currency1 !== "CLP") {
-        document.getElementById("currency1-text").textContent = "CLP"; // Cambiar a CLP si ninguna es CLP
+        document.getElementById("currency1-text").textContent = "CLP";
     }
 
     document.getElementById("currency2-text").textContent = currency;
     updateCurrencyIcon();
-    filterDropdownCurrencies(); // Actualizar opciones visibles
-    convertCurrency(); // Realizar la conversión después de actualizar la divisa
+    filterDropdownCurrencies();
+    convertCurrency();
 }
 
 function swapCurrencies() {
@@ -64,11 +62,11 @@ function filterDropdownCurrencies() {
     const currency1 = document.getElementById("currency1-text").textContent;
     const currency2 = document.getElementById("currency2-text").textContent;
 
-    // Limpiar los dropdowns antes de actualizar
-    //dropdown1.querySelectorAll("li").forEach(option => option.classList.remove("hidden"));
-    //dropdown2.querySelectorAll("li").forEach(option => option.classList.remove("hidden"));
+    // Primero mostrar todo
+    dropdown1.querySelectorAll("li").forEach(option => option.classList.remove("hidden"));
+    dropdown2.querySelectorAll("li").forEach(option => option.classList.remove("hidden"));
 
-    // Actualizar dropdown1: Ocultar la divisa seleccionada en currency1 o currency2
+    // Ocultar en dropdown1 las divisas seleccionadas en currency1 y currency2
     dropdown1.querySelectorAll("li").forEach(option => {
         const divisa = option.textContent.trim();
         if (divisa === currency1 || divisa === currency2) {
@@ -76,7 +74,7 @@ function filterDropdownCurrencies() {
         }
     });
 
-    // Actualizar dropdown2: Ocultar la divisa seleccionada en currency2 o currency1
+    // Ocultar en dropdown2 las divisas seleccionadas en currency1 y currency2
     dropdown2.querySelectorAll("li").forEach(option => {
         const divisa = option.textContent.trim();
         if (divisa === currency2 || divisa === currency1) {
@@ -84,9 +82,9 @@ function filterDropdownCurrencies() {
         }
     });
 
-    // Asegurar que CLP esté al principio
-    moveCLPToTop(dropdown1, currency1);
-    moveCLPToTop(dropdown2, currency2);
+    // Asegurar que CLP esté arriba
+    moveCLPToTop(dropdown1);
+    moveCLPToTop(dropdown2);
 }
 
 // Función para mover CLP al principio
