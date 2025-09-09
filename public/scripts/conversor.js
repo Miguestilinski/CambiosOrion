@@ -78,8 +78,8 @@ function filterDropdownCurrencies() {
     console.log('[filterDropdownCurrencies] entrada ->', { currency1, currency2 });
 
     // Primero mostrar todo
-    const list1 = dropdown1.querySelectorAll("ul li");
-    const list2 = dropdown2.querySelectorAll("ul li");
+    const list1 = dropdown1.querySelectorAll("div");
+    const list2 = dropdown2.querySelectorAll("div");
     console.log(`[filter] items dropdown1: ${list1.length}, dropdown2: ${list2.length}`);
 
     list1.forEach(option => option.classList.remove("hidden"));
