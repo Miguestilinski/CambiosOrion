@@ -65,26 +65,22 @@ function filterDropdownCurrencies() {
     const currency2 = document.getElementById("currency2-text").textContent;
 
     // Limpiar los dropdowns antes de actualizar
-    Array.from(dropdown1.children).forEach(option => option.style.display = 'block');
-    Array.from(dropdown2.children).forEach(option => option.style.display = 'block');
+    dropdown1.querySelectorAll("li").forEach(option => option.classList.remove("hidden"));
+    dropdown2.querySelectorAll("li").forEach(option => option.classList.remove("hidden"));
 
-    // Actualizar dropdown1: Ocultar la divisa seleccionada en currency1
-    Array.from(dropdown1.children).forEach(option => {
+    // Actualizar dropdown1: Ocultar la divisa seleccionada en currency1 o currency2
+    dropdown1.querySelectorAll("li").forEach(option => {
         const divisa = option.textContent.trim();
-        if (divisa === currency1) {
-            option.style.display = 'none'; // Ocultar currency1
-        } else if (divisa === currency2) {
-            option.style.display = 'none'; // Ocultar currency2 si está en dropdown1
+        if (divisa === currency1 || divisa === currency2) {
+            option.classList.add("hidden");
         }
     });
 
-    // Actualizar dropdown2: Ocultar la divisa seleccionada en currency2
-    Array.from(dropdown2.children).forEach(option => {
+    // Actualizar dropdown2: Ocultar la divisa seleccionada en currency2 o currency1
+    dropdown2.querySelectorAll("li").forEach(option => {
         const divisa = option.textContent.trim();
-        if (divisa === currency2) {
-            option.style.display = 'none'; // Ocultar currency2
-        } else if (divisa === currency1) {
-            option.style.display = 'none'; // Ocultar currency1 si está en dropdown2
+        if (divisa === currency2 || divisa === currency1) {
+            option.classList.add("hidden");
         }
     });
 
