@@ -78,33 +78,29 @@ function filterDropdownCurrencies() {
     console.log('[filterDropdownCurrencies] entrada ->', { currency1, currency2 });
 
     // Primero mostrar todo
-    const list1 = dropdown1.querySelectorAll("li");
-    const list2 = dropdown2.querySelectorAll("li");
+    const list1 = dropdown1.querySelectorAll("ul li");
+    const list2 = dropdown2.querySelectorAll("ul li");
     console.log(`[filter] items dropdown1: ${list1.length}, dropdown2: ${list2.length}`);
 
     list1.forEach(option => option.classList.remove("hidden"));
     list2.forEach(option => option.classList.remove("hidden"));
 
     // Ocultar en dropdown1 la divisa que está en currency1 o currency2
-    dropdown1.querySelectorAll("li").forEach(option => {
+    list1.forEach(option => {
         const span = option.querySelector("span");
         const divisa = span ? span.textContent.trim() : option.textContent.trim();
         const shouldHide = (divisa === currency1 || divisa === currency2);
         console.log(`[filter][dropdown1] opcion="${divisa}" -> hide?`, shouldHide);
-        if (shouldHide) {
-            option.classList.add("hidden");
-        }
+        if (shouldHide) option.classList.add("hidden");
     });
 
     // Ocultar en dropdown2 la divisa que está en currency1 o currency2
-    dropdown2.querySelectorAll("li").forEach(option => {
+    list2.forEach(option => {
         const span = option.querySelector("span");
         const divisa = span ? span.textContent.trim() : option.textContent.trim();
         const shouldHide = (divisa === currency2 || divisa === currency1);
         console.log(`[filter][dropdown2] opcion="${divisa}" -> hide?`, shouldHide);
-        if (shouldHide) {
-            option.classList.add("hidden");
-        }
+        if (shouldHide) option.classList.add("hidden");
     });
 
     // Asegurar que CLP esté arriba
