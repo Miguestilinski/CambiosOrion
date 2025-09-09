@@ -49,7 +49,8 @@ function swapCurrencies() {
     document.getElementById("icon-currency1").src = iconCurrency2;
     document.getElementById("icon-currency2").src = iconCurrency1;
 
-    convertCurrency(); // Realizar la conversión tras intercambiar divisas
+    convertCurrency();
+    updateTradeSwitch();
 }
 
 // Función para filtrar las opciones de divisas
@@ -194,6 +195,8 @@ function convertCurrency() {
         tradePrice.textContent = '';
         tradePrice.dataset.price = '0';
     }
+
+    updateTradeSwitch();
 }
 
 // Asegurar que el segundo campo de entrada sea de solo lectura
@@ -213,3 +216,65 @@ function updateCurrencyIcon() {
     document.getElementById("icon-currency1").src = exchangeRates[currency1].icono;
     document.getElementById("icon-currency2").src = exchangeRates[currency2].icono;
 }
+
+// Actualiza los textos del switch según las divisas actuales
+function updateTradeSwitch() {
+    const currency1 = document.getElementById("currency1-text").textContent;
+    const currency2 = document.getElementById("currency2-text").textContent;
+
+    const buyButton = document.getElementById("trade-buy");
+    const sellButton = document.getElementById("trade-sell");
+
+    let buyPrice = 0;
+    let sellPrice = 0;
+
+    // Supongamos que siempre CLP es referencia
+    if (currency1 === "CLP") {
+        buyPrice = exchangeRates[currency2].compra;
+        sellPrice = exchangeRates[currency2].venta;
+    } else if (currency2 === "CLP") {
+        buyPrice = exchangeRates[currency1].compra;
+        sellPrice = exchangeRates[currency1].venta;
+    } else {
+        buyPrice = exchangeRates[currency1].compra / exchangeRates[currency2].venta;
+        sellPrice = exchangeRates[currency1].venta / exchangeRates[currency2].compra;
+    }
+
+    buyButton.textContent = `Compra: ${formatWithThousandsSeparator(buyPrice)} CLP`;
+    sellButton.textContent = `Venta: ${formatWithThousandsSeparator(sellPrice)} CLP`;
+
+    // Resaltar el botón activo
+    if (currency1 === "CLP") {
+        buyButton.classList.add("bg-green-100");
+        sellButton.classList.remove("bg-green-100");
+    } else if (currency2 === "CLP") {
+        sellButton.classList.add("bg-red-100");
+        buyButton.classList.remove("bg-red-100");
+    } else {
+        buyButton.classList.remove("bg-green-100");
+        sellButton.classList.remove("bg-red-100");
+    }
+}
+
+// Manejar clicks en los botones del switch
+document.getElementById("trade-buy").addEventListener("click", () => {
+    const currency1 = document.getElementById("currency1-text").textContent;
+    const currency2 = document.getElementById("currency2-text").textContent;
+
+    // Si actualmente está Venta, hacemos swap
+    if (!(currency1 === "CLP")) {
+        swapCurrencies();
+    }
+    updateTradeSwitch();
+});
+
+document.getElementById("trade-sell").addEventListener("click", () => {
+    const currency1 = document.getElementById("currency1-text").textContent;
+    const currency2 = document.getElementById("currency2-text").textContent;
+
+    // Si actualmente está Compra, hacemos swap
+    if (!(currency2 === "CLP")) {
+        swapCurrencies();
+    }
+    updateTradeSwitch();
+});
