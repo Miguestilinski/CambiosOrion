@@ -200,19 +200,19 @@ function loadAlertaCurrenciesFromArray() {
 
             // mostrar card con precios separado Compra/Venta
             preciosCard.innerHTML = `
-                <div class="grid grid-cols-2 gap-4 text-center">
-                    <div>
-                        <div class="font-semibold mb-1 text-green-700">Compra</div>
-                        <button class="bg-green-100 px-3 py-1 rounded text-sm" data-precio="compra" data-valor="${divisa.compra}">
-                            ${Math.round(divisa.compra)} CLP
-                        </button>
-                    </div>
-                    <div>
-                        <div class="font-semibold mb-1 text-red-700">Venta</div>
-                        <button class="bg-red-100 px-3 py-1 rounded text-sm" data-precio="venta" data-valor="${divisa.venta}">
-                            ${Math.round(divisa.venta)} CLP
-                        </button>
-                    </div>
+                <div class="flex flex-col gap-3">
+                    <button 
+                        class="bg-[#1e3a8a] hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow w-full"
+                        data-precio="compra" 
+                        data-valor="${divisa.compra}">
+                        Compra: ${Math.round(divisa.compra)} CLP
+                    </button>
+                    <button 
+                        class="bg-[#1e3a8a] hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow w-full"
+                        data-precio="venta" 
+                        data-valor="${divisa.venta}">
+                        Venta: ${Math.round(divisa.venta)} CLP
+                    </button>
                 </div>
             `;
             preciosCard.classList.remove("hidden");
@@ -232,7 +232,6 @@ function loadAlertaCurrenciesFromArray() {
         ul.appendChild(li); // <-- agregar al <ul>
     });
 }
-
 
 // Paso 3: guardar alerta
 document.getElementById("guardar-alerta").addEventListener("click", async () => {
