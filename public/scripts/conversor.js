@@ -203,11 +203,15 @@ function convertCurrency() {
 document.addEventListener('DOMContentLoaded', () => {
     const amount2Input = document.getElementById("amount2");
 
-    if (amount2Input) {
-        amount2Input.setAttribute('readonly', true); // Hacerlo de solo lectura
-    }
+    if (amount2Input) amount2Input.setAttribute('readonly', true);
 
-    updateTradeSwitch();
+    // Esperar un poco o hasta que exchangeRates esté definido
+    if (typeof exchangeRates !== "undefined") {
+        updateTradeSwitch();
+    } else {
+        console.warn("exchangeRates no definido aún, intentando en 100ms");
+        setTimeout(updateTradeSwitch, 100);
+    }
 });
 
 // Función para actualizar los íconos de divisas seleccionadas
@@ -262,7 +266,13 @@ function updateTradeSwitch() {
 
     if (currency1 === "CLP") {
         // Compra activo
-        buyDiv.classList.add(activeColor, "text-white", borderColor);
+        buyDiv.classList.add(
+            "bg-transparent",
+            inactiveText,
+            borderColor,
+            "hover:bg-[#1e3a8a]",
+            "hover:text-white"
+        );
         sellDiv.classList.add(
             "bg-transparent",
             inactiveText,
@@ -279,7 +289,13 @@ function updateTradeSwitch() {
             "hover:bg-[#1e3a8a]",
             "hover:text-white"
         );
-        buyDiv.classList.add("bg-transparent", inactiveText, borderColor, inactiveHover);
+        buyDiv.classList.add(
+            "bg-transparent",
+            inactiveText,
+            borderColor,
+            "hover:bg-[#1e3a8a]",
+            "hover:text-white"
+        );
     }
 }
 
