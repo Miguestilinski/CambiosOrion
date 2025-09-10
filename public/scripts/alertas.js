@@ -139,6 +139,26 @@ function showAlertaDropdown() {
     document.addEventListener("click", handleClickOutside);
 }
 
+// Manejar selección de divisa
+function selectAlertaCurrency(nombre, icono) {
+    const button = document.getElementById("alerta-divisa-button");
+    const text = document.getElementById("alerta-currency-text");
+    const icon = document.getElementById("alerta-icon");
+    const container = document.getElementById("alerta-divisa-container");
+
+    // Cambiar texto e icono
+    text.textContent = nombre;
+    icon.src = icono;
+    icon.classList.remove("hidden");
+
+    // Cambiar ancho del contenedor (200px → 150px)
+    container.classList.remove("w-[200px]");
+    container.classList.add("w-[150px]");
+
+    // Ocultar dropdown
+    hideAlertaDropdown();
+}
+
 // Paso 1: cargar divisas desde SSE en dropdown estilo conversor
 function loadAlertaCurrenciesFromArray() {
     const dropdown = document.getElementById("alerta-divisa-dropdown");
