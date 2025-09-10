@@ -206,6 +206,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (amount2Input) {
         amount2Input.setAttribute('readonly', true); // Hacerlo de solo lectura
     }
+
+    updateTradeSwitch();
 });
 
 // Función para actualizar los íconos de divisas seleccionadas
@@ -222,8 +224,8 @@ function updateTradeSwitch() {
     const currency1 = document.getElementById("currency1-text").textContent;
     const currency2 = document.getElementById("currency2-text").textContent;
 
-    const buyButton = document.getElementById("trade-buy");
-    const sellButton = document.getElementById("trade-sell");
+    const buyDiv = document.getElementById("trade-buy");
+    const sellDiv = document.getElementById("trade-sell");
 
     let buyPrice = 0;
     let sellPrice = 0;
@@ -240,42 +242,35 @@ function updateTradeSwitch() {
         sellPrice = exchangeRates[currency1].venta / exchangeRates[currency2].compra;
     }
 
-    buyButton.textContent = `Compra: ${formatWithThousandsSeparator(buyPrice)} CLP`;
-    sellButton.textContent = `Venta: ${formatWithThousandsSeparator(sellPrice)} CLP`;
+    buyDiv.textContent = `Compra: ${formatWithThousandsSeparator(buyPrice)} CLP`;
+    sellDiv.textContent = `Venta: ${formatWithThousandsSeparator(sellPrice)} CLP`;
 
-    // Resetear clases
-    buyButton.className = "flex-1 p-2 text-center border-l border-t border-b rounded-l-md";
-    sellButton.className = "flex-1 p-2 text-center border-t border-b border-r rounded-r-md";
+    // Limpiar clases
+    buyDiv.className = "flex-1 p-2 text-center border-l border-t border-b rounded-l-md cursor-pointer";
+    sellDiv.className = "flex-1 p-2 text-center border-t border-b border-r rounded-r-md cursor-pointer";
 
-    // Aplicar estilos según el botón activo
+    // Por defecto Venta seleccionado (currency2 = CLP → Venta)
     if (currency1 === "CLP") {
         // Compra activo
-        buyButton.classList.add("bg-[#1e3a8a]", "text-white", "border-[#1e3a8a]");
-        sellButton.classList.add("bg-transparent", "text-gray-800", "border-[#1e3a8a]", "hover:bg-[#1e3a8a]", "hover:text-white");
-    } else if (currency2 === "CLP") {
-        // Venta activo
-        sellButton.classList.add("bg-[#1e3a8a]", "text-white", "border-[#1e3a8a]");
-        buyButton.classList.add("bg-transparent", "text-gray-800", "border-[#1e3a8a]", "hover:bg-[#1e3a8a]", "hover:text-white");
+        buyDiv.classList.add("bg-[#1e3a8a]", "text-white", "border-[#1e3a8a]");
+        sellDiv.classList.add("bg-transparent", "text-gray-800", "border-[#1e3a8a]", "hover:bg-[#1e3a8a]", "hover:text-white");
     } else {
-        // Ninguno activo
-        buyButton.classList.add("bg-transparent", "text-gray-800", "border-[#1e3a8a]", "hover:bg-[#1e3a8a]", "hover:text-white");
-        sellButton.classList.add("bg-transparent", "text-gray-800", "border-[#1e3a8a]", "hover:bg-[#1e3a8a]", "hover:text-white");
+        // Venta activo
+        sellDiv.classList.add("bg-[#1e3a8a]", "text-white", "border-[#1e3a8a]");
+        buyDiv.classList.add("bg-transparent", "text-gray-800", "border-[#1e3a8a]", "hover:bg-[#1e3a8a]", "hover:text-white");
     }
 }
 
-// Manejar clicks en los botones del switch
+// Manejar clicks en los divs del switch
 document.getElementById("trade-buy").addEventListener("click", () => {
     const currency1 = document.getElementById("currency1-text").textContent;
-    const currency2 = document.getElementById("currency2-text").textContent;
-
     if (!(currency1 === "CLP")) swapCurrencies();
     updateTradeSwitch();
 });
 
 document.getElementById("trade-sell").addEventListener("click", () => {
-    const currency1 = document.getElementById("currency1-text").textContent;
     const currency2 = document.getElementById("currency2-text").textContent;
-
     if (!(currency2 === "CLP")) swapCurrencies();
     updateTradeSwitch();
 });
+
