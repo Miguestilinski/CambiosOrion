@@ -281,7 +281,7 @@ function updateTradeSwitch() {
     const inactiveHover = "hover:bg-[#1e3a8a] hover:text-white"; // hover del no seleccionado
     const borderColor = "border-[#1e3a8a]";
 
-    if (currency1 === "CLP") {
+    if (currency2 === "CLP") {
         // Compra activo
         buyDiv.classList.add(
             activeColor,
