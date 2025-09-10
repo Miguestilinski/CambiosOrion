@@ -219,7 +219,7 @@ function updateCurrencyIcon() {
     document.getElementById("icon-currency2").src = exchangeRates[currency2].icono;
 }
 
-// Actualiza los textos del switch según las divisas actuales
+// Actualiza los textos y estilos del switch
 function updateTradeSwitch() {
     const currency1 = document.getElementById("currency1-text").textContent;
     const currency2 = document.getElementById("currency2-text").textContent;
@@ -245,31 +245,38 @@ function updateTradeSwitch() {
     buyDiv.textContent = `Compra: ${formatWithThousandsSeparator(buyPrice)} CLP`;
     sellDiv.textContent = `Venta: ${formatWithThousandsSeparator(sellPrice)} CLP`;
 
-    // Limpiar clases
+    // Limpiar clases base
     buyDiv.className = "flex-1 p-2 text-center border-l border-t border-b rounded-l-md cursor-pointer";
     sellDiv.className = "flex-1 p-2 text-center border-t border-b border-r rounded-r-md cursor-pointer";
 
-    // ✅ Compra seleccionado por defecto
+    // 🔹 Estilos
+    const activeColor = "bg-[#1e3a8a]";      // fondo azul del seleccionado
+    const inactiveText = "text-[#1e3a8a]";    // texto del lado no seleccionado
+    const inactiveHover = "hover:bg-[#1e3a8a] hover:text-white"; // hover del no seleccionado
+    const borderColor = "border-[#1e3a8a]";
+
     if (currency1 === "CLP") {
-        buyDiv.classList.add("bg-[#1e3a8a]", "text-white", "border-[#1e3a8a]");
-        sellDiv.classList.add("bg-transparent", "text-gray-800", "border-[#1e3a8a]", "hover:bg-[#1e3a8a]", "hover:text-white");
+        // Compra activo
+        buyDiv.classList.add(activeColor, "text-white", borderColor);
+        sellDiv.classList.add("bg-transparent", inactiveText, borderColor, inactiveHover);
     } else {
-        sellDiv.classList.add("bg-[#1e3a8a]", "text-white", "border-[#1e3a8a]");
-        buyDiv.classList.add("bg-transparent", "text-gray-800", "border-[#1e3a8a]", "hover:bg-[#1e3a8a]", "hover:text-white");
+        // Venta activo
+        sellDiv.classList.add(activeColor, "text-white", borderColor);
+        buyDiv.classList.add("bg-transparent", inactiveText, borderColor, inactiveHover);
     }
 }
 
-// Manejar clicks en los divs del switch
+// Click en Compra
 document.getElementById("trade-buy").addEventListener("click", () => {
     const currency1 = document.getElementById("currency1-text").textContent;
-    // Si actualmente no es Compra, hacer swap
     if (!(currency1 === "CLP")) swapCurrencies();
     updateTradeSwitch();
 });
 
+// Click en Venta
 document.getElementById("trade-sell").addEventListener("click", () => {
     const currency2 = document.getElementById("currency2-text").textContent;
-    // Si actualmente no es Venta, hacer swap
     if (!(currency2 === "CLP")) swapCurrencies();
     updateTradeSwitch();
 });
+
