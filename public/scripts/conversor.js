@@ -267,30 +267,30 @@ function updateTradeSwitch() {
     if (currency1 === "CLP") {
         // Compra activo
         buyDiv.classList.add(
+            activeColor,
+            "text-white",
+            borderColor
+        );
+        sellDiv.classList.add(
             "bg-transparent",
             inactiveText,
             borderColor,
             "hover:bg-[#1e3a8a]",
             "hover:text-white"
-        );
-        sellDiv.classList.add(
-            activeColor,
-            "text-white",
-            borderColor
         );
     } else {
         // Venta activo
         sellDiv.classList.add(
+            activeColor,
+            "text-white",
+            borderColor
+        );
+        buyDiv.classList.add(
             "bg-transparent",
             inactiveText,
             borderColor,
             "hover:bg-[#1e3a8a]",
             "hover:text-white"
-        );
-        buyDiv.classList.add(
-            activeColor,
-            "text-white",
-            borderColor
         );
     }
 }
