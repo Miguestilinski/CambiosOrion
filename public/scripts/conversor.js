@@ -199,21 +199,6 @@ function convertCurrency() {
     updateTradeSwitch();
 }
 
-// Asegurar que el segundo campo de entrada sea de solo lectura
-document.addEventListener('DOMContentLoaded', () => {
-    const amount2Input = document.getElementById("amount2");
-
-    if (amount2Input) amount2Input.setAttribute('readonly', true);
-
-    // Esperar un poco o hasta que exchangeRates esté definido
-    if (typeof exchangeRates !== "undefined") {
-        updateTradeSwitch();
-    } else {
-        console.warn("exchangeRates no definido aún, intentando en 100ms");
-        setTimeout(updateTradeSwitch, 100);
-    }
-});
-
 // Función para actualizar los íconos de divisas seleccionadas
 function updateCurrencyIcon() {
     const currency1 = document.getElementById("currency1-text").textContent;
@@ -221,6 +206,38 @@ function updateCurrencyIcon() {
 
     document.getElementById("icon-currency1").src = exchangeRates[currency1].icono;
     document.getElementById("icon-currency2").src = exchangeRates[currency2].icono;
+}
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const amount2Input = document.getElementById("amount2");
+
+    if (amount2Input) amount2Input.setAttribute('readonly', true);
+
+    // Intentar actualizar el switch cuando exchangeRates esté listo
+    waitForExchangeRates().then(() => {
+        // Forzar que al inicio currency1 sea CLP y currency2 USD
+        document.getElementById("currency1-text").textContent = "CLP";
+        document.getElementById("currency2-text").textContent = "USD";
+
+        updateTradeSwitch();
+    });
+});
+
+// Función que espera a que exchangeRates esté definido
+function waitForExchangeRates() {
+    return new Promise((resolve) => {
+        if (typeof exchangeRates !== "undefined") {
+            resolve();
+        } else {
+            const interval = setInterval(() => {
+                if (typeof exchangeRates !== "undefined") {
+                    clearInterval(interval);
+                    resolve();
+                }
+            }, 50); // cada 50ms revisa
+        }
+    });
 }
 
 // Actualiza los textos y estilos del switch
