@@ -177,7 +177,8 @@ function loadAlertaCurrenciesFromArray() {
 
         const li = document.createElement("li");
         li.innerHTML = `
-            <a href="#" class="flex items-center hover:bg-gray-100 inline-block">
+            <a href="#" class="flex items-center hover:bg-gray-100 inline-block"
+            onclick="selectAlertaCurrency('${nombre}', '${divisa.icono}')">
                 <img src="${divisa.icono}" alt="${nombre}">
                 <span>${nombre}</span>
             </a>
