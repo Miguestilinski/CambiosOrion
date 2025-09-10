@@ -81,12 +81,19 @@ function showAlertaDropdown() {
 
     // Posicionar debajo del botón
     const rect = button.getBoundingClientRect();
+
     dropdown.style.position = 'absolute';
     dropdown.style.top = `${rect.bottom + window.scrollY}px`;
-    dropdown.style.left = `${rect.left + window.scrollX}px`;
-    dropdown.style.width = `${rect.width}px`;
-    dropdown.style.zIndex = 9999;
 
+    // Calcular ancho del botón y del dropdown
+    const buttonWidth = rect.width;
+    const dropdownWidth = dropdown.offsetWidth || buttonWidth; // fallback
+
+    // Centrar horizontalmente respecto al botón
+    const left = rect.left + window.scrollX + (buttonWidth / 2) - (dropdownWidth / 2);
+    dropdown.style.left = `${left}px`;
+
+    dropdown.style.zIndex = 9999;
     dropdown.classList.remove("hidden");
 
     // Cerrar al click fuera
@@ -122,7 +129,7 @@ function loadAlertaCurrenciesFromArray() {
                 <span>${nombre}</span>
             </a>
         `;
-        
+
         li.addEventListener("click", (e) => {
             e.preventDefault();
 
