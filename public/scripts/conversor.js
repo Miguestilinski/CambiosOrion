@@ -249,13 +249,11 @@ function updateTradeSwitch() {
     buyDiv.className = "flex-1 p-2 text-center border-l border-t border-b rounded-l-md cursor-pointer";
     sellDiv.className = "flex-1 p-2 text-center border-t border-b border-r rounded-r-md cursor-pointer";
 
-    // Por defecto Venta seleccionado (currency2 = CLP → Venta)
+    // ✅ Compra seleccionado por defecto
     if (currency1 === "CLP") {
-        // Compra activo
         buyDiv.classList.add("bg-[#1e3a8a]", "text-white", "border-[#1e3a8a]");
         sellDiv.classList.add("bg-transparent", "text-gray-800", "border-[#1e3a8a]", "hover:bg-[#1e3a8a]", "hover:text-white");
     } else {
-        // Venta activo
         sellDiv.classList.add("bg-[#1e3a8a]", "text-white", "border-[#1e3a8a]");
         buyDiv.classList.add("bg-transparent", "text-gray-800", "border-[#1e3a8a]", "hover:bg-[#1e3a8a]", "hover:text-white");
     }
@@ -264,13 +262,14 @@ function updateTradeSwitch() {
 // Manejar clicks en los divs del switch
 document.getElementById("trade-buy").addEventListener("click", () => {
     const currency1 = document.getElementById("currency1-text").textContent;
+    // Si actualmente no es Compra, hacer swap
     if (!(currency1 === "CLP")) swapCurrencies();
     updateTradeSwitch();
 });
 
 document.getElementById("trade-sell").addEventListener("click", () => {
     const currency2 = document.getElementById("currency2-text").textContent;
+    // Si actualmente no es Venta, hacer swap
     if (!(currency2 === "CLP")) swapCurrencies();
     updateTradeSwitch();
 });
-
