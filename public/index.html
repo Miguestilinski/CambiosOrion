@@ -417,12 +417,12 @@
                 <!-- Paso 1 -->
                 <div id="alerta-step-1" class="step-content flex gap-4 items-start">
                     <!-- Selector de divisa estilo conversor -->
-                    <div id="alerta-divisa-container" class="relative flex-shrink-0 w-[150px] mr-14 ml-14">
+                    <div id="alerta-divisa-container" class="relative flex-shrink-0 w-[200px] mr-14 ml-14">
                         <div id="alerta-divisa-button"
                             class="currency-selector flex items-center justify-between px-3 py-2 bg-white rounded text-sm cursor-pointer w-full"
                             onclick="showAlertaDropdown()">
                             <img id="alerta-icon" src="" alt="Icono divisa" class="w-5 h-5 mr-2 hidden">
-                            <span id="alerta-currency-text" class="font-medium truncate">Selecciona</span>
+                            <span id="alerta-currency-text" class="font-medium truncate">Selecciona una Divisa</span>
                             <svg class="w-4 h-4 ml-2 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
                             </svg>
@@ -430,7 +430,7 @@
 
                         <!-- Dropdown -->
                         <div id="alerta-divisa-dropdown"
-                            class="hidden absolute left-0 top-full mt-1 ml-6 bg-white rounded-lg shadow-md z-[9999] w-[100px] max-h-[150px] overflow-y-auto">
+                            class="hidden absolute left-0 top-1/2 -translate-y-1/2 mt-1 bg-white rounded-lg shadow-md z-[9999] w-[100px] max-h-[150px] overflow-y-auto">
                             <ul class="m-0 p-0 list-none"></ul>
                         </div>
                     </div>
