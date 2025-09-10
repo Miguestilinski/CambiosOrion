@@ -69,32 +69,64 @@ function hideAlertaDropdown() {
     dropdown.classList.add("hidden");
 }
 
-// Abrir dropdown
+// Abrir dropdown (centrado horizontalmente respecto al botón)
 function showAlertaDropdown() {
     const button = document.getElementById("alerta-divisa-button");
     const dropdown = document.getElementById("alerta-divisa-dropdown");
 
-    // Si ya está en body, no hacemos nada
+    // Asegurar que esté en body para posicionarlo respecto a viewport
     if (!dropdown.parentElement.isSameNode(document.body)) {
         document.body.appendChild(dropdown);
     }
 
-    // Posicionar debajo del botón
+    // --- Quitar clases de Tailwind que pueden interferir con el posicionamiento calculado
+    ['left-1/2', '-translate-x-1/2', 'top-full', 'mt-1', 'ml-6'].forEach(c => {
+        if (dropdown.classList.contains(c)) dropdown.classList.remove(c);
+    });
+
+    // Obtener rect del botón
     const rect = button.getBoundingClientRect();
 
+    // Para medir el tamaño real del dropdown (si está oculto por `hidden`, offsetWidth = 0)
+    const wasHidden = dropdown.classList.contains('hidden');
+    let prevVisibility = dropdown.style.visibility;
+    if (wasHidden) {
+        // Mostrarlo pero invisible para medir
+        dropdown.classList.remove('hidden');
+        dropdown.style.visibility = 'hidden';
+    }
+
+    // Medir
+    const dropdownWidth = dropdown.offsetWidth || rect.width;
+    const dropdownHeight = dropdown.offsetHeight || 0;
+
+    // Restaurar visibilidad previa (si lo dejamos visible para medir lo volveremos a mostrar abajo)
+    dropdown.style.visibility = prevVisibility || '';
+    // Si estaba hidden, lo volveremos a mostrar después de posicionarlo
+
+    // Calcular left para centrar horizontalmente respecto al botón
+    let left = rect.left + window.scrollX + (rect.width - dropdownWidth) / 2;
+    let top = rect.bottom + window.scrollY + 6; // un pequeño gap (6px) bajo el botón
+
+    // Evitar que se salga del viewport (padding de 8px)
+    const minLeft = 8 + window.scrollX;
+    const maxLeft = window.innerWidth - dropdownWidth - 8 + window.scrollX;
+    left = Math.max(minLeft, Math.min(left, maxLeft));
+
+    // Aplicar estilos en línea (esto anula utilidades de Tailwind como left-1/2)
     dropdown.style.position = 'absolute';
-    dropdown.style.top = `${rect.bottom + window.scrollY}px`;
-
-    // Calcular ancho del botón y del dropdown
-    const buttonWidth = rect.width;
-    const dropdownWidth = dropdown.offsetWidth || buttonWidth; // fallback
-
-    // Centrar horizontalmente respecto al botón
-    const left = rect.left + window.scrollX + (buttonWidth / 2) - (dropdownWidth / 2);
     dropdown.style.left = `${left}px`;
+    dropdown.style.top = `${top}px`;
+    dropdown.style.zIndex = '9999';
 
-    dropdown.style.zIndex = 9999;
-    dropdown.classList.remove("hidden");
+    // Si quieres que tenga el mismo ancho que el botón, descomenta:
+    // dropdown.style.width = `${rect.width}px`;
+
+    // Finalmente mostrarlo (si estaba hidden)
+    if (wasHidden) {
+        dropdown.classList.remove('hidden');
+        dropdown.style.visibility = '';
+    }
 
     // Cerrar al click fuera
     function handleClickOutside(e) {
@@ -103,6 +135,7 @@ function showAlertaDropdown() {
             document.removeEventListener("click", handleClickOutside);
         }
     }
+    // Registrar listener (se quita dentro de handleClickOutside)
     document.addEventListener("click", handleClickOutside);
 }
 
