@@ -258,12 +258,15 @@ function updateTradeSwitch() {
 
     // Supongamos que siempre CLP es referencia
     if (currency1 === "CLP") {
+        // CLP está en el lado 1 → Venta
         buyPrice = exchangeRates[currency2].compra;
         sellPrice = exchangeRates[currency2].venta;
     } else if (currency2 === "CLP") {
+        // CLP está en el lado 2 → Compra
         buyPrice = exchangeRates[currency1].compra;
         sellPrice = exchangeRates[currency1].venta;
     } else {
+        // Ningún lado es CLP → cálculo cruzado
         buyPrice = exchangeRates[currency1].compra / exchangeRates[currency2].venta;
         sellPrice = exchangeRates[currency1].venta / exchangeRates[currency2].compra;
     }
@@ -278,11 +281,24 @@ function updateTradeSwitch() {
     // 🔹 Estilos
     const activeColor = "bg-[#1e3a8a]";      // fondo azul del seleccionado
     const inactiveText = "text-[#1e3a8a]";    // texto del lado no seleccionado
-    const inactiveHover = "hover:bg-[#1e3a8a] hover:text-white"; // hover del no seleccionado
     const borderColor = "border-[#1e3a8a]";
 
-    if (currency2 === "CLP") {
-        // Compra activo
+    if (currency1 === "CLP") {
+        // CLP está en currency1 → Venta activo
+        sellDiv.classList.add(
+            activeColor,
+            "text-white",
+            borderColor
+        );
+        buyDiv.classList.add(
+            "bg-transparent",
+            inactiveText,
+            borderColor,
+            "hover:bg-[#1e3a8a]",
+            "hover:text-white"
+        );
+    } else if (currency2 === "CLP") {
+        // CLP está en currency2 → Compra activo
         buyDiv.classList.add(
             activeColor,
             "text-white",
@@ -296,13 +312,13 @@ function updateTradeSwitch() {
             "hover:text-white"
         );
     } else {
-        // Venta activo
-        sellDiv.classList.add(
+        // Caso "extra" cuando ninguno es CLP → dejamos Compra como activo por defecto
+        buyDiv.classList.add(
             activeColor,
             "text-white",
             borderColor
         );
-        buyDiv.classList.add(
+        sellDiv.classList.add(
             "bg-transparent",
             inactiveText,
             borderColor,
@@ -314,15 +330,17 @@ function updateTradeSwitch() {
 
 // Click en Compra
 document.getElementById("trade-buy").addEventListener("click", () => {
-    const currency1 = document.getElementById("currency1-text").textContent;
-    if (!(currency1 === "CLP")) swapCurrencies();
+    const currency2 = document.getElementById("currency2-text").textContent;
+    // Si CLP no está en currency2 → hay que swapear
+    if (currency2 !== "CLP") swapCurrencies();
     updateTradeSwitch();
 });
 
 // Click en Venta
 document.getElementById("trade-sell").addEventListener("click", () => {
-    const currency2 = document.getElementById("currency2-text").textContent;
-    if (!(currency2 === "CLP")) swapCurrencies();
+    const currency1 = document.getElementById("currency1-text").textContent;
+    // Si CLP no está en currency1 → hay que swapear
+    if (currency1 !== "CLP") swapCurrencies();
     updateTradeSwitch();
 });
 
