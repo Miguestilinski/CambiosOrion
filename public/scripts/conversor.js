@@ -274,11 +274,9 @@ function updateTradeSwitch() {
             "hover:text-white"
         );
         sellDiv.classList.add(
-            "bg-transparent",
-            inactiveText,
-            borderColor,
-            "hover:bg-[#1e3a8a]",
-            "hover:text-white"
+            activeColor,
+            "text-white",
+            borderColor
         );
     } else {
         // Venta activo
@@ -290,11 +288,9 @@ function updateTradeSwitch() {
             "hover:text-white"
         );
         buyDiv.classList.add(
-            "bg-transparent",
-            inactiveText,
-            borderColor,
-            "hover:bg-[#1e3a8a]",
-            "hover:text-white"
+            activeColor,
+            "text-white",
+            borderColor
         );
     }
 }
