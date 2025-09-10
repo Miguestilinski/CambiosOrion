@@ -243,23 +243,23 @@ function updateTradeSwitch() {
     buyButton.textContent = `Compra: ${formatWithThousandsSeparator(buyPrice)} CLP`;
     sellButton.textContent = `Venta: ${formatWithThousandsSeparator(sellPrice)} CLP`;
 
-    // Limpiar clases anteriores
-    buyButton.className = "flex-1 p-2 text-center border rounded-l-lg hover:bg-blue-100";
-    sellButton.className = "flex-1 p-2 text-center border-l border-r rounded-r-lg hover:bg-blue-100";
+    // Resetear clases
+    buyButton.className = "flex-1 p-2 text-center border-l border-t border-b rounded-l-md";
+    sellButton.className = "flex-1 p-2 text-center border-t border-b border-r rounded-r-md";
 
     // Aplicar estilos según el botón activo
     if (currency1 === "CLP") {
         // Compra activo
-        buyButton.classList.add("bg-blue-600", "text-white", "border-blue-600");
-        sellButton.classList.add("border-blue-600", "text-gray-800", "bg-transparent");
+        buyButton.classList.add("bg-[#1e3a8a]", "text-white", "border-[#1e3a8a]");
+        sellButton.classList.add("bg-transparent", "text-gray-800", "border-[#1e3a8a]", "hover:bg-[#1e3a8a]", "hover:text-white");
     } else if (currency2 === "CLP") {
         // Venta activo
-        sellButton.classList.add("bg-blue-600", "text-white", "border-blue-600");
-        buyButton.classList.add("border-blue-600", "text-gray-800", "bg-transparent");
+        sellButton.classList.add("bg-[#1e3a8a]", "text-white", "border-[#1e3a8a]");
+        buyButton.classList.add("bg-transparent", "text-gray-800", "border-[#1e3a8a]", "hover:bg-[#1e3a8a]", "hover:text-white");
     } else {
         // Ninguno activo
-        buyButton.classList.add("border-blue-600", "text-gray-800", "bg-transparent");
-        sellButton.classList.add("border-blue-600", "text-gray-800", "bg-transparent");
+        buyButton.classList.add("bg-transparent", "text-gray-800", "border-[#1e3a8a]", "hover:bg-[#1e3a8a]", "hover:text-white");
+        sellButton.classList.add("bg-transparent", "text-gray-800", "border-[#1e3a8a]", "hover:bg-[#1e3a8a]", "hover:text-white");
     }
 }
 
