@@ -202,12 +202,12 @@ function loadAlertaCurrenciesFromArray() {
             preciosCard.innerHTML = `
                 <div class="flex gap-3">
                     <button 
-                        class="bg-[#1e3a8a] hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow w-full"
+                        class="bg-[#1e3a8a] hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow w-full text-center leading-none"
                         data-precio="compra" 
                         data-valor="${divisa.compra}">Compra: ${divisa.compra} CLP</button>
                     </button>
                     <button 
-                        class="bg-[#1e3a8a] hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow w-full"
+                        class="bg-[#1e3a8a] hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow w-full text-center leading-none"
                         data-precio="venta" 
                         data-valor="${divisa.venta}">Venta: ${divisa.venta} CLP</button>
                     </button>
