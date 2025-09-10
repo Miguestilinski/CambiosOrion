@@ -230,6 +230,11 @@ function updateTradeSwitch() {
     let buyPrice = 0;
     let sellPrice = 0;
 
+    if (!exchangeRates[currency1] || !exchangeRates[currency2]) {
+        console.warn("Divisa no encontrada en exchangeRates:", currency1, currency2);
+        return;
+    }
+
     // Supongamos que siempre CLP es referencia
     if (currency1 === "CLP") {
         buyPrice = exchangeRates[currency2].compra;
@@ -258,10 +263,22 @@ function updateTradeSwitch() {
     if (currency1 === "CLP") {
         // Compra activo
         buyDiv.classList.add(activeColor, "text-white", borderColor);
-        sellDiv.classList.add("bg-transparent", inactiveText, borderColor, inactiveHover);
+        sellDiv.classList.add(
+            "bg-transparent",
+            inactiveText,
+            borderColor,
+            "hover:bg-[#1e3a8a]",
+            "hover:text-white"
+        );
     } else {
         // Venta activo
-        sellDiv.classList.add(activeColor, "text-white", borderColor);
+        sellDiv.classList.add(
+            "bg-transparent",
+            inactiveText,
+            borderColor,
+            "hover:bg-[#1e3a8a]",
+            "hover:text-white"
+        );
         buyDiv.classList.add("bg-transparent", inactiveText, borderColor, inactiveHover);
     }
 }
