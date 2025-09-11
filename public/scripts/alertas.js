@@ -31,6 +31,7 @@ nextBtn.addEventListener("click", () => {
   if (alertaStep < 3) {
     alertaStep++;
     updateAlertaStepper();
+    nextAlertaStep();
   }
 });
 
@@ -147,9 +148,6 @@ function nextAlertaStep() {
     updateAlertaStepper();
   }
 }
-
-// Botón "Siguiente" → usa la misma función
-nextBtn.addEventListener("click", nextAlertaStep);
 
 function hideAlertaDropdown() {
     const dropdown = document.getElementById("alerta-divisa-dropdown");
