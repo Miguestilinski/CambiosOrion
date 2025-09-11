@@ -34,6 +34,16 @@ nextBtn.addEventListener("click", () => {
   }
 });
 
+const condicionLabels = {
+  alcanza: "Alcanza el precio",
+  sube: "Precio sube sobre",
+  baja: "Precio baja a",
+  cambio_sobre: "Cambio sobre %",
+  cambio_bajo: "Cambio por debajo %",
+  cambio_24h_sube: "Cambio en 24h sobre %",
+  cambio_24h_baja: "Cambio en 24h por debajo %"
+};
+
 const guardarBtn = document.getElementById("guardar-alerta");
 
 // Mostrar/ocultar botones según paso
@@ -66,30 +76,31 @@ function updateAlertaStepper() {
 
   // Actualizar resumen del Step 2 y 3
   if (alertaStep === 2 || alertaStep === 3) {
-      const resumenHTML = (alertaData.divisa && alertaData.tipoPrecio && alertaData.precioRef)
-          ? `
-            <div class="flex flex-col items-center gap-1">
-              <div class="flex items-center gap-2">
-                <img src="${alertaData.icono}" alt="${alertaData.divisa}" class="w-5 h-5">
-                <span class="font-semibold text-gray-800">${alertaData.divisa}</span>
-              </div>
-              <div class="text-sm text-gray-600">
-                ${alertaData.tipoPrecio.charAt(0).toUpperCase() + alertaData.tipoPrecio.slice(1)}: 
-                ${alertaData.precioRef.toLocaleString("es-CL")} CLP
-              </div>
-              ${alertaData.condicion && alertaData.valor ? 
-                `<div class="text-sm text-gray-600">
-                  Condición: ${alertaData.condicion} → ${alertaData.valor}
-                </div>` : ""}
-            </div>
-          `
-          : "Selecciona una divisa y completa los pasos anteriores.";
+    const resumenHTML = (alertaData.divisa && alertaData.tipoPrecio && alertaData.precioRef)
+      ? `
+        <div class="flex flex-col items-center gap-1">
+          <div class="flex items-center gap-2">
+            <img src="${alertaData.icono}" alt="${alertaData.divisa}" class="w-5 h-5">
+            <span class="font-semibold text-gray-800">${alertaData.divisa}</span>
+          </div>
+          <div class="text-sm text-gray-600">
+            ${alertaData.tipoPrecio.charAt(0).toUpperCase() + alertaData.tipoPrecio.slice(1)}: 
+            ${alertaData.precioRef.toLocaleString("es-CL")} CLP
+          </div>
+          ${alertaData.condicion && alertaData.valor ? 
+            `<div class="text-sm text-gray-600">
+              Condición: ${condicionLabels[alertaData.condicion] || alertaData.condicion} → 
+              ${alertaData.valor.toLocaleString("es-CL")}
+            </div>` : ""}
+        </div>
+      `
+      : "Selecciona una divisa y completa los pasos anteriores.";
 
-      const summary2 = document.getElementById("alerta-step-2-summary");
-      const summary3 = document.getElementById("alerta-step-3-summary");
+    const summary2 = document.getElementById("alerta-step-2-summary");
+    const summary3 = document.getElementById("alerta-step-3-summary");
 
-      if (summary2) summary2.innerHTML = resumenHTML;
-      if (summary3) summary3.innerHTML = resumenHTML;
+    if (summary2) summary2.innerHTML = resumenHTML;
+    if (summary3) summary3.innerHTML = resumenHTML;
   }
 
 }
