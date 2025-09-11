@@ -43,6 +43,10 @@ const guardarBtn = document.getElementById("guardar-alerta");
 
 // Mostrar/ocultar botones según paso
 function updateAlertaStepper() {
+  // limpiar errores cada vez que se cambia de paso
+  errorText.classList.add("hidden");
+  valorInput.classList.remove("ring-2", "ring-red-500");
+
   for (let i = 1; i <= 3; i++) {
     const stepElem = document.getElementById(`alerta-stepper-${i}`);
     const stepContent = document.getElementById(`alerta-step-${i}`);
