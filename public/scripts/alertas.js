@@ -130,7 +130,7 @@ function nextAlertaStep() {
     // validar que no sea igual al precio actual
     if (valor === alertaData.precioRef) {
       errorText.textContent = `❌ El valor no puede ser igual al precio actual (${alertaData.precioRef.toLocaleString("es-CL")} CLP).`;
-      errorText.classList.add("text-red-600");
+      errorText.classList.remove("hidden");
       valorInput.classList.add("ring-2", "ring-red-500");
       valorInput.focus();
       console.log("❌ Valor igual al precio actual");
