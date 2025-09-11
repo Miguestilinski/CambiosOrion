@@ -120,14 +120,11 @@ function nextAlertaStep() {
     const condicion = condicionSelect.value;
     const valor = parseFloat(valorInput.value);
 
-    console.log("➡️ Validando paso 2:", { condicion, valor, precioRef: alertaData.precioRef });
-
     // validar que estén completos
     if (!condicion || !valor) {
       errorText.textContent = "❌ Debes seleccionar una condición y un valor.";
       errorText.classList.remove("hidden");
       valorInput.classList.add("ring-2", "ring-red-500");
-      console.log("❌ Condición o valor vacíos");
       return;
     }
 
@@ -137,14 +134,12 @@ function nextAlertaStep() {
       errorText.classList.remove("hidden");
       valorInput.classList.add("ring-2", "ring-red-500");
       valorInput.focus();
-      console.log("❌ Valor igual al precio actual");
       return;
     }
 
     // guardar en alertaData si pasa validación
     alertaData.condicion = condicion;
     alertaData.valor = valor;
-    console.log("✅ Validación pasada, avanzando...");
   }
 
   // avanzar si no hubo error

@@ -251,11 +251,6 @@ function updateTradeSwitch() {
     let buyPrice = 0;
     let sellPrice = 0;
 
-    if (!exchangeRates[currency1] || !exchangeRates[currency2]) {
-        console.warn("Divisa no encontrada en exchangeRates:", currency1, currency2);
-        return;
-    }
-
     // Supongamos que siempre CLP es referencia
     if (currency1 === "CLP") {
         // CLP está en el lado 1 → Venta

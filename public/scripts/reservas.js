@@ -1,4 +1,5 @@
 let currentStep = 1;
+let errorStep = null;
 const totalSteps = 3;
 
 function updateStepper() {
@@ -14,6 +15,24 @@ function updateStepper() {
     }
 }
 
+// 🔑 Función para mostrar errores del stepper
+function showStepperError(message) {
+    const errorElem = document.getElementById("conversor-stepper-error");
+    errorElem.textContent = message;
+    errorElem.classList.remove("hidden");
+    errorStep = currentStep; // Guardamos el paso en que se mostró
+}
+
+// 🔑 Función para limpiar errores si cambiamos de paso
+function clearStepperError() {
+    const errorElem = document.getElementById("conversor-stepper-error");
+    if (errorStep !== currentStep) {
+        errorElem.classList.add("hidden");
+        errorElem.textContent = "";
+        errorStep = null;
+    }
+}
+
 document.getElementById('nextStep').addEventListener('click', () => {
     if (currentStep < totalSteps) {
         // Guardar nombre/email justo antes de cambiar paso
@@ -26,7 +45,7 @@ document.getElementById('nextStep').addEventListener('click', () => {
             window.reservaEmail = emailInput?.value?.trim() || "";
 
             if (!window.reservaNombre || !window.reservaEmail) {
-                alert("Por favor, completa tu nombre y correo antes de continuar.");
+                showStepperError("❌ Por favor, completa tu nombre y correo antes de continuar.");
                 return;
             }
 
@@ -34,7 +53,7 @@ document.getElementById('nextStep').addEventListener('click', () => {
             if (!document.getElementById("telefono-container").classList.contains("hidden")) {
                 window.reservaTelefono = phoneInput?.value?.trim() || "";
                 if (!window.reservaTelefono) {
-                    alert("Por favor, ingresa tu número de teléfono para continuar.");
+                    showStepperError("❌ Por favor, ingresa tu número de teléfono para continuar.");
                     return;
                 }
             } else {
@@ -46,6 +65,9 @@ document.getElementById('nextStep').addEventListener('click', () => {
         document.getElementById(`step-${currentStep}`).classList.add('hidden');
         currentStep++;
         document.getElementById(`step-${currentStep}`).classList.remove('hidden');
+
+        // Limpiar error si cambiamos de paso
+        clearStepperError();
 
         // 🔑 Al entrar en el Paso 2, decidir si mostrar el input teléfono
         if (currentStep === 2) {
@@ -69,6 +91,9 @@ document.getElementById('prevStep').addEventListener('click', () => {
         document.getElementById(`step-${currentStep}`).classList.add('hidden');
         currentStep--;
         document.getElementById(`step-${currentStep}`).classList.remove('hidden');
+
+        // Limpiar error si cambiamos de paso
+        clearStepperError();
     }
     toggleButtons();
 });
@@ -391,3 +416,4 @@ document.getElementById("contactExecutive").addEventListener('click', async () =
         statusText.style.color = "red";
     }
 });
+
