@@ -286,18 +286,18 @@ function loadAlertaCurrenciesFromArray() {
             preciosCard.innerHTML = `
                 <div class="flex gap-3">
                     <button 
-                        class="bg-[#1e3a8a] hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow w-full text-center leading-tight"
+                        class="bg-[#1e3a8a] hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow w-full text-center leading-tight cursor-pointer"
                         data-precio="compra" 
                         data-valor="${divisa.compra}">
                         <div class="font-semibold">Compra:</div>
-                        <div>${Math.round(divisa.compra).toLocaleString("es-CL")} CLP</div>
+                        <div>${(divisa.compra).toLocaleString("es-CL")} CLP</div>
                     </button>
                     <button 
-                        class="bg-[#1e3a8a] hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow w-full text-center leading-tight"
+                        class="bg-[#1e3a8a] hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow w-full text-center leading-tight cursor-pointer"
                         data-precio="venta" 
                         data-valor="${divisa.venta}">
                         <div class="font-semibold">Venta:</div>
-                        <div>${Math.round(divisa.venta).toLocaleString("es-CL")} CLP</div>
+                        <div>${(divisa.venta).toLocaleString("es-CL")} CLP</div>
                     </button>
                 </div>
             `;
