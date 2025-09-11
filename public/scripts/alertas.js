@@ -58,11 +58,26 @@ function updateAlertaStepper() {
   // Actualizar resumen del Step 2
   if (alertaStep === 2) {
       const summary = document.getElementById("alerta-step-2-summary");
-      if (alertaData.divisa && alertaData.tipoPrecio) {
+
+      if (alertaData.divisa && alertaData.tipoPrecio && alertaData.precioRef) {
           const tipoTexto = alertaData.tipoPrecio.charAt(0).toUpperCase() + alertaData.tipoPrecio.slice(1);
-          summary.textContent = `Has seleccionado: ${alertaData.divisa} (${tipoTexto})`;
+
+          summary.innerHTML = `
+              <div class="flex flex-col items-center gap-1">
+                  <div class="flex items-center gap-2">
+                      <img src="${alertaData.icono}" alt="${alertaData.divisa}" class="w-5 h-5">
+                      <span class="font-semibold text-gray-800">${alertaData.divisa}</span>
+                  </div>
+                  <div class="text-sm text-gray-600">
+                      ${tipoTexto}: ${alertaData.precioRef.toLocaleString("es-CL")} CLP
+                  </div>
+              </div>
+          `;
+          summary.classList.remove("italic");
+          summary.classList.add("text-center");
       } else {
           summary.textContent = "Selecciona una divisa y un tipo de precio en el paso anterior.";
+          summary.classList.add("italic");
       }
   }
 
