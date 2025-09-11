@@ -111,7 +111,7 @@ function updateAlertaStepper() {
 
 const errorText = document.getElementById("alerta-stepper-error");
 
-nextBtn.addEventListener("click", () => {
+function nextAlertaStep() {
   errorText.classList.add("hidden"); // limpiar error previo
 
   if (alertaStep === 2) {
@@ -143,7 +143,10 @@ nextBtn.addEventListener("click", () => {
     alertaStep++;
     updateAlertaStepper();
   }
-});
+}
+
+// Botón "Siguiente" → usa la misma función
+nextBtn.addEventListener("click", nextAlertaStep);
 
 function hideAlertaDropdown() {
     const dropdown = document.getElementById("alerta-divisa-dropdown");
