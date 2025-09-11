@@ -58,24 +58,30 @@ function updateAlertaStepper() {
   nextBtn.classList.toggle("hidden", alertaStep === 1 || alertaStep === 3);
   guardarBtn.classList.toggle("hidden", alertaStep !== 3);
 
+  // ⚡️ Si estamos en paso 3, guardar lo que escribió el usuario en condición/valor
+  if (alertaStep === 3) {
+    alertaData.condicion = document.getElementById("alerta-condicion").value;
+    alertaData.valor = parseFloat(document.getElementById("alerta-valor").value);
+  }
+
   // Actualizar resumen del Step 2 y 3
   if (alertaStep === 2 || alertaStep === 3) {
       const resumenHTML = (alertaData.divisa && alertaData.tipoPrecio && alertaData.precioRef)
           ? `
-              <div class="flex flex-col items-center gap-1">
-                  <div class="flex items-center gap-2">
-                      <img src="${alertaData.icono}" alt="${alertaData.divisa}" class="w-5 h-5">
-                      <span class="font-semibold text-gray-800">${alertaData.divisa}</span>
-                  </div>
-                  <div class="text-sm text-gray-600">
-                      ${alertaData.tipoPrecio.charAt(0).toUpperCase() + alertaData.tipoPrecio.slice(1)}: 
-                      ${alertaData.precioRef.toLocaleString("es-CL")} CLP
-                  </div>
-                  ${alertaData.condicion && alertaData.valor ? 
-                      `<div class="text-sm text-gray-600">
-                          Condición: ${alertaData.condicion} → ${alertaData.valor}
-                      </div>` : ""}
+            <div class="flex flex-col items-center gap-1">
+              <div class="flex items-center gap-2">
+                <img src="${alertaData.icono}" alt="${alertaData.divisa}" class="w-5 h-5">
+                <span class="font-semibold text-gray-800">${alertaData.divisa}</span>
               </div>
+              <div class="text-sm text-gray-600">
+                ${alertaData.tipoPrecio.charAt(0).toUpperCase() + alertaData.tipoPrecio.slice(1)}: 
+                ${alertaData.precioRef.toLocaleString("es-CL")} CLP
+              </div>
+              ${alertaData.condicion && alertaData.valor ? 
+                `<div class="text-sm text-gray-600">
+                  Condición: ${alertaData.condicion} → ${alertaData.valor}
+                </div>` : ""}
+            </div>
           `
           : "Selecciona una divisa y completa los pasos anteriores.";
 
