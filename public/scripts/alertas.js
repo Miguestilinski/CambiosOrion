@@ -262,6 +262,55 @@ function loadAlertaCurrenciesFromArray() {
     });
 }
 
+// Definir textos de ayuda y placeholders según condición
+const condicionConfig = {
+  alcanza: {
+    placeholder: "Ej: 950",
+    help: "La alerta se activará cuando el precio alcance exactamente este valor."
+  },
+  sube: {
+    placeholder: "Ej: 1000",
+    help: "La alerta se activará cuando el precio suba por sobre este valor."
+  },
+  baja: {
+    placeholder: "Ej: 900",
+    help: "La alerta se activará cuando el precio baje hasta este valor."
+  },
+  cambio_sobre: {
+    placeholder: "Ej: 5",
+    help: "La alerta se activará cuando la variación supere este porcentaje."
+  },
+  cambio_bajo: {
+    placeholder: "Ej: -5",
+    help: "La alerta se activará cuando la variación sea menor a este porcentaje."
+  },
+  cambio_24h_sube: {
+    placeholder: "Ej: 3",
+    help: "La alerta se activará cuando el cambio en 24h supere este porcentaje."
+  },
+  cambio_24h_baja: {
+    placeholder: "Ej: -3",
+    help: "La alerta se activará cuando el cambio en 24h esté por debajo de este porcentaje."
+  }
+};
+
+// Referencias
+const condicionSelect = document.getElementById("alerta-condicion");
+const valorInput = document.getElementById("alerta-valor");
+const helpText = document.getElementById("alerta-condicion-help");
+
+// Función para actualizar UI
+function updateCondicionUI() {
+  const seleccion = condicionSelect.value;
+  if (condicionConfig[seleccion]) {
+    valorInput.placeholder = condicionConfig[seleccion].placeholder;
+    helpText.textContent = condicionConfig[seleccion].help;
+  }
+}
+
+// Evento al cambiar el select
+condicionSelect.addEventListener("change", updateCondicionUI);
+
 // Paso 3: guardar alerta
 document.getElementById("guardar-alerta").addEventListener("click", async () => {
   alertaData.condicion = document.getElementById("alerta-condicion").value;
@@ -295,6 +344,9 @@ document.getElementById("guardar-alerta").addEventListener("click", async () => 
 
 // Init
 updateAlertaStepper();
+
+// Inicializar al cargar paso 2
+updateCondicionUI();
 
 window.onCurrenciesLoaded = function() {
     loadAlertaCurrenciesFromArray();
