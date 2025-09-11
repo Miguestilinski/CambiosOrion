@@ -94,9 +94,11 @@ function updateAlertaStepper() {
   const resumenExtendido = (alertaData.condicion && alertaData.valor)
     ? `
       ${baseResumen}
-      <div class="text-sm text-gray-600 mt-1">
-        Condición: ${condicionLabels[alertaData.condicion] || alertaData.condicion} → 
-        ${alertaData.valor.toLocaleString("es-CL")}
+      <div class="flex flex-col items-center mt-1">
+        <div class="text-sm text-gray-600">
+          Condición: ${condicionLabels[alertaData.condicion] || alertaData.condicion} → 
+          ${alertaData.valor.toLocaleString("es-CL")}
+        </div>
       </div>
     `
     : baseResumen;
@@ -113,11 +115,11 @@ const errorText = document.getElementById("alerta-stepper-error");
 
 function nextAlertaStep() {
   errorText.classList.add("hidden"); // limpiar error previo
+  helpText.classList.remove("text-red-600"); // reset estilo
 
   if (alertaStep === 2) {
-    // leer valores de paso 2
-    const condicion = document.getElementById("alerta-condicion").value;
-    const valor = parseFloat(document.getElementById("alerta-valor").value);
+    const condicion = condicionSelect.value;
+    const valor = parseFloat(valorInput.value);
 
     // validar que estén completos
     if (!condicion || !valor) {
@@ -128,12 +130,13 @@ function nextAlertaStep() {
 
     // validar que no sea igual al precio actual
     if (valor === alertaData.precioRef) {
-      errorText.textContent = `❌ El valor no puede ser igual al precio actual (${alertaData.precioRef.toLocaleString("es-CL")} CLP).`;
-      errorText.classList.remove("hidden");
+      helpText.textContent = `❌ El valor no puede ser igual al precio actual (${alertaData.precioRef.toLocaleString("es-CL")} CLP).`;
+      helpText.classList.add("text-red-600");
+      valorInput.focus();
       return;
     }
 
-    // si pasa validaciones, guardamos en alertaData
+    // guardar en alertaData si pasa validación
     alertaData.condicion = condicion;
     alertaData.valor = valor;
   }
