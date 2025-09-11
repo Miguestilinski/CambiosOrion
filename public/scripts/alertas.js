@@ -68,50 +68,82 @@ function updateAlertaStepper() {
   nextBtn.classList.toggle("hidden", alertaStep === 1 || alertaStep === 3);
   guardarBtn.classList.toggle("hidden", alertaStep !== 3);
 
-  // ⚡️ Si estamos en paso 3, guardar lo que escribió el usuario en condición/valor
+  // ⚡️ Solo en paso 3 se guardan condición/valor
   if (alertaStep === 3) {
     alertaData.condicion = document.getElementById("alerta-condicion").value;
     alertaData.valor = parseFloat(document.getElementById("alerta-valor").value);
   }
 
-  // Actualizar resumen del Step 2 y 3
-  if (alertaStep === 2 || alertaStep === 3) {
-    const resumenHTML = (alertaData.divisa && alertaData.tipoPrecio && alertaData.precioRef)
-      ? `
-        <div class="flex flex-col items-center gap-1">
-          <div class="flex items-center gap-2">
-            <img src="${alertaData.icono}" alt="${alertaData.divisa}" class="w-5 h-5">
-            <span class="font-semibold text-gray-800">${alertaData.divisa}</span>
-          </div>
-          <div class="text-sm text-gray-600">
-            ${alertaData.tipoPrecio.charAt(0).toUpperCase() + alertaData.tipoPrecio.slice(1)}: 
-            ${alertaData.precioRef.toLocaleString("es-CL")} CLP
-          </div>
-          ${alertaData.condicion && alertaData.valor ? 
-            `<div class="text-sm text-gray-600">
-              Condición: ${condicionLabels[alertaData.condicion] || alertaData.condicion} → 
-              ${alertaData.valor.toLocaleString("es-CL")}
-            </div>` : ""}
+  // Construir resumen base (para paso 2 y 3)
+  const baseResumen = (alertaData.divisa && alertaData.tipoPrecio && alertaData.precioRef)
+    ? `
+      <div class="flex flex-col items-center gap-1">
+        <div class="flex items-center gap-2">
+          <img src="${alertaData.icono}" alt="${alertaData.divisa}" class="w-5 h-5">
+          <span class="font-semibold text-gray-800">${alertaData.divisa}</span>
         </div>
-      `
-      : "Selecciona una divisa y completa los pasos anteriores.";
+        <div class="text-sm text-gray-600">
+          ${alertaData.tipoPrecio.charAt(0).toUpperCase() + alertaData.tipoPrecio.slice(1)}: 
+          ${alertaData.precioRef.toLocaleString("es-CL")} CLP
+        </div>
+      </div>
+    `
+    : "Selecciona una divisa y completa los pasos anteriores.";
 
-    const summary2 = document.getElementById("alerta-step-2-summary");
-    const summary3 = document.getElementById("alerta-step-3-summary");
+  // Resumen extendido (solo en paso 3)
+  const resumenExtendido = (alertaData.condicion && alertaData.valor)
+    ? `
+      ${baseResumen}
+      <div class="text-sm text-gray-600 mt-1">
+        Condición: ${condicionLabels[alertaData.condicion] || alertaData.condicion} → 
+        ${alertaData.valor.toLocaleString("es-CL")}
+      </div>
+    `
+    : baseResumen;
 
-    if (summary2) summary2.innerHTML = resumenHTML;
-    if (summary3) summary3.innerHTML = resumenHTML;
-  }
+  // Inyectar en los contenedores
+  const summary2 = document.getElementById("alerta-step-2-summary");
+  const summary3 = document.getElementById("alerta-step-3-summary");
 
+  if (summary2) summary2.innerHTML = baseResumen;
+  if (summary3) summary3.innerHTML = resumenExtendido;
 }
 
-// Ir al siguiente paso
-function nextAlertaStep() {
+const errorText = document.getElementById("alerta-stepper-error");
+
+nextBtn.addEventListener("click", () => {
+  errorText.classList.add("hidden"); // limpiar error previo
+
+  if (alertaStep === 2) {
+    // leer valores de paso 2
+    const condicion = document.getElementById("alerta-condicion").value;
+    const valor = parseFloat(document.getElementById("alerta-valor").value);
+
+    // validar que estén completos
+    if (!condicion || !valor) {
+      errorText.textContent = "❌ Debes seleccionar una condición y un valor.";
+      errorText.classList.remove("hidden");
+      return;
+    }
+
+    // validar que no sea igual al precio actual
+    if (valor === alertaData.precioRef) {
+      errorText.textContent = `❌ El valor no puede ser igual al precio actual (${alertaData.precioRef.toLocaleString("es-CL")} CLP).`;
+      errorText.classList.remove("hidden");
+      return;
+    }
+
+    // si pasa validaciones, guardamos en alertaData
+    alertaData.condicion = condicion;
+    alertaData.valor = valor;
+  }
+
+  // avanzar si no hubo error
   if (alertaStep < 3) {
     alertaStep++;
     updateAlertaStepper();
   }
-}
+});
 
 function hideAlertaDropdown() {
     const dropdown = document.getElementById("alerta-divisa-dropdown");
