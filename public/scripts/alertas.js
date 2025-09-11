@@ -54,6 +54,18 @@ function updateAlertaStepper() {
   // Botones
   prevBtn.classList.toggle("hidden", alertaStep === 1);
   nextBtn.classList.toggle("hidden", alertaStep === 1 || alertaStep === 3);
+
+  // Actualizar resumen del Step 2
+  if (alertaStep === 2) {
+      const summary = document.getElementById("alerta-step-2-summary");
+      if (alertaData.divisa && alertaData.tipoPrecio) {
+          const tipoTexto = alertaData.tipoPrecio.charAt(0).toUpperCase() + alertaData.tipoPrecio.slice(1);
+          summary.textContent = `Has seleccionado: ${alertaData.divisa} (${tipoTexto})`;
+      } else {
+          summary.textContent = "Selecciona una divisa y un tipo de precio en el paso anterior.";
+      }
+  }
+
 }
 
 // Ir al siguiente paso
