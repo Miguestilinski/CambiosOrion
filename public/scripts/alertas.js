@@ -27,13 +27,7 @@ prevBtn.addEventListener("click", () => {
   }
 });
 
-nextBtn.addEventListener("click", () => {
-  if (alertaStep < 3) {
-    alertaStep++;
-    updateAlertaStepper();
-    nextAlertaStep();
-  }
-});
+nextBtn.addEventListener("click", nextAlertaStep);
 
 const condicionLabels = {
   alcanza: "Alcanza el precio",
@@ -117,15 +111,20 @@ const errorText = document.getElementById("alerta-stepper-error");
 function nextAlertaStep() {
   errorText.classList.add("hidden"); // limpiar error previo
   helpText.classList.remove("text-red-600"); // reset estilo
+  valorInput.classList.remove("ring-2", "ring-red-500"); // reset borde rojo
 
   if (alertaStep === 2) {
     const condicion = condicionSelect.value;
     const valor = parseFloat(valorInput.value);
 
+    console.log("➡️ Validando paso 2:", { condicion, valor, precioRef: alertaData.precioRef });
+
     // validar que estén completos
     if (!condicion || !valor) {
       errorText.textContent = "❌ Debes seleccionar una condición y un valor.";
       errorText.classList.remove("hidden");
+      valorInput.classList.add("ring-2", "ring-red-500");
+      console.log("❌ Condición o valor vacíos");
       return;
     }
 
@@ -133,13 +132,16 @@ function nextAlertaStep() {
     if (valor === alertaData.precioRef) {
       helpText.textContent = `❌ El valor no puede ser igual al precio actual (${alertaData.precioRef.toLocaleString("es-CL")} CLP).`;
       helpText.classList.add("text-red-600");
+      valorInput.classList.add("ring-2", "ring-red-500");
       valorInput.focus();
+      console.log("❌ Valor igual al precio actual");
       return;
     }
 
     // guardar en alertaData si pasa validación
     alertaData.condicion = condicion;
     alertaData.valor = valor;
+    console.log("✅ Validación pasada, avanzando...");
   }
 
   // avanzar si no hubo error
