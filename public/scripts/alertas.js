@@ -110,7 +110,6 @@ const errorText = document.getElementById("alerta-stepper-error");
 
 function nextAlertaStep() {
   errorText.classList.add("hidden"); // limpiar error previo
-  helpText.classList.remove("text-red-600"); // reset estilo
   valorInput.classList.remove("ring-2", "ring-red-500"); // reset borde rojo
 
   if (alertaStep === 2) {
@@ -130,8 +129,8 @@ function nextAlertaStep() {
 
     // validar que no sea igual al precio actual
     if (valor === alertaData.precioRef) {
-      helpText.textContent = `❌ El valor no puede ser igual al precio actual (${alertaData.precioRef.toLocaleString("es-CL")} CLP).`;
-      helpText.classList.add("text-red-600");
+      errorText.textContent = `❌ El valor no puede ser igual al precio actual (${alertaData.precioRef.toLocaleString("es-CL")} CLP).`;
+      errorText.classList.add("text-red-600");
       valorInput.classList.add("ring-2", "ring-red-500");
       valorInput.focus();
       console.log("❌ Valor igual al precio actual");
