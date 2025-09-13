@@ -175,7 +175,7 @@ function convertCurrency() {
         }
 
         // Mostrar el resultado en amount2
-        document.getElementById("amount2").value = formatWithThousandsSeparator(Math.round(result));
+        document.getElementById("amount2").value = formatWithThousandsSeparator(result);
 
         // Actualizar texto dinámico y precio
         tradeInfo.textContent = actionText;

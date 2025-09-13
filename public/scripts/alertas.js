@@ -93,7 +93,7 @@ function updateAlertaStepper() {
   const resumenExtendido = (alertaData.condicion && alertaData.valor)
     ? `
       ${baseResumen}
-      <div class="flex flex-col items-center mt-1">
+      <div class="flex flex-col items-center">
         <div class="text-sm text-gray-600">
           Condición: ${condicionLabels[alertaData.condicion] || alertaData.condicion} → 
           ${alertaData.valor.toLocaleString("es-CL")}
