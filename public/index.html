@@ -140,7 +140,7 @@
                 <div class="bg-black/60 p-6 rounded-lg text-center max-w-xl mx-4">
                     <h2 class="text-2xl md:text-4xl font-bold mb-2">Reserva tu cambio</h2>
                     <p class="mb-4">Asegura el precio de hoy para tu próxima operación.</p>
-                    <a href="#reservas" class="bg-white text-black px-4 py-2 rounded-lg font-semibold hover:bg-gray-200">Reservar</a>
+                    <a href="#conversor" class="bg-white text-black px-4 py-2 rounded-lg font-semibold hover:bg-gray-200">Reservar</a>
                 </div>
                 </div>
 
@@ -150,7 +150,7 @@
                 <div class="bg-black/60 p-6 rounded-lg text-center max-w-xl mx-4">
                     <h2 class="text-2xl md:text-4xl font-bold mb-2">Alertas personalizadas</h2>
                     <p class="mb-4">Recibe notificaciones cuando el tipo de cambio sea el que buscas.</p>
-                    <a href="#alertas" class="bg-white text-black px-4 py-2 rounded-lg font-semibold hover:bg-gray-200">Crear alerta</a>
+                    <a id="alertaSlideBtn" href="#" class="bg-white text-black px-4 py-2 rounded-lg font-semibold hover:bg-gray-200">Crear alerta</a>
                 </div>
                 </div>
             </div>
@@ -179,7 +179,7 @@
         </span>
 
         <!-- Conversor de divisas -->
-        <section class="max-w-2xl mx-auto my-10 bg-white p-8 mb-12 rounded-xl shadow-lg">
+        <section id="conversor" class="max-w-2xl mx-auto my-10 bg-white p-8 mb-12 rounded-xl shadow-lg">
             <h2 class="text-3xl font-extrabold text-[#1e3a8a] text-center mb-6 tracking-wide drop-shadow-md">Cotiza y Reserva</h2>
             <!-- Stepper de Flowbite -->
             <ol class="flex items-center w-full text-sm font-medium text-center text-gray-500 sm:text-base">
@@ -387,7 +387,7 @@
                 <!-- Contenedor para Reserva y Alerta lado a lado -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-12">
 
-                    <a onclick="abrirFormularioReserva()" 
+                    <a href="#conversor"
                         class="flex items-center justify-center bg-[#1e3a8a] p-6 rounded-xl shadow-lg hover:shadow-2xl hover:-translate-y-1 transform transition duration-300 text-lg font-semibold text-white cursor-pointer">
                         <!-- Opcional ícono pequeño -->
                         <span class="inline-block mr-2 text-xl">📅</span>

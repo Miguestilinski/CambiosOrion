@@ -3,10 +3,11 @@ let alertaData = {};
 
 // Mostrar/ocultar form
 const alertaBtn = document.getElementById("alertaBtn");
+const alertaSlideBtn = document.getElementById("alertaSlideBtn");
 const alertaSection = document.getElementById("alerta-section");
 const alertaWrapper = document.getElementById("alerta-wrapper");
 
-alertaBtn.addEventListener("click", (e) => {
+function toggleAlertaWrapper(e) {
   e.preventDefault();
   if (alertaWrapper.classList.contains("max-h-0")) {
     alertaWrapper.classList.remove("max-h-0");
@@ -15,7 +16,11 @@ alertaBtn.addEventListener("click", (e) => {
     alertaWrapper.classList.add("max-h-0");
     alertaWrapper.classList.remove("max-h-[1000px]");
   }
-});
+}
+
+// Reutilizar función para ambos botones
+alertaBtn.addEventListener("click", toggleAlertaWrapper);
+alertaSlideBtn.addEventListener("click", toggleAlertaWrapper);
 
 const prevBtn = document.getElementById("alerta-prev");
 const nextBtn = document.getElementById("alerta-next");
