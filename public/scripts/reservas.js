@@ -238,8 +238,11 @@ function showStep3Summary() {
         confirmBtn.style.display = "none";
         contactBtn.classList.remove("hidden");
 
-        const currentHour = now.getHours();
-        if (currentHour >= 1 && currentHour < 24) {
+        const currentMinutes = now.getHours() * 60 + now.getMinutes();
+        const startMinutes = 9 * 60;     // 09:00 → 540 minutos
+        const endMinutes   = 16 * 60 + 30; // 16:30 → 990 minutos
+
+        if (currentMinutes >= startMinutes && currentMinutes <= endMinutes) {
             confirmBtn.disabled = false;
             statusText.textContent = "✅ Puedes solicitar tu reserva.";
         } else {
@@ -276,8 +279,11 @@ function showStep3Summary() {
     }
 
     // Validar horario
-    const currentHour = now.getHours();
-    if (currentHour >= 1 && currentHour < 24) {
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+    const startMinutes = 9 * 60;     // 09:00 → 540 minutos
+    const endMinutes   = 16 * 60 + 30; // 16:30 → 990 minutos
+
+    if (currentMinutes >= startMinutes && currentMinutes <= endMinutes) {
         confirmBtn.disabled = false;
         statusText.textContent = "✅ Puedes confirmar tu reserva.";
     } else {
