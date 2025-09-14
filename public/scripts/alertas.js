@@ -380,6 +380,8 @@ document.getElementById("guardar-alerta").addEventListener("click", async () => 
   alertaData.valor = parseFloat(document.getElementById("alerta-valor").value);
   alertaData.nombre = document.getElementById("alerta-nombre").value.trim();
   alertaData.email = document.getElementById("alerta-email").value.trim();
+  alertaData.divisa = document.getElementById("alerta-divisa").value;
+  alertaData.tipoPrecio = document.getElementById("alerta-tipoPrecio").value;
 
   const statusText = document.getElementById("alerta-status");
 
