@@ -345,7 +345,6 @@ function updateSwitchWhenRatesReady() {
     const waitForRates = setInterval(() => {
         if (exchangeRates["USD"] && exchangeRates["CLP"]) {
             clearInterval(waitForRates);
-            console.log("[conversor.js] exchangeRates listas, actualizando switch");
 
             // Forzar que currency1 sea CLP y currency2 sea USD
             document.getElementById("currency1-text").textContent = "CLP";
@@ -360,8 +359,6 @@ function updateSwitchWhenRatesReady() {
 
             // Forzar que el switch quede en Venta
             updateTradeSwitch();
-        } else {
-            console.log("[conversor.js] esperando exchangeRates...");
         }
     }, 50);
 }
@@ -373,12 +370,9 @@ const waitForAlertas = setInterval(() => {
         const original = window.onCurrenciesLoaded;
 
         window.onCurrenciesLoaded = function() {
-            console.log("[conversor.js] onCurrenciesLoaded sobrescrita: llamando alertas");
             original(); // ejecuta alertas.js
-            console.log("[conversor.js] onCurrenciesLoaded: ejecutando conversor");
             updateSwitchWhenRatesReady(); // ejecuta conversor.js
         };
 
-        console.log("[conversor.js] onCurrenciesLoaded sobrescrita con éxito");
     }
 }, 50);

@@ -440,6 +440,5 @@ updateAlertaStepper();
 updateCondicionUI();
 
 window.onCurrenciesLoaded = function() {
-    console.log("[alertas.js] onCurrenciesLoaded ejecutada: cargando alertas");
     loadAlertaCurrenciesFromArray();
 };
