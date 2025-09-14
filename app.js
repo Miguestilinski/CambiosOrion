@@ -98,7 +98,7 @@ app.get('/', (req, res) => {
       res.sendFile(path.join(__dirname, 'subdominios/admin', 'info-per.html'));
       break;
     default:
-      res.sendFile(path.join(__dirname, 'public', 'landing.html'));
+      res.sendFile(path.join(__dirname, 'public', 'index.html'));
   }
 });
 
