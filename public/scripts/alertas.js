@@ -88,7 +88,7 @@ function updateAlertaStepper() {
         </div>
         <div class="text-sm text-gray-600">
           ${alertaData.tipoPrecio.charAt(0).toUpperCase() + alertaData.tipoPrecio.slice(1)}: 
-          ${alertaData.precioRef.toLocaleString("es-CL")} CLP
+          ${alertaData.precioRef.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 3 })} CLP
         </div>
       </div>
     `
@@ -101,7 +101,7 @@ function updateAlertaStepper() {
       <div class="flex flex-col items-center">
         <div class="text-sm text-gray-600">
           Condición: ${condicionLabels[alertaData.condicion] || alertaData.condicion} → 
-          ${alertaData.valor.toLocaleString("es-CL")}
+           ${alertaData.valor.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 3 })}
         </div>
       </div>
     `
@@ -296,14 +296,14 @@ function loadAlertaCurrenciesFromArray() {
                         data-precio="compra" 
                         data-valor="${divisa.compra}">
                         <div class="font-semibold">Compra:</div>
-                        <div>${(divisa.compra).toLocaleString("es-CL")} CLP</div>
+                        <div>${(divisa.compra).toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 3 })} CLP</div>
                     </button>
                     <button 
                         class="bg-[#1e3a8a] hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow w-full text-center leading-tight cursor-pointer"
                         data-precio="venta" 
                         data-valor="${divisa.venta}">
                         <div class="font-semibold">Venta:</div>
-                        <div>${(divisa.venta).toLocaleString("es-CL")} CLP</div>
+                        <div>${(divisa.venta).toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 3 })} CLP</div>
                     </button>
                 </div>
             `;
