@@ -340,42 +340,45 @@ document.getElementById("trade-sell").addEventListener("click", () => {
     updateTradeSwitch();
 });
 
-// Función que queremos que ocurra cuando SSE cargue los datos
-function onCurrenciesLoadedForConversor() {
-    console.log("[conversor.js] onCurrenciesLoadedForConversor ejecutada");
+// Función que actualiza el switch cuando exchangeRates está listo
+function updateSwitchWhenRatesReady() {
+    const waitForRates = setInterval(() => {
+        if (exchangeRates["USD"] && exchangeRates["CLP"]) {
+            clearInterval(waitForRates);
+            console.log("[conversor.js] exchangeRates listas, actualizando switch");
 
-    // Esperar a que alertas.js haya definido su onCurrenciesLoaded
-    const waitForAlertasLoaded = setInterval(() => {
-        if (typeof window.onCurrenciesLoaded === "function") {
-            clearInterval(waitForAlertasLoaded);
+            // Forzar que currency1 sea CLP y currency2 sea USD
+            document.getElementById("currency1-text").textContent = "CLP";
+            document.getElementById("currency2-text").textContent = "USD";
 
-            const originalOnCurrenciesLoaded = window.onCurrenciesLoaded;
+            // Actualizar iconos y dropdowns
+            updateCurrencyIcon();
+            filterDropdownCurrencies();
 
-            window.onCurrenciesLoaded = function() {
-                console.log("[conversor.js] onCurrenciesLoaded sobrescrita: llamando original");
-                originalOnCurrenciesLoaded(); // ejecuta alertas.js
-                console.log("[conversor.js] onCurrenciesLoaded: ejecutando conversor");
-                onCurrenciesLoadedForConversor(); // ejecuta conversor.js
-            };
+            // Hacer la conversión
+            convertCurrency();
 
-            console.log("[conversor.js] onCurrenciesLoaded sobrescrita con éxito");
+            // Forzar que el switch quede en Venta
+            updateTradeSwitch();
+        } else {
+            console.log("[conversor.js] esperando exchangeRates...");
         }
     }, 50);
 }
 
-// Suscribir nuestra función al evento sin sobrescribir
-if (typeof window.onCurrenciesLoaded === "function") {
-    const originalOnCurrenciesLoaded = window.onCurrenciesLoaded;
-    window.onCurrenciesLoaded = function() {
-        console.log("[conversor.js] onCurrenciesLoaded sobrescrita: llamando original"); // 🔹 log
-        // Primero ejecutamos la función de alertas
-        originalOnCurrenciesLoaded();
+// Suscribirse a onCurrenciesLoaded **después** de que alertas.js haya cargado
+const waitForAlertas = setInterval(() => {
+    if (typeof window.onCurrenciesLoaded === "function") {
+        clearInterval(waitForAlertas);
+        const original = window.onCurrenciesLoaded;
 
-        console.log("[conversor.js] onCurrenciesLoaded: ejecutando conversor"); // 🔹 log
-        // Después ejecutamos nuestro código de conversor
-        onCurrenciesLoadedForConversor();
-    };
-} else {
-    console.log("[conversor.js] onCurrenciesLoaded asignada directamente"); // 🔹 log
-    window.onCurrenciesLoaded = onCurrenciesLoadedForConversor;
-}
+        window.onCurrenciesLoaded = function() {
+            console.log("[conversor.js] onCurrenciesLoaded sobrescrita: llamando alertas");
+            original(); // ejecuta alertas.js
+            console.log("[conversor.js] onCurrenciesLoaded: ejecutando conversor");
+            updateSwitchWhenRatesReady(); // ejecuta conversor.js
+        };
+
+        console.log("[conversor.js] onCurrenciesLoaded sobrescrita con éxito");
+    }
+}, 50);
