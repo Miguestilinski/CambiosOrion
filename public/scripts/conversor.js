@@ -340,3 +340,38 @@ document.getElementById("trade-sell").addEventListener("click", () => {
     updateTradeSwitch();
 });
 
+// Función que queremos que ocurra cuando SSE cargue los datos
+function onCurrenciesLoadedForConversor() {
+    // Forzar que currency1 sea CLP y currency2 sea USD
+    const currency1El = document.getElementById("currency1-text");
+    const currency2El = document.getElementById("currency2-text");
+
+    currency1El.textContent = "CLP";
+    currency2El.textContent = "USD";
+
+    // Actualizar iconos
+    updateCurrencyIcon();
+
+    // Filtrar dropdowns
+    filterDropdownCurrencies();
+
+    // Hacer la conversión
+    convertCurrency();
+
+    // Forzar que el switch quede en Venta
+    updateTradeSwitch();
+}
+
+// Suscribir nuestra función al evento sin sobrescribir
+if (typeof window.onCurrenciesLoaded === "function") {
+    const originalOnCurrenciesLoaded = window.onCurrenciesLoaded;
+    window.onCurrenciesLoaded = function() {
+        // Primero ejecutamos la función de alertas
+        originalOnCurrenciesLoaded();
+
+        // Después ejecutamos nuestro código de conversor
+        onCurrenciesLoadedForConversor();
+    };
+} else {
+    window.onCurrenciesLoaded = onCurrenciesLoadedForConversor;
+}
