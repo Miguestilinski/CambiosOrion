@@ -371,12 +371,15 @@ function onCurrenciesLoadedForConversor() {
 if (typeof window.onCurrenciesLoaded === "function") {
     const originalOnCurrenciesLoaded = window.onCurrenciesLoaded;
     window.onCurrenciesLoaded = function() {
+        console.log("[conversor.js] onCurrenciesLoaded sobrescrita: llamando original"); // 🔹 log
         // Primero ejecutamos la función de alertas
         originalOnCurrenciesLoaded();
 
+        console.log("[conversor.js] onCurrenciesLoaded: ejecutando conversor"); // 🔹 log
         // Después ejecutamos nuestro código de conversor
         onCurrenciesLoadedForConversor();
     };
 } else {
+    console.log("[conversor.js] onCurrenciesLoaded asignada directamente"); // 🔹 log
     window.onCurrenciesLoaded = onCurrenciesLoadedForConversor;
 }

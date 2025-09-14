@@ -77,7 +77,10 @@ function loadCurrenciesWithSSE() {
             }
 
             if (typeof window.onCurrenciesLoaded === "function") {
+                console.log("[index.js] llamando window.onCurrenciesLoaded"); // 🔹 log
                 window.onCurrenciesLoaded(); // avisar que exchangeRates ya tiene datos
+            } else {
+                console.warn("[index.js] window.onCurrenciesLoaded no está definida");
             }
         } catch (error) {
             console.error('Error procesando los datos SSE:', error);
