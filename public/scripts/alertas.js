@@ -380,8 +380,6 @@ document.getElementById("guardar-alerta").addEventListener("click", async () => 
   alertaData.valor = parseFloat(document.getElementById("alerta-valor").value);
   alertaData.nombre = document.getElementById("alerta-nombre").value.trim();
   alertaData.email = document.getElementById("alerta-email").value.trim();
-  alertaData.divisa = document.getElementById("alerta-divisa").value;
-  alertaData.tipoPrecio = document.getElementById("alerta-tipoPrecio").value;
 
   const statusText = document.getElementById("alerta-status");
 
@@ -396,6 +394,8 @@ document.getElementById("guardar-alerta").addEventListener("click", async () => 
     statusText.style.color = "red";
     return;
   }
+
+  console.log("📤 Datos que se enviarán al PHP:", alertaData);
 
   try {
     const response = await fetch("https://cambiosorion.cl/data/alertas.php", {
