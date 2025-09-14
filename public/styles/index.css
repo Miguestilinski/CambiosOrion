@@ -611,7 +611,7 @@ button:hover {
 }
 
 #last-updated1 {
-    left: 2rem;
+    right: 2rem;
     margin-top: 3rem;
     font-size: 0.75rem;
     position: absolute;
