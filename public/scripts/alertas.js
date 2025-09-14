@@ -389,25 +389,44 @@ document.getElementById("guardar-alerta").addEventListener("click", async () => 
     return;
   }
 
-  // Validar que no sea igual al precio actual
   if (alertaData.valor === alertaData.precioRef) {
     statusText.textContent = `❌ El valor no puede ser igual al precio actual (${alertaData.precioRef.toLocaleString("es-CL")} CLP).`;
     statusText.style.color = "red";
     return;
   }
 
-  const response = await fetch("https://cambiosorion.cl/data/alertas.php", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(alertaData)
-  });
+  try {
+    const response = await fetch("https://cambiosorion.cl/data/alertas.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(alertaData)
+    });
 
-  const result = await response.json();
-  if (result.success) {
-    statusText.textContent = "✅ Alerta guardada, recibirás un correo cuando se cumpla.";
-    statusText.style.color = "green";
-  } else {
-    statusText.textContent = "❌ Hubo un error, intenta más tarde.";
+    // Leer como texto en bruto para debug
+    const raw = await response.text();
+    console.log("📡 Respuesta RAW de alertas.php:", raw);
+
+    // Intentar parsear como JSON
+    let result;
+    try {
+      result = JSON.parse(raw);
+    } catch (e) {
+      console.error("❌ Error al parsear JSON:", e);
+      statusText.textContent = "❌ Respuesta inválida del servidor.";
+      statusText.style.color = "red";
+      return;
+    }
+
+    if (result.success) {
+      statusText.textContent = "✅ Alerta guardada, recibirás un correo cuando se cumpla.";
+      statusText.style.color = "green";
+    } else {
+      statusText.textContent = "❌ Hubo un error, intenta más tarde.";
+      statusText.style.color = "red";
+    }
+  } catch (error) {
+    console.error("❌ Error en fetch:", error);
+    statusText.textContent = "❌ No se pudo conectar al servidor.";
     statusText.style.color = "red";
   }
 });
