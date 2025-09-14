@@ -396,7 +396,7 @@ document.getElementById("guardar-alerta").addEventListener("click", async () => 
     return;
   }
 
-  const response = await fetch("/data/alerta.php", {
+  const response = await fetch("https://cambiosorion.cl/data/alertas.php", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(alertaData)
