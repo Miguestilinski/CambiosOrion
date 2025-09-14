@@ -344,32 +344,21 @@ document.getElementById("trade-sell").addEventListener("click", () => {
 function onCurrenciesLoadedForConversor() {
     console.log("[conversor.js] onCurrenciesLoadedForConversor ejecutada");
 
-    const waitForRates = setInterval(() => {
-        if (exchangeRates["USD"] && exchangeRates["CLP"]) {
-            clearInterval(waitForRates);
+    // Esperar a que alertas.js haya definido su onCurrenciesLoaded
+    const waitForAlertasLoaded = setInterval(() => {
+        if (typeof window.onCurrenciesLoaded === "function") {
+            clearInterval(waitForAlertasLoaded);
 
-            console.log("[conversor.js] exchangeRates listas, actualizando conversor");
+            const originalOnCurrenciesLoaded = window.onCurrenciesLoaded;
 
-            // Forzar que currency1 sea CLP y currency2 sea USD
-            const currency1El = document.getElementById("currency1-text");
-            const currency2El = document.getElementById("currency2-text");
+            window.onCurrenciesLoaded = function() {
+                console.log("[conversor.js] onCurrenciesLoaded sobrescrita: llamando original");
+                originalOnCurrenciesLoaded(); // ejecuta alertas.js
+                console.log("[conversor.js] onCurrenciesLoaded: ejecutando conversor");
+                onCurrenciesLoadedForConversor(); // ejecuta conversor.js
+            };
 
-            currency1El.textContent = "CLP";
-            currency2El.textContent = "USD";
-
-            // Actualizar iconos
-            updateCurrencyIcon();
-
-            // Filtrar dropdowns
-            filterDropdownCurrencies();
-
-            // Hacer la conversión
-            convertCurrency();
-
-            // Forzar que el switch quede en Venta
-            updateTradeSwitch();
-        } else {
-            console.log("[conversor.js] esperando exchangeRates...");
+            console.log("[conversor.js] onCurrenciesLoaded sobrescrita con éxito");
         }
     }, 50);
 }
