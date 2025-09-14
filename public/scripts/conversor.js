@@ -50,6 +50,7 @@ function swapCurrencies() {
     document.getElementById("icon-currency2").src = iconCurrency1;
 
     convertCurrency();
+    filterDropdownCurrencies();
     updateTradeSwitch();
 }
 
