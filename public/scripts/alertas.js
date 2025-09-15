@@ -124,18 +124,49 @@ function nextAlertaStep() {
   if (alertaStep === 2) {
     const condicion = condicionSelect.value;
     const valor = parseFloat(valorInput.value);
+    const precioRef = alertaData.precioRef;
 
     // validar que estén completos
-    if (!condicion || !valor) {
+    if (!condicion || isNaN(valor)) {
       errorText.textContent = "❌ Debes seleccionar una condición y un valor.";
       errorText.classList.remove("hidden");
       valorInput.classList.add("ring-2", "ring-red-500");
       return;
     }
 
-    // validar que no sea igual al precio actual
-    if (valor === alertaData.precioRef) {
-      errorText.textContent = `❌ El valor no puede ser igual al precio actual (${alertaData.precioRef.toLocaleString("es-CL")} CLP).`;
+    // ⚡ Validaciones condicionales según la opción elegida
+    switch (condicion) {
+      case "alcanza":
+        if (valor === precioRef) {
+          errorText.textContent = `❌ Debes ingresar un valor distinto al precio actual (${precioRef.toLocaleString("en-US")} CLP).`;
+        }
+        break;
+      case "sube": // debe ser mayor
+        if (valor <= precioRef) {
+          errorText.textContent = `❌ El valor debe ser mayor al precio actual (${precioRef.toLocaleString("en-US")} CLP).`;
+        }
+        break;
+      case "baja": // debe ser menor
+        if (valor >= precioRef) {
+          errorText.textContent = `❌ El valor debe ser menor al precio actual (${precioRef.toLocaleString("en-US")} CLP).`;
+        }
+        break;
+      case "cambio_sobre":
+      case "cambio_24h_sube":
+        if (valor <= 0) {
+          errorText.textContent = "❌ Debes ingresar un porcentaje positivo.";
+        }
+        break;
+      case "cambio_bajo":
+      case "cambio_24h_baja":
+        if (valor >= 0) {
+          errorText.textContent = "❌ Debes ingresar un porcentaje negativo.";
+        }
+        break;
+    }
+
+    // Si hubo error en el switch, salir
+    if (errorText.textContent) {
       errorText.classList.remove("hidden");
       valorInput.classList.add("ring-2", "ring-red-500");
       valorInput.focus();
