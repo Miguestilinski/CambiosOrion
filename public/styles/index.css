@@ -537,6 +537,7 @@ input[type="checkbox"]:checked + div div {
     cursor: pointer;
     text-align: center;
     margin-right: 1.4rem;
+    top: 9rem;
     transition: background-color 0.3s ease;
 }
 
@@ -728,5 +729,8 @@ span#paridades-date {
     .sending-money-button {
         padding: 0.75rem 1.2rem;
         font-size: 1rem;
+    }
+    .edit-btn {
+        top: 11rem;
     }
 }
