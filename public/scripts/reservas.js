@@ -240,7 +240,7 @@ function showStep3Summary() {
 
         const currentMinutes = now.getHours() * 60 + now.getMinutes();
         const startMinutes = 9 * 60;     // 09:00 → 540 minutos
-        const endMinutes   = 22 * 60 + 30; // 16:30 → 990 minutos
+        const endMinutes   = 16 * 60 + 30; // 16:30 → 990 minutos
 
         if (currentMinutes >= startMinutes && currentMinutes <= endMinutes) {
             confirmBtn.disabled = false;
@@ -281,7 +281,7 @@ function showStep3Summary() {
     // Validar horario
     const currentMinutes = now.getHours() * 60 + now.getMinutes();
     const startMinutes = 9 * 60;     // 09:00 → 540 minutos
-    const endMinutes   = 22 * 60 + 30; // 16:30 → 990 minutos
+    const endMinutes   = 16 * 60 + 30; // 16:30 → 990 minutos
 
     if (currentMinutes >= startMinutes && currentMinutes <= endMinutes) {
         confirmBtn.disabled = false;
