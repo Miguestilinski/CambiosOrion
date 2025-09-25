@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuevo Egreso</title>
+    <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/header.css">
+    <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/footer.css">
+    <link rel="stylesheet" href="./styles/nueva-op.css">
+    <link href="https://cambiosorion.cl/orionapp/public/styles/output.css" rel="stylesheet">
+    <link rel="icon" href="https://cambiosorion.cl/orionapp/icons/IsotipoOrion-blue.svg" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">  
+</head>
+<body>
+    <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js" crossorigin="anonymous"></script>
+    <header>
+        <!-- Logo y Nombre -->
+        <div class="header-logo">
+            <a href="index">
+                <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Logo Cambios Orion" class="logo">
+            </a>
+             
+        </div>
+    
+        <!-- Botones para versión móvil -->
+        <div class="mobile-buttons">
+            <button class="menu-button" id="nav-menu-button">
+                <img src="https://cambiosorion.cl/orionapp/icons/menu-white.svg" alt="Menú">
+            </button>
+            <button class="menu-button" id="session-menu-button">
+                <img src="https://cambiosorion.cl/orionapp/icons/profile-white.png" alt="Sesión">
+            </button>
+        </div>
+    
+        <!-- Menús desplegables para móvil -->
+        <div id="nav-mobile-menu" class="mobile-menu hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
+            <ul class="py-2 text-sm text-gray-700">
+                <li><a href="https://caja.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Sist. Caja</a></li>
+            </ul>
+            <ul class="py-2 text-sm text-gray-700">
+                <li><a href="https://tesoreria.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Sist. Tesoreria</a></li>
+            </ul>
+            <ul class="py-2 text-sm text-gray-700">
+                <li><a href="https://admin.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Portal Admin</a></li>
+            </ul>
+            <ul class="py-2 text-sm text-gray-700">
+                <li><a href="https://pizarras.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Pizarras</a></li>
+            </ul>
+        </div>
+    
+        <div class="mobile-menu hidden bg-white rounded-lg shadow w-44" id="session-mobile-menu">
+            <div id="guest-actions-mobile" class="divide-y divide-gray-100" style="display:none;">
+                <ul class="py-2 text-sm text-gray-700">
+                    <li><a href="https://admin.cambiosorion.cl/login" class="block px-4 py-2 hover:bg-gray-100">Iniciar Sesión</a></li>
+                </ul>
+            </div>
+            <div id="user-actions-mobile" class="divide-y divide-gray-100" style="display:none;">
+                <div class="px-2 py-2 text-sm text-gray-900">
+                    <div id="user-name">Nombre del usuario</div>
+                    <div id="user-email" class="mail font-medium truncate">Correo del usuario</div>
+                </div>
+                <ul class="py-2 text-sm text-gray-700" id="menu-admin-mobile" style="display: none;">
+                    <li><a href="https://admin.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Portal Admin</a></li>
+                    <li><a href="https://cambiosorion.cl/webmail" class="block px-4 py-2 hover:bg-gray-100">Correo</a></li>
+                </ul>
+                <ul class="py-2 text-sm text-gray-700">
+                    <li><a href="#" class="block px-4 py-2 hover:bg-gray-100" id="logout-button-mobile">Cerrar sesión</a></li>
+                </ul>
+            </div>
+        </div>
+    
+        <!-- Menú de navegación para escritorio -->
+        <nav>
+            <ul>
+                <li><a href="https://caja.cambiosorion.cl/">Sist. Cajas</a></li>
+                <li class="selected"><a href="https://tesoreria.cambiosorion.cl/tesoreria">Sist. Tesorería</a></li>
+                <li><a href="https://admin.cambiosorion.cl/">Portal Admin</a></li>
+                <li><a href="https://pizarras.cambiosorion.cl/">Pizarras</a></li>
+            </ul>
+        </nav>
+    
+        <!-- Acciones para escritorio -->
+        <div class="header-actions">
+            <!-- User actions -->
+            <div id="user-actions" style="display:none;">
+                <button id="profile-menu-button" class="text-white bg-transparent hover:bg-gray-200 focus:outline-none">
+                    <img src="https://cambiosorion.cl/orionapp/icons/profile-white.png" alt="Profile">
+                </button>
+                <!-- Menú desplegable -->
+                <div id="dropdownInformation" class="hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
+                    <div class="px-4 py-3 text-sm text-gray-900">
+                        <div id="user-name">Nombre del usuario</div>
+                        <div id="user-email" class="mail font-medium truncate">Correo del usuario</div>
+                    </div>
+                    <ul class="py-2 text-sm text-gray-700" id="menu-admin" style="display: none;">
+                        <li><a href="https://admin.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Portal Admin</a></li>
+                        <li><a href="https://cambiosorion.cl/webmail" class="block px-4 py-2 hover:bg-gray-100">Correo</a></li>
+                    </ul>
+                    <ul class="py-2 text-sm text-gray-700">
+                        <li><a href="#" class="block px-4 py-2 hover:bg-gray-100" id="logout-button">Cerrar sesión</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Guest actions -->
+            <div id="guest-actions" style="display:none;">
+                <a href="https://admin.cambiosorion.cl/login">Iniciar sesión</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="header-divider"></div>
+    <div class="main-content">
+    <div id="sidebar-container"></div>
+    <main id="dashboard-content" class="dashboard-content">
+        <section id="nuevo-egreso" class="content-section active">
+        <div class="flex items-center mb-6">
+            <h1 class="text-2xl font-medium mr-4 leading-none text-white">Crear Nuevo Egreso</h1>
+        </div>
+
+        <!-- Formulario Nuevo Egreso -->
+        <form id="form-nuevo-egreso" class="grid grid-cols-1 gap-6 mb-6">
+
+            <!-- Caja -->
+            <div>
+            <label class="block mb-1 text-sm text-white">Caja:</label>
+            <select id="caja" name="caja" required class="block w-1/2 px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
+                <option value="">Cargando cajas...</option>
+            </select>
+            </div>
+
+            <!-- Tipo de Egreso -->
+            <div>
+            <label class="block mb-1 text-sm text-white">Tipo de Egreso</label>
+            <select id="tipo-transaccion" class="block w-1/2 px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
+                <option value="efectivo">Efectivo</option>
+                <option value="cuenta">Cuenta</option>
+            </select>
+            </div>
+
+            <!-- Proveedor / Destinatario -->
+            <div class="relative">
+            <label for="proveedor" class="block mb-1 text-sm text-white">Proveedor / Destinatario</label>
+            <input
+                type="text"
+                id="proveedor"
+                placeholder="Buscar proveedor por nombre"
+                autocomplete="off"
+                class="block w-1/2 px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
+            />
+            <ul 
+                id="resultado-proveedores" 
+                class="resultado-clientes bg-white border border-gray-600 text-gray-700 w-1/2 rounded-lg mt-1 hidden"></ul>
+            </div>
+
+            <!-- Cuenta Proveedor -->
+            <div class="relative flex items-center gap-4">
+            <div class="w-1/2">
+                <label for="cuenta-proveedor" class="block mb-1 text-sm text-white">Cuenta Proveedor</label>
+                <select id="cuenta-proveedor" class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
+                <option value="">Selecciona una cuenta</option>
+                </select>
+            </div>
+            <p id="saldo-actual" class="text-sm text-yellow-300 mt-6">Saldo: —</p>
+            </div>
+
+            <!-- Sección de Divisas -->
+            <div id="divisas-container" class="space-y-4 mt-4 mb-8">
+            <label class="block text-lg text-white font-medium mb-2">Divisa</label>
+
+            <!-- Divisa Template -->
+            <div class="divisa-item grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                <!-- Nombre Divisa -->
+                <div class="relative w-full">
+                <label for="divisa" class="block mb-1 text-sm text-white">Divisa</label>
+                <input
+                    type="text"
+                    placeholder="Buscar divisa"
+                    class="divisa-nombre block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
+                    autocomplete="off"
+                />
+                <ul class="divisa-sugerencias absolute z-10 w-full bg-white border border-gray-600 text-gray-700 rounded-lg mt-1 hidden max-h-48 overflow-y-auto"></ul>
+                </div>
+
+                <!-- Monto -->
+                <div class="w-full">
+                <label for="monto" class="block mb-1 text-sm text-white">Monto</label>
+                <input
+                    id="monto-egreso"
+                    type="number"
+                    placeholder="Monto"
+                    class="divisa-monto block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
+                />
+                </div>
+
+                <!-- Saldo futuro -->
+                <p id="saldo-futuro" class="text-sm text-green-300 mb-2">Saldo final: —</p>
+
+            </div>
+            </div>
+
+            <!-- Botones Finales -->
+            <div class="flex space-x-4">
+            <button
+                type="submit"
+                class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5"
+            >
+                Crear Egreso
+            </button>
+            <button
+                type="button"
+                id="cancelar"
+                class="text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5"
+            >
+                Cancelar
+            </button>
+            </div>
+        </form>
+
+        <!-- Modal de advertencia -->
+        <div id="modal-advertencia" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+            <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
+            <h2 class="text-lg font-semibold mb-4">⚠️ Advertencia</h2>
+            <p id="modal-advertencia-mensaje" class="mb-4">Mensaje</p>
+            <div class="flex justify-end space-x-4">
+                <button id="modal-advertencia-cancelar" class="bg-gray-300 text-gray-700 px-4 py-2 rounded">Cancelar</button>
+                <button id="modal-advertencia-confirmar" class="bg-red-600 text-white px-4 py-2 rounded">Continuar</button>
+            </div>
+            </div>
+        </div>
+
+        <!-- Modal error -->
+        <div id="modal-error" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+            <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
+            <h2 id="modal-error-titulo" class="text-lg font-semibold mb-4">Título</h2>
+            <p id="modal-error-mensaje" class="mb-4">Mensaje</p>
+            <div class="flex justify-end space-x-4">
+                <button id="modal-error-cancelar" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hidden">Cancelar</button>
+                <button id="modal-error-confirmar" class="bg-red-600 text-white px-4 py-2 rounded">Aceptar</button>
+            </div>
+            </div>
+        </div>
+
+        <!-- Modal exitoso -->
+        <div id="modal-exitoso" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+            <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
+            <h2 class="text-lg font-semibold mb-4">✅ Egreso generado</h2>
+            <p class="mb-4">El egreso se ha registrado correctamente.</p>
+            <div class="flex justify-end space-x-4">
+                <button id="nuevo-egreso" class="bg-green-600 text-white px-4 py-2 rounded">Nueva Operación</button>
+                <button id="volver" class="bg-gray-300 text-gray-700 px-4 py-2 rounded">Volver</button>
+            </div>
+            </div>
+        </div>
+        </section>
+    </main>
+    </div>    
+
+    <footer>
+        <div class="footer-container">
+            <!-- Sección del logo -->
+            <div class="footer-logo">
+                <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Logo Orion" class="logo">
+                 
+            </div>
+            <!-- Mapa de navegación -->
+            <div class="footer-navigation flex justify-between">
+                <div class="nav-section">
+                    <h3 href="https://admin.cambiosorion.cl/" class="font-bold text-lg">Admin</h3>
+                    <ul class="list-none p-0">
+                        <li><a href="https://admin.cambiosorion.cl/#vacaciones" class="block py-1">Vacaciones</a></li>
+                        <li><a href="https://admin.cambiosorion.cl/" class="block py-1">Adelantos</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h3 href="https://pizarras.cambiosorion.cl/" class="font-bold text-lg">Pizarras</h3>
+                    <ul class="list-none p-0">
+                        <li><a href="https://pizarras.cambiosorion.cl/normal" class="block py-1">Normal</a></li>
+                        <li><a href="https://pizarras.cambiosorion.cl/destacadas" class="block py-1">Destacadas</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h3 class="font-bold text-lg">Intranet</h3>
+                    <ul class="list-none p-0">
+                        <li><a href="https://intranet.cambiosorion.cl/" class="block py-1">Sist. Cajas</a></li>
+                        <li><a href="https://intranet.cambiosorion.cl/tesorería" class="block py-1">Sist. Tesorería</a></li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Información de contacto -->
+            <div class="footer-contact flex flex-wrap justify-between">
+            </div>         
+        </div>
+        <div class="footer-bottom text-xs text-center p-4">
+            © 2025 Cambios Orion. Todos los derechos reservados.
+        </div>
+    </footer>
+
+    <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
+    <script type="module" src="https://cambiosorion.cl/orionapp/public/scripts/header.js" crossorigin="anonymous"></script>
+    <script type="module" src="./scripts/nuevo-egr.js"></script>
+    <script>
+        fetch('sidebar.html')
+            .then(response => response.text())
+            .then(data => document.getElementById('sidebar-container').innerHTML = data);
+    </script>
+</body>
+</html>
