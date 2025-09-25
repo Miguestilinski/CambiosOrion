@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (nuevoEgresoBtn) {
         nuevoEgresoBtn.addEventListener('click', () => {
-            window.location.href = '.https://tesoreria.cambiosorion.cl/nuevo-egr';
+            window.location.href = 'https://tesoreria.cambiosorion.cl/nuevo-egr';
         });
     }
 
