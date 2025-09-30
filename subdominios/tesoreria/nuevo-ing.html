@@ -153,13 +153,21 @@
                     class="resultado-clientes bg-white border border-gray-600 text-gray-700 w-1/2 rounded-lg mt-1 hidden"></ul>
                 </div>
 
-                <!-- Cuenta Cliente -->
+                <!-- Cuenta -->
                 <div class="relative flex items-center gap-4">
                     <div class="w-1/2">
-                        <label for="cuenta-cliente" class="block mb-1 text-sm text-white">Cuenta Cliente</label>
-                        <select id="cuenta-cliente" class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
-                        <option value="">Selecciona una cuenta</option>
-                        </select>
+                        <label for="cuenta" class="block mb-1 text-sm text-white">Cuenta</label>
+                        <input
+                            type="text"
+                            id="cuenta"
+                            placeholder="Buscar cuenta"
+                            autocomplete="off"
+                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700"
+                        />
+                        <ul
+                            id="resultado-cuentas"
+                            class="bg-white border border-gray-600 text-gray-700 w-full rounded-lg mt-1 hidden">
+                        </ul>
                     </div>
                     <p id="deuda-actual" class="text-sm text-yellow-300 mt-6">Debe: —</p>
                 </div>

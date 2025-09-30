@@ -2,7 +2,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const cajaSelect = document.getElementById("caja");
   const clienteInput = document.getElementById("cliente");
   const resultadoClientes = document.getElementById("resultado-clientes");
-  const cuentaClienteInput = document.getElementById("cuenta-cliente");
+  const cuentaInput = document.getElementById("cuenta");
+  const resultadoCuentas = document.getElementById("resultado-cuentas");
   const divisasContainer = document.getElementById("divisas-container");
   const form = document.getElementById("form-nuevo-ingreso");
 
@@ -24,7 +25,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
   cargarCajas();
-  cargarTodasLasCuentas();
 
   // Buscar clientes
   let clienteTimeout;
@@ -52,7 +52,10 @@ document.addEventListener("DOMContentLoaded", () => {
               clienteInput.value = c.nombre;
               clienteInput.dataset.id = c.id; // Guardar id del cliente
               resultadoClientes.classList.add("hidden");
-              cargarCuentasCliente(c.id);
+              // Resetear cuenta al cambiar cliente
+              cuentaInput.value = "";
+              cuentaInput.dataset.id = "";
+              resultadoCuentas.innerHTML = "";
             });
             resultadoClientes.appendChild(li);
           });
@@ -64,108 +67,100 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 300);
   });
 
-    // Cargar cuentas del cliente seleccionado
-    async function cargarCuentasCliente(clienteId) {
-        try {
-            const res = await fetch(`https://cambiosorion.cl/data/nuevo-ing.php?cliente_id=${clienteId}`);
-            const cuentas = await res.json();
-            const selectCuenta = document.getElementById("cuenta-cliente");
-            selectCuenta.innerHTML = "";  // limpiar opciones
+  // búsqueda de cuentas ===
+  let cuentaTimeout;
 
-            if (cuentas.length === 0) {
-            // Si quieres, puedes agregar una opción deshabilitada:
-            const option = document.createElement("option");
-            option.textContent = "No hay cuentas activas para este cliente";
-            option.disabled = true;
-            selectCuenta.appendChild(option);
-            return;
-            }
+  async function buscarCuentas(query) {
+    const clienteId = clienteInput.dataset.id || "";
+    const url = clienteId
+      ? `https://cambiosorion.cl/data/nuevo-ing.php?cliente_id=${clienteId}`
+      : `https://cambiosorion.cl/data/nuevo-ing.php?todas_cuentas=1`;
 
-            cuentas.forEach(cuenta => {
-            const option = document.createElement("option");
-            option.value = cuenta.id; // id de la cuenta
-            option.textContent = `${cuenta.nombre_cliente} - ${cuenta.codigo_divisa}`;
-            option.dataset.nombreDivisa = cuenta.nombre_divisa;
-            option.dataset.deuda = cuenta.me_deben;
-            selectCuenta.appendChild(option);
-            });
-
-            selectCuenta.dispatchEvent(new Event("change"));
-
-        } catch (error) {
-            console.error("Error cargando cuentas cliente:", error);
-        }
+    try {
+      const res = await fetch(url);
+      const cuentas = await res.json();
+      return cuentas.filter(c =>
+        `${c.nombre_cliente || ''} ${c.codigo_divisa || ''}`
+        .toLowerCase()
+        .includes(query.toLowerCase())
+      );
+    } catch (e) {
+      console.error("Error buscando cuentas:", e);
+      return [];
     }
+  }
 
-    // Cargar todas las cuentas si no hay cliente
-    async function cargarTodasLasCuentas() {
-        try {
-            const res = await fetch(`https://cambiosorion.cl/data/nuevo-ing.php?todas_cuentas=1`);
-            const cuentas = await res.json();
-            const selectCuenta = document.getElementById("cuenta-cliente");
-            selectCuenta.innerHTML = '<option value="">Selecciona una cuenta</option>';
-
-            cuentas.forEach(cuenta => {
-                const option = document.createElement("option");
-                option.value = cuenta.id;
-                option.textContent = `${cuenta.nombre_cliente || '—'} - ${cuenta.codigo_divisa}`;
-                option.dataset.nombreDivisa = cuenta.nombre_divisa;
-                option.dataset.deuda = cuenta.me_deben;
-                selectCuenta.appendChild(option);
-            });
-
-        } catch (error) {
-            console.error("Error cargando cuentas:", error);
-        }
+  cuentaInput.addEventListener("input", () => {
+    clearTimeout(cuentaTimeout);
+    const query = cuentaInput.value.trim();
+    if (query.length < 1) {
+      resultadoCuentas.classList.add("hidden");
+      return;
     }
+    cuentaTimeout = setTimeout(async () => {
+      const cuentas = await buscarCuentas(query);
+      resultadoCuentas.innerHTML = "";
 
-    // Manejar el cambio de cuenta para actualizar input de divisa
-    document.getElementById("cuenta-cliente").addEventListener("change", () => {
-        const selectCuenta = document.getElementById("cuenta-cliente");
-        const selectedOption = selectCuenta.options[selectCuenta.selectedIndex];
-        const nombreDivisa = selectedOption.dataset.nombreDivisa;
-        const deuda = parseFloat(selectedOption.dataset.deuda || 0);
-
-        // Mostrar deuda actual
-        document.getElementById("deuda-actual").textContent = `Debe: ${deuda.toLocaleString()} ${nombreDivisa || ''}`;
-
-        // Input de divisa (ajustar selector si hay varios)
-        const inputDivisa = divisasContainer.querySelector(".divisa-nombre");
-
-        if (inputDivisa) {
-            inputDivisa.value = nombreDivisa || "";
-            inputDivisa.readOnly = true;
-            inputDivisa.classList.add("bg-gray-100", "cursor-not-allowed");
-            inputDivisa.removeAttribute("data-id");
-            
-            const sugerenciasList = inputDivisa.nextElementSibling;
-            if (sugerenciasList) sugerenciasList.classList.add("hidden");
-        }
-        actualizarDeudaFutura();
-    });
-
-    document.getElementById("monto-ingreso").addEventListener("input", actualizarDeudaFutura);
-
-    function actualizarDeudaFutura() {
-        const selectCuenta = document.getElementById("cuenta-cliente");
-        const selectedOption = selectCuenta.options[selectCuenta.selectedIndex];
-        const deudaActual = parseFloat(selectedOption.dataset.deuda || 0);
-        const montoInput = document.getElementById("monto-ingreso");
-        const monto = parseFloat(montoInput.value || 0);
-        const nombreDivisa = selectedOption.dataset.nombreDivisa || '';
-
-        const deudaFutura = deudaActual - monto;
-        document.getElementById("deuda-futura").textContent =
-            `Deberá: ${deudaFutura.toLocaleString()} ${nombreDivisa}`;
-    }
-
+      if (cuentas.length === 0) {
+        resultadoCuentas.innerHTML = "<li class='p-2'>No hay resultados</li>";
+      } else {
+        cuentas.forEach(c => {
+          const li = document.createElement("li");
+          li.textContent = `${c.nombre_cliente || '—'} - ${c.codigo_divisa}`;
+          li.classList.add("p-2","cursor-pointer","hover:bg-gray-200");
+          li.addEventListener("click", () => {
+            cuentaInput.value = `${c.nombre_cliente || '—'} - ${c.codigo_divisa}`;
+            cuentaInput.dataset.id = c.id;
+            cuentaInput.dataset.nombreDivisa = c.nombre_divisa;
+            cuentaInput.dataset.deuda = c.me_deben || 0;
+            resultadoCuentas.classList.add("hidden");
+            actualizarDeuda();
+            bloquearDivisa();
+          });
+          resultadoCuentas.appendChild(li);
+        });
+      }
+      resultadoCuentas.classList.remove("hidden");
+    }, 300);
+  });
 
   // Ocultar sugerencias al hacer click afuera
   document.addEventListener("click", (e) => {
-    if (!clienteInput.contains(e.target)) {
+    if (!clienteInput.contains(e.target) && !resultadoClientes.contains(e.target)) {
       resultadoClientes.classList.add("hidden");
     }
   });
+
+  document.addEventListener("click", (e) => {
+    if (!cuentaInput.contains(e.target) && !resultadoCuentas.contains(e.target)) {
+      resultadoCuentas.classList.add("hidden");
+    }
+  });
+
+  function actualizarDeuda() {
+    const deuda = parseFloat(cuentaInput.dataset.deuda || 0);
+    const nombreDivisa = cuentaInput.dataset.nombreDivisa || '';
+    document.getElementById("deuda-actual").textContent =
+      `Debe: ${deuda.toLocaleString()} ${nombreDivisa}`;
+  }
+
+  document.getElementById("monto-ingreso").addEventListener("input", () => {
+    const deuda = parseFloat(cuentaInput.dataset.deuda || 0);
+    const monto = parseFloat(document.getElementById("monto-ingreso").value || 0);
+    const nombreDivisa = cuentaInput.dataset.nombreDivisa || '';
+    document.getElementById("deuda-futura").textContent =
+      `Deberá: ${(deuda - monto).toLocaleString()} ${nombreDivisa}`;
+  });
+
+  function bloquearDivisa() {
+    const inputDivisa = divisasContainer.querySelector(".divisa-nombre");
+    if (inputDivisa) {
+      inputDivisa.value = cuentaInput.dataset.nombreDivisa || "";
+      inputDivisa.readOnly = true;
+      inputDivisa.classList.add("bg-gray-100", "cursor-not-allowed");
+      inputDivisa.removeAttribute("data-id");
+    }
+  }
 
   // Manejar submit del formulario
   form.addEventListener("submit", async (e) => {
@@ -175,7 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const tipo_ingreso = document.getElementById("tipo-transaccion").value;
     const cliente_id = clienteInput.dataset.id;
     const caja_id = cajaSelect.value;
-    const cuenta_id = cuentaClienteInput.dataset.id;
+    const cuenta_id = cuentaInput.dataset.id;
     const divisaItems = form.querySelectorAll(".divisa-item:not(.hidden)");
 
     if (!cuenta_id) {
@@ -234,7 +229,7 @@ document.addEventListener("DOMContentLoaded", () => {
         form.reset();
         // Limpiar IDs guardados
         clienteInput.dataset.id = "";
-        cuentaClienteInput.dataset.id = "";
+        cuentaInput.dataset.id = "";
         // Podrías recargar las cajas o divisas si quieres
       } else {
         alert("Error: " + data.message);
