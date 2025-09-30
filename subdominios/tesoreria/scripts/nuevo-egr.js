@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     const tipo_egreso = document.getElementById("tipo-transaccion").value;
     const cliente_id = clienteInput.dataset.id;
-    const cuenta_id = document.getElementById("cuenta-cliente").value || null;
+    const cuenta_id = cuentaClienteInput.dataset.id;
     const caja_id = cajaSelect.value || null;
     const divisaItem = divisasContainer.querySelector(".divisa-item:not(.hidden)");
     const divisa_id = divisaItem?.querySelector(".divisa-nombre").dataset.id;

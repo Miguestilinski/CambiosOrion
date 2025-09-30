@@ -24,6 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
   cargarCajas();
+  cargarTodasLasCuentas();
 
   // Buscar clientes
   let clienteTimeout;
@@ -96,6 +97,28 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // Cargar todas las cuentas si no hay cliente
+    async function cargarTodasLasCuentas() {
+        try {
+            const res = await fetch(`https://cambiosorion.cl/data/nuevo-ing.php?todas_cuentas=1`);
+            const cuentas = await res.json();
+            const selectCuenta = document.getElementById("cuenta-cliente");
+            selectCuenta.innerHTML = '<option value="">Selecciona una cuenta</option>';
+
+            cuentas.forEach(cuenta => {
+                const option = document.createElement("option");
+                option.value = cuenta.id;
+                option.textContent = `${cuenta.nombre_cliente || '—'} - ${cuenta.codigo_divisa}`;
+                option.dataset.nombreDivisa = cuenta.nombre_divisa;
+                option.dataset.deuda = cuenta.me_deben;
+                selectCuenta.appendChild(option);
+            });
+
+        } catch (error) {
+            console.error("Error cargando cuentas:", error);
+        }
+    }
+
     // Manejar el cambio de cuenta para actualizar input de divisa
     document.getElementById("cuenta-cliente").addEventListener("change", () => {
         const selectCuenta = document.getElementById("cuenta-cliente");
@@ -155,12 +178,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const cuenta_id = cuentaClienteInput.dataset.id;
     const divisaItems = form.querySelectorAll(".divisa-item:not(.hidden)");
 
-    if (!cliente_id) {
-      alert("Debe seleccionar un cliente válido.");
-      return;
-    }
     if (!cuenta_id) {
-      alert("Debe seleccionar una cuenta cliente válida.");
+      alert("Debe seleccionar una cuenta válida.");
       return;
     }
     if (!caja_id) {
