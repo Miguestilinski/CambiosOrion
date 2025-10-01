@@ -72,31 +72,76 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function buscarCuentas(query) {
     const clienteId = clienteInput.dataset.id || "";
-    const url = clienteId
-      ? `https://cambiosorion.cl/data/nuevo-ing.php?cliente_id=${clienteId}`
-      : `https://cambiosorion.cl/data/nuevo-ing.php?todas_cuentas=1`;
+
+    let url = "";
+    if (!query && clienteId) {
+      url = `https://cambiosorion.cl/data/nuevo-ing.php?cliente_id=${clienteId}`;
+    } else if (query) {
+      url = `https://cambiosorion.cl/data/nuevo-ing.php?todas_cuentas=1`;
+    } else {
+      return [];
+    }
 
     try {
       const res = await fetch(url);
-      const cuentas = await res.json();
-      return cuentas.filter(c =>
-        `${c.nombre_cliente || ''} ${c.codigo_divisa || ''}`
-        .toLowerCase()
-        .includes(query.toLowerCase())
-      );
+      let cuentas = await res.json();
+
+      if (query) {
+        cuentas = cuentas.filter(c =>
+          `${c.nombre_cliente || ''} ${c.codigo_divisa || ''}`
+            .toLowerCase()
+            .includes(query.toLowerCase())
+        );
+      }
+      return cuentas;
     } catch (e) {
       console.error("Error buscando cuentas:", e);
       return [];
     }
   }
 
-  cuentaInput.addEventListener("input", () => {
+  function renderizarCuentas(cuentas) {
+    resultadoCuentas.innerHTML = "";
+    if (cuentas.length === 0) {
+      resultadoCuentas.innerHTML = "<li class='p-2'>No hay resultados</li>";
+    } else {
+      cuentas.forEach(c => {
+        const li = document.createElement("li");
+        li.textContent = `${c.nombre_cliente || '—'} - ${c.codigo_divisa}`;
+        li.classList.add("p-2","cursor-pointer","hover:bg-gray-200");
+        li.addEventListener("click", () => {
+          cuentaInput.value = `${c.nombre_cliente || '—'} - ${c.codigo_divisa}`;
+          cuentaInput.dataset.id = c.id;
+          cuentaInput.dataset.nombreDivisa = c.nombre_divisa;
+          cuentaInput.dataset.deuda = c.me_deben || 0;
+          resultadoCuentas.classList.add("hidden");
+          actualizarDeuda();
+          bloquearDivisa();
+        });
+        resultadoCuentas.appendChild(li);
+      });
+    }
+    resultadoCuentas.classList.remove("hidden");
+  }
+
+  cuentaInput.addEventListener("focus", async () => {
     clearTimeout(cuentaTimeout);
     const query = cuentaInput.value.trim();
+    const clienteId = clienteInput.dataset.id || "";
+
+    // Si hay cliente seleccionado y no hay query => mostrar sus cuentas
+    if (clienteId && query === "") {
+      const res = await fetch(`https://cambiosorion.cl/data/nuevo-ing.php?cliente_id=${clienteId}`);
+      const cuentas = await res.json();
+      renderizarCuentas(cuentas);
+      return;
+    }
+
     if (query.length < 1) {
       resultadoCuentas.classList.add("hidden");
       return;
     }
+
     cuentaTimeout = setTimeout(async () => {
       const cuentas = await buscarCuentas(query);
       resultadoCuentas.innerHTML = "";
@@ -230,6 +275,8 @@ document.addEventListener("DOMContentLoaded", () => {
         // Limpiar IDs guardados
         clienteInput.dataset.id = "";
         cuentaInput.dataset.id = "";
+        document.getElementById("deuda-actual").textContent = "Debe: —";
+        document.getElementById("deuda-futura").textContent = "Deberá: —";
         // Podrías recargar las cajas o divisas si quieres
       } else {
         alert("Error: " + data.message);
