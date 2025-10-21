@@ -4,6 +4,25 @@ document.addEventListener("DOMContentLoaded", () => {
     const campoPais = document.getElementById("pais");
     const campoComuna = document.getElementById("comuna");
 
+    const rutInput = document.getElementById("rut");
+    const rutError = document.getElementById("rut-error");
+
+    rutInput.addEventListener("input", () => {
+        rutError.classList.add("hidden");
+        rutInput.classList.remove("border-red-500", "focus:border-red-500");
+    });
+
+    rutInput.addEventListener("blur", () => {
+        const rut = rutInput.value.trim();
+        if (rut.length > 0 && !validarRut(rut)) {
+            rutError.classList.remove("hidden");
+            rutInput.classList.add("border-red-500", "focus:border-red-500");
+        } else {
+            rutError.classList.add("hidden");
+            rutInput.classList.remove("border-red-500", "focus:border-red-500");
+        }
+    });
+
     tipoSelect.addEventListener("change", () => {
         const tipo = tipoSelect.value;
 
@@ -31,6 +50,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const telefono = document.getElementById("fono").value.trim();
         const direccion = document.getElementById("direccion_detalle").value.trim();
 
+        rutError.classList.add("hidden");
+        rutInput.classList.remove("border-red-500", "focus:border-red-500");
 
         if (!tipo || !razonSocial || !rut || !correo) {
             mostrarModalError({
@@ -38,6 +59,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 mensaje: `Campos requeridos incompletos. Por favor complete todos los campos marcados con *.`,
                 textoConfirmar: "Cerrar"
             });
+        }
+
+        if (!validarRut(rut)) {
+            rutError.classList.remove("hidden");
+            rutInput.classList.add("border-red-500", "focus:border-red-500");
+            
+            // Opcional: mostrar modal de error específico si prefieres
+            // mostrarModalError({
+            //     titulo: "❌ Error",
+            //     mensaje: `El RUT ingresado no es válido.`,
+            //     textoConfirmar: "Cerrar"
+            // });
+            return; // Detener aquí
         }
 
         const datosCliente = {
@@ -128,4 +162,40 @@ function mostrarModalExitoso() {
   document.getElementById("volver").onclick = () => {
     window.location.href = "https://tesoreia.cambiosorion.cl/clientes";
   };
+}
+
+function validarRut(rutCompleto) {
+    if (!rutCompleto || typeof rutCompleto !== 'string') return false;
+
+    // Limpia el RUT de puntos y guion
+    const rutLimpio = rutCompleto.replace(/[^0-9kK]/g, '').toUpperCase();
+    
+    if (rutLimpio.length < 2) return false;
+
+    const cuerpo = rutLimpio.slice(0, -1);
+    let dv = rutLimpio.slice(-1);
+
+    let suma = 0;
+    let multiplo = 2;
+
+    // Calcular suma ponderada
+    for(let i = cuerpo.length - 1; i >= 0; i--) {
+        suma += multiplo * parseInt(cuerpo.charAt(i), 10);
+        multiplo = multiplo < 7 ? multiplo + 1 : 2;
+    }
+
+    // Calcular dígito verificador esperado
+    const dvEsperado = 11 - (suma % 11);
+
+    // Manejar casos especiales del dígito
+    if (dvEsperado === 11) {
+        dvEsperado = '0';
+    } else if (dvEsperado === 10) {
+        dvEsperado = 'K';
+    } else {
+        dvEsperado = dvEsperado.toString();
+    }
+
+    // Comparar
+    return dv === dvEsperado;
 }
