@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const direccion = document.getElementById('direccion');
     const fono = document.getElementById('fono');
     const habilitados = document.getElementById('habilitados');
+    const estadoDocumentacion = document.getElementById('estado-documentacion');
     const borrarFiltrosBtn = document.getElementById('borrar-filtros');
     const tablaClientes = document.querySelector('#clientes table tbody');
     const nuevoClienteBtn = document.getElementById('nuevo-cliente');
@@ -31,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
         params.set('direccion', direccion.value);
         params.set('fono', fono.value);
         params.set('habilitados', habilitados.value);
+        params.set('estado_documentacion', estadoDocumentacion.value);
         params.set('mostrar_registros', mostrarRegistros.value);
         params.set('buscar', buscarInput.value);
 
@@ -43,10 +45,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 return res.text(); // Pide la respuesta como texto en lugar de JSON
             })
             .then(text => {
-                // 1. ¡Aquí mostramos la respuesta cruda en la consola!
                 console.log("Respuesta cruda del servidor:", text);
 
-                // 2. Intentamos parsear el texto manualmente
                 try {
                     // Si el texto está vacío, trátalo como un array vacío
                     if (text.trim() === "") {
@@ -88,25 +88,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function formatearRut(rut) {
-        // Si el RUT es nulo, vacío o "null", devuelve un string vacío
         if (!rut || rut === 'null') return '';
-
-        // 1. Dividir por el guion que AHORA VIENE de la BD
         const parts = rut.split('-');
-        
-        // 2. Si no tiene el formato "cuerpo-dv", devolverlo tal cual.
         if (parts.length !== 2) return rut;
-
         const cuerpo = parts[0];
         const dv = parts[1];
-
-        // 3. Si el cuerpo no es un número, devolver tal cual
         if (isNaN(cuerpo)) return rut;
-
-        // 4. Formatear el cuerpo con los puntos
         const cuerpoFormateado = new Intl.NumberFormat('es-CL').format(cuerpo);
-
-        // 5. Devolver el RUT formateado
         return `${cuerpoFormateado}-${dv}`;
     }
 
@@ -191,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Listeners para filtros
     [
         fechaInicio, fechaFin, tipoCliente, nombreRSocial,
-        rut, direccion, fono, habilitados, mostrarRegistros, buscarInput
+        rut, direccion, fono, habilitados, estadoDocumentacion, mostrarRegistros, buscarInput
     ].forEach(el => el.addEventListener('input', obtenerClientes));
 
     borrarFiltrosBtn.addEventListener('click', () => {
@@ -203,6 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
         direccion.value = '';
         fono.value = '';
         habilitados.value = '';
+        estadoDocumentacion.value = '';
         buscarInput.value = '';
         obtenerClientes();
     });
