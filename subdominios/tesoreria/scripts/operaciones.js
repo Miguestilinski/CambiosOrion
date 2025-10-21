@@ -261,8 +261,24 @@ document.addEventListener('DOMContentLoaded', () => {
         return span;
     }
 
+    emitidasCheckbox.addEventListener('change', () => {
+        if (emitidasCheckbox.checked) {
+            noEmitidasCheckbox.checked = false; // Deselecciona el otro
+        }
+        paginaActual = 1; // Resetea la página
+        obtenerOperaciones(); // Vuelve a cargar los datos
+    });
+
+    noEmitidasCheckbox.addEventListener('change', () => {
+        if (noEmitidasCheckbox.checked) {
+            emitidasCheckbox.checked = false; // Deselecciona el otro
+        }
+        paginaActual = 1; // Resetea la página
+        obtenerOperaciones(); // Vuelve a cargar los datos
+    });
+
     const todosLosFiltros = [
-        fechaInicioInput, fechaFinInput, emitidasCheckbox, noEmitidasCheckbox,
+        fechaInicioInput, fechaFinInput,
         numeroInput, clienteInput, tipoDocSelect, nDocInput, nNotaInput,
         tipoTransaccionSelect, divisaInput, estadoSelect,
         mostrarRegistros, buscarInput
