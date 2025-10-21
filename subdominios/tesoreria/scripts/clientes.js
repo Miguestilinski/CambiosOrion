@@ -42,6 +42,26 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(err => console.error('Error al obtener los datos:', err));
     }
 
+    function formatearFecha(timestamp) {
+        // Si la fecha es nula o inválida, devuelve un string vacío
+        if (!timestamp) return ''; 
+        
+        const fecha = new Date(timestamp);
+
+        // Comprobar si la fecha es válida
+        if (isNaN(fecha.getTime())) {
+            return timestamp; // Devuelve el original si no se pudo convertir
+        }
+        
+        const hh = String(fecha.getHours()).padStart(2, '0');
+        const min = String(fecha.getMinutes()).padStart(2, '0');
+        const dd = String(fecha.getDate()).padStart(2, '0');
+        const mm = String(fecha.getMonth() + 1).padStart(2, '0'); // getMonth() es 0-indexado, por eso +1
+        const yyyy = fecha.getFullYear();
+        
+        return `${hh}:${min} ${dd}/${mm}/${yyyy}`;
+    }
+
     function renderizarTabla(clientes) {
         tablaClientes.innerHTML = '';
         clientes.forEach(cliente => {
@@ -62,8 +82,10 @@ document.addEventListener('DOMContentLoaded', () => {
             btnDeshabilitar.textContent = 'Deshabilitar';
             btnDeshabilitar.className = 'text-white bg-red-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1';
 
+            const fechaFormateada = formatearFecha(cliente.fecha_ingreso);
+
             tr.innerHTML = `
-                <td class="px-4 py-2">${cliente.fecha_ingreso}</td>
+                <td class="px-4 py-2">${fechaFormateada}</td>
                 <td class="px-4 py-2">${cliente.tipo}</td>
                 <td class="px-4 py-2">${cliente.razon_social}</td>
                 <td class="px-4 py-2">${cliente.rut}</td>
