@@ -13,6 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const borrarFiltrosBtn = document.getElementById('borrar-filtros');
     const tablaClientes = document.querySelector('#clientes table tbody');
     const nuevoClienteBtn = document.getElementById('nuevo-cliente');
+    const conteoResultados = document.getElementById('conteo-resultados');
+    const paginacionContainer = document.getElementById('paginacion-container');
+    let paginaActual = 1;
 
     // Redirigir al hacer clic en "Nuevo Cliente"
     if (nuevoClienteBtn) {
@@ -35,6 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
         params.set('estado_documentacion', estadoDocumentacion.value);
         params.set('mostrar_registros', mostrarRegistros.value);
         params.set('buscar', buscarInput.value);
+        params.set('pagina', paginaActual);
 
         fetch(`https://cambiosorion.cl/data/clientes.php?${params.toString()}`)
             .then(res => {
@@ -56,7 +60,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     
                     const data = JSON.parse(text); // Parseamos el texto
-                    renderizarTabla(data); // Si tiene éxito, renderiza
+                    renderizarTabla(data.clientes);
+
+                    const porPagina = parseInt(mostrarRegistros.value, 10);
+                    renderizarConteo(data.clientes.length, data.totalFiltrado, porPagina, paginaActual);
+                    renderizarPaginacion(data.totalFiltrado, porPagina, paginaActual);
                 
                 } catch (jsonError) {
                     // Si falla el parseo, el error de sintaxis de JSON se mostrará aquí
@@ -176,11 +184,94 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function renderizarConteo(mostrados, total, porPagina, pagina) {
+        if (!conteoResultados) return;
+        
+        if (total === 0) {
+            conteoResultados.textContent = 'No se encontraron resultados.';
+            return;
+        }
+        
+        const inicio = ((pagina - 1) * porPagina) + 1;
+        const fin = inicio + mostrados - 1;
+        conteoResultados.textContent = `Mostrando ${inicio}-${fin} de ${total} resultados`;
+    }
+
+    function renderizarPaginacion(total, porPagina, pagina) {
+        if (!paginacionContainer) return;
+        paginacionContainer.innerHTML = '';
+        const totalPaginas = Math.ceil(total / porPagina);
+
+        if (totalPaginas <= 1) return; // No mostrar si solo hay 1 página
+
+        // Botón "Anterior"
+        if (pagina > 1) {
+            paginacionContainer.appendChild(crearBotonPaginacion('Anterior', pagina - 1));
+        }
+
+        // Lógica de botones de página con '...'
+        const maxBotones = 5;
+        let inicio = Math.max(1, pagina - Math.floor(maxBotones / 2));
+        let fin = Math.min(totalPaginas, inicio + maxBotones - 1);
+        
+        // Ajustar 'inicio' si 'fin' llega al final
+        inicio = Math.max(1, fin - maxBotones + 1);
+
+        if (inicio > 1) {
+            paginacionContainer.appendChild(crearBotonPaginacion(1, 1));
+            if (inicio > 2) {
+                paginacionContainer.appendChild(crearSpanPaginacion('...'));
+            }
+        }
+
+        for (let i = inicio; i <= fin; i++) {
+            paginacionContainer.appendChild(crearBotonPaginacion(i, i, i === pagina));
+        }
+
+        if (fin < totalPaginas) {
+            if (fin < totalPaginas - 1) {
+                paginacionContainer.appendChild(crearSpanPaginacion('...'));
+            }
+            paginacionContainer.appendChild(crearBotonPaginacion(totalPaginas, totalPaginas));
+        }
+
+        // Botón "Siguiente"
+        if (pagina < totalPaginas) {
+            paginacionContainer.appendChild(crearBotonPaginacion('Siguiente', pagina + 1));
+        }
+    }
+
+    function crearBotonPaginacion(texto, pagina, esActual = false) {
+        const boton = document.createElement('button');
+        boton.textContent = texto;
+        boton.className = `px-3 py-1 mx-1 rounded-lg focus:outline-none ${
+            esActual 
+            ? 'bg-blue-700 text-white' // Página actual
+            : 'bg-white text-gray-700 hover:bg-gray-200' // Otras páginas
+        }`;
+        boton.addEventListener('click', (e) => {
+            e.preventDefault();
+            paginaActual = pagina; // Actualiza la página global
+            obtenerClientes();      // Vuelve a cargar los datos
+        });
+        return boton;
+    }
+
+    function crearSpanPaginacion(texto) {
+        const span = document.createElement('span');
+        span.textContent = texto;
+        span.className = 'px-3 py-1 mx-1 text-white select-none';
+        return span;
+    }
+
     // Listeners para filtros
     [
         fechaInicio, fechaFin, tipoCliente, nombreRSocial,
         rut, direccion, fono, habilitados, estadoDocumentacion, mostrarRegistros, buscarInput
-    ].forEach(el => el.addEventListener('input', obtenerClientes));
+    ].forEach(el => el.addEventListener('input', () => {
+        paginaActual = 1;
+        obtenerClientes();
+    }));
 
     borrarFiltrosBtn.addEventListener('click', () => {
         fechaInicio.value = '';
@@ -193,6 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
         habilitados.value = '';
         estadoDocumentacion.value = '';
         buscarInput.value = '';
+        paginaActual = 1;
         obtenerClientes();
     });
 
