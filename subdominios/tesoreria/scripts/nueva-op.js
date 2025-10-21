@@ -230,18 +230,27 @@ function agregarDivisa() {
               try {
                   const res = await fetch(`https://cambiosorion.cl/data/nueva-op.php?precio_divisa=${encodeURIComponent(divisa.nombre)}&tipo=${tipoOperacion}`);
                   const data = await res.json();
+                  const tasaInput = nuevaDivisa.querySelector(".divisa-tasa");
+
                   if (data && data.precio) {
                       const precio = parseFloat(data.precio);
                       const precioFormateado = Number.isInteger(precio)
                           ? new Intl.NumberFormat('es-CL').format(precio)
-                          : new Intl.NumberFormat('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(precio);
+                          : new Intl.NumberFormat('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 3 }).format(precio);
                       nuevaDivisa.querySelector(".divisa-tasa").placeholder = `≈ ${precioFormateado}`;
+                      tasaInput.value = precioFormateado;
+                      calcularSubtotal();
                   } else {
+                      tasaInput.value = "";
                       nuevaDivisa.querySelector(".divisa-tasa").placeholder = "Tasa de cambio";
+                      calcularSubtotal();
                   }
               } catch (err) {
                   console.error("Error al obtener tasa:", err);
+                  const tasaInput = nuevaDivisa.querySelector(".divisa-tasa");
+                  tasaInput.value = "";
                   nuevaDivisa.querySelector(".divisa-tasa").placeholder = "Tasa de cambio";
+                  calcularSubtotal();
               }
             });
             sugerenciasUl.appendChild(li);
@@ -286,15 +295,21 @@ document.getElementById("tipo-transaccion").addEventListener("change", async () 
                 const precio = parseFloat(data.precio);
                 const precioFormateado = Number.isInteger(precio)
                     ? new Intl.NumberFormat('es-CL').format(precio)
-                    : new Intl.NumberFormat('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(precio);
+                    : new Intl.NumberFormat('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 3 }).format(precio);
 
                 tasaInput.placeholder = `≈ ${precioFormateado}`;
+                tasaInput.value = precioFormateado;
+                tasaInput.dispatchEvent(new Event('input'));
             } else {
+                tasaInput.value = "";
                 tasaInput.placeholder = "Tasa de cambio";
+                tasaInput.dispatchEvent(new Event('input'));
             }
         } catch (err) {
             console.error("Error al actualizar precio:", err);
+            tasaInput.value = "";
             tasaInput.placeholder = "Tasa de cambio";
+            tasaInput.dispatchEvent(new Event('input'));
         }
     });
 });
