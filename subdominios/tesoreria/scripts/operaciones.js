@@ -8,10 +8,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const fechaFinInput = document.getElementById('fecha-fin');
     const emitidasCheckbox = document.getElementById('emitidas');
     const noEmitidasCheckbox = document.getElementById('no-emitidas');
-    const buscarInput = document.getElementById('buscar');
-    const mostrarRegistros = document.getElementById('mostrar-registros');
     const borrarFiltrosBtn = document.getElementById('borrar-filtros');
+    const mostrarRegistros = document.getElementById('mostrar-registros');
+    const buscarInput = document.getElementById('buscar');
     const tablaOperaciones = document.getElementById('tabla-operaciones');
+    const conteoResultados = document.getElementById('conteo-resultados');
+    const paginacionContainer = document.getElementById('paginacion-container');
+
+    let paginaActual = 1;
 
    // Redirigir al hacer clic en "Nueva Operacion"
     if (nuevaOperacionBtn) {
@@ -24,26 +28,70 @@ document.addEventListener('DOMContentLoaded', () => {
     function obtenerOperaciones() {
         const params = new URLSearchParams();
 
-        params.set('numero', numeroInput.value);
-        params.set('cliente', clienteInput.value);
-        params.set('tipo_doc', tipoDocSelect.value);
-        params.set('n_doc', nDocInput.value);
         params.set('fecha_inicio', fechaInicioInput.value);
         params.set('fecha_fin', fechaFinInput.value);
         if (emitidasCheckbox.checked) params.set('emitidas', '1');
         if (noEmitidasCheckbox.checked) params.set('no_emitidas', '1');
+        
+        params.set('numero', numeroInput.value);
+        params.set('cliente', clienteInput.value);
+        params.set('tipo_doc', tipoDocSelect.value);
+        params.set('n_doc', nDocInput.value);
+        params.set('n_nota', nNotaInput.value);
+        params.set('tipo_transaccion', tipoTransaccionSelect.value);
+        params.set('divisa', divisaInput.value);
+        params.set('estado', estadoSelect.value);
+
         params.set('buscar', buscarInput.value);
         params.set('mostrar_registros', mostrarRegistros.value);
+        params.set('pagina', paginaActual); // Enviar página actual
 
         console.log('Parámetros enviados:', params.toString());
 
         fetch(`https://cambiosorion.cl/data/operaciones.php?${params.toString()}`)
-            .then(response => response.json())
-            .then(data => {
-                console.log('Datos recibidos:', data);
-                mostrarResultados(data);
-            })            
-            .catch(error => console.error('Error al obtener operaciones:', error));
+            .then(res => res.text()) // Pedir como texto primero
+            .then(text => {
+                console.log("Respuesta cruda del servidor:", text);
+                try {
+                    const data = JSON.parse(text); // 'data' ahora es {operaciones: [], totalFiltrado: N}
+
+                    // Renderizar la tabla con los datos de esta página
+                    renderizarTabla(data.operaciones);
+                    
+                    // Renderizar el conteo
+                    const porPagina = parseInt(mostrarRegistros.value, 10);
+                    renderizarConteo(data.operaciones.length, data.totalFiltrado, porPagina, paginaActual);
+                    
+                    // Renderizar los botones de paginación
+                    renderizarPaginacion(data.totalFiltrado, porPagina, paginaActual);
+
+                } catch (jsonError) {
+                    console.error("Error al parsear JSON:", jsonError, text);
+                    tablaOperaciones.innerHTML = `<tr><td colspan="13" class="text-center text-red-500 py-4 bg-white">Error al cargar datos. Revise la consola.</td></tr>`;
+                    conteoResultados.textContent = 'Error al cargar.';
+                    paginacionContainer.innerHTML = '';
+                }
+            })
+            .catch(error => {
+                console.error('Error de red al obtener operaciones:', error)
+                tablaOperaciones.innerHTML = `<tr><td colspan="13" class="text-center text-red-500 py-4 bg-white">Error de red. No se pudo conectar.</td></tr>`;
+                conteoResultados.textContent = 'Error de red.';
+                paginacionContainer.innerHTML = '';
+            });
+    }
+
+    function formatearFecha(timestamp) {
+        if (!timestamp) return ''; 
+        const fecha = new Date(timestamp);
+        if (isNaN(fecha.getTime())) return timestamp;
+        
+        const hh = String(fecha.getHours()).padStart(2, '0');
+        const min = String(fecha.getMinutes()).padStart(2, '0');
+        const dd = String(fecha.getDate()).padStart(2, '0');
+        const mm = String(fecha.getMonth() + 1).padStart(2, '0');
+        const yyyy = fecha.getFullYear();
+        
+        return `${hh}:${min} ${dd}/${mm}/${yyyy}`;
     }
 
     function formatearNumero(numero) {
@@ -68,10 +116,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Función para mostrar los resultados en la tabla
-    function mostrarResultados(operaciones) {
+    function renderizarTabla(operaciones) {
         tablaOperaciones.innerHTML = '';
 
-        if (operaciones.length === 0) {
+        if (!operaciones || operaciones.length === 0) {
             const tr = document.createElement('tr');
             tr.innerHTML = `<td colspan="13" class="text-center text-gray-700 py-4 bg-white">No se encontraron operaciones</td>`;
             tablaOperaciones.appendChild(tr);
@@ -110,28 +158,25 @@ document.addEventListener('DOMContentLoaded', () => {
             btnDesactivar.className = 'text-white bg-red-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1';
             
             // Procesar divisas y tasas como listas tabuladas
-            const divisas = operacion.divisas.split(' ');
-            const tasas = operacion.tasas_cambio.split('| ');
-            const montos = operacion.montos_por_divisa.split('| ');
+            const divisas = operacion.divisas ? operacion.divisas.split(', ') : [];
+            const tasas = operacion.tasas_cambio ? operacion.tasas_cambio.split('|') : [];
+            const montos = operacion.montos_por_divisa ? operacion.montos_por_divisa.split('|') : [];
 
-            let divisaTasaHTML = '';
-            for (let i = 0; i < divisas.length; i++) {
-                divisaTasaHTML += `<div>${formatearNumero(parseFloat(tasas[i]))}</div>`;
-            }
+            let divisaHTML = divisas.map(d => `<div>${limpiarTexto(d)}</div>`).join('');
+            let montoHTML = montos.map(m => `<div>${formatearNumero(m)}</div>`).join('');
+            let tasaHTML = tasas.map(t => `<div>${formatearNumero(t)}</div>`).join('');
 
             tr.innerHTML = `
-                <td class="px-4 py-2">${limpiarTexto(operacion.fecha)}</td>
+                <td class="px-4 py-2">${formatearFecha(operacion.fecha)}</td>
                 <td class="px-4 py-2">${limpiarTexto(operacion.id)}</td>
                 <td class="px-4 py-2">${limpiarTexto(operacion.nombre_cliente)}</td>
                 <td class="px-4 py-2">${limpiarTexto(operacion.tipo_documento)}</td>
-                <td class="px-4 py-2">${limpiarTexto(operacion.numer_documento)}</td>
+                <td class="px-4 py-2">${limpiarTexto(operacion.numero_documento)}</td>
                 <td class="px-4 py-2">${limpiarTexto(operacion.numero_nota)}</td>
                 <td class="px-4 py-2">${limpiarTexto(operacion.tipo_transaccion)}</td>
-                <td class="px-4 py-2">${divisas.map((d, i) => `<div>${d}${i < divisas.length - 1 ? '' : ''}</div>`).join('')}</td>
-                <td class="px-4 py-2">
-                    ${montos.map(monto => `<div>${formatearNumero(monto)}</div>`).join('')}
-                </td>
-                <td class="px-4 py-2">${divisaTasaHTML}</td>
+                <td class="px-4 py-2">${divisaHTML}</td>
+                <td class="px-4 py-2">${montoHTML}</td>
+                <td class="px-4 py-2">${tasaHTML}</td>
                 <td class="px-4 py-2">${formatearNumero(operacion.total)}</td>
                 <td class="px-4 py-2">${limpiarTexto(operacion.estado)}</td>
                 <td class="px-4 py-2 mostrar-btn-cell"></td>
@@ -143,27 +188,113 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Borrar filtros
+    function renderizarConteo(mostrados, total, porPagina, pagina) {
+        if (!conteoResultados) return;
+        if (total === 0) {
+            conteoResultados.textContent = 'No se encontraron resultados.';
+            return;
+        }
+        const inicio = ((pagina - 1) * porPagina) + 1;
+        const fin = inicio + mostrados - 1;
+        conteoResultados.textContent = `Mostrando ${inicio}-${fin} de ${total} resultados`;
+    }
+
+    function renderizarPaginacion(total, porPagina, pagina) {
+        if (!paginacionContainer) return;
+        paginacionContainer.innerHTML = '';
+        const totalPaginas = Math.ceil(total / porPagina);
+
+        if (totalPaginas <= 1) return;
+
+        if (pagina > 1) {
+            paginacionContainer.appendChild(crearBotonPaginacion('Anterior', pagina - 1));
+        }
+
+        const maxBotones = 5;
+        let inicio = Math.max(1, pagina - Math.floor(maxBotones / 2));
+        let fin = Math.min(totalPaginas, inicio + maxBotones - 1);
+        inicio = Math.max(1, fin - maxBotones + 1);
+
+        if (inicio > 1) {
+            paginacionContainer.appendChild(crearBotonPaginacion(1, 1));
+            if (inicio > 2) paginacionContainer.appendChild(crearSpanPaginacion('...'));
+        }
+
+        for (let i = inicio; i <= fin; i++) {
+            paginacionContainer.appendChild(crearBotonPaginacion(i, i, i === pagina));
+        }
+
+        if (fin < totalPaginas) {
+            if (fin < totalPaginas - 1) paginacionContainer.appendChild(crearSpanPaginacion('...'));
+            paginacionContainer.appendChild(crearBotonPaginacion(totalPaginas, totalPaginas));
+        }
+
+        if (pagina < totalPaginas) {
+            paginacionContainer.appendChild(crearBotonPaginacion('Siguiente', pagina + 1));
+        }
+    }
+
+    function crearBotonPaginacion(texto, pagina, esActual = false) {
+        const boton = document.createElement('button');
+        boton.textContent = texto;
+        boton.className = `px-3 py-1 mx-1 rounded-lg focus:outline-none ${
+            esActual 
+            ? 'bg-blue-700 text-white' 
+            : 'bg-white text-gray-700 hover:bg-gray-200'
+        }`;
+        boton.addEventListener('click', (e) => {
+            e.preventDefault();
+            paginaActual = pagina;
+            obtenerOperaciones();
+        });
+        return boton;
+    }
+
+    function crearSpanPaginacion(texto) {
+        const span = document.createElement('span');
+        span.textContent = texto;
+        span.className = 'px-3 py-1 mx-1 text-white select-none';
+        return span;
+    }
+
+    const todosLosFiltros = [
+        fechaInicioInput, fechaFinInput, emitidasCheckbox, noEmitidasCheckbox,
+        numeroInput, clienteInput, tipoDocSelect, nDocInput, nNotaInput,
+        tipoTransaccionSelect, divisaInput, estadoSelect,
+        mostrarRegistros, buscarInput
+    ];
+
+    todosLosFiltros.forEach(element => {
+        // 'input' para texto/número, 'change' para select/checkbox/date
+        const evento = (element.type === 'checkbox' || element.tagName === 'SELECT' || element.type === 'date') ? 'change' : 'input';
+        
+        element.addEventListener(evento, () => {
+            paginaActual = 1; // Resetear a página 1 en cualquier filtro
+            obtenerOperaciones();
+        });
+    });
+
     borrarFiltrosBtn.addEventListener('click', () => {
-        numeroInput.value = '';
-        clienteInput.value = '';
-        tipoDocSelect.value = '';
-        nDocInput.value = '';
         fechaInicioInput.value = '';
         fechaFinInput.value = '';
         emitidasCheckbox.checked = false;
         noEmitidasCheckbox.checked = false;
-        buscarInput.value = '';
+        numeroInput.value = '';
+        clienteInput.value = '';
+        tipoDocSelect.value = '';
+        nDocInput.value = '';
+        nNotaInput.value = '';
+        tipoTransaccionSelect.value = '';
+        divisaInput.value = '';
+        estadoSelect.value = '';
+        
         mostrarRegistros.value = '25';
+        buscarInput.value = '';
+        
+        paginaActual = 1;
         obtenerOperaciones();
     });
 
-    // Cargar cuentas inicialmente
-    [numeroInput, clienteInput, tipoDocSelect, nDocInput, fechaInicioInput, fechaFinInput, emitidasCheckbox, noEmitidasCheckbox, buscarInput, mostrarRegistros]
-        .forEach(element => {
-            element.addEventListener('input', obtenerOperaciones);
-            element.addEventListener('change', obtenerOperaciones);
-        });
-
+    // Carga inicial
     obtenerOperaciones();
 });
