@@ -126,9 +126,17 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     
             // Crear botón Deshabilitar (opcionalmente puedes también hacer funcionalidad aquí)
-            const btnDeshabilitar = document.createElement('button');
-            btnDeshabilitar.textContent = 'Deshabilitar';
-            btnDeshabilitar.className = 'text-white bg-red-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1';
+            const btnToggleActivo = document.createElement('button');
+            const esActivo = cliente.activo == 1; // 'activo' es el nuevo campo de la BD
+
+            btnToggleActivo.textContent = esActivo ? 'Deshabilitar' : 'Habilitar';
+            btnToggleActivo.className = `font-medium rounded-lg text-sm px-3 py-1 text-white ${esActivo ? 'bg-red-700 hover:bg-red-800' : 'bg-green-700 hover:bg-green-800'}`;
+            
+            // 2. Añadir evento click para el toggle
+            btnToggleActivo.addEventListener('click', () => {
+                // Llama a la nueva función (que crearemos abajo)
+                toggleEstadoCliente(cliente.id, !esActivo); 
+            });
 
             const fechaFormateada = formatearFecha(cliente.fecha_ingreso);
 
@@ -139,14 +147,44 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="px-4 py-2">${formatearRut(cliente.rut)}</td>
                 <td class="px-4 py-2">${cliente.direccion}</td>
                 <td class="px-4 py-2">${cliente.fono}</td>
+                <td class="px-4 py-2">${cliente.estado_documentacion || 'No Documentado'}</td>
                 <td class="px-4 py-2 mostrar-btn-cell"></td>
                 <td class="px-4 py-2 deshabilitar-btn-cell"></td>
             `;
 
             tr.querySelector('.mostrar-btn-cell').appendChild(btnMostrar);
-            tr.querySelector('.deshabilitar-btn-cell').appendChild(btnDeshabilitar);
+            tr.querySelector('.deshabilitar-btn-cell').appendChild(btnToggleActivo);
 
             tablaClientes.appendChild(tr);
+        });
+    }
+
+    function toggleEstadoCliente(clienteId, nuevoEstadoBooleano) {
+        // nuevoEstadoBooleano es (true = Habilitar, false = Deshabilitar)
+        const nuevoValorFetch = nuevoEstadoBooleano ? 1 : 0;
+
+        fetch(`https://cambiosorion.cl/data/clientes.php`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                id: clienteId,
+                activo: nuevoValorFetch
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                obtenerClientes(); // Recarga la tabla para reflejar el cambio
+            } else {
+                console.error('Error al actualizar el cliente:', data.error);
+                alert('Error al actualizar el cliente.');
+            }
+        })
+        .catch(err => {
+            console.error('Error de red al actualizar:', err);
+            alert('Error de red al actualizar el cliente.');
         });
     }
 
