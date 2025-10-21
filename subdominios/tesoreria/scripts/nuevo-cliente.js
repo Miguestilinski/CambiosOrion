@@ -185,7 +185,7 @@ function validarRut(rutCompleto) {
     }
 
     // Calcular dígito verificador esperado
-    const dvEsperado = 11 - (suma % 11);
+    let dvEsperado = 11 - (suma % 11);
 
     // Manejar casos especiales del dígito
     if (dvEsperado === 11) {
