@@ -35,11 +35,36 @@ document.addEventListener('DOMContentLoaded', () => {
         params.set('buscar', buscarInput.value);
 
         fetch(`https://cambiosorion.cl/data/clientes.php?${params.toString()}`)
-            .then(res => res.json())
-            .then(data => {
-                renderizarTabla(data);
+            .then(res => {
+                // Verifica si la respuesta es OK, si no, también loguea el status
+                if (!res.ok) {
+                    console.error("Error en la respuesta del servidor:", res.status, res.statusText);
+                }
+                return res.text(); // Pide la respuesta como texto en lugar de JSON
             })
-            .catch(err => console.error('Error al obtener los datos:', err));
+            .then(text => {
+                // 1. ¡Aquí mostramos la respuesta cruda en la consola!
+                console.log("Respuesta cruda del servidor:", text);
+
+                // 2. Intentamos parsear el texto manualmente
+                try {
+                    // Si el texto está vacío, trátalo como un array vacío
+                    if (text.trim() === "") {
+                        console.warn("La respuesta del servidor está vacía.");
+                        renderizarTabla([]); // Renderiza una tabla vacía
+                        return;
+                    }
+                    
+                    const data = JSON.parse(text); // Parseamos el texto
+                    renderizarTabla(data); // Si tiene éxito, renderiza
+                
+                } catch (jsonError) {
+                    // Si falla el parseo, el error de sintaxis de JSON se mostrará aquí
+                    console.error("Error al parsear JSON:", jsonError);
+                    tablaClientes.innerHTML = '<tr><td colspan="8" class="px-4 py-2 text-center text-red-500">Error al procesar la respuesta del servidor. Revise la consola.</td></tr>';
+                }
+            })
+            .catch(err => console.error('Error de red al obtener los datos:', err)); // Esto captura errores de red
     }
 
     function formatearFecha(timestamp) {
