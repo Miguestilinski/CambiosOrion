@@ -87,6 +87,29 @@ document.addEventListener('DOMContentLoaded', () => {
         return `${hh}:${min} ${dd}/${mm}/${yyyy}`;
     }
 
+    function formatearRut(rut) {
+        // Si el RUT es nulo, vacío o "null", devuelve un string vacío
+        if (!rut || rut === 'null') return '';
+
+        // 1. Dividir por el guion que AHORA VIENE de la BD
+        const parts = rut.split('-');
+        
+        // 2. Si no tiene el formato "cuerpo-dv", devolverlo tal cual.
+        if (parts.length !== 2) return rut;
+
+        const cuerpo = parts[0];
+        const dv = parts[1];
+
+        // 3. Si el cuerpo no es un número, devolver tal cual
+        if (isNaN(cuerpo)) return rut;
+
+        // 4. Formatear el cuerpo con los puntos
+        const cuerpoFormateado = new Intl.NumberFormat('es-CL').format(cuerpo);
+
+        // 5. Devolver el RUT formateado
+        return `${cuerpoFormateado}-${dv}`;
+    }
+
     function renderizarTabla(clientes) {
         tablaClientes.innerHTML = '';
         clientes.forEach(cliente => {
@@ -113,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="px-4 py-2">${fechaFormateada}</td>
                 <td class="px-4 py-2">${cliente.tipo}</td>
                 <td class="px-4 py-2">${cliente.razon_social}</td>
-                <td class="px-4 py-2">${cliente.rut || ''}</td>
+                <td class="px-4 py-2">${formatearRut(cliente.rut)}</td>
                 <td class="px-4 py-2">${cliente.direccion}</td>
                 <td class="px-4 py-2">${cliente.fono}</td>
                 <td class="px-4 py-2 mostrar-btn-cell"></td>
