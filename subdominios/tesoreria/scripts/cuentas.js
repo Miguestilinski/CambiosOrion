@@ -52,6 +52,15 @@ document.addEventListener('DOMContentLoaded', () => {
         cuentas.forEach(cuenta => {
             const tr = document.createElement('tr');
             tr.classList.add('border-b', 'bg-white', 'border-gray-700', 'text-gray-700');
+
+            const btnMostrar = document.createElement('button');
+            btnMostrar.textContent = 'Mostrar';
+            btnMostrar.className = 'text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1';
+            
+            btnMostrar.addEventListener('click', () => {
+                window.location.href = `detalle-cta?id=${cuenta.id}`;
+            });
+
             tr.innerHTML = `
                 <td class="px-4 py-2 text-center">${cuenta.id}</td>
                 <td class="px-4 py-2">${limpiarTexto(cuenta.nombre)}</td>
@@ -61,17 +70,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="px-4 py-2 text-center">${limpiarTexto(cuenta.por_cobrar_texto)}</td>
                 <td class="px-4 py-2 text-center">${limpiarTexto(cuenta.por_pagar_texto)}</td>
                 <td class="px-4 py-2">${limpiarTexto(cuenta.activa_texto)}</td>
-                <td class="px-4 py-2">
-                    <button class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1">
-                        Mostrar
-                    </button>
-                </td>
+                <td class="px-4 py-2 mostrar-btn-cell"></td>
                 <td class="px-4 py-2">
                     <button class="text-white bg-red-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1">
                         Desactivar
                     </button>
                 </td>
             `;
+
+            tr.querySelector('.mostrar-btn-cell').appendChild(btnMostrar);
+            
             tablaCuentas.appendChild(tr);
         });
     }
