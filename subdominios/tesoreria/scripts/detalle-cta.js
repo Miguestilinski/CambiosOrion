@@ -46,9 +46,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const renderizarVista = (cuenta) => {
         const infoHTML = `
           <div><span class="font-semibold text-gray-300">Nombre:</span> ${cuenta.nombre || ''}</div>
-          <div><span class="font-semibold text-gray-300">Tipo:</span> ${cuenta.tipo || ''}</div>
-          <div><span class="font-semibold text-gray-300">Moneda:</span> ${cuenta.moneda || ''}</div>
-          <div><span class="font-semibold text-gray-300">Saldo Inicial:</span> ${formatNumber(cuenta.saldo_inicial)}</div>
+          <div><span class="font-semibold text-gray-300">Tipo:</span> ${cuenta.tipo_cuenta || ''}</div>
+          <div><span class="font-semibold text-gray-300">Divisa:</span> ${cuenta.divisa_id || ''}</div>
+          <div><span class="font-semibold text-gray-300">Me Deben (+):</span> ${formatNumber(cuenta.me_deben)}</div>
+          <div><span class="font-semibold text-gray-300">Debo (-):</span> ${formatNumber(cuenta.debo)}</div>
+          <div><span class="font-semibold text-gray-300">Por Cobrar:</span> ${cuenta.por_cobrar == 1 ? 'Sí' : 'No'}</div>
+          <div><span class="font-semibold text-gray-300">Por Pagar:</span> ${cuenta.por_pagar == 1 ? 'Sí' : 'No'}</div>
+          <div><span class="font-semibold text-gray-300">Activa:</span> ${cuenta.activa == 1 ? 'Sí' : 'No'}</div>
         `;
         infoContenedor.innerHTML = infoHTML;
         accionesEdicion.classList.add("hidden");
@@ -63,14 +67,14 @@ document.addEventListener("DOMContentLoaded", () => {
               <input type="text" id="input-nombre" value="${cuenta.nombre || ''}" class="w-full p-2 rounded bg-white text-black" />
             </div>
             <div class="mb-3">
-              <label for="input-tipo" class="text-gray-300">Tipo:</label>
-              <input type="text" id="input-tipo" value="${cuenta.tipo || ''}" class="w-full p-2 rounded bg-white text-black" />
+              <label for="input-tipo-cuenta" class="text-gray-300">Tipo (general, cliente, funcionario, administrativa):</label>
+              <input type="text" id="input-tipo-cuenta" value="${cuenta.tipo_cuenta || ''}" class="w-full p-2 rounded bg-white text-black" />
             </div>
             <div class="mb-3">
-              <label for="input-moneda" class="text-gray-300">Moneda:</label>
-              <input type="text" id="input-moneda" value="${cuenta.moneda || ''}" class="w-full p-2 rounded bg-white text-black" />
+              <label for="input-divisa-id" class="text-gray-300">Divisa (Ej: CLP, USD, EUR):</label>
+              <input type="text" id="input-divisa-id" value="${cuenta.divisa_id || ''}" class="w-full p-2 rounded bg-white text-black" />
             </div>
-            <p class="text-xs text-gray-400">El Saldo Inicial no es editable desde esta vista.</p>
+            <p class="text-xs text-gray-400">Los saldos y estados no son editables desde esta vista.</p>
         `;        
         infoContenedor.innerHTML = formHTML;
         accionesEdicion.classList.remove("hidden");
@@ -82,9 +86,16 @@ document.addEventListener("DOMContentLoaded", () => {
       .then(async res => {
         const text = await res.text();
         console.log("Respuesta cruda cuenta:", text);
-        return JSON.parse(text);
-      })
-      .then(data => {
+
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch (e) {
+            console.error("Error al parsear JSON:", e, text);
+            infoContenedor.innerHTML = `<p>Error al procesar la respuesta del servidor. La respuesta no es JSON. Revise la consola.</p>`;
+            return; // Detener la ejecución
+        }
+
         if (data.error) {
           infoContenedor.innerHTML = `<p>${data.error}</p>`;
           return;
@@ -167,8 +178,8 @@ document.addEventListener("DOMContentLoaded", () => {
           const datosActualizados = {
               id: cuentaOriginal.id,
               nombre: document.getElementById("input-nombre").value,
-              tipo: document.getElementById("input-tipo").value,
-              moneda: document.getElementById("input-moneda").value,
+              tipo_cuenta: document.getElementById("input-tipo-cuenta").value, // Corregido
+              divisa_id: document.getElementById("input-divisa-id").value, // Corregido
           };
 
           fetch("https://cambiosorion.cl/data/detalle-cta.php", {
