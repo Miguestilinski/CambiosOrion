@@ -156,7 +156,7 @@
                         </div>
 
                         <!-- RUT -->
-                        <div class="mb-4">
+                        <div id="rut-container" class="mb-4">
                             <label for="rut" class="block mb-1 text-sm text-white">RUT <span class="text-red-500">*</span></label>
                             <input
                             type="text"
@@ -167,6 +167,19 @@
                             class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
                             />
                             <p id="rut-error" class="text-red-500 text-xs mt-1 hidden">Por favor, ingrese un RUT válido.</p>
+                        </div>
+
+                        <!-- DNI -->
+                        <div id="dni-container" class="mb-4 hidden">
+                            <label for="dni" class="block mb-1 text-sm text-white">DNI / Pasaporte <span class="text-red-500">*</span></label>
+                            <input
+                            type="text"
+                            id="dni"
+                            name="dni"
+                            placeholder="Ingrese documento de identidad"
+                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                            />
+                            <p id="dni-error" class="text-red-500 text-xs mt-1 hidden">Este campo es obligatorio.</p>
                         </div>
 
                         <!-- Correo -->

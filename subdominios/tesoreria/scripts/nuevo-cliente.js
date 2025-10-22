@@ -4,8 +4,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const campoPais = document.getElementById("pais");
     const campoComuna = document.getElementById("comuna");
 
+    const rutContainer = document.getElementById("rut-container");
     const rutInput = document.getElementById("rut");
     const rutError = document.getElementById("rut-error");
+
+    const dniContainer = document.getElementById("dni-container");
+    const dniInput = document.getElementById("dni");
+    const dniError = document.getElementById("dni-error");
 
     rutInput.addEventListener("input", () => {
         rutError.classList.add("hidden");
@@ -23,19 +28,70 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    rutInput.addEventListener("keydown", (e) => {
+        // Permitir: números, punto, guión, K, y teclas de control
+        const esValido = (
+            (e.key >= '0' && e.key <= '9') ||
+            e.key === 'k' || e.key === 'K' ||
+            e.key === '.' || e.key === '-' ||
+            // Teclas de control
+            ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Home', 'End'].includes(e.key)
+        );
+
+        if (!esValido) {
+            e.preventDefault();
+        }
+    });
+
+    dniInput.addEventListener("input", () => {
+        dniError.classList.add("hidden");
+        dniInput.classList.remove("border-red-500", "focus:border-red-500");
+    });
+
     tipoSelect.addEventListener("change", () => {
         const tipo = tipoSelect.value;
 
-        if (tipo === "Persona Juridica" || tipo === "Persona Natural") {
-            fieldsetDireccion.classList.remove("hidden");
-            campoPais.classList.add("hidden");
-            campoComuna.classList.remove("hidden");
-        } else if (tipo === "Extranjero") {
+if (tipo === "Extranjero") {
+            // Ocultar RUT, mostrar DNI
+            rutContainer.classList.add("hidden");
+            rutInput.required = false; // Ya no es obligatorio
+            rutInput.value = ""; // Limpiar valor
+            rutError.classList.add("hidden"); // Ocultar error
+
+            dniContainer.classList.remove("hidden");
+            dniInput.required = true; // Ahora es obligatorio
+            
+            // Lógica de dirección (existente)
             fieldsetDireccion.classList.remove("hidden");
             campoPais.classList.remove("hidden");
             campoComuna.classList.add("hidden");
-        } else {
+
+        } else if (tipo === "Persona Juridica" || tipo === "Persona Natural" || tipo === "Miembro") {
+            // Mostrar RUT, ocultar DNI
+            rutContainer.classList.remove("hidden");
+            rutInput.required = true; // Es obligatorio
+
+            dniContainer.classList.add("hidden");
+            dniInput.required = false; // Ya no es obligatorio
+            dniInput.value = ""; // Limpiar valor
+            dniError.classList.add("hidden"); // Ocultar error
+
+            // Lógica de dirección (existente, ajustada)
+            if (tipo === "Miembro") {
+                fieldsetDireccion.classList.add("hidden");
+            } else {
+                fieldsetDireccion.classList.remove("hidden");
+                campoPais.classList.add("hidden");
+                campoComuna.classList.remove("hidden");
+            }
+
+        } else { // Caso "Seleccione tipo"
             fieldsetDireccion.classList.add("hidden");
+            // Dejar RUT visible por defecto
+            rutContainer.classList.remove("hidden");
+            rutInput.required = true;
+            dniContainer.classList.add("hidden");
+            dniInput.required = false;
         }
     });
 
@@ -46,41 +102,64 @@ document.addEventListener("DOMContentLoaded", () => {
         const tipo = tipoSelect.value.trim();
         const razonSocial = document.getElementById("razon_social").value.trim();
         const rut = document.getElementById("rut").value.trim();
+        const dni = dniInput.value.trim();
         const correo = document.getElementById("correo").value.trim();
         const telefono = document.getElementById("fono").value.trim();
         const direccion = document.getElementById("direccion_detalle").value.trim();
 
         rutError.classList.add("hidden");
         rutInput.classList.remove("border-red-500", "focus:border-red-500");
+        dniError.classList.add("hidden");
+        dniInput.classList.remove("border-red-500", "focus:border-red-500");
 
-        if (!tipo || !razonSocial || !rut || !correo) {
-            mostrarModalError({
-                titulo: "❌ Error",
-                mensaje: `Campos requeridos incompletos. Por favor complete todos los campos marcados con *.`,
-                textoConfirmar: "Cerrar"
-            });
+        let isValid = true;
+
+        // Validar campos comunes
+        if (!tipo || !razonSocial || !correo) {
+            isValid = false;
         }
 
-        if (!validarRut(rut)) {
-            rutError.classList.remove("hidden");
-            rutInput.classList.add("border-red-500", "focus:border-red-500");
-            
-            // Opcional: mostrar modal de error específico si prefieres
-            // mostrarModalError({
-            //     titulo: "❌ Error",
-            //     mensaje: `El RUT ingresado no es válido.`,
-            //     textoConfirmar: "Cerrar"
-            // });
-            return; // Detener aquí
+        // Validar campos condicionales (RUT vs DNI)
+        if (tipo === "Extranjero") {
+            if (!dni) {
+                isValid = false;
+                dniError.classList.remove("hidden");
+                dniInput.classList.add("border-red-500", "focus:border-red-500");
+            }
+        } else { // Persona Natural, Juridica, Miembro, etc.
+            if (!rut) {
+                isValid = false;
+                rutError.textContent = "Por favor, ingrese un RUT."; // Mensaje específico
+                rutError.classList.remove("hidden");
+                rutInput.classList.add("border-red-500", "focus:border-red-500");
+            } else if (!validarRut(rut)) {
+                isValid = false;
+                rutError.textContent = "Por favor, ingrese un RUT válido."; // Mensaje específico
+                rutError.classList.remove("hidden");
+                rutInput.classList.add("border-red-500", "focus:border-red-500");
+            }
+        }
+        
+        // Detener si algo es inválido
+        if (!isValid) {
+            // Mostrar modal genérico solo si los errores de campo específicos no se mostraron
+            if (rutError.classList.contains('hidden') && dniError.classList.contains('hidden')) {
+                mostrarModalError({
+                    titulo: "❌ Error",
+                    mensaje: `Campos requeridos incompletos. Por favor complete todos los campos marcados con *.`,
+                    textoConfirmar: "Cerrar"
+                });
+            }
+            return;
         }
 
         const datosCliente = {
             tipo: tipo,
             razon_social: razonSocial,
-            rut: rut,
             correo: correo,
             telefono: telefono,
             direccion: direccion,
+            ...(tipo === "Extranjero" ? { dni: dni } : { rut: rut })
         };
 
         fetch('https://cambiosorion.cl/data/nuevo-cliente.php', {
@@ -157,6 +236,12 @@ function mostrarModalExitoso() {
     modal.classList.add("hidden");
     document.getElementById("form-nuevo-cliente").reset();
     // Resetear también estado adicional si es necesario
+
+    document.getElementById("rut-container").classList.remove("hidden");
+    document.getElementById("dni-container").classList.add("hidden");
+    document.getElementById("rut").required = true;
+    document.getElementById("dni").required = false;
+    document.getElementById("fieldset-direccion").classList.add("hidden");
   };
 
   document.getElementById("volver").onclick = () => {
