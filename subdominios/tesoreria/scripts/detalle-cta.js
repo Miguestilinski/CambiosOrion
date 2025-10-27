@@ -144,8 +144,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Ocultar sugerencias si se hace clic fuera
         document.addEventListener("click", (e) => {
-            if (!infoContenedor.contains(e.target)) {
-                divisaSugerencias.classList.add("hidden");
+            const currentSugerencias = document.getElementById("divisa-sugerencias"); 
+            if (currentSugerencias && !infoContenedor.contains(e.target)) {
+                currentSugerencias.classList.add("hidden"); 
             }
         }, { once: true }); // El listener se ejecuta una vez y se remueve
     };
