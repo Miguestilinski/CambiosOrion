@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     
         const res = await fetch(
-        `https://cambiosorion.cl/data/cuenta.php?buscar_divisa=${encodeURIComponent(query)}`
+        `https://cambiosorion.cl/data/cuentas.php?buscar_divisa=${encodeURIComponent(query)}`
         );
     
         // Verificar si la respuesta es exitosa
