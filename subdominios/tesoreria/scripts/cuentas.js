@@ -31,7 +31,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (nombreInput.value.trim() !== '') {
             params.set('nombre', nombreInput.value);
         }
-        params.set('divisa', divisaInput.value);
+        if (divisaSeleccionada) {
+            params.set('divisa_id', divisaSeleccionada.id);
+        }
         params.set('por_cobrar', porCobrarSelect.value);
         params.set('por_pagar', porPagarSelect.value);
         params.set('activa', activaSelect.value);
@@ -89,8 +91,10 @@ document.addEventListener('DOMContentLoaded', () => {
     divisaInput.addEventListener("input", async (e) => {
         const query = e.target.value.trim();
         if (query.length < 1) {
-        divisaSugerencias.classList.add("hidden");
-        return;
+            divisaSugerencias.classList.add("hidden");
+            divisaSeleccionada = null;
+            obtenerCuentas();
+            return;
         }
     
         const res = await fetch(
@@ -160,6 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
         idInput.value = '';
         nombreInput.value = '';
         divisaInput.value = '';
+        divisaSeleccionada = null;
         porCobrarSelect.value = '';
         porPagarSelect.value = '';
         activaSelect.value = '';
