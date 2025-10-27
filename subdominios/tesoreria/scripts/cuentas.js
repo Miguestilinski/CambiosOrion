@@ -102,6 +102,8 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error al buscar divisa', res.statusText);
             return;
         }
+
+        const text = await res.text();
     
         try {
             // Si el texto está vacío, no intentar parsear
