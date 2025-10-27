@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 ID de Divisa 
                 <span class="font-normal text-gray-400">(Actual: ${iconoHTML} ${cuenta.divisa_nombre || 'N/A'})</span>
               </label>
-              <input type="text" id="input-divisa-id" value="${cuenta.divisa_id || ''}" placeholder="Ej: CLP, D99, EUR" class="w-full p-2 rounded bg-white text-black" />
+              <input type="text" id="input-divisa-id" value="${cuenta.divisa_id || ''}" placeholder="Ej: Dolar USA, Euro" class="w-full p-2 rounded bg-white text-black" />
             </div>
             <p class="text-xs text-gray-400">Los saldos y estados no son editables desde esta vista.</p>
         `;        
@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
         accionesEdicion.classList.remove("hidden");
         btnEditar.classList.add("hidden");
 
-        const divisaSearchInput = document.getElementById("input-divisa-search");
+        const divisaSearchInput = document.getElementById("input-divisa-id");
         const divisaHiddenInput = document.getElementById("input-divisa-id-hidden");
         const divisaSugerencias = document.getElementById("divisa-sugerencias");
 
