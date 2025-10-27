@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const tablaCuentas = document.querySelector('table tbody');
     const nuevaCuentaBtn = document.getElementById('nueva-cuenta');
     const divisaSugerencias = document.getElementById('divisa-sugerencias');
+    let divisaSeleccionada = null;
 
     // Redirigir al hacer clic en "Nueva Cuenta"
     if (nuevaCuentaBtn) {
@@ -93,38 +94,45 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     
         const res = await fetch(
-        `https://cambiosorion.cl/data/nueva-cuenta.php?buscar_divisa=${encodeURIComponent(query)}`
+        `https://cambiosorion.cl/data/cuenta.php?buscar_divisa=${encodeURIComponent(query)}`
         );
     
         // Verificar si la respuesta es exitosa
         if (!res.ok) {
-        console.error('Error al buscar divisa', res.statusText);
-        alert("Hubo un problema con la conexión al servidor. Intenta nuevamente.");
-        return;
+            console.error('Error al buscar divisa', res.statusText);
+            return;
         }
     
         try {
-        const divisas = await res.json();
-        divisaSugerencias.innerHTML = "";
-        divisas.forEach((divisa) => {
-            const li = document.createElement("li");
-            li.textContent = divisa.nombre;
-            li.classList.add("px-2", "py-1", "hover:bg-gray-200", "cursor-pointer");
-            li.addEventListener("click", () => {
-            divisaInput.value = divisa.nombre;
-            divisaSeleccionada = divisa;
-            console.log(`ID de divisas_interna seleccionado: ${divisa.id}`);
-            console.log(`Valor asignado a divisa_id: ${divisa.id}`);
-            divisaSugerencias.classList.add("hidden");
-            });      
-            divisaSugerencias.appendChild(li);
-        });
-        divisaSugerencias.classList.remove("hidden");
+            // Si el texto está vacío, no intentar parsear
+            if (text.trim() === "") {
+                console.warn("Respuesta de divisas vacía.");
+                divisaSugerencias.classList.add("hidden");
+                return;
+            }
+
+            const divisas = JSON.parse(text);
+            divisaSugerencias.innerHTML = "";
+            
+            divisas.forEach((divisa) => {
+                const li = document.createElement("li");
+                li.textContent = divisa.nombre;
+                li.classList.add("px-2", "py-1", "hover:bg-gray-200", "cursor-pointer");
+                li.addEventListener("click", () => {
+                    divisaInput.value = divisa.nombre;
+                    divisaSeleccionada = divisa;
+                    console.log(`ID de divisas_interna seleccionado: ${divisa.id}`);
+                    console.log(`Valor asignado a divisa_id: ${divisa.id}`);
+                    divisaSugerencias.classList.add("hidden");
+                    
+                    obtenerCuentas(); 
+                });      
+                divisaSugerencias.appendChild(li);
+            });
+            divisaSugerencias.classList.remove("hidden");
         } catch (error) {
-        console.error("Error al procesar la respuesta de las divisas", error);
-        const text = await res.text();
-        console.error("Respuesta del servidor:", text);
-        alert("Error al procesar la respuesta del servidor. Intenta nuevamente.");
+            console.error("Error al procesar la respuesta de las divisas (no es JSON):", error);
+            console.error("Respuesta del servidor:", text);
         }
     });
   
