@@ -74,37 +74,48 @@ document.addEventListener("DOMContentLoaded", () => {
             `<option value="${tipo}" ${cuenta.tipo_cuenta === tipo ? 'selected' : ''}>${tipo.charAt(0).toUpperCase() + tipo.slice(1)}</option>`
         ).join('');
 
-        // Icono actual
         const iconoHTML = cuenta.divisa_icono 
             ? `<img src="${cuenta.divisa_icono}" alt="${cuenta.divisa_nombre}" class="w-4 h-4 inline-block mr-2" style="margin-top: -2px;">` 
             : '';
+
         const formHTML = `
             <div class="mb-3">
               <label for="input-nombre" class="text-gray-300">Nombre:</label>
               <input type="text" id="input-nombre" value="${cuenta.nombre || ''}" class="w-full p-2 rounded bg-white text-black" />
             </div>
+            
             <div class="mb-3">
-              <label for="input-tipo-cuenta" class="text-gray-300">Tipo (general, cliente, funcionario, administrativa):</label>
-              <input type="text" id="input-tipo-cuenta" value="${cuenta.tipo_cuenta || ''}" class="w-full p-2 rounded bg-white text-black" />
+              <label for="input-tipo-cuenta" class="text-gray-300">Tipo:</label>
+              <select id="input-tipo-cuenta" class="w-full p-2 rounded bg-white text-black">
+                ${opcionesTipo}
+              </select>
             </div>
-            <div class="mb-3">
-              <label for="input-divisa-id" class="text-gray-300">
-                ID de Divisa 
-                <span class="font-normal text-gray-400">(Actual: ${iconoHTML} ${cuenta.divisa_nombre || 'N/A'})</span>
-              </label>
-              <input type="text" id="input-divisa-id" value="${cuenta.divisa_id || ''}" placeholder="Ej: Dolar USA, Euro" class="w-full p-2 rounded bg-white text-black" />
+
+            <div class="mb-3 relative">
+              <label for="input-divisa-search" class="text-gray-300">Divisa</label>
+              
+              <input type="text" 
+                     id="input-divisa-search" 
+                     placeholder="Buscar por nombre..." 
+                     value="${cuenta.divisa_nombre || ''}" 
+                     class="w-full p-2 rounded bg-white text-black" />
+              <input type="hidden" id="input-divisa-id-hidden" value="${cuenta.divisa_id || ''}" />
+              <ul id="divisa-sugerencias" class="absolute z-10 w-full bg-white border border-gray-600 text-gray-700 rounded-lg mt-1 hidden max-h-48 overflow-y-auto"></ul>
             </div>
+            
             <p class="text-xs text-gray-400">Los saldos y estados no son editables desde esta vista.</p>
         `;        
         infoContenedor.innerHTML = formHTML;
         accionesEdicion.classList.remove("hidden");
         btnEditar.classList.add("hidden");
 
-        const divisaSearchInput = document.getElementById("input-divisa-id");
+        const divisaSearchInput = document.getElementById("input-divisa-search");
         const divisaHiddenInput = document.getElementById("input-divisa-id-hidden");
-        const divisaSugerencias = document.getElementById("divisa-sugerencias");
 
         divisaSearchInput.addEventListener("input", async () => {
+            const divisaSugerencias = document.getElementById("divisa-sugerencias");
+            if (!divisaSugerencias) return;
+            
             const query = divisaSearchInput.value.trim();
             if (query.length < 1) {
                 divisaSugerencias.classList.add("hidden");
