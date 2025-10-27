@@ -68,6 +68,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Función para renderizar el formulario de edición
     const renderizarEdicion = (cuenta) => {
+
+        const tipos = ['general', 'cliente', 'funcionario', 'administrativa'];
+        const opcionesTipo = tipos.map(tipo => 
+            `<option value="${tipo}" ${cuenta.tipo_cuenta === tipo ? 'selected' : ''}>${tipo.charAt(0).toUpperCase() + tipo.slice(1)}</option>`
+        ).join('');
+
+        // Icono actual
         const iconoHTML = cuenta.divisa_icono 
             ? `<img src="${cuenta.divisa_icono}" alt="${cuenta.divisa_nombre}" class="w-4 h-4 inline-block mr-2" style="margin-top: -2px;">` 
             : '';
@@ -92,6 +99,55 @@ document.addEventListener("DOMContentLoaded", () => {
         infoContenedor.innerHTML = formHTML;
         accionesEdicion.classList.remove("hidden");
         btnEditar.classList.add("hidden");
+
+        const divisaSearchInput = document.getElementById("input-divisa-search");
+        const divisaHiddenInput = document.getElementById("input-divisa-id-hidden");
+        const divisaSugerencias = document.getElementById("divisa-sugerencias");
+
+        divisaSearchInput.addEventListener("input", async () => {
+            const query = divisaSearchInput.value.trim();
+            if (query.length < 1) {
+                divisaSugerencias.classList.add("hidden");
+                return;
+            }
+
+            // Llamar al PHP para buscar divisas
+            const res = await fetch(`https://cambiosorion.cl/data/detalle-cta.php?buscar_divisa=${encodeURIComponent(query)}`);
+            const text = await res.text(); // Leer como texto primero
+
+            try {
+                const divisas = JSON.parse(text);
+                divisaSugerencias.innerHTML = "";
+                
+                divisas.forEach(divisa => {
+                    const li = document.createElement("li");
+                    li.className = "px-3 py-2 hover:bg-gray-200 cursor-pointer flex items-center";
+                    
+                    // Añadir ícono y nombre
+                    const icono = divisa.icono ? `<img src="${divisa.icono}" class="w-4 h-4 mr-2">` : '<div class="w-4 h-4 mr-2"></div>'; // Placeholder
+                    li.innerHTML = `${icono} ${divisa.nombre}`;
+                    
+                    li.addEventListener("click", () => {
+                        divisaSearchInput.value = divisa.nombre; // Mostrar nombre en el input
+                        divisaHiddenInput.value = divisa.id; // Guardar ID en el input oculto
+                        divisaSugerencias.classList.add("hidden");
+                    });
+                    divisaSugerencias.appendChild(li);
+                });
+
+                divisaSugerencias.classList.remove("hidden");
+
+            } catch(e) {
+                console.error("Error al parsear JSON de divisas:", e, text);
+            }
+        });
+
+        // Ocultar sugerencias si se hace clic fuera
+        document.addEventListener("click", (e) => {
+            if (!infoContenedor.contains(e.target)) {
+                divisaSugerencias.classList.add("hidden");
+            }
+        }, { once: true }); // El listener se ejecuta una vez y se remueve
     };
 
     function mostrarModal({ titulo, mensaje, onConfirmar }) {
@@ -214,8 +270,8 @@ document.addEventListener("DOMContentLoaded", () => {
           const datosActualizados = {
               id: cuentaOriginal.id,
               nombre: document.getElementById("input-nombre").value,
-              tipo_cuenta: document.getElementById("input-tipo-cuenta").value, // Corregido
-              divisa_id: document.getElementById("input-divisa-id").value, // Corregido
+              tipo_cuenta: document.getElementById("input-tipo-cuenta").value, // Leer del Select
+              divisa_id: document.getElementById("input-divisa-id-hidden").value, // Leer del Input Oculto
           };
 
           fetch("https://cambiosorion.cl/data/detalle-cta.php", {
@@ -251,7 +307,10 @@ document.addEventListener("DOMContentLoaded", () => {
           })        
           .catch(error => {
               console.error("Error de red:", error);
-              alert("Error al intentar guardar los datos");
+              mostrarModal({
+                  titulo: "❌ Error de Red",
+                  mensaje: "Error al intentar guardar los datos."
+              });
           });
         });
       })
