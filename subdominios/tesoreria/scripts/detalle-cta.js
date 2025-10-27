@@ -44,10 +44,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Función para renderizar la vista de solo lectura
     const renderizarVista = (cuenta) => {
+        const iconoHTML = cuenta.divisa_icono 
+            ? `<img src="${cuenta.divisa_icono}" alt="${cuenta.divisa_nombre}" class="w-4 h-4 inline-block mr-2" style="margin-top: -2px;">` 
+            : '';
         const infoHTML = `
           <div><span class="font-semibold text-gray-300">Nombre:</span> ${cuenta.nombre || ''}</div>
           <div><span class="font-semibold text-gray-300">Tipo:</span> ${cuenta.tipo_cuenta || ''}</div>
-          <div><span class="font-semibold text-gray-300">Divisa:</span> ${cuenta.divisa_id || ''}</div>
+          <div>
+            <span class="font-semibold text-gray-300">Divisa:</span> 
+            ${iconoHTML}
+            ${cuenta.divisa_nombre || (cuenta.divisa_id || '')}
+          </div>
           <div><span class="font-semibold text-gray-300">Me Deben (+):</span> ${formatNumber(cuenta.me_deben)}</div>
           <div><span class="font-semibold text-gray-300">Debo (-):</span> ${formatNumber(cuenta.debo)}</div>
           <div><span class="font-semibold text-gray-300">Por Cobrar:</span> ${cuenta.por_cobrar == 1 ? 'Sí' : 'No'}</div>
@@ -71,8 +78,11 @@ document.addEventListener("DOMContentLoaded", () => {
               <input type="text" id="input-tipo-cuenta" value="${cuenta.tipo_cuenta || ''}" class="w-full p-2 rounded bg-white text-black" />
             </div>
             <div class="mb-3">
-              <label for="input-divisa-id" class="text-gray-300">Divisa (Ej: CLP, USD, EUR):</label>
-              <input type="text" id="input-divisa-id" value="${cuenta.divisa_id || ''}" class="w-full p-2 rounded bg-white text-black" />
+              <label for="input-divisa-id" class="text-gray-300">
+                ID de Divisa 
+                <span class="font-normal text-gray-400">(Actual: ${iconoHTML} ${cuenta.divisa_nombre || 'N/A'})</span>
+              </label>
+              <input type="text" id="input-divisa-id" value="${cuenta.divisa_id || ''}" placeholder="Ej: CLP, D99, EUR" class="w-full p-2 rounded bg-white text-black" />
             </div>
             <p class="text-xs text-gray-400">Los saldos y estados no son editables desde esta vista.</p>
         `;        
@@ -80,6 +90,29 @@ document.addEventListener("DOMContentLoaded", () => {
         accionesEdicion.classList.remove("hidden");
         btnEditar.classList.add("hidden");
     };
+
+    function mostrarModal({ titulo, mensaje, onConfirmar }) {
+        const modal = document.getElementById("modal-error");
+        const tituloElem = document.getElementById("modal-error-titulo");
+        const mensajeElem = document.getElementById("modal-error-mensaje");
+        const btnConfirmar = document.getElementById("modal-error-confirmar");
+        
+        // Ocultar el botón de cancelar por si acaso
+        document.getElementById("modal-error-cancelar").classList.add("hidden");
+        
+        tituloElem.textContent = titulo;
+        mensajeElem.textContent = mensaje;
+        
+        // Asignar el evento click
+        btnConfirmar.onclick = () => {
+            modal.classList.add("hidden");
+            if (onConfirmar) {
+                onConfirmar();
+            }
+        };
+        
+        modal.classList.remove("hidden");
+    }
 
     // --- Carga inicial de datos ---
     fetch(`https://cambiosorion.cl/data/detalle-cta.php?id=${id}`)
@@ -192,16 +225,25 @@ document.addEventListener("DOMContentLoaded", () => {
               try {
                   const response = JSON.parse(text);
                   if (response.success) {
-                      alert("Cuenta actualizada correctamente");
-                      // Actualizar los datos "originales" y volver a modo vista
-                      cuentaOriginal = { ...cuentaOriginal, ...datosActualizados };
-                      renderizarVista(cuentaOriginal);
+                      mostrarModal({
+                          titulo: "✅ Éxito",
+                          mensaje: "Cuenta actualizada correctamente.",
+                          onConfirmar: () => {
+                              window.location.reload();
+                          }
+                      });
                   } else {
-                      alert("Error: " + (response.error || "Desconocido"));
+                      mostrarModal({
+                          titulo: "❌ Error",
+                          mensaje: "Error: " + (response.error || "Desconocido")
+                      });
                   }
               } catch (error) {
                   console.error("Error al parsear JSON:", error, text);
-                  alert("Hubo un error al procesar la respuesta.");
+                  mostrarModal({
+                      titulo: "❌ Error de Servidor",
+                      mensaje: "Hubo un error al procesar la respuesta. Revise la consola."
+                  });
               }
           })        
           .catch(error => {
