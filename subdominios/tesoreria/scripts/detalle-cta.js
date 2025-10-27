@@ -45,15 +45,15 @@ document.addEventListener("DOMContentLoaded", () => {
     // Función para renderizar la vista de solo lectura
     const renderizarVista = (cuenta) => {
         const iconoHTML = cuenta.divisa_icono 
-            ? `<img src="${cuenta.divisa_icono}" alt="${cuenta.divisa_nombre}" class="w-4 h-4 inline-block mr-2" style="margin-top: -2px;">` 
+            ? `<img src="${cuenta.divisa_icono}" alt="${cuenta.divisa_nombre}" class="w-4 h-4 inline-block ml-1" style="margin-top: -2px;">` 
             : '';
         const infoHTML = `
           <div><span class="font-semibold text-gray-300">Nombre:</span> ${cuenta.nombre || ''}</div>
           <div><span class="font-semibold text-gray-300">Tipo:</span> ${cuenta.tipo_cuenta || ''}</div>
           <div>
             <span class="font-semibold text-gray-300">Divisa:</span> 
-            ${iconoHTML}
             ${cuenta.divisa_nombre || (cuenta.divisa_id || '')}
+            ${iconoHTML}
           </div>
           <div><span class="font-semibold text-gray-300">Me Deben (+):</span> ${formatNumber(cuenta.me_deben)}</div>
           <div><span class="font-semibold text-gray-300">Debo (-):</span> ${formatNumber(cuenta.debo)}</div>
@@ -68,6 +68,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Función para renderizar el formulario de edición
     const renderizarEdicion = (cuenta) => {
+        const iconoHTML = cuenta.divisa_icono 
+            ? `<img src="${cuenta.divisa_icono}" alt="${cuenta.divisa_nombre}" class="w-4 h-4 inline-block mr-2" style="margin-top: -2px;">` 
+            : '';
         const formHTML = `
             <div class="mb-3">
               <label for="input-nombre" class="text-gray-300">Nombre:</label>
