@@ -21,20 +21,28 @@ if (cancelarBtn) {
 
 function determinarTipoCuenta() {
   const tieneCliente = clienteSeleccionado !== null;
+  const esAdminChecked = esAdministrativaCheckbox.checked;
 
-  if (!tieneCliente) {
-    return "administrativa"; // Si no hay cliente seleccionado => administrativa
+  if (esAdminChecked) {
+      return "administrativa"; // Prioridad si el checkbox está marcado
   }
-
+  
   if (tieneCliente && esFuncionarioSeleccionado) {
-    return "funcionario";
+      return "funcionario"; // Si hay cliente Y es funcionario
   }
-
+  
   if (tieneCliente && !esFuncionarioSeleccionado) {
-    return "cliente";
+      return "cliente"; // Si hay cliente pero NO es funcionario
   }
 
-  return "general"; // Solo nombre y divisa, sin cliente (en desuso si administrativa ya lo cubre)
+  // Si no hay cliente seleccionado Y el checkbox no está marcado,
+  // podría ser 'general' o 'administrativa' dependiendo de tu lógica por defecto.
+  // Asumiremos 'administrativa' si no hay cliente.
+  if (!tieneCliente) {
+      return "administrativa"; 
+  }
+
+  return "general"; // Caso fallback, aunque debería cubrirse arriba
 }
 
 // Buscar cliente
@@ -53,7 +61,7 @@ clienteInput.addEventListener("input", async (e) => {
   }
 
   const res = await fetch(
-    `https://cambiosorion.cl/data/nueva-cuenta.php?buscar_cliente=${encodeURIComponent(query)}`
+    `https://cambiosorion.cl/data/nueva-cta.php?buscar_cliente=${encodeURIComponent(query)}`
   );
 
   // Verificar si la respuesta es exitosa
@@ -79,28 +87,40 @@ clienteInput.addEventListener("input", async (e) => {
         esAdministrativaCheckbox.disabled = false;
         actualizarNombreCuenta();
 
-        // Incrementamos la verificación actual
-        const verificacionIdActual = ++ultimaVerificacionId;
-
         // Ocultar inmediatamente el mensaje, sin condiciones
         mensajeFuncionario.classList.add("hidden");
         esFuncionarioSeleccionado = false;
 
+        const verificacionIdActual = ++ultimaVerificacionId;
+
         try {
           const resultadoFuncionario = await verificarFuncionario(cliente.rut);
+          console.log(`Resultado verificación (ID ${verificacionIdActual}):`, resultadoFuncionario);
 
           // Ignorar si esta no es la verificación más reciente
-          if (verificacionIdActual !== ultimaVerificacionId) return;
+          if (verificacionIdActual !== ultimaVerificacionId) {
+              console.log(`Ignorando resultado antiguo (ID ${verificacionIdActual})`);
+              return; 
+          }
 
           // Guardar el estado solo si es la verificación más reciente
           esFuncionarioSeleccionado = resultadoFuncionario.esFuncionario;
 
+          // Actualizar UI si es funcionario
           if (esFuncionarioSeleccionado) {
+            mensajeFuncionario.textContent = "Este cliente es miembro del equipo."; // Asegurar texto correcto
             mensajeFuncionario.classList.remove("hidden");
           }
+          
+          // Actualizar tipo de cuenta visualmente (si tienes esa lógica)
+          actualizarTipoCuentaVisualmente();
+          
         } catch (error) {
-          console.error("Error al verificar funcionario:", error);
-          // Ya está oculto, así que no se muestra ningún mensaje aquí
+          // El error ya se maneja dentro de verificarFuncionario, aquí solo aseguramos ocultar
+          console.error("Error en el proceso de verificación post-fetch:", error);
+          mensajeFuncionario.classList.add("hidden"); 
+          esFuncionarioSeleccionado = false;
+          actualizarTipoCuentaVisualmente();
         }
 
         actualizarTipoCuentaVisualmente();
@@ -122,14 +142,29 @@ clienteInput.addEventListener("input", async (e) => {
 
 mensajeFuncionario.classList.add("hidden");
 async function verificarFuncionario(rut) {
+  // No verificar si el RUT está vacío o es nulo
+  if (!rut || rut.trim() === '') {
+      return { esFuncionario: false };
+  }
   try {
-    const res = await fetch(`https://cambiosorion.cl/data/nueva-cuenta.php?rut=${encodeURIComponent(rut)}`);
+    console.log(`Verificando RUT: ${rut}`); // Debug
+    const res = await fetch(`https://cambiosorion.cl/data/nueva-cta.php?rut=${encodeURIComponent(rut)}`);
+    
+    if (!res.ok) {
+        console.error(`Error ${res.status} al verificar funcionario: ${res.statusText}`);
+        return { esFuncionario: false };
+    }
+    
     const data = await res.json();
     console.log("Respuesta del servidor verificarFuncionario:", data);
-    return { esFuncionario: !!data.es_funcionario };
+    
+    // --- CAMBIO: Usar la propiedad correcta 'es_funcionario' ---
+    return { esFuncionario: !!data.es_funcionario }; // Convertir a booleano explícitamente
+    // --- FIN CAMBIO ---
+    
   } catch (error) {
-    console.error("Error al verificar funcionario:", error);
-    return { esFuncionario: false};
+    console.error("Error en fetch al verificar funcionario:", error);
+    return { esFuncionario: false}; // Asumir no funcionario si hay error
   }
 }
 
@@ -144,7 +179,7 @@ divisaInput.addEventListener("input", async (e) => {
   }
 
   const res = await fetch(
-    `https://cambiosorion.cl/data/nueva-cuenta.php?buscar_divisa=${encodeURIComponent(query)}`
+    `https://cambiosorion.cl/data/nueva-cta.php?buscar_divisa=${encodeURIComponent(query)}`
   );
 
   // Verificar si la respuesta es exitosa
@@ -199,7 +234,7 @@ document.addEventListener("click", (e) => {
 });
 
 // Enviar formulario
-document.getElementById("form-nueva-cuenta").addEventListener("submit", async (e) => {
+document.getElementById("form-nueva-cta").addEventListener("submit", async (e) => {
   e.preventDefault();
 
     // Validar divisa siempre
@@ -240,7 +275,7 @@ document.getElementById("form-nueva-cuenta").addEventListener("submit", async (e
 
   try {
     console.log("Datos enviados:", body);
-    const res = await fetch("https://cambiosorion.cl/data/nueva-cuenta.php", {
+    const res = await fetch("https://cambiosorion.cl/data/nueva-cta.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
@@ -273,7 +308,7 @@ document.getElementById("form-nueva-cuenta").addEventListener("submit", async (e
           onConfirmar: async () => {
             // Hacer segundo request con fuerza para crear la cuenta igual
             try {
-              const res2 = await fetch("https://cambiosorion.cl/data/nueva-cuenta.php?forzar=1", {
+              const res2 = await fetch("https://cambiosorion.cl/data/nueva-cta.php?forzar=1", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data.body),
@@ -467,9 +502,9 @@ function mostrarModalExitoso() {
   const modal = document.getElementById("modal-exitoso");
   modal.classList.remove("hidden");
 
-  document.getElementById("nueva-cuenta").onclick = () => {
+  document.getElementById("nueva-cta").onclick = () => {
     modal.classList.add("hidden");
-    document.getElementById("form-nueva-cuenta").reset();
+    document.getElementById("form-nueva-cta").reset();
     // Resetear también estado adicional si es necesario
   };
 

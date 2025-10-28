@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const activaSelect = document.getElementById('activa');
     const borrarFiltrosBtn = document.getElementById('borrar-filtros');
     const tablaCuentas = document.querySelector('table tbody');
-    const nuevaCuentaBtn = document.getElementById('nueva-cuenta');
+    const nuevaCuentaBtn = document.getElementById('nueva-cta');
     const divisaSugerencias = document.getElementById('divisa-sugerencias');
     let divisaSeleccionada = null;
 
@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Redirigir al hacer clic en "Nueva Cuenta"
     if (nuevaCuentaBtn) {
         nuevaCuentaBtn.addEventListener('click', () => {
-            window.location.href = 'https://tesoreria.cambiosorion.cl/nueva-cuenta';
+            window.location.href = 'https://tesoreria.cambiosorion.cl/nueva-cta';
         });
     }
 
