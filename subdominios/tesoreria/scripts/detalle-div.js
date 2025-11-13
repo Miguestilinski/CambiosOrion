@@ -96,13 +96,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       let modoEdicion = false;
 
-      document.getElementById("btn-editar").addEventListener("click", () => {
+      document.getElementById("btn-editar").addEventListener("click", async () => {
         if (modoEdicion) {
           // Salir del modo edición
           divisa.nombre = divisaOriginal.nombre;
           divisa.simbolo = divisaOriginal.simbolo;
           divisa.codigo = divisaOriginal.codigo;
           divisa.pais = divisaOriginal.pais;
+          divisa.icono = divisaOriginal.icono;
 
           renderInfo();
           document.getElementById("acciones-edicion").classList.add("hidden");
@@ -111,9 +112,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else {
           // Entrar modo edición, sin el input estado
           const formHTML = `
-            <div class="mb-3">
-              <label for="input-icono" class="text-gray-300">URL Ícono:</label>
-              <input type="text" id="input-icono" value="${divisa.icono || ''}" class="w-full p-2 rounded bg-white text-black" placeholder="https://ejemplo.com/icono.svg" />
+            <div class="mb-4 col-span-2">
+                <div class="flex items-center gap-2 mb-2">
+                    <label class="text-gray-300">Icono:</label>
+                    <img id="preview-icono-edit" src="${divisa.icono || ''}" class="w-8 h-8 rounded-full border border-gray-400 ${divisa.icono ? '' : 'hidden'}" alt="Seleccionado">
+                </div>
+                
+                <div id="grid-iconos-container" class="grid grid-cols-8 gap-2 max-h-40 overflow-y-auto bg-white p-2 rounded-lg border border-gray-600">
+                    <p class="col-span-8 text-center text-gray-500 text-xs">Cargando iconos...</p>
+                </div>
+                
+                <input type="hidden" id="input-icono" value="${divisa.icono || ''}">
             </div>
             <div class="mb-3">
               <label for="input-nombre" class="text-gray-300">Nombre:</label>
@@ -136,6 +145,53 @@ document.addEventListener('DOMContentLoaded', async () => {
           document.getElementById("acciones-edicion").classList.remove("hidden");
           document.getElementById("btn-editar").textContent = "Cancelar edición";
           modoEdicion = true;
+
+          const gridContainer = document.getElementById("grid-iconos-container");
+          const inputIcono = document.getElementById("input-icono");
+          const previewIcono = document.getElementById("preview-icono-edit");
+
+          try {
+              // Llamamos al nuevo endpoint que creamos en el PHP
+              const res = await fetch("https://cambiosorion.cl/data/detalle-div.php?get_icons=1");
+              const iconos = await res.json();
+
+              if (Array.isArray(iconos)) {
+                  gridContainer.innerHTML = ""; // Limpiar mensaje de carga
+                  
+                  iconos.forEach(({ codigo, url }) => {
+                      const img = document.createElement("img");
+                      img.src = url;
+                      img.alt = codigo;
+                      img.title = codigo;
+                      img.className = "w-8 h-8 cursor-pointer rounded-full border border-gray-300 hover:border-blue-500 hover:scale-110 transition-transform";
+                      
+                      // Marcar el actual si coincide
+                      if (url === divisa.icono) {
+                          img.classList.add("ring-2", "ring-blue-500");
+                      }
+
+                      img.addEventListener("click", () => {
+                          // Quitar selección visual de otros
+                          gridContainer.querySelectorAll("img").forEach(i => i.classList.remove("ring-2", "ring-blue-500"));
+                          
+                          // Seleccionar este
+                          img.classList.add("ring-2", "ring-blue-500");
+                          
+                          // Actualizar input y preview
+                          inputIcono.value = url;
+                          previewIcono.src = url;
+                          previewIcono.classList.remove("hidden");
+                      });
+
+                      gridContainer.appendChild(img);
+                  });
+              } else {
+                  gridContainer.innerHTML = '<p class="col-span-8 text-red-500 text-xs">Error cargando iconos.</p>';
+              }
+          } catch (e) {
+              console.error("Error fetch iconos:", e);
+              gridContainer.innerHTML = '<p class="col-span-8 text-red-500 text-xs">Error de conexión.</p>';
+          }
         }
       });
 
