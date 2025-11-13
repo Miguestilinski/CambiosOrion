@@ -20,6 +20,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
   
         const cliente = data.cliente;
+
+        const estadoActivoTexto = cliente.activo == 1 ? 'Activo' : 'Inactivo';
+        const estadoActivoClase = cliente.activo == 1 ? 'text-green-500' : 'text-red-500';
+        const docEstado = cliente.estado_documentacion || 'No Documentado';
   
         const infoHTML = `
           <div><span class="font-semibold text-gray-300">Razón social:</span> ${cliente.razon_social}</div>
@@ -27,6 +31,8 @@ document.addEventListener("DOMContentLoaded", () => {
           <div><span class="font-semibold text-gray-300">Email:</span> ${cliente.correo}</div>
           <div><span class="font-semibold text-gray-300">Teléfono:</span> ${cliente.fono}</div>
           <div><span class="font-semibold text-gray-300">Dirección:</span> ${cliente.direccion}</div>
+          <div><span class="font-semibold text-gray-300">Estado:</span> <span class="${estadoActivoClase}">${estadoActivoTexto}</span></div>
+          <div><span class="font-semibold text-gray-300">Documentación:</span> ${docEstado}</div>
         `;
         document.getElementById("info-cliente").innerHTML = infoHTML;
   
