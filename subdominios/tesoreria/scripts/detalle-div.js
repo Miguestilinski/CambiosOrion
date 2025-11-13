@@ -20,12 +20,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
 
       const divisa = data.divisa;
+      const operaciones = data.operaciones || [];
       divisa.estado = Number(divisa.estado);
       let divisaOriginal = { ...divisa };
       const estadoTexto = (estado) => estado == 1 ? "habilitada" : "deshabilitada";
 
       const renderInfo = () => {
         const estadoStr = estadoTexto(Number(divisa.estado));
+        const iconoImg = divisa.icono 
+            ? `<img src="${divisa.icono}" alt="${divisa.nombre}" class="w-8 h-8 object-contain ml-2 inline-block">` 
+            : '<span class="text-gray-500 italic ml-2">(Sin ícono)</span>';
         const infoHTML = `
           <div class="flex items-center mb-2">
              <span class="font-semibold text-gray-300 mr-2">Ícono:</span> 
