@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', async () => {
   const params = new URLSearchParams(window.location.search);
   const id = params.get('id');
+  const opsContenedor = document.getElementById("detalle-operaciones-divisa");
+  const btnOperaciones = document.getElementById("btn-operaciones");
 
   if (!id) {
     document.getElementById('info-divisa').innerHTML = "<p>ID de divisa no proporcionado.</p>";
