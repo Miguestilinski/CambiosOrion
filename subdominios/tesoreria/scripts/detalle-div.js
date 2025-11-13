@@ -27,6 +27,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       const renderInfo = () => {
         const estadoStr = estadoTexto(Number(divisa.estado));
         const infoHTML = `
+          <div class="flex items-center mb-2">
+             <span class="font-semibold text-gray-300 mr-2">Ícono:</span> 
+             ${iconoImg}
+          </div>
           <div><span class="font-semibold text-gray-300">Nombre:</span> ${divisa.nombre}</div>
           <div><span class="font-semibold text-gray-300">Símbolo:</span> ${divisa.simbolo}</div>
           <div><span class="font-semibold text-gray-300">Código:</span> ${divisa.codigo}</div>
@@ -102,6 +106,10 @@ document.addEventListener('DOMContentLoaded', async () => {
           // Entrar modo edición, sin el input estado
           const formHTML = `
             <div class="mb-3">
+              <label for="input-icono" class="text-gray-300">URL Ícono:</label>
+              <input type="text" id="input-icono" value="${divisa.icono || ''}" class="w-full p-2 rounded bg-white text-black" placeholder="https://ejemplo.com/icono.svg" />
+            </div>
+            <div class="mb-3">
               <label for="input-nombre" class="text-gray-300">Nombre:</label>
               <input type="text" id="input-nombre" value="${divisa.nombre}" class="w-full p-2 rounded bg-white text-black" />
             </div>
@@ -175,6 +183,69 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.error("Error de red o servidor", error);
             alert("Error al intentar guardar los datos");
           });
+      });
+
+      // --- Lógica Operaciones (Igual que detalle-cta) ---
+      btnOperaciones.addEventListener("click", () => {
+        if (opsContenedor.classList.contains("hidden")) {
+          if (operaciones.length === 0) {
+             opsContenedor.innerHTML = '<p class="text-white p-4 bg-gray-800 rounded">No hay operaciones registradas con esta divisa.</p>';
+          } else {
+              const tablaHTML = `
+                <table class="w-full text-sm text-left text-white bg-gray-800">
+                  <thead class="text-xs uppercase bg-gray-800 text-white">
+                    <tr>
+                      <th class="px-4 py-2">Fecha</th>
+                      <th class="px-4 py-2">ID Op</th>
+                      <th class="px-4 py-2">Cliente</th> 
+                      <th class="px-4 py-2">Tipo Doc</th>
+                      <th class="px-4 py-2">Tipo Trans.</th>
+                      <th class="px-4 py-2">Monto (${divisa.codigo})</th>
+                      <th class="px-4 py-2">Tasa</th>
+                      <th class="px-4 py-2">Total Op (CLP)</th>
+                      <th class="px-4 py-2">Estado</th>
+                      <th class="px-4 py-2"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  ${operaciones.map(op => {
+                      const colorFondo = op.tipo_transaccion === 'Compra'
+                      ? 'style="background-color: #c3e8f1;"'
+                      : op.tipo_transaccion === 'Venta'
+                      ? 'style="background-color: #dbf599;"'
+                      : '';
+                      const colorAnulado = op.estado === 'Anulado'
+                      ? 'style="background-color: #f9b8a3;"'
+                      : colorFondo;
+
+                      return `
+                      <tr class="border-b bg-white border-gray-700 text-gray-700" ${colorAnulado}>
+                          <td class="px-4 py-2">${formatearFecha(op.fecha)}</td>
+                          <td class="px-4 py-2">${op.id}</td>
+                          <td class="px-4 py-2">${op.nombre_cliente || 'N/A'}</td>
+                          <td class="px-4 py-2">${op.tipo_documento || ''}</td>
+                          <td class="px-4 py-2">${op.tipo_transaccion || ''}</td>
+                          <td class="px-4 py-2 font-bold">${formatNumber(op.monto)}</td>
+                          <td class="px-4 py-2">${formatNumber(op.tasa_cambio)}</td>
+                          <td class="px-4 py-2">${formatNumber(op.total)}</td>
+                          <td class="px-4 py-2">${op.estado || ''}</td>
+                          <td class="px-4 py-2">
+                          <a href="/detalle-op?id=${op.id}" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1">Mostrar</a>
+                          </td>
+                      </tr>
+                      `;
+                  }).join("")}
+                  </tbody>
+                </table>
+              `;
+              opsContenedor.innerHTML = tablaHTML;
+          }
+          opsContenedor.classList.remove("hidden");
+          btnOperaciones.innerText = "Ocultar Operaciones";
+        } else {
+          opsContenedor.classList.add("hidden");
+          btnOperaciones.innerText = "Ver Operaciones";
+        }
       });
 
       // Referencias a elementos del modal
