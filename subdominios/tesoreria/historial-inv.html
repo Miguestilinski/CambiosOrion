@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Cajas</title>
-        <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/header.css">
-        <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/footer.css">
-        <link rel="stylesheet" href="./styles/index.css">
-        <link href="https://cambiosorion.cl/orionapp/public/styles/output.css" rel="stylesheet">
-        <link rel="icon" href="https://cambiosorion.cl/orionapp/icons/IsotipoOrion-blue.svg" type="image/png">
-        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">  
-    </head>
+<head>
+    <meta charset="UTF-m">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial de Arqueos</title>
+    <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/header.css">
+    <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/footer.css">
+    <link rel="stylesheet" href="./styles/index.css">
+    <link href="https://cambiosorion.cl/orionapp/public/styles/output.css" rel="stylesheet">
+    <link rel="icon" href="https://cambiosorion.cl/orionapp/icons/IsotipoOrion-blue.svg" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
 <body>
-    <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js" crossorigin="anonymous"></script>
     <header>
         <!-- Logo y Nombre -->
         <div class="header-logo">
@@ -113,52 +112,45 @@
     <div class="main-content">
         <div id="sidebar-container"></div>
         <main id="dashboard-content" class="dashboard-content">
-            <section id="cajas" class="content-section active">
-                <!-- Título y botón Nueva Operación -->
+            <section id="historial" class="content-section active">
                 <div class="flex items-center mb-6">
-                    <h1 class="text-2xl font-medium mr-4 leading-none text-white">Cajas</h1>
-                    <button type="button" id="nueva-caja" href="#"
-                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
-                        Nueva Caja
+                    <h1 class="text-2xl font-medium mr-4 leading-none text-white">Historial de Arqueos</h1>
+                    <button type="button" id="volver-inventarios"
+                        class="text-white bg-gray-600 hover:bg-gray-700 font-medium rounded-lg text-sm px-5 py-2.5">
+                        Volver a Inventarios
                     </button>
                 </div>
                 
-                <!-- Filtros avanzados -->
                 <div class="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-6">
                     <div>
-                        <label for="numero" class="block mb-1 text-sm text-white">Numero</label>
-                        <select id="divisa"
-                            class="select-list block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Seleccionar</option>
-                        </select>
+                        <label for="fecha-inicio" class="block mb-1 text-sm text-white">Desde</label>
+                        <input type="date" id="fecha-inicio" 
+                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
                     </div>
                     <div>
-                        <label for="Nombre" class="block mb-1 text-sm text-white">Nombre</label>
-                        <input type="text" id="nombre" 
-                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                        <label for="fecha-fin" class="block mb-1 text-sm text-white">Hasta</label>
+                        <input type="date" id="fecha-fin" 
+                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
                     </div>
                     <div>
-                        <label for="tipo_caja" class="block mb-1 text-sm text-white">Tipo</label>
-                        <select id="tipo_caja"
-                            class="select-list block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Seleccionar</option>
-                            <option value="tesoreria">Tesoreria</option>
-                            <option value="caja">Caja</option>
-                        </select>
+                        <label for="caja" class="block mb-1 text-sm text-white">Caja</label>
+                        <select id="caja"
+                            class="select-list block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
+                            <option value="">Todas</option>
+                            </select>
                     </div>
                     <div>
-                        <label for="asignado" class="block mb-1 text-sm text-white">Asignado</label>
-                        <input type="text" id="asignado" 
-                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                        <button type="button" id="borrar-filtros" 
+                            class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 mt-6">
+                            Borrar Filtros
+                        </button>
                     </div>
                 </div>
                 
-                <!-- Mostrar registros y buscar -->
                 <div class="flex items-center justify-between mb-6">
                     <div class="flex items-center space-x-2">
                         <label for="mostrar-registros" class="text-sm text-white">Mostrar</label>
-                        <select id="mostrar-registros" 
-                            class="block px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                        <select id="mostrar-registros" class="block px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
                             <option value="25">25</option>
                             <option value="50">50</option>
                             <option value="100">100</option>
@@ -166,51 +158,33 @@
                         <span class="text-sm text-white">registros</span>
                     </div>
                     <div>
-                        <input type="text" id="buscar" placeholder="Buscar" 
-                            class="block w-64 px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                        <input type="text" id="buscar" placeholder="Buscar por Usuario o Divisa..." 
+                            class="block w-64 px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
                     </div>
                 </div>
                 
-                <!-- Tabla de operaciones -->
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm text-left text-white bg-gray-800">
                         <thead class="text-xs uppercase bg-gray-800 text-white">
                             <tr>
-                                <th class="px-4 py-2">Nº</th>
-                                <th class="px-4 py-2">Nombre</th>
-                                <th class="px-4 py-2">Tipo</th>
-                                <th class="px-4 py-2">Asignado</th>
+                                <th class="px-4 py-2">Fecha</th>
+                                <th class="px-4 py-2">Caja</th>
+                                <th class="px-4 py-2">Usuario</th>
+                                <th class="px-4 py-2">Observación</th>
+                                <th class="px-4 py-2">Estado</th>
                                 <th class="px-4 py-2"></th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr class="border-b bg-white border-gray-700 text-gray-700">
-                                <td class="px-4 py-2">0</td>
-                                <td class="px-4 py-2">Caja 0</td>
-                                <td class="px-4 py-2">Caja</td>
-                                <td class="px-4 py-2">Bryon Danilo Madariaga Chamorro</td>
-                                <td class="px-4 py-2">
-                                    <button class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1">
-                                        Mostrar
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr class="border-b bg-white border-gray-700 text-gray-700">
-                                <td class="px-4 py-2">1</td>
-                                <td class="px-4 py-2">Caja 1</td>
-                                <td class="px-4 py-2">Caja</td>
-                                <td class="px-4 py-2">Christian Andres Escobar Pereda</td>
-                                <td class="px-4 py-2">
-                                    <button class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1">
-                                        Mostrar
-                                    </button>
-                                </td>
-                            </tr>
-                            <!-- Más filas -->
-                        </tbody>
+                        <tbody id="tabla-historial">
+                            </tbody>               
                     </table>
                 </div>
-            </section>      
+                
+                <div class="flex items-center justify-between mt-4 text-white">
+                    <div id="conteo-resultados" class="text-sm">Cargando...</div>
+                    <nav id="paginacion-container" aria-label="Paginación"></nav>
+                </div>
+            </section> 
         </main>
     </div>
 
@@ -253,10 +227,9 @@
             © 2025 Cambios Orion. Todos los derechos reservados.
         </div>
     </footer>
-
-    <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
+    
     <script type="module" src="https://cambiosorion.cl/orionapp/public/scripts/header.js" crossorigin="anonymous"></script>
-    <script type="module" src="./scripts/cajas.js"></script>
+    <script type="module" src="./scripts/historial-inv.js"></script>
     <script>
         fetch('sidebar.html')
             .then(response => response.text())

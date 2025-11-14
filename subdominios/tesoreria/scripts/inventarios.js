@@ -35,6 +35,14 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    const verHistorialBtn = document.getElementById("ver-historial");
+    if (verHistorialBtn) {
+        verHistorialBtn.addEventListener("click", () => {
+            // Asumimos que la nueva página se llamará 'historial-inventarios'
+            window.location.href = 'https://tesoreria.cambiosorion.cl/historial-inventarios';
+        });
+    }
+
     // Función para cargar divisas desde API
     function cargarDivisas() {
         fetch(`https://cambiosorion.cl/data/inventarios.php?action=divisas&caja=${cajaInput.value}`)
