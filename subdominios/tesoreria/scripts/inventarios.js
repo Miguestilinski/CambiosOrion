@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (verHistorialBtn) {
         verHistorialBtn.addEventListener("click", () => {
             // Asumimos que la nueva página se llamará 'historial-inventarios'
-            window.location.href = 'https://tesoreria.cambiosorion.cl/historial-inventarios';
+            window.location.href = 'https://tesoreria.cambiosorion.cl/historial-inv';
         });
     }
 
