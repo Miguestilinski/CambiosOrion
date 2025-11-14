@@ -45,7 +45,10 @@ async function cargarDivisas(cajaId) {
         let response = await fetch(`https://cambiosorion.cl/data/arqueo-tesoreria.php?caja_id=${cajaId}`);
         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
         
-        let data = await response.json();
+        const text = await response.text();
+        console.log("Respuesta cruda del servidor (arqueo-tesoreria.php):", text);
+        
+        let data = JSON.parse(text);
         let divisas = data.divisas;
         
         // Filtrar divisas duplicadas (basado en código)
