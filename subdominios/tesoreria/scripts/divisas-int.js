@@ -15,6 +15,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const paginacionContainer = document.getElementById('paginacion-container');
     let paginaActual = 1;
 
+    function capitalizar(str) {
+        if (!str || typeof str !== 'string') return str;
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
     if (nuevaDivisaBtn) {
         nuevaDivisaBtn.addEventListener('click', () => {
             window.location.href = 'https://tesoreria.cambiosorion.cl/nueva-div';
@@ -93,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="px-4 py-2">${divisa.pais}</td>
                 <td class="px-4 py-2">${divisa.codigo}</td>
                 <td class="px-4 py-2">${divisa.simbolo}</td>
-                <td class="px-4 py-2">${divisa.tipo_divisa ?? '-'}</td>
+                <td class="px-4 py-2">${capitalizar(divisa.tipo_divisa ?? '-')}</td>
                 <td class="px-4 py-2">${divisa.fraccionable}</td>
                 <td class="px-4 py-2">${divisa.estado}</td>
                 <td class="px-4 py-2 mostrar-btn-cell"></td>
