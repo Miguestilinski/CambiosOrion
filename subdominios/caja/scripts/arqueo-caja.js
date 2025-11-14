@@ -102,18 +102,17 @@ async function cargarDivisas(cajaId) {
             }
 
             div.innerHTML = `
-                <div class="flex">
+                <div class="flex items-center">
                     <img class="w-6 h-6 mr-2" src="${divisa.icono}" alt="${divisa.pais}">
                     <span class="m">${displayText}</span>
                 </div>
-                <div class="resumen flex text-sm">
-                    <span class="text-sm">Arqueo:</span>
+                <div class="resumen flex flex-col items-end text-sm">
+                    <span class="text-xs text-gray-200">Arqueo:</span>
                     <span class="text-md" id="arqueo-${divisa.codigo}">${divisa.simbolo} ${formatoNumero(divisa.arqueo || 0)}</span>
                 </div>
-                <div class="resumen flex text-sm">
-                    <span class="text-sm">Diferencia:</span>
+                <div class="resumen flex flex-col items-end text-sm">
+                    <span class="text-xs text-gray-200">Diferencia:</span>
                     <span class="text-md" id="diferencia-${divisa.codigo}">${divisa.simbolo} ${formatoNumero(divisa.diferencia || 0)}</span>
-
                 </div>
             `;
 
