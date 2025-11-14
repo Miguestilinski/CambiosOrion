@@ -7,6 +7,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnAgregarDivisas = document.getElementById("btn-agregar-divisas");
   const tablaContainer = document.getElementById("tabla-divisas-container");
 
+  const contadorContainer = document.getElementById("contador-divisas-container");
+  const btnCancelar = document.getElementById("cancelar");
+
+  function resetFormVisuals() {
+    formCaja.reset();
+    if (contador) contador.textContent = "0";
+    if (checkTodas) checkTodas.checked = false;
+    if (tablaContainer) tablaContainer.classList.add("hidden");
+    if (contadorContainer) contadorContainer.classList.add("hidden");
+    if (btnAgregarDivisas) btnAgregarDivisas.innerText = "Agregar Divisas";
+  }
+
   btnAgregarDivisas.addEventListener("click", () => {
     const isHidden = tablaContainer.classList.contains("hidden");
     if (isHidden) {
@@ -100,12 +112,18 @@ document.addEventListener("DOMContentLoaded", () => {
                               .map(cb => cb.dataset.id);
 
     if (!nombre) {
-      alert("Debes ingresar un nombre para la caja.");
+      mostrarModalError({
+        titulo: "❌ Datos incompletos",
+        mensaje: "Debes ingresar un nombre para la caja."
+      });
       return;
     }
 
     if (seleccionadas.length === 0) {
-      alert("Debes seleccionar al menos una divisa.");
+      mostrarModalError({
+        titulo: "❌ Datos incompletos",
+        mensaje: "Debes seleccionar al menos una divisa."
+      });
       return;
     }
 
@@ -117,21 +135,75 @@ document.addEventListener("DOMContentLoaded", () => {
     .then(res => res.json())
     .then(data => {
       if (data.error) {
-        alert("Error: " + data.error);
+        mostrarModalError({
+          titulo: "❌ Error",
+          mensaje: "Error: " + data.error
+        });
       } else {
-        alert("Caja creada correctamente con ID: " + data.caja_id);
-        formCaja.reset();
-        actualizarContador();
-        checkTodas.checked = false;
-        // Opcional: ocultar tabla y contador después de crear la caja
-        tablaContainer.classList.add("hidden");
-        contadorContainer.classList.add("hidden");
-        btnAgregarDivisas.innerText = "Agregar Divisas";
+        mostrarModalExitoso();
+        resetFormVisuals();
       }
     })
     .catch(err => {
       console.error("Error al enviar datos:", err);
-      alert("Error inesperado al crear la caja.");
+      mostrarModalError({
+        titulo: "❌ Error",
+        mensaje: "Error inesperado al crear la caja. Revisa la consola."
+      });
     });
   });
+
+  btnCancelar.addEventListener("click", () => {
+    resetFormVisuals(); // <-- Usar la nueva función
+    window.history.back(); // Volver
+  });
 });
+
+function mostrarModalError({ titulo, mensaje, textoConfirmar = "Aceptar", textoCancelar = null, onConfirmar, onCancelar }) {
+  const modal = document.getElementById("modal-error");
+  const tituloElem = document.getElementById("modal-error-titulo");
+  const mensajeElem = document.getElementById("modal-error-mensaje");
+  const btnConfirmar = document.getElementById("modal-error-confirmar");
+  const btnCancelar = document.getElementById("modal-error-cancelar");
+
+  tituloElem.textContent = titulo;
+  mensajeElem.textContent = mensaje;
+  btnConfirmar.textContent = textoConfirmar;
+
+  if (textoCancelar) {
+    btnCancelar.classList.remove("hidden");
+    btnCancelar.textContent = textoCancelar;
+  } else {
+    btnCancelar.classList.add("hidden");
+  }
+
+  modal.classList.remove("hidden");
+
+  // Asignar handlers
+  btnConfirmar.onclick = () => {
+    modal.classList.add("hidden");
+    if (onConfirmar) onConfirmar();
+  };
+
+  btnCancelar.onclick = () => {
+    modal.classList.add("hidden");
+    if (onCancelar) onCancelar();
+  };
+}
+
+function mostrarModalExitoso() {
+  const modal = document.getElementById("modal-exitoso");
+  modal.classList.remove("hidden");
+
+  // IDs de los botones en nueva-caja.html
+  document.getElementById("nueva-caja").onclick = () => {
+    modal.classList.add("hidden");
+    // El formulario ya se reseteó, esto solo cierra el modal.
+  };
+
+  document.getElementById("volver").onclick = () => {
+    modal.classList.add("hidden");
+    // Redirigir a la lista de cajas (puedes cambiar esta URL si es necesario)
+    window.location.href = "https://tesoreria.cambiosorion.cl/cajas";
+  };
+}
