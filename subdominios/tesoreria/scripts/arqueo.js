@@ -110,11 +110,11 @@ async function cargarDivisas(cajaId) {
                     <span class="m">${displayText}</span>
                 </div>
                 <div class="resumen flex flex-col items-end text-sm">
-                    <span class="text-xs text-gray-400">Arqueo:</span>
+                    <span class="text-xs text-gray-200">Arqueo:</span>
                     <span class="text-md" id="arqueo-${divisa.codigo}">${divisa.simbolo} ${formatoNumero(divisa.arqueo || 0)}</span>
                 </div>
                 <div class="resumen flex flex-col items-end text-sm">
-                    <span class="text-xs text-gray-400">Diferencia:</span>
+                    <span class="text-xs text-gray-200">Diferencia:</span>
                     <span class="text-md" id="diferencia-${divisa.codigo}">${divisa.simbolo} ${formatoNumero(divisa.diferencia || 0)}</span>
                 </div>
             `;
