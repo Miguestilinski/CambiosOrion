@@ -116,7 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                     <td class="px-4 py-2">
                                         ${d.icono ? `<img src="${d.icono}" alt="${d.nombre_divisa}" class="w-6 h-6 rounded-full border border-gray-400">` : ''}
                                     </td>
-                                    <td class="px-4 py-2">${d.nombre_divisa} (${d.divisa_id})</td>
+                                    <td class="px-4 py-2">${d.nombre_divisa}</td>
                                     <td class="px-4 py-2">${formatNumber(d.total_sistema, d.simbolo)}</td>
                                     <td class="px-4 py-2">${formatNumber(d.total_arqueo, d.simbolo)}</td>
                                     <td class="px-4 py-2 ${difClase}">${formatNumber(dif, d.simbolo)}</td>
