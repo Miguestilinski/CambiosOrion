@@ -142,6 +142,12 @@
                         <input type="text" id="precio-promedio" 
                             class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                     </div>
+                    <div>
+                        <button type="button" id="borrar-filtros" 
+                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mt-6">
+                        Borrar Filtros
+                        </button>
+                    </div>
                 </div>
                 
                 <!-- Mostrar registros y buscar -->
@@ -185,6 +191,10 @@
                             <!-- Más filas -->
                         </tbody>
                     </table>
+                </div>
+                <div class="flex items-center justify-between mt-4 text-white">
+                    <div id="conteo-resultados" class="text-sm">Cargando...</div>
+                    <nav id="paginacion-container" aria-label="Paginación"></nav>
                 </div>
             </section>        
         </main>
