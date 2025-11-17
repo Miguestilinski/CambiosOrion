@@ -4,8 +4,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const buscarInput = document.getElementById("buscar");
     
     // Filtros
-    const divisaSelect = document.getElementById("divisa"); // Si es un select
-    // Si tu HTML tiene un input text para divisa, cambia esto a: const divisaInput = document.getElementById("divisa");
+    const divisaInput = document.getElementById("divisa-input");
+    const divisaList = document.getElementById("divisa-list");
     const montoInput = document.getElementById("monto");
     const precioInput = document.getElementById("precio-promedio");
     const borrarFiltrosBtn = document.getElementById("borrar-filtros");
@@ -13,18 +13,75 @@ document.addEventListener("DOMContentLoaded", () => {
     const conteoResultados = document.getElementById("conteo-resultados");
     const paginacionContainer = document.getElementById("paginacion-container");
     let paginaActual = 1;
+    
+    let divisas = []; // Almacén local de divisas
 
-    // 1. Cargar Divisas para el Select (Opcional, si usas select)
+    // --- 1. Cargar Divisas (CAMBIO: Ahora llama a posiciones.php) ---
     function cargarDivisas() {
-        // Puedes reutilizar el endpoint de inventarios o crear uno simple
-        // Por ahora, dejaremos el select vacío o estático si no hay endpoint específico.
+        fetch("https://cambiosorion.cl/data/posiciones.php?action=divisas") 
+            .then(res => res.json())
+            .then(data => {
+                if (data.divisas && Array.isArray(data.divisas)) {
+                    divisas = data.divisas;
+                }
+            })
+            .catch(error => console.error("Error al cargar lista de divisas:", error));
     }
 
-    // 2. Función Principal
+    // --- 2. Lógica del Dropdown ---
+    function mostrarOpciones(filtro) {
+        const filtroMinusculas = filtro.toLowerCase().trim();
+        divisaList.innerHTML = "";
+
+        if (filtroMinusculas.length === 0) {
+            divisaList.classList.add("hidden");
+            return;
+        }
+
+        const filtradas = divisas.filter(d => d.nombre && d.nombre.toLowerCase().includes(filtroMinusculas));
+        
+        if (filtradas.length === 0) {
+            divisaList.classList.add("hidden");
+            return;
+        }
+
+        filtradas.slice(0, 4).forEach(d => {
+            const li = document.createElement("li");
+            li.textContent = d.nombre;
+            li.className = "px-2 py-1 hover:bg-blue-600 hover:text-white cursor-pointer";
+
+            li.addEventListener("click", () => {
+                divisaInput.value = d.nombre;
+                divisaList.classList.add("hidden");
+                paginaActual = 1;
+                obtenerPosiciones(); // Recargar con el filtro
+            });
+            divisaList.appendChild(li);
+        });
+        divisaList.classList.remove("hidden");
+    }
+
+    divisaInput.addEventListener("input", () => {
+        mostrarOpciones(divisaInput.value);
+        if (divisaInput.value.trim() === '') {
+             paginaActual = 1;
+             obtenerPosiciones();
+        }
+    });
+
+    document.addEventListener("click", (e) => {
+        if (!divisaInput.contains(e.target) && !divisaList.contains(e.target)) {
+            divisaList.classList.add("hidden");
+        }
+    });
+
+    // --- 3. Función Principal Fetch ---
     function obtenerPosiciones() {
         const params = new URLSearchParams();
-        // Asumiendo que el id del filtro divisa es un input text, si es select usa .value
-        // params.set('divisa', divisaInput.value); 
+        
+        if (divisaInput.value.trim() !== '') {
+            params.set('divisa', divisaInput.value.trim());
+        }
         
         params.set('monto', montoInput.value);
         params.set('precio', precioInput.value);
@@ -33,7 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
         params.set('pagina', paginaActual);
 
         fetch(`https://cambiosorion.cl/data/posiciones.php?${params.toString()}`)
-            .then(res => res.text()) // Leer como texto primero
+            .then(res => res.text())
             .then(text => {
                 console.log("Respuesta cruda posiciones:", text);
                 try {
@@ -78,7 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // --- Funciones de Paginación (Standard) ---
+    // --- Funciones de Paginación ---
     function renderizarConteo(mostrados, total, porPagina, pagina) {
         if (!conteoResultados) return;
         if (total === 0) {
@@ -98,9 +155,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (pagina > 1) paginacionContainer.appendChild(crearBotonPaginacion('Anterior', pagina - 1));
         
-        // Lógica simplificada de botones (1, 2, 3...)
         for (let i = 1; i <= totalPaginas; i++) {
-             // Mostrar solo si está cerca de la página actual (opcional)
              if (i === 1 || i === totalPaginas || (i >= pagina - 2 && i <= pagina + 2)) {
                 paginacionContainer.appendChild(crearBotonPaginacion(i, i, i === pagina));
              }
@@ -135,11 +190,12 @@ document.addEventListener("DOMContentLoaded", () => {
             montoInput.value = '';
             precioInput.value = '';
             buscarInput.value = '';
-            // divisaSelect.value = ''; 
+            divisaInput.value = '';
             paginaActual = 1;
             obtenerPosiciones();
         });
     }
 
+    cargarDivisas(); // Ahora llama a posiciones.php
     obtenerPosiciones();
 });
