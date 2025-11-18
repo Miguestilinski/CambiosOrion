@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
             btnMostrar.addEventListener('click', () => {
                 window.location.href = `detalle-ing?id=${item.id}`;
             });
-            
+
             tr.innerHTML = `
                 <td class="px-4 py-2">${item.id}</td>
                 <td class="px-4 py-2">${formatDate(item.fecha)}</td>
@@ -91,6 +91,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     </button>
                 </td>
             `;
+            
+            tr.querySelector('.mostrar-btn-cell').appendChild(btnMostrar);
+
             tablaIngresos.appendChild(tr);
         });
     }
