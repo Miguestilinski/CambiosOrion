@@ -8,123 +8,188 @@ document.addEventListener("DOMContentLoaded", () => {
     const imprimirBtn = document.getElementById("imprimir");
 
     if (!ingresoId) {
-        infoContenedor.innerHTML = "<p>ID de ingreso no proporcionado.</p>";
+        infoContenedor.innerHTML = "<p class='text-white'>ID de ingreso no proporcionado.</p>";
         return;
     }
 
+    // --- Helpers de Formato ---
     const formatearFecha = (timestamp) => {
         if (!timestamp) return ''; 
         const fecha = new Date(timestamp);
-        if (isNaN(fecha.getTime())) return timestamp;
-        // Formato simple DD/MM/YYYY HH:MM
-        return fecha.toLocaleString('es-CL');
+        return isNaN(fecha.getTime()) ? timestamp : fecha.toLocaleString('es-CL');
     };
 
     const formatNumber = (num) => {
         const n = parseFloat(num);
-        if (isNaN(n)) return num;
-        return n.toLocaleString('es-CL', {minimumFractionDigits: 1, maximumFractionDigits: 1});
+        return isNaN(n) ? num : n.toLocaleString('es-CL', {minimumFractionDigits: 1, maximumFractionDigits: 1});
+    };
+
+    // --- Helper Visuales ---
+    const getBadgeColor = (estado) => {
+        const est = (estado || '').toLowerCase();
+        if (est === 'vigente') return 'bg-green-900 text-green-300 border border-green-700';
+        if (est === 'anulado') return 'bg-red-900 text-red-300 border border-red-700';
+        if (est === 'cerrado') return 'bg-gray-700 text-gray-300 border border-gray-600';
+        return 'bg-blue-900 text-blue-300';
+    };
+
+    // Función para asignar icono según divisa (puedes cambiar los emojis por <img> con rutas reales)
+    const getDivisaIcon = (nombreDivisa) => {
+        const nombre = (nombreDivisa || '').toLowerCase();
+        // SVG genérico de billete como fallback
+        const iconoSvg = `<svg class="w-8 h-8 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
+        
+        // Si tienes iconos de banderas, descomenta y usa: return `<img src="/assets/flags/usa.png" class="w-8 h-8 shadow-sm rounded-full">`;
+        if (nombre.includes('dólar') || nombre.includes('usa')) return `<div class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full text-xl">🇺🇸</div>`;
+        if (nombre.includes('euro')) return `<div class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full text-xl">🇪🇺</div>`;
+        if (nombre.includes('peso') || nombre.includes('chileno')) return `<div class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full text-xl">🇨🇱</div>`;
+        
+        return iconoSvg;
     };
 
     function cargarDetalleIngreso() {
         fetch(`https://cambiosorion.cl/data/detalle-ing.php?id=${ingresoId}`)
             .then(async res => {
                 const text = await res.text();
-                return JSON.parse(text);
+                try { return JSON.parse(text); } catch (e) { throw new Error("Respuesta no válida del servidor"); }
             })    
             .then(data => {
                 if (data.error) {
-                    infoContenedor.innerHTML = `<p>${data.error}</p>`;
+                    infoContenedor.innerHTML = `<p class="text-red-400">${data.error}</p>`;
                     return;
                 }
 
                 const ing = data.ingreso;
                 const esCuenta = ing.tipo_ingreso === 'Cuenta';
+                const divisaIcon = getDivisaIcon(ing.nombre_divisa);
+                const badgeClass = getBadgeColor(ing.estado);
 
-                // Construcción dinámica de filas para que se vea limpio como en la captura
-                let htmlCampos = `
-                    <div class="py-1"><span class="font-bold">Estado:</span> ${ing.estado || 'N/A'}</div>
-                    <div class="py-1"><span class="font-bold">Tipo de ingreso:</span> ${ing.tipo_ingreso || 'N/A'}</div>
+                // --- CONSTRUCCIÓN DEL HTML REDISEÑADO ---
+                let html = `
+                <div class="flex flex-col gap-6">
                     
-                    <div class="border-t border-gray-600 my-2 pt-2">
-                        <div class="py-1"><span class="font-bold">Caja:</span> ${ing.nombre_caja || 'N/A'}</div>
-                        <div class="py-1"><span class="font-bold">Cajero:</span> ${ing.nombre_cajero || 'N/A'}</div>
+                    <div class="flex justify-between items-start">
+                        <div>
+                           <span class="text-gray-400 text-xs uppercase tracking-wider">ID Operación</span>
+                           <h2 class="text-3xl font-bold text-white">#${ing.id}</h2>
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-xs font-medium uppercase tracking-wide ${badgeClass}">
+                            ${ing.estado || 'Desconocido'}
+                        </span>
                     </div>
 
-                    <div class="border-t border-gray-600 my-2 pt-2">
-                        <div class="py-1"><span class="font-bold">Divisa:</span> ${ing.nombre_divisa || 'N/A'}</div>
-                        <div class="py-1"><span class="font-bold">Cliente:</span> ${ing.nombre_cliente || 'N/A'}</div>
+                    <div class="bg-gray-700/50 border border-gray-600 rounded-xl p-6 flex items-center justify-between shadow-lg">
+                        <div class="flex items-center gap-4">
+                            ${divisaIcon}
+                            <div>
+                                <p class="text-gray-400 text-sm">Monto Ingresado</p>
+                                <p class="text-3xl font-bold text-white tracking-tight">${formatNumber(ing.monto)} <span class="text-lg text-yellow-500 font-normal">${ing.simbolo_divisa || ''}</span></p>
+                                <p class="text-sm text-gray-300">${ing.nombre_divisa}</p>
+                            </div>
+                        </div>
+                        <div class="text-right hidden sm:block">
+                            <p class="text-gray-400 text-xs uppercase">Por Pagar</p>
+                            <p class="text-xl font-semibold text-white">${formatNumber(ing.monto)}</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        
+                        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 space-y-3">
+                            <h3 class="text-yellow-500 text-xs font-bold uppercase tracking-widest mb-2 border-b border-gray-700 pb-2">Información Operativa</h3>
+                            
+                            <div class="flex justify-between">
+                                <span class="text-gray-400 text-sm">Tipo Ingreso:</span>
+                                <span class="text-white font-medium">${ing.tipo_ingreso}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-400 text-sm">Caja:</span>
+                                <span class="text-white font-medium">${ing.nombre_caja || '—'}</span>
+                            </div>
+                             <div class="flex justify-between">
+                                <span class="text-gray-400 text-sm">Cajero:</span>
+                                <span class="text-white font-medium">${ing.nombre_cajero || '—'}</span>
+                            </div>
+                             <div class="flex justify-between">
+                                <span class="text-gray-400 text-sm">Fecha:</span>
+                                <span class="text-white font-medium text-right">${formatearFecha(ing.fecha)}</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 space-y-3">
+                            <h3 class="text-blue-400 text-xs font-bold uppercase tracking-widest mb-2 border-b border-gray-700 pb-2">Contraparte y Cuentas</h3>
+                            
+                            <div class="flex justify-between">
+                                <span class="text-gray-400 text-sm">Cliente:</span>
+                                <span class="text-white font-medium text-right truncate w-1/2">${ing.nombre_cliente || '—'}</span>
+                            </div>
                 `;
 
-                // Lógica de visualización de Cuentas (Estilo Sistema Antiguo)
                 if (esCuenta) {
-                    // Si es 'Cuenta', mostramos Origen y Destino
-                    htmlCampos += `
-                        <div class="py-1"><span class="font-bold">Cuenta origen:</span> ${ing.nombre_cuenta_origen || '—'}</div>
-                        <div class="py-1"><span class="font-bold">Cuenta destino:</span> ${ing.nombre_cuenta_destino || '—'}</div>
+                    html += `
+                        <div class="flex justify-between">
+                            <span class="text-gray-400 text-sm">Cuenta Origen:</span>
+                            <span class="text-white font-medium text-right truncate w-1/2" title="${ing.nombre_cuenta_origen}">${ing.nombre_cuenta_origen || '—'}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-400 text-sm">Cuenta Destino:</span>
+                            <span class="text-white font-medium text-right truncate w-1/2" title="${ing.nombre_cuenta_destino}">${ing.nombre_cuenta_destino || '—'}</span>
+                        </div>
                     `;
                 } else {
-                    // Si es 'Efectivo', SOLO mostramos destino si existe, Origen no aplica
-                    htmlCampos += `
-                         <div class="py-1"><span class="font-bold">Cuenta destino:</span> ${ing.nombre_cuenta_destino || '—'}</div>
+                    html += `
+                        <div class="flex justify-between">
+                            <span class="text-gray-400 text-sm">Cuenta Destino:</span>
+                            <span class="text-white font-medium text-right truncate w-1/2" title="${ing.nombre_cuenta_destino}">${ing.nombre_cuenta_destino || '—'}</span>
+                        </div>
+                        <div class="mt-2 text-xs text-gray-500 italic text-right">
+                            * Ingreso en efectivo sin cuenta de origen
+                        </div>
                     `;
                 }
 
-                htmlCampos += `
-                        <div class="py-1"><span class="font-bold">Monto:</span> ${formatNumber(ing.monto)}</div>
-                        <div class="py-1"><span class="font-bold">Monto por pagar:</span> ${formatNumber(ing.monto)}</div>
+                html += `
+                        </div>
                     </div>
+
+                    ${ing.detalle ? `
+                    <div class="bg-gray-800 p-4 rounded-lg border border-gray-700">
+                        <span class="text-gray-400 text-xs uppercase font-bold">Observaciones / Detalle:</span>
+                        <p class="text-white mt-1 italic text-sm">${ing.detalle}</p>
+                    </div>
+                    ` : ''}
                     
-                    <div class="border-t border-gray-600 my-2 pt-2">
-                        <div class="py-1"><span class="font-bold">Detalle:</span> ${ing.detalle || ''}</div>
-                    </div>
+                </div>
                 `;
 
-                infoContenedor.innerHTML = htmlCampos;
+                infoContenedor.innerHTML = html;
 
-                // --- Manejo de Tabla de Pagos ---
+                // --- Manejo de Tabla de Pagos (Misma lógica limpia) ---
                 const pagos = data.pagos || [];
                 if (pagos.length === 0) {
-                    // Muestra la tabla vacía con el mensaje "Ningún dato disponible"
                     pagosContenedor.innerHTML = `
-                        <table class="w-full text-sm text-left text-white bg-gray-800">
-                            <thead class="text-xs uppercase bg-yellow-700 text-white">
-                                <tr>
-                                    <th class="px-4 py-2">Fecha de ingreso</th>
-                                    <th class="px-4 py-2">Forma de pago</th>
-                                    <th class="px-4 py-2">Cuenta</th>
-                                    <th class="px-4 py-2">Monto</th>
-                                    <th class="px-4 py-2">Detalle</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="bg-gray-200 text-gray-500 text-center">
-                                    <td colspan="5" class="py-4">Ningún dato disponible en esta tabla</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="w-full p-6 text-center bg-gray-800 rounded-lg border border-gray-700">
+                            <p class="text-gray-400 text-sm">No se han registrado pagos parciales para este ingreso.</p>
+                        </div>
                     `;
                 } else {
-                    // Si existieran pagos reales (futuro)
                     const tablaHTML = `
-                        <table class="w-full text-sm text-left text-white bg-gray-800">
+                        <table class="w-full text-sm text-left text-white bg-gray-800 rounded-lg overflow-hidden">
                             <thead class="text-xs uppercase bg-yellow-700 text-white">
                                 <tr>
-                                    <th class="px-4 py-2">Fecha de ingreso</th>
-                                    <th class="px-4 py-2">Forma de pago</th>
-                                    <th class="px-4 py-2">Cuenta</th>
-                                    <th class="px-4 py-2">Monto</th>
-                                    <th class="px-4 py-2">Detalle</th>
+                                    <th class="px-4 py-3">Fecha</th>
+                                    <th class="px-4 py-3">Forma Pago</th>
+                                    <th class="px-4 py-3">Monto</th>
+                                    <th class="px-4 py-3">Detalle</th>
                                 </tr>
                             </thead>
                             <tbody>
                             ${pagos.map(p => `
-                                <tr class="border-b bg-white border-gray-700 text-gray-700">
-                                    <td class="px-4 py-2">${formatearFecha(p.fecha)}</td>
-                                    <td class="px-4 py-2">${p.forma_pago || ''}</td>
-                                    <td class="px-4 py-2">${p.cuenta || ''}</td>
-                                    <td class="px-4 py-2">${formatNumber(p.monto)}</td>
-                                    <td class="px-4 py-2">${p.detalle || ''}</td>
+                                <tr class="border-b bg-gray-700 border-gray-600 hover:bg-gray-600 transition">
+                                    <td class="px-4 py-3">${formatearFecha(p.fecha)}</td>
+                                    <td class="px-4 py-3">${p.forma_pago || ''}</td>
+                                    <td class="px-4 py-3 font-bold text-yellow-400">${formatNumber(p.monto)}</td>
+                                    <td class="px-4 py-3">${p.detalle || ''}</td>
                                 </tr>
                             `).join("")}
                             </tbody>
@@ -133,6 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     pagosContenedor.innerHTML = tablaHTML;
                 }
 
+                // Estado de Botones
                 if (ing.estado === 'Anulado' || ing.estado === 'Cerrado') {
                     anularBtn.disabled = true;
                     anularBtn.classList.add("opacity-50", "cursor-not-allowed");
@@ -143,20 +209,18 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .catch(err => {
                 console.error(err);
-                infoContenedor.innerHTML = "<p>Error al cargar los detalles del ingreso.</p>";
+                infoContenedor.innerHTML = "<p>Error de conexión.</p>";
             });
     }
 
-    imprimirBtn.addEventListener("click", () => {
-        window.print();
-    });
+    imprimirBtn.addEventListener("click", () => window.print());
 
     anularBtn.addEventListener("click", () => {
         mostrarModal({
-            titulo: "⚠️ Confirmar Anulación",
-            mensaje: "¿Estás seguro que deseas anular este ingreso?",
-            textoConfirmar: "Anular",
-            textoCancelar: "Cancelar",
+            titulo: "⚠️ Anular Ingreso",
+            mensaje: "¿Confirmas que deseas anular esta operación? Esta acción es irreversible.",
+            textoConfirmar: "Sí, Anular",
+            textoCancelar: "Volver",
             onConfirmar: () => {
                 fetch(`https://cambiosorion.cl/data/detalle-ing.php`, {
                     method: "POST",
@@ -166,62 +230,38 @@ document.addEventListener("DOMContentLoaded", () => {
                 .then(res => res.json())
                 .then(response => {
                     if (response.success) {
-                        mostrarModal({
-                            titulo: "✅ Éxito",
-                            mensaje: "El ingreso ha sido anulado.",
-                            onConfirmar: () => location.reload()
-                        });
+                        mostrarModal({ titulo: "✅ Éxito", mensaje: "Ingreso anulado correctamente.", onConfirmar: () => location.reload() });
                     } else {
-                        mostrarModal({
-                            titulo: "❌ Error",
-                            mensaje: "Error al anular: " + (response.message || "Error desconocido")
-                        });
+                        mostrarModal({ titulo: "❌ Error", mensaje: response.message });
                     }
                 })
-                .catch(err => {
-                     mostrarModal({
-                        titulo: "❌ Error de Red",
-                        mensaje: "No se pudo conectar con el servidor."
-                    });
-                });
+                .catch(() => mostrarModal({ titulo: "❌ Error", mensaje: "Error de conexión." }));
             }
         });
     });
 
+    // Modal Genérico
     function mostrarModal({ titulo, mensaje, textoConfirmar = "Aceptar", textoCancelar = null, onConfirmar, onCancelar }) {
       const modal = document.getElementById("modal-generico");
-      const tituloElem = document.getElementById("modal-generico-titulo");
-      const mensajeElem = document.getElementById("modal-generico-mensaje");
+      document.getElementById("modal-generico-titulo").textContent = titulo;
+      document.getElementById("modal-generico-mensaje").textContent = mensaje;
       const btnConfirmar = document.getElementById("modal-generico-confirmar");
       const btnCancelar = document.getElementById("modal-generico-cancelar");
 
-      tituloElem.textContent = titulo;
-      mensajeElem.textContent = mensaje;
       btnConfirmar.textContent = textoConfirmar;
-
-      if (textoCancelar) {
-        btnCancelar.classList.remove("hidden");
-        btnCancelar.textContent = textoCancelar;
-      } else {
-        btnCancelar.classList.add("hidden");
-      }
+      btnCancelar.classList.toggle("hidden", !textoCancelar);
+      if (textoCancelar) btnCancelar.textContent = textoCancelar;
 
       modal.classList.remove("hidden");
 
+      // Clonar nodos para limpiar eventos anteriores
       const newConfirm = btnConfirmar.cloneNode(true);
       const newCancel = btnCancelar.cloneNode(true);
       btnConfirmar.parentNode.replaceChild(newConfirm, btnConfirmar);
       btnCancelar.parentNode.replaceChild(newCancel, btnCancelar);
 
-      newConfirm.onclick = () => {
-        modal.classList.add("hidden");
-        if (onConfirmar) onConfirmar();
-      };
-
-      newCancel.onclick = () => {
-        modal.classList.add("hidden");
-        if (onCancelar) onCancelar();
-      };
+      newConfirm.onclick = () => { modal.classList.add("hidden"); if (onConfirmar) onConfirmar(); };
+      newCancel.onclick = () => { modal.classList.add("hidden"); if (onCancelar) onCancelar(); };
     }
 
     cargarDetalleIngreso();

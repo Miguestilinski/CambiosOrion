@@ -11,6 +11,15 @@
     <link href="https://cambiosorion.cl/orionapp/public/styles/output.css" rel="stylesheet">
     <link rel="icon" href="https://cambiosorion.cl/orionapp/icons/IsotipoOrion-blue.svg" type="image/png">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        /* Ajuste específico para impresión */
+        @media print {
+            body * { visibility: hidden; }
+            #dashboard-content, #dashboard-content * { visibility: visible; }
+            #dashboard-content { position: absolute; left: 0; top: 0; width: 100%; }
+            .no-print { display: none; }
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -128,15 +137,18 @@
                 </div>
                 
                 <!-- Información Principal -->
-                <div id="info-ingreso" class="space-y-2 mb-6 text-sm w-1/2 text-white bg-gray-800 rounded-lg p-4 border border-gray-600">
+                <div id="info-ingreso" class="space-y-2 animate-fade-in-up mb-6 text-sm w-1/2 text-white bg-gray-800 rounded-lg p-4 border border-gray-600">
+                    <div class="h-32 bg-gray-800 rounded-lg animate-pulse"></div>
                     <!-- JS llenará esta sección -->
                     <p>Cargando información...</p>
                 </div>
 
                 <!-- Tabla de Pagos -->
-                <h2 class="text-xl font-semibold text-white mb-3">Pagos de Ingreso</h2>
-                <div id="detalle-pagos-ingreso" class="space-y-4 overflow-x-auto">
-                    <!-- JS llenará esta tabla -->
+                <div class="mt-8">
+                    <h2 class="text-xl font-semibold text-white mb-3 flex items-center gap-2">Pagos de Ingreso</h2>
+                    <div id="detalle-pagos-ingreso" class="overflow-hidden rounded-lg shadow-lg">
+                        <!-- JS llenará esta tabla -->
+                    </div>
                 </div>
                 
                 <!-- Modales (Copiados de detalle-op.html) -->
@@ -154,7 +166,7 @@
             </section>
         </main>
     </div>
-    
+
     <footer>
         <div class="footer-container">
             <!-- Sección del logo -->
