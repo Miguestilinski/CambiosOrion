@@ -33,18 +33,15 @@ document.addEventListener("DOMContentLoaded", () => {
         return 'bg-blue-900 text-blue-300';
     };
 
-    // Función para asignar icono según divisa (puedes cambiar los emojis por <img> con rutas reales)
-    const getDivisaIcon = (nombreDivisa) => {
-        const nombre = (nombreDivisa || '').toLowerCase();
-        // SVG genérico de billete como fallback
-        const iconoSvg = `<svg class="w-8 h-8 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
+    // Función para mostrar icono desde DB o fallback genérico
+    const getDivisaElement = (urlIcono, nombreDivisa) => {
+        // 1. Si hay URL en la base de datos, mostramos la imagen
+        if (urlIcono && urlIcono.trim() !== "") {
+            return `<img src="${urlIcono}" alt="${nombreDivisa}" class="w-10 h-10 object-contain drop-shadow-sm">`;
+        }
         
-        // Si tienes iconos de banderas, descomenta y usa: return `<img src="/assets/flags/usa.png" class="w-8 h-8 shadow-sm rounded-full">`;
-        if (nombre.includes('dólar') || nombre.includes('usa')) return `<div class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full text-xl">🇺🇸</div>`;
-        if (nombre.includes('euro')) return `<div class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full text-xl">🇪🇺</div>`;
-        if (nombre.includes('peso') || nombre.includes('chileno')) return `<div class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full text-xl">🇨🇱</div>`;
-        
-        return iconoSvg;
+        // 2. Fallback: SVG genérico de billete si no hay icono en BD
+        return `<svg class="w-10 h-10 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
     };
 
     function cargarDetalleIngreso() {
@@ -61,10 +58,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const ing = data.ingreso;
                 const esCuenta = ing.tipo_ingreso === 'Cuenta';
-                const divisaIcon = getDivisaIcon(ing.nombre_divisa);
+                
+                // Aquí usamos la nueva función pasando la URL que viene de la BD
+                const divisaIcon = getDivisaElement(ing.icono_divisa, ing.nombre_divisa);
                 const badgeClass = getBadgeColor(ing.estado);
 
-                // --- CONSTRUCCIÓN DEL HTML REDISEÑADO ---
+                // --- CONSTRUCCIÓN DEL HTML ---
                 let html = `
                 <div class="flex flex-col gap-6">
                     
@@ -80,7 +79,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     <div class="bg-gray-700/50 border border-gray-600 rounded-xl p-6 flex items-center justify-between shadow-lg">
                         <div class="flex items-center gap-4">
-                            ${divisaIcon}
+                            <div class="bg-white/10 p-2 rounded-full">
+                                ${divisaIcon}
+                            </div>
                             <div>
                                 <p class="text-gray-400 text-sm">Monto Ingresado</p>
                                 <p class="text-3xl font-bold text-white tracking-tight">${formatNumber(ing.monto)} <span class="text-lg text-yellow-500 font-normal">${ing.simbolo_divisa || ''}</span></p>
@@ -164,7 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 infoContenedor.innerHTML = html;
 
-                // --- Manejo de Tabla de Pagos (Misma lógica limpia) ---
+                // --- Tabla de Pagos ---
                 const pagos = data.pagos || [];
                 if (pagos.length === 0) {
                     pagosContenedor.innerHTML = `
@@ -240,7 +241,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Modal Genérico
     function mostrarModal({ titulo, mensaje, textoConfirmar = "Aceptar", textoCancelar = null, onConfirmar, onCancelar }) {
       const modal = document.getElementById("modal-generico");
       document.getElementById("modal-generico-titulo").textContent = titulo;
@@ -254,7 +254,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       modal.classList.remove("hidden");
 
-      // Clonar nodos para limpiar eventos anteriores
       const newConfirm = btnConfirmar.cloneNode(true);
       const newCancel = btnCancelar.cloneNode(true);
       btnConfirmar.parentNode.replaceChild(newConfirm, btnConfirmar);
