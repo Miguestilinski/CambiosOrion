@@ -16,25 +16,20 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!timestamp) return ''; 
         const fecha = new Date(timestamp);
         if (isNaN(fecha.getTime())) return timestamp;
-        const hh = String(fecha.getHours()).padStart(2, '0');
-        const min = String(fecha.getMinutes()).padStart(2, '0');
-        const dd = String(fecha.getDate()).padStart(2, '0');
-        const mm = String(fecha.getMonth() + 1).padStart(2, '0');
-        const yyyy = fecha.getFullYear();
-        return `${hh}:${min} ${dd}/${mm}/${yyyy}`;
+        // Formato simple DD/MM/YYYY HH:MM
+        return fecha.toLocaleString('es-CL');
     };
 
     const formatNumber = (num) => {
         const n = parseFloat(num);
         if (isNaN(n)) return num;
-        return n.toLocaleString('es-CL');
+        return n.toLocaleString('es-CL', {minimumFractionDigits: 1, maximumFractionDigits: 1});
     };
 
     function cargarDetalleIngreso() {
         fetch(`https://cambiosorion.cl/data/detalle-ing.php?id=${ingresoId}`)
             .then(async res => {
                 const text = await res.text();
-                console.log("Respuesta cruda:", text);
                 return JSON.parse(text);
             })    
             .then(data => {
@@ -44,49 +39,80 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
                 const ing = data.ingreso;
+                const esCuenta = ing.tipo_ingreso === 'Cuenta';
 
-                // Lógica de visualización de Cuentas
-                let origenTexto = ing.nombre_cuenta_origen || "—";
-                let destinoTexto = ing.nombre_cuenta_destino || ing.nombre_caja || "—";
+                // Construcción dinámica de filas para que se vea limpio como en la captura
+                let htmlCampos = `
+                    <div class="py-1"><span class="font-bold">Estado:</span> ${ing.estado || 'N/A'}</div>
+                    <div class="py-1"><span class="font-bold">Tipo de ingreso:</span> ${ing.tipo_ingreso || 'N/A'}</div>
+                    
+                    <div class="border-t border-gray-600 my-2 pt-2">
+                        <div class="py-1"><span class="font-bold">Caja:</span> ${ing.nombre_caja || 'N/A'}</div>
+                        <div class="py-1"><span class="font-bold">Cajero:</span> ${ing.nombre_cajero || 'N/A'}</div>
+                    </div>
 
-                // Si es efectivo y no hay cuenta origen explícita, asumimos cliente
-                if (ing.tipo_ingreso === 'Efectivo' && !ing.nombre_cuenta_origen) {
-                    origenTexto = "Efectivo (" + (ing.nombre_cliente || 'Cliente') + ")";
+                    <div class="border-t border-gray-600 my-2 pt-2">
+                        <div class="py-1"><span class="font-bold">Divisa:</span> ${ing.nombre_divisa || 'N/A'}</div>
+                        <div class="py-1"><span class="font-bold">Cliente:</span> ${ing.nombre_cliente || 'N/A'}</div>
+                `;
+
+                // Lógica de visualización de Cuentas (Estilo Sistema Antiguo)
+                if (esCuenta) {
+                    // Si es 'Cuenta', mostramos Origen y Destino
+                    htmlCampos += `
+                        <div class="py-1"><span class="font-bold">Cuenta origen:</span> ${ing.nombre_cuenta_origen || '—'}</div>
+                        <div class="py-1"><span class="font-bold">Cuenta destino:</span> ${ing.nombre_cuenta_destino || '—'}</div>
+                    `;
+                } else {
+                    // Si es 'Efectivo', SOLO mostramos destino si existe, Origen no aplica
+                    htmlCampos += `
+                         <div class="py-1"><span class="font-bold">Cuenta destino:</span> ${ing.nombre_cuenta_destino || '—'}</div>
+                    `;
                 }
 
-                const infoHTML = `
-                    <div><span class="font-semibold text-gray-300">ID Ingreso:</span> ${ing.id}</div>
-                    <div><span class="font-semibold text-gray-300">Estado:</span> ${ing.estado || 'N/A'}</div>
-                    <div><span class="font-semibold text-gray-300">Tipo de ingreso:</span> ${ing.tipo_ingreso || 'N/A'}</div>
-                    <div><span class="font-semibold text-gray-300">Caja:</span> ${ing.nombre_caja || 'N/A'}</div>
-                    <div><span class="font-semibold text-gray-300">Cajero:</span> ${ing.nombre_cajero || 'N/A'}</div>
-                    <div><span class="font-semibold text-gray-300">Divisa:</span> ${ing.nombre_divisa || 'N/A'}</div>
-                    <div><span class="font-semibold text-gray-300">Cliente:</span> ${ing.nombre_cliente || 'N/A'}</div>
-                    
-                    <div class="mt-2 border-t border-gray-600 pt-2">
-                        <div><span class="font-semibold text-gray-300">Cuenta Origen:</span> ${origenTexto}</div>
-                        <div><span class="font-semibold text-gray-300">Cuenta Destino:</span> ${destinoTexto}</div>
+                htmlCampos += `
+                        <div class="py-1"><span class="font-bold">Monto:</span> ${formatNumber(ing.monto)}</div>
+                        <div class="py-1"><span class="font-bold">Monto por pagar:</span> ${formatNumber(ing.monto)}</div>
                     </div>
                     
-                    <div class="mt-2 border-t border-gray-600 pt-2">
-                        <div><span class="font-semibold text-gray-300">Monto:</span> ${formatNumber(ing.monto)}</div>
-                        <div><span class="font-semibold text-gray-300">Monto por pagar:</span> ${formatNumber(ing.monto)}</div>
-                        <div><span class="font-semibold text-gray-300">Detalle:</span> ${ing.detalle || 'Ninguno'}</div>
+                    <div class="border-t border-gray-600 my-2 pt-2">
+                        <div class="py-1"><span class="font-bold">Detalle:</span> ${ing.detalle || ''}</div>
                     </div>
                 `;
-                infoContenedor.innerHTML = infoHTML;
 
+                infoContenedor.innerHTML = htmlCampos;
+
+                // --- Manejo de Tabla de Pagos ---
                 const pagos = data.pagos || [];
                 if (pagos.length === 0) {
-                    pagosContenedor.innerHTML = '<p class="text-white p-4 bg-gray-800 rounded">No hay información de pagos.</p>';
+                    // Muestra la tabla vacía con el mensaje "Ningún dato disponible"
+                    pagosContenedor.innerHTML = `
+                        <table class="w-full text-sm text-left text-white bg-gray-800">
+                            <thead class="text-xs uppercase bg-yellow-700 text-white">
+                                <tr>
+                                    <th class="px-4 py-2">Fecha de ingreso</th>
+                                    <th class="px-4 py-2">Forma de pago</th>
+                                    <th class="px-4 py-2">Cuenta</th>
+                                    <th class="px-4 py-2">Monto</th>
+                                    <th class="px-4 py-2">Detalle</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-gray-200 text-gray-500 text-center">
+                                    <td colspan="5" class="py-4">Ningún dato disponible en esta tabla</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    `;
                 } else {
+                    // Si existieran pagos reales (futuro)
                     const tablaHTML = `
                         <table class="w-full text-sm text-left text-white bg-gray-800">
-                            <thead class="text-xs uppercase bg-gray-800 text-white">
+                            <thead class="text-xs uppercase bg-yellow-700 text-white">
                                 <tr>
-                                    <th class="px-4 py-2">Fecha</th>
+                                    <th class="px-4 py-2">Fecha de ingreso</th>
                                     <th class="px-4 py-2">Forma de pago</th>
-                                    <th class="px-4 py-2">Cuenta Destino</th>
+                                    <th class="px-4 py-2">Cuenta</th>
                                     <th class="px-4 py-2">Monto</th>
                                     <th class="px-4 py-2">Detalle</th>
                                 </tr>
@@ -107,10 +133,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     pagosContenedor.innerHTML = tablaHTML;
                 }
 
-                if (ing.estado === 'Anulado') {
+                if (ing.estado === 'Anulado' || ing.estado === 'Cerrado') {
                     anularBtn.disabled = true;
-                    anularBtn.textContent = 'Anulado';
                     anularBtn.classList.add("opacity-50", "cursor-not-allowed");
+                    if(ing.estado === 'Cerrado') anularBtn.textContent = "Cerrado"; 
+                    if(ing.estado === 'Anulado') anularBtn.textContent = "Anulado";
                 }
 
             })
