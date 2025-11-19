@@ -291,23 +291,22 @@ document.addEventListener("DOMContentLoaded", () => {
     const divisaId = divisaInput ? divisaInput.dataset.id : null;
 
     // Validaciones Visuales
-    if (!cajaSelect.value) return alert("Seleccione una caja de destino");
+    if (!cajaSelect.value) return mostrarAlerta("Seleccione una caja de destino.");
     
     // Si es divisa manual, validar ID. Si vino por cuenta, validar que tengamos ID (o nombre al menos)
     // Nota: Si el usuario escribe "Dolar" pero no selecciona de la lista, dataset.id estará vacío.
     // Es recomendable forzar la selección.
     if (!divisaId && divisaInput.value) {
-        // Intento de recuperación fallback o error
-        return alert("Por favor seleccione la divisa de la lista desplegable para asegurar el código correcto.");
+        return mostrarAlerta("Por favor seleccione la divisa de la lista desplegable para asegurar el código correcto.");
     }
-    if (!divisaId) return alert("Seleccione una divisa");
+    if (!divisaId) return mostrarAlerta("Debe seleccionar una divisa.");;
 
-    if (isNaN(montoRaw) || montoRaw <= 0) return alert("Ingrese un monto válido mayor a 0");
+    if (isNaN(montoRaw) || montoRaw <= 0) return mostrarAlerta("Ingrese un monto válido mayor a 0.");
 
     // Validar cuenta si el tipo es 'cuenta'
     const cuentaId = cuentaInput.dataset.id;
     if (inputTipoHidden.value === 'cuenta' && !cuentaId) {
-        return alert("Para ingresos de tipo 'Cuenta', debe seleccionar una cuenta de origen válida.");
+        return mostrarAlerta("Para ingresos de tipo 'Cuenta', debe seleccionar una cuenta de origen válida.");
     }
 
     const payload = {
@@ -342,13 +341,25 @@ document.addEventListener("DOMContentLoaded", () => {
         actualizarInfoDeuda(0, "");
         
       } else {
-        alert("Error al registrar: " + (data.error || data.message));
+        mostrarAlerta(data.error || data.message, "Error al Registrar"); // Reemplaza el alert de error del backend
       }
     } catch (error) {
       console.error("Error submit:", error);
-      alert("Error de conexión con el servidor.");
+      mostrarAlerta(data.error || data.message, "Error de conexión con el servidor.");
     }
   });
+
+  // Helper para mostrar modales en vez de alerts
+  function mostrarAlerta(mensaje, titulo = "Atención") {
+      const modal = document.getElementById("modal-alerta");
+      document.getElementById("modal-titulo").textContent = titulo;
+      document.getElementById("modal-mensaje").textContent = mensaje;
+      modal.classList.remove("hidden");
+      
+      // Botón cerrar
+      const btnCerrar = document.getElementById("cerrar-modal");
+      btnCerrar.onclick = () => modal.classList.add("hidden");
+  }
 
   // Botones del Modal Exitoso
   const btnNuevaOp = document.getElementById("nueva-ingreso"); // ID del botón en tu HTML nuevo-ing.html (chequear ID)
