@@ -165,15 +165,15 @@ document.addEventListener("DOMContentLoaded", () => {
         // Helper Visual
         const renderCurrencyList = (lista, alignRight = false) => {
             return lista.map(item => {
-                const icon = item.id === 'D47' ? `<img src="https://cambiosorion.cl/orionapp/icons/chile.svg" class="w-6 h-6 object-contain drop-shadow-md inline-block" onerror="this.style.display='none'">` : getDivisaElement(item.icono, item.nombre);
+                const icon = item.id === 'D47' ? `<img src="https://cambiosorion.cl/orionapp/node_modules/circle-flags/flags/cl.svg" class="w-6 h-6 object-contain drop-shadow-md inline-block" onerror="this.style.display='none'">` : getDivisaElement(item.icono, item.nombre);
                 return `
                     <div class="flex items-center gap-3 ${alignRight ? 'justify-end' : ''} mb-3">
                         ${!alignRight ? icon : ''}
                         <div class="flex flex-col ${alignRight ? 'items-end' : 'items-start'}">
-                            <span class="text-2xl font-bold text-white leading-none tracking-tight">
-                                <span class="text-gray-500 text-sm font-normal mr-1">${item.simbolo}</span>${formatNumber(item.meta)} <span class="text-xs text-blue-400 font-bold ml-1">${item.codigo}</span>
+                            <span class="text-3xl font-bold text-white leading-none tracking-tight">
+                                <span class="text-gray-500 text-md font-normal mr-1">${item.simbolo}</span>${formatNumber(item.meta)} <span class="text-xs text-blue-400 font-bold ml-1">${item.codigo}</span>
                             </span>
-                            <div class="text-xs text-gray-400 font-mono mt-1 bg-gray-900/50 px-2 py-0.5 rounded">
+                            <div class="text-sm text-gray-400 font-mono mt-1 bg-gray-900/50 px-2 py-0.5 rounded">
                                 Pagado: ${formatNumber(item.pagado)}
                             </div>
                         </div>
@@ -218,7 +218,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     
                     <div class="flex justify-between items-end mb-6 px-2">
                         <div class="text-left w-1/2 border-r border-gray-700/50 pr-6">
-                            <div class="text-blue-400 text-xs font-bold uppercase mb-4">Cliente Entrega</div>
+                            <div class="text-blue-400 text-sm font-bold uppercase mb-4">Cliente Entrega</div>
                             <div class="flex flex-col gap-4">
                                 ${renderCurrencyList(listaCliente, false)}
                             </div>
@@ -229,7 +229,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         </div>
 
                         <div class="text-right w-1/2 pl-6">
-                            <div class="text-purple-400 text-xs font-bold uppercase mb-4">Orion Entrega</div>
+                            <div class="text-purple-400 text-sm font-bold uppercase mb-4">Orion Entrega</div>
                             <div class="flex flex-col gap-4">
                                 ${renderCurrencyList(listaOrion, true)}
                             </div>
