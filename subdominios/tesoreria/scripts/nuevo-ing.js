@@ -38,12 +38,18 @@ document.addEventListener("DOMContentLoaded", () => {
   // A. Obtener Sesión Activa (Cajero)
   async function obtenerSesionActiva() {
       try {
-          const res = await fetch("https://cambiosorion.cl/data/session_status.php");
+          // CAMBIO AQUÍ: Agregamos { credentials: 'include' } para que envíe la cookie de sesión
+          const res = await fetch("https://cambiosorion.cl/data/session_status.php", { 
+              credentials: 'include' 
+          });
           const session = await res.json();
+          
+          // Log para verificar que ESTE archivo recibe bien la sesión
+          console.log("Sesión en nuevo-ing:", session); 
           
           if (session.isAuthenticated && session.equipo_id) {
               usuarioSesionId = session.equipo_id;
-              console.log("Cajero identificado ID:", usuarioSesionId);
+              // console.log("Cajero identificado ID:", usuarioSesionId); // Opcional
               
               // Habilitar botón si hay sesión
               if(btnSubmit) {
