@@ -1467,6 +1467,10 @@ input:checked + .toggle-bg {
   max-width: 80rem;
 }
 
+.max-w-8xl {
+  max-width: 82rem;
+}
+
 .max-w-lg {
   max-width: 32rem;
 }
