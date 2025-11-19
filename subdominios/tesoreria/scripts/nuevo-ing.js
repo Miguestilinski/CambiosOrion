@@ -24,7 +24,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- 1. CONFIGURACIÓN INICIAL ---
 
-  // Cargar Cajas y Pre-seleccionar Tesorería (index 0)
+  // A. Obtener Sesión Activa (Cajero)
+  async function obtenerSesionActiva() {
+      try {
+          const res = await fetch("https://cambiosorion.cl/data/session_status.php");
+          const session = await res.json();
+          
+          if (session.isAuthenticated && session.equipo_id) {
+              usuarioSesionId = session.equipo_id;
+              console.log("Cajero identificado ID:", usuarioSesionId);
+          } else {
+              // Si no hay sesión, podrías redirigir o avisar
+              mostrarAlerta("No se ha detectado una sesión activa. Por favor inicie sesión nuevamente.");
+          }
+      } catch (error) {
+          console.error("Error verificando sesión:", error);
+      }
+  }
+  obtenerSesionActiva();
+
+  // B. Cargar Cajas y Pre-seleccionar Tesorería
   async function cargarCajas() {
     try {
       const res = await fetch("https://cambiosorion.cl/data/nuevo-ing.php?buscar_cajas=1");
@@ -317,6 +336,7 @@ document.addEventListener("DOMContentLoaded", () => {
       cuenta_id: cuentaId || null,
       divisa_id: divisaId,
       monto: montoRaw,
+      usuario_id: usuarioSesionId
     };
 
     try {
