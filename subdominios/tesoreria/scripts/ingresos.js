@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="px-4 py-2 font-bold text-gray-900">${montoFmt}</td>
                 <td class="px-4 py-2"><span class="px-2 py-1 rounded text-xs font-bold uppercase ${estadoClass}">${item.estado}</span></td>
                 <td class="px-4 py-2 text-center">
-                    <button onclick="window.location.href='detalle-ing?id=${item.id}'" class="text-white bg-blue-700 hover:bg-blue-800 rounded-lg text-sm px-3 py-1">Ver</button>
+                    <button onclick="window.location.href='detalle-ing?id=${item.id}'" class="text-white bg-blue-700 hover:bg-blue-800 rounded-lg text-sm px-3 py-1">Mostrar</button>
                 </td>
             `;
             tbody.appendChild(tr);
