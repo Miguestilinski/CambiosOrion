@@ -83,54 +83,98 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
 
-    // --- 3. RENDERIZADO DEL DASHBOARD ---
+    // --- 3. RENDERIZADO DEL DASHBOARD (Corregido) ---
     function renderDashboard(data) {
         const op = data.operacion;
         const detalles = data.detalles || [];
         const pagos = data.pagos || [];
 
-        // --- LÓGICA FINANCIERA (Separación de Deudas) ---
-        const esVenta = op.tipo_transaccion === "Venta";
+        // --- LÓGICA FINANCIERA ---
+        const esVenta = op.tipo_transaccion === "Venta"; 
         
-        // 1. Calcular Totales (Metas)
+        // 1. Calcular Totales
         const totalCLP = parseFloat(op.total);
         const totalExt = detalles.reduce((acc, d) => acc + parseFloat(d.monto), 0);
-        const divisaExt = detalles[0]?.divisa || "Divisa"; // Nombre divisa extranjera
-        const divisaExtCod = detalles[0]?.divisa_id || "EXT";
+        const divisaExtInfo = detalles[0] || { divisa: "Divisa", divisa_id: "EXT", divisa_icono: "" };
 
-        // 2. Asignar Roles
-        let metaCliente = 0, pagadoCliente = 0, divisaCliente = "";
-        let metaOrion = 0, pagadoOrion = 0, divisaOrion = "";
+        // 2. Asignar Roles (Quién debe qué)
+        let metaCliente = 0, divisaCliente = "", divisaClienteId = "";
+        let metaOrion = 0, divisaOrion = "", divisaOrionId = "";
 
         if (esVenta) {
             // Venta: Cliente paga CLP, Orion entrega Divisa
-            metaCliente = totalCLP; divisaCliente = "CLP";
-            metaOrion = totalExt; divisaOrion = divisaExt; // Ej: USD
+            metaCliente = totalCLP; divisaCliente = "CLP"; divisaClienteId = "D47";
+            metaOrion = totalExt; divisaOrion = divisaExtInfo.divisa; divisaOrionId = divisaExtInfo.divisa_id;
         } else {
             // Compra: Cliente entrega Divisa, Orion paga CLP
-            metaCliente = totalExt; divisaCliente = divisaExt;
-            metaOrion = totalCLP; divisaOrion = "CLP";
+            metaCliente = totalExt; divisaCliente = divisaExtInfo.divisa; divisaClienteId = divisaExtInfo.divisa_id;
+            metaOrion = totalCLP; divisaOrion = "CLP"; divisaOrionId = "D47";
         }
 
-        // 3. Sumar Pagos (Filtrando estrictamente para no mezclar peras con manzanas)
-        // Nota: Asumimos que si divisaCliente es CLP (D47), sumamos los pagos D47 del cliente.
+        // 3. Sumar Pagos (Filtrando estrictamente por moneda)
+        let pagadoCliente = 0;
+        let pagadoOrion = 0;
+
         pagos.forEach(p => {
             const monto = parseFloat(p.monto);
             if (p.origen === 'cliente') {
-                // Si es CLP y cliente debe CLP, o si es Ext y cliente debe Ext
-                if ((divisaCliente === "CLP" && p.divisa_id === "D47") || (divisaCliente !== "CLP" && p.divisa_id !== "D47")) {
-                    pagadoCliente += monto;
-                }
+                // Si la deuda es CLP y pagan CLP, o si es Extranjera y pagan esa Extranjera
+                if (p.divisa_id === divisaClienteId) pagadoCliente += monto;
             } else if (p.origen === 'orion') {
-                if ((divisaOrion === "CLP" && p.divisa_id === "D47") || (divisaOrion !== "CLP" && p.divisa_id !== "D47")) {
-                    pagadoOrion += monto;
-                }
+                if (p.divisa_id === divisaOrionId) pagadoOrion += monto;
             }
         });
 
+        // 4. Cálculos de Estado
+        const pctCliente = metaCliente > 0 ? Math.min(100, (pagadoCliente / metaCliente) * 100) : (pagadoCliente > 0 ? 100 : 0);
+        const pctOrion = metaOrion > 0 ? Math.min(100, (pagadoOrion / metaOrion) * 100) : (pagadoOrion > 0 ? 100 : 0);
+        const deudaCliente = Math.max(0, metaCliente - pagadoCliente);
+        const deudaOrion = Math.max(0, metaOrion - pagadoOrion);
+
+        let estadoReal = "Vigente";
+        if (pagadoCliente > 0) estadoReal = "Abonado";
+        // Pagado solo si ambos terminaron (tolerancia de 1.0)
+        if (deudaCliente < 1 && deudaOrion < 1) estadoReal = "Pagado";
+        if (op.estado === "Anulado") estadoReal = "Anulado";
+
+        // --- AQUÍ CREAMOS EL OBJETO 'fin' QUE FALTABA ---
+        const fin = {
+            estadoCalculado: estadoReal,
+            esVenta: esVenta,
+            cliente: {
+                meta: metaCliente,
+                pagado: pagadoCliente,
+                pct: pctCliente,
+                divisaId: divisaClienteId,
+                listo: deudaCliente < 1
+            },
+            orion: {
+                meta: metaOrion,
+                pagado: pagadoOrion,
+                pct: pctOrion,
+                divisaId: divisaOrionId,
+                listo: deudaOrion < 1
+            },
+            divisaExtranjeraInfo: divisaExtInfo
+        };
+
         const badgeClass = getBadgeColor(fin.estadoCalculado);
+        
+        // Iconos
+        const iconCLP = `<img src="https://cambiosorion.cl/orionapp/icons/chile.svg" class="w-5 h-5 inline mr-1 object-contain" onerror="this.style.display='none'">`; 
+        const iconExt = getDivisaElement(fin.divisaExtranjeraInfo.divisa_icono, fin.divisaExtranjeraInfo.divisa);
+
+        // Variables visuales para el HTML
+        const clienteSimbolo = esVenta ? "$" : "";
+        const clienteIcono = esVenta ? iconCLP : iconExt;
+        const orionSimbolo = !esVenta ? "$" : "";
+        const orionIcono = !esVenta ? iconCLP : iconExt;
+        
+        const clienteColor = fin.cliente.listo ? "bg-green-500" : (fin.cliente.pagado > 0 ? "bg-orange-500" : "bg-gray-600");
+        const orionColor = fin.orion.listo ? "bg-green-500" : (fin.orion.pagado > 0 ? "bg-blue-500" : "bg-gray-600");
 
         let html = `
+            <!-- CABECERA -->
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 pb-6 border-b border-gray-700">
                 <div>
                     <div class="flex items-center gap-3 mb-1">
@@ -152,50 +196,55 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
             </div>
 
+            <!-- HERO CARDS -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                 
+                <!-- 1. TOTAL OPERACIÓN (CLP) -->
                 <div class="bg-gray-900 border-l-4 border-blue-600 rounded-r-xl p-6 shadow-lg relative overflow-hidden flex flex-col justify-center">
                     <div class="absolute right-4 top-4 opacity-20 text-5xl">💰</div>
-                    <p class="text-blue-400 text-xs uppercase font-bold tracking-wider mb-2">Total Operación (CLP)</p>
+                    <p class="text-blue-400 text-xs uppercase font-bold tracking-wider mb-2">Total Operación</p>
                     <p class="text-3xl font-bold text-white">${formatCurrency(totalCLP)} <span class="text-sm text-gray-500 font-normal">CLP</span></p>
                 </div>
 
+                <!-- 2. VERSUS DE PAGOS (2 COLUMNAS) -->
                 <div class="md:col-span-2 bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700">
                     <h4 class="text-xs font-bold text-gray-400 uppercase mb-4 flex justify-between">
-                        <span>Estado de Intercambio</span>
-                        <span class="text-gray-500 italic">Progreso de Pagos</span>
+                        <span>Progreso de Pagos</span>
+                        <span class="text-gray-500 italic">Estado del Intercambio</span>
                     </h4>
                     
-                    <div class="space-y-5">
+                    <div class="space-y-6">
+                        <!-- Cliente -->
                         <div>
                             <div class="flex justify-between text-sm mb-1">
-                                <span class="font-bold text-white">Cliente <span class="text-gray-400 font-normal">debe entregar</span></span>
-                                <span class="text-gray-300 font-mono">${formatNumber(pagadoCliente)} / ${formatNumber(metaCliente)} <span class="text-yellow-500 font-bold">${divisaCliente}</span></span>
+                                <span class="font-bold text-white flex items-center gap-2">👤 Cliente <span class="text-gray-400 font-normal">debe entregar</span></span>
+                                <span class="text-gray-300 font-mono flex items-center gap-1">${clienteIcono} ${clienteSimbolo}${formatNumber(pagadoCliente)} / ${formatNumber(metaCliente)} <span class="text-yellow-500 font-bold text-xs">${divisaCliente}</span></span>
                             </div>
                             <div class="w-full bg-gray-900 rounded-full h-2.5">
-                                <div class="bg-blue-500 h-2.5 rounded-full transition-all duration-1000" style="width: ${pctCliente}%"></div>
+                                <div class="h-2.5 rounded-full transition-all duration-1000 ${clienteColor}" style="width: ${pctCliente}%"></div>
                             </div>
-                            <div class="text-right mt-1"><span class="text-xs ${deudaCliente < 1 ? 'text-green-400' : 'text-red-400'}">${deudaCliente < 1 ? '✅ Completado' : 'Faltan ' + formatNumber(deudaCliente)}</span></div>
                         </div>
 
+                        <!-- Orion -->
                         <div>
                             <div class="flex justify-between text-sm mb-1">
-                                <span class="font-bold text-white">Orion <span class="text-gray-400 font-normal">debe entregar</span></span>
-                                <span class="text-gray-300 font-mono">${formatNumber(pagadoOrion)} / ${formatNumber(metaOrion)} <span class="text-yellow-500 font-bold">${divisaOrion}</span></span>
+                                <span class="font-bold text-white flex items-center gap-2">🏢 Orion <span class="text-gray-400 font-normal">debe entregar</span></span>
+                                <span class="text-gray-300 font-mono flex items-center gap-1">${orionIcono} ${orionSimbolo}${formatNumber(pagadoOrion)} / ${formatNumber(metaOrion)} <span class="text-yellow-500 font-bold text-xs">${divisaOrion}</span></span>
                             </div>
                             <div class="w-full bg-gray-900 rounded-full h-2.5">
-                                <div class="bg-purple-500 h-2.5 rounded-full transition-all duration-1000" style="width: ${pctOrion}%"></div>
+                                <div class="h-2.5 rounded-full transition-all duration-1000 ${orionColor}" style="width: ${pctOrion}%"></div>
                             </div>
-                            <div class="text-right mt-1"><span class="text-xs ${deudaOrion < 1 ? 'text-green-400' : 'text-red-400'}">${deudaOrion < 1 ? '✅ Completado' : 'Faltan ' + formatNumber(deudaOrion)}</span></div>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- GRID CENTRAL (Información y Tabla Divisas) -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <!-- Info General -->
                 <div class="bg-gray-800 rounded-xl border border-gray-700 p-5 flex flex-col shadow-md">
                     <h3 class="text-white font-bold border-b border-gray-600 pb-3 mb-4 text-sm uppercase flex items-center gap-2">
-                        <span class="w-1 h-4 bg-blue-500 rounded-full"></span> Información General
+                        <span class="w-1 h-4 bg-blue-500 rounded-full"></span> Información
                     </h3>
                     <div class="grid grid-cols-2 gap-y-4 text-sm flex-1 content-start">
                         <div class="text-gray-500">Fecha:</div>
@@ -210,12 +259,13 @@ document.addEventListener("DOMContentLoaded", () => {
                         <div class="text-gray-500">Caja:</div>
                         <div class="text-white text-right text-gray-300">${op.caja || '—'}</div>
                         
-                        <div class="text-gray-500">Documento SII:</div>
+                        <div class="text-gray-500">Doc SII:</div>
                         <div class="text-white text-right text-blue-400 font-mono">${op.numero_documento || 'N/A'}</div>
                     </div>
-                     ${op.observaciones ? `<div class="pt-4 border-t border-gray-700 mt-4"><p class="text-xs text-gray-500 uppercase mb-1 font-bold">Observaciones</p><p class="text-sm text-gray-300 italic bg-gray-900/50 p-2 rounded">"${op.observaciones}"</p></div>` : ''}
+                    ${op.observaciones ? `<div class="pt-4 border-t border-gray-700 mt-4"><p class="text-xs text-gray-500 uppercase mb-1 font-bold">Observaciones</p><p class="text-sm text-gray-300 italic bg-gray-900/50 p-2 rounded">"${op.observaciones}"</p></div>` : ''}
                 </div>
 
+                <!-- Tabla Divisas -->
                 <div class="lg:col-span-2 bg-gray-900 rounded-xl border border-gray-700 overflow-hidden flex flex-col shadow-lg">
                     <div class="p-4 border-b border-gray-800 bg-gray-900 flex justify-between items-center">
                         <h3 class="text-gray-100 font-bold text-sm uppercase tracking-wide">Detalle de Divisas</h3>
@@ -223,7 +273,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div class="overflow-x-auto flex-1 bg-gray-900">
                         <table class="w-full text-sm text-left text-gray-300">
                             <thead class="text-xs text-gray-400 uppercase bg-gray-800 border-b border-gray-700">
-                                <tr><th class="px-4 py-3 font-semibold">Divisa</th><th class="px-4 py-3 text-right font-semibold">Monto</th><th class="px-4 py-3 text-right font-semibold">Tasa</th><th class="px-4 py-3 text-right font-semibold">Subtotal</th></tr>
+                                <tr><th class="px-4 py-3">Divisa</th><th class="px-4 py-3 text-right">Monto</th><th class="px-4 py-3 text-right">Tasa</th><th class="px-4 py-3 text-right">Subtotal</th></tr>
                             </thead>
                             <tbody class="divide-y divide-gray-800">
                                 ${detalles.map(d => `<tr class="hover:bg-gray-800 transition"><td class="px-4 py-3 font-medium text-white flex items-center">${getDivisaElement(d.divisa_icono, d.divisa)}${d.divisa}</td><td class="px-4 py-3 text-right font-mono text-gray-300">${formatNumber(d.monto)}</td><td class="px-4 py-3 text-right font-mono text-gray-500">${formatNumber(d.tasa_cambio)}</td><td class="px-4 py-3 text-right font-bold text-white font-mono">${formatCurrency(d.subtotal)}</td></tr>`).join('')}
@@ -232,57 +282,55 @@ document.addEventListener("DOMContentLoaded", () => {
                     </div>
                     <div class="bg-black/20 p-4 flex justify-between items-center border-t border-gray-800">
                         <span class="text-gray-500 text-xs uppercase font-bold">Total Calculado</span>
-                        <span class="text-xl font-bold text-blue-400">${formatCurrency(total)}</span>
+                        <span class="text-xl font-bold text-blue-400">${formatCurrency(totalCLP)}</span>
                     </div>
                 </div>
             </div>
 
+            <!-- SECCIÓN DE PAGOS -->
             <div class="rounded-xl border border-gray-700 bg-transparent overflow-hidden mb-10">
                 <div class="p-5 border-b border-gray-700 flex flex-col sm:flex-row justify-between items-center gap-4 bg-gray-800">
                     <h2 class="text-lg font-bold text-white flex items-center gap-2"><span class="text-blue-400">💳</span> Gestión de Pagos</h2>
-                    ${estadoReal !== 'Pagado' && op.estado !== 'Anulado' ? `
+                    ${fin.estadoCalculado !== 'Pagado' && op.estado !== 'Anulado' ? `
                     <div class="flex gap-2">
-                        <button id="btn-full-cliente" class="px-3 py-1.5 text-xs font-bold text-blue-200 bg-blue-900/50 border border-blue-800 rounded hover:bg-blue-800 transition">Pagar Todo Cliente</button>
-                        <button id="btn-full-orion" class="px-3 py-1.5 text-xs font-bold text-purple-200 bg-purple-900/50 border border-purple-800 rounded hover:bg-purple-800 transition">Pagar Todo Orion</button>
+                        <button id="btn-full-cliente" class="px-3 py-1.5 text-xs font-bold text-blue-200 bg-blue-900/50 border border-blue-800 rounded hover:bg-blue-800 transition" ${fin.cliente.listo ? 'disabled class="opacity-50 cursor-not-allowed"' : ''}>Pagar Todo Cliente</button>
+                        <button id="btn-full-orion" class="px-3 py-1.5 text-xs font-bold text-purple-200 bg-purple-900/50 border border-purple-800 rounded hover:bg-purple-800 transition" ${fin.orion.listo ? 'disabled class="opacity-50 cursor-not-allowed"' : ''}>Pagar Todo Orion</button>
                     </div>` : ''}
                 </div>
 
                 <div class="p-6 bg-gray-900/80">
-                    <div id="form-container" class="${(estadoReal === 'Pagado' || op.estado === 'Anulado') ? 'hidden' : ''}">
+                    <!-- Formulario -->
+                    <div id="form-container" class="${(fin.estadoCalculado === 'Pagado' || op.estado === 'Anulado') ? 'hidden' : ''}">
                         <form id="form-pago" class="bg-gray-800 rounded-xl p-5 border border-gray-700 mb-8 shadow-md">
-                            <h4 class="text-gray-400 text-xs font-bold uppercase mb-4 border-b border-gray-700 pb-2">Nuevo Registro</h4>
                             <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
                                 <div class="md:col-span-3">
-                                    <label class="block text-xs text-gray-400 mb-2 uppercase font-bold">¿Quién paga?</label>
+                                    <label class="block text-xs text-gray-400 mb-2 font-bold">¿QUIÉN PAGA?</label>
                                     <div class="grid grid-cols-2 gap-2">
                                         <div class="origen-option cursor-pointer border border-gray-600 rounded-lg p-3 text-center hover:border-blue-500 transition group bg-gray-700" data-value="cliente">
-                                            <span class="block text-2xl mb-1 group-hover:scale-110 transition">👤</span><span class="text-xs text-gray-300 font-bold group-hover:text-white">Cliente</span>
+                                            <span class="block text-2xl mb-1">👤</span><span class="text-xs text-gray-300 font-bold">Cliente</span>
                                         </div>
                                         <div class="origen-option cursor-pointer border border-gray-600 rounded-lg p-3 text-center hover:border-purple-500 transition group bg-gray-700" data-value="orion">
-                                            <span class="block text-2xl mb-1 group-hover:scale-110 transition">🏢</span><span class="text-xs text-gray-300 font-bold group-hover:text-white">Orion</span>
+                                            <span class="block text-2xl mb-1">🏢</span><span class="text-xs text-gray-300 font-bold">Orion</span>
                                         </div>
                                     </div>
                                     <input type="hidden" id="origen-pago">
                                 </div>
                                 <div class="md:col-span-3">
-                                    <label class="block text-xs text-gray-400 mb-1 font-bold ml-1">Divisa</label>
-                                    <select id="divisa-select" class="w-full bg-gray-900 border border-gray-600 text-white text-sm rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"><option value="">Seleccione...</option></select>
+                                    <label class="block text-xs text-gray-400 mb-1 font-bold">DIVISA</label>
+                                    <select id="divisa-select" class="w-full bg-gray-900 border border-gray-600 text-white text-sm rounded-lg p-2.5"><option value="">Seleccione...</option></select>
                                 </div>
                                 <div class="md:col-span-2">
-                                    <label class="block text-xs text-gray-400 mb-1 font-bold ml-1">Método</label>
-                                    <select id="tipo-pago" class="w-full bg-gray-900 border border-gray-600 text-white text-sm rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-                                        <option value="">Seleccione...</option><option value="efectivo">Efectivo</option><option value="cuenta">Cuenta</option><option value="transferencia">Transferencia</option><option value="tarjeta">Tarjeta</option>
+                                    <label class="block text-xs text-gray-400 mb-1 font-bold">MÉTODO</label>
+                                    <select id="tipo-pago" class="w-full bg-gray-900 border border-gray-600 text-white text-sm rounded-lg p-2.5">
+                                        <option value="efectivo">Efectivo</option><option value="cuenta">Cuenta</option><option value="transferencia">Transferencia</option><option value="tarjeta">Tarjeta</option>
                                     </select>
                                 </div>
                                 <div class="md:col-span-2">
-                                    <label class="block text-xs text-gray-400 mb-1 font-bold ml-1">Monto</label>
-                                    <div class="relative">
-                                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500">$</div>
-                                        <input type="text" id="input-pago" class="w-full bg-gray-900 border border-gray-600 text-white text-sm rounded-lg p-2.5 pl-6 font-mono focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="0">
-                                    </div>
+                                    <label class="block text-xs text-gray-400 mb-1 font-bold">MONTO</label>
+                                    <input type="text" id="input-pago" class="w-full bg-gray-900 border border-gray-600 text-white text-sm rounded-lg p-2.5 pl-4 font-mono" placeholder="0">
                                 </div>
                                 <div class="md:col-span-2">
-                                    <button type="button" id="btn-registrar-pago" class="w-full bg-green-700 hover:bg-green-600 text-white font-bold py-2.5 rounded-lg shadow-md transition transform hover:-translate-y-0.5">Registrar</button>
+                                    <button type="button" id="btn-registrar-pago" class="w-full bg-green-700 hover:bg-green-600 text-white font-bold py-2.5 rounded-lg shadow-md transition">REGISTRAR</button>
                                 </div>
                             </div>
                             <div id="input-cuenta" class="mt-4"></div>
@@ -290,15 +338,17 @@ document.addEventListener("DOMContentLoaded", () => {
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div id="tabla-pagos-cliente">${renderTablaPagos("Pagos Recibidos (Cliente)", pagosCliente, "cliente", "blue")}</div>
-                        <div id="tabla-pagos-orion">${renderTablaPagos("Pagos Realizados (Orion)", pagosOrion, "orion", "purple")}</div>
+                        <div id="tabla-pagos-cliente">${renderTablaPagos("Pagos Recibidos (Cliente)", pagos.filter(p => p.origen === 'cliente'), "cliente", "blue")}</div>
+                        <div id="tabla-pagos-orion">${renderTablaPagos("Pagos Realizados (Orion)", pagos.filter(p => p.origen === 'orion'), "orion", "purple")}</div>
                     </div>
                 </div>
             </div>
         `;
 
         dashboardContainer.innerHTML = html;
-        attachLogic(data, { cliente: { meta: metaCliente, pagado: pagadoCliente }, orion: { meta: metaOrion, pagado: pagadoOrion } });
+        
+        // IMPORTANTE: Pasamos 'fin' a la lógica de eventos para que funcione el pre-llenado
+        attachLogic(data, fin);
     }
 
     function attachLogic(data, restante) {
