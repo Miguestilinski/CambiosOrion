@@ -82,173 +82,189 @@ document.addEventListener("DOMContentLoaded", () => {
         const pagosCliente = pagos.filter(p => p.origen === "cliente");
         const pagosOrion = pagos.filter(p => p.origen === "orion");
 
-        // Construcción del HTML
+        // --- HTML CON PALETA "ORION CLEAN" ---
         let html = `
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+            <!-- CABECERA: Fondo Transparente para integrarse con la constelación -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 pb-6 border-b border-gray-700/50">
                 <div>
                     <div class="flex items-center gap-3 mb-1">
-                        <span class="text-gray-400 text-xs uppercase tracking-wider">Operación</span>
-                        <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase border bg-gray-800 text-gray-400 border-gray-600">${op.tipo_transaccion}</span>
+                        <span class="text-blue-400 text-xs uppercase tracking-wider font-bold">Operación</span>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-gray-900 border border-gray-700 text-gray-300">${op.tipo_transaccion}</span>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <h1 class="text-3xl font-bold text-white">#${op.id}</h1>
-                        <span class="px-3 py-1 rounded-full text-xs font-medium uppercase tracking-wide ${badgeClass}">${op.estado}</span>
+                    <div class="flex items-center gap-4">
+                        <h1 class="text-4xl font-bold text-white tracking-tight drop-shadow-md">#${op.id}</h1>
+                        <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${badgeClass}">${op.estado}</span>
                     </div>
                 </div>
                 
                 <div class="flex flex-wrap gap-2">
-                     <button id="btn-emitir-sii" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded shadow flex items-center gap-2 text-sm transition">
+                     <button id="btn-emitir-sii" class="bg-blue-700 hover:bg-blue-600 text-white px-4 py-2 rounded shadow-md flex items-center gap-2 text-sm transition border-b-2 border-blue-900">
                         <span>📄</span> ${op.numero_documento ? 'Ver Documento' : 'Emitir SII'}
                     </button>
                     ${op.estado !== 'Anulado' ? `
-                        <button id="btn-anular" class="bg-red-900/80 hover:bg-red-800 text-red-200 border border-red-700 px-4 py-2 rounded shadow flex items-center gap-2 text-sm transition">
+                        <button id="btn-anular" class="bg-transparent hover:bg-red-900/30 text-red-400 border border-red-900 px-4 py-2 rounded shadow flex items-center gap-2 text-sm transition">
                             <span>🚫</span> Anular
                         </button>
                     ` : ''}
-                    <button id="btn-imprimir" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded shadow flex items-center gap-2 text-sm transition">
+                    <button id="btn-imprimir" class="bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-600 px-4 py-2 rounded shadow flex items-center gap-2 text-sm transition">
                         <span>🖨️</span> Imprimir
                     </button>
-                     <button id="btn-pdf" class="bg-blue-700 hover:bg-blue-600 text-white px-4 py-2 rounded shadow flex items-center gap-2 text-sm transition">
+                     <button id="btn-pdf" class="bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-600 px-4 py-2 rounded shadow flex items-center gap-2 text-sm transition">
                         <span>⬇️</span> PDF
                     </button>
                 </div>
             </div>
 
+            <!-- HERO CARDS: Alternancia de Fondos (Sólido vs Transparente) -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                <div class="bg-gray-800 border border-gray-700 rounded-xl p-5 shadow-lg relative overflow-hidden">
-                    <div class="absolute top-0 right-0 p-4 opacity-10 text-6xl">💰</div>
-                    <p class="text-gray-400 text-xs uppercase font-bold tracking-wider mb-1">Total Operación</p>
-                    <p class="text-3xl font-bold text-white">${formatCurrency(total)}</p>
+                
+                <!-- 1. TOTAL: Fondo Oscuro Sólido con Acento Azul -->
+                <div class="bg-gray-900 border-l-4 border-blue-600 rounded-r-xl p-6 shadow-lg relative overflow-hidden">
+                    <div class="absolute right-4 top-4 opacity-20 text-5xl">💰</div>
+                    <p class="text-blue-400 text-xs uppercase font-bold tracking-wider mb-2">Total Operación</p>
+                    <p class="text-3xl md:text-4xl font-bold text-white">${formatCurrency(total)}</p>
                 </div>
 
-                <div class="bg-gray-800 border border-gray-700 rounded-xl p-5 shadow-lg">
-                    <p class="text-gray-400 text-xs uppercase font-bold tracking-wider mb-1">Total Pagado</p>
+                <!-- 2. PAGADO: Fondo Gris Intermedio -->
+                <div class="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700/50">
+                    <p class="text-gray-400 text-xs uppercase font-bold tracking-wider mb-2">Total Pagado</p>
                     <p class="text-3xl font-bold text-green-400">${formatCurrency(pagado)}</p>
-                    <div class="w-full bg-gray-700 h-1.5 rounded-full mt-3">
-                        <div class="bg-green-500 h-1.5 rounded-full" style="width: ${porcentajePagado}%"></div>
+                    <div class="w-full bg-gray-700 h-1.5 rounded-full mt-4">
+                        <div class="bg-green-600 h-1.5 rounded-full" style="width: ${porcentajePagado}%"></div>
                     </div>
                 </div>
 
-                <div class="bg-gray-800 border border-gray-700 rounded-xl p-5 shadow-lg">
-                     <p class="text-gray-400 text-xs uppercase font-bold tracking-wider mb-1">Restante por Pagar</p>
+                <!-- 3. POR PAGAR: Fondo Transparente con Borde -->
+                <div class="bg-transparent border border-gray-600 rounded-xl p-6 shadow-sm">
+                     <p class="text-gray-400 text-xs uppercase font-bold tracking-wider mb-2">Restante por Pagar</p>
                      <p class="text-3xl font-bold ${restante > 0 ? 'text-yellow-400' : 'text-gray-500'}">${formatCurrency(restante)}</p>
-                     <p class="text-xs text-gray-500 mt-1">${restante === 0 ? 'Operación saldada' : 'Pendiente de pago'}</p>
+                     <p class="text-xs text-gray-500 mt-2 italic border-l-2 border-gray-700 pl-2">${restante === 0 ? 'Operación saldada' : 'Pendiente de pago'}</p>
                 </div>
             </div>
 
+            <!-- GRID CENTRAL -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
                 
-                <div class="bg-gray-800 rounded-xl border border-gray-700 p-5 space-y-4">
-                    <h3 class="text-white font-bold border-b border-gray-700 pb-2 text-sm uppercase">Información General</h3>
+                <!-- INFO GENERAL: Fondo Gris Intermedio (Gray-800) -->
+                <div class="bg-gray-800 rounded-xl border border-gray-700 p-5 flex flex-col shadow-md">
+                    <h3 class="text-white font-bold border-b border-gray-600 pb-3 mb-4 text-sm uppercase flex items-center gap-2">
+                        <span class="w-1 h-4 bg-blue-500 rounded-full"></span> Información General
+                    </h3>
                     
-                    <div class="grid grid-cols-2 gap-y-4 text-sm">
-                        <div class="text-gray-400">Fecha:</div>
+                    <div class="grid grid-cols-2 gap-y-4 text-sm flex-1 content-start">
+                        <div class="text-gray-500">Fecha:</div>
                         <div class="text-white text-right font-medium">${op.fecha}</div>
 
-                        <div class="text-gray-400">Cliente:</div>
-                        <div class="text-white text-right font-medium truncate" title="${op.nombre_cliente}">${op.nombre_cliente}</div>
+                        <div class="text-gray-500">Cliente:</div>
+                        <div class="text-white text-right font-medium truncate text-blue-200" title="${op.nombre_cliente}">${op.nombre_cliente}</div>
 
-                        <div class="text-gray-400">Vendedor:</div>
+                        <div class="text-gray-500">Vendedor:</div>
                         <div class="text-white text-right text-gray-300">${op.vendedor || '—'}</div>
 
-                        <div class="text-gray-400">Caja:</div>
+                        <div class="text-gray-500">Caja:</div>
                         <div class="text-white text-right text-gray-300">${op.caja || '—'}</div>
                         
-                        <div class="text-gray-400">Documento SII:</div>
-                        <div class="text-white text-right text-blue-400">${op.numero_documento || 'Sin emitir'}</div>
+                        <div class="text-gray-500">Documento SII:</div>
+                        <div class="text-white text-right text-blue-400 font-mono">${op.numero_documento || 'N/A'}</div>
                     </div>
                     
                     ${op.observaciones ? `
-                    <div class="pt-2 border-t border-gray-700 mt-2">
-                        <p class="text-xs text-gray-500 uppercase mb-1">Observaciones</p>
-                        <p class="text-sm text-gray-300 italic">"${op.observaciones}"</p>
+                    <div class="pt-4 border-t border-gray-700 mt-4">
+                        <p class="text-xs text-gray-500 uppercase mb-1 font-bold">Observaciones</p>
+                        <p class="text-sm text-gray-300 italic bg-gray-900/50 p-2 rounded">"${op.observaciones}"</p>
                     </div>` : ''}
                 </div>
 
-                <div class="lg:col-span-2 bg-gray-800 rounded-xl border border-gray-700 overflow-hidden flex flex-col">
-                    <div class="p-4 border-b border-gray-700 bg-gray-800/50 flex justify-between items-center">
-                        <h3 class="text-white font-bold text-sm uppercase">Detalle de Divisas</h3>
+                <!-- TABLA DIVISAS: Fondo Oscuro (Gray-900) para contraste de datos -->
+                <div class="lg:col-span-2 bg-gray-900 rounded-xl border border-gray-700 overflow-hidden flex flex-col shadow-lg">
+                    <div class="p-4 border-b border-gray-800 bg-gray-900 flex justify-between items-center">
+                        <h3 class="text-gray-100 font-bold text-sm uppercase tracking-wide">Detalle de Divisas</h3>
                     </div>
-                    <div class="overflow-x-auto flex-1">
+                    <div class="overflow-x-auto flex-1 bg-gray-900">
                         <table class="w-full text-sm text-left text-gray-300">
-                            <thead class="text-xs text-gray-400 uppercase bg-gray-900/50">
+                            <thead class="text-xs text-gray-400 uppercase bg-gray-800 border-b border-gray-700">
                                 <tr>
-                                    <th class="px-4 py-3">Divisa</th>
-                                    <th class="px-4 py-3 text-right">Monto</th>
-                                    <th class="px-4 py-3 text-right">Tasa</th>
-                                    <th class="px-4 py-3 text-right">Subtotal</th>
+                                    <th class="px-4 py-3 font-semibold">Divisa</th>
+                                    <th class="px-4 py-3 text-right font-semibold">Monto</th>
+                                    <th class="px-4 py-3 text-right font-semibold">Tasa</th>
+                                    <th class="px-4 py-3 text-right font-semibold">Subtotal</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-gray-700">
+                            <tbody class="divide-y divide-gray-800">
                                 ${detalles.map(d => `
-                                <tr class="hover:bg-gray-700/50 transition">
+                                <tr class="hover:bg-gray-800 transition">
                                     <td class="px-4 py-3 font-medium text-white flex items-center">
                                         ${getDivisaElement(d.divisa_icono, d.divisa)}
                                         ${d.divisa}
                                     </td>
-                                    <td class="px-4 py-3 text-right font-mono">${formatNumber(d.monto)}</td>
-                                    <td class="px-4 py-3 text-right font-mono text-gray-400">${formatNumber(d.tasa_cambio)}</td>
+                                    <td class="px-4 py-3 text-right font-mono text-gray-300">${formatNumber(d.monto)}</td>
+                                    <td class="px-4 py-3 text-right font-mono text-gray-500">${formatNumber(d.tasa_cambio)}</td>
                                     <td class="px-4 py-3 text-right font-bold text-white font-mono">${formatCurrency(d.subtotal)}</td>
                                 </tr>
                                 `).join('')}
                             </tbody>
                         </table>
                     </div>
-                    <div class="bg-gray-900/80 p-4 flex justify-between items-center border-t border-gray-700">
-                        <span class="text-gray-400 text-sm">Total Calculado</span>
-                        <span class="text-xl font-bold text-white">${formatCurrency(total)}</span>
+                    <div class="bg-black/20 p-4 flex justify-between items-center border-t border-gray-800">
+                        <span class="text-gray-500 text-xs uppercase font-bold">Total Calculado</span>
+                        <span class="text-xl font-bold text-blue-400">${formatCurrency(total)}</span>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden mb-10">
-                <div class="p-5 border-b border-gray-700 flex flex-col sm:flex-row justify-between items-center gap-4 bg-gray-900/30">
+            <!-- SECCIÓN DE PAGOS: Fondo Transparente con Contenedor Interno -->
+            <div class="rounded-xl border border-gray-700 bg-transparent overflow-hidden mb-10">
+                <!-- Header: Gris Intermedio -->
+                <div class="p-5 border-b border-gray-700 flex flex-col sm:flex-row justify-between items-center gap-4 bg-gray-800">
                     <h2 class="text-lg font-bold text-white flex items-center gap-2">
-                        <span>💳</span> Gestión de Pagos
+                        <span class="text-blue-400">💳</span> 
+                        Gestión de Pagos
                     </h2>
                     
                     ${op.estado !== 'Pagado' && op.estado !== 'Anulado' ? `
                     <div class="flex gap-2">
-                        <button id="btn-full-cliente" class="px-3 py-1.5 text-xs font-medium text-blue-200 bg-blue-900/50 border border-blue-700 rounded hover:bg-blue-800 transition">
+                        <button id="btn-full-cliente" class="px-3 py-1.5 text-xs font-bold text-blue-200 bg-blue-900/50 border border-blue-800 rounded hover:bg-blue-800 transition">
                             Pago Total Cliente
                         </button>
-                        <button id="btn-full-orion" class="px-3 py-1.5 text-xs font-medium text-purple-200 bg-purple-900/50 border border-purple-700 rounded hover:bg-purple-800 transition">
+                        <button id="btn-full-orion" class="px-3 py-1.5 text-xs font-bold text-purple-200 bg-purple-900/50 border border-purple-800 rounded hover:bg-purple-800 transition">
                             Pago Total Orion
                         </button>
                     </div>
                     ` : ''}
                 </div>
 
-                <div class="p-5">
+                <div class="p-6 bg-gray-900/80">
+                    <!-- Formulario -->
                     <div id="form-container" class="${(op.estado === 'Pagado' || op.estado === 'Anulado') ? 'hidden' : ''}">
-                        <form id="form-pago" class="bg-gray-700/30 rounded-lg p-4 border border-gray-600 mb-6">
+                        <form id="form-pago" class="bg-gray-800 rounded-xl p-5 border border-gray-700 mb-8 shadow-md">
+                            <h4 class="text-gray-400 text-xs font-bold uppercase mb-4 border-b border-gray-700 pb-2">Nuevo Registro</h4>
                             <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
                                 
                                 <div class="md:col-span-3">
                                     <label class="block text-xs text-gray-400 mb-2 uppercase font-bold">¿Quién paga?</label>
                                     <div class="grid grid-cols-2 gap-2">
-                                        <div class="origen-option cursor-pointer border border-gray-600 rounded p-2 text-center hover:bg-gray-600 transition" data-value="cliente">
-                                            <span class="block text-xl">👤</span>
-                                            <span class="text-xs text-white">Cliente</span>
+                                        <div class="origen-option cursor-pointer border border-gray-600 rounded-lg p-3 text-center hover:border-blue-500 transition group bg-gray-700" data-value="cliente">
+                                            <span class="block text-2xl mb-1 group-hover:scale-110 transition">👤</span>
+                                            <span class="text-xs text-gray-300 font-bold group-hover:text-white">Cliente</span>
                                         </div>
-                                        <div class="origen-option cursor-pointer border border-gray-600 rounded p-2 text-center hover:bg-gray-600 transition" data-value="orion">
-                                            <span class="block text-xl">🏢</span>
-                                            <span class="text-xs text-white">Orion</span>
+                                        <div class="origen-option cursor-pointer border border-gray-600 rounded-lg p-3 text-center hover:border-purple-500 transition group bg-gray-700" data-value="orion">
+                                            <span class="block text-2xl mb-1 group-hover:scale-110 transition">🏢</span>
+                                            <span class="text-xs text-gray-300 font-bold group-hover:text-white">Orion</span>
                                         </div>
                                     </div>
                                     <input type="hidden" id="origen-pago">
                                 </div>
 
                                 <div class="md:col-span-3">
-                                    <label class="block text-xs text-gray-400 mb-1">Divisa</label>
-                                    <select id="divisa-select" class="w-full bg-gray-800 border border-gray-600 text-white text-sm rounded p-2 focus:ring-1 focus:ring-blue-500">
+                                    <label class="block text-xs text-gray-400 mb-1 font-bold ml-1">Divisa</label>
+                                    <select id="divisa-select" class="w-full bg-gray-900 border border-gray-600 text-white text-sm rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
                                         <option value="">Seleccione...</option>
                                     </select>
                                 </div>
 
                                 <div class="md:col-span-2">
-                                    <label class="block text-xs text-gray-400 mb-1">Método</label>
-                                    <select id="tipo-pago" class="w-full bg-gray-800 border border-gray-600 text-white text-sm rounded p-2 focus:ring-1 focus:ring-blue-500">
+                                    <label class="block text-xs text-gray-400 mb-1 font-bold ml-1">Método</label>
+                                    <select id="tipo-pago" class="w-full bg-gray-900 border border-gray-600 text-white text-sm rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
                                         <option value="">Seleccione...</option>
                                         <option value="efectivo">Efectivo</option>
                                         <option value="cuenta">Cuenta</option>
@@ -258,24 +274,28 @@ document.addEventListener("DOMContentLoaded", () => {
                                 </div>
 
                                 <div class="md:col-span-2">
-                                    <label class="block text-xs text-gray-400 mb-1">Monto</label>
-                                    <input type="text" id="input-pago" class="w-full bg-gray-800 border border-gray-600 text-white text-sm rounded p-2 font-mono" placeholder="$0">
+                                    <label class="block text-xs text-gray-400 mb-1 font-bold ml-1">Monto</label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500">$</div>
+                                        <input type="text" id="input-pago" class="w-full bg-gray-900 border border-gray-600 text-white text-sm rounded-lg p-2.5 pl-6 font-mono focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="0">
+                                    </div>
                                 </div>
 
                                 <div class="md:col-span-2">
-                                    <button type="button" id="btn-registrar-pago" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-2 rounded shadow transition">
+                                    <button type="button" id="btn-registrar-pago" class="w-full bg-green-700 hover:bg-green-600 text-white font-bold py-2.5 rounded-lg shadow-md transition transform hover:-translate-y-0.5">
                                         Registrar
                                     </button>
                                 </div>
                             </div>
                             
-                            <div id="input-cuenta" class="mt-3"></div>
+                            <div id="input-cuenta" class="mt-4"></div>
                         </form>
                     </div>
 
+                    <!-- Historial Tablas -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div id="tabla-pagos-cliente">${renderTablaPagos("Pagos Recibidos (Cliente)", pagosCliente, "cliente")}</div>
-                        <div id="tabla-pagos-orion">${renderTablaPagos("Pagos Realizados (Orion)", pagosOrion, "orion")}</div>
+                        <div id="tabla-pagos-cliente">${renderTablaPagos("Pagos Recibidos (Cliente)", pagosCliente, "cliente", "blue")}</div>
+                        <div id="tabla-pagos-orion">${renderTablaPagos("Pagos Realizados (Orion)", pagosOrion, "orion", "purple")}</div>
                     </div>
                 </div>
             </div>
@@ -666,36 +686,42 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Función auxiliar para renderizar las tablas HTML
-    function renderTablaPagos(titulo, listaPagos, origen) {
+    function renderTablaPagos(titulo, listaPagos, origen, color = "gray") {
+        const headerClass = color === "blue" ? "bg-blue-900/20 text-blue-200 border-blue-800" 
+                          : color === "purple" ? "bg-purple-900/20 text-purple-200 border-purple-800" 
+                          : "bg-gray-800 text-gray-400";
+
         if (listaPagos.length === 0) {
             return `
-            <div class="bg-gray-900/50 rounded-lg p-4 border border-gray-700 text-center">
-                <h4 class="text-xs font-bold text-gray-500 uppercase mb-2">${titulo}</h4>
-                <p class="text-sm text-gray-600 italic">No hay registros.</p>
+            <div class="bg-gray-800/50 rounded-xl p-6 border border-gray-700 text-center shadow-inner">
+                <h4 class="text-xs font-bold text-gray-500 uppercase mb-2 tracking-widest">${titulo}</h4>
+                <p class="text-sm text-gray-400 italic">No hay registros.</p>
             </div>`;
         }
         return `
-        <div class="bg-gray-900/50 rounded-lg border border-gray-700 overflow-hidden">
-            <div class="bg-gray-800 px-4 py-2 border-b border-gray-700">
-                 <h4 class="text-xs font-bold text-gray-400 uppercase">${titulo}</h4>
+        <div class="bg-gray-900 rounded-xl border border-gray-700 overflow-hidden shadow-md">
+            <div class="px-4 py-3 border-b border-gray-700 ${headerClass}">
+                 <h4 class="text-xs font-bold uppercase tracking-widest">${titulo}</h4>
             </div>
             <table class="w-full text-sm text-left text-gray-300">
-                <tbody class="divide-y divide-gray-700">
+                <tbody class="divide-y divide-gray-800">
                 ${listaPagos.map(p => `
-                    <tr>
-                        <td class="px-3 py-2">
-                            <div class="text-xs text-gray-500">${p.fecha}</div>
+                    <tr class="hover:bg-gray-800 transition">
+                        <td class="px-4 py-3">
+                            <div class="text-xs text-gray-500 mb-1">${p.fecha}</div>
                             <div class="font-medium text-white flex items-center">
                                 ${getDivisaElement(p.divisa_icono, p.divisa)}
                                 ${formatCurrency(p.monto)}
                             </div>
                         </td>
-                        <td class="px-3 py-2 text-right">
-                             <div class="text-xs uppercase border border-gray-600 rounded px-1 inline-block">${p.tipo}</div>
-                             ${p.cuenta_nombre ? `<div class="text-xs text-gray-500 mt-1 truncate max-w-[100px]" title="${p.cuenta_nombre}">${p.cuenta_nombre}</div>` : ''}
+                        <td class="px-4 py-3 text-right">
+                             <div class="text-[10px] font-bold uppercase border border-gray-600 rounded px-1.5 py-0.5 inline-block text-gray-400 mb-1">${p.tipo}</div>
+                             ${p.cuenta_nombre ? `<div class="text-xs text-blue-300 truncate max-w-[120px]" title="${p.cuenta_nombre}">${p.cuenta_nombre}</div>` : ''}
                         </td>
-                        <td class="px-3 py-2 text-right">
-                             <button class="text-red-500 hover:text-red-300 text-xs font-bold px-2 py-1 rounded hover:bg-gray-700" onclick="eliminarPago(${p.id}, '${origen}')">✕</button>
+                        <td class="px-4 py-3 text-right">
+                             <button class="text-red-500 hover:text-white hover:bg-red-600 transition p-1.5 rounded-lg" onclick="eliminarPago(${p.id}, '${origen}')">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                             </button>
                         </td>
                     </tr>
                 `).join('')}
