@@ -205,7 +205,7 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
 
             <div class="w-full mb-8">
-                <div class="bg-gray-800 rounded-xl p-8 shadow-2xl border border-gray-700 relative overflow-hidden">
+                <div class="bg-gray-800 rounded-xl p-8 shadow-2xl border-2 border-gray-600 relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600"></div>
                     
                     <div class="flex justify-between items-start mb-6 border-b border-gray-700 pb-4">
@@ -258,7 +258,7 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                <div class="bg-gray-800 rounded-xl border border-gray-700 p-5 flex flex-col shadow-md">
+                <div class="bg-gray-800 rounded-xl border-2 border-gray-600 p-5 flex flex-col shadow-md">
                     <h3 class="text-white font-bold border-b border-gray-600 pb-3 mb-4 text-sm uppercase flex items-center gap-2">
                         <span class="w-1 h-4 bg-blue-500 rounded-full"></span> Información
                     </h3>
@@ -272,7 +272,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     ${op.observaciones ? `<div class="pt-4 border-t border-gray-700 mt-4"><p class="text-xs text-gray-500 uppercase mb-1 font-bold">Observaciones</p><p class="text-sm text-gray-300 italic bg-gray-900/50 p-2 rounded">"${op.observaciones}"</p></div>` : ''}
                 </div>
 
-                <div class="lg:col-span-2 bg-gray-900 rounded-xl border border-gray-700 overflow-hidden flex flex-col shadow-lg">
+                <div class="lg:col-span-2 bg-gray-900 rounded-xl border-2 border-gray-600 overflow-hidden flex flex-col shadow-lg">
                     <div class="p-4 border-b border-gray-800 bg-gray-900 flex justify-between items-center">
                         <h3 class="text-gray-100 font-bold text-sm uppercase tracking-wide">Detalle de Divisas</h3>
                     </div>
@@ -293,7 +293,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
             </div>
 
-            <div class="rounded-xl border border-gray-700 bg-transparent overflow-hidden mb-10">
+            <div class="rounded-xl border-2 border-gray-600 bg-transparent overflow-hidden mb-10">
                 <div class="p-5 border-b border-gray-700 flex flex-col sm:flex-row justify-between items-center gap-4 bg-gray-800">
                     <h2 class="text-lg font-bold text-white flex items-center gap-2">Gestión de Pagos</h2>
                     ${fin.estadoCalculado !== 'Pagado' && op.estado !== 'Anulado' ? `
