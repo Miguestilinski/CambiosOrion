@@ -84,98 +84,106 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // --- HTML CON NUEVA PALETA DE COLORES ---
         let html = `
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 border-b border-gray-800 pb-6">
+            <!-- CABECERA (Fondo Transparente) -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 border-b border-white/10 pb-6">
                 <div>
                     <div class="flex items-center gap-3 mb-1">
-                        <span class="text-blue-400 text-xs uppercase tracking-wider font-semibold">Operación</span>
-                        <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase border bg-gray-800 text-gray-400 border-gray-600">${op.tipo_transaccion}</span>
+                        <span class="text-blue-300 text-xs uppercase tracking-wider font-semibold drop-shadow-sm">Operación</span>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase border bg-white/10 text-gray-300 border-white/20 backdrop-blur-sm">${op.tipo_transaccion}</span>
                     </div>
                     <div class="flex items-center gap-4">
-                        <h1 class="text-4xl font-bold text-white tracking-tight">#${op.id}</h1>
-                        <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${badgeClass}">${op.estado}</span>
+                        <h1 class="text-4xl font-bold text-white tracking-tight drop-shadow-lg">#${op.id}</h1>
+                        <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${badgeClass} backdrop-blur-md">${op.estado}</span>
                     </div>
                 </div>
                 
                 <div class="flex flex-wrap gap-2">
-                     <button id="btn-emitir-sii" class="bg-blue-700 hover:bg-blue-600 text-white px-4 py-2 rounded shadow-lg shadow-blue-900/20 flex items-center gap-2 text-sm transition border border-blue-600">
+                     <button id="btn-emitir-sii" class="bg-blue-600/90 hover:bg-blue-500 text-white px-4 py-2 rounded shadow-lg shadow-blue-900/40 flex items-center gap-2 text-sm transition border border-blue-400/30 backdrop-blur-sm">
                         <span>📄</span> ${op.numero_documento ? 'Ver Documento' : 'Emitir SII'}
                     </button>
                     ${op.estado !== 'Anulado' ? `
-                        <button id="btn-anular" class="bg-red-900/20 hover:bg-red-900/40 text-red-400 border border-red-800/50 px-4 py-2 rounded shadow flex items-center gap-2 text-sm transition">
+                        <button id="btn-anular" class="bg-red-900/40 hover:bg-red-900/60 text-red-300 border border-red-500/30 px-4 py-2 rounded shadow backdrop-blur-sm flex items-center gap-2 text-sm transition">
                             <span>🚫</span> Anular
                         </button>
                     ` : ''}
-                    <button id="btn-imprimir" class="bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700 px-4 py-2 rounded shadow flex items-center gap-2 text-sm transition">
+                    <button id="btn-imprimir" class="bg-white/10 hover:bg-white/20 text-gray-200 border border-white/10 px-4 py-2 rounded shadow backdrop-blur-sm flex items-center gap-2 text-sm transition">
                         <span>🖨️</span> Imprimir
                     </button>
-                     <button id="btn-pdf" class="bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700 px-4 py-2 rounded shadow flex items-center gap-2 text-sm transition">
+                     <button id="btn-pdf" class="bg-white/10 hover:bg-white/20 text-gray-200 border border-white/10 px-4 py-2 rounded shadow backdrop-blur-sm flex items-center gap-2 text-sm transition">
                         <span>⬇️</span> PDF
                     </button>
                 </div>
             </div>
 
+            <!-- HERO CARDS (KPIs) - MEZCLA DE ESTILOS -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                 
-                <div class="bg-gradient-to-br from-gray-800 to-blue-900/40 border border-blue-700/50 rounded-xl p-5 shadow-xl relative overflow-hidden group">
-                    <div class="absolute -right-6 -top-6 p-4 opacity-10 text-8xl text-blue-400 group-hover:scale-110 transition duration-500">💰</div>
-                    <p class="text-blue-300 text-xs uppercase font-bold tracking-wider mb-1">Total Operación</p>
-                    <p class="text-3xl md:text-4xl font-bold text-white drop-shadow-sm">${formatCurrency(total)}</p>
+                <!-- 1. TOTAL: Gradiente Sólido (Destacado) -->
+                <div class="bg-gradient-to-br from-blue-900/90 to-indigo-900/90 border border-blue-500/30 rounded-xl p-5 shadow-2xl relative overflow-hidden group backdrop-blur-xl">
+                    <div class="absolute -right-6 -top-6 p-4 opacity-20 text-8xl text-blue-300 group-hover:scale-110 transition duration-500">💰</div>
+                    <p class="text-blue-200 text-xs uppercase font-bold tracking-wider mb-1">Total Operación</p>
+                    <p class="text-3xl md:text-4xl font-bold text-white drop-shadow-md">${formatCurrency(total)}</p>
                 </div>
 
-                <div class="bg-gray-800 border border-gray-700 rounded-xl p-5 shadow-lg relative">
-                    <p class="text-gray-400 text-xs uppercase font-bold tracking-wider mb-1">Total Pagado</p>
-                    <p class="text-3xl font-bold text-green-400">${formatCurrency(pagado)}</p>
-                    <div class="w-full bg-gray-700 h-1.5 rounded-full mt-4 overflow-hidden">
+                <!-- 2. PAGADO: Efecto Cristal "Blanco" (Frosty) -->
+                <div class="bg-white/5 border border-white/10 rounded-xl p-5 shadow-lg relative backdrop-blur-md">
+                    <p class="text-gray-300 text-xs uppercase font-bold tracking-wider mb-1">Total Pagado</p>
+                    <p class="text-3xl font-bold text-green-400 drop-shadow-sm">${formatCurrency(pagado)}</p>
+                    <div class="w-full bg-gray-700/50 h-1.5 rounded-full mt-4 overflow-hidden">
                         <div class="bg-green-500 h-1.5 rounded-full shadow-[0_0_10px_rgba(34,197,94,0.5)]" style="width: ${porcentajePagado}%"></div>
                     </div>
                 </div>
 
-                <div class="bg-gray-800 border border-gray-700 rounded-xl p-5 shadow-lg">
+                <!-- 3. POR PAGAR: Transparente (Solo borde) -->
+                <div class="bg-transparent border border-gray-600/50 rounded-xl p-5 shadow-lg relative">
                      <p class="text-gray-400 text-xs uppercase font-bold tracking-wider mb-1">Restante por Pagar</p>
-                     <p class="text-3xl font-bold ${restante > 0 ? 'text-yellow-400' : 'text-gray-500'}">${formatCurrency(restante)}</p>
+                     <p class="text-3xl font-bold ${restante > 0 ? 'text-yellow-400' : 'text-gray-500'} drop-shadow-sm">${formatCurrency(restante)}</p>
                      <p class="text-xs text-gray-500 mt-1 italic border-l-2 border-gray-600 pl-2">${restante === 0 ? 'Operación saldada' : 'Pendiente de pago'}</p>
                 </div>
             </div>
 
+            <!-- GRID CENTRAL -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
                 
-                <div class="bg-gray-800 rounded-xl border border-gray-700 shadow-lg flex flex-col">
-                    <div class="h-1 w-full bg-blue-600 rounded-t-xl"></div> <div class="p-5 space-y-4">
-                        <h3 class="text-white font-bold border-b border-gray-700 pb-2 text-sm uppercase flex justify-between">
+                <!-- INFO GENERAL: Gris Semitransparente -->
+                <div class="bg-gray-900/60 rounded-xl border border-gray-700/50 shadow-xl backdrop-blur-md flex flex-col">
+                    <div class="h-1 w-full bg-gradient-to-r from-blue-600 to-purple-600 rounded-t-xl"></div> 
+                    <div class="p-5 space-y-4">
+                        <h3 class="text-white font-bold border-b border-white/10 pb-2 text-sm uppercase flex justify-between">
                             Información General
-                            <span class="text-blue-500 text-xs">Info</span>
                         </h3>
                         
                         <div class="grid grid-cols-2 gap-y-4 text-sm">
-                            <div class="text-gray-500">Fecha:</div>
+                            <div class="text-gray-400">Fecha:</div>
                             <div class="text-white text-right font-medium">${op.fecha}</div>
 
-                            <div class="text-gray-500">Cliente:</div>
+                            <div class="text-gray-400">Cliente:</div>
                             <div class="text-white text-right font-medium truncate text-blue-200" title="${op.nombre_cliente}">${op.nombre_cliente}</div>
 
-                            <div class="text-gray-500">Vendedor:</div>
+                            <div class="text-gray-400">Vendedor:</div>
                             <div class="text-white text-right text-gray-300">${op.vendedor || '—'}</div>
 
-                            <div class="text-gray-500">Caja:</div>
+                            <div class="text-gray-400">Caja:</div>
                             <div class="text-white text-right text-gray-300">${op.caja || '—'}</div>
                             
-                            <div class="text-gray-500">Documento SII:</div>
-                            <div class="text-white text-right text-blue-400 font-mono">${op.numero_documento || 'N/A'}</div>
+                            <div class="text-gray-400">Documento SII:</div>
+                            <div class="text-white text-right text-blue-400 font-mono bg-blue-900/20 px-2 rounded">${op.numero_documento || 'N/A'}</div>
                         </div>
                         
                         ${op.observaciones ? `
-                        <div class="pt-3 border-t border-gray-700 mt-2">
+                        <div class="pt-3 border-t border-white/10 mt-2">
                             <p class="text-xs text-gray-500 uppercase mb-1 font-bold">Observaciones</p>
-                            <div class="bg-gray-900/50 p-2 rounded border border-gray-700">
+                            <div class="bg-black/20 p-2 rounded border border-white/5">
                                 <p class="text-sm text-gray-300 italic">"${op.observaciones}"</p>
                             </div>
                         </div>` : ''}
                     </div>
                 </div>
 
-                <div class="lg:col-span-2 bg-gray-800 rounded-xl border border-gray-700 overflow-hidden flex flex-col shadow-lg">
-                    <div class="p-4 border-b border-gray-700 bg-gradient-to-r from-gray-800 to-gray-900 flex justify-between items-center">
-                        <h3 class="text-blue-400 font-bold text-sm uppercase tracking-wide">Detalle de Divisas</h3>
+                <!-- TABLA DIVISAS: Gris Sólido (Para lectura) -->
+                <div class="lg:col-span-2 bg-gray-800/80 rounded-xl border border-gray-700/50 overflow-hidden flex flex-col shadow-xl backdrop-blur-sm">
+                    <div class="p-4 border-b border-white/10 bg-white/5 flex justify-between items-center">
+                        <h3 class="text-blue-300 font-bold text-sm uppercase tracking-wide">Detalle de Divisas</h3>
                     </div>
                     <div class="overflow-x-auto flex-1">
                         <table class="w-full text-sm text-left text-gray-300">
@@ -187,9 +195,9 @@ document.addEventListener("DOMContentLoaded", () => {
                                     <th class="px-4 py-3 text-right font-semibold">Subtotal</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-gray-700">
+                            <tbody class="divide-y divide-white/5">
                                 ${detalles.map(d => `
-                                <tr class="hover:bg-blue-900/10 transition duration-150">
+                                <tr class="hover:bg-white/5 transition duration-150">
                                     <td class="px-4 py-3 font-medium text-white flex items-center">
                                         ${getDivisaElement(d.divisa_icono, d.divisa)}
                                         ${d.divisa}
@@ -202,46 +210,49 @@ document.addEventListener("DOMContentLoaded", () => {
                             </tbody>
                         </table>
                     </div>
-                    <div class="bg-gray-900 p-4 flex justify-between items-center border-t border-gray-700">
+                    <div class="bg-black/20 p-4 flex justify-between items-center border-t border-white/10">
                         <span class="text-gray-500 text-xs uppercase font-bold">Total Calculado</span>
                         <span class="text-xl font-bold text-blue-400">${formatCurrency(total)}</span>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden mb-10 shadow-lg">
-                <div class="p-5 border-b border-gray-700 flex flex-col sm:flex-row justify-between items-center gap-4 bg-blue-900/10">
+            <!-- SECCIÓN DE PAGOS: Contenedor Transparente -->
+            <div class="bg-transparent rounded-xl border border-gray-700/50 overflow-hidden mb-10 shadow-lg backdrop-blur-sm">
+                <!-- Header Azul Transparente -->
+                <div class="p-5 border-b border-white/10 flex flex-col sm:flex-row justify-between items-center gap-4 bg-blue-900/20">
                     <h2 class="text-lg font-bold text-white flex items-center gap-2">
-                        <span class="bg-blue-600 text-white p-1.5 rounded-lg text-xs">💳</span> 
+                        <span class="bg-blue-600 text-white p-1.5 rounded-lg text-xs shadow-lg shadow-blue-600/50">💳</span> 
                         Gestión de Pagos
                     </h2>
                     
                     ${op.estado !== 'Pagado' && op.estado !== 'Anulado' ? `
                     <div class="flex gap-2">
-                        <button id="btn-full-cliente" class="px-3 py-1.5 text-xs font-bold text-blue-200 bg-blue-900/40 border border-blue-600/50 rounded hover:bg-blue-800 hover:text-white transition">
+                        <button id="btn-full-cliente" class="px-3 py-1.5 text-xs font-bold text-blue-100 bg-blue-600/30 border border-blue-400/30 rounded hover:bg-blue-600 hover:text-white transition backdrop-blur-md">
                             Pago Total Cliente
                         </button>
-                        <button id="btn-full-orion" class="px-3 py-1.5 text-xs font-bold text-purple-200 bg-purple-900/40 border border-purple-600/50 rounded hover:bg-purple-800 hover:text-white transition">
+                        <button id="btn-full-orion" class="px-3 py-1.5 text-xs font-bold text-purple-100 bg-purple-600/30 border border-purple-400/30 rounded hover:bg-purple-600 hover:text-white transition backdrop-blur-md">
                             Pago Total Orion
                         </button>
                     </div>
                     ` : ''}
                 </div>
 
-                <div class="p-6 bg-gray-800">
+                <div class="p-6 bg-black/20">
+                    <!-- Formulario con fondo sólido suave -->
                     <div id="form-container" class="${(op.estado === 'Pagado' || op.estado === 'Anulado') ? 'hidden' : ''}">
-                        <form id="form-pago" class="bg-gray-900/50 rounded-xl p-5 border border-gray-700 mb-8 shadow-inner">
-                            <h4 class="text-gray-400 text-xs font-bold uppercase mb-4 border-b border-gray-700 pb-2">Nuevo Registro</h4>
+                        <form id="form-pago" class="bg-gray-800/80 rounded-xl p-5 border border-white/10 mb-8 shadow-inner backdrop-blur-xl">
+                            <h4 class="text-gray-400 text-xs font-bold uppercase mb-4 border-b border-white/10 pb-2">Nuevo Registro</h4>
                             <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
                                 
                                 <div class="md:col-span-3">
                                     <label class="block text-xs text-gray-400 mb-2 uppercase font-bold">¿Quién paga?</label>
                                     <div class="grid grid-cols-2 gap-2">
-                                        <div class="origen-option cursor-pointer border border-gray-600 rounded-lg p-3 text-center hover:border-blue-500 transition group" data-value="cliente">
+                                        <div class="origen-option cursor-pointer border border-gray-600 rounded-lg p-3 text-center hover:border-blue-500 transition group bg-gray-900/50" data-value="cliente">
                                             <span class="block text-2xl mb-1 group-hover:scale-110 transition">👤</span>
                                             <span class="text-xs text-gray-400 font-bold group-hover:text-white">Cliente</span>
                                         </div>
-                                        <div class="origen-option cursor-pointer border border-gray-600 rounded-lg p-3 text-center hover:border-purple-500 transition group" data-value="orion">
+                                        <div class="origen-option cursor-pointer border border-gray-600 rounded-lg p-3 text-center hover:border-purple-500 transition group bg-gray-900/50" data-value="orion">
                                             <span class="block text-2xl mb-1 group-hover:scale-110 transition">🏢</span>
                                             <span class="text-xs text-gray-400 font-bold group-hover:text-white">Orion</span>
                                         </div>
@@ -251,14 +262,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
                                 <div class="md:col-span-3">
                                     <label class="block text-xs text-gray-400 mb-1 font-bold ml-1">Divisa</label>
-                                    <select id="divisa-select" class="w-full bg-gray-800 border border-gray-600 text-white text-sm rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                                    <select id="divisa-select" class="w-full bg-gray-900/80 border border-gray-600 text-white text-sm rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
                                         <option value="">Seleccione...</option>
                                     </select>
                                 </div>
 
                                 <div class="md:col-span-2">
                                     <label class="block text-xs text-gray-400 mb-1 font-bold ml-1">Método</label>
-                                    <select id="tipo-pago" class="w-full bg-gray-800 border border-gray-600 text-white text-sm rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                                    <select id="tipo-pago" class="w-full bg-gray-900/80 border border-gray-600 text-white text-sm rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
                                         <option value="">Seleccione...</option>
                                         <option value="efectivo">Efectivo</option>
                                         <option value="cuenta">Cuenta</option>
@@ -271,12 +282,12 @@ document.addEventListener("DOMContentLoaded", () => {
                                     <label class="block text-xs text-gray-400 mb-1 font-bold ml-1">Monto</label>
                                     <div class="relative">
                                         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500">$</div>
-                                        <input type="text" id="input-pago" class="w-full bg-gray-800 border border-gray-600 text-white text-sm rounded-lg p-2.5 pl-6 font-mono focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="0">
+                                        <input type="text" id="input-pago" class="w-full bg-gray-900/80 border border-gray-600 text-white text-sm rounded-lg p-2.5 pl-6 font-mono focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="0">
                                     </div>
                                 </div>
 
                                 <div class="md:col-span-2">
-                                    <button type="button" id="btn-registrar-pago" class="w-full bg-green-700 hover:bg-green-600 text-white font-bold py-2.5 rounded-lg shadow-lg transition transform hover:-translate-y-0.5">
+                                    <button type="button" id="btn-registrar-pago" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-2.5 rounded-lg shadow-lg transition transform hover:-translate-y-0.5">
                                         Registrar
                                     </button>
                                 </div>
@@ -286,6 +297,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         </form>
                     </div>
 
+                    <!-- Historial Tablas -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div id="tabla-pagos-cliente">${renderTablaPagos("Pagos Recibidos (Cliente)", pagosCliente, "cliente", "blue")}</div>
                         <div id="tabla-pagos-orion">${renderTablaPagos("Pagos Realizados (Orion)", pagosOrion, "orion", "purple")}</div>
@@ -681,26 +693,26 @@ document.addEventListener("DOMContentLoaded", () => {
     // Función auxiliar para renderizar las tablas HTML
     function renderTablaPagos(titulo, listaPagos, origen, color = "gray") {
         // Color puede ser 'blue' o 'purple' para las cabeceras de las tablas
-        const headerColor = color === "blue" ? "bg-blue-900/30 text-blue-200 border-blue-900/50" 
-                          : color === "purple" ? "bg-purple-900/30 text-purple-200 border-purple-900/50" 
+        const headerColor = color === "blue" ? "bg-blue-900/20 text-blue-200 border-blue-500/30" 
+                          : color === "purple" ? "bg-purple-900/20 text-purple-200 border-purple-500/30" 
                           : "bg-gray-800 text-gray-400";
         
         if (listaPagos.length === 0) {
             return `
-            <div class="bg-gray-900/50 rounded-xl p-6 border border-gray-700 text-center shadow-inner">
+            <div class="bg-gray-800/50 rounded-xl p-6 border border-white/5 text-center shadow-inner backdrop-blur-sm">
                 <h4 class="text-xs font-bold text-gray-500 uppercase mb-2 tracking-widest">${titulo}</h4>
-                <p class="text-sm text-gray-600 italic">No hay registros.</p>
+                <p class="text-sm text-gray-400 italic">No hay registros.</p>
             </div>`;
         }
         return `
-        <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden shadow-md">
-            <div class="px-4 py-3 border-b border-gray-700 ${headerColor}">
+        <div class="bg-gray-900/40 rounded-xl border border-gray-700/50 overflow-hidden shadow-md backdrop-blur-sm">
+            <div class="px-4 py-3 border-b border-white/10 ${headerColor}">
                  <h4 class="text-xs font-bold uppercase tracking-widest">${titulo}</h4>
             </div>
             <table class="w-full text-sm text-left text-gray-300">
-                <tbody class="divide-y divide-gray-700">
+                <tbody class="divide-y divide-gray-700/50">
                 ${listaPagos.map(p => `
-                    <tr class="hover:bg-gray-700/50 transition">
+                    <tr class="hover:bg-white/5 transition">
                         <td class="px-4 py-3">
                             <div class="text-xs text-gray-500 mb-1">${p.fecha}</div>
                             <div class="font-medium text-white flex items-center">
