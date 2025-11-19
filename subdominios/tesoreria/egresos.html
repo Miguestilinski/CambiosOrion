@@ -124,64 +124,82 @@
                 </div>
                 
                 <!-- Filtros avanzados -->
-                <div class="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-6">
+                <div class="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-6 items-end">
+                    
+                    <!-- Numero y Fecha -->
                     <div>
                         <label for="numero" class="block mb-1 text-sm text-white">Nº</label>
-                        <input type="text" id="numero" 
-                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                        <input type="text" id="numero" class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
                     </div>
                     <div>
                         <label for="fecha" class="block mb-1 text-sm text-white">Fecha</label>
-                        <input type="text" id="fecha" 
-                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                        <input type="date" id="fecha" class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
                     </div>
+
+                    <!-- Tipo Egreso (con valores correctos) -->
                     <div>
-                        <label for="tipo-egreso" class="block mb-1 text-sm text-white">Tipo de Egreso</label>
-                        <select id="tipo-egreso"
-                            class="select-list block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Seleccionar</option>
-                            <option value="">Cuenta</option>
-                            <option value="">Efectivo</option>
+                        <label for="tipo-egreso" class="block mb-1 text-sm text-white">Tipo</label>
+                        <select id="tipo-egreso" class="select-list block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
+                            <option value="">Todos</option>
+                            <option value="Cuenta">Cuenta</option>
+                            <option value="Efectivo">Efectivo</option>
                         </select>
                     </div>
-                    <div>
+
+                    <!-- Cliente (Buscador) -->
+                    <div class="relative">
                         <label for="cliente" class="block mb-1 text-sm text-white">Cliente</label>
-                        <input type="text" id="cliente" 
-                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                        <input type="text" id="cliente" autocomplete="off" placeholder="Buscar..."
+                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
+                        <ul id="sugerencias-cliente" class="absolute z-50 w-full bg-white border border-gray-300 rounded-lg mt-1 max-h-40 overflow-y-auto hidden shadow-lg"></ul>
                     </div>
+
+                    <!-- Caja -->
                     <div>
                         <label for="caja" class="block mb-1 text-sm text-white">Caja</label>
-                        <input type="text" id="caja" 
-                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                        <input type="text" id="caja" class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
                     </div>
-                    <div>
+
+                    <!-- Cuenta (Buscador) -->
+                    <div class="relative">
                         <label for="cuenta" class="block mb-1 text-sm text-white">Cuenta</label>
-                        <input type="text" id="cuenta" 
-                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                        <input type="text" id="cuenta" autocomplete="off" placeholder="Buscar..."
+                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
+                        <ul id="sugerencias-cuenta" class="absolute z-50 w-full bg-white border border-gray-300 rounded-lg mt-1 max-h-40 overflow-y-auto hidden shadow-lg"></ul>
                     </div>
-                    <div>
+
+                    <!-- Divisa (Buscador) -->
+                    <div class="relative">
                         <label for="divisa" class="block mb-1 text-sm text-white">Divisa</label>
-                        <input type="text" id="divisa" 
-                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                        <input type="text" id="divisa" autocomplete="off" placeholder="Buscar..."
+                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
+                        <ul id="sugerencias-divisa" class="absolute z-50 w-full bg-white border border-gray-300 rounded-lg mt-1 max-h-40 overflow-y-auto hidden shadow-lg"></ul>
                     </div>
+
+                    <!-- Estado -->
                     <div>
                         <label for="estado" class="block mb-1 text-sm text-white">Estado</label>
-                        <select id="estado" 
-                            class="select-list block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Seleccionar</option>
-                            <option value="vigente">Vigente</option>
-                            <option value="abonado">Abonado</option>
-                            <option value="pagado">Pagado</option>
-                            <option value="anulado">Anulado</option>
+                        <select id="estado" class="select-list block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
+                            <option value="">Todos</option>
+                            <option value="Vigente">Vigente</option>
+                            <option value="Anulado">Anulado</option>
+                            <option value="Cerrado">Cerrado</option>
                         </select>
                     </div>
+                </div>
+
+                <!-- Botón Borrar Filtros -->
+                <div class="flex justify-end mb-6">
+                    <button id="borrar-filtros" class="text-white bg-gray-600 hover:bg-gray-700 font-medium rounded-lg text-sm px-4 py-2 flex items-center gap-2">
+                        <span>✕</span> Borrar Filtros
+                    </button>
                 </div>
                 
                 <!-- Mostrar registros y buscar -->
                 <div class="flex items-center justify-between mb-6">
                     <div class="flex items-center space-x-2">
                         <label for="mostrar-registros" class="text-sm text-white">Mostrar</label>
-                        <select id="mostrar-registros"
+                        <select id="mostrar-registros" 
                             class="block px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                             <option value="25">25</option>
                             <option value="50">50</option>
@@ -190,19 +208,19 @@
                         <span class="text-sm text-white">registros</span>
                     </div>
                     <div>
-                        <input type="text" id="buscar" placeholder="Buscar" 
+                        <input type="text" id="buscar" placeholder="Buscar global..." 
                             class="block w-64 px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                     </div>
                 </div>
                 
-                <!-- Tabla de operaciones -->
+                <!-- Tabla -->
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm text-left text-white bg-gray-800">
                         <thead class="text-xs uppercase bg-gray-800 text-white">
                             <tr>
                                 <th class="px-4 py-2">Nº</th>
-                                <th class="px-4 py-2">Fecha Creación</th>
-                                <th class="px-4 py-2">Tipo de Egreso</th>
+                                <th class="px-4 py-2">Fecha</th>
+                                <th class="px-4 py-2">Tipo</th>
                                 <th class="px-4 py-2">Cliente</th>
                                 <th class="px-4 py-2">Caja</th>
                                 <th class="px-4 py-2">Cuenta</th>
@@ -213,26 +231,21 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="border-b bg-white border-gray-700 text-gray-700">
-                                <td class="px-4 py-2">1739</td>
-                                <td class="px-4 py-2">2025-01-30</td>
-                                <td class="px-4 py-2">Cuenta</td>
-                                <td class="px-4 py-2">Cliente</td>
-                                <td class="px-4 py-2">Tesorería</td>
-                                <td class="px-4 py-2">00 Cliente USD</td>
-                                <td class="px-4 py-2">USD</td>
-                                <td class="px-4 py-2">$30.000</td>
-                                <td class="px-4 py-2">Cerrado</td>
-                                <td class="px-4 py-2">
-                                    <button class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1">
-                                        Mostrar
-                                    </button>
-                                </td>
-                            </tr>
-                            <!-- Más filas -->
+                            <!-- Se llena con JS -->
                         </tbody>
                     </table>
                 </div>
+
+                <!-- Paginación -->
+                <div class="flex items-center justify-between mt-4 bg-gray-800 p-4 rounded-lg">
+                    <div class="text-sm text-white">
+                        Mostrando <span id="inicio-registro" class="font-bold">0</span> a <span id="fin-registro" class="font-bold">0</span> de <span id="total-registros" class="font-bold">0</span> registros
+                    </div>
+                    <nav aria-label="Page navigation">
+                        <ul class="inline-flex -space-x-px text-sm" id="pagination-controls"></ul>
+                    </nav>
+                </div>
+
             </section>        
         </main>
     </div>
