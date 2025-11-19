@@ -88,6 +88,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const op = data.operacion;
         const detalles = data.detalles || [];
         const pagos = data.pagos || [];
+
+        // --- LÓGICA FINANCIERA (Separación de Deudas) ---
+        const esVenta = op.tipo_transaccion === "Venta";
         
         // 1. Calcular Totales (Metas)
         const totalCLP = parseFloat(op.total);
