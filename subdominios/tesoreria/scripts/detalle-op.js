@@ -31,6 +31,20 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    const formatDate = (dateString) => {
+        if (!dateString) return "";
+        const date = new Date(dateString.replace(/-/g, "/")); // Compatibilidad Safari/Firefox
+        if (isNaN(date)) return dateString;
+        
+        const d = String(date.getDate()).padStart(2, '0');
+        const m = String(date.getMonth() + 1).padStart(2, '0');
+        const y = date.getFullYear();
+        const h = String(date.getHours()).padStart(2, '0');
+        const min = String(date.getMinutes()).padStart(2, '0');
+        
+        return `${h}:${min} ${d}/${m}/${y}`;
+    };
+
     const getBadgeColor = (estado) => {
         const est = (estado || '').toLowerCase();
         if (est === 'vigente') return 'bg-blue-900 text-blue-200 border border-blue-700';
@@ -74,15 +88,44 @@ document.addEventListener("DOMContentLoaded", () => {
         const op = data.operacion;
         const detalles = data.detalles || [];
         const pagos = data.pagos || [];
-
-        const total = parseFloat(op.total);
-        const pagado = parseFloat(op.monto_pagado || 0); 
-        const restante = Math.max(0, total - pagado);
-        const porcentajePagado = total > 0 ? Math.min(100, (pagado / total) * 100) : 0;
-        const badgeClass = getBadgeColor(op.estado);
         
-        const pagosCliente = pagos.filter(p => p.origen === "cliente");
-        const pagosOrion = pagos.filter(p => p.origen === "orion");
+        // 1. Calcular Totales (Metas)
+        const totalCLP = parseFloat(op.total);
+        const totalExt = detalles.reduce((acc, d) => acc + parseFloat(d.monto), 0);
+        const divisaExt = detalles[0]?.divisa || "Divisa"; // Nombre divisa extranjera
+        const divisaExtCod = detalles[0]?.divisa_id || "EXT";
+
+        // 2. Asignar Roles
+        let metaCliente = 0, pagadoCliente = 0, divisaCliente = "";
+        let metaOrion = 0, pagadoOrion = 0, divisaOrion = "";
+
+        if (esVenta) {
+            // Venta: Cliente paga CLP, Orion entrega Divisa
+            metaCliente = totalCLP; divisaCliente = "CLP";
+            metaOrion = totalExt; divisaOrion = divisaExt; // Ej: USD
+        } else {
+            // Compra: Cliente entrega Divisa, Orion paga CLP
+            metaCliente = totalExt; divisaCliente = divisaExt;
+            metaOrion = totalCLP; divisaOrion = "CLP";
+        }
+
+        // 3. Sumar Pagos (Filtrando estrictamente para no mezclar peras con manzanas)
+        // Nota: Asumimos que si divisaCliente es CLP (D47), sumamos los pagos D47 del cliente.
+        pagos.forEach(p => {
+            const monto = parseFloat(p.monto);
+            if (p.origen === 'cliente') {
+                // Si es CLP y cliente debe CLP, o si es Ext y cliente debe Ext
+                if ((divisaCliente === "CLP" && p.divisa_id === "D47") || (divisaCliente !== "CLP" && p.divisa_id !== "D47")) {
+                    pagadoCliente += monto;
+                }
+            } else if (p.origen === 'orion') {
+                if ((divisaOrion === "CLP" && p.divisa_id === "D47") || (divisaOrion !== "CLP" && p.divisa_id !== "D47")) {
+                    pagadoOrion += monto;
+                }
+            }
+        });
+
+        const badgeClass = getBadgeColor(estadoReal);
 
         let html = `
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 pb-6 border-b border-gray-700">
@@ -93,45 +136,56 @@ document.addEventListener("DOMContentLoaded", () => {
                     </div>
                     <div class="flex items-center gap-4">
                         <h1 class="text-4xl font-bold text-white tracking-tight">#${op.id}</h1>
-                        <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${badgeClass}">${op.estado}</span>
+                        <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${badgeClass}">${estadoReal}</span>
                     </div>
                 </div>
-                
                 <div class="flex flex-wrap gap-2">
                      <button id="btn-emitir-sii" class="bg-blue-700 hover:bg-blue-600 text-white px-4 py-2 rounded shadow-md flex items-center gap-2 text-sm transition border-b-2 border-blue-900">
                         <span>📄</span> ${op.numero_documento ? 'Ver Documento' : 'Emitir SII'}
                     </button>
-                    ${op.estado !== 'Anulado' ? `
-                        <button id="btn-anular" class="bg-transparent hover:bg-red-900/30 text-red-400 border border-red-900 px-4 py-2 rounded shadow flex items-center gap-2 text-sm transition">
-                            Anular
-                        </button>
-                    ` : ''}
-                    <button id="btn-imprimir" class="bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-600 px-4 py-2 rounded shadow flex items-center gap-2 text-sm transition">
-                        <span>🖨️</span> Imprimir
-                    </button>
-                     <button id="btn-pdf" class="bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-600 px-4 py-2 rounded shadow flex items-center gap-2 text-sm transition">
-                        <span>⬇️</span> PDF
-                    </button>
+                    ${op.estado !== 'Anulado' ? `<button id="btn-anular" class="bg-transparent hover:bg-red-900/30 text-red-400 border border-red-900 px-4 py-2 rounded shadow flex items-center gap-2 text-sm transition"><span>🚫</span> Anular</button>` : ''}
+                    <button id="btn-imprimir" class="bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-600 px-4 py-2 rounded shadow flex items-center gap-2 text-sm transition"><span>🖨️</span></button>
+                    <button id="btn-pdf" class="bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-600 px-4 py-2 rounded shadow flex items-center gap-2 text-sm transition"><span>⬇️</span> PDF</button>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                <div class="bg-gray-900 border-l-4 border-blue-600 rounded-r-xl p-6 shadow-lg relative overflow-hidden">
+                
+                <div class="bg-gray-900 border-l-4 border-blue-600 rounded-r-xl p-6 shadow-lg relative overflow-hidden flex flex-col justify-center">
                     <div class="absolute right-4 top-4 opacity-20 text-5xl">💰</div>
-                    <p class="text-blue-400 text-xs uppercase font-bold tracking-wider mb-2">Total Operación</p>
-                    <p class="text-3xl md:text-4xl font-bold text-white">${formatCurrency(total)}</p>
+                    <p class="text-blue-400 text-xs uppercase font-bold tracking-wider mb-2">Total Operación (CLP)</p>
+                    <p class="text-3xl font-bold text-white">${formatCurrency(totalCLP)} <span class="text-sm text-gray-500 font-normal">CLP</span></p>
                 </div>
-                <div class="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700">
-                    <p class="text-gray-400 text-xs uppercase font-bold tracking-wider mb-2">Total Pagado</p>
-                    <p class="text-3xl font-bold text-green-400">${formatCurrency(pagado)}</p>
-                    <div class="w-full bg-gray-700 h-1.5 rounded-full mt-4">
-                        <div class="bg-green-600 h-1.5 rounded-full" style="width: ${porcentajePagado}%"></div>
+
+                <div class="md:col-span-2 bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700">
+                    <h4 class="text-xs font-bold text-gray-400 uppercase mb-4 flex justify-between">
+                        <span>Estado de Intercambio</span>
+                        <span class="text-gray-500 italic">Progreso de Pagos</span>
+                    </h4>
+                    
+                    <div class="space-y-5">
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="font-bold text-white">Cliente <span class="text-gray-400 font-normal">debe entregar</span></span>
+                                <span class="text-gray-300 font-mono">${formatNumber(pagadoCliente)} / ${formatNumber(metaCliente)} <span class="text-yellow-500 font-bold">${divisaCliente}</span></span>
+                            </div>
+                            <div class="w-full bg-gray-900 rounded-full h-2.5">
+                                <div class="bg-blue-500 h-2.5 rounded-full transition-all duration-1000" style="width: ${pctCliente}%"></div>
+                            </div>
+                            <div class="text-right mt-1"><span class="text-xs ${deudaCliente < 1 ? 'text-green-400' : 'text-red-400'}">${deudaCliente < 1 ? '✅ Completado' : 'Faltan ' + formatNumber(deudaCliente)}</span></div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="font-bold text-white">Orion <span class="text-gray-400 font-normal">debe entregar</span></span>
+                                <span class="text-gray-300 font-mono">${formatNumber(pagadoOrion)} / ${formatNumber(metaOrion)} <span class="text-yellow-500 font-bold">${divisaOrion}</span></span>
+                            </div>
+                            <div class="w-full bg-gray-900 rounded-full h-2.5">
+                                <div class="bg-purple-500 h-2.5 rounded-full transition-all duration-1000" style="width: ${pctOrion}%"></div>
+                            </div>
+                            <div class="text-right mt-1"><span class="text-xs ${deudaOrion < 1 ? 'text-green-400' : 'text-red-400'}">${deudaOrion < 1 ? '✅ Completado' : 'Faltan ' + formatNumber(deudaOrion)}</span></div>
+                        </div>
                     </div>
-                </div>
-                <div class="bg-transparent border border-gray-600 rounded-xl p-6 shadow-sm">
-                     <p class="text-gray-400 text-xs uppercase font-bold tracking-wider mb-2">Restante por Pagar</p>
-                     <p class="text-3xl font-bold ${restante > 0 ? 'text-yellow-400' : 'text-gray-500'}">${formatCurrency(restante)}</p>
-                     <p class="text-xs text-gray-500 mt-2 italic border-l-2 border-gray-700 pl-2">${restante === 0 ? 'Operación saldada' : 'Pendiente de pago'}</p>
                 </div>
             </div>
 
@@ -142,21 +196,21 @@ document.addEventListener("DOMContentLoaded", () => {
                     </h3>
                     <div class="grid grid-cols-2 gap-y-4 text-sm flex-1 content-start">
                         <div class="text-gray-500">Fecha:</div>
-                        <div class="text-white text-right font-medium">${op.fecha}</div>
+                        <div class="text-white text-right font-medium">${formatDate(op.fecha)}</div>
+                        
                         <div class="text-gray-500">Cliente:</div>
                         <div class="text-white text-right font-medium truncate text-blue-200" title="${op.nombre_cliente}">${op.nombre_cliente}</div>
+                        
                         <div class="text-gray-500">Vendedor:</div>
                         <div class="text-white text-right text-gray-300">${op.vendedor || '—'}</div>
+                        
                         <div class="text-gray-500">Caja:</div>
                         <div class="text-white text-right text-gray-300">${op.caja || '—'}</div>
+                        
                         <div class="text-gray-500">Documento SII:</div>
                         <div class="text-white text-right text-blue-400 font-mono">${op.numero_documento || 'N/A'}</div>
                     </div>
-                     ${op.observaciones ? `
-                    <div class="pt-4 border-t border-gray-700 mt-4">
-                        <p class="text-xs text-gray-500 uppercase mb-1 font-bold">Observaciones</p>
-                        <p class="text-sm text-gray-300 italic bg-gray-900/50 p-2 rounded">"${op.observaciones}"</p>
-                    </div>` : ''}
+                     ${op.observaciones ? `<div class="pt-4 border-t border-gray-700 mt-4"><p class="text-xs text-gray-500 uppercase mb-1 font-bold">Observaciones</p><p class="text-sm text-gray-300 italic bg-gray-900/50 p-2 rounded">"${op.observaciones}"</p></div>` : ''}
                 </div>
 
                 <div class="lg:col-span-2 bg-gray-900 rounded-xl border border-gray-700 overflow-hidden flex flex-col shadow-lg">
@@ -166,25 +220,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div class="overflow-x-auto flex-1 bg-gray-900">
                         <table class="w-full text-sm text-left text-gray-300">
                             <thead class="text-xs text-gray-400 uppercase bg-gray-800 border-b border-gray-700">
-                                <tr>
-                                    <th class="px-4 py-3 font-semibold">Divisa</th>
-                                    <th class="px-4 py-3 text-right font-semibold">Monto</th>
-                                    <th class="px-4 py-3 text-right font-semibold">Tasa</th>
-                                    <th class="px-4 py-3 text-right font-semibold">Subtotal</th>
-                                </tr>
+                                <tr><th class="px-4 py-3 font-semibold">Divisa</th><th class="px-4 py-3 text-right font-semibold">Monto</th><th class="px-4 py-3 text-right font-semibold">Tasa</th><th class="px-4 py-3 text-right font-semibold">Subtotal</th></tr>
                             </thead>
                             <tbody class="divide-y divide-gray-800">
-                                ${detalles.map(d => `
-                                <tr class="hover:bg-gray-800 transition">
-                                    <td class="px-4 py-3 font-medium text-white flex items-center">
-                                        ${getDivisaElement(d.divisa_icono, d.divisa)}
-                                        ${d.divisa}
-                                    </td>
-                                    <td class="px-4 py-3 text-right font-mono text-gray-300">${formatNumber(d.monto)}</td>
-                                    <td class="px-4 py-3 text-right font-mono text-gray-500">${formatNumber(d.tasa_cambio)}</td>
-                                    <td class="px-4 py-3 text-right font-bold text-white font-mono">${formatCurrency(d.subtotal)}</td>
-                                </tr>
-                                `).join('')}
+                                ${detalles.map(d => `<tr class="hover:bg-gray-800 transition"><td class="px-4 py-3 font-medium text-white flex items-center">${getDivisaElement(d.divisa_icono, d.divisa)}${d.divisa}</td><td class="px-4 py-3 text-right font-mono text-gray-300">${formatNumber(d.monto)}</td><td class="px-4 py-3 text-right font-mono text-gray-500">${formatNumber(d.tasa_cambio)}</td><td class="px-4 py-3 text-right font-bold text-white font-mono">${formatCurrency(d.subtotal)}</td></tr>`).join('')}
                             </tbody>
                         </table>
                     </div>
@@ -197,19 +236,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
             <div class="rounded-xl border border-gray-700 bg-transparent overflow-hidden mb-10">
                 <div class="p-5 border-b border-gray-700 flex flex-col sm:flex-row justify-between items-center gap-4 bg-gray-800">
-                    <h2 class="text-lg font-bold text-white flex items-center gap-2">
-                        Gestión de Pagos
-                    </h2>
-                    ${op.estado !== 'Pagado' && op.estado !== 'Anulado' ? `
+                    <h2 class="text-lg font-bold text-white flex items-center gap-2"><span class="text-blue-400">💳</span> Gestión de Pagos</h2>
+                    ${estadoReal !== 'Pagado' && op.estado !== 'Anulado' ? `
                     <div class="flex gap-2">
-                        <button id="btn-full-cliente" class="px-3 py-1.5 text-xs font-bold text-blue-200 bg-blue-900/50 border border-blue-800 rounded hover:bg-blue-800 transition">Pago Total Cliente</button>
-                        <button id="btn-full-orion" class="px-3 py-1.5 text-xs font-bold text-purple-200 bg-purple-900/50 border border-purple-800 rounded hover:bg-purple-800 transition">Pago Total Orion</button>
-                    </div>
-                    ` : ''}
+                        <button id="btn-full-cliente" class="px-3 py-1.5 text-xs font-bold text-blue-200 bg-blue-900/50 border border-blue-800 rounded hover:bg-blue-800 transition">Pagar Todo Cliente</button>
+                        <button id="btn-full-orion" class="px-3 py-1.5 text-xs font-bold text-purple-200 bg-purple-900/50 border border-purple-800 rounded hover:bg-purple-800 transition">Pagar Todo Orion</button>
+                    </div>` : ''}
                 </div>
 
                 <div class="p-6 bg-gray-900/80">
-                    <div id="form-container" class="${(op.estado === 'Pagado' || op.estado === 'Anulado') ? 'hidden' : ''}">
+                    <div id="form-container" class="${(estadoReal === 'Pagado' || op.estado === 'Anulado') ? 'hidden' : ''}">
                         <form id="form-pago" class="bg-gray-800 rounded-xl p-5 border border-gray-700 mb-8 shadow-md">
                             <h4 class="text-gray-400 text-xs font-bold uppercase mb-4 border-b border-gray-700 pb-2">Nuevo Registro</h4>
                             <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
@@ -217,12 +253,10 @@ document.addEventListener("DOMContentLoaded", () => {
                                     <label class="block text-xs text-gray-400 mb-2 uppercase font-bold">¿Quién paga?</label>
                                     <div class="grid grid-cols-2 gap-2">
                                         <div class="origen-option cursor-pointer border border-gray-600 rounded-lg p-3 text-center hover:border-blue-500 transition group bg-gray-700" data-value="cliente">
-                                            <span class="block text-2xl mb-1 group-hover:scale-110 transition">👤</span>
-                                            <span class="text-xs text-gray-300 font-bold group-hover:text-white">Cliente</span>
+                                            <span class="block text-2xl mb-1 group-hover:scale-110 transition">👤</span><span class="text-xs text-gray-300 font-bold group-hover:text-white">Cliente</span>
                                         </div>
                                         <div class="origen-option cursor-pointer border border-gray-600 rounded-lg p-3 text-center hover:border-purple-500 transition group bg-gray-700" data-value="orion">
-                                            <span class="block text-2xl mb-1 group-hover:scale-110 transition">🏢</span>
-                                            <span class="text-xs text-gray-300 font-bold group-hover:text-white">Orion</span>
+                                            <span class="block text-2xl mb-1 group-hover:scale-110 transition">🏢</span><span class="text-xs text-gray-300 font-bold group-hover:text-white">Orion</span>
                                         </div>
                                     </div>
                                     <input type="hidden" id="origen-pago">
@@ -234,11 +268,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 <div class="md:col-span-2">
                                     <label class="block text-xs text-gray-400 mb-1 font-bold ml-1">Método</label>
                                     <select id="tipo-pago" class="w-full bg-gray-900 border border-gray-600 text-white text-sm rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-                                        <option value="">Seleccione...</option>
-                                        <option value="efectivo">Efectivo</option>
-                                        <option value="cuenta">Cuenta</option>
-                                        <option value="transferencia">Transferencia</option>
-                                        <option value="tarjeta">Tarjeta</option>
+                                        <option value="">Seleccione...</option><option value="efectivo">Efectivo</option><option value="cuenta">Cuenta</option><option value="transferencia">Transferencia</option><option value="tarjeta">Tarjeta</option>
                                     </select>
                                 </div>
                                 <div class="md:col-span-2">
@@ -265,7 +295,7 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
 
         dashboardContainer.innerHTML = html;
-        attachLogic(data, restante);
+        attachLogic(data, { cliente: { meta: metaCliente, pagado: pagadoCliente }, orion: { meta: metaOrion, pagado: pagadoOrion } });
     }
 
     function attachLogic(data, restante) {
@@ -546,10 +576,38 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (e) { divisaSelect.innerHTML = '<option>Error carga</option>'; }
     }
 
-    function renderTablaPagos(titulo, listaPagos, origen, color = "gray") {
+    function renderTablaPagos(titulo, lista, origen, color = "gray") {
         const headerColor = color === "blue" ? "bg-blue-900/20 text-blue-200 border-blue-500/30" : color === "purple" ? "bg-purple-900/20 text-purple-200 border-purple-500/30" : "bg-gray-800 text-gray-400";
-        if (listaPagos.length === 0) return `<div class="bg-gray-800/50 rounded-xl p-6 border border-gray-700 text-center shadow-inner"><h4 class="text-xs font-bold text-gray-500 uppercase mb-2 tracking-widest">${titulo}</h4><p class="text-sm text-gray-400 italic">No hay registros.</p></div>`;
-        return `<div class="bg-gray-900 rounded-xl border border-gray-700 overflow-hidden shadow-md"><div class="px-4 py-3 border-b border-gray-700 ${headerColor}"><h4 class="text-xs font-bold uppercase tracking-widest">${titulo}</h4></div><table class="w-full text-sm text-left text-gray-300"><tbody class="divide-y divide-gray-800">${listaPagos.map(p => `<tr class="hover:bg-gray-800 transition"><td class="px-4 py-3"><div class="text-xs text-gray-500 mb-1">${p.fecha}</div><div class="font-medium text-white flex items-center">${getDivisaElement(p.divisa_icono, p.divisa)}${formatCurrency(p.monto)}</div></td><td class="px-4 py-3 text-right"><div class="text-[10px] font-bold uppercase border border-gray-600 rounded px-1.5 py-0.5 inline-block text-gray-400 mb-1">${p.tipo}</div>${p.cuenta_nombre ? `<div class="text-xs text-blue-300 truncate max-w-[120px]" title="${p.cuenta_nombre}">${p.cuenta_nombre}</div>` : ''}</td><td class="px-4 py-3 text-right"><button class="text-red-500 hover:text-white hover:bg-red-600 transition p-1.5 rounded-lg" onclick="eliminarPago(${p.id}, '${origen}')"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button></td></tr>`).join('')}</tbody></table></div>`;
+        if (lista.length === 0) return `<div class="bg-gray-800/50 rounded-xl p-6 border border-gray-700 text-center shadow-inner"><h4 class="text-xs font-bold text-gray-500 uppercase mb-2 tracking-widest">${titulo}</h4><p class="text-sm text-gray-400 italic">No hay registros.</p></div>`;
+        return `
+        <div class="bg-gray-900 rounded-xl border border-gray-700 overflow-hidden shadow-md">
+            <div class="px-4 py-3 border-b border-gray-700 ${headerColor}">
+                 <h4 class="text-xs font-bold uppercase tracking-widest">${titulo}</h4>
+            </div>
+            <table class="w-full text-sm text-left text-gray-300">
+                <tbody class="divide-y divide-gray-800">
+                ${lista.map(p => `
+                    <tr class="hover:bg-gray-800 transition">
+                        <td class="px-4 py-3">
+                            <div class="text-xs text-gray-500 mb-1">${formatDate(p.fecha)}</div> <div class="font-medium text-white flex items-center">
+                                ${getDivisaElement(p.divisa_icono, p.divisa)}
+                                ${formatCurrency(p.monto)}
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 text-right">
+                             <div class="text-[10px] font-bold uppercase border border-gray-600 rounded px-1.5 py-0.5 inline-block text-gray-400 mb-1">${p.tipo}</div>
+                             ${p.cuenta_nombre ? `<div class="text-xs text-blue-300 truncate max-w-[120px]" title="${p.cuenta_nombre}">${p.cuenta_nombre}</div>` : ''}
+                        </td>
+                        <td class="px-4 py-3 text-right">
+                             <button class="text-red-500 hover:text-white hover:bg-red-600 transition p-1.5 rounded-lg" onclick="eliminarPago(${p.id}, '${origen}')">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                             </button>
+                        </td>
+                    </tr>
+                `).join('')}
+                </tbody>
+            </table>
+        </div>`;
     }
 
     window.mostrarModal = ({ titulo, mensaje, textoConfirmar = "Aceptar", textoCancelar = null, onConfirmar, onCancelar }) => {
