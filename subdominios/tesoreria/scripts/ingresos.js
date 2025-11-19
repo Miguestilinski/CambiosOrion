@@ -78,18 +78,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const tr = document.createElement('tr');
             tr.className = 'border-b bg-white border-gray-700 text-gray-700 hover:bg-gray-50';
             
-            // Formateo seguro
             const fechaFmt = formatDate(item.fecha);
             const montoFmt = '$' + Number(item.monto).toLocaleString('es-CL');
             const estadoClass = getEstadoClass(item.estado);
 
+            // CAMBIO AQUÍ: Uso de || '' para evitar undefined
             tr.innerHTML = `
                 <td class="px-4 py-2 font-medium">${item.id}</td>
                 <td class="px-4 py-2">${fechaFmt}</td>
                 <td class="px-4 py-2">${item.tipo_ingreso}</td>
                 <td class="px-4 py-2 truncate max-w-[150px]" title="${item.cliente}">${item.cliente || '—'}</td>
                 <td class="px-4 py-2">${item.caja || '—'}</td>
-                <td class="px-4 py-2 truncate max-w-[150px]" title="${item.cuenta}">${item.cuenta}</td>
+                <td class="px-4 py-2 truncate max-w-[150px]" title="${item.cuenta}">${item.cuenta || ''}</td>
                 <td class="px-4 py-2">${item.divisa || '—'}</td>
                 <td class="px-4 py-2 font-bold text-gray-900">${montoFmt}</td>
                 <td class="px-4 py-2"><span class="px-2 py-1 rounded text-xs font-bold uppercase ${estadoClass}">${item.estado}</span></td>
