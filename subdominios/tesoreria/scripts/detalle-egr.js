@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const imprimirBtn = document.getElementById("imprimir");
 
     if (!egresoId) {
-        infoContenedor.innerHTML = "<p class='text-white p-4 bg-red-900/20 border border-red-500 rounded'>ID de egreso no proporcionado.</p>";
+        infoContenedor.innerHTML = "<p class='text-white p-4 border border-red-500 bg-red-900/20 rounded'>ID no proporcionado.</p>";
         return;
     }
 
@@ -40,7 +40,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (urlIcono && urlIcono.trim() !== "") {
             return `<img src="${urlIcono}" alt="${nombreDivisa}" class="w-10 h-10 object-contain drop-shadow-sm">`;
         }
-        return `<svg class="w-10 h-10 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
+        // Icono genérico rojo/amarillo
+        return `<svg class="w-10 h-10 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
     };
 
     function cargarDetalleEgreso() {
@@ -49,12 +50,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 const text = await res.text();
                 try { return JSON.parse(text); } catch (e) { 
                     console.error("Server Error:", text);
-                    throw new Error("Respuesta no válida del servidor"); 
+                    throw new Error("Respuesta del servidor inválida."); 
                 }
             })    
             .then(data => {
                 if (data.error) {
-                    infoContenedor.innerHTML = `<p class="text-red-400 p-4 bg-red-900/20 border border-red-800 rounded">${data.error}</p>`;
+                    infoContenedor.innerHTML = `<p class="text-red-400 p-4 border border-red-800 bg-red-900/20 rounded">${data.error}</p>`;
                     return;
                 }
 
@@ -63,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const divisaIcon = getDivisaElement(egr.icono_divisa, egr.nombre_divisa);
                 const badgeClass = getBadgeColor(egr.estado);
 
-                // --- 1. Información Principal ---
+                // --- HTML Principal ---
                 let html = `
                 <div class="flex flex-col gap-6">
                     
@@ -78,15 +79,15 @@ document.addEventListener("DOMContentLoaded", () => {
                         </span>
                     </div>
 
-                    <!-- TARJETA PRINCIPAL (Hero) -->
+                    <!-- HERO CARD (Rojo) -->
                     <div class="bg-gray-800/80 border border-gray-700 rounded-xl p-6 flex items-center justify-between shadow-lg relative overflow-hidden">
-                         <div class="absolute top-0 left-0 w-1 h-full bg-red-500"></div>
+                         <div class="absolute top-0 left-0 w-1 h-full bg-red-600"></div>
                         <div class="flex items-center gap-4">
                             <div class="bg-white/5 p-2 rounded-full border border-white/10">
                                 ${divisaIcon}
                             </div>
                             <div>
-                                <p class="text-red-400 text-sm font-bold uppercase tracking-wide">Monto Egreso</p>
+                                <p class="text-red-400 text-sm font-bold uppercase tracking-wide">Monto Egresado</p>
                                 <p class="text-4xl font-bold text-white tracking-tight flex items-baseline gap-2"> 
                                     <span class="text-xl text-gray-400 font-normal">${egr.simbolo_divisa || ''}</span>
                                     ${formatNumber(egr.monto)}
@@ -96,9 +97,10 @@ document.addEventListener("DOMContentLoaded", () => {
                         </div>
                     </div>
 
-                    <!-- GRID DE DETALLES -->
+                    <!-- GRID DE DATOS -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         
+                        <!-- Lado Izquierdo: Operativo -->
                         <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 space-y-4 shadow-md">
                             <h3 class="text-gray-400 text-xs font-bold uppercase tracking-widest mb-2 border-b border-gray-700 pb-2">Datos Operativos</h3>
                             
@@ -110,32 +112,41 @@ document.addEventListener("DOMContentLoaded", () => {
                                 <span class="text-gray-500 text-sm">Caja Origen:</span>
                                 <span class="text-white font-medium">${egr.nombre_caja || '—'}</span>
                             </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-500 text-sm">Cajero Responsable:</span>
+                                <span class="text-white font-medium">${egr.nombre_cajero || 'Sistema'}</span>
+                            </div>
                              <div class="flex justify-between">
                                 <span class="text-gray-500 text-sm">Fecha:</span>
                                 <span class="text-white font-medium text-right">${formatearFecha(egr.fecha)}</span>
                             </div>
                         </div>
 
+                        <!-- Lado Derecho: Destino -->
                         <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 space-y-4 shadow-md">
-                            <h3 class="text-blue-400 text-xs font-bold uppercase tracking-widest mb-2 border-b border-gray-700 pb-2">Destino</h3>
+                            <h3 class="text-blue-400 text-xs font-bold uppercase tracking-widest mb-2 border-b border-gray-700 pb-2">Destino del Dinero</h3>
                             
                             <div class="flex justify-between">
-                                <span class="text-gray-500 text-sm">Cliente:</span>
-                                <span class="text-white font-medium text-right truncate w-1/2" title="${egr.nombre_cliente}">${egr.nombre_cliente || '—'}</span>
+                                <span class="text-gray-500 text-sm">Cliente Receptor:</span>
+                                <span class="text-white font-medium text-right truncate w-1/2">${egr.nombre_cliente || '—'}</span>
                             </div>
                 `;
 
                 if (esCuenta) {
                     html += `
                         <div class="flex justify-between">
-                            <span class="text-gray-500 text-sm">Cuenta (Nuestra):</span>
-                            <span class="text-white font-medium text-right truncate w-1/2" title="${egr.nombre_cuenta}">${egr.nombre_cuenta || '—'}</span>
+                            <span class="text-gray-500 text-sm">Cuenta Origen (Nuestra):</span>
+                            <span class="text-gray-400 italic text-right">Caja ${egr.nombre_caja}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500 text-sm">Cuenta Destino (Cliente):</span>
+                            <span class="text-white font-medium text-right truncate w-1/2" title="${egr.nombre_cuenta_destino}">${egr.nombre_cuenta_destino || '—'}</span>
                         </div>
                     `;
                 } else {
                     html += `
                         <div class="mt-2 text-xs text-gray-500 italic text-right">
-                            * Salida de efectivo por caja
+                            * Entrega de efectivo por ventanilla
                         </div>
                     `;
                 }
@@ -156,26 +167,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 infoContenedor.innerHTML = html;
 
-                // --- 2. Tabla de Pagos (Si hubieran desgloces) ---
+                // --- 2. Tabla (Simulada o real si hay desglose) ---
                 const pagos = data.pagos || [];
-                // Para egresos simples, suele ser solo 1 pago (el egreso mismo), pero mantenemos la estructura.
-                // Si el array está vacío, mostramos el mensaje.
-                if (pagos.length === 0) {
-                     pagosContenedor.innerHTML = `
-                        <div class="w-full p-8 text-center bg-gray-800 rounded-lg border border-gray-700">
-                            <p class="text-gray-500 text-sm italic">Este egreso no tiene movimientos asociados adicionales.</p>
-                        </div>
-                    `;
-                } else {
-                    // Renderizar tabla si hay datos (futuro)
-                    pagosContenedor.innerHTML = `...tabla...`; 
-                }
+                const tablaHTML = `
+                    <table class="w-full text-sm text-left text-gray-300 bg-gray-800">
+                        <thead class="text-xs uppercase bg-gray-900 text-gray-400 border-b border-gray-700">
+                            <tr>
+                                <th class="px-4 py-3">Fecha</th>
+                                <th class="px-4 py-3">Forma</th>
+                                <th class="px-4 py-3 text-right">Monto Salida</th>
+                                <th class="px-4 py-3">Detalle</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-700">
+                        ${pagos.map(p => `
+                            <tr class="hover:bg-gray-700 transition">
+                                <td class="px-4 py-3">${formatearFecha(p.fecha)}</td>
+                                <td class="px-4 py-3">${p.forma_pago || ''}</td>
+                                <td class="px-4 py-3 text-right font-mono text-red-400 font-bold">-${formatNumber(p.monto)}</td>
+                                <td class="px-4 py-3 text-gray-400 italic">${p.detalle || '-'}</td>
+                            </tr>
+                        `).join("")}
+                        </tbody>
+                    </table>
+                `;
+                pagosContenedor.innerHTML = tablaHTML;
 
-                // Estado de Botones
+                // Botones
                 if (egr.estado === 'Anulado') {
                     anularBtn.disabled = true;
                     anularBtn.classList.add("opacity-50", "cursor-not-allowed");
-                    anularBtn.innerHTML = "<span>🚫</span> Anulado";
+                    anularBtn.innerHTML = "Anulado";
                 }
 
             })
@@ -189,10 +211,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     anularBtn.addEventListener("click", () => {
         mostrarModal({
-            titulo: "⚠️ Confirmar Anulación",
-            mensaje: "¿Estás seguro que deseas anular este egreso? Esto revertirá el movimiento de inventario.",
+            titulo: "⚠️ Anular Egreso",
+            mensaje: "¿Confirmas que deseas anular? Esto devolverá el dinero a la caja.",
             textoConfirmar: "Sí, Anular",
-            textoCancelar: "Cancelar",
+            textoCancelar: "Volver",
             onConfirmar: () => {
                 fetch(`https://cambiosorion.cl/data/detalle-egr.php`, {
                     method: "POST",
@@ -202,12 +224,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 .then(res => res.json())
                 .then(response => {
                     if (response.success) {
-                        mostrarModal({ titulo: "✅ Éxito", mensaje: "Egreso anulado correctamente.", onConfirmar: () => location.reload() });
+                        mostrarModal({ titulo: "✅ Éxito", mensaje: "Anulado correctamente.", onConfirmar: () => location.reload() });
                     } else {
                         mostrarModal({ titulo: "❌ Error", mensaje: response.message });
                     }
                 })
-                .catch(() => mostrarModal({ titulo: "❌ Error", mensaje: "Error de conexión." }));
+                .catch(() => mostrarModal({ titulo: "❌ Error", mensaje: "Error de red." }));
             }
         });
     });
