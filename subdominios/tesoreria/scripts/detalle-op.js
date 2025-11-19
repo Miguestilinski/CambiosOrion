@@ -65,8 +65,14 @@ document.addEventListener("DOMContentLoaded", () => {
     fetch(`https://cambiosorion.cl/data/detalle-op.php?id=${id}`)
         .then(async res => {
             const text = await res.text();
-            try { return JSON.parse(text); } catch (e) { throw new Error("Respuesta no válida del servidor"); }
-        })    
+            try { 
+                return JSON.parse(text); 
+            } catch (e) { 
+                // Esto imprimirá en consola lo que realmente devolvió el PHP (ej: el error fatal HTML)
+                console.error("Respuesta cruda del servidor:", text); 
+                throw new Error("Respuesta no válida del servidor"); 
+            }
+        })   
         .then(data => {
             if (data.error) {
                 dashboardContainer.innerHTML = `<p class="text-red-400 p-6">${data.error}</p>`;
