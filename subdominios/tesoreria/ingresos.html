@@ -144,11 +144,11 @@
                             <option value="">Efectivo</option>
                         </select>
                     </div>
-                    <div>
+                    <div class="relative">
                         <label for="cliente" class="block mb-1 text-sm text-white">Cliente</label>
-                        <input type="text" id="cliente" list="list-clientes" autocomplete="off" placeholder="Buscar cliente..."
+                        <input type="text" id="cliente" autocomplete="off" placeholder="Buscar cliente..."
                             class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                        <datalist id="list-clientes"></datalist>
+                        <ul id="sugerencias-cliente" class="absolute z-50 w-full bg-white border border-gray-300 rounded-lg mt-1 max-h-40 overflow-y-auto hidden shadow-lg"></ul>
                     </div>
 
                     <div>
@@ -157,18 +157,18 @@
                             class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                     </div>
 
-                    <div>
+                    <div class="relative">
                         <label for="cuenta" class="block mb-1 text-sm text-white">Cuenta</label>
-                        <input type="text" id="cuenta" list="list-cuentas" autocomplete="off" placeholder="Buscar cuenta..."
+                        <input type="text" id="cuenta" autocomplete="off" placeholder="Buscar cuenta..."
                             class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                        <datalist id="list-cuentas"></datalist>
+                        <ul id="sugerencias-cuenta" class="absolute z-50 w-full bg-white border border-gray-300 rounded-lg mt-1 max-h-40 overflow-y-auto hidden shadow-lg"></ul>
                     </div>
 
-                    <div>
+                    <div class="relative">
                         <label for="divisa" class="block mb-1 text-sm text-white">Divisa</label>
-                        <input type="text" id="divisa" list="list-divisas" autocomplete="off" placeholder="Buscar divisa..."
+                        <input type="text" id="divisa" autocomplete="off" placeholder="Buscar divisa..."
                             class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                        <datalist id="list-divisas"></datalist>
+                        <ul id="sugerencias-divisa" class="absolute z-50 w-full bg-white border border-gray-300 rounded-lg mt-1 max-h-40 overflow-y-auto hidden shadow-lg"></ul>
                     </div>
                     <div>
                         <label for="estado" class="block mb-1 text-sm text-white">Estado</label>

@@ -18,30 +18,59 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnBorrarFiltros = document.getElementById('borrar-filtros');
     const btnNuevoIngreso = document.getElementById('nuevo-ingreso');
 
-    // 1. Cargar Opciones para Datalists (Dropdowns Buscables)
-    function cargarOpcionesFiltros() {
-        fetch('https://cambiosorion.cl/data/ingresos.php?get_options=1')
-            .then(res => res.json())
-            .then(data => {
-                if(data.error) return console.error(data.error);
-                
-                // Llenar las listas usando el helper
-                llenarDatalist('list-clientes', data.clientes, 'razon_social');
-                llenarDatalist('list-cuentas', data.cuentas, 'nombre');
-                llenarDatalist('list-divisas', data.divisas, 'nombre');
-            })
-            .catch(err => console.error("Error cargando opciones de filtro:", err));
+    // Función genérica para configurar un buscador
+    function setupAutocomplete(inputId, listId, paramName, displayField) {
+        const input = document.getElementById(inputId);
+        const list = document.getElementById(listId);
+
+        input.addEventListener('input', async (e) => {
+            const query = e.target.value.trim();
+            if (query.length < 1) { // Solo buscar si hay al menos 1 caracter
+                list.classList.add('hidden');
+                list.innerHTML = '';
+                obtenerIngresos(1); // Refrescar tabla al borrar
+                return;
+            }
+
+            try {
+                const res = await fetch(`https://cambiosorion.cl/data/ingresos.php?${paramName}=${encodeURIComponent(query)}`);
+                const items = await res.json();
+
+                list.innerHTML = '';
+                if (items.length > 0) {
+                    list.classList.remove('hidden');
+                    items.forEach(item => {
+                        const li = document.createElement('li');
+                        li.className = "px-4 py-2 hover:bg-gray-100 cursor-pointer text-gray-700 text-sm border-b border-gray-100 last:border-0";
+                        li.textContent = item[displayField]; // Ej: razon_social o nombre
+                        
+                        li.addEventListener('click', () => {
+                            input.value = item[displayField]; // Poner valor en input
+                            list.classList.add('hidden');
+                            obtenerIngresos(1); // Filtrar tabla inmediatamente
+                        });
+                        list.appendChild(li);
+                    });
+                } else {
+                    list.classList.add('hidden');
+                }
+            } catch (err) {
+                console.error("Error buscando:", err);
+            }
+        });
+
+        // Cerrar lista al hacer clic fuera
+        document.addEventListener('click', (e) => {
+            if (!input.contains(e.target) && !list.contains(e.target)) {
+                list.classList.add('hidden');
+            }
+        });
     }
 
-    function llenarDatalist(idList, items, campoTexto) {
-        const datalist = document.getElementById(idList);
-        if(!datalist || !items) return;
-        
-        // Creamos las opciones del dropdown
-        datalist.innerHTML = items.map(item => 
-            `<option value="${item[campoTexto]}">`
-        ).join('');
-    }
+    // Configurar los 3 buscadores
+    setupAutocomplete('cliente', 'sugerencias-cliente', 'buscar_cliente', 'razon_social');
+    setupAutocomplete('cuenta', 'sugerencias-cuenta', 'buscar_cuenta', 'nombre');
+    setupAutocomplete('divisa', 'sugerencias-divisa', 'buscar_divisa', 'nombre');
 
     // 2. Función Principal de Obtención
     function obtenerIngresos(page = 1) {
@@ -200,6 +229,5 @@ document.addEventListener('DOMContentLoaded', () => {
     if(btnNuevoIngreso) btnNuevoIngreso.addEventListener('click', () => window.location.href = 'https://tesoreria.cambiosorion.cl/nuevo-ing');
 
     // Inicialización
-    cargarOpcionesFiltros();
     obtenerIngresos(1);
 });
