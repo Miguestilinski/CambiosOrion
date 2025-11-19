@@ -174,7 +174,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         ${icon}
                         <div class="flex flex-col">
                             <span class="text-2xl md:text-3xl font-bold text-white leading-none tracking-tight whitespace-nowrap">
-                                <span class="text-gray-500 text-sm font-normal mr-0.5">${item.simbolo}</span>${formatNumber(item.meta)} <span class="text-xs text-blue-400 font-bold">${item.codigo}</span>
+                                <span class="text-gray-500 text-sm font-normal mr-0.5">${item.simbolo}</span>${formatNumber(item.meta)} <span class="text-md text-blue-400 font-bold">${item.codigo}</span>
                             </span>
                             <div class="text-xs text-gray-400 font-mono mt-1 bg-gray-900/50 px-2 py-0.5 rounded inline-block ${alignRight ? 'ml-auto' : 'mr-auto'}">
                                 Pagado: ${formatNumber(item.pagado)}
@@ -188,8 +188,8 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 pb-6 border-b border-gray-700">
                 <div>
                     <div class="flex items-center gap-3 mb-1">
-                        <span class="text-blue-400 text-xs uppercase tracking-wider font-bold">Operación</span>
-                        <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-gray-800 border border-gray-600 text-gray-300">${op.tipo_transaccion}</span>
+                        <span class="text-blue-400 text-sm uppercase tracking-wider font-bold">Operación</span>
+                        <span class="px-2 py-0.5 rounded text-sm font-bold uppercase bg-gray-800 border border-gray-600 text-gray-300">${op.tipo_transaccion}</span>
                     </div>
                     <div class="flex items-center gap-4">
                         <h1 class="text-4xl font-bold text-white tracking-tight">#${op.id}</h1>
@@ -238,7 +238,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="relative h-8 w-full flex rounded-full overflow-hidden bg-gray-900 shadow-inner border border-gray-600">
                         <div class="w-1/2 flex justify-start border-r border-gray-700 relative bg-gray-900/50">
                              <div style="width: ${pctClienteBarra}%" class="bg-gradient-to-r from-blue-800 to-blue-500 h-full shadow-[0_0_20px_rgba(59,130,246,0.6)] transition-all duration-1000 ease-out relative flex items-center justify-end pr-3">
