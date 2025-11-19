@@ -86,10 +86,10 @@ document.addEventListener("DOMContentLoaded", () => {
                                 ${divisaIcon}
                             </div>
                             <div>
-                                <p class="text-red-400 text-sm font-bold uppercase tracking-wide">Monto Salida</p>
-                                <p class="text-4xl font-bold text-white tracking-tight flex items-baseline gap-2">
-                                    ${formatNumber(egr.monto)} 
+                                <p class="text-red-400 text-sm font-bold uppercase tracking-wide">Monto Egreso</p>
+                                <p class="text-4xl font-bold text-white tracking-tight flex items-baseline gap-2"> 
                                     <span class="text-xl text-gray-400 font-normal">${egr.simbolo_divisa || ''}</span>
+                                    ${formatNumber(egr.monto)}
                                 </p>
                                 <p class="text-sm text-gray-500">${egr.nombre_divisa}</p>
                             </div>
