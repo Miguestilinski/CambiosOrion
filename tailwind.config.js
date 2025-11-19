@@ -2,9 +2,10 @@
 module.exports = {
   mode: 'jit',
   content: [
-    './public/**/*.html',
-    './public/styles/**/*.css',
-    './public/scripts/**/*.{js,jsx}', 
+    // Busca en cualquier subcarpeta de public
+    './public/**/*.{html,js,php}', 
+    // Si tus archivos JS están en la raíz del proyecto (fuera de public), descomenta esto:
+    // './*.{html,js,php}',
     "./node_modules/flowbite/**/*.js",
   ],
   theme: {
