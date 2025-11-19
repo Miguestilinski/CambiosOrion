@@ -146,23 +146,29 @@
                     </div>
                     <div>
                         <label for="cliente" class="block mb-1 text-sm text-white">Cliente</label>
-                        <input type="text" id="cliente" 
+                        <input type="text" id="cliente" list="list-clientes" autocomplete="off" placeholder="Buscar cliente..."
                             class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                        <datalist id="list-clientes"></datalist>
                     </div>
+
                     <div>
                         <label for="caja" class="block mb-1 text-sm text-white">Caja</label>
                         <input type="text" id="caja" 
                             class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
                     </div>
+
                     <div>
                         <label for="cuenta" class="block mb-1 text-sm text-white">Cuenta</label>
-                        <input type="text" id="cuenta" 
+                        <input type="text" id="cuenta" list="list-cuentas" autocomplete="off" placeholder="Buscar cuenta..."
                             class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                        <datalist id="list-cuentas"></datalist>
                     </div>
+
                     <div>
                         <label for="divisa" class="block mb-1 text-sm text-white">Divisa</label>
-                        <input type="text" id="divisa" 
+                        <input type="text" id="divisa" list="list-divisas" autocomplete="off" placeholder="Buscar divisa..."
                             class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                        <datalist id="list-divisas"></datalist>
                     </div>
                     <div>
                         <label for="estado" class="block mb-1 text-sm text-white">Estado</label>

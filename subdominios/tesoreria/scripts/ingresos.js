@@ -24,17 +24,23 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(res => res.json())
             .then(data => {
                 if(data.error) return console.error(data.error);
+                
+                // Llenar las listas usando el helper
                 llenarDatalist('list-clientes', data.clientes, 'razon_social');
                 llenarDatalist('list-cuentas', data.cuentas, 'nombre');
                 llenarDatalist('list-divisas', data.divisas, 'nombre');
             })
-            .catch(err => console.error("Error cargando opciones:", err));
+            .catch(err => console.error("Error cargando opciones de filtro:", err));
     }
 
     function llenarDatalist(idList, items, campoTexto) {
         const datalist = document.getElementById(idList);
         if(!datalist || !items) return;
-        datalist.innerHTML = items.map(item => `<option value="${item[campoTexto]}">`).join('');
+        
+        // Creamos las opciones del dropdown
+        datalist.innerHTML = items.map(item => 
+            `<option value="${item[campoTexto]}">`
+        ).join('');
     }
 
     // 2. Función Principal de Obtención
