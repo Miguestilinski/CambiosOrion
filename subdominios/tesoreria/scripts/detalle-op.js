@@ -341,7 +341,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             <div class="rounded-xl border border-gray-700 bg-transparent overflow-hidden mb-10">
                 <div class="p-5 border-b border-gray-700 flex flex-col sm:flex-row justify-between items-center gap-4 bg-gray-800">
-                    <h2 class="text-lg font-bold text-white flex items-center gap-2"><span class="text-blue-400">💳</span> Gestión de Pagos</h2>
+                    <h2 class="text-lg font-bold text-white flex items-center gap-2">Gestión de Pagos</h2>
                     ${fin.estadoCalculado !== 'Pagado' && op.estado !== 'Anulado' ? `
                     <div class="flex gap-2">
                         <button id="btn-full-cliente" class="px-3 py-1.5 text-xs font-bold text-blue-200 bg-blue-900/50 border border-blue-800 rounded hover:bg-blue-800 transition" ${fin.cliente.listo ? 'disabled class="opacity-50 cursor-not-allowed"' : ''}>Pagar Todo Cliente</button>
