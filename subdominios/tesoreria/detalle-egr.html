@@ -121,31 +121,45 @@
         <div id="sidebar-container" class="no-print"></div>
         
         <main id="dashboard-content" class="flex-1 p-6 md:p-10">
-            <section class="max-w-4xl mx-auto">
+            <!-- CAMBIO: Ancho máximo 6xl para centrado óptimo pero más amplio -->
+            <section class="max-w-6xl mx-auto">
                 
                 <!-- Top Bar -->
                 <div class="flex flex-col md:flex-row justify-between items-center mb-8 border-b border-gray-700 pb-4">
                     <h1 class="text-3xl font-light text-white mb-4 md:mb-0">
-                        Detalle de <span class="font-bold text-yellow-500">Egreso</span>
+                        Detalle de <span class="font-bold text-red-500">Egreso</span>
                     </h1>
                     <div class="flex space-x-3 no-print">
-                        <button type="button" id="anular-egreso" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded shadow transition flex items-center gap-2">
+                        <button type="button" id="anular-egreso" class="bg-red-900/50 border border-red-700 hover:bg-red-800 text-red-100 px-4 py-2 rounded shadow transition flex items-center gap-2">
                             <span>🚫</span> Anular
                         </button>
-                        <button type="button" id="imprimir" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded shadow transition flex items-center gap-2">
+                        <button type="button" id="imprimir" class="bg-gray-800 border border-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded shadow transition flex items-center gap-2">
                             <span>🖨️</span> Imprimir
                         </button>
                     </div>
                 </div>
                 
-                <!-- Contenedor Dinámico -->
+                <!-- Contenedor Dinámico (Info Principal) -->
                 <div id="info-egreso" class="mb-10 animate-fade-in-up">
-                    <div class="h-32 bg-gray-800 rounded-lg animate-pulse"></div> <!-- Skeleton -->
+                    <!-- Skeleton Loader mejorado -->
+                    <div class="space-y-6 animate-pulse">
+                        <div class="h-32 bg-gray-800 rounded-xl"></div>
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="h-40 bg-gray-800 rounded-xl"></div>
+                            <div class="h-40 bg-gray-800 rounded-xl"></div>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Sección Historial (Visualmente vacía en este caso, pero se mantiene estructura) -->
+                <!-- Sección Historial de Pagos -->
                 <div class="mt-8">
-                    <div id="detalle-pagos-egreso" class="rounded-lg shadow-lg"></div>
+                    <h2 class="text-xl font-semibold text-gray-300 mb-4 flex items-center gap-2 border-l-4 border-red-500 pl-3">
+                        Historial de Salidas
+                    </h2>
+                    <div id="detalle-pagos-egreso" class="rounded-lg shadow-lg overflow-hidden">
+                        <!-- JS llenará esta tabla -->
+                        <div class="bg-gray-800 h-20 rounded animate-pulse"></div>
+                    </div>
                 </div>
                 
                 <!-- Modales -->

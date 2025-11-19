@@ -3,11 +3,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const egresoId = params.get("id");
     
     const infoContenedor = document.getElementById("info-egreso");
+    const pagosContenedor = document.getElementById("detalle-pagos-egreso");
     const anularBtn = document.getElementById("anular-egreso");
     const imprimirBtn = document.getElementById("imprimir");
 
     if (!egresoId) {
-        infoContenedor.innerHTML = "<p class='text-white'>ID de egreso no proporcionado.</p>";
+        infoContenedor.innerHTML = "<p class='text-white p-4 bg-red-900/20 border border-red-500 rounded'>ID de egreso no proporcionado.</p>";
         return;
     }
 
@@ -53,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
             })    
             .then(data => {
                 if (data.error) {
-                    infoContenedor.innerHTML = `<p class="text-red-400">${data.error}</p>`;
+                    infoContenedor.innerHTML = `<p class="text-red-400 p-4 bg-red-900/20 border border-red-800 rounded">${data.error}</p>`;
                     return;
                 }
 
@@ -62,14 +63,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 const divisaIcon = getDivisaElement(egr.icono_divisa, egr.nombre_divisa);
                 const badgeClass = getBadgeColor(egr.estado);
 
-                // --- CONSTRUCCIÓN DEL HTML ---
+                // --- 1. Información Principal ---
                 let html = `
                 <div class="flex flex-col gap-6">
                     
                     <!-- CABECERA -->
                     <div class="flex justify-between items-start">
                         <div>
-                           <span class="text-gray-400 text-xs uppercase tracking-wider">ID Egreso</span>
+                           <span class="text-gray-400 text-xs uppercase tracking-wider font-bold">ID Egreso</span>
                            <h2 class="text-3xl font-bold text-white">#${egr.id}</h2>
                         </div>
                         <span class="px-3 py-1 rounded-full text-xs font-medium uppercase tracking-wide ${badgeClass}">
@@ -77,16 +78,20 @@ document.addEventListener("DOMContentLoaded", () => {
                         </span>
                     </div>
 
-                    <!-- TARJETA PRINCIPAL -->
-                    <div class="bg-gray-700/50 border border-gray-600 rounded-xl p-6 flex items-center justify-between shadow-lg">
+                    <!-- TARJETA PRINCIPAL (Hero) -->
+                    <div class="bg-gray-800/80 border border-gray-700 rounded-xl p-6 flex items-center justify-between shadow-lg relative overflow-hidden">
+                         <div class="absolute top-0 left-0 w-1 h-full bg-red-500"></div>
                         <div class="flex items-center gap-4">
-                            <div class="bg-white/10 p-2 rounded-full">
+                            <div class="bg-white/5 p-2 rounded-full border border-white/10">
                                 ${divisaIcon}
                             </div>
                             <div>
-                                <p class="text-gray-400 text-sm">Monto Egresado</p>
-                                <p class="text-3xl font-bold text-white tracking-tight">${formatNumber(egr.monto)} <span class="text-lg text-yellow-500 font-normal">${egr.simbolo_divisa || ''}</span></p>
-                                <p class="text-sm text-gray-300">${egr.nombre_divisa}</p>
+                                <p class="text-red-400 text-sm font-bold uppercase tracking-wide">Monto Salida</p>
+                                <p class="text-4xl font-bold text-white tracking-tight flex items-baseline gap-2">
+                                    ${formatNumber(egr.monto)} 
+                                    <span class="text-xl text-gray-400 font-normal">${egr.simbolo_divisa || ''}</span>
+                                </p>
+                                <p class="text-sm text-gray-500">${egr.nombre_divisa}</p>
                             </div>
                         </div>
                     </div>
@@ -94,43 +99,43 @@ document.addEventListener("DOMContentLoaded", () => {
                     <!-- GRID DE DETALLES -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         
-                        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 space-y-3">
-                            <h3 class="text-yellow-500 text-xs font-bold uppercase tracking-widest mb-2 border-b border-gray-700 pb-2">Información Operativa</h3>
+                        <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 space-y-4 shadow-md">
+                            <h3 class="text-gray-400 text-xs font-bold uppercase tracking-widest mb-2 border-b border-gray-700 pb-2">Datos Operativos</h3>
                             
                             <div class="flex justify-between">
-                                <span class="text-gray-400 text-sm">Tipo Egreso:</span>
-                                <span class="text-white font-medium">${egr.tipo_egreso}</span>
+                                <span class="text-gray-500 text-sm">Tipo:</span>
+                                <span class="text-white font-medium bg-gray-900 px-2 py-0.5 rounded text-xs uppercase">${egr.tipo_egreso}</span>
                             </div>
                             <div class="flex justify-between">
-                                <span class="text-gray-400 text-sm">Caja Origen:</span>
+                                <span class="text-gray-500 text-sm">Caja Origen:</span>
                                 <span class="text-white font-medium">${egr.nombre_caja || '—'}</span>
                             </div>
                              <div class="flex justify-between">
-                                <span class="text-gray-400 text-sm">Fecha:</span>
+                                <span class="text-gray-500 text-sm">Fecha:</span>
                                 <span class="text-white font-medium text-right">${formatearFecha(egr.fecha)}</span>
                             </div>
                         </div>
 
-                        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 space-y-3">
-                            <h3 class="text-blue-400 text-xs font-bold uppercase tracking-widest mb-2 border-b border-gray-700 pb-2">Contraparte y Cuentas</h3>
+                        <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 space-y-4 shadow-md">
+                            <h3 class="text-blue-400 text-xs font-bold uppercase tracking-widest mb-2 border-b border-gray-700 pb-2">Destino</h3>
                             
                             <div class="flex justify-between">
-                                <span class="text-gray-400 text-sm">Cliente Destino:</span>
-                                <span class="text-white font-medium text-right truncate w-1/2">${egr.nombre_cliente || '—'}</span>
+                                <span class="text-gray-500 text-sm">Cliente:</span>
+                                <span class="text-white font-medium text-right truncate w-1/2" title="${egr.nombre_cliente}">${egr.nombre_cliente || '—'}</span>
                             </div>
                 `;
 
                 if (esCuenta) {
                     html += `
                         <div class="flex justify-between">
-                            <span class="text-gray-400 text-sm">Cuenta Origen (Nuestra):</span>
+                            <span class="text-gray-500 text-sm">Cuenta (Nuestra):</span>
                             <span class="text-white font-medium text-right truncate w-1/2" title="${egr.nombre_cuenta}">${egr.nombre_cuenta || '—'}</span>
                         </div>
                     `;
                 } else {
                     html += `
                         <div class="mt-2 text-xs text-gray-500 italic text-right">
-                            * Egreso en efectivo desde Caja
+                            * Salida de efectivo por caja
                         </div>
                     `;
                 }
@@ -140,9 +145,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     </div>
 
                     ${egr.detalle ? `
-                    <div class="bg-gray-800 p-4 rounded-lg border border-gray-700">
-                        <span class="text-gray-400 text-xs uppercase font-bold">Observaciones:</span>
-                        <p class="text-white mt-1 italic text-sm">${egr.detalle}</p>
+                    <div class="bg-gray-800 p-4 rounded-xl border border-gray-700">
+                        <span class="text-gray-400 text-xs uppercase font-bold block mb-1">Observaciones</span>
+                        <p class="text-gray-300 italic text-sm bg-gray-900/50 p-2 rounded">${egr.detalle}</p>
                     </div>
                     ` : ''}
                     
@@ -151,17 +156,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 infoContenedor.innerHTML = html;
 
+                // --- 2. Tabla de Pagos (Si hubieran desgloces) ---
+                const pagos = data.pagos || [];
+                // Para egresos simples, suele ser solo 1 pago (el egreso mismo), pero mantenemos la estructura.
+                // Si el array está vacío, mostramos el mensaje.
+                if (pagos.length === 0) {
+                     pagosContenedor.innerHTML = `
+                        <div class="w-full p-8 text-center bg-gray-800 rounded-lg border border-gray-700">
+                            <p class="text-gray-500 text-sm italic">Este egreso no tiene movimientos asociados adicionales.</p>
+                        </div>
+                    `;
+                } else {
+                    // Renderizar tabla si hay datos (futuro)
+                    pagosContenedor.innerHTML = `...tabla...`; 
+                }
+
                 // Estado de Botones
                 if (egr.estado === 'Anulado') {
                     anularBtn.disabled = true;
                     anularBtn.classList.add("opacity-50", "cursor-not-allowed");
-                    anularBtn.textContent = "Anulado";
+                    anularBtn.innerHTML = "<span>🚫</span> Anulado";
                 }
 
             })
             .catch(err => {
                 console.error(err);
-                infoContenedor.innerHTML = "<p>Error de conexión.</p>";
+                infoContenedor.innerHTML = "<p class='text-red-400'>Error de conexión.</p>";
             });
     }
 
@@ -169,10 +189,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     anularBtn.addEventListener("click", () => {
         mostrarModal({
-            titulo: "⚠️ Anular Egreso",
-            mensaje: "¿Confirmas que deseas anular esta salida de dinero? Esta acción es irreversible.",
+            titulo: "⚠️ Confirmar Anulación",
+            mensaje: "¿Estás seguro que deseas anular este egreso? Esto revertirá el movimiento de inventario.",
             textoConfirmar: "Sí, Anular",
-            textoCancelar: "Volver",
+            textoCancelar: "Cancelar",
             onConfirmar: () => {
                 fetch(`https://cambiosorion.cl/data/detalle-egr.php`, {
                     method: "POST",
