@@ -114,7 +114,7 @@
             </div>
         </div>
     </header>
-    
+
     <div class="header-divider"></div>
     <div class="main-content flex">
         <div id="sidebar-container" class="no-print"></div>
@@ -203,10 +203,14 @@
         </div>
     </footer>
 
-    <script type="module" src="[https://cambiosorion.cl/orionapp/public/scripts/header.js](https://cambiosorion.cl/orionapp/public/scripts/header.js)"></script>
+    <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type_ ="module" src="https://cambiosorion.cl/orionapp/public/scripts/header.js" crossorigin="anonymous"></script>
     <script type="module" src="./detalle-egr.js"></script>
     <script>
-        fetch('sidebar.html').then(r => r.text()).then(d => document.getElementById('sidebar-container').innerHTML = d);
+        fetch('sidebar.html')
+            .then(response => response.text())
+            .then(data => document.getElementById('sidebar-container').innerHTML = data);
     </script>
 </body>
 </html>
