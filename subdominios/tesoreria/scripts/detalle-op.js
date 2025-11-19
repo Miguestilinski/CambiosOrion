@@ -103,7 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     </button>
                     ${op.estado !== 'Anulado' ? `
                         <button id="btn-anular" class="bg-transparent hover:bg-red-900/30 text-red-400 border border-red-900 px-4 py-2 rounded shadow flex items-center gap-2 text-sm transition">
-                            <span>🚫</span> Anular
+                            <span></span> Anular
                         </button>
                     ` : ''}
                     <button id="btn-imprimir" class="bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-600 px-4 py-2 rounded shadow flex items-center gap-2 text-sm transition">
@@ -217,7 +217,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <!-- Header: Gris Intermedio -->
                 <div class="p-5 border-b border-gray-700 flex flex-col sm:flex-row justify-between items-center gap-4 bg-gray-800">
                     <h2 class="text-lg font-bold text-white flex items-center gap-2">
-                        <span class="text-blue-400">💳</span> 
+                        <span class="text-blue-400"></span> 
                         Gestión de Pagos
                     </h2>
                     
