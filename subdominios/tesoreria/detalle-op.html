@@ -10,6 +10,14 @@
     <link href="https://cambiosorion.cl/orionapp/public/styles/output.css" rel="stylesheet">
     <link rel="icon" href="https://cambiosorion.cl/orionapp/icons/IsotipoOrion-blue.svg" type="image/png">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">  
+    <style>
+        @media print {
+            body * { visibility: hidden; }
+            #dashboard-content, #dashboard-content * { visibility: visible; }
+            #dashboard-content { position: absolute; left: 0; top: 0; width: 100%; }
+            .no-print { display: none !important; }
+        }
+    </style>
 </head>
 <body>
     <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js" crossorigin="anonymous"></script>
@@ -112,7 +120,7 @@
     <div class="header-divider"></div>
     <div class="main-content">
         <div id="sidebar-container"></div>
-        <main id="dashboard-content" class="dashboard-content">
+        <main id="dashboard-content" class="dashboard-content animate-fade-in-up">
             <section id="detalle-operacion" class="content-section active">
                 <div class="flex items-center mb-6">
                   <h1 class="text-2xl font-medium mr-4 leading-none text-white">Detalle de Operación</h1>
