@@ -143,15 +143,18 @@
                             <div>
                                 <label class="block mb-1 text-sm font-medium text-gray-300">Tipo de Operación</label>
                                 <div class="grid grid-cols-2 gap-2">
-                                    <label class="cursor-pointer">
+                                    <label class="cursor-pointer relative">
                                         <input type="radio" name="tipo_radio" value="efectivo" class="peer sr-only" checked>
-                                        <div class="text-center p-2 rounded-lg border border-gray-600 bg-gray-900 peer-checked:bg-blue-600 peer-checked:border-blue-500 peer-checked:text-white text-gray-400 transition hover:bg-gray-700">
+                                        <div class="text-center p-2 rounded-lg border border-gray-600 bg-gray-900 text-gray-400 hover:bg-gray-700 transition 
+                                                    peer-checked:bg-blue-600 peer-checked:border-blue-500 peer-checked:text-white peer-checked:shadow-lg">
                                             Efectivo
                                         </div>
                                     </label>
-                                    <label class="cursor-pointer">
+                                    
+                                    <label class="cursor-pointer relative">
                                         <input type="radio" name="tipo_radio" value="cuenta" class="peer sr-only">
-                                        <div class="text-center p-2 rounded-lg border border-gray-600 bg-gray-900 peer-checked:bg-purple-600 peer-checked:border-purple-500 peer-checked:text-white text-gray-400 transition hover:bg-gray-700">
+                                        <div class="text-center p-2 rounded-lg border border-gray-600 bg-gray-900 text-gray-400 hover:bg-gray-700 transition 
+                                                    peer-checked:bg-purple-600 peer-checked:border-purple-500 peer-checked:text-white peer-checked:shadow-lg">
                                             Cuenta
                                         </div>
                                     </label>
@@ -224,7 +227,7 @@
                         Limpiar
                     </button>
                     <button type="submit"
-                        class="text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:outline-none focus:ring-blue-800 font-bold rounded-lg text-sm px-8 py-2.5 shadow-lg shadow-blue-900/50 transition transform hover:-translate-y-0.5">
+                        class="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-blue-800 font-bold rounded-lg text-sm px-8 py-2.5 shadow-lg shadow-blue-900/50 transition transform hover:-translate-y-0.5">
                         Crear Ingreso
                     </button>
                 </div>

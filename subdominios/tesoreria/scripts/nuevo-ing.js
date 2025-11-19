@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
       radio.addEventListener('change', (e) => {
           if(e.target.checked) {
               inputTipoHidden.value = e.target.value;
-              // Opcional: Resetear validaciones o estilos si cambias de tipo
+              // Opcional: Puedes limpiar el campo de cuenta si cambia a efectivo, o dejarlo.
           }
       });
   });
@@ -238,18 +238,38 @@ document.addEventListener("DOMContentLoaded", () => {
           try {
               const res = await fetch(`https://cambiosorion.cl/data/nuevo-ing.php?buscar_divisa=${encodeURIComponent(query)}`);
               const divisas = await res.json();
+              
               divisaSugerencias.innerHTML = "";
-              divisas.forEach(d => {
-                  const li = document.createElement("li");
-                  li.textContent = d.nombre;
-                  li.className = "p-3 hover:bg-gray-100 cursor-pointer text-sm text-gray-800";
-                  li.addEventListener("click", () => {
-                      divisaInput.value = d.nombre;
-                      divisaInput.dataset.id = d.id; // ID real para el POST
-                      divisaSugerencias.classList.add("hidden");
+              
+              if (divisas.length === 0) {
+                  divisaSugerencias.innerHTML = "<li class='p-3 text-sm text-gray-500'>No hay resultados</li>";
+              } else {
+                  divisas.forEach(d => {
+                      const li = document.createElement("li");
+                      li.className = "p-2 hover:bg-gray-100 cursor-pointer text-sm text-gray-800 border-b border-gray-100 flex items-center gap-3";
+                      
+                      // Crear elemento de imagen si existe icono
+                      let iconHtml = "";
+                      if (d.icono) {
+                          iconHtml = `<img src="${d.icono}" class="w-6 h-6 object-contain rounded-full bg-gray-50 border border-gray-200" alt="">`;
+                      } else {
+                          // Fallback: Círculo con inicial
+                          iconHtml = `<div class="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-500">${d.nombre.charAt(0)}</div>`;
+                      }
+
+                      li.innerHTML = `
+                          ${iconHtml}
+                          <span class="font-medium">${d.nombre}</span>
+                      `;
+
+                      li.addEventListener("click", () => {
+                          divisaInput.value = d.nombre;
+                          divisaInput.dataset.id = d.id; 
+                          divisaSugerencias.classList.add("hidden");
+                      });
+                      divisaSugerencias.appendChild(li);
                   });
-                  divisaSugerencias.appendChild(li);
-              });
+              }
               divisaSugerencias.classList.remove("hidden");
           } catch(e) { console.error(e); }
       });
