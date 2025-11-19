@@ -89,147 +89,96 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
 
-    // --- 3. RENDERIZADO DEL DASHBOARD (Versus DB Data) ---
+    // --- 3. RENDERIZADO DEL DASHBOARD (Propuesta A: Hero Unificado) ---
     function renderDashboard(data) {
         const op = data.operacion;
         const detalles = data.detalles || [];
         const pagos = data.pagos || [];
 
-        // --- LÓGICA FINANCIERA MULTI-DIVISA ---
+        const getCurrencyInfo = (nombre, id) => { /* ... (Mismo helper interno, usa datos BD si existen en data) ... */ return {code: "UNK", symbol: "$"}; }; // Nota: En tu código real ya estás usando los datos directos, así que la lógica de abajo usa los datos preparados.
+
+        // --- LÓGICA FINANCIERA (Sin cambios) ---
         const esVenta = op.tipo_transaccion === "Venta"; 
         const totalCLP = parseFloat(op.total);
 
         let listaCliente = [];
         let listaOrion = [];
-        
-        // Variables para barras de progreso
         let progresoGlobalCliente = 0;
         let progresoGlobalOrion = 0;
 
         const getPagado = (origen, divisaId) => {
-            return pagos
-                .filter(p => p.origen === origen && p.divisa_id === divisaId)
-                .reduce((sum, p) => sum + parseFloat(p.monto), 0);
+            return pagos.filter(p => p.origen === origen && p.divisa_id === divisaId).reduce((sum, p) => sum + parseFloat(p.monto), 0);
         };
 
         if (esVenta) {
-            // VENTA: Cliente paga CLP -> Orion paga Divisas
-            
-            // Lado Cliente (CLP)
+            // VENTA
             const pagadoClp = getPagado('cliente', 'D47');
-            listaCliente.push({
-                id: 'D47', nombre: 'Peso Chileno', icono: '', codigo: 'CLP', simbolo: '$', // Datos base D47
-                meta: totalCLP, pagado: pagadoClp
-            });
+            listaCliente.push({ id: 'D47', nombre: 'Peso Chileno', icono: '', codigo: 'CLP', simbolo: '$', meta: totalCLP, pagado: pagadoClp });
             progresoGlobalCliente = totalCLP > 0 ? (pagadoClp / totalCLP) : 0;
 
-            // Lado Orion (Multi-Divisa)
-            let totalPonderacion = 0;
-            let sumaProgreso = 0;
-
+            let totalPonderacion = 0; let sumaProgreso = 0;
             detalles.forEach(d => {
                 const meta = parseFloat(d.monto);
                 const pagado = getPagado('orion', d.divisa_id);
-                const pesoLinea = parseFloat(d.subtotal); // Ponderación por valor CLP
-                
-                listaOrion.push({
-                    id: d.divisa_id, nombre: d.divisa, icono: d.divisa_icono,
-                    codigo: d.divisa_codigo, simbolo: d.divisa_simbolo, // <-- USAMOS DATOS BD
-                    meta: meta, pagado: pagado
-                });
-
-                const pctLinea = meta > 0 ? (pagado / meta) : 0;
-                sumaProgreso += (pctLinea * pesoLinea);
+                const pesoLinea = parseFloat(d.subtotal);
+                listaOrion.push({ id: d.divisa_id, nombre: d.divisa, icono: d.divisa_icono, codigo: d.divisa_codigo, simbolo: d.divisa_simbolo, meta: meta, pagado: pagado });
+                sumaProgreso += (meta > 0 ? (pagado/meta) : 0) * pesoLinea;
                 totalPonderacion += pesoLinea;
             });
             progresoGlobalOrion = totalPonderacion > 0 ? (sumaProgreso / totalPonderacion) : 0;
-
         } else {
-            // COMPRA: Cliente paga Divisas -> Orion paga CLP
-
-            // Lado Cliente (Multi-Divisa)
-            let totalPonderacion = 0;
-            let sumaProgreso = 0;
-
+            // COMPRA
+            let totalPonderacion = 0; let sumaProgreso = 0;
             detalles.forEach(d => {
                 const meta = parseFloat(d.monto);
                 const pagado = getPagado('cliente', d.divisa_id);
                 const pesoLinea = parseFloat(d.subtotal);
-
-                listaCliente.push({
-                    id: d.divisa_id, nombre: d.divisa, icono: d.divisa_icono,
-                    codigo: d.divisa_codigo, simbolo: d.divisa_simbolo, // <-- USAMOS DATOS BD
-                    meta: meta, pagado: pagado
-                });
-
-                const pctLinea = meta > 0 ? (pagado / meta) : 0;
-                sumaProgreso += (pctLinea * pesoLinea);
+                listaCliente.push({ id: d.divisa_id, nombre: d.divisa, icono: d.divisa_icono, codigo: d.divisa_codigo, simbolo: d.divisa_simbolo, meta: meta, pagado: pagado });
+                sumaProgreso += (meta > 0 ? (pagado/meta) : 0) * pesoLinea;
                 totalPonderacion += pesoLinea;
             });
             progresoGlobalCliente = totalPonderacion > 0 ? (sumaProgreso / totalPonderacion) : 0;
 
-            // Lado Orion (CLP)
             const pagadoClp = getPagado('orion', 'D47');
-            listaOrion.push({
-                id: 'D47', nombre: 'Peso Chileno', icono: '', codigo: 'CLP', simbolo: '$', // Datos base D47
-                meta: totalCLP, pagado: pagadoClp
-            });
+            listaOrion.push({ id: 'D47', nombre: 'Peso Chileno', icono: '', codigo: 'CLP', simbolo: '$', meta: totalCLP, pagado: pagadoClp });
             progresoGlobalOrion = totalCLP > 0 ? (pagadoClp / totalCLP) : 0;
         }
 
-        // Normalización Visual
         const pctClienteBarra = Math.min(100, progresoGlobalCliente * 100);
         const pctOrionBarra = Math.min(100, progresoGlobalOrion * 100);
         
-        // Estado Estricto
         let estadoReal = "Vigente";
         if (pctClienteBarra > 1 || pctOrionBarra > 1) estadoReal = "Abonado";
         if (pctClienteBarra > 99.9 && pctOrionBarra > 99.9) estadoReal = "Pagado";
         if (op.estado === "Anulado") estadoReal = "Anulado";
 
         const badgeClass = getBadgeColor(estadoReal);
-
-        // Objeto para lógica
         const pendienteCliente = listaCliente.find(x => (x.meta - x.pagado) > 1);
         const pendienteOrion = listaOrion.find(x => (x.meta - x.pagado) > 1);
 
         const fin = {
             estadoCalculado: estadoReal, esVenta: esVenta,
-            cliente: { 
-                meta: listaCliente.reduce((a,b)=>a+b.meta,0), pagado: listaCliente.reduce((a,b)=>a+b.pagado,0), 
-                divisaId: pendienteCliente ? pendienteCliente.id : (listaCliente[0]?.id || 'D47'),
-                listo: pctClienteBarra > 99.9,
-                metaReal: pendienteCliente ? pendienteCliente.meta : 0, pagadoReal: pendienteCliente ? pendienteCliente.pagado : 0
-            },
-            orion: { 
-                meta: listaOrion.reduce((a,b)=>a+b.meta,0), pagado: listaOrion.reduce((a,b)=>a+b.pagado,0),
-                divisaId: pendienteOrion ? pendienteOrion.id : (listaOrion[0]?.id || 'D47'),
-                listo: pctOrionBarra > 99.9,
-                metaReal: pendienteOrion ? pendienteOrion.meta : 0, pagadoReal: pendienteOrion ? pendienteOrion.pagado : 0
-            }
+            cliente: { meta: listaCliente.reduce((a,b)=>a+b.meta,0), pagado: listaCliente.reduce((a,b)=>a+b.pagado,0), divisaId: pendienteCliente ? pendienteCliente.id : (listaCliente[0]?.id || 'D47'), listo: pctClienteBarra > 99.9, metaReal: pendienteCliente ? pendienteCliente.meta : 0, pagadoReal: pendienteCliente ? pendienteCliente.pagado : 0 },
+            orion: { meta: listaOrion.reduce((a,b)=>a+b.meta,0), pagado: listaOrion.reduce((a,b)=>a+b.pagado,0), divisaId: pendienteOrion ? pendienteOrion.id : (listaOrion[0]?.id || 'D47'), listo: pctOrionBarra > 99.9, metaReal: pendienteOrion ? pendienteOrion.meta : 0, pagadoReal: pendienteOrion ? pendienteOrion.pagado : 0 }
         };
 
-        // Helper de Lista Visual
+        // Helper Visual
         const renderCurrencyList = (lista, alignRight = false) => {
             return lista.map(item => {
-                const icon = item.id === 'D47' 
-                    ? `<img src="https://cambiosorion.cl/orionapp/icons/chile.svg" class="w-6 h-6 object-contain drop-shadow-md" onerror="this.style.display='none'">`
-                    : getDivisaElement(item.icono, item.nombre);
-                
+                const icon = item.id === 'D47' ? `<img src="https://cambiosorion.cl/orionapp/icons/chile.svg" class="w-6 h-6 object-contain drop-shadow-md inline-block" onerror="this.style.display='none'">` : getDivisaElement(item.icono, item.nombre);
                 return `
-                    <div class="flex items-center gap-2 ${alignRight ? 'justify-end' : ''} mb-2">
+                    <div class="flex items-center gap-3 ${alignRight ? 'justify-end' : ''} mb-3">
                         ${!alignRight ? icon : ''}
                         <div class="flex flex-col ${alignRight ? 'items-end' : 'items-start'}">
-                            <span class="text-xl font-bold text-white leading-none">
-                                <span class="text-gray-400 text-sm font-normal mr-1">${item.simbolo}</span>${formatNumber(item.meta)} <span class="text-xs text-yellow-500 font-bold ml-1">${item.codigo}</span>
+                            <span class="text-2xl font-bold text-white leading-none tracking-tight">
+                                <span class="text-gray-500 text-sm font-normal mr-1">${item.simbolo}</span>${formatNumber(item.meta)} <span class="text-xs text-blue-400 font-bold ml-1">${item.codigo}</span>
                             </span>
-                            <div class="text-[10px] text-gray-400 font-mono mt-0.5">
+                            <div class="text-xs text-gray-400 font-mono mt-1 bg-gray-900/50 px-2 py-0.5 rounded">
                                 Pagado: ${formatNumber(item.pagado)}
                             </div>
                         </div>
                         ${alignRight ? icon : ''}
-                    </div>
-                `;
+                    </div>`;
             }).join('');
         };
 
@@ -246,59 +195,61 @@ document.addEventListener("DOMContentLoaded", () => {
                     </div>
                 </div>
                 <div class="flex flex-wrap gap-2">
-                     <button id="btn-emitir-sii" class="bg-blue-700 hover:bg-blue-600 text-white px-4 py-2 rounded shadow-md flex items-center gap-2 text-sm transition border-b-2 border-blue-900">
-                        <span>📄</span> ${op.numero_documento ? 'Ver Documento' : 'Emitir SII'}
-                    </button>
-                    ${op.estado !== 'Anulado' ? `<button id="btn-anular" class="bg-transparent hover:bg-red-900/30 text-red-400 border border-red-900 px-4 py-2 rounded shadow flex items-center gap-2 text-sm transition">Anular</button>` : ''}
-                    <button id="btn-imprimir" class="bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-600 px-4 py-2 rounded shadow flex items-center gap-2 text-sm transition"><span>🖨️</span> Imprimir</button>
-                    <button id="btn-pdf" class="bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-600 px-4 py-2 rounded shadow flex items-center gap-2 text-sm transition">Exportar</button>
+                     <button id="btn-emitir-sii" class="bg-blue-700 hover:bg-blue-600 text-white px-4 py-2 rounded shadow-md flex items-center gap-2 text-sm transition border-b-2 border-blue-900"><span>📄</span> Documento</button>
+                     ${op.estado !== 'Anulado' ? `<button id="btn-anular" class="bg-transparent hover:bg-red-900/30 text-red-400 border border-red-900 px-4 py-2 rounded shadow flex items-center gap-2 text-sm transition"><span>🚫</span> Anular</button>` : ''}
+                     <button id="btn-imprimir" class="bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-600 px-4 py-2 rounded shadow flex items-center gap-2 text-sm transition"><span>🖨️</span></button>
+                     <button id="btn-pdf" class="bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-600 px-4 py-2 rounded shadow flex items-center gap-2 text-sm transition"><span>⬇️</span> PDF</button>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                
-                <div class="bg-gray-900 border-l-4 border-blue-600 rounded-r-xl p-6 shadow-lg relative overflow-hidden flex flex-col justify-center">
-                    <div class="absolute right-4 top-4 opacity-20 text-5xl">💰</div>
-                    <p class="text-blue-400 text-xs uppercase font-bold tracking-wider mb-2">Total Operación (CLP)</p>
-                    <p class="text-3xl font-bold text-white">${formatCurrency(totalCLP)} <span class="text-sm text-gray-500 font-normal">CLP</span></p>
-                </div>
-
-                <div class="md:col-span-2 bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700 flex flex-col justify-center">
+            <div class="w-full mb-8">
+                <div class="bg-gray-800 rounded-xl p-8 shadow-2xl border border-gray-700 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600"></div>
                     
-                    <div class="flex justify-between items-end mb-4">
-                        <div class="text-left w-1/2 pr-2">
-                            <div class="text-gray-400 text-xs font-bold uppercase mb-2 border-b border-gray-700 pb-1">Cliente Entrega</div>
-                            <div class="flex flex-col">
+                    <div class="flex justify-between items-start mb-6 border-b border-gray-700 pb-4">
+                        <h4 class="text-sm font-bold text-gray-300 uppercase tracking-widest flex items-center gap-2">
+                            Estado de Intercambio
+                        </h4>
+                        <div class="text-right">
+                            <p class="text-[10px] text-gray-500 uppercase font-bold">Valor Total</p>
+                            <p class="text-lg font-mono text-blue-300 font-bold">${formatCurrency(totalCLP)} CLP</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-between items-end mb-6 px-2">
+                        <div class="text-left w-1/2 border-r border-gray-700/50 pr-6">
+                            <div class="text-blue-400 text-xs font-bold uppercase mb-4">Cliente Entrega</div>
+                            <div class="flex flex-col gap-4">
                                 ${renderCurrencyList(listaCliente, false)}
                             </div>
                         </div>
 
-                        <div class="text-center px-2 pb-6">
-                            <span class="bg-gray-900 text-gray-500 font-bold text-xs px-2 py-1 rounded border border-gray-700">VS</span>
+                        <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-gray-900 text-gray-500 font-black text-sm px-3 py-2 rounded-full border border-gray-700 shadow-lg z-10">
+                            VS
                         </div>
 
-                        <div class="text-right w-1/2 pl-2">
-                            <div class="text-gray-400 text-xs font-bold uppercase mb-2 border-b border-gray-700 pb-1">Orion Entrega</div>
-                            <div class="flex flex-col">
+                        <div class="text-right w-1/2 pl-6">
+                            <div class="text-purple-400 text-xs font-bold uppercase mb-4">Orion Entrega</div>
+                            <div class="flex flex-col gap-4">
                                 ${renderCurrencyList(listaOrion, true)}
                             </div>
                         </div>
                     </div>
 
-                    <div class="relative h-5 w-full flex rounded-full overflow-hidden bg-gray-900 shadow-inner border border-gray-700/50 mt-2">
-                        <div class="w-1/2 flex justify-start border-r border-gray-800 relative bg-gray-900/50">
-                             <div style="width: ${pctClienteBarra}%" class="bg-blue-600 h-full shadow-[0_0_15px_rgba(37,99,235,0.5)] transition-all duration-1000 ease-out relative">
-                                 ${pctClienteBarra > 10 ? `<span class="absolute right-2 top-0.5 text-[10px] font-bold text-white/80">${Math.round(pctClienteBarra)}%</span>` : ''}
+                    <div class="relative h-8 w-full flex rounded-full overflow-hidden bg-gray-900 shadow-inner border border-gray-600">
+                        <div class="w-1/2 flex justify-start border-r border-gray-700 relative bg-gray-900/50">
+                             <div style="width: ${pctClienteBarra}%" class="bg-gradient-to-r from-blue-800 to-blue-500 h-full shadow-[0_0_20px_rgba(59,130,246,0.6)] transition-all duration-1000 ease-out relative flex items-center justify-end pr-3">
+                                 ${pctClienteBarra > 5 ? `<span class="text-xs font-bold text-white drop-shadow-md">${Math.round(pctClienteBarra)}%</span>` : ''}
                              </div>
                         </div>
                         
-                        <div class="w-1/2 flex justify-end border-l border-gray-800 relative bg-gray-900/50">
-                             <div style="width: ${pctOrionBarra}%" class="bg-purple-600 h-full shadow-[0_0_15px_rgba(147,51,234,0.5)] transition-all duration-1000 ease-out relative">
-                                 ${pctOrionBarra > 10 ? `<span class="absolute left-2 top-0.5 text-[10px] font-bold text-white/80">${Math.round(pctOrionBarra)}%</span>` : ''}
+                        <div class="w-1/2 flex justify-end border-l border-gray-700 relative bg-gray-900/50">
+                             <div style="width: ${pctOrionBarra}%" class="bg-gradient-to-l from-purple-800 to-purple-500 h-full shadow-[0_0_20px_rgba(168,85,247,0.6)] transition-all duration-1000 ease-out relative flex items-center justify-start pl-3">
+                                 ${pctOrionBarra > 5 ? `<span class="text-xs font-bold text-white drop-shadow-md">${Math.round(pctOrionBarra)}%</span>` : ''}
                              </div>
                         </div>
-                        
-                        <div class="absolute left-1/2 top-0 bottom-0 w-px bg-white/20 -translate-x-1/2 z-10"></div>
+
+                        <div class="absolute left-1/2 top-0 bottom-0 w-0.5 bg-white/10 -translate-x-1/2 z-20"></div>
                     </div>
                 </div>
             </div>
@@ -341,14 +292,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
             <div class="rounded-xl border border-gray-700 bg-transparent overflow-hidden mb-10">
                 <div class="p-5 border-b border-gray-700 flex flex-col sm:flex-row justify-between items-center gap-4 bg-gray-800">
-                    <h2 class="text-lg font-bold text-white flex items-center gap-2">Gestión de Pagos</h2>
+                    <h2 class="text-lg font-bold text-white flex items-center gap-2"><span class="text-blue-400">💳</span> Gestión de Pagos</h2>
                     ${fin.estadoCalculado !== 'Pagado' && op.estado !== 'Anulado' ? `
                     <div class="flex gap-2">
                         <button id="btn-full-cliente" class="px-3 py-1.5 text-xs font-bold text-blue-200 bg-blue-900/50 border border-blue-800 rounded hover:bg-blue-800 transition" ${fin.cliente.listo ? 'disabled class="opacity-50 cursor-not-allowed"' : ''}>Pagar Todo Cliente</button>
                         <button id="btn-full-orion" class="px-3 py-1.5 text-xs font-bold text-purple-200 bg-purple-900/50 border border-purple-800 rounded hover:bg-purple-800 transition" ${fin.orion.listo ? 'disabled class="opacity-50 cursor-not-allowed"' : ''}>Pagar Todo Orion</button>
                     </div>` : ''}
                 </div>
-
                 <div class="p-6 bg-gray-900/80">
                     <div id="form-container" class="${(fin.estadoCalculado === 'Pagado' || op.estado === 'Anulado') ? 'hidden' : ''}">
                         <form id="form-pago" class="bg-gray-800 rounded-xl p-5 border border-gray-700 mb-8 shadow-md">
@@ -386,7 +336,6 @@ document.addEventListener("DOMContentLoaded", () => {
                             <div id="input-cuenta" class="mt-4"></div>
                         </form>
                     </div>
-
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div id="tabla-pagos-cliente">${renderTablaPagos("Pagos Recibidos (Cliente)", pagos.filter(p => p.origen === 'cliente'), "cliente", "blue")}</div>
                         <div id="tabla-pagos-orion">${renderTablaPagos("Pagos Realizados (Orion)", pagos.filter(p => p.origen === 'orion'), "orion", "purple")}</div>
@@ -396,7 +345,6 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
 
         dashboardContainer.innerHTML = html;
-        
         attachLogic(data, fin);
     }
 
