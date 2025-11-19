@@ -298,8 +298,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     <h2 class="text-lg font-bold text-white flex items-center gap-2">Gestión de Pagos</h2>
                     ${fin.estadoCalculado !== 'Pagado' && op.estado !== 'Anulado' ? `
                     <div class="flex gap-2">
-                        <button id="btn-full-cliente" class="px-3 py-1.5 text-xs font-bold text-blue-200 bg-blue-900/50 border border-blue-800 rounded hover:bg-blue-800 transition" ${fin.cliente.listo ? 'disabled class="opacity-50 cursor-not-allowed"' : ''}>Pagar Todo Cliente</button>
-                        <button id="btn-full-orion" class="px-3 py-1.5 text-xs font-bold text-purple-200 bg-purple-900/50 border border-purple-800 rounded hover:bg-purple-800 transition" ${fin.orion.listo ? 'disabled class="opacity-50 cursor-not-allowed"' : ''}>Pagar Todo Orion</button>
+                        <button id="btn-full-cliente" class="px-3 py-1.5 text-sm font-bold text-blue-200 bg-blue-900/50 border border-blue-800 rounded hover:bg-blue-800 transition" ${fin.cliente.listo ? 'disabled class="opacity-50 cursor-not-allowed"' : ''}>Pagar Todo Cliente</button>
+                        <button id="btn-full-orion" class="px-3 py-1.5 text-sm font-bold text-purple-200 bg-purple-900/50 border border-purple-800 rounded hover:bg-purple-800 transition" ${fin.orion.listo ? 'disabled class="opacity-50 cursor-not-allowed"' : ''}>Pagar Todo Orion</button>
                     </div>` : ''}
                 </div>
                 <div class="p-6 bg-gray-900/80">
