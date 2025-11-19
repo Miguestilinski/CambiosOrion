@@ -40,7 +40,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (urlIcono && urlIcono.trim() !== "") {
             return `<img src="${urlIcono}" alt="${nombreDivisa}" class="w-10 h-10 object-contain drop-shadow-sm">`;
         }
-        // Icono genérico rojo/amarillo
         return `<svg class="w-10 h-10 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
     };
 
@@ -64,11 +63,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 const divisaIcon = getDivisaElement(egr.icono_divisa, egr.nombre_divisa);
                 const badgeClass = getBadgeColor(egr.estado);
 
-                // --- HTML Principal ---
+                // HTML Principal
                 let html = `
                 <div class="flex flex-col gap-6">
                     
-                    <!-- CABECERA -->
                     <div class="flex justify-between items-start">
                         <div>
                            <span class="text-gray-400 text-xs uppercase tracking-wider font-bold">ID Egreso</span>
@@ -79,7 +77,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         </span>
                     </div>
 
-                    <!-- HERO CARD (Rojo) -->
                     <div class="bg-gray-800/80 border border-gray-700 rounded-xl p-6 flex items-center justify-between shadow-lg relative overflow-hidden">
                          <div class="absolute top-0 left-0 w-1 h-full bg-red-600"></div>
                         <div class="flex items-center gap-4">
@@ -97,7 +94,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         </div>
                     </div>
 
-                    <!-- GRID DE DATOS -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         
                         <!-- Lado Izquierdo: Operativo -->
@@ -105,15 +101,11 @@ document.addEventListener("DOMContentLoaded", () => {
                             <h3 class="text-gray-400 text-xs font-bold uppercase tracking-widest mb-2 border-b border-gray-700 pb-2">Datos Operativos</h3>
                             
                             <div class="flex justify-between">
-                                <span class="text-gray-500 text-sm">Tipo:</span>
+                                <span class="text-gray-500 text-sm">Tipo Egreso:</span>
                                 <span class="text-white font-medium bg-gray-900 px-2 py-0.5 rounded text-xs uppercase">${egr.tipo_egreso}</span>
                             </div>
                             <div class="flex justify-between">
-                                <span class="text-gray-500 text-sm">Caja Origen:</span>
-                                <span class="text-white font-medium">${egr.nombre_caja || '—'}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-500 text-sm">Cajero Responsable:</span>
+                                <span class="text-gray-500 text-sm">Cajero:</span>
                                 <span class="text-white font-medium">${egr.nombre_cajero || 'Sistema'}</span>
                             </div>
                              <div class="flex justify-between">
@@ -122,7 +114,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             </div>
                         </div>
 
-                        <!-- Lado Derecho: Destino -->
+                        <!-- Lado Derecho: Destino y Cuentas -->
                         <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 space-y-4 shadow-md">
                             <h3 class="text-blue-400 text-xs font-bold uppercase tracking-widest mb-2 border-b border-gray-700 pb-2">Destino del Dinero</h3>
                             
@@ -133,10 +125,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 `;
 
                 if (esCuenta) {
+                    // Si es cuenta, mostramos Origen (Caja) y Destino (Cuenta Cliente)
                     html += `
                         <div class="flex justify-between">
                             <span class="text-gray-500 text-sm">Cuenta Origen (Nuestra):</span>
-                            <span class="text-gray-400 italic text-right">Caja ${egr.nombre_caja}</span>
+                            <span class="text-gray-400 italic text-right truncate w-1/2">Caja ${egr.nombre_caja}</span>
                         </div>
                         <div class="flex justify-between">
                             <span class="text-gray-500 text-sm">Cuenta Destino (Cliente):</span>
@@ -144,9 +137,13 @@ document.addEventListener("DOMContentLoaded", () => {
                         </div>
                     `;
                 } else {
-                    html += `
-                        <div class="mt-2 text-xs text-gray-500 italic text-right">
-                            * Entrega de efectivo por ventanilla
+                     html += `
+                        <div class="flex justify-between">
+                            <span class="text-gray-500 text-sm">Origen:</span>
+                            <span class="text-gray-400 italic text-right">Caja ${egr.nombre_caja}</span>
+                        </div>
+                        <div class="mt-2 text-xs text-gray-500 italic text-right pt-2 border-t border-gray-700">
+                            * Entrega en efectivo / ventanilla
                         </div>
                     `;
                 }
@@ -167,15 +164,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 infoContenedor.innerHTML = html;
 
-                // --- 2. Tabla (Simulada o real si hay desglose) ---
+                // Tabla Pagos
                 const pagos = data.pagos || [];
-                const tablaHTML = `
+                let tablaHTML = '';
+                if (pagos.length === 0) {
+                     tablaHTML = `
+                        <div class="w-full p-6 text-center bg-gray-800 rounded-lg border border-gray-700">
+                            <p class="text-gray-500 text-sm italic">Registro único.</p>
+                        </div>`;
+                } else {
+                    tablaHTML = `
                     <table class="w-full text-sm text-left text-gray-300 bg-gray-800">
                         <thead class="text-xs uppercase bg-gray-900 text-gray-400 border-b border-gray-700">
                             <tr>
                                 <th class="px-4 py-3">Fecha</th>
                                 <th class="px-4 py-3">Forma</th>
-                                <th class="px-4 py-3 text-right">Monto Salida</th>
+                                <th class="px-4 py-3 text-right">Monto</th>
                                 <th class="px-4 py-3">Detalle</th>
                             </tr>
                         </thead>
@@ -189,8 +193,8 @@ document.addEventListener("DOMContentLoaded", () => {
                             </tr>
                         `).join("")}
                         </tbody>
-                    </table>
-                `;
+                    </table>`;
+                }
                 pagosContenedor.innerHTML = tablaHTML;
 
                 // Botones
@@ -212,8 +216,8 @@ document.addEventListener("DOMContentLoaded", () => {
     anularBtn.addEventListener("click", () => {
         mostrarModal({
             titulo: "⚠️ Anular Egreso",
-            mensaje: "¿Confirmas que deseas anular? Esto devolverá el dinero a la caja.",
-            textoConfirmar: "Sí, Anular",
+            mensaje: "¿Confirmas anular esta salida? El dinero volverá a la caja.",
+            textoConfirmar: "Anular",
             textoCancelar: "Volver",
             onConfirmar: () => {
                 fetch(`https://cambiosorion.cl/data/detalle-egr.php`, {
@@ -222,14 +226,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     body: JSON.stringify({ id: egresoId, action: "anular" })
                 })
                 .then(res => res.json())
-                .then(response => {
-                    if (response.success) {
-                        mostrarModal({ titulo: "✅ Éxito", mensaje: "Anulado correctamente.", onConfirmar: () => location.reload() });
-                    } else {
-                        mostrarModal({ titulo: "❌ Error", mensaje: response.message });
-                    }
-                })
-                .catch(() => mostrarModal({ titulo: "❌ Error", mensaje: "Error de red." }));
+                .then(r => {
+                    if (r.success) location.reload();
+                    else mostrarModal({ titulo: "❌ Error", mensaje: r.message });
+                });
             }
         });
     });

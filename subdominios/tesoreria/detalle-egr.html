@@ -121,7 +121,6 @@
         <div id="sidebar-container" class="no-print"></div>
         
         <main id="dashboard-content" class="flex-1 p-6 md:p-10">
-            <!-- CAMBIO: Ancho máximo 6xl para centrado óptimo pero más amplio -->
             <section class="max-w-6xl mx-auto">
                 
                 <!-- Top Bar -->
@@ -139,27 +138,23 @@
                     </div>
                 </div>
                 
-                <!-- Contenedor Dinámico (Info Principal) -->
+                <!-- Contenedor Info Principal -->
                 <div id="info-egreso" class="mb-10 animate-fade-in-up">
-                    <!-- Skeleton Loader mejorado -->
                     <div class="space-y-6 animate-pulse">
                         <div class="h-32 bg-gray-800 rounded-xl"></div>
                         <div class="grid grid-cols-2 gap-6">
-                            <div class="h-40 bg-gray-800 rounded-xl"></div>
-                            <div class="h-40 bg-gray-800 rounded-xl"></div>
+                            <div class="h-48 bg-gray-800 rounded-xl"></div> <!-- Aumentado alto por más datos -->
+                            <div class="h-48 bg-gray-800 rounded-xl"></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Sección Historial de Pagos -->
+                <!-- Historial -->
                 <div class="mt-8">
                     <h2 class="text-xl font-semibold text-gray-300 mb-4 flex items-center gap-2 border-l-4 border-red-500 pl-3">
                         Pagos de Egreso
                     </h2>
-                    <div id="detalle-pagos-egreso" class="rounded-lg shadow-lg overflow-hidden">
-                        <!-- JS llenará esta tabla -->
-                        <div class="bg-gray-800 h-20 rounded animate-pulse"></div>
-                    </div>
+                    <div id="detalle-pagos-egreso" class="rounded-lg shadow-lg overflow-hidden"></div>
                 </div>
                 
                 <!-- Modales -->
