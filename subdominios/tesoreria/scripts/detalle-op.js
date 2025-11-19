@@ -128,7 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        const badgeClass = getBadgeColor(estadoReal);
+        const badgeClass = getBadgeColor(fin.estadoCalculado);
 
         let html = `
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 pb-6 border-b border-gray-700">
@@ -139,7 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     </div>
                     <div class="flex items-center gap-4">
                         <h1 class="text-4xl font-bold text-white tracking-tight">#${op.id}</h1>
-                        <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${badgeClass}">${estadoReal}</span>
+                        <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${badgeClass}">${fin.estadoCalculado}</span>
                     </div>
                 </div>
                 <div class="flex flex-wrap gap-2">
