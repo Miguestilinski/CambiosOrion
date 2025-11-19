@@ -249,9 +249,9 @@ document.addEventListener("DOMContentLoaded", () => {
                      <button id="btn-emitir-sii" class="bg-blue-700 hover:bg-blue-600 text-white px-4 py-2 rounded shadow-md flex items-center gap-2 text-sm transition border-b-2 border-blue-900">
                         <span>📄</span> ${op.numero_documento ? 'Ver Documento' : 'Emitir SII'}
                     </button>
-                    ${op.estado !== 'Anulado' ? `<button id="btn-anular" class="bg-transparent hover:bg-red-900/30 text-red-400 border border-red-900 px-4 py-2 rounded shadow flex items-center gap-2 text-sm transition"><span>🚫</span> Anular</button>` : ''}
+                    ${op.estado !== 'Anulado' ? `<button id="btn-anular" class="bg-transparent hover:bg-red-900/30 text-red-400 border border-red-900 px-4 py-2 rounded shadow flex items-center gap-2 text-sm transition">Anular</button>` : ''}
                     <button id="btn-imprimir" class="bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-600 px-4 py-2 rounded shadow flex items-center gap-2 text-sm transition"><span>🖨️</span> Imprimir</button>
-                    <button id="btn-pdf" class="bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-600 px-4 py-2 rounded shadow flex items-center gap-2 text-sm transition"><span>⬇️</span> PDF</button>
+                    <button id="btn-pdf" class="bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-600 px-4 py-2 rounded shadow flex items-center gap-2 text-sm transition">Exportar</button>
                 </div>
             </div>
 
