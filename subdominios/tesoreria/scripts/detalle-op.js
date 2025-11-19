@@ -165,19 +165,21 @@ document.addEventListener("DOMContentLoaded", () => {
         // Helper Visual
         const renderCurrencyList = (lista, alignRight = false) => {
             return lista.map(item => {
-                const icon = item.id === 'D47' ? `<img src="https://cambiosorion.cl/orionapp/node_modules/circle-flags/flags/cl.svg" class="w-6 h-6 object-contain drop-shadow-md inline-block" onerror="this.style.display='none'">` : getDivisaElement(item.icono, item.nombre);
+                const icon = item.id === 'D47' 
+                    ? `<img src="https://cambiosorion.cl/orionapp/node_modules/circle-flags/flags/cl.svg" class="w-6 h-6 object-contain drop-shadow-md inline-block" onerror="this.style.display='none'">` 
+                    : getDivisaElement(item.icono, item.nombre);
+                
                 return `
-                    <div class="flex items-center gap-3 ${alignRight ? 'justify-end' : ''} mb-3">
-                        ${!alignRight ? icon : ''}
-                        <div class="flex flex-col ${alignRight ? 'items-end' : 'items-start'}">
-                            <span class="text-3xl font-bold text-white leading-none tracking-tight">
-                                <span class="text-gray-500 text-md font-normal mr-1">${item.simbolo}</span>${formatNumber(item.meta)} <span class="text-xs text-blue-400 font-bold ml-1">${item.codigo}</span>
+                    <div class="flex items-center gap-3 ${alignRight ? 'flex-row-reverse text-right' : 'text-left'}">
+                        ${icon}
+                        <div class="flex flex-col">
+                            <span class="text-2xl md:text-3xl font-bold text-white leading-none tracking-tight whitespace-nowrap">
+                                <span class="text-gray-500 text-sm font-normal mr-0.5">${item.simbolo}</span>${formatNumber(item.meta)} <span class="text-xs text-blue-400 font-bold">${item.codigo}</span>
                             </span>
-                            <div class="text-sm text-gray-400 font-mono mt-1 bg-gray-900/50 px-2 py-0.5 rounded">
+                            <div class="text-xs text-gray-400 font-mono mt-1 bg-gray-900/50 px-2 py-0.5 rounded inline-block ${alignRight ? 'ml-auto' : 'mr-auto'}">
                                 Pagado: ${formatNumber(item.pagado)}
                             </div>
                         </div>
-                        ${alignRight ? icon : ''}
                     </div>`;
             }).join('');
         };
@@ -195,10 +197,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     </div>
                 </div>
                 <div class="flex flex-wrap gap-2">
-                     <button id="btn-emitir-sii" class="bg-blue-700 hover:bg-blue-600 text-white px-4 py-2 rounded shadow-md flex items-center gap-2 text-sm transition border-b-2 border-blue-900"><span>📄</span> Documento</button>
-                     ${op.estado !== 'Anulado' ? `<button id="btn-anular" class="bg-transparent hover:bg-red-900/30 text-red-400 border border-red-900 px-4 py-2 rounded shadow flex items-center gap-2 text-sm transition"><span>🚫</span> Anular</button>` : ''}
-                     <button id="btn-imprimir" class="bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-600 px-4 py-2 rounded shadow flex items-center gap-2 text-sm transition"><span>🖨️</span></button>
-                     <button id="btn-pdf" class="bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-600 px-4 py-2 rounded shadow flex items-center gap-2 text-sm transition"><span>⬇️</span> PDF</button>
+                     <button id="btn-emitir-sii" class="bg-blue-700 hover:bg-blue-600 text-white px-4 py-2 rounded shadow-md flex items-center gap-2 text-sm transition border-b-2 border-blue-900"><span>📄</span> Ver Documento</button>
+                     ${op.estado !== 'Anulado' ? `<button id="btn-anular" class="bg-transparent hover:bg-red-900/30 text-red-400 border border-red-900 px-4 py-2 rounded shadow flex items-center gap-2 text-sm transition">Anular</button>` : ''}
+                     <button id="btn-imprimir" class="bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-600 px-4 py-2 rounded shadow flex items-center gap-2 text-sm transition"><span>🖨️</span> Imprimir</button>
+                     <button id="btn-pdf" class="bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-600 px-4 py-2 rounded shadow flex items-center gap-2 text-sm transition">Exportar</button>
                 </div>
             </div>
 
@@ -216,26 +218,27 @@ document.addEventListener("DOMContentLoaded", () => {
                         </div>
                     </div>
                     
-                    <div class="flex justify-between items-end mb-6 px-2">
-                        <div class="text-left w-1/2 border-r border-gray-700/50 pr-6">
-                            <div class="text-blue-400 text-sm font-bold uppercase mb-4">Cliente Entrega</div>
-                            <div class="flex flex-col gap-4">
+                    <div class="flex justify-between items-end mb-6 px-2 relative">
+                        
+                        <div class="text-left w-1/2 border-r border-gray-700/50 pr-8">
+                            <div class="text-blue-400 text-sm font-bold uppercase mb-3">Cliente Entrega</div>
+                            <div class="flex flex-wrap gap-x-6 gap-y-4 justify-start items-center">
                                 ${renderCurrencyList(listaCliente, false)}
                             </div>
                         </div>
 
-                        <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-gray-900 text-gray-500 font-black text-sm px-3 py-2 rounded-full border border-gray-700 shadow-lg z-10">
-                            VS
+                        <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+                            <span class="bg-gray-900 text-gray-500 font-black text-xs px-3 py-2 rounded-full border border-gray-700 shadow-xl">VS</span>
                         </div>
 
-                        <div class="text-right w-1/2 pl-6">
-                            <div class="text-purple-400 text-sm font-bold uppercase mb-4">Orion Entrega</div>
-                            <div class="flex flex-col gap-4">
+                        <div class="text-right w-1/2 pl-8">
+                            <div class="text-purple-400 text-sm font-bold uppercase mb-3">Orion Entrega</div>
+                            <div class="flex flex-wrap gap-x-6 gap-y-4 justify-end items-center">
                                 ${renderCurrencyList(listaOrion, true)}
                             </div>
                         </div>
                     </div>
-
+                    
                     <div class="relative h-8 w-full flex rounded-full overflow-hidden bg-gray-900 shadow-inner border border-gray-600">
                         <div class="w-1/2 flex justify-start border-r border-gray-700 relative bg-gray-900/50">
                              <div style="width: ${pctClienteBarra}%" class="bg-gradient-to-r from-blue-800 to-blue-500 h-full shadow-[0_0_20px_rgba(59,130,246,0.6)] transition-all duration-1000 ease-out relative flex items-center justify-end pr-3">
@@ -292,7 +295,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             <div class="rounded-xl border border-gray-700 bg-transparent overflow-hidden mb-10">
                 <div class="p-5 border-b border-gray-700 flex flex-col sm:flex-row justify-between items-center gap-4 bg-gray-800">
-                    <h2 class="text-lg font-bold text-white flex items-center gap-2"><span class="text-blue-400">💳</span> Gestión de Pagos</h2>
+                    <h2 class="text-lg font-bold text-white flex items-center gap-2">Gestión de Pagos</h2>
                     ${fin.estadoCalculado !== 'Pagado' && op.estado !== 'Anulado' ? `
                     <div class="flex gap-2">
                         <button id="btn-full-cliente" class="px-3 py-1.5 text-xs font-bold text-blue-200 bg-blue-900/50 border border-blue-800 rounded hover:bg-blue-800 transition" ${fin.cliente.listo ? 'disabled class="opacity-50 cursor-not-allowed"' : ''}>Pagar Todo Cliente</button>
