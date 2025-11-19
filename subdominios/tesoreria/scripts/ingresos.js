@@ -23,10 +23,12 @@ document.addEventListener('DOMContentLoaded', () => {
         fetch('https://cambiosorion.cl/data/ingresos.php?get_options=1')
             .then(res => res.json())
             .then(data => {
+                if(data.error) return console.error(data.error);
                 llenarDatalist('list-clientes', data.clientes, 'razon_social');
                 llenarDatalist('list-cuentas', data.cuentas, 'nombre');
                 llenarDatalist('list-divisas', data.divisas, 'nombre');
-            });
+            })
+            .catch(err => console.error("Error cargando opciones:", err));
     }
 
     function llenarDatalist(idList, items, campoTexto) {
@@ -42,26 +44,39 @@ document.addEventListener('DOMContentLoaded', () => {
         params.set('page', page);
         
         // Mapeo exacto de IDs HTML a parámetros PHP
-        params.set('mostrar', inputsFiltro.mostrar.value);
-        params.set('buscar', inputsFiltro.buscar.value);
-        params.set('numero', inputsFiltro.numero.value);
-        params.set('fecha', inputsFiltro.fecha.value);
-        params.set('tipo_ingreso', inputsFiltro.tipo.value); // Corregido
-        params.set('cliente', inputsFiltro.cliente.value);
-        params.set('caja', inputsFiltro.caja.value);
-        params.set('cuenta', inputsFiltro.cuenta.value);
-        params.set('divisa', inputsFiltro.divisa.value);
-        params.set('estado', inputsFiltro.estado.value);
+        params.set('mostrar', inputsFiltro.mostrar ? inputsFiltro.mostrar.value : 25);
+        params.set('buscar', inputsFiltro.buscar ? inputsFiltro.buscar.value : '');
+        params.set('numero', inputsFiltro.numero ? inputsFiltro.numero.value : '');
+        params.set('fecha', inputsFiltro.fecha ? inputsFiltro.fecha.value : '');
+        params.set('tipo_ingreso', inputsFiltro.tipo ? inputsFiltro.tipo.value : '');
+        params.set('cliente', inputsFiltro.cliente ? inputsFiltro.cliente.value : '');
+        params.set('caja', inputsFiltro.caja ? inputsFiltro.caja.value : '');
+        params.set('cuenta', inputsFiltro.cuenta ? inputsFiltro.cuenta.value : '');
+        params.set('divisa', inputsFiltro.divisa ? inputsFiltro.divisa.value : '');
+        params.set('estado', inputsFiltro.estado ? inputsFiltro.estado.value : '');
 
         fetch(`https://cambiosorion.cl/data/ingresos.php?${params.toString()}`)
-            .then(res => res.json())
+            .then(async res => {
+                const text = await res.text();
+                try {
+                    return JSON.parse(text);
+                } catch (e) {
+                    console.error("Error de respuesta:", text);
+                    throw new Error("Respuesta no válida del servidor");
+                }
+            })
             .then(res => {
-                if (res.error) return console.error(res.error);
+                if (res.error) {
+                    console.error("Error PHP:", res.error);
+                    const tbody = document.querySelector('#ingresos table tbody');
+                    tbody.innerHTML = `<tr><td colspan="10" class="text-center text-red-400 py-4">Error: ${res.error}</td></tr>`;
+                    return;
+                }
                 mostrarResultados(res.data);
                 actualizarContador(res.total, res.limit, res.page);
                 renderPaginacion(res.totalPages, res.page);
             })
-            .catch(err => console.error(err));
+            .catch(err => console.error('Error Fetch:', err));
     }
 
     // 3. Renderizado Tabla
@@ -82,14 +97,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const montoFmt = '$' + Number(item.monto).toLocaleString('es-CL');
             const estadoClass = getEstadoClass(item.estado);
 
-            // CAMBIO AQUÍ: Uso de || '' para evitar undefined
+            // AQUÍ ESTÁ EL FIX DEL UNDEFINED: Usamos || ''
+            const cuentaTexto = item.cuenta || ''; 
+
             tr.innerHTML = `
                 <td class="px-4 py-2 font-medium">${item.id}</td>
                 <td class="px-4 py-2">${fechaFmt}</td>
                 <td class="px-4 py-2">${item.tipo_ingreso}</td>
                 <td class="px-4 py-2 truncate max-w-[150px]" title="${item.cliente}">${item.cliente || '—'}</td>
                 <td class="px-4 py-2">${item.caja || '—'}</td>
-                <td class="px-4 py-2 truncate max-w-[150px]" title="${item.cuenta}">${item.cuenta || ''}</td>
+                <td class="px-4 py-2 truncate max-w-[150px]" title="${cuentaTexto}">${cuentaTexto}</td>
                 <td class="px-4 py-2">${item.divisa || '—'}</td>
                 <td class="px-4 py-2 font-bold text-gray-900">${montoFmt}</td>
                 <td class="px-4 py-2"><span class="px-2 py-1 rounded text-xs font-bold uppercase ${estadoClass}">${item.estado}</span></td>
@@ -149,7 +166,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         container.appendChild(createBtn('Anterior', currentP - 1, currentP === 1, false));
         
-        // Lógica simple de rango (5 botones)
         let start = Math.max(1, currentP - 2);
         let end = Math.min(totalP, start + 4);
         if(end - start < 4) start = Math.max(1, end - 4);
@@ -169,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if(btnBorrarFiltros) {
         btnBorrarFiltros.addEventListener('click', () => {
             Object.values(inputsFiltro).forEach(el => {
-                if(el.id !== 'mostrar-registros') el.value = ''; // Limpiar todos menos el "Mostrar X registros"
+                if(el.id !== 'mostrar-registros') el.value = ''; 
             });
             obtenerIngresos(1);
         });
