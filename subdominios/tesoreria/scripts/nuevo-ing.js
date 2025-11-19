@@ -24,6 +24,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- 1. CONFIGURACIÓN INICIAL ---
 
+  // Variable para almacenar el ID del cajero
+  let usuarioSesionId = null;
+  const btnSubmit = document.querySelector("button[type='submit']"); // Referencia al botón
+
+  // Deshabilitar botón por defecto hasta confirmar sesión
+  if(btnSubmit) {
+      btnSubmit.disabled = true;
+      btnSubmit.classList.add("opacity-50", "cursor-not-allowed");
+      btnSubmit.title = "Cargando sesión...";
+  }
+
   // A. Obtener Sesión Activa (Cajero)
   async function obtenerSesionActiva() {
       try {
@@ -33,12 +44,20 @@ document.addEventListener("DOMContentLoaded", () => {
           if (session.isAuthenticated && session.equipo_id) {
               usuarioSesionId = session.equipo_id;
               console.log("Cajero identificado ID:", usuarioSesionId);
+              
+              // Habilitar botón si hay sesión
+              if(btnSubmit) {
+                  btnSubmit.disabled = false;
+                  btnSubmit.classList.remove("opacity-50", "cursor-not-allowed");
+                  btnSubmit.title = "";
+              }
           } else {
-              // Si no hay sesión, podrías redirigir o avisar
-              mostrarAlerta("No se ha detectado una sesión activa. Por favor inicie sesión nuevamente.");
+              mostrarAlerta("No hay sesión activa. Por favor inicie sesión para operar.", "Sesión Requerida");
+              // El botón sigue deshabilitado
           }
       } catch (error) {
           console.error("Error verificando sesión:", error);
+          mostrarAlerta("Error de conexión verificando sesión.");
       }
   }
   obtenerSesionActiva();
@@ -304,6 +323,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- 4. ENVÍO DEL FORMULARIO ---
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
+
+    // VALIDACIÓN DE SEGURIDAD (SESIÓN)
+    if (!usuarioSesionId) {
+        return mostrarAlerta("No se puede registrar el ingreso: No hay una sesión de cajero activa.");
+    }
 
     // Limpiar formato de miles antes de enviar
     const montoRaw = parseFloat(montoInput.value.replace(/\./g, '').replace(/,/g, '.'));
