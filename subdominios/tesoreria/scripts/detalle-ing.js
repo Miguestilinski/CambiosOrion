@@ -169,7 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const pagos = data.pagos || [];
                 if (pagos.length === 0) {
                     pagosContenedor.innerHTML = `
-                        <div class="w-full p-6 text-center bg-gray-800 rounded-lg border border-gray-700">
+                        <div class="w-full p-6 text-center bg-gray-800 rounded-lg border-2 border-gray-600">
                             <p class="text-gray-400 text-sm">No se han registrado pagos parciales para este ingreso.</p>
                         </div>
                     `;
