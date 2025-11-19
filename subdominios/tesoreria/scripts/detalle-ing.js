@@ -109,7 +109,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 <span class="text-white font-medium bg-gray-900 px-2 py-0.5 rounded text-xs uppercase">${ing.tipo_ingreso}</span>
                             </div>
                             <div class="flex justify-between">
-                                <span class="text-gray-500 text-sm">Caja Destino:</span>
+                                <span class="text-gray-500 text-sm">Caja:</span>
                                 <span class="text-white font-medium">${ing.nombre_caja || '—'}</span>
                             </div>
                             <div class="flex justify-between">
@@ -135,11 +135,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (esCuenta) {
                     html += `
                         <div class="flex justify-between">
-                            <span class="text-gray-500 text-sm">Cuenta Origen (Cliente):</span>
+                            <span class="text-gray-500 text-sm">Cuenta Origen:</span>
                             <span class="text-white font-medium text-right truncate w-1/2" title="${ing.nombre_cuenta_origen}">${ing.nombre_cuenta_origen || '—'}</span>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-gray-500 text-sm">Cuenta Destino (Nuestra):</span>
+                            <span class="text-gray-500 text-sm">Cuenta Destino:</span>
                             <span class="text-white font-medium text-right truncate w-1/2" title="${ing.nombre_cuenta_destino}">${ing.nombre_cuenta_destino || '—'}</span>
                         </div>
                     `;

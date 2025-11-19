@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             <h3 class="text-gray-400 text-xs font-bold uppercase tracking-widest mb-2 border-b border-gray-700 pb-2">Datos Operativos</h3>
                             
                             <div class="flex justify-between">
-                                <span class="text-gray-500 text-sm">Tipo Egreso:</span>
+                                <span class="text-gray-500 text-sm">Tipo:</span>
                                 <span class="text-white font-medium bg-gray-900 px-2 py-0.5 rounded text-xs uppercase">${egr.tipo_egreso}</span>
                             </div>
                             <div class="flex justify-between">
@@ -128,11 +128,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     // Si es cuenta, mostramos Origen (Caja) y Destino (Cuenta Cliente)
                     html += `
                         <div class="flex justify-between">
-                            <span class="text-gray-500 text-sm">Cuenta Origen (Nuestra):</span>
+                            <span class="text-gray-500 text-sm">Cuenta Origen:</span>
                             <span class="text-gray-400 italic text-right truncate w-1/2">Caja ${egr.nombre_caja}</span>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-gray-500 text-sm">Cuenta Destino (Cliente):</span>
+                            <span class="text-gray-500 text-sm">Cuenta Destino:</span>
                             <span class="text-white font-medium text-right truncate w-1/2" title="${egr.nombre_cuenta_destino}">${egr.nombre_cuenta_destino || '—'}</span>
                         </div>
                     `;
@@ -143,7 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             <span class="text-gray-400 italic text-right">Caja ${egr.nombre_caja}</span>
                         </div>
                         <div class="mt-2 text-xs text-gray-500 italic text-right pt-2 border-t border-gray-700">
-                            * Entrega en efectivo / ventanilla
+                            * Entrega en efectivo
                         </div>
                     `;
                 }
