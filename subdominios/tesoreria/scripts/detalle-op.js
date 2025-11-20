@@ -174,7 +174,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         ${icon}
                         <div class="flex flex-col">
                             <span class="text-2xl md:text-3xl font-bold text-white leading-none tracking-tight whitespace-nowrap">
-                                <span class="text-gray-500 text-sm font-normal mr-0.5">${item.simbolo}</span>${formatNumber(item.meta)} <span class="text-md text-blue-400 font-bold">${item.codigo}</span>
+                                <span class="text-gray-500 text-md font-normal mr-0.5">${item.simbolo}</span>${formatNumber(item.meta)} <span class="text-lg text-blue-400 font-bold">${item.codigo}</span>
                             </span>
                             <div class="text-xs text-gray-400 font-mono mt-1 bg-gray-900/50 px-2 py-0.5 rounded inline-block ${alignRight ? 'ml-auto' : 'mr-auto'}">
                                 Pagado: ${formatNumber(item.pagado)}
