@@ -106,7 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-gray-500 text-sm">Origen:</span>
-                                <span class="text-white font-medium">Caja ${egr.nombre_caja}</span>
+                                <span class="text-white font-medium">${egr.nombre_caja}</span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-gray-500 text-sm">Cajero:</span>
