@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 ${divisaIcon}
                             </div>
                             <div>
-                                <p class="text-red-400 text-sm font-bold uppercase tracking-wide">Monto Egresado</p>
+                                <p class="text-red-400 text-sm font-bold uppercase tracking-wide">Monto Egreso</p>
                                 <p class="text-4xl font-bold text-white tracking-tight flex items-baseline gap-2"> 
                                     <span class="text-xl text-gray-400 font-normal">${egr.simbolo_divisa || ''}</span>
                                     ${formatNumber(egr.monto)}
@@ -105,6 +105,10 @@ document.addEventListener("DOMContentLoaded", () => {
                                 <span class="text-white font-medium bg-gray-900 px-2 py-0.5 rounded text-xs uppercase">${egr.tipo_egreso}</span>
                             </div>
                             <div class="flex justify-between">
+                                <span class="text-gray-500 text-sm">Caja:</span>
+                                <span class="text-gray-400 italic text-right">Caja ${egr.nombre_caja}</span>
+                            </div>
+                            <div class="flex justify-between">
                                 <span class="text-gray-500 text-sm">Cajero:</span>
                                 <span class="text-white font-medium">${egr.nombre_cajero || 'Sistema'}</span>
                             </div>
@@ -119,7 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             <h3 class="text-blue-400 text-xs font-bold uppercase tracking-widest mb-2 border-b border-gray-700 pb-2">Destino del Dinero</h3>
                             
                             <div class="flex justify-between">
-                                <span class="text-gray-500 text-sm">Cliente Receptor:</span>
+                                <span class="text-gray-500 text-sm">Cliente:</span>
                                 <span class="text-white font-medium text-right truncate w-1/2">${egr.nombre_cliente || '—'}</span>
                             </div>
                 `;
@@ -138,10 +142,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     `;
                 } else {
                      html += `
-                        <div class="flex justify-between">
-                            <span class="text-gray-500 text-sm">Origen:</span>
-                            <span class="text-gray-400 italic text-right">Caja ${egr.nombre_caja}</span>
-                        </div>
                         <div class="mt-2 text-xs text-gray-500 italic text-right pt-2 border-t border-gray-700">
                             * Entrega en efectivo
                         </div>
