@@ -105,8 +105,8 @@ document.addEventListener("DOMContentLoaded", () => {
                                 <span class="text-white font-medium bg-gray-900 px-2 py-0.5 rounded text-xs uppercase">${egr.tipo_egreso}</span>
                             </div>
                             <div class="flex justify-between">
-                                <span class="text-gray-500 text-sm">Caja:</span>
-                                <span class="text-gray-400 italic text-right">Caja ${egr.nombre_caja}</span>
+                                <span class="text-gray-500 text-sm">Origen:</span>
+                                <span class="text-white font-medium">Caja ${egr.nombre_caja}</span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-gray-500 text-sm">Cajero:</span>
