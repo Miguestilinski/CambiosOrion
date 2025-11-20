@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // 2. Cargar Cajas
   async function cargarCajas() {
     try {
-      const res = await fetch("[https://cambiosorion.cl/data/nuevo-egr.php?buscar_cajas=1](https://cambiosorion.cl/data/nuevo-egr.php?buscar_cajas=1)");
+      const res = await fetch("https://cambiosorion.cl/data/nuevo-egr.php?buscar_cajas=1");
       const cajas = await res.json();
       cajaSelect.innerHTML = ''; 
       cajas.forEach(c => {
@@ -221,7 +221,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     try {
-      const res = await fetch("[https://cambiosorion.cl/data/nuevo-egr.php](https://cambiosorion.cl/data/nuevo-egr.php)", {
+      const res = await fetch("https://cambiosorion.cl/data/nuevo-egr.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
