@@ -82,7 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const colorClass = "text-yellow-400";
       
       if(deudaFuturaText) {
-          deudaFuturaText.innerHTML = `Proyección: <span class="${colorClass} font-bold">${nuevoSaldo.toLocaleString('es-CL')}</span> ${nombreDivisa}`;
+          deudaFuturaText.innerHTML = `Nuevo Saldo: <span class="${colorClass} font-bold">${nuevoSaldo.toLocaleString('es-CL')}</span> ${nombreDivisa}`;
       }
   }
 
