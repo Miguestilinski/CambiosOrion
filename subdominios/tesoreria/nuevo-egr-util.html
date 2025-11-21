@@ -121,7 +121,7 @@
     <div class="main-content">
         <div id="sidebar-container"></div>
         <main id="dashboard-content" class="dashboard-content p-4 md:p-10">
-          <section id="nuevo-egreso-util" class="content-section active max-w-7xl mx-auto">
+          <section id="nuevo-egreso-util" class="content-section active max-w-8xl mx-auto">
             
             <!-- Header Dorado -->
             <div class="flex items-center justify-between mb-8 border-b border-gray-700 pb-4">
@@ -166,10 +166,13 @@
                                 <input type="hidden" id="tipo-transaccion" value="efectivo">
                             </div>
 
-                            <!-- Concepto / Utilidad (Reemplaza a Cliente) -->
+                            <!-- Tipo Utilidad (Input Buscador + Agregar) -->
                             <div class="relative">
-                                <label class="block mb-1 text-sm font-medium text-gray-300">Concepto / Beneficiario</label>
-                                <input type="text" id="concepto" placeholder="Ej: Pago Luz, Socio Juan..." autocomplete="off" class="w-full bg-gray-900 border border-gray-600 text-white text-sm rounded-lg p-2.5 focus:ring-2 focus:ring-yellow-500 transition">
+                                <label class="block mb-1 text-sm font-medium text-gray-300">Tipo Utilidad / Beneficiario</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500">🏷️</div>
+                                    <input type="text" id="concepto" placeholder="Buscar o escribir nuevo..." autocomplete="off" class="w-full bg-gray-900 border border-gray-600 text-white text-sm rounded-lg p-2.5 pl-10 focus:ring-2 focus:ring-yellow-500 transition">
+                                </div>
                                 <ul id="resultado-conceptos" class="absolute z-50 w-full bg-white text-gray-900 rounded-lg mt-1 shadow-xl max-h-48 overflow-y-auto hidden border border-gray-300"></ul>
                             </div>
                         </div>
@@ -185,7 +188,7 @@
                             <label class="block mb-1 text-sm font-medium text-gray-300">Cuenta Destino (Opcional)</label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500">💳</div>
-                                <input type="text" id="cuenta" placeholder="Buscar cuenta..." autocomplete="off" class="w-full bg-gray-900 border border-gray-600 text-white text-sm rounded-lg p-2.5 pl-10 focus:ring-2 focus:ring-yellow-500 transition font-mono">
+                                <input type="text" id="cuenta" placeholder="Buscar cuenta..." autocomplete="off" class="w-full bg-gray-900 border border-gray-600 text-white text-sm rounded-lg p-2.5 pl-10 focus:ring-2 focus:ring-red-500 transition font-mono">
                             </div>
                             <ul id="resultado-cuentas" class="absolute z-50 w-full bg-white text-gray-900 rounded-lg mt-1 shadow-xl max-h-60 overflow-y-auto hidden border border-gray-300"></ul>
                         </div>
@@ -196,7 +199,7 @@
                                 <label class="block mb-1 text-sm font-medium text-gray-300">Divisa</label>
                                 <div class="relative">
                                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500">💱</div>
-                                    <input type="text" placeholder="Buscar divisa..." class="divisa-nombre w-full bg-gray-900 border border-gray-600 text-white text-sm rounded-lg p-2.5 pl-10 focus:ring-2 focus:ring-yellow-500 transition font-bold" autocomplete="off">
+                                    <input type="text" placeholder="Buscar divisa..." class="divisa-nombre w-full bg-gray-900 border border-gray-600 text-white text-sm rounded-lg p-2.5 pl-10 focus:ring-2 focus:ring-red-500 transition font-bold" autocomplete="off">
                                 </div>
                                 <ul class="divisa-sugerencias absolute z-50 w-full bg-white text-gray-900 rounded-lg mt-1 shadow-xl max-h-48 overflow-y-auto hidden border border-gray-300"></ul>
                             </div>
@@ -206,7 +209,7 @@
                                 <label class="block mb-1 text-sm font-medium text-gray-300">Monto a Retirar</label>
                                 <div class="relative">
                                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400 text-lg">$</div>
-                                    <input id="monto-egreso" type="text" placeholder="0" class="w-full bg-gray-900 border border-yellow-600/50 text-white text-2xl font-bold rounded-lg p-3 pl-8 focus:ring-2 focus:ring-yellow-500 transition font-mono placeholder-gray-600">
+                                    <input id="monto-egreso" type="text" placeholder="0" class="w-full bg-gray-900 border border-red-600/50 text-white text-2xl font-bold rounded-lg p-3 pl-8 focus:ring-2 focus:ring-red-500 focus:border-red-500 transition font-mono placeholder-gray-600">
                                 </div>
                             </div>
                         </div>

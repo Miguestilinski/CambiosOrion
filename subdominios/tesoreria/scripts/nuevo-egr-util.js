@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("form-nuevo-utilidad");
   const cajaSelect = document.getElementById("caja");
-  const conceptoInput = document.getElementById("concepto"); // Reemplaza a cliente
+  const conceptoInput = document.getElementById("concepto"); // Tipo Utilidad
   const cuentaInput = document.getElementById("cuenta");
   const divisaInput = document.querySelector(".divisa-nombre");
   const montoInput = document.getElementById("monto-egreso");
@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // 1. Obtener Sesión
   async function obtenerSesionActiva() {
       try {
-          const res = await fetch("https://cambiosorion.cl/data/session_status.php", { credentials: 'include' });
+          const res = await fetch("[https://cambiosorion.cl/data/session_status.php](https://cambiosorion.cl/data/session_status.php)", { credentials: 'include' });
           const session = await res.json();
           if (session.isAuthenticated && session.equipo_id) {
               usuarioSesionId = session.equipo_id;
@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // 2. Cargar Cajas
   async function cargarCajas() {
     try {
-      const res = await fetch("https://cambiosorion.cl/data/nuevo-egr-util.php?buscar_cajas=1");
+      const res = await fetch("[https://cambiosorion.cl/data/nuevo-egr-util.php?buscar_cajas=1](https://cambiosorion.cl/data/nuevo-egr-util.php?buscar_cajas=1)");
       const cajas = await res.json();
       cajaSelect.innerHTML = ''; 
       cajas.forEach(c => {
@@ -59,28 +59,53 @@ document.addEventListener("DOMContentLoaded", () => {
       if(val) e.target.value = new Intl.NumberFormat('es-CL').format(parseInt(val));
   });
 
-  // 4. Buscador CONCEPTOS (Nuevo)
+  // 4. BUSCADOR TIPO UTILIDAD (Con opción "Agregar Nuevo")
   let conceptoTimeout;
   conceptoInput.addEventListener("input", () => {
     clearTimeout(conceptoTimeout);
     const query = conceptoInput.value.trim();
-    if (query.length < 2) { resultadoConceptos.classList.add("hidden"); return; }
+    
+    // Si está vacío, ocultar lista
+    if (query.length === 0) { 
+        resultadoConceptos.classList.add("hidden"); 
+        return; 
+    }
+
     conceptoTimeout = setTimeout(async () => {
       try {
         const res = await fetch(`https://cambiosorion.cl/data/nuevo-egr-util.php?buscar_concepto=${encodeURIComponent(query)}`);
         const items = await res.json();
+        
         resultadoConceptos.innerHTML = "";
+        
+        // Opción 1: Resultados encontrados
         items.forEach(c => {
             const li = document.createElement("li");
             li.textContent = c.nombre;
-            li.className = "p-3 hover:bg-gray-100 cursor-pointer text-sm text-gray-800 border-b border-gray-100";
+            li.className = "p-3 hover:bg-gray-100 cursor-pointer text-sm text-gray-800 border-b border-gray-100 font-medium";
             li.addEventListener("click", () => {
               conceptoInput.value = c.nombre;
               resultadoConceptos.classList.add("hidden");
             });
             resultadoConceptos.appendChild(li);
         });
-        if(items.length > 0) resultadoConceptos.classList.remove("hidden");
+
+        // Opción 2: Agregar Nuevo (Siempre visible al final para confirmar que es texto libre)
+        // Verificamos si el texto exacto ya existe para no duplicar la opción visualmente
+        const existeExacto = items.some(i => i.nombre.toLowerCase() === query.toLowerCase());
+        
+        if (!existeExacto && query.length > 0) {
+            const liNuevo = document.createElement("li");
+            liNuevo.innerHTML = `<span class="text-yellow-600 font-bold">➕ Agregar:</span> "${query}"`;
+            liNuevo.className = "p-3 hover:bg-yellow-50 cursor-pointer text-sm text-gray-800 border-t-2 border-gray-100";
+            liNuevo.addEventListener("click", () => {
+                conceptoInput.value = query; // Se queda con lo escrito
+                resultadoConceptos.classList.add("hidden");
+            });
+            resultadoConceptos.appendChild(liNuevo);
+        }
+
+        resultadoConceptos.classList.remove("hidden");
       } catch (error) {}
     }, 300);
   });
@@ -126,15 +151,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const concepto = conceptoInput.value.trim();
 
     if (!cajaSelect.value) return mostrarAlerta("Seleccione caja.");
-    if (!concepto) return mostrarAlerta("Ingrese un concepto o beneficiario.");
+    if (!concepto) return mostrarAlerta("Ingrese un Tipo de Utilidad / Beneficiario.");
     if (!divisaId) return mostrarAlerta("Seleccione divisa.");
     if (isNaN(montoRaw) || montoRaw <= 0) return mostrarAlerta("Monto inválido.");
 
     const payload = {
       tipo_egreso: inputTipoHidden.value,
-      item_utilidad: concepto, // Campo clave para utilidad
+      item_utilidad: concepto, // Se guarda lo que esté en el input (seleccionado o escrito)
       caja_id: cajaSelect.value,
-      // cuenta_id: cuentaInput.dataset.id || null, // Opcional si pagas a cuenta
+      // cuenta_id: cuentaInput.dataset.id || null, 
       divisa_id: divisaId,
       monto: montoRaw,
       usuario_id: usuarioSesionId,
@@ -142,7 +167,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     try {
-      const res = await fetch("https://cambiosorion.cl/data/nuevo-egr-util.php", {
+      const res = await fetch("[https://cambiosorion.cl/data/nuevo-egr-util.php](https://cambiosorion.cl/data/nuevo-egr-util.php)", {
         method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload)
       });
       
