@@ -2,8 +2,8 @@
 <html lang="es">
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Egresos Utilidades</title>
+        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
+        <title>Retiros y Utilidades</title>
         <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/header.css">
         <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/footer.css">
         <link rel="stylesheet" href="./styles/index.css">
@@ -114,91 +114,68 @@
         <div id="sidebar-container"></div>
         <main id="dashboard-content" class="dashboard-content">
             <section id="egresos-util" class="content-section active">
-                <!-- Título y botón Nueva Operación -->
+                
                 <div class="flex items-center mb-6">
-                    <h1 class="text-2xl font-medium mr-4 leading-none text-white">Egresos Utilidades</h1>
-                    <button type="button" id="nuevo-egreso-util" href="./nuevo-egreso-util"
-                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
-                        Nuevo Egreso Utilidad
+                    <h1 class="text-2xl font-medium mr-4 leading-none text-white">Retiros y Utilidades</h1>
+                    <button type="button" id="nuevo-egreso-util"
+                        class="text-white bg-yellow-600 hover:bg-yellow-700 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5">
+                        Nuevo Retiro
                     </button>
                 </div>
                 
-                <!-- Filtros avanzados -->
-                <div class="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-6">
+                <!-- Filtros -->
+                <div class="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-6 items-end">
                     <div>
-                        <label for="numero" class="block mb-1 text-sm text-white">Nº</label>
-                        <input type="text" id="numero" 
-                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                        <label class="block mb-1 text-sm text-white">Nº</label>
+                        <input type="text" id="numero" class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
                     </div>
                     <div>
-                        <label for="fecha" class="block mb-1 text-sm text-white">Fecha</label>
-                        <input type="text" id="fecha" 
-                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                        <label class="block mb-1 text-sm text-white">Fecha</label>
+                        <input type="date" id="fecha" class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
                     </div>
                     <div>
-                        <label for="utilidad" class="block mb-1 text-sm text-white">Utilidad</label>
-                        <select id="utilidad"
-                            class="select-list block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Seleccionar</option>
-                            <option value="">Cuenta</option>
-                            <option value="">Efectivo</option>
+                        <label class="block mb-1 text-sm text-white">Tipo</label>
+                        <select id="tipo-egreso" class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
+                            <option value="">Todos</option>
+                            <option value="Efectivo">Efectivo</option>
+                            <option value="Cuenta">Cuenta</option>
                         </select>
                     </div>
+                    
+                    <!-- Búsqueda por Concepto (Item Utilidad) -->
+                    <div class="col-span-2">
+                        <label class="block mb-1 text-sm text-white">Concepto / Utilidad</label>
+                        <input type="text" id="buscar" placeholder="Ej: Pago Luz, Retiro Socio..." 
+                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
+                    </div>
+
                     <div>
-                        <label for="caja" class="block mb-1 text-sm text-white">Caja</label>
-                        <select id="caja"
-                            class="select-list block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Seleccionar</option>
-                            <option value="">Caja</option>
-                            <option value="">Tesorería</option>
-                        </select>
+                        <label class="block mb-1 text-sm text-white">Caja</label>
+                        <input type="text" id="caja" class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
                     </div>
                     <div>
-                        <label for="divisa" class="block mb-1 text-sm text-white">Divisa</label>
-                        <select id="divisa"
-                            class="select-list block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Seleccionar</option>
-                        </select>
+                        <label class="block mb-1 text-sm text-white">Divisa</label>
+                        <input type="text" id="divisa" class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
                     </div>
                     <div>
-                        <label for="estado" class="block mb-1 text-sm text-white">Estado</label>
-                        <select id="estado" 
-                            class="select-list block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Seleccionar</option>
-                            <option value="vigente">Vigente</option>
-                            <option value="abonado">Abonado</option>
-                            <option value="pagado">Pagado</option>
-                            <option value="anulado">Anulado</option>
+                        <label class="block mb-1 text-sm text-white">Estado</label>
+                        <select id="estado" class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700">
+                            <option value="">Todos</option>
+                            <option value="Vigente">Vigente</option>
+                            <option value="Anulado">Anulado</option>
                         </select>
                     </div>
                 </div>
                 
-                <!-- Mostrar registros y buscar -->
-                <div class="flex items-center justify-between mb-6">
-                    <div class="flex items-center space-x-2">
-                        <label for="mostrar-registros" class="text-sm text-white">Mostrar</label>
-                        <select id="mostrar-registros"
-                            class="block px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="25">25</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                        </select>
-                        <span class="text-sm text-white">registros</span>
-                    </div>
-                    <div>
-                        <input type="text" id="buscar" placeholder="Buscar" 
-                            class="block w-64 px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                </div>
-                
-                <!-- Tabla de operaciones -->
+                <!-- Tabla -->
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm text-left text-white bg-gray-800">
-                        <thead class="text-xs uppercase bg-gray-800 text-white">
+                        <thead class="text-xs uppercase bg-yellow-700 text-white border-b border-yellow-600">
                             <tr>
                                 <th class="px-4 py-2">Nº</th>
-                                <th class="px-4 py-2">Fecha Creación</th>
-                                <th class="px-4 py-2">Utilidad</th>
+                                <th class="px-4 py-2">Fecha</th>
+                                <th class="px-4 py-2">Tipo</th>
+                                <th class="px-4 py-2">Concepto / Utilidad</th> <!-- CAMBIO VISUAL -->
                                 <th class="px-4 py-2">Caja</th>
                                 <th class="px-4 py-2">Divisa</th>
                                 <th class="px-4 py-2">Monto</th>
@@ -207,35 +184,32 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="border-b bg-white border-gray-700 text-gray-700">
-                                <td class="px-4 py-2">1739</td>
-                                <td class="px-4 py-2">2025-01-30</td>
-                                <td class="px-4 py-2">Utilidad Operaciones</td>
-                                <td class="px-4 py-2">Cliente</td>
-                                <td class="px-4 py-2">Tesorería</td>
-                                <td class="px-4 py-2">Peso Chileno</td>
-                                <td class="px-4 py-2">$30.000</td>
-                                <td class="px-4 py-2">Vigente</td>
-                                <td class="px-4 py-2">
-                                    <button class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1">
-                                        Mostrar
-                                    </button>
-                                </td>
-                            </tr>
-                            <!-- Más filas -->
+                            <!-- JS -->
                         </tbody>
                     </table>
                 </div>
+
+                <!-- Paginación -->
+                <div class="flex items-center justify-between mt-4 bg-gray-800 p-4 rounded-lg">
+                    <div class="text-sm text-white">
+                        Mostrando <span id="inicio-registro">0</span> - <span id="fin-registro">0</span> de <span id="total-registros">0</span>
+                    </div>
+                    <nav>
+                        <ul class="inline-flex -space-x-px text-sm" id="pagination-controls"></ul>
+                    </nav>
+                    <!-- Selector oculto para mantener lógica JS -->
+                    <input type="hidden" id="mostrar-registros" value="25">
+                </div>
+
             </section>        
         </main>
     </div>
-
+    
     <footer>
         <div class="footer-container">
             <!-- Sección del logo -->
             <div class="footer-logo">
                 <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Logo Orion" class="logo">
-                 
             </div>
             <!-- Mapa de navegación -->
             <div class="footer-navigation flex justify-between">
@@ -270,13 +244,8 @@
         </div>
     </footer>
 
-    <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
-    <script type="module" src="https://cambiosorion.cl/orionapp/public/scripts/header.js" crossorigin="anonymous"></script>
-    <script type="module" src="./scripts/index.js"></script>
-    <script>
-        fetch('sidebar.html')
-            .then(response => response.text())
-            .then(data => document.getElementById('sidebar-container').innerHTML = data);
-    </script>
+    <script type="module" src="https://cambiosorion.cl/orionapp/public/scripts/header.js"></script>
+    <script type="module" src="./scripts/egresos-util.js"></script>
+    <script>fetch('sidebar.html').then(r=>r.text()).then(d=>document.getElementById('sidebar-container').innerHTML=d);</script>
 </body>
 </html>
