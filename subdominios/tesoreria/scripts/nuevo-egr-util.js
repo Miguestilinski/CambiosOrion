@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // 1. Obtener Sesión
   async function obtenerSesionActiva() {
       try {
-          const res = await fetch("[https://cambiosorion.cl/data/session_status.php](https://cambiosorion.cl/data/session_status.php)", { credentials: 'include' });
+          const res = await fetch("https://cambiosorion.cl/data/session_status.php", { credentials: 'include' });
           const session = await res.json();
           if (session.isAuthenticated && session.equipo_id) {
               usuarioSesionId = session.equipo_id;
@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // 2. Cargar Cajas
   async function cargarCajas() {
     try {
-      const res = await fetch("[https://cambiosorion.cl/data/nuevo-egr-util.php?buscar_cajas=1](https://cambiosorion.cl/data/nuevo-egr-util.php?buscar_cajas=1)");
+      const res = await fetch("https://cambiosorion.cl/data/nuevo-egr-util.php?buscar_cajas=1");
       const cajas = await res.json();
       cajaSelect.innerHTML = ''; 
       cajas.forEach(c => {
@@ -167,7 +167,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     try {
-      const res = await fetch("[https://cambiosorion.cl/data/nuevo-egr-util.php](https://cambiosorion.cl/data/nuevo-egr-util.php)", {
+      const res = await fetch("https://cambiosorion.cl/data/nuevo-egr-util.php", {
         method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload)
       });
       
