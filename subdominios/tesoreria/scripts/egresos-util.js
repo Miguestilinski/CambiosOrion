@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tbody.innerHTML = '';
         
         if (!lista || lista.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="9" class="text-center text-gray-400 py-4">No se encontraron registros.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="9" class="text-center bg-white text-gray-600 py-4">No se encontraron registros.</td></tr>';
             return;
         }
 
