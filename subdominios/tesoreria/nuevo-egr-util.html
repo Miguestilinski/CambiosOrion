@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuevo Egreso Utilidad</title>
+    <<link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/header.css">
+    <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/footer.css">
+    <link rel="stylesheet" href="./styles/nueva-op.css">
+    <link href="https://cambiosorion.cl/orionapp/public/styles/output.css" rel="stylesheet">
+    <link rel="icon" href="https://cambiosorion.cl/orionapp/icons/IsotipoOrion-blue.svg" type="image/png">
+    <!-- link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" -->
+    <style>
+      /* Ajuste específico para impresión */
+      @media print {
+          body * { visibility: hidden; }
+          #dashboard-content, #dashboard-content * { visibility: visible; }
+          #dashboard-content { position: absolute; left: 0; top: 0; width: 100%; }
+          .no-print { display: none; }
+      }
+  </style>
+<body>
+    <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js" crossorigin="anonymous"></script>
+    <header>
+        <!-- Logo y Nombre -->
+        <div class="header-logo">
+            <a href="index">
+                <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Logo Cambios Orion" class="logo">
+            </a>
+             
+        </div>
+    
+        <!-- Botones para versión móvil -->
+        <div class="mobile-buttons">
+            <button class="menu-button" id="nav-menu-button">
+                <img src="https://cambiosorion.cl/orionapp/icons/menu-white.svg" alt="Menú">
+            </button>
+            <button class="menu-button" id="session-menu-button">
+                <img src="https://cambiosorion.cl/orionapp/icons/profile-white.png" alt="Sesión">
+            </button>
+        </div>
+    
+        <!-- Menús desplegables para móvil -->
+        <div id="nav-mobile-menu" class="mobile-menu hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
+            <ul class="py-2 text-sm text-gray-700">
+                <li><a href="https://caja.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Sist. Caja</a></li>
+            </ul>
+            <ul class="py-2 text-sm text-gray-700">
+                <li><a href="https://tesoreria.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Sist. Tesoreria</a></li>
+            </ul>
+            <ul class="py-2 text-sm text-gray-700">
+                <li><a href="https://admin.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Portal Admin</a></li>
+            </ul>
+            <ul class="py-2 text-sm text-gray-700">
+                <li><a href="https://pizarras.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Pizarras</a></li>
+            </ul>
+        </div>
+    
+        <div class="mobile-menu hidden bg-white rounded-lg shadow w-44" id="session-mobile-menu">
+            <div id="guest-actions-mobile" class="divide-y divide-gray-100" style="display:none;">
+                <ul class="py-2 text-sm text-gray-700">
+                    <li><a href="https://admin.cambiosorion.cl/login" class="block px-4 py-2 hover:bg-gray-100">Iniciar Sesión</a></li>
+                </ul>
+            </div>
+            <div id="user-actions-mobile" class="divide-y divide-gray-100" style="display:none;">
+                <div class="px-2 py-2 text-sm text-gray-900">
+                    <div id="user-name">Nombre del usuario</div>
+                    <div id="user-email" class="mail font-medium truncate">Correo del usuario</div>
+                </div>
+                <ul class="py-2 text-sm text-gray-700" id="menu-admin-mobile" style="display: none;">
+                    <li><a href="https://admin.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Portal Admin</a></li>
+                    <li><a href="https://cambiosorion.cl/webmail" class="block px-4 py-2 hover:bg-gray-100">Correo</a></li>
+                </ul>
+                <ul class="py-2 text-sm text-gray-700">
+                    <li><a href="#" class="block px-4 py-2 hover:bg-gray-100" id="logout-button-mobile">Cerrar sesión</a></li>
+                </ul>
+            </div>
+        </div>
+    
+        <!-- Menú de navegación para escritorio -->
+        <nav>
+            <ul>
+                <li><a href="https://caja.cambiosorion.cl/">Sist. Cajas</a></li>
+                <li class="selected"><a href="https://tesoreria.cambiosorion.cl/tesoreria">Sist. Tesorería</a></li>
+                <li><a href="https://admin.cambiosorion.cl/">Portal Admin</a></li>
+                <li><a href="https://pizarras.cambiosorion.cl/">Pizarras</a></li>
+            </ul>
+        </nav>
+    
+        <!-- Acciones para escritorio -->
+        <div class="header-actions">
+            <!-- User actions -->
+            <div id="user-actions" style="display:none;">
+                <button id="profile-menu-button" class="text-white bg-transparent hover:bg-gray-200 focus:outline-none">
+                    <img src="https://cambiosorion.cl/orionapp/icons/profile-white.png" alt="Profile">
+                </button>
+                <!-- Menú desplegable -->
+                <div id="dropdownInformation" class="hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
+                    <div class="px-4 py-3 text-sm text-gray-900">
+                        <div id="user-name">Nombre del usuario</div>
+                        <div id="user-email" class="mail font-medium truncate">Correo del usuario</div>
+                    </div>
+                    <ul class="py-2 text-sm text-gray-700" id="menu-admin" style="display: none;">
+                        <li><a href="https://admin.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Portal Admin</a></li>
+                        <li><a href="https://cambiosorion.cl/webmail" class="block px-4 py-2 hover:bg-gray-100">Correo</a></li>
+                    </ul>
+                    <ul class="py-2 text-sm text-gray-700">
+                        <li><a href="#" class="block px-4 py-2 hover:bg-gray-100" id="logout-button">Cerrar sesión</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Guest actions -->
+            <div id="guest-actions" style="display:none;">
+                <a href="https://admin.cambiosorion.cl/login">Iniciar sesión</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="header-divider"></div>
+    <div class="main-content">
+        <div id="sidebar-container"></div>
+        <main id="dashboard-content" class="dashboard-content p-4 md:p-10">
+          <section id="nuevo-egreso-util" class="content-section active max-w-7xl mx-auto">
+            
+            <!-- Header Dorado -->
+            <div class="flex items-center justify-between mb-8 border-b border-gray-700 pb-4">
+              <div>
+                  <h1 class="text-3xl font-bold text-white tracking-tight">Nuevo Retiro / Utilidad</h1>
+                  <p class="text-gray-400 text-sm mt-1">Registre gastos operativos, retiros de socios o pagos internos.</p>
+              </div>
+              <div class="bg-yellow-900/30 border border-yellow-700 rounded-lg px-4 py-2">
+                  <span class="text-yellow-500 text-xs font-bold uppercase">Categoría</span>
+                  <p class="text-white font-mono font-bold">Utilidad</p>
+              </div>
+            </div>
+      
+            <!-- Formulario -->
+            <form id="form-nuevo-utilidad" class="w-full">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    
+                    <!-- PANEL 1: CONFIGURACIÓN -->
+                    <div class="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700 h-fit">
+                        <h3 class="text-gray-400 text-xs font-bold uppercase mb-4 border-b border-gray-700 pb-2">Origen del Fondo</h3>
+                        
+                        <div class="space-y-5">
+                            <!-- Caja -->
+                            <div>
+                                <label class="block mb-1 text-sm font-medium text-gray-300">Caja de Origen</label>
+                                <select id="caja" name="caja" required class="w-full bg-gray-900 border border-gray-600 text-white text-sm rounded-lg p-2.5 focus:ring-2 focus:ring-yellow-500 transition"></select>
+                            </div>
+
+                            <!-- Tipo -->
+                            <div>
+                                <label class="block mb-1 text-sm font-medium text-gray-300">Forma de Retiro</label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <label class="cursor-pointer relative">
+                                        <input type="radio" name="tipo_radio" value="efectivo" class="peer sr-only" checked>
+                                        <div class="text-center p-2 rounded-lg border border-gray-600 bg-gray-900 text-gray-400 hover:bg-gray-700 transition peer-checked:bg-yellow-600 peer-checked:border-yellow-500 peer-checked:text-black font-bold peer-checked:shadow-lg">Efectivo</div>
+                                    </label>
+                                    <label class="cursor-pointer relative">
+                                        <input type="radio" name="tipo_radio" value="cuenta" class="peer sr-only">
+                                        <div class="text-center p-2 rounded-lg border border-gray-600 bg-gray-900 text-gray-400 hover:bg-gray-700 transition peer-checked:bg-purple-600 peer-checked:border-purple-500 peer-checked:text-white peer-checked:shadow-lg">Cuenta</div>
+                                    </label>
+                                </div>
+                                <input type="hidden" id="tipo-transaccion" value="efectivo">
+                            </div>
+
+                            <!-- Concepto / Utilidad (Reemplaza a Cliente) -->
+                            <div class="relative">
+                                <label class="block mb-1 text-sm font-medium text-gray-300">Concepto / Beneficiario</label>
+                                <input type="text" id="concepto" placeholder="Ej: Pago Luz, Socio Juan..." autocomplete="off" class="w-full bg-gray-900 border border-gray-600 text-white text-sm rounded-lg p-2.5 focus:ring-2 focus:ring-yellow-500 transition">
+                                <ul id="resultado-conceptos" class="absolute z-50 w-full bg-white text-gray-900 rounded-lg mt-1 shadow-xl max-h-48 overflow-y-auto hidden border border-gray-300"></ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PANEL 2: FINANCIERO -->
+                    <div class="lg:col-span-2 bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700 relative">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-t-xl"></div>
+                        <h3 class="text-gray-400 text-xs font-bold uppercase mb-4 border-b border-gray-700 pb-2">Detalle del Monto</h3>
+
+                        <!-- Cuenta Destino (Opcional) -->
+                        <div class="mb-6 relative">
+                            <label class="block mb-1 text-sm font-medium text-gray-300">Cuenta Destino (Opcional)</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500">💳</div>
+                                <input type="text" id="cuenta" placeholder="Buscar cuenta..." autocomplete="off" class="w-full bg-gray-900 border border-gray-600 text-white text-sm rounded-lg p-2.5 pl-10 focus:ring-2 focus:ring-yellow-500 transition font-mono">
+                            </div>
+                            <ul id="resultado-cuentas" class="absolute z-50 w-full bg-white text-gray-900 rounded-lg mt-1 shadow-xl max-h-60 overflow-y-auto hidden border border-gray-300"></ul>
+                        </div>
+
+                        <div id="divisas-container" class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                            <!-- Divisa -->
+                            <div class="relative">
+                                <label class="block mb-1 text-sm font-medium text-gray-300">Divisa</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500">💱</div>
+                                    <input type="text" placeholder="Buscar divisa..." class="divisa-nombre w-full bg-gray-900 border border-gray-600 text-white text-sm rounded-lg p-2.5 pl-10 focus:ring-2 focus:ring-yellow-500 transition font-bold" autocomplete="off">
+                                </div>
+                                <ul class="divisa-sugerencias absolute z-50 w-full bg-white text-gray-900 rounded-lg mt-1 shadow-xl max-h-48 overflow-y-auto hidden border border-gray-300"></ul>
+                            </div>
+
+                            <!-- Monto -->
+                            <div>
+                                <label class="block mb-1 text-sm font-medium text-gray-300">Monto a Retirar</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400 text-lg">$</div>
+                                    <input id="monto-egreso" type="text" placeholder="0" class="w-full bg-gray-900 border border-yellow-600/50 text-white text-2xl font-bold rounded-lg p-3 pl-8 focus:ring-2 focus:ring-yellow-500 transition font-mono placeholder-gray-600">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                             <label class="block mb-1 text-sm font-medium text-gray-300">Observaciones Adicionales</label>
+                             <textarea id="observaciones" rows="2" class="w-full bg-gray-900 border border-gray-600 text-white text-sm rounded-lg p-2.5"></textarea>
+                        </div>
+                    </div>
+                </div>
+      
+                <div class="flex justify-end gap-4 pt-4 border-t border-gray-800">
+                    <button type="button" id="cancelar" onclick="location.reload()" class="text-gray-300 bg-transparent border border-gray-600 hover:bg-gray-700 px-6 py-2.5 rounded-lg transition">Limpiar</button>
+                    <button type="submit" class="text-black bg-yellow-500 hover:bg-yellow-400 focus:ring-4 focus:outline-none focus:ring-yellow-600 font-bold rounded-lg text-sm px-8 py-2.5 shadow-lg shadow-yellow-900/50 transition transform hover:-translate-y-0.5">Confirmar Retiro</button>
+                </div>
+            </form>
+
+            <!-- Modales -->
+            <div id="modal-alerta" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden backdrop-blur-sm">
+              <div class="bg-gray-800 border border-yellow-500/50 rounded-lg shadow-2xl p-6 max-w-sm w-full text-center">
+                <div class="text-5xl mb-4">⚠️</div>
+                <h2 class="text-xl font-bold text-white mb-2" id="modal-titulo">Atención</h2>
+                <p class="mb-6 text-gray-300 text-sm" id="modal-mensaje"></p>
+                <button id="cerrar-modal" class="bg-yellow-600 hover:bg-yellow-700 text-black font-bold px-6 py-2 rounded-lg w-full">Entendido</button>
+              </div>
+            </div>
+            
+            <div id="modal-exitoso" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden backdrop-blur-sm">
+              <div class="bg-gray-800 border border-gray-600 rounded-lg shadow-2xl p-6 max-w-md w-full text-center">
+                <div class="text-5xl mb-4">✅</div>
+                <h2 class="text-xl font-bold text-white mb-2">Retiro Registrado</h2>
+                <p class="mb-6 text-gray-300">El egreso de utilidad se ha procesado.</p>
+                <div class="flex justify-center space-x-3">
+                  <button onclick="location.reload()" class="bg-yellow-600 hover:bg-yellow-500 text-black font-bold px-6 py-2 rounded shadow-lg">Nuevo</button>
+                  <button onclick="window.location.href='egresos-util'" class="bg-gray-700 hover:bg-gray-600 text-white px-6 py-2 rounded border border-gray-500">Listado</button>
+                </div>
+              </div>
+            </div>
+
+          </section>
+        </main>
+    </div>
+
+    <footer>
+        <div class="footer-container">
+            <!-- Sección del logo -->
+            <div class="footer-logo">
+                <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Logo Orion" class="logo">
+            </div>
+            <!-- Mapa de navegación -->
+            <div class="footer-navigation flex justify-between">
+                <div class="nav-section">
+                    <h3 href="https://admin.cambiosorion.cl/" class="font-bold text-lg">Admin</h3>
+                    <ul class="list-none p-0">
+                        <li><a href="https://admin.cambiosorion.cl/#vacaciones" class="block py-1">Vacaciones</a></li>
+                        <li><a href="https://admin.cambiosorion.cl/" class="block py-1">Adelantos</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h3 href="https://pizarras.cambiosorion.cl/" class="font-bold text-lg">Pizarras</h3>
+                    <ul class="list-none p-0">
+                        <li><a href="https://pizarras.cambiosorion.cl/normal" class="block py-1">Normal</a></li>
+                        <li><a href="https://pizarras.cambiosorion.cl/destacadas" class="block py-1">Destacadas</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h3 class="font-bold text-lg">Intranet</h3>
+                    <ul class="list-none p-0">
+                        <li><a href="https://caja.cambiosorion.cl/" class="block py-1">Sist. Cajas</a></li>
+                        <li><a href="https://tesoreria.cambiosorion.cl/" class="block py-1">Sist. Tesorería</a></li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Información de contacto -->
+            <div class="footer-contact flex flex-wrap justify-between">
+            </div>         
+        </div>
+        <div class="footer-bottom text-xs text-center p-4">
+            © 2025 Cambios Orion. Todos los derechos reservados.
+        </div>
+    </footer>
+
+    <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="https://cambiosorion.cl/orionapp/public/scripts/header.js"></script>
+    <script type="module" src="./scripts/nuevo-egr-util.js"></script>
+    <script>
+        fetch('sidebar.html')
+            .then(response => response.text())
+            .then(data => document.getElementById('sidebar-container').innerHTML = data);
+    </script>
+</body>
+</html>
