@@ -1,0 +1,77 @@
+/* index.css Actualizado */
+
+/* Reseteamos el body para quitar la imagen de fondo oscura */
+body {
+    background: none; /* Quitamos la imagen de fondo */
+    background-color: #f8fafc; /* Color pizarra muy claro (slate-50) */
+    position: relative;
+}
+
+/* Eliminamos el pseudoelemento oscuro */
+body::before {
+    display: none;
+}
+
+/* Ajuste suave para el scroll */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Animación simple para mostrar pasos */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeIn {
+    animation: fadeIn 0.4s ease-out forwards;
+}
+
+/* Estilos específicos para la tabla que el JS genera */
+/* Sobrescribimos estilos anteriores para adaptarlos al fondo blanco */
+#currency-table-body tr {
+    transition: background-color 0.2s;
+}
+
+#currency-table-body tr:hover {
+    background-color: #f1f5f9; /* hover gris claro */
+}
+
+/* La primera fila (generalmente USD) ya no necesita ser azul sólido, 
+   pero si quieres destacarla: */
+#currency-table-body tr.first-row td {
+    background-color: #eff6ff !important; /* azul muy muy claro */
+    color: #1e3a8a !important;
+    font-weight: 700;
+}
+
+/* Ajustes para inputs del conversor (para quitar flechas de número) */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Estilos del Ticker */
+#ticker {
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+/* Estilo para los botones de Compra/Venta activos en el nuevo diseño */
+/* El JS (conversor.js) agrega clases bg-[#1e3a8a]. 
+   Asegúrate de que esas clases existan en output.css o defínelas aquí si Tailwind no las compiló */
+.bg-\[\#1e3a8a\] {
+    background-color: #1e3a8a;
+}
+.text-\[\#1e3a8a\] {
+    color: #1e3a8a;
+}
+
+/* Loader Skeleton para la tabla */
+.skeleton-loader {
+    background-color: #e2e8f0;
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .5; }
+}
