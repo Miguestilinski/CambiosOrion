@@ -5,11 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cambios Orion - Tu mejor opción en divisas</title>
+    
     <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/header.css">
-    <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/index.css">
-    <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/footer.css">
-    <link href="https://cambiosorion.cl/orionapp/public/styles/output.css" rel="stylesheet">
+    <link rel="stylesheet" href="landing.css"> <link href="https://cambiosorion.cl/orionapp/public/styles/output.css" rel="stylesheet">
     <link rel="icon" href="https://cambiosorion.cl/orionapp/icons/IsotipoOrion-blue.svg" type="image/png">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -18,30 +18,30 @@
     </style>
 </head>
 
-<body class="bg-slate-50 flex flex-col min-h-screen">
+<body class="flex flex-col min-h-screen">
     <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js"></script>
 
-    <header class="bg-[#1e3a8a] text-white shadow-md sticky top-0 z-50">
+    <header class="fixed w-full z-50 transition-all duration-300 bg-black/20 backdrop-blur-md border-b border-white/10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
+            <div class="flex justify-between items-center h-20">
                 <div class="flex-shrink-0 flex items-center">
                     <a href="https://cambiosorion.cl/">
-                        <img src="/orionapp/assets/LogoOrion-white.svg" alt="Logo Cambios Orion" class="h-8 w-auto">
+                        <img src="/orionapp/assets/LogoOrion-white.svg" alt="Logo Cambios Orion" class="h-9 w-auto drop-shadow-md">
                     </a>
                 </div>
 
                 <nav class="hidden md:flex space-x-8">
-                    <a href="index" class="text-white hover:text-blue-200 px-3 py-2 rounded-md text-sm font-medium font-bold border-b-2 border-white">Inicio</a>
-                    <a href="nosotros" class="text-white hover:text-blue-200 px-3 py-2 rounded-md text-sm font-medium transition">Nosotros</a>
-                    <a href="contacto" class="text-white hover:text-blue-200 px-3 py-2 rounded-md text-sm font-medium transition">Contacto</a>
+                    <a href="index" class="text-white hover:text-blue-300 px-3 py-2 text-sm font-bold border-b-2 border-white text-shadow transition">Inicio</a>
+                    <a href="nosotros" class="text-white hover:text-blue-300 px-3 py-2 text-sm font-medium text-shadow transition">Nosotros</a>
+                    <a href="contacto" class="text-white hover:text-blue-300 px-3 py-2 text-sm font-medium text-shadow transition">Contacto</a>
                 </nav>
 
                 <div class="hidden md:flex items-center space-x-4">
                      <div id="user-actions" style="display:none;" class="relative">
-                        <button id="profile-menu-button" class="flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-white">
-                            <img class="h-8 w-8 rounded-full bg-white p-1" src="/orionapp/icons/profile-white.png" alt="Profile">
+                        <button id="profile-menu-button" class="flex text-sm rounded-full focus:outline-none ring-2 ring-white/50">
+                            <img class="h-9 w-9 rounded-full bg-white p-1" src="/orionapp/icons/profile-white.png" alt="Profile">
                         </button>
-                         <div id="dropdownInformation" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 text-gray-700 ring-1 ring-black ring-opacity-5 z-50">
+                        <div id="dropdownInformation" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-xl py-1 text-gray-700 z-50">
                             <div class="px-4 py-3 text-sm border-b">
                                 <div id="user-name" class="font-bold">Usuario</div>
                                 <div id="user-email" class="text-gray-500 truncate">email@ejemplo.com</div>
@@ -52,69 +52,68 @@
                     </div>
                     
                     <div id="guest-actions" style="display:none;" class="flex space-x-3">
-                        <a href="#login" class="text-white hover:text-gray-200 px-3 py-2 text-sm font-medium">Iniciar sesión</a>
-                        <a href="#registro" class="bg-white text-[#1e3a8a] hover:bg-gray-100 px-4 py-2 rounded-md text-sm font-bold shadow-sm transition">Registrarse</a>
+                        <a href="#login" class="text-white hover:text-blue-200 px-3 py-2 text-sm font-medium text-shadow">Iniciar sesión</a>
+                        <a href="#registro" class="bg-white text-[#1e3a8a] hover:bg-gray-100 px-5 py-2 rounded-full text-sm font-bold shadow-lg transition transform hover:scale-105">Registrarse</a>
                     </div>
                 </div>
 
                 <div class="flex items-center md:hidden">
-                    <button id="nav-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-blue-800 focus:outline-none">
-                        <img src="/orionapp/icons/menu-white.svg" class="h-6 w-6" alt="Menu">
+                    <button id="nav-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-white/20 focus:outline-none">
+                        <img src="/orionapp/icons/menu-white.svg" class="h-7 w-7" alt="Menu">
                     </button>
                 </div>
             </div>
         </div>
 
-        <div id="nav-mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200 absolute w-full z-40 shadow-xl">
-             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 text-gray-700">
-                <a href="index" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-50 text-[#1e3a8a] font-bold">Inicio</a>
-                <a href="nosotros" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-50">Nosotros</a>
-                <a href="contacto" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-50">Contacto</a>
-                <div class="border-t border-gray-200 mt-2 pt-2">
-                     <a href="#login" class="block px-3 py-2 text-base font-medium text-gray-600 hover:text-blue-800">Iniciar Sesión</a>
-                     <a href="#registro" class="block px-3 py-2 text-base font-medium text-blue-600 font-bold">Registrarse</a>
+        <div id="nav-mobile-menu" class="hidden md:hidden bg-[#0f172a] border-t border-gray-700 absolute w-full z-40 shadow-xl">
+             <div class="px-4 pt-4 pb-6 space-y-2 text-white">
+                <a href="index" class="block px-3 py-2 rounded-md text-base font-bold text-blue-400">Inicio</a>
+                <a href="nosotros" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-white/10">Nosotros</a>
+                <a href="contacto" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-white/10">Contacto</a>
+                <div class="border-t border-gray-700 mt-4 pt-4">
+                     <a href="#login" class="block px-3 py-2 text-base font-medium hover:text-blue-300">Iniciar Sesión</a>
+                     <a href="#registro" class="block px-3 py-2 text-base font-bold text-blue-400">Registrarse</a>
                 </div>
             </div>
         </div>
     </header>
 
-    <section class="relative bg-[#1e3a8a] pb-32 pt-16 lg:pt-24 overflow-hidden">
-        <div class="absolute inset-0">
-             <div class="absolute inset-0 bg-gradient-to-br from-[#1e3a8a] to-[#0f172a] mix-blend-multiply"></div>
-             <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
-        </div>
-
-        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center">
+    <section class="relative pt-32 pb-16 lg:pt-40 lg:pb-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center">
             
-            <div class="text-center lg:text-left lg:w-1/2 lg:pr-10 mb-10 lg:mb-0 z-10">
-                <h1 class="text-4xl tracking-tight font-extrabold text-white sm:text-5xl md:text-6xl">
+            <div class="text-center lg:text-left lg:w-1/2 lg:pr-12 mb-12 lg:mb-0 z-10">
+                <h1 class="text-4xl tracking-tight font-extrabold text-white sm:text-5xl md:text-6xl drop-shadow-lg">
                     <span class="block">El cambio más seguro</span>
-                    <span class="block text-blue-200">al mejor precio.</span>
+                    <span class="block text-blue-400">al mejor precio.</span>
                 </h1>
-                <p class="mt-3 max-w-md mx-auto text-base text-gray-300 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl lg:mx-0">
+                <p class="mt-6 text-lg text-gray-100 max-w-lg mx-auto lg:mx-0 drop-shadow-md leading-relaxed">
                     Cotiza en tiempo real, reserva tu tasa y retira en nuestras oficinas con total seguridad. Sin comisiones ocultas.
                 </p>
-                <div class="mt-10 sm:flex sm:justify-center lg:justify-start gap-4">
-                     <a href="https://cambiosorion.cl/divisas" target="_blank" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-[#1e3a8a] bg-white hover:bg-gray-50 md:py-4 md:text-lg md:px-10 shadow-lg transition transform hover:-translate-y-1">
+                
+                <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                     <a href="https://cambiosorion.cl/divisas" target="_blank" class="px-8 py-3 bg-white text-[#1e3a8a] font-bold rounded-full shadow-lg hover:bg-gray-100 transition transform hover:-translate-y-1">
                         Ver Catálogo
                     </a>
-                    <a href="#alerta-wrapper" id="heroAlertaBtn" class="w-full flex items-center justify-center px-8 py-3 border border-white text-base font-medium rounded-md text-white hover:bg-white/10 md:py-4 md:text-lg md:px-10 transition">
+                    <button id="heroAlertaBtn" class="px-8 py-3 border-2 border-white text-white font-bold rounded-full hover:bg-white/10 transition">
                         Crear Alerta
-                    </a>
+                    </button>
                 </div>
                 
-                <div class="mt-8 bg-white/10 rounded-lg p-3 backdrop-blur-sm border border-white/20">
-                     <div id="ticker" class="bg-transparent text-white text-sm font-mono overflow-hidden whitespace-nowrap">
-                        <div id="ticker-content">Cargando indicadores...</div>
+                <div class="mt-12 bg-black/40 backdrop-blur-sm rounded-xl p-4 border border-white/10 shadow-lg inline-block w-full max-w-lg">
+                     <div class="flex justify-between items-center mb-2 text-xs text-blue-200 uppercase font-semibold">
+                         <span>Indicadores Económicos</span>
+                         <span id="paridades-date">--</span> </div>
+                     <div id="ticker" class="text-white text-sm font-mono overflow-hidden whitespace-nowrap">
+                        <div id="ticker-content" class="animate-pulse">Cargando indicadores...</div>
                     </div>
                 </div>
             </div>
 
             <div class="w-full lg:w-1/2 z-20">
-                <div id="conversor" class="bg-white rounded-2xl shadow-2xl p-6 md:p-8 transform transition-all hover:scale-[1.01]">
+                <div id="conversor" class="bg-white rounded-3xl shadow-2xl p-6 md:p-8 transform transition-all border border-gray-200">
                     <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-2xl font-bold text-gray-900 m-0">Cotiza y Reserva</h2>
-                        <span id="last-updated1" class="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded-full">Actualizado: --</span>
+                        <h2 class="text-2xl font-bold text-[#1e3a8a]">Cotiza y Reserva</h2>
+                        <span id="last-updated1" class="text-xs font-semibold text-gray-500 bg-gray-100 px-3 py-1 rounded-full">Actualizado: --</span>
                     </div>
 
                     <ol class="flex items-center w-full text-sm font-medium text-center text-gray-500 mb-6">
@@ -130,65 +129,63 @@
                     </ol>
 
                     <div id="step-1">
-                        <div id="trade-switch" class="flex bg-gray-100 p-1 rounded-lg mb-6 select-none relative">
-                             <div id="trade-buy" class="flex-1 py-2 text-center rounded-md cursor-pointer text-sm font-semibold transition-all duration-300">Compra</div>
-                             <div id="trade-sell" class="flex-1 py-2 text-center rounded-md cursor-pointer text-sm font-semibold transition-all duration-300">Venta</div>
+                        <div id="trade-switch" class="flex bg-gray-100 p-1 rounded-xl mb-6 select-none relative">
+                             <div id="trade-buy" class="flex-1 py-2 text-center rounded-lg cursor-pointer text-sm font-bold transition-all duration-300">Compra</div>
+                             <div id="trade-sell" class="flex-1 py-2 text-center rounded-lg cursor-pointer text-sm font-bold transition-all duration-300">Venta</div>
                         </div>
 
                         <div class="relative space-y-4">
                             <div class="relative group">
-                                <label for="amount1" class="block text-xs font-medium text-gray-500 mb-1 ml-1">Tienes</label>
-                                <div class="flex items-center border border-gray-300 rounded-xl bg-gray-50 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 overflow-hidden transition-all">
-                                    <input type="text" id="amount1" placeholder="0" class="w-full p-4 bg-transparent border-none text-xl font-bold text-gray-900 focus:ring-0 text-right" oninput="convertCurrency()">
-                                    
-                                    <div class="border-l border-gray-300 h-full flex items-center bg-white hover:bg-gray-50 cursor-pointer px-3 transition" id="dropdown1Button" onclick="toggleDropdown('dropdown1', event)">
+                                <label class="block text-xs font-bold text-gray-500 mb-1 ml-1 uppercase">Tienes</label>
+                                <div class="flex items-center border border-gray-300 rounded-xl bg-gray-50 focus-within:ring-2 focus-within:ring-blue-500 overflow-hidden">
+                                    <input type="text" id="amount1" placeholder="0" class="w-full p-4 bg-transparent border-none text-2xl font-bold text-gray-900 focus:ring-0 text-right" oninput="convertCurrency()">
+                                    <div class="border-l border-gray-300 h-full flex items-center bg-white hover:bg-gray-50 cursor-pointer px-4 transition" id="dropdown1Button" onclick="toggleDropdown('dropdown1', event)">
                                         <img id="icon-currency1" src="/orionapp/node_modules/circle-flags/flags/cl.svg" class="w-6 h-6 rounded-full shadow-sm mr-2">
                                         <span id="currency1-text" class="font-bold text-gray-700">CLP</span>
-                                        <svg class="w-4 h-4 ml-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                        <svg class="w-4 h-4 ml-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                     </div>
-                                    <div id="dropdown1" class="hidden absolute top-full right-0 mt-2 w-48 bg-white rounded-xl shadow-2xl z-50 border border-gray-100 max-h-60 overflow-y-auto"></div>
+                                    <div id="dropdown1" class="hidden absolute top-full right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl z-50 border border-gray-100 max-h-60 overflow-y-auto"></div>
                                 </div>
                             </div>
 
                             <div class="absolute left-1/2 top-[42%] -translate-x-1/2 -translate-y-1/2 z-10">
-                                <button onclick="swapCurrencies()" class="bg-white border border-gray-200 p-2 rounded-full shadow-md hover:shadow-lg hover:bg-gray-50 hover:text-blue-600 transition text-gray-400 transform active:rotate-180 duration-300">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path></svg>
+                                <button onclick="swapCurrencies()" class="bg-white border border-gray-200 p-2 rounded-full shadow-md hover:shadow-lg hover:text-blue-600 transition text-gray-400 transform active:rotate-180 duration-300">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path></svg>
                                 </button>
                             </div>
 
                             <div class="relative group">
-                                <label for="amount2" class="block text-xs font-medium text-gray-500 mb-1 ml-1">Obtienes</label>
-                                <div class="flex items-center border border-gray-300 rounded-xl bg-gray-50 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 overflow-hidden transition-all">
-                                    <input type="text" id="amount2" readonly class="w-full p-4 bg-gray-100 border-none text-xl font-bold text-gray-900 focus:ring-0 text-right cursor-default">
-                                    
-                                    <div class="border-l border-gray-300 h-full flex items-center bg-white hover:bg-gray-50 cursor-pointer px-3 transition" id="dropdown2Button" onclick="toggleDropdown('dropdown2', event)">
+                                <label class="block text-xs font-bold text-gray-500 mb-1 ml-1 uppercase">Obtienes</label>
+                                <div class="flex items-center border border-gray-300 rounded-xl bg-gray-50 focus-within:ring-2 focus-within:ring-blue-500 overflow-hidden">
+                                    <input type="text" id="amount2" readonly class="w-full p-4 bg-gray-100 border-none text-2xl font-bold text-gray-900 focus:ring-0 text-right cursor-default">
+                                    <div class="border-l border-gray-300 h-full flex items-center bg-white hover:bg-gray-50 cursor-pointer px-4 transition" id="dropdown2Button" onclick="toggleDropdown('dropdown2', event)">
                                         <img id="icon-currency2" src="/orionapp/node_modules/circle-flags/flags/us.svg" class="w-6 h-6 rounded-full shadow-sm mr-2">
                                         <span id="currency2-text" class="font-bold text-gray-700">USD</span>
-                                        <svg class="w-4 h-4 ml-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                        <svg class="w-4 h-4 ml-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                     </div>
-                                    <div id="dropdown2" class="hidden absolute top-full right-0 mt-2 w-48 bg-white rounded-xl shadow-2xl z-50 border border-gray-100 max-h-60 overflow-y-auto"></div>
+                                    <div id="dropdown2" class="hidden absolute top-full right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl z-50 border border-gray-100 max-h-60 overflow-y-auto"></div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="mt-4 flex flex-col items-center justify-center text-sm">
-                            <div id="trade-info" class="font-medium text-gray-800"></div>
-                            <div id="trade-price" class="text-gray-500 bg-gray-50 px-3 py-1 rounded-full mt-1 border border-gray-200"></div>
+                            <div id="trade-info" class="font-bold text-[#1e3a8a]"></div>
+                            <div id="trade-price" class="text-gray-500 font-medium mt-1"></div>
                         </div>
                     </div>
 
                     <div id="step-2" class="mt-6 hidden animate-fadeIn">
                         <form id="formReserva" class="space-y-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Nombre Completo</label>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Nombre Completo</label>
                                 <input id="reserva-nombre" type="text" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 p-3" placeholder="Ej: Juan Pérez">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Correo Electrónico</label>
                                 <input id="reserva-email" type="email" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 p-3" placeholder="juan@ejemplo.com">
                             </div>
                             <div id="telefono-container" class="hidden">
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Teléfono</label>
                                 <input id="reserva-fono" type="tel" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 p-3" placeholder="+56 9 1234 5678">
                             </div>
                         </form>
@@ -196,248 +193,253 @@
 
                     <div id="step-3" class="mt-6 hidden animate-fadeIn">
                          <div class="bg-gray-50 rounded-lg p-4 mb-4 border border-gray-200">
-                             <h3 class="text-md font-bold text-gray-900 mb-2 border-b pb-2">Resumen</h3>
+                             <h3 class="text-md font-bold text-[#1e3a8a] mb-2 border-b pb-2">Resumen de Operación</h3>
                              <div class="grid grid-cols-2 gap-4 text-sm">
                                  <div>
-                                     <span class="block text-gray-500 text-xs">Operación</span>
-                                     <span id="summary-operation" class="font-semibold text-gray-800">--</span>
+                                     <span class="block text-gray-500 text-xs uppercase">Operación</span>
+                                     <span id="summary-operation" class="font-bold text-gray-800">--</span>
                                  </div>
                                  <div>
-                                     <span class="block text-gray-500 text-xs">Divisa</span>
-                                     <span id="summary-currency-name" class="font-semibold text-gray-800 flex items-center">--</span>
+                                     <span class="block text-gray-500 text-xs uppercase">Divisa</span>
+                                     <span id="summary-currency-name" class="font-bold text-gray-800 flex items-center">--</span>
                                  </div>
                                  <div>
-                                     <span class="block text-gray-500 text-xs">Pagas</span>
-                                     <span id="summary-pay" class="font-semibold text-blue-600">--</span>
+                                     <span class="block text-gray-500 text-xs uppercase">Pagas</span>
+                                     <span id="summary-pay" class="font-bold text-blue-600 text-lg">--</span>
                                  </div>
                                  <div>
-                                     <span class="block text-gray-500 text-xs">Recibes</span>
-                                     <span id="summary-get" class="font-semibold text-green-600">--</span>
+                                     <span class="block text-gray-500 text-xs uppercase">Recibes</span>
+                                     <span id="summary-get" class="font-bold text-green-600 text-lg">--</span>
                                  </div>
                              </div>
                          </div>
                          
                          <div id="reservation-instructions" class="text-xs bg-yellow-50 text-yellow-800 p-3 rounded-md border border-yellow-200 mb-4"></div>
 
-                         <div class="flex flex-col gap-2">
-                            <button id="confirmReservation" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg shadow transition disabled:opacity-50 disabled:cursor-not-allowed">
+                         <div class="flex flex-col gap-3">
+                            <button id="confirmReservation" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl shadow-lg transition disabled:opacity-50">
                                 Confirmar Reserva
                             </button>
-                            <button id="contactExecutive" class="hidden w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 rounded-lg shadow transition">
+                            <button id="contactExecutive" class="hidden w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 rounded-xl shadow-lg transition">
                                 Contactar Ejecutivo
                             </button>
-                             <p id="reservation-status" class="text-center text-sm font-medium mt-2"></p>
+                             <p id="reservation-status" class="text-center text-sm font-medium mt-1"></p>
                          </div>
                     </div>
 
-                    <p id="conversor-stepper-error" class="text-red-500 text-sm mt-3 text-center hidden bg-red-50 p-2 rounded border border-red-100"></p>
+                    <p id="conversor-stepper-error" class="text-red-600 font-medium text-sm mt-3 text-center hidden bg-red-50 p-2 rounded-lg border border-red-100"></p>
 
                     <div id="stepperButtons" class="flex justify-between mt-8 pt-4 border-t border-gray-100">
-                        <button id="prevStep" class="text-gray-500 hover:text-gray-800 font-medium text-sm hidden px-4">Atrás</button>
-                        <button id="nextStep" class="bg-[#1e3a8a] hover:bg-blue-800 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-blue-900/20 transition w-full sm:w-auto ml-auto">
+                        <button id="prevStep" class="text-gray-500 hover:text-gray-800 font-bold text-sm hidden px-4">Atrás</button>
+                        <button id="nextStep" class="bg-[#1e3a8a] hover:bg-blue-800 text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-blue-900/20 transition w-full sm:w-auto ml-auto">
                             Continuar
                         </button>
                     </div>
                 </div>
             </div>
         </div>
-        
-        <div class="absolute bottom-0 w-full">
-            <svg class="fill-slate-50 w-full h-12 lg:h-24" viewBox="0 0 1440 120" preserveAspectRatio="none">
-                <path d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z"></path>
-            </svg>
-        </div>
     </section>
 
-    <div class="main-content flex-grow">
-        <div id="alerta-wrapper" class="overflow-hidden max-h-0 transition-all duration-500 ease-in-out bg-white border-b border-gray-100">
-            <div id="alerta-section" class="max-w-2xl mx-auto p-8">
-                 <h2 class="text-2xl text-center font-bold mb-2 text-[#1e3a8a]">Configura tu Alerta</h2>
-                 <div id="alerta-step-1" class="step-content flex flex-col gap-4 items-center">
-                    <div id="alerta-divisa-container" class="relative w-[200px]">
-                        <div id="alerta-divisa-button" class="flex items-center justify-between px-4 py-3 border border-gray-300 rounded-lg cursor-pointer bg-white hover:bg-gray-50" onclick="showAlertaDropdown()">
-                             <div class="flex items-center">
-                                <img id="alerta-icon" src="" class="w-6 h-6 mr-2 hidden">
-                                <span id="alerta-currency-text" class="font-medium">Seleccionar Divisa</span>
-                             </div>
-                             <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                        </div>
-                         <div id="alerta-divisa-dropdown" class="hidden absolute top-full left-0 mt-1 bg-white rounded-lg shadow-xl z-[60] w-full max-h-48 overflow-y-auto border border-gray-100">
-                             <ul></ul>
+    <div id="alerta-wrapper" class="overflow-hidden max-h-0 transition-all duration-700 ease-in-out bg-white border-b border-gray-200 shadow-inner relative z-30">
+        <div id="alerta-section" class="max-w-3xl mx-auto p-10">
+             <div class="text-center mb-8">
+                <span class="text-blue-600 font-bold tracking-wider text-xs uppercase">Notificaciones</span>
+                <h2 class="text-3xl font-extrabold text-[#1e3a8a]">Configura tu Alerta</h2>
+                <p class="text-gray-500 mt-2">Te avisaremos cuando el precio llegue a tu objetivo.</p>
+             </div>
+             
+             <div id="alerta-step-1" class="step-content flex flex-col gap-6 items-center">
+                <div id="alerta-divisa-container" class="relative w-full max-w-xs">
+                    <div id="alerta-divisa-button" class="flex items-center justify-between px-5 py-4 border border-gray-300 rounded-xl cursor-pointer bg-gray-50 hover:bg-white transition shadow-sm" onclick="showAlertaDropdown()">
+                         <div class="flex items-center">
+                            <img id="alerta-icon" src="" class="w-6 h-6 mr-3 hidden">
+                            <span id="alerta-currency-text" class="font-bold text-gray-700">Seleccionar Divisa</span>
                          </div>
+                         <svg class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </div>
-                    <div id="alerta-precios-card" class="hidden w-full"></div>
-                 </div>
-                 <div id="alerta-step-2" class="step-content hidden text-center">
-                      <p id="alerta-step-2-summary" class="text-sm text-gray-600 mb-4 bg-gray-100 p-2 rounded"></p>
-                      <select id="alerta-condicion" class="w-full border-gray-300 rounded-lg p-3 mb-2 bg-white"><option value="alcanza">Alcanza el precio</option><option value="sube">Sube sobre</option><option value="baja">Baja a</option></select>
-                      <p id="alerta-condicion-help" class="text-xs text-gray-500 mb-4 italic"></p>
-                      <input id="alerta-valor" type="number" step="0.01" class="w-full border-gray-300 rounded-lg p-3" placeholder="Valor objetivo">
-                 </div>
-                 <div id="alerta-step-3" class="step-content hidden">
-                      <p id="alerta-step-3-summary" class="text-sm text-gray-600 mb-4 bg-gray-100 p-2 rounded"></p>
-                      <input id="alerta-nombre" type="text" class="w-full border-gray-300 rounded-lg p-3 mb-3" placeholder="Tu Nombre">
-                      <input id="alerta-email" type="email" class="w-full border-gray-300 rounded-lg p-3 mb-3" placeholder="Tu Email">
-                      <p id="alerta-status" class="text-center text-sm font-bold"></p>
-                 </div>
-                 <p id="alerta-stepper-error" class="text-red-500 text-center text-sm mt-2 hidden"></p>
-                 <div id="alerta-stepper-buttons" class="flex justify-between mt-6">
-                      <button id="alerta-prev" class="text-gray-500 hidden">Atrás</button>
-                      <div class="flex gap-2 ml-auto">
-                        <button id="alerta-next" class="bg-[#1e3a8a] text-white px-6 py-2 rounded-lg hidden">Siguiente</button>
-                        <button id="guardar-alerta" class="bg-green-600 text-white px-6 py-2 rounded-lg hidden shadow-lg hover:bg-green-700">Crear Alerta</button>
-                      </div>
-                 </div>
-            </div>
-        </div>
+                     <div id="alerta-divisa-dropdown" class="hidden absolute top-full left-0 mt-2 bg-white rounded-xl shadow-2xl z-[60] w-full max-h-60 overflow-y-auto border border-gray-100">
+                         <ul class="divide-y divide-gray-100"></ul>
+                     </div>
+                </div>
+                <div id="alerta-precios-card" class="hidden w-full max-w-lg"></div>
+             </div>
 
-        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-            <div class="text-center mb-10">
-                <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-                    Pizarra de Divisas
+             <div id="alerta-step-2" class="step-content hidden text-center max-w-sm mx-auto">
+                  <p id="alerta-step-2-summary" class="text-sm font-semibold text-[#1e3a8a] mb-4 bg-blue-50 p-3 rounded-lg border border-blue-100"></p>
+                  <select id="alerta-condicion" class="w-full border-gray-300 rounded-xl p-3 mb-2 bg-white focus:ring-blue-500"><option value="alcanza">Alcanza el precio</option><option value="sube">Sube sobre</option><option value="baja">Baja a</option></select>
+                  <p id="alerta-condicion-help" class="text-xs text-gray-500 mb-4 italic"></p>
+                  <input id="alerta-valor" type="number" step="0.01" class="w-full border-gray-300 rounded-xl p-3 text-lg font-bold text-center" placeholder="Valor objetivo">
+             </div>
+
+             <div id="alerta-step-3" class="step-content hidden max-w-sm mx-auto">
+                  <p id="alerta-step-3-summary" class="text-sm font-semibold text-[#1e3a8a] mb-4 bg-blue-50 p-3 rounded-lg border border-blue-100 text-center"></p>
+                  <input id="alerta-nombre" type="text" class="w-full border-gray-300 rounded-xl p-3 mb-3" placeholder="Tu Nombre">
+                  <input id="alerta-email" type="email" class="w-full border-gray-300 rounded-xl p-3 mb-3" placeholder="Tu Email">
+                  <p id="alerta-status" class="text-center text-sm font-bold mt-2"></p>
+             </div>
+
+             <p id="alerta-stepper-error" class="text-red-500 text-center font-bold text-sm mt-4 hidden"></p>
+             <div id="alerta-stepper-buttons" class="flex justify-between mt-8 max-w-sm mx-auto">
+                  <button id="alerta-prev" class="text-gray-400 hover:text-gray-600 font-bold hidden">Atrás</button>
+                  <div class="flex gap-2 ml-auto">
+                    <button id="alerta-next" class="bg-[#1e3a8a] text-white px-6 py-2 rounded-lg font-bold shadow-lg hidden">Siguiente</button>
+                    <button id="guardar-alerta" class="bg-green-600 text-white px-6 py-2 rounded-lg font-bold shadow-lg hidden hover:bg-green-700">Crear Alerta</button>
+                  </div>
+             </div>
+        </div>
+    </div>
+
+    <section class="relative py-20">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-extrabold text-white sm:text-4xl drop-shadow-lg">
+                    Pizarra de Precios
                 </h2>
-                <p class="mt-4 max-w-2xl text-xl text-gray-500 mx-auto">
-                    Monitorea el mercado en tiempo real. Precios actualizados al instante.
+                <p class="mt-4 text-xl text-blue-200 drop-shadow-md">
+                    Monitorea el mercado en tiempo real.
                 </p>
             </div>
 
-            <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
-                <div class="bg-gray-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center flex-wrap gap-4">
-                    <span id="paridades-date" class="text-sm text-gray-500 font-medium">Cargando fecha...</span>
+            <div class="glass-panel rounded-2xl overflow-hidden shadow-2xl">
+                <div class="bg-white/10 px-6 py-4 flex justify-between items-center flex-wrap gap-4 border-b border-white/10 backdrop-blur-md">
                     
-                    <div id="mobile-toggle" class="flex items-center md:hidden">
-                        <span class="mr-3 text-sm font-medium text-gray-600">Compra</span>
+                    <div id="mobile-toggle" class="flex items-center md:hidden text-white">
+                        <span class="mr-3 text-sm font-medium">Compra</span>
                         <label class="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" id="toggle-switch" class="sr-only peer" onchange="toggleTableColumns()">
-                            <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            <div class="w-11 h-6 bg-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500"></div>
                         </label>
-                        <span class="ml-3 text-sm font-medium text-gray-600">Venta</span>
+                        <span class="ml-3 text-sm font-medium">Venta</span>
                     </div>
 
-                    <button onclick="toggleEditMode()" class="text-[#1e3a8a] hover:bg-blue-50 px-4 py-2 rounded-lg text-sm font-bold transition flex items-center">
+                    <button onclick="toggleEditMode()" class="text-blue-200 hover:text-white px-4 py-2 rounded-lg text-sm font-bold transition flex items-center border border-blue-200/30 hover:bg-white/10 ml-auto">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-                        Editar Pizarra
+                        Editar
                     </button>
                 </div>
 
                 <div class="overflow-x-auto">
                     <table class="w-full">
-                        <thead class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider font-semibold border-b border-gray-200">
+                        <thead class="text-blue-200 text-xs uppercase tracking-wider font-semibold border-b border-white/10 bg-black/20">
                             <tr>
-                                <th class="px-6 py-4 text-left">Divisa</th>
-                                <th class="px-6 py-4 text-center compra-col text-[#1e3a8a]">Compra</th>
-                                <th class="px-6 py-4 text-center compra-col text-gray-400 font-normal">Var. 24h</th>
-                                <th class="px-6 py-4 text-center venta-col text-[#1e3a8a] hidden md:table-cell">Venta</th>
-                                <th class="px-6 py-4 text-center venta-col text-gray-400 font-normal hidden md:table-cell">Var. 24h</th>
-                                <th class="px-6 py-4 edit-column hidden"></th>
+                                <th class="px-6 py-5 text-left">Divisa</th>
+                                <th class="px-6 py-5 text-center compra-col text-white">Compra</th>
+                                <th class="px-6 py-5 text-center compra-col text-gray-400 font-normal">Var. 24h</th>
+                                <th class="px-6 py-5 text-center venta-col text-white hidden md:table-cell">Venta</th>
+                                <th class="px-6 py-5 text-center venta-col text-gray-400 font-normal hidden md:table-cell">Var. 24h</th>
+                                <th class="px-6 py-5 edit-column hidden"></th>
                             </tr>
                         </thead>
-                        <tbody id="currency-table-body" class="divide-y divide-gray-100 bg-white">
+                        <tbody id="currency-table-body" class="divide-y divide-white/5">
                             </tbody>
                     </table>
                 </div>
                 
-                <div class="bg-gray-50 px-6 py-4 border-t border-gray-200 flex justify-between items-center">
+                <div class="bg-black/30 px-6 py-4 border-t border-white/10 flex justify-between items-center backdrop-blur-md">
                      <div class="relative">
-                        <button onclick="toggleDropdown('add-currency-dropdown', event)" class="flex items-center text-sm font-bold text-[#1e3a8a] hover:text-blue-700 transition">
-                            <span class="text-lg mr-1">+</span> Agregar Divisa
+                        <button onclick="toggleDropdown('add-currency-dropdown', event)" class="flex items-center text-sm font-bold text-blue-300 hover:text-white transition">
+                            <span class="text-lg mr-2 bg-blue-600 rounded-full w-6 h-6 flex items-center justify-center text-white shadow">+</span> Agregar Divisa
                         </button>
-                        <div id="add-currency-dropdown" class="hidden absolute bottom-full left-0 mb-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 max-h-60 overflow-y-auto"></div>
+                        <div id="add-currency-dropdown" class="hidden absolute bottom-full left-0 mb-2 w-48 bg-white text-gray-800 rounded-lg shadow-xl border border-gray-200 max-h-60 overflow-y-auto"></div>
                      </div>
                      <span id="last-updated2" class="text-xs text-gray-400 italic">Actualizado: --</span>
                 </div>
             </div>
         </section>
 
-        <section class="bg-white py-16 border-t border-gray-100">
+        <section class="bg-white py-20 relative z-20 shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                     <h2 class="text-3xl font-extrabold text-gray-900">Herramientas Rápidas</h2>
+                     <p class="mt-2 text-gray-500">Todo lo que necesitas en un solo lugar</p>
+                </div>
+                
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div class="group p-8 bg-gray-50 rounded-2xl hover:bg-white hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-blue-100 cursor-pointer text-center">
-                        <div class="w-14 h-14 bg-blue-100 text-[#1e3a8a] rounded-full flex items-center justify-center mx-auto mb-6 text-2xl group-hover:scale-110 transition">
+                    <div class="group p-8 bg-gray-50 rounded-3xl hover:bg-white hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-blue-100 cursor-pointer text-center">
+                        <div class="w-16 h-16 bg-blue-100 text-[#1e3a8a] rounded-2xl flex items-center justify-center mx-auto mb-6 text-3xl group-hover:rotate-6 transition duration-300">
                             📊
                         </div>
                         <h3 class="text-xl font-bold text-gray-900 mb-2">Catálogo Completo</h3>
-                        <p class="text-gray-500 text-sm mb-4">Revisa nuestro portafolio de divisas exóticas y tradicionales.</p>
-                        <a href="https://cambiosorion.cl/divisas" target="_blank" class="text-[#1e3a8a] font-semibold text-sm group-hover:underline">Ver catálogo &rarr;</a>
+                        <p class="text-gray-500 text-sm mb-6 leading-relaxed">Accede a nuestra lista completa de divisas exóticas y tradicionales con tasas preferenciales.</p>
+                        <a href="https://cambiosorion.cl/divisas" target="_blank" class="inline-block px-6 py-2 bg-white border border-gray-200 rounded-full text-[#1e3a8a] font-bold text-sm group-hover:bg-[#1e3a8a] group-hover:text-white transition">Ver catálogo</a>
                     </div>
 
-                    <div class="group p-8 bg-gray-50 rounded-2xl hover:bg-white hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-blue-100 cursor-pointer text-center" onclick="document.getElementById('amount1').focus()">
-                        <div class="w-14 h-14 bg-green-100 text-green-700 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl group-hover:scale-110 transition">
+                    <div class="group p-8 bg-gray-50 rounded-3xl hover:bg-white hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-blue-100 cursor-pointer text-center" onclick="document.getElementById('conversor').scrollIntoView({behavior: 'smooth'})">
+                        <div class="w-16 h-16 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center mx-auto mb-6 text-3xl group-hover:rotate-6 transition duration-300">
                             ⚡
                         </div>
                         <h3 class="text-xl font-bold text-gray-900 mb-2">Reserva Online</h3>
-                        <p class="text-gray-500 text-sm mb-4">Congela el precio ahora y retira en sucursal sin filas.</p>
-                        <span class="text-[#1e3a8a] font-semibold text-sm group-hover:underline">Reservar ahora &rarr;</span>
+                        <p class="text-gray-500 text-sm mb-6 leading-relaxed">Asegura el precio que ves en pantalla. Congela la tasa y retira en sucursal cuando quieras.</p>
+                        <span class="inline-block px-6 py-2 bg-white border border-gray-200 rounded-full text-green-600 font-bold text-sm group-hover:bg-green-600 group-hover:text-white transition">Ir a reservar</span>
                     </div>
 
-                    <div class="group p-8 bg-gray-50 rounded-2xl hover:bg-white hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-blue-100 cursor-pointer text-center" onclick="document.getElementById('heroAlertaBtn').click()">
-                        <div class="w-14 h-14 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl group-hover:scale-110 transition">
+                    <div class="group p-8 bg-gray-50 rounded-3xl hover:bg-white hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-blue-100 cursor-pointer text-center" onclick="document.getElementById('heroAlertaBtn').click()">
+                        <div class="w-16 h-16 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-6 text-3xl group-hover:rotate-6 transition duration-300">
                             🔔
                         </div>
                         <h3 class="text-xl font-bold text-gray-900 mb-2">Alertas de Precio</h3>
-                        <p class="text-gray-500 text-sm mb-4">Te avisamos cuando la divisa llegue al precio que buscas.</p>
-                        <span class="text-[#1e3a8a] font-semibold text-sm group-hover:underline">Crear alerta &rarr;</span>
+                        <p class="text-gray-500 text-sm mb-6 leading-relaxed">No pierdas tiempo mirando la pantalla. Te avisamos por correo cuando el precio sea ideal.</p>
+                        <span class="inline-block px-6 py-2 bg-white border border-gray-200 rounded-full text-orange-600 font-bold text-sm group-hover:bg-orange-600 group-hover:text-white transition">Crear alerta</span>
                     </div>
                 </div>
             </div>
         </section>
 
-        <a href="https://wa.me/+56971846048?text=Hola,%20necesito%20consultar%20con%20un%20ejecutivo." 
-        class="fixed bottom-6 right-6 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:scale-110 transition z-[100] flex items-center justify-center group">
-            <img src="https://cambiosorion.cl/orionapp/icons/whatsapp-white.png" alt="WhatsApp" class="w-8 h-8">
-            <span class="max-w-0 overflow-hidden group-hover:max-w-xs group-hover:ml-2 transition-all duration-500 whitespace-nowrap font-bold">¡Contáctanos!</span>
-        </a>
-    </div>
+    </div> <a href="https://wa.me/+56971846048?text=Hola,%20necesito%20consultar%20con%20un%20ejecutivo." 
+    class="fixed bottom-6 right-6 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:scale-110 transition z-[100] flex items-center justify-center group border-2 border-white/20">
+        <img src="https://cambiosorion.cl/orionapp/icons/whatsapp-white.png" alt="WhatsApp" class="w-8 h-8">
+        <span class="max-w-0 overflow-hidden group-hover:max-w-xs group-hover:ml-3 transition-all duration-500 whitespace-nowrap font-bold">¡Hablemos!</span>
+    </a>
 
-    <footer class="bg-gray-900 text-white pt-16 pb-8">
+    <footer class="bg-black text-white pt-16 pb-8 border-t border-gray-900 relative z-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
                 <div class="col-span-1 md:col-span-1">
-                     <img src="/orionapp/assets/LogoOrion-white.svg" alt="Logo Orion" class="h-10 mb-6">
-                     <p class="text-gray-400 text-sm leading-relaxed">
+                     <img src="/orionapp/assets/LogoOrion-white.svg" alt="Logo Orion" class="h-10 mb-6 opacity-90">
+                     <p class="text-gray-500 text-sm leading-relaxed">
                          Expertos en cambio de divisas con la mejor tasa del mercado. Seguridad, rapidez y confianza en cada operación.
                      </p>
                 </div>
                 <div>
-                    <h4 class="text-lg font-bold mb-4">Servicios</h4>
-                    <ul class="space-y-2 text-gray-400 text-sm">
-                        <li><a href="https://cambiosorion.cl/divisas" class="hover:text-white transition">Divisas</a></li>
-                        <li><a href="#conversor" class="hover:text-white transition">Cotizador</a></li>
-                        <li><a href="#alerta-wrapper" class="hover:text-white transition">Alertas</a></li>
+                    <h4 class="text-lg font-bold mb-4 text-gray-200">Servicios</h4>
+                    <ul class="space-y-2 text-gray-500 text-sm">
+                        <li><a href="https://cambiosorion.cl/divisas" class="hover:text-white transition">Catálogo de Divisas</a></li>
+                        <li><a href="#conversor" class="hover:text-white transition">Cotizador Online</a></li>
+                        <li><a href="#alerta-wrapper" class="hover:text-white transition">Sistema de Alertas</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h4 class="text-lg font-bold mb-4">Compañía</h4>
-                    <ul class="space-y-2 text-gray-400 text-sm">
-                        <li><a href="nosotros" class="hover:text-white transition">Nosotros</a></li>
+                    <h4 class="text-lg font-bold mb-4 text-gray-200">Compañía</h4>
+                    <ul class="space-y-2 text-gray-500 text-sm">
+                        <li><a href="nosotros" class="hover:text-white transition">Quiénes Somos</a></li>
                         <li><a href="contacto" class="hover:text-white transition">Ubicación</a></li>
                         <li><a href="faq" class="hover:text-white transition">Preguntas Frecuentes</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h4 class="text-lg font-bold mb-4">Contacto</h4>
-                    <ul class="space-y-3 text-gray-400 text-sm">
+                    <h4 class="text-lg font-bold mb-4 text-gray-200">Contacto</h4>
+                    <ul class="space-y-3 text-gray-500 text-sm">
                         <li class="flex items-start">
-                             <img src="/orionapp/icons/location-white.png" class="w-5 h-5 mr-3 mt-0.5 opacity-70">
-                             <span>Agustinas 1035 Of 13,<br>Santiago Centro</span>
+                             <img src="/orionapp/icons/location-white.png" class="w-5 h-5 mr-3 mt-0.5 opacity-60">
+                             <span>Agustinas 1035 Of 13,<br>Santiago Centro, Chile</span>
                         </li>
                         <li class="flex items-center">
-                            <img src="/orionapp/icons/phone-white.png" class="w-5 h-5 mr-3 opacity-70">
+                            <img src="/orionapp/icons/phone-white.png" class="w-5 h-5 mr-3 opacity-60">
                             +56 9 7184 6048
                         </li>
                         <li class="flex items-center">
-                             <img src="/orionapp/icons/email-white.png" class="w-5 h-5 mr-3 opacity-70">
+                             <img src="/orionapp/icons/email-white.png" class="w-5 h-5 mr-3 opacity-60">
                              contacto@cambiosorion.cl
                         </li>
                     </ul>
                 </div>
             </div>
             
-            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
-                <p class="text-gray-500 text-xs">© 2025 Cambios Orion. Todos los derechos reservados.</p>
+            <div class="border-t border-gray-900 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-600 text-xs">© 2025 Cambios Orion. Todos los derechos reservados.</p>
                 <div class="flex space-x-6 mt-4 md:mt-0">
-                    <a href="https://www.facebook.com/CambiosOrion" target="_blank" class="opacity-50 hover:opacity-100 transition"><img src="/orionapp/icons/facebook-white.png" class="w-5 h-5"></a>
-                    <a href="https://www.instagram.com/CambiosOrion.cl" target="_blank" class="opacity-50 hover:opacity-100 transition"><img src="/orionapp/icons/instagram-white.png" class="w-5 h-5"></a>
+                    <a href="https://www.facebook.com/CambiosOrion" target="_blank" class="opacity-40 hover:opacity-100 transition"><img src="/orionapp/icons/facebook-white.png" class="w-5 h-5"></a>
+                    <a href="https://www.instagram.com/CambiosOrion.cl" target="_blank" class="opacity-40 hover:opacity-100 transition"><img src="/orionapp/icons/instagram-white.png" class="w-5 h-5"></a>
                 </div>
             </div>
         </div>
@@ -450,21 +452,33 @@
     <script src="https://cambiosorion.cl/orionapp/public/scripts/reservas.js"></script>
     <script src="https://cambiosorion.cl/orionapp/public/scripts/alertas.js"></script>
     <script>
-        // Pequeño script para manejar el botón de menú móvil en este nuevo diseño
+        // Script Menú Móvil
         document.getElementById('nav-menu-button').addEventListener('click', function() {
             const menu = document.getElementById('nav-mobile-menu');
             menu.classList.toggle('hidden');
         });
         
-        // Asignar el botón de alerta del Hero para abrir el wrapper
+        // Script Expandir Alertas
         document.getElementById('heroAlertaBtn').addEventListener('click', function(e) {
             e.preventDefault();
             const wrapper = document.getElementById('alerta-wrapper');
              if (wrapper.classList.contains("max-h-0")) {
                 wrapper.classList.remove("max-h-0");
                 wrapper.classList.add("max-h-[1000px]");
-                // Scroll suave hacia la alerta
-                setTimeout(() => wrapper.scrollIntoView({ behavior: 'smooth' }), 300);
+                // Scroll suave
+                setTimeout(() => wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
+            }
+        });
+        
+        // Script para oscurecer el header al hacer scroll (Mejora visual opcional)
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.classList.add('bg-black/80');
+                header.classList.remove('bg-black/20');
+            } else {
+                header.classList.remove('bg-black/80');
+                header.classList.add('bg-black/20');
             }
         });
     </script>

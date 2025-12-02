@@ -1,23 +1,46 @@
-/* index.css Actualizado */
+/* landing.css - Versión Orion Dark/Light */
 
-/* Reseteamos el body para quitar la imagen de fondo oscura */
 body {
-    background: none; /* Quitamos la imagen de fondo */
-    background-color: #f8fafc; /* Color pizarra muy claro (slate-50) */
+    /* Fondo de la constelación fijo */
+    background: url('https://cambiosorion.cl/orionapp/assets/FondoOrion.jpg') no-repeat center center fixed; 
+    background-size: cover;
+    background-color: #0f172a; /* Color de respaldo azul oscuro */
+    color: #333; /* Color de texto por defecto para secciones blancas */
     position: relative;
+    margin: 0;
 }
 
-/* Eliminamos el pseudoelemento oscuro */
+/* Capa oscura superpuesta para mejorar legibilidad del texto blanco sobre las estrellas */
 body::before {
-    display: none;
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4); /* Oscurece un 40% la imagen */
+    z-index: -1;
+    pointer-events: none;
 }
 
-/* Ajuste suave para el scroll */
+/* Degradado final hacia el negro en la parte inferior */
+body::after {
+    content: "";
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 300px;
+    background: linear-gradient(to bottom, transparent, #000000);
+    z-index: -1;
+    pointer-events: none;
+}
+
 html {
     scroll-behavior: smooth;
 }
 
-/* Animación simple para mostrar pasos */
+/* Animaciones */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
@@ -26,49 +49,56 @@ html {
     animation: fadeIn 0.4s ease-out forwards;
 }
 
-/* Estilos específicos para la tabla que el JS genera */
-/* Sobrescribimos estilos anteriores para adaptarlos al fondo blanco */
+/* === ESTILOS DE LA TABLA (PIZARRA) === */
+/* Adaptados para Texto Blanco sobre Fondo Transparente */
+
+/* Filas con fondo semitransparente oscuro */
 #currency-table-body tr {
+    background-color: rgba(255, 255, 255, 0.05); /* Muy sutil */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     transition: background-color 0.2s;
+    color: white; /* Texto blanco */
 }
 
 #currency-table-body tr:hover {
-    background-color: #f1f5f9; /* hover gris claro */
+    background-color: rgba(255, 255, 255, 0.15);
 }
 
-/* La primera fila (generalmente USD) ya no necesita ser azul sólido, 
-   pero si quieres destacarla: */
+/* Primera fila destacada (USD usualmente) */
 #currency-table-body tr.first-row td {
-    background-color: #eff6ff !important; /* azul muy muy claro */
-    color: #1e3a8a !important;
+    background-color: rgba(30, 58, 138, 0.6) !important; /* Azul Orion semitransparente */
+    color: #fff !important;
     font-weight: 700;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Ajustes para inputs del conversor (para quitar flechas de número) */
+/* Inputs numéricos sin flechas */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
 
-/* Estilos del Ticker */
+/* Ticker con máscara de desvanecimiento */
 #ticker {
     mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
 }
 
-/* Estilo para los botones de Compra/Venta activos en el nuevo diseño */
-/* El JS (conversor.js) agrega clases bg-[#1e3a8a]. 
-   Asegúrate de que esas clases existan en output.css o defínelas aquí si Tailwind no las compiló */
-.bg-\[\#1e3a8a\] {
-    background-color: #1e3a8a;
-}
-.text-\[\#1e3a8a\] {
-    color: #1e3a8a;
+/* Clases de utilidad específicas */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Loader Skeleton para la tabla */
+.text-shadow {
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+/* Skeleton Loader adaptado a modo oscuro */
 .skeleton-loader {
-    background-color: #e2e8f0;
+    background-color: rgba(255,255,255,0.1);
     animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 @keyframes pulse {
