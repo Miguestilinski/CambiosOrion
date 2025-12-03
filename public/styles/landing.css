@@ -18,7 +18,7 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.4); /* Oscurece un 40% la imagen */
+    background: rgba(0, 0, 0, 0.5); /* Oscurece un 50% la imagen */
     z-index: -1;
     pointer-events: none;
 }
@@ -49,19 +49,65 @@ html {
     animation: fadeIn 0.4s ease-out forwards;
 }
 
-/* === ESTILOS DE LA TABLA (PIZARRA) === */
-/* Adaptados para Texto Blanco sobre Fondo Transparente */
+/* === AJUSTES DE HEADER === */
+header .header-logo img {
+    height: 3.5rem; /* Aumenta el tamaño del logo */
+    width: auto;
+    transition: height 0.3s;
+}
 
-/* Filas con fondo semitransparente oscuro */
+/* === ESTILOS DE LA TABLA (PIZARRA) === */
 #currency-table-body tr {
-    background-color: rgba(255, 255, 255, 0.05); /* Muy sutil */
+    background-color: rgba(255, 255, 255, 0.05);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     transition: background-color 0.2s;
-    color: white; /* Texto blanco */
+    color: white; 
 }
 
 #currency-table-body tr:hover {
     background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Columna de Variación - IMPORTANTE */
+.variation-up {
+    color: #10b981; /* Verde esmeralda (es-600) para subidas */
+    font-weight: 600;
+    font-size: 0.875rem; /* text-sm */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.variation-down {
+    color: #ef4444; /* Rojo (red-500) para bajadas */
+    font-weight: 600;
+    font-size: 0.875rem; /* text-sm */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.variation-neutral {
+    color: #9ca3af; /* Gris (gray-400) para neutral */
+    font-weight: 400;
+    font-size: 0.875rem; /* text-sm */
+    text-align: center;
+}
+
+/* Ajuste para centrar el contenido de las celdas en el nuevo diseño */
+#currency-table-body td {
+    padding: 1rem 1.5rem;
+    text-align: center;
+    vertical-align: middle;
+}
+
+#currency-table-body td:first-child {
+    text-align: left;
+}
+
+/* Ajuste para el color de los encabezados de columna de variación (antes eran gray-400) */
+#currency-table-body th.font-normal {
+    color: #9ca3af !important; /* Asegurar que el color sea gris claro */
 }
 
 /* Primera fila destacada (USD usualmente) */
@@ -77,6 +123,16 @@ input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
+}
+
+/* === ESTILOS DEL FOOTER === */
+/* Aseguramos que los iconos del footer tengan suficiente visibilidad */
+footer .social-icon {
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+footer .social-icon:hover {
+    opacity: 1;
 }
 
 /* Ticker con máscara de desvanecimiento */
