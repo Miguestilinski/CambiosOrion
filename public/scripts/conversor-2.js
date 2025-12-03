@@ -203,7 +203,7 @@ function updateTradeSwitch() {
     sellDiv.textContent = `Venta: ${formatWithThousandsSeparator(Math.floor(sellPrice))} CLP`;
 
     // Clases base para el estado "Inactivo" (Gris, texto suave)
-    const baseClass = "flex-1 py-3 text-center rounded-xl cursor-pointer text-lg font-bold transition-all duration-300 text-gray-500 hover:text-gray-700";
+    const baseClass = "flex-1 py-3 text-center rounded-xl cursor-pointer md:text-lg text-md font-bold transition-all duration-300 text-gray-500 hover:text-gray-700";
     
     // Clases para el estado "Activo" (Blanco, Sombra, Texto oscuro)
     const activeClass = "bg-white shadow-sm text-gray-900";
