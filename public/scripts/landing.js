@@ -95,10 +95,18 @@ async function fetchIndicators() {
 
         let content = "";
         for (const [nombre, value] of Object.entries(data)) {
-            content += `${nombre}: ${value.valor} CLP   | `;
+            content += `${nombre}: ${value.valor} CLP   |   `;
         }
+        
         const tickerEl = document.getElementById("ticker-content");
-        if(tickerEl) tickerEl.innerHTML = content + content;
+        if(tickerEl) {
+            // Duplicamos contenido para efecto infinito
+            tickerEl.innerHTML = content + content; 
+            
+            // Removemos clase de carga y agregamos clase de animación
+            tickerEl.classList.remove("animate-pulse");
+            tickerEl.classList.add("ticker-loaded");
+        }
     })
     .catch(error => console.error("Error:", error));
 }

@@ -101,13 +101,15 @@
                     </button>
                 </div>
                 
-                <div class="mt-16 bg-black/40 backdrop-blur-md rounded-2xl p-5 border border-white/10 shadow-lg inline-block w-full max-w-xl">
+                <div class="mt-16 bg-black/40 backdrop-blur-md rounded-2xl p-5 border border-white/10 shadow-lg block w-full max-w-xl mx-auto lg:mx-0">
                      <div class="flex justify-between items-center mb-3 text-sm text-blue-200 uppercase font-bold tracking-wider">
                          <span>Indicadores Banco Central</span>
-                         <span id="paridades-date" class="bg-blue-900/50 px-2 py-0.5 rounded">--</span> 
+                         <span id="paridades-date" class="bg-blue-900/50 px-2 py-0.5 rounded text-xs">--</span> 
                      </div>
-                     <div id="ticker" class="text-white text-base font-mono overflow-hidden whitespace-nowrap">
-                        <div id="ticker-content" class="animate-pulse">Cargando indicadores...</div>
+                     <div id="ticker" class="w-full overflow-hidden relative">
+                        <div id="ticker-content" class="text-white text-base font-mono whitespace-nowrap animate-pulse">
+                            Cargando indicadores...
+                        </div>
                     </div>
                 </div>
             </div>
@@ -390,10 +392,12 @@
             </div>
         </section>
 
-    </div> <a href="https://wa.me/+56971846048?text=Hola,%20necesito%20consultar%20con%20un%20ejecutivo." 
-    class="fixed bottom-8 right-8 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:scale-110 transition z-[100] flex items-center justify-center group border-2 border-white/20">
-        <img src="https://cambiosorion.cl/orionapp/icons/whatsapp-white.png" alt="WhatsApp" class="w-14 h-14">
-        <span class="max-w-0 overflow-hidden group-hover:max-w-xs group-hover:ml-3 transition-all duration-500 whitespace-nowrap font-bold text-lg">¡Hablemos!</span>
+    </div>
+    
+    <a href="https://wa.me/+56971846048?text=Hola,%20necesito%20consultar%20con%20un%20ejecutivo." 
+    class="fixed bottom-4 right-4 md:bottom-8 md:right-8 bg-[#25D366] text-white p-3 md:p-4 rounded-full shadow-2xl hover:scale-110 transition z-[100] flex items-center justify-center group border-2 border-white/20">
+        <img src="https://cambiosorion.cl/orionapp/icons/whatsapp-white.png" alt="WhatsApp" class="w-10 h-10 md:w-14 md:h-14">
+        <span class="max-w-0 overflow-hidden group-hover:max-w-xs group-hover:ml-3 transition-all duration-500 whitespace-nowrap font-bold text-base md:text-lg">¡Hablemos!</span>
     </a>
 
     <footer class="bg-black text-white pt-20 pb-10 border-t border-gray-900 relative z-20">

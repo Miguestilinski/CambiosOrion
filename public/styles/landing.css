@@ -7,6 +7,7 @@ body {
     color: #333;
     position: relative;
     margin: 0;
+    overflow-x: hidden;
 }
 
 body::before {
@@ -82,5 +83,29 @@ input[type="number"]::-webkit-outer-spin-button {
 
 /* Ticker Fade Mask */
 #ticker {
-    mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    overflow: hidden; /* Asegura que el texto no se salga */
+    width: 100%;
+}
+
+/* Animación de desplazamiento infinito */
+@keyframes ticker-scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); } /* Se mueve la mitad (asumiendo contenido duplicado) */
+}
+
+.animate-ticker {
+    display: inline-block;
+    white-space: nowrap;
+    padding-left: 100%; /* Empieza fuera de pantalla */
+    animation: ticker-scroll 40s linear infinite; /* Ajusta los segundos para velocidad */
+}
+
+/* Cuando ya cargó el JS y duplicamos contenido, usamos esta clase */
+.ticker-loaded {
+    display: inline-block;
+    white-space: nowrap;
+    padding-left: 0;
+    animation: ticker-scroll 60s linear infinite;
 }
