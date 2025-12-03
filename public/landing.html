@@ -399,18 +399,18 @@
 
             <div class="bg-white/5 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl">
                 
-                <div class="bg-black/20 px-6 py-4 flex justify-between items-center flex-wrap gap-4 border-b border-white/10 rounded-t-3xl">
+                <div class="bg-black/20 px-4 md:px-6 py-4 flex justify-between items-center flex-wrap gap-4 border-b border-white/10 rounded-t-3xl">
                     
                     <div id="mobile-toggle" class="flex items-center md:hidden text-white">
-                        <span class="mr-3 text-sm font-bold uppercase tracking-wider">Compra</span>
+                        <span class="mr-3 text-xs font-bold uppercase tracking-wider">Compra</span>
                         <label class="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" id="toggle-switch" class="sr-only peer" onchange="toggleTableColumns()">
-                            <div class="w-14 h-7 bg-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-blue-600"></div>
+                            <div class="w-12 h-6 bg-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                         </label>
-                        <span class="ml-3 text-sm font-bold uppercase tracking-wider">Venta</span>
+                        <span class="ml-3 text-xs font-bold uppercase tracking-wider">Venta</span>
                     </div>
 
-                    <button onclick="toggleEditMode()" class="text-blue-200 hover:text-white px-5 py-2 rounded-xl text-sm font-bold transition flex items-center border border-blue-200/30 hover:bg-white/10 ml-auto uppercase tracking-wide">
+                    <button onclick="toggleEditMode()" class="text-blue-200 hover:text-white px-4 py-2 rounded-xl text-xs md:text-sm font-bold transition flex items-center border border-blue-200/30 hover:bg-white/10 ml-auto uppercase tracking-wide">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                         Editar
                     </button>
@@ -418,30 +418,30 @@
 
                 <div class="overflow-x-auto">
                     <table class="w-full">
-                        <thead class="bg-black/20 text-blue-200 text-sm uppercase tracking-widest font-bold border-b border-white/10">
+                        <thead class="bg-black/20 text-blue-200 text-[10px] md:text-xs uppercase tracking-widest font-bold border-b border-white/10">
                             <tr>
-                                <th class="px-6 py-5 text-left w-1/4">Divisa</th>
-                                <th class="px-6 py-5 text-center w-1/4 compra-col text-white">Compra</th>
-                                <th class="px-6 py-5 text-center w-1/4 compra-col text-gray-400 font-bold opacity-80">Var. 24h</th>
-                                <th class="px-6 py-5 text-center w-1/4 venta-col text-white hidden md:table-cell">Venta</th>
-                                <th class="px-6 py-5 text-center w-1/4 venta-col text-gray-400 font-bold hidden md:table-cell opacity-80">Var. 24h</th>
-                                <th class="px-2 py-5 edit-column hidden w-10"></th>
+                                <th class="px-4 py-4 text-left">Divisa</th>
+                                <th class="px-4 py-4 text-center compra-col text-white">Compra</th>
+                                <th class="px-4 py-4 text-center compra-col text-gray-400 font-bold opacity-80">Var. 24h</th>
+                                <th class="px-4 py-4 text-center venta-col text-white hidden md:table-cell">Venta</th>
+                                <th class="px-4 py-4 text-center venta-col text-gray-400 font-bold hidden md:table-cell opacity-80">Var. 24h</th>
+                                <th class="px-2 py-4 edit-column hidden w-8"></th>
                             </tr>
                         </thead>
-                        <tbody id="currency-table-body" class="divide-y divide-white/5 text-lg">
+                        <tbody id="currency-table-body" class="divide-y divide-white/5 text-sm md:text-base">
                             </tbody>
                     </table>
                 </div>
                 
-                <div class="bg-black/30 px-6 py-4 border-t border-white/10 flex justify-between items-center backdrop-blur-md rounded-b-3xl">
+                <div class="bg-black/30 px-4 md:px-6 py-4 border-t border-white/10 flex justify-between items-center backdrop-blur-md rounded-b-3xl">
                     <div class="relative">
-                        <button id="btn-add-divisa" onclick="toggleTableDropdown(event)" class="flex items-center text-sm font-bold text-blue-300 hover:text-white transition uppercase tracking-wider">
+                        <button id="btn-add-divisa" onclick="toggleTableDropdown(event)" class="flex items-center text-xs md:text-sm font-bold text-blue-300 hover:text-white transition uppercase tracking-wider">
                             <span class="text-lg mr-2 bg-blue-600 rounded-full w-6 h-6 flex items-center justify-center text-white shadow">+</span> Agregar Divisa
                         </button>
                         
-                        <div id="add-currency-dropdown" class="hidden absolute bg-white text-gray-900 rounded-xl shadow-2xl border border-gray-200 max-h-72 overflow-y-auto z-[9999]"></div>
+                        <div id="add-currency-dropdown" class="hidden absolute bg-white text-gray-900 rounded-xl shadow-2xl border border-gray-200 max-h-72 overflow-y-auto z-[9999] w-56"></div>
                     </div>
-                    <span id="last-updated2" class="text-sm text-gray-400 italic">Actualizado: --</span>
+                    <span id="last-updated2" class="text-[10px] md:text-xs text-gray-400 italic">Actualizado: --</span>
                 </div>
             </div>
         </section>

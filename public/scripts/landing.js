@@ -144,36 +144,33 @@ function calculateVariationPercentage(currentRate, closingRate) {
     return 0;
 }
 
-// Genera el HTML del "Badge" o "Pill" de variación usando clases Tailwind
+// === BADGES DE VARIACIÓN (Tamaños reducidos) ===
 function getVariationBadge(variation) {
     let classes = "";
     let iconSVG = "";
     let sign = "";
 
-    // SVG Icons
-    const arrowUp = `<svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>`;
-    const arrowDown = `<svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>`;
-    const dash = `<svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M20 12H4"></path></svg>`;
+    const arrowUp = `<svg class="w-2.5 h-2.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>`;
+    const arrowDown = `<svg class="w-2.5 h-2.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>`;
+    const dash = `<svg class="w-2.5 h-2.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M20 12H4"></path></svg>`;
 
     if (variation > 0) {
-        // Positivo: Verde
         classes = "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
         iconSVG = arrowUp;
         sign = "+";
     } else if (variation < 0) {
-        // Negativo: Rojo
         classes = "bg-rose-500/20 text-rose-400 border border-rose-500/30";
         iconSVG = arrowDown;
-        sign = ""; // El número ya trae el negativo
+        sign = ""; 
     } else {
-        // Neutro: Gris
         classes = "bg-gray-500/20 text-gray-400 border border-gray-500/30";
         iconSVG = dash;
         sign = "";
     }
 
+    // Texto reducido a text-xs (antes era text-md)
     return `
-        <div class="inline-flex items-center justify-center px-2.5 py-1 rounded-full text-md font-bold tracking-wide ${classes}">
+        <div class="inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-bold tracking-wide ${classes}">
             ${sign}${variation.toFixed(2)}%
             ${iconSVG}
         </div>
@@ -323,6 +320,7 @@ function updateAddCurrencyDropdown() {
     });
 }
 
+// === GENERACIÓN DE TABLA (Tamaños reducidos) ===
 function fillCurrencyTable() {
     const tableBody = document.getElementById("currency-table-body");
     if (!tableBody) return;
@@ -333,55 +331,51 @@ function fillCurrencyTable() {
         if (exchangeRates[currency]) {
             const row = document.createElement("tr");
 
-            // Datos
             const compra = exchangeRates[currency].compra;
             const venta = exchangeRates[currency].venta;
             
-            // Variaciones
             const closingCompra = closingRates[currency]?.compra || 0;
             const closingVenta = closingRates[currency]?.venta || 0;
             const varCompra = calculateVariationPercentage(compra, closingCompra);
             const varVenta = calculateVariationPercentage(venta, closingVenta);
 
-            // Obtener Badges
             const badgeCompra = (currency === 'CLP') ? '' : getVariationBadge(varCompra);
             const badgeVenta = (currency === 'CLP') ? '' : getVariationBadge(varVenta);
 
-            // Determinar clases para hover y fondo
             const baseClasses = "hover:bg-white/10 transition duration-200";
-            // Si es la primera fila (CLP normalmente), le damos un tinte azul muy sutil
             const rowClass = index === 0 ? "bg-blue-900/20" : "";
             
             row.className = `${baseClasses} ${rowClass} currency-row`;
 
+            // Aquí se han reducido los paddings (px-4 py-3) y los tamaños de texto (text-base / text-sm)
             row.innerHTML = `
-                <td class="px-6 py-4 whitespace-nowrap">
+                <td class="px-4 md:px-6 py-3 whitespace-nowrap">
                     <div class="flex items-center">
-                        <img class="md:h-10 md:w-10 h-8 sm:w-8 rounded-full shadow-md object-cover mr-4 ring-2 ring-white/10" src="${exchangeRates[currency].icono}" alt="${currency}">
-                        <div class="text-lg font-bold text-white tracking-wide">${currency}</div>
+                        <img class="w-6 h-6 md:w-8 md:h-8 rounded-full shadow-md object-cover mr-3 ring-2 ring-white/10" src="${exchangeRates[currency].icono}" alt="${currency}">
+                        <div class="text-base md:text-lg font-bold text-white tracking-wide">${currency}</div>
                     </div>
                 </td>
                 
-                <td class="px-6 py-4 text-center whitespace-nowrap compra-column">
-                    <div class="text-lg font-bold text-white">${compra ? Math.floor(compra) : '-'} <span class="text-sm md:text-md text-blue-300 ml-1">CLP</span></div>
+                <td class="px-4 md:px-6 py-3 text-center whitespace-nowrap compra-column">
+                    <div class="text-base md:text-lg font-bold text-white">${compra ? Math.floor(compra) : '-'} <span class="text-xs text-blue-300 ml-0.5">CLP</span></div>
                 </td>
 
-                <td class="px-6 py-4 text-center whitespace-nowrap compra-column">
+                <td class="px-4 md:px-6 py-3 text-center whitespace-nowrap compra-column">
                     ${badgeCompra}
                 </td>
 
-                <td class="px-6 py-4 text-center whitespace-nowrap venta-column hidden">
-                    <div class="text-lg font-bold text-white">${venta ? Math.floor(venta) : '-'} <span class="text-sm md:text-md text-blue-300 ml-1">CLP</span></div>
+                <td class="px-4 md:px-6 py-3 text-center whitespace-nowrap venta-column hidden">
+                    <div class="text-base md:text-lg font-bold text-white">${venta ? Math.floor(venta) : '-'} <span class="text-xs text-blue-300 ml-0.5">CLP</span></div>
                 </td>
 
-                <td class="px-6 py-4 text-center whitespace-nowrap venta-column hidden">
+                <td class="px-4 md:px-6 py-3 text-center whitespace-nowrap venta-column hidden">
                     ${badgeVenta}
                 </td>
 
-                <td class="px-2 py-4 text-center whitespace-nowrap edit-column ${isEditMode ? '' : 'hidden'}">
+                <td class="px-2 py-3 text-center whitespace-nowrap edit-column ${isEditMode ? '' : 'hidden'}">
                     ${currency !== 'CLP' ? `
-                    <button onclick="deleteCurrency('${currency}')" class="text-red-400 hover:text-red-300 hover:bg-red-900/30 p-2 rounded-full transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <button onclick="deleteCurrency('${currency}')" class="text-red-400 hover:text-red-300 hover:bg-red-900/30 p-1.5 rounded-full transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
                     </button>
