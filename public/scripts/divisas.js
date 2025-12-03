@@ -1,4 +1,5 @@
 let exchangeRates = {};
+// Lista completa de monedas a mostrar
 let displayedCurrencies = [
     "USD", "EUR", "ARS", "BRL", "PEN", "COP",
     "UYU", "BOB", "CAD", "GBP", "JPY", "CNY",
@@ -8,103 +9,60 @@ let displayedCurrencies = [
 
 function initializePage() {
     initializeSSE();
-    setActiveLink('#nav-menu');
-    setActiveLink('#session-menu');
     showSkeletonLoader();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     initializePage();
-
-    const navMenuButton = document.getElementById('nav-menu-button');
-    const sessionMenuButton = document.getElementById('session-menu-button');
-    const navMobileMenu = document.getElementById('nav-mobile-menu');
-    const sessionMobileMenu = document.getElementById('session-mobile-menu');
-
-    if (navMenuButton && sessionMenuButton && navMobileMenu && sessionMobileMenu) {
-        navMenuButton.addEventListener('click', (event) => {
-            toggleMenu(navMobileMenu);
-            event.stopPropagation();
-        });
-
-        sessionMenuButton.addEventListener('click', (event) => {
-            toggleMenu(sessionMobileMenu);
-            event.stopPropagation();
-        });
-
-        document.addEventListener('click', () => {
-            closeMenu(navMobileMenu);
-            closeMenu(sessionMobileMenu);
-        });
-    }
+    // La lógica de menú móvil está ahora en el HTML inline o header.js, 
+    // pero mantenemos esto limpio por si acaso.
 });
 
-// Función para mostrar el Skeleton Loader
+// Skeleton Loader Moderno (Dark Mode)
 function showSkeletonLoader() {
     const tableBody = document.getElementById("currency-table-body");
-
     if (!tableBody) return;
 
-    // Crear 5 filas como el diseño de la tabla con animación
-    const skeletonRows = Array.from({ length: 5 }).map(() => `
-        <tr class="skeleton-row">
-            <td class="px-4 py-2">&nbsp;</td>
-            <td class="px-4 py-2">&nbsp;</td>
-            <td class="px-4 py-2">&nbsp;</td>
+    // Crear filas con animación de pulso y fondo semitransparente
+    const skeletonRows = Array.from({ length: 8 }).map(() => `
+        <tr class="animate-pulse border-b border-white/5">
+            <td class="px-6 py-4">
+                <div class="flex items-center space-x-3">
+                    <div class="rounded-full bg-white/10 h-8 w-8"></div>
+                    <div class="h-4 bg-white/10 rounded w-24"></div>
+                </div>
+            </td>
+            <td class="px-6 py-4 text-center">
+                <div class="h-4 bg-white/10 rounded w-16 mx-auto"></div>
+            </td>
+            <td class="px-6 py-4 text-center">
+                <div class="h-4 bg-white/10 rounded w-16 mx-auto"></div>
+            </td>
         </tr>
     `).join('');
 
     tableBody.innerHTML = skeletonRows;
 }
 
-// Función para ocultar el Skeleton Loader y mostrar la tabla
 function removeSkeletonLoader() {
     const tableBody = document.getElementById("currency-table-body");
-
-    if (!tableBody) {
-        console.error("Error: 'currency-table-body' no se encuentra en el DOM.");
-        return;
-    }
-
-    // Limpiar el Skeleton Loader
+    if (!tableBody) return;
     tableBody.innerHTML = '';
     fillCurrencyTable();
-}
-
-// Función para alternar visibilidad del menú
-function toggleMenu(menuToOpen, menuToClose) {
-    if (menuToClose) closeMenu(menuToClose);
-
-    if (menuToOpen.classList.contains('hidden')) {
-        menuToOpen.classList.remove('hidden');
-    } else {
-        menuToOpen.classList.add('hidden');
-    }
-}
-
-function closeMenu(menu) {
-    if (!menu.classList.contains('hidden')) {
-        menu.classList.add('hidden');
-    }
-}
-
-// Marcar la opción activa en el menú
-function setActiveLink(menuId) {
-    const links = document.querySelectorAll(`${menuId} a`);
-    const currentPath = window.location.pathname;
-    links.forEach(link => {
-        if (link.getAttribute('href') === currentPath) {
-            link.classList.add('selected');
-        } else {
-            link.classList.remove('selected');
-        }
-    });
 }
 
 function removeTrailingZeros(value) {
     if (value === null || value === undefined) return '';
     const floatValue = parseFloat(value);
-    return floatValue.toString();
+    return floatValue.toString(); // Retorna string limpio
+}
+
+// Función auxiliar para formatear moneda (miles con punto)
+function formatCurrency(value) {
+    if (!value) return '-';
+    // Convertir a float y luego formatear
+    const num = parseFloat(value);
+    return num.toLocaleString('es-CL');
 }
 
 let eventSource;
@@ -114,7 +72,7 @@ function initializeSSE() {
     eventSource = new EventSource('https://cambiosorion.cl/api/stream/stream_divisas.php');
 
     eventSource.onopen = () => {
-        console.log('Conexión SSE establecida correctamente.');
+        console.log('Conexión SSE establecida.');
         clearTimeout(retryTimeout);
     };
 
@@ -122,44 +80,32 @@ function initializeSSE() {
         try {
             const data = JSON.parse(event.data);
 
-            // Capturar la fecha de última actualización
             if (data.length && data[0].fecha_actualizacion) {
                 updateLastUpdatedTimestamp(data[0].fecha_actualizacion);
             }
 
-            // Procesar datos de las divisas
             if (Array.isArray(data)) {
                 exchangeRates = {};
 
                 data.forEach(currency => {
-                    if (
-                        currency.nombre &&
-                        currency.compra &&
-                        currency.venta &&
-                        (currency.icono_circular || currency.icono_cuadrado)
-                    ) {
+                    if (currency.nombre && currency.compra && currency.venta) {
                         exchangeRates[currency.nombre] = {
                             compra: removeTrailingZeros(currency.compra),
                             venta: removeTrailingZeros(currency.venta),
                             icono: currency.icono_circular || currency.icono_cuadrado,
                         };
-                    } else {
-                        console.warn('Elemento inválido en los datos:', currency);
                     }
                 });
-
                 removeSkeletonLoader();
-            } else {
-                console.error('Formato de datos inesperado:', data);
             }
         } catch (error) {
-            console.error('Error procesando los datos SSE:', error);
+            console.error('Error procesando SSE:', error);
         }
     };
 
     eventSource.onerror = (error) => {
-        console.error('Error con la conexión SSE:', error);
-        eventSource.close(); // Cerrar la conexión si algo sale mal
+        console.error('Error SSE:', error);
+        eventSource.close();
         retryTimeout = setTimeout(() => {
             initializeSSE();
         }, 5000);
@@ -168,45 +114,61 @@ function initializeSSE() {
 
 function fillCurrencyTable() {
     const tableBody = document.getElementById("currency-table-body");
-    if (!tableBody) {
-        console.error("Error: 'currency-table-body' no se encuentra en el DOM.");
-        return;
-    }
+    if (!tableBody) return;
 
     tableBody.innerHTML = '';
+    
     displayedCurrencies.forEach((currency) => {
         if (exchangeRates[currency]) {
             const row = document.createElement("tr");
-            row.classList.add("currency-row");
+            
+            // Estilos de fila: hover suave, transición, borde inferior sutil
+            row.className = "hover:bg-white/10 transition duration-200 group border-b border-white/5 last:border-0";
+            
             const currencyIcon = exchangeRates[currency].icono;
-            const currencyName = currency;
+            const compraFmt = formatCurrency(exchangeRates[currency].compra);
+            const ventaFmt = formatCurrency(exchangeRates[currency].venta);
+
             row.innerHTML = `
-                <td class="px-4 py-2 flex items-center justify-start space-x-2 sm:w-auto w-full">
-                    <img src="${currencyIcon}" alt="${currencyName}" class="w-6 h-6 mr-2"> ${currencyName}
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                        <img src="${currencyIcon}" alt="${currency}" class="w-8 h-8 mr-3 rounded-full shadow-md object-cover ring-2 ring-white/10 group-hover:scale-110 transition-transform"> 
+                        <span class="font-bold text-white tracking-wide">${currency}</span>
+                    </div>
                 </td>
-                <td class="px-4 py-2">${exchangeRates[currency].compra} CLP</td>
-                <td class="px-4 py-2">${exchangeRates[currency].venta} CLP</td>
+                <td class="px-6 py-4 text-center whitespace-nowrap">
+                    <div class="text-white font-semibold text-lg">${compraFmt} <span class="text-xs text-blue-300 ml-1">CLP</span></div>
+                </td>
+                <td class="px-6 py-4 text-center whitespace-nowrap">
+                    <div class="text-white font-semibold text-lg">${ventaFmt} <span class="text-xs text-blue-300 ml-1">CLP</span></div>
+                </td>
             `;
             tableBody.appendChild(row);
-        } else {
-            console.log(`No se encontraron datos para la divisa: ${currency}`);
         }
     });
 }
 
+// Formato fecha: hh:mm dd/mm/yyyy
 function updateLastUpdatedTimestamp(fecha) {
     const lastUpdatedElement = document.getElementById("last-updated");
     if (lastUpdatedElement) {
-        const dateObject = new Date(fecha);
-        const formattedDate = dateObject.toLocaleString('es-CL', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
-        });
-        lastUpdatedElement.textContent = `Última actualización: ${formattedDate}`;
+        const dateObj = new Date(fecha);
+        
+        const pad = (n) => n.toString().padStart(2, '0');
+        const day = pad(dateObj.getDate());
+        const month = pad(dateObj.getMonth() + 1);
+        const year = dateObj.getFullYear();
+        const hour = pad(dateObj.getHours());
+        const minute = pad(dateObj.getMinutes());
+        
+        const dateStr = `${hour}:${minute} ${day}/${month}/${year}`;
+        
+        // Mantenemos el ícono SVG dentro del HTML, solo cambiamos texto si es necesario o concatenamos
+        // Como el HTML ya tiene el icono, podemos actualizar solo el textNode si quisieramos ser muy precisos, 
+        // pero innerHTML es más fácil:
+        lastUpdatedElement.innerHTML = `
+            <svg class="w-3 h-3 mr-1 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Actualizado: ${dateStr}
+        `;
     }
 }
-
