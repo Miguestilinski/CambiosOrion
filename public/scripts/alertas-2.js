@@ -177,9 +177,6 @@ function showError(msg) {
     }
 }
 
-// ==========================================
-// SOLUCIÓN AL DROPDOWN CORTADO (PORTAL)
-// ==========================================
 function showAlertaDropdown() {
     const dropdown = document.getElementById("alerta-divisa-dropdown");
     const button = document.getElementById("alerta-divisa-button");
