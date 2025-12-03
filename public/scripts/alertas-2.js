@@ -3,7 +3,7 @@ let alertaData = {};
 
 // Referencias DOM
 const alertaBtn = document.getElementById("alertaBtn");
-const alertaSlideBtn = document.getElementById("alertaSlideBtn"); // Por si existe en otro lado
+const alertaSlideBtn = document.getElementById("alertaSlideBtn");
 const alertaWrapper = document.getElementById("alerta-wrapper");
 const prevBtn = document.getElementById("alerta-prev");
 const nextBtn = document.getElementById("alerta-next");
@@ -55,7 +55,6 @@ const condicionLabels = {
 function updateAlertaStepper() {
   if(!errorText) return;
   
-  // Limpiar errores
   errorText.classList.add("hidden");
   const valorInput = document.getElementById("alerta-valor");
   if(valorInput) valorInput.classList.remove("ring-2", "ring-red-500");
@@ -66,43 +65,29 @@ function updateAlertaStepper() {
     const text = document.getElementById(`alerta-text-${i}`);
 
     if (i === alertaStep) {
-      // Activo
       stepContent.classList.remove("hidden");
-      
-      // Estilo Badge (Azul)
       badge.classList.remove("bg-gray-200", "text-gray-500");
       badge.classList.add("bg-[#1e3a8a]", "text-white");
-      
-      // Estilo Texto (Negrita Azul)
       text.classList.add("text-[#1e3a8a]", "font-bold");
       text.classList.remove("text-gray-500");
-
     } else {
-      // Inactivo
       stepContent.classList.add("hidden");
-      
-      // Estilo Badge (Gris)
       badge.classList.remove("bg-[#1e3a8a]", "text-white");
       badge.classList.add("bg-gray-200", "text-gray-500");
-      
-      // Estilo Texto (Gris)
       text.classList.remove("text-[#1e3a8a]", "font-bold");
       text.classList.add("text-gray-500");
     }
   }
 
-  // Visibilidad Botones
   prevBtn.classList.toggle("hidden", alertaStep === 1);
   nextBtn.classList.toggle("hidden", alertaStep === 1 || alertaStep === 3);
   guardarBtn.classList.toggle("hidden", alertaStep !== 3);
 
-  // Capturar datos en el paso 3
   if (alertaStep === 3) {
     alertaData.condicion = document.getElementById("alerta-condicion").value;
     alertaData.valor = parseFloat(document.getElementById("alerta-valor").value);
   }
 
-  // Generar Resúmenes
   updateSummaries();
 }
 
@@ -159,7 +144,6 @@ function nextAlertaStep() {
       return;
     }
 
-    // Validaciones lógicas
     if (condicion === "alcanza" && valor === precioRef) {
         showError("❌ El valor objetivo debe ser distinto al precio actual.");
         return;
@@ -193,35 +177,48 @@ function showError(msg) {
     }
 }
 
-// Dropdown Logic (Tailwind Style)
+// ==========================================
+// SOLUCIÓN AL DROPDOWN CORTADO (PORTAL)
+// ==========================================
 function showAlertaDropdown() {
     const dropdown = document.getElementById("alerta-divisa-dropdown");
     const button = document.getElementById("alerta-divisa-button");
     
-    // Toggle
+    // 1. Mover el dropdown al <body> para que no lo corte el overflow-hidden del contenedor
+    if (dropdown.parentElement !== document.body) {
+        document.body.appendChild(dropdown);
+    }
+
     if (dropdown.classList.contains("hidden")) {
+        // 2. Calcular posición exacta del botón
+        const rect = button.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+
+        // 3. Aplicar estilos fijos para que flote encima de todo
+        dropdown.style.position = 'absolute';
+        dropdown.style.top = `${rect.bottom + scrollTop + 8}px`; // 8px de margen
+        dropdown.style.left = `${rect.left + scrollLeft}px`;
+        dropdown.style.width = `${rect.width}px`; // Mismo ancho que el botón
+        dropdown.style.zIndex = '9999'; // Z-index máximo para estar sobre el footer
+
         dropdown.classList.remove("hidden");
-        
-        // Si el dropdown es hijo del botón o contenedor relativo, 
-        // Tailwind 'absolute top-full left-0' ya lo posiciona bien.
-        // Solo necesitamos asegurar z-index (ya tiene z-[60]).
-        
     } else {
         dropdown.classList.add("hidden");
     }
 
-    // Cerrar al click fuera
+    // 4. Cerrar al hacer clic fuera
     const closeFn = function(e) {
         if (!dropdown.contains(e.target) && !button.contains(e.target)) {
             dropdown.classList.add("hidden");
             document.removeEventListener("click", closeFn);
         }
     };
-    document.addEventListener("click", closeFn);
+    // Usamos setTimeout para evitar que el click actual cierre inmediatamente el menú
+    setTimeout(() => document.addEventListener("click", closeFn), 0);
 }
 
 function selectAlertaCurrency(nombre, icono) {
-    // UI Update
     document.getElementById("alerta-currency-text").textContent = nombre;
     const iconImg = document.getElementById("alerta-icon");
     iconImg.src = icono;
@@ -252,11 +249,9 @@ function loadAlertaCurrenciesFromArray() {
         li.addEventListener("click", () => {
             selectAlertaCurrency(nombre, divisa.icono);
             
-            // Guardar datos
             alertaData.divisa = nombre;
             alertaData.icono = divisa.icono;
 
-            // Mostrar opciones Compra/Venta
             preciosCard.innerHTML = `
                 <div class="grid grid-cols-2 gap-4 animate-fadeIn">
                     <div class="cursor-pointer bg-white border-2 border-blue-100 hover:border-[#1e3a8a] hover:bg-blue-50 rounded-xl p-4 text-center transition shadow-sm group"
@@ -281,14 +276,12 @@ function loadAlertaCurrenciesFromArray() {
     });
 }
 
-// Helper para el click en las cards de precio
 window.setPrecioRef = function(tipo, valor) {
     alertaData.tipoPrecio = tipo;
     alertaData.precioRef = valor;
     nextAlertaStep();
 };
 
-// UI Condición
 const condicionSelect = document.getElementById("alerta-condicion");
 const helpText = document.getElementById("alerta-condicion-help");
 const condicionConfig = {
@@ -302,11 +295,9 @@ if(condicionSelect) {
         const val = condicionSelect.value;
         if(helpText) helpText.textContent = condicionConfig[val] || "";
     });
-    // Init default text
     if(helpText) helpText.textContent = condicionConfig[condicionSelect.value];
 }
 
-// Guardar
 if(guardarBtn) {
     guardarBtn.addEventListener("click", async () => {
         alertaData.nombre = document.getElementById("alerta-nombre").value.trim();
@@ -330,7 +321,7 @@ if(guardarBtn) {
             });
             
             const raw = await response.text();
-            let result = JSON.parse(raw); // Asumiendo respuesta correcta JSON
+            let result = JSON.parse(raw);
 
             if (result.success) {
               statusText.textContent = "✅ ¡Alerta creada con éxito!";
@@ -346,10 +337,8 @@ if(guardarBtn) {
     });
 }
 
-// Init Check
 updateAlertaStepper();
 
-// Esperar carga de divisas (hooking window.onCurrenciesLoaded o intervalo)
 const checkRatesAlertas = setInterval(() => {
     if (window.exchangeRates && Object.keys(window.exchangeRates).length > 0) {
         clearInterval(checkRatesAlertas);
