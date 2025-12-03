@@ -2305,6 +2305,10 @@ input:checked + .toggle-bg {
   background-color: rgb(17 24 39 / 0.5);
 }
 
+.bg-gray-900\/60 {
+  background-color: rgb(17 24 39 / 0.6);
+}
+
 .bg-green-100 {
   --tw-bg-opacity: 1;
   background-color: rgb(222 247 236 / var(--tw-bg-opacity, 1));
@@ -2563,10 +2567,6 @@ input:checked + .toggle-bg {
 
 .pt-20 {
   padding-top: 5rem;
-}
-
-.pt-32 {
-  padding-top: 8rem;
 }
 
 .pt-4 {
