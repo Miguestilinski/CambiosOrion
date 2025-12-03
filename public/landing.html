@@ -24,7 +24,9 @@
 
     <header class="fixed w-full z-50 transition-all duration-300 bg-black/30 backdrop-blur-md border-b border-white/10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-            <div class="flex justify-between items-center h-20"> <div class="flex-shrink-0 flex items-center header-logo">
+            <div class="flex justify-between items-center h-24"> 
+                
+                <div class="flex-shrink-0 flex items-center header-logo">
                     <a href="https://cambiosorion.cl/">
                         <img src="/orionapp/assets/LogoOrion-white.svg" alt="Logo Cambios Orion" class="h-14 md:h-16 w-auto drop-shadow-lg">
                     </a>
@@ -59,9 +61,12 @@
                     </div>
                 </div>
 
-                <div class="flex items-center md:hidden">
+                <div class="flex items-center md:hidden gap-4">
+                    <button id="session-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-white/20 focus:outline-none">
+                        <img src="/orionapp/icons/profile-white.png" class="h-8 w-8" alt="Sesión">
+                    </button>
                     <button id="nav-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-white/20 focus:outline-none">
-                        <img src="/orionapp/icons/menu-white.svg" class="h-9 w-9" alt="Menu">
+                        <img src="/orionapp/icons/menu-white.svg" class="h-9 w-9" alt="Menú">
                     </button>
                 </div>
             </div>
@@ -72,10 +77,21 @@
                 <a href="index" class="block px-3 py-3 rounded-md text-xl font-bold text-blue-400 bg-white/5">Inicio</a>
                 <a href="nosotros" class="block px-3 py-3 rounded-md text-xl font-medium hover:bg-white/10">Nosotros</a>
                 <a href="contacto" class="block px-3 py-3 rounded-md text-xl font-medium hover:bg-white/10">Contacto</a>
-                <div class="border-t border-gray-700 mt-6 pt-6 space-y-4">
-                     <a href="#login" class="block px-3 py-2 text-xl font-medium hover:text-blue-300">Iniciar Sesión</a>
-                     <a href="#registro" class="block w-full text-center px-3 py-3 rounded-lg bg-blue-600 text-xl font-bold text-white">Registrarse</a>
+            </div>
+        </div>
+
+        <div id="session-mobile-menu" class="hidden md:hidden bg-[#0f172a] border-t border-gray-700 absolute w-full z-40 shadow-xl">
+            <div id="guest-actions-mobile" class="px-6 pt-6 pb-8 space-y-4">
+                 <a href="#login" class="block px-3 py-2 text-xl font-medium text-white hover:text-blue-300">Iniciar Sesión</a>
+                 <a href="#registro" class="block w-full text-center px-3 py-3 rounded-lg bg-blue-600 text-xl font-bold text-white">Registrarse</a>
+            </div>
+            <div id="user-actions-mobile" class="hidden px-6 pt-6 pb-8 space-y-4 text-white">
+                <div class="px-3 py-2 border-b border-gray-600 mb-2">
+                    <div id="user-name" class="font-bold text-lg">Usuario</div>
+                    <div id="user-email" class="text-sm text-gray-400">correo@ejemplo.com</div>
                 </div>
+                <a href="https://clientes.cambiosorion.cl/" class="block px-3 py-2 text-xl hover:bg-white/10">Mi perfil</a>
+                <a href="#" id="logout-button-mobile" class="block px-3 py-2 text-xl text-red-400 font-bold hover:bg-white/10">Cerrar sesión</a>
             </div>
         </div>
     </header>
@@ -462,11 +478,39 @@
     <script src="https://cambiosorion.cl/orionapp/public/scripts/reservas.js"></script>
     <script src="https://cambiosorion.cl/orionapp/public/scripts/alertas.js"></script>
     <script>
-        document.getElementById('nav-menu-button').addEventListener('click', function() {
-            const menu = document.getElementById('nav-mobile-menu');
-            menu.classList.toggle('hidden');
+        // Lógica para el Header Móvil (Doble menú)
+        const navBtn = document.getElementById('nav-menu-button');
+        const sessionBtn = document.getElementById('session-menu-button');
+        const navMenu = document.getElementById('nav-mobile-menu');
+        const sessionMenu = document.getElementById('session-mobile-menu');
+
+        // Toggle Menú Navegación
+        navBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            navMenu.classList.toggle('hidden');
+            // Si abro navegación, cierro sesión
+            sessionMenu.classList.add('hidden');
+        });
+
+        // Toggle Menú Sesión
+        sessionBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            sessionMenu.classList.toggle('hidden');
+            // Si abro sesión, cierro navegación
+            navMenu.classList.add('hidden');
+        });
+
+        // Cerrar menús al hacer click fuera
+        document.addEventListener('click', function(e) {
+            if (!navMenu.contains(e.target) && !navBtn.contains(e.target)) {
+                navMenu.classList.add('hidden');
+            }
+            if (!sessionMenu.contains(e.target) && !sessionBtn.contains(e.target)) {
+                sessionMenu.classList.add('hidden');
+            }
         });
         
+        // Botón de alerta suave
         document.getElementById('heroAlertaBtn').addEventListener('click', function(e) {
             e.preventDefault();
             const wrapper = document.getElementById('alerta-wrapper');
@@ -477,6 +521,7 @@
             }
         });
         
+        // Efecto scroll en el header
         window.addEventListener('scroll', function() {
             const header = document.querySelector('header');
             if (window.scrollY > 50) {
