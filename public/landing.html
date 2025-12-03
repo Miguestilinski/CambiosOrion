@@ -303,50 +303,86 @@
 
     <div id="alerta-wrapper" class="overflow-hidden max-h-0 transition-all duration-700 ease-in-out bg-white border-b border-gray-200 shadow-inner relative z-30">
         <div id="alerta-section" class="max-w-4xl mx-auto p-12">
-            <div class="text-center mb-10">
-                <span class="text-blue-600 font-bold tracking-widest text-sm uppercase">Notificaciones Inteligentes</span>
+             <div class="text-center mb-10">
+                <span class="text-[#1e3a8a] font-bold tracking-widest text-sm uppercase">Notificaciones Inteligentes</span>
                 <h2 class="text-4xl font-extrabold text-[#1e3a8a] mt-2">Configura tu Alerta</h2>
                 <p class="text-gray-500 mt-3 text-lg">Te avisaremos automáticamente cuando el precio llegue a tu objetivo.</p>
-            </div>
-            
-            <div id="alerta-step-1" class="step-content flex flex-col gap-8 items-center">
+             </div>
+             
+             <ol class="flex items-center w-full text-base font-medium text-center text-gray-500 mb-10 max-w-2xl mx-auto">
+                <li class="flex md:w-full items-center text-[#1e3a8a] font-bold sm:after:content-[''] after:w-full after:h-1 after:border-b-2 after:border-gray-200 after:mx-4">
+                    <span id="alerta-badge-1" class="flex items-center justify-center w-8 h-8 min-w-[2rem] bg-[#1e3a8a] text-white rounded-full mr-3 text-sm transition-colors duration-300">1</span> 
+                    <span id="alerta-text-1">Divisa</span>
+                </li>
+                <li class="flex md:w-full items-center after:content-[''] after:w-full after:h-1 after:border-b-2 after:border-gray-200 after:mx-4">
+                    <span id="alerta-badge-2" class="flex items-center justify-center w-8 h-8 min-w-[2rem] bg-gray-200 text-gray-500 rounded-full mr-3 text-sm transition-colors duration-300">2</span> 
+                    <span id="alerta-text-2">Condición</span>
+                </li>
+                <li class="flex items-center">
+                    <span id="alerta-badge-3" class="flex items-center justify-center w-8 h-8 min-w-[2rem] bg-gray-200 text-gray-500 rounded-full mr-3 text-sm transition-colors duration-300">3</span> 
+                    <span id="alerta-text-3">Datos</span>
+                </li>
+            </ol>
+             
+             <div id="alerta-step-1" class="step-content flex flex-col gap-8 items-center">
                 <div id="alerta-divisa-container" class="relative w-full max-w-sm">
                     <div id="alerta-divisa-button" class="flex items-center justify-between px-6 py-5 border-2 border-gray-200 rounded-2xl cursor-pointer bg-gray-50 hover:bg-white hover:border-blue-300 transition shadow-sm" onclick="showAlertaDropdown()">
-                        <div class="flex items-center">
-                            <img id="alerta-icon" src="" class="w-8 h-8 mr-4 hidden">
+                         <div class="flex items-center">
+                            <img id="alerta-icon" src="" class="w-8 h-8 mr-4 hidden rounded-full">
                             <span id="alerta-currency-text" class="font-bold text-xl text-gray-700">Seleccionar Divisa</span>
-                        </div>
-                        <svg class="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                         </div>
+                         <svg class="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </div>
-                    <div id="alerta-divisa-dropdown" class="hidden absolute top-full left-0 mt-2 bg-white rounded-2xl shadow-2xl z-[60] w-full max-h-72 overflow-y-auto border border-gray-100">
-                        <ul class="divide-y divide-gray-100"></ul>
-                    </div>
+                     <div id="alerta-divisa-dropdown" class="hidden absolute top-full left-0 mt-2 bg-white rounded-2xl shadow-2xl z-[60] w-full max-h-72 overflow-y-auto border border-gray-100">
+                         <ul class="divide-y divide-gray-100"></ul>
+                     </div>
                 </div>
                 <div id="alerta-precios-card" class="hidden w-full max-w-xl"></div>
-            </div>
+             </div>
 
-            <div id="alerta-step-2" class="step-content hidden text-center max-w-md mx-auto">
-                <p id="alerta-step-2-summary" class="text-base font-semibold text-[#1e3a8a] mb-6 bg-blue-50 p-4 rounded-xl border border-blue-100"></p>
-                <select id="alerta-condicion" class="w-full border-gray-300 rounded-xl p-4 mb-3 bg-white focus:ring-blue-500 text-lg"><option value="alcanza">Alcanza el precio</option><option value="sube">Sube sobre</option><option value="baja">Baja a</option></select>
-                <p id="alerta-condicion-help" class="text-sm text-gray-500 mb-6 italic"></p>
-                <input id="alerta-valor" type="number" step="0.01" class="w-full border-gray-300 rounded-xl p-4 text-2xl font-bold text-center" placeholder="Valor objetivo">
-            </div>
+             <div id="alerta-step-2" class="step-content hidden text-center max-w-md mx-auto">
+                  <p id="alerta-step-2-summary" class="text-base font-semibold text-[#1e3a8a] mb-6 bg-blue-50 p-4 rounded-xl border border-blue-100"></p>
+                  
+                  <label class="block text-left font-bold text-gray-700 mb-2">Cuando el precio...</label>
+                  <select id="alerta-condicion" class="w-full border-gray-300 rounded-xl p-4 mb-3 bg-white focus:ring-blue-500 text-lg shadow-sm">
+                      <option value="alcanza">Alcanza el precio</option>
+                      <option value="sube">Sube sobre</option>
+                      <option value="baja">Baja a</option>
+                      <option value="cambio_sobre">Varíe más de %</option>
+                      <option value="cambio_bajo">Varíe menos de %</option>
+                  </select>
+                  
+                  <p id="alerta-condicion-help" class="text-sm text-gray-500 mb-6 italic text-left"></p>
+                  
+                  <label class="block text-left font-bold text-gray-700 mb-2">Valor Objetivo</label>
+                  <input id="alerta-valor" type="number" step="0.01" class="w-full border-gray-300 rounded-xl p-4 text-2xl font-bold text-center shadow-sm focus:ring-[#1e3a8a] focus:border-[#1e3a8a]" placeholder="Ej: 950">
+             </div>
 
-            <div id="alerta-step-3" class="step-content hidden max-w-md mx-auto">
-                <p id="alerta-step-3-summary" class="text-base font-semibold text-[#1e3a8a] mb-6 bg-blue-50 p-4 rounded-xl border border-blue-100 text-center"></p>
-                <input id="alerta-nombre" type="text" class="w-full border-gray-300 rounded-xl p-4 mb-4 text-lg" placeholder="Tu Nombre">
-                <input id="alerta-email" type="email" class="w-full border-gray-300 rounded-xl p-4 mb-4 text-lg" placeholder="Tu Email">
-                <p id="alerta-status" class="text-center text-base font-bold mt-4"></p>
-            </div>
+             <div id="alerta-step-3" class="step-content hidden max-w-md mx-auto">
+                  <p id="alerta-step-3-summary" class="text-base font-semibold text-[#1e3a8a] mb-6 bg-blue-50 p-4 rounded-xl border border-blue-100 text-center"></p>
+                  
+                  <div class="space-y-4">
+                      <div>
+                          <label class="block text-left font-bold text-gray-700 mb-1">Nombre</label>
+                          <input id="alerta-nombre" type="text" class="w-full border-gray-300 rounded-xl p-4 text-lg shadow-sm focus:ring-[#1e3a8a] focus:border-[#1e3a8a]" placeholder="Tu Nombre">
+                      </div>
+                      <div>
+                          <label class="block text-left font-bold text-gray-700 mb-1">Correo Electrónico</label>
+                          <input id="alerta-email" type="email" class="w-full border-gray-300 rounded-xl p-4 text-lg shadow-sm focus:ring-[#1e3a8a] focus:border-[#1e3a8a]" placeholder="Tu Email">
+                      </div>
+                  </div>
+                  <p id="alerta-status" class="text-center text-base font-bold mt-4 min-h-[1.5rem]"></p>
+             </div>
 
-            <p id="alerta-stepper-error" class="text-red-500 text-center font-bold text-base mt-6 hidden"></p>
-            <div id="alerta-stepper-buttons" class="flex justify-between mt-10 max-w-md mx-auto">
-                <button id="alerta-prev" class="text-gray-400 hover:text-gray-600 font-bold hidden text-lg">Atrás</button>
-                <div class="flex gap-4 ml-auto">
-                    <button id="alerta-next" class="bg-[#1e3a8a] text-white px-8 py-3 rounded-xl font-bold shadow-lg hidden hover:bg-blue-800 transition text-lg">Siguiente</button>
-                    <button id="guardar-alerta" class="bg-green-600 text-white px-8 py-3 rounded-xl font-bold shadow-lg hidden hover:bg-green-700 transition text-lg">Crear Alerta</button>
-                </div>
-            </div>
+             <p id="alerta-stepper-error" class="text-red-600 text-center font-bold text-base mt-6 hidden bg-red-50 p-3 rounded-xl border border-red-100"></p>
+             
+             <div id="alerta-stepper-buttons" class="flex justify-between mt-10 max-w-md mx-auto pt-6 border-t border-gray-100">
+                  <button id="alerta-prev" class="text-gray-500 hover:text-gray-800 font-bold hidden text-lg px-4 py-2">Atrás</button>
+                  <div class="flex gap-4 ml-auto">
+                    <button id="alerta-next" class="bg-[#1e3a8a] text-white px-8 py-3 rounded-full font-bold shadow-xl hover:bg-blue-800 transition text-lg hidden">Siguiente</button>
+                    <button id="guardar-alerta" class="bg-green-600 text-white px-8 py-3 rounded-full font-bold shadow-xl hover:bg-green-700 transition text-lg hidden">Crear Alerta</button>
+                  </div>
+             </div>
         </div>
     </div>
 
@@ -476,7 +512,7 @@
     <script src="https://cambiosorion.cl/orionapp/public/scripts/landing.js"></script> 
     <script src="https://cambiosorion.cl/orionapp/public/scripts/conversor-2.js"></script>
     <script src="https://cambiosorion.cl/orionapp/public/scripts/reservas-2.js"></script>
-    <script src="https://cambiosorion.cl/orionapp/public/scripts/alertas.js"></script>
+    <script src="https://cambiosorion.cl/orionapp/public/scripts/alertas-2.js"></script>
     <script>
         // Lógica para el Header Móvil (Doble menú)
         const navBtn = document.getElementById('nav-menu-button');
