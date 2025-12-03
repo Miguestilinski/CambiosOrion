@@ -375,11 +375,17 @@ function toggleTableColumns() {
 }
 
 function updateLastUpdatedTimestamp(fecha) {
-    const format = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-    
-    // Usar fecha actual si no viene fecha
     const dateObj = fecha ? new Date(fecha) : new Date();
-    const dateStr = dateObj.toLocaleString('es-CL', format);
+    
+    const pad = (n) => n.toString().padStart(2, '0');
+    
+    const day = pad(dateObj.getDate());
+    const month = pad(dateObj.getMonth() + 1);
+    const year = dateObj.getFullYear();
+    const hour = pad(dateObj.getHours());
+    const minute = pad(dateObj.getMinutes());
+    
+    const dateStr = `${hour}:${minute} ${day}/${month}/${year}`;
 
     const el1 = document.getElementById("last-updated1");
     const el2 = document.getElementById("last-updated2");
