@@ -15,9 +15,9 @@ header {
     margin-right: 50px;
 }
 
-.header-logo img {
-    height: auto; /* Mantén las proporciones */
-}
+/*.header-logo img {
+    height: auto; /* Mantén las proporciones 
+} */
 
 .header-logo img.logo {
     width: 10rem;
