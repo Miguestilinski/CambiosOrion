@@ -1163,6 +1163,10 @@ input:checked + .toggle-bg {
   top: 3rem;
 }
 
+.top-24 {
+  top: 6rem;
+}
+
 .top-\[45\%\] {
   top: 45%;
 }
@@ -1405,10 +1409,6 @@ input:checked + .toggle-bg {
 
 .h-20 {
   height: 5rem;
-}
-
-.h-24 {
-  height: 6rem;
 }
 
 .h-3 {
@@ -3558,9 +3558,9 @@ input:checked + .toggle-bg {
     padding-right: 1.5rem;
   }
 
-  .sm\:text-5xl {
-    font-size: 3rem;
-    line-height: 1;
+  .sm\:text-3xl {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
   }
 
   .sm\:text-6xl {
