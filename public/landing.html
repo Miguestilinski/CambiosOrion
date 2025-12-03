@@ -134,18 +134,18 @@
                 <div id="conversor" class="bg-white rounded-[2rem] shadow-2xl p-8 md:p-10 transform transition-all border border-gray-200">
                     <div class="flex items-center justify-between mb-8">
                         <h2 class="text-3xl md:text-4xl font-extrabold text-[#1e3a8a]">Cotiza y Reserva</h2>
-                         <span id="last-updated1" class="text-sm font-semibold text-gray-600 bg-gray-100 px-4 py-1.5 rounded-full">Actualizado: --</span>
+                         <span id="last-updated1" class="text-xs md:text-sm font-semibold text-gray-600 bg-gray-100 px-3 py-1.5 rounded-full">Actualizado: --</span>
                     </div>
 
                     <ol class="flex items-center w-full text-base font-medium text-center text-gray-500 mb-8">
                         <li id="stepper-1" class="flex md:w-full items-center text-[#1e3a8a] font-bold sm:after:content-[''] after:w-full after:h-1 after:border-b-2 after:border-gray-200 after:mx-4">
-                            <span class="flex items-center justify-center w-8 h-8 shrink-0 bg-[#1e3a8a] text-white rounded-full mr-3 text-sm">1</span> Cotiza
+                            <span id="badge-1" class="flex items-center justify-center w-8 h-8 min-w-[2rem] bg-[#1e3a8a] text-white rounded-full mr-3 text-sm transition-colors duration-300">1</span> Cotiza
                         </li>
-                        <li id="stepper-2" class="flex md:w-full items-center after:content-[''] after:w-full after:h-1 after:border-b-2 after:border-gray-200 after:mx-4">
-                            <span class="flex items-center justify-center w-8 h-8 shrink-0 bg-gray-200 rounded-full mr-3 text-sm">2</span> Datos
+                        <li id="stepper-2" class="flex md:w-full items-center after:content-[''] after:w-full after:h-1 after:border-b-2 after:border-gray-200 after:mx-4 transition-colors duration-300">
+                            <span id="badge-2" class="flex items-center justify-center w-8 h-8 min-w-[2rem] bg-gray-200 text-gray-500 rounded-full mr-3 text-sm transition-colors duration-300">2</span> Datos
                         </li>
-                        <li id="stepper-3" class="flex items-center">
-                            <span class="flex items-center justify-center w-8 h-8 shrink-0 bg-gray-200 rounded-full mr-3 text-sm">3</span> Fin
+                        <li id="stepper-3" class="flex items-center transition-colors duration-300">
+                            <span id="badge-3" class="flex items-center justify-center w-8 h-8 min-w-[2rem] bg-gray-200 text-gray-500 rounded-full mr-3 text-sm transition-colors duration-300">3</span> Fin
                         </li>
                     </ol>
 
@@ -159,14 +159,14 @@
                             <div class="relative group">
                                 <label class="block text-sm font-bold text-gray-500 mb-2 ml-1 uppercase tracking-wide">Tienes</label>
                                 <div class="flex items-center border-2 border-gray-200 rounded-2xl bg-gray-50 focus-within:ring-4 focus-within:ring-blue-100 focus-within:border-blue-500 transition-all overflow-hidden h-20">
-                                    <input type="text" id="amount1" placeholder="0" class="w-full h-full px-6 bg-transparent border-none text-4xl font-extrabold text-gray-900 focus:ring-0 text-right" oninput="convertCurrency()">
+                                    <input type="text" id="amount1" placeholder="0" class="w-full h-full px-6 bg-transparent border-none text-3xl md:text-4xl font-extrabold text-gray-900 focus:ring-0 text-right" oninput="convertCurrency()">
                                     
-                                    <div class="border-l-2 border-gray-200 h-full flex items-center bg-white hover:bg-gray-50 cursor-pointer px-5 transition min-w-[140px]" id="dropdown1Button" onclick="toggleDropdown('dropdown1', event)">
+                                    <div class="border-l-2 border-gray-200 h-full flex items-center bg-white hover:bg-gray-50 cursor-pointer px-4 md:px-5 transition min-w-[120px] md:min-w-[140px]" id="dropdown1Button" onclick="toggleDropdown('dropdown1', event)">
                                         <img id="icon-currency1" src="/orionapp/node_modules/circle-flags/flags/cl.svg" class="w-8 h-8 rounded-full shadow-sm mr-3">
                                         <span id="currency1-text" class="text-xl font-bold text-gray-800">CLP</span>
                                         <svg class="w-5 h-5 ml-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                     </div>
-                                    <div id="dropdown1" class="hidden absolute top-full right-0 mt-2 bg-white rounded-xl shadow-2xl z-50 border border-gray-100 max-h-72 overflow-y-auto"></div>
+                                    <div id="dropdown1" class="hidden absolute top-full right-0 mt-2 w-64 bg-white rounded-xl shadow-2xl z-50 border border-gray-100 max-h-72 overflow-y-auto"></div>
                                 </div>
                             </div>
 
@@ -179,14 +179,14 @@
                             <div class="relative group">
                                 <label class="block text-sm font-bold text-gray-500 mb-2 ml-1 uppercase tracking-wide">Obtienes</label>
                                 <div class="flex items-center border-2 border-gray-200 rounded-2xl bg-gray-50 focus-within:ring-4 focus-within:ring-blue-100 focus-within:border-blue-500 transition-all overflow-hidden h-20">
-                                    <input type="text" id="amount2" readonly class="w-full h-full px-6 bg-gray-100 border-none text-4xl font-extrabold text-gray-900 focus:ring-0 text-right cursor-default">
+                                    <input type="text" id="amount2" readonly class="w-full h-full px-6 bg-gray-100 border-none text-3xl md:text-4xl font-extrabold text-gray-900 focus:ring-0 text-right cursor-default">
                                     
-                                    <div class="border-l-2 border-gray-200 h-full flex items-center bg-white hover:bg-gray-50 cursor-pointer px-5 transition min-w-[140px]" id="dropdown2Button" onclick="toggleDropdown('dropdown2', event)">
+                                    <div class="border-l-2 border-gray-200 h-full flex items-center bg-white hover:bg-gray-50 cursor-pointer px-4 md:px-5 transition min-w-[120px] md:min-w-[140px]" id="dropdown2Button" onclick="toggleDropdown('dropdown2', event)">
                                         <img id="icon-currency2" src="/orionapp/node_modules/circle-flags/flags/us.svg" class="w-8 h-8 rounded-full shadow-sm mr-3">
                                         <span id="currency2-text" class="text-xl font-bold text-gray-800">USD</span>
                                         <svg class="w-5 h-5 ml-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                     </div>
-                                    <div id="dropdown2" class="hidden absolute top-full right-0 mt-2 bg-white rounded-xl shadow-2xl z-50 border border-gray-100 max-h-72 overflow-y-auto"></div>
+                                    <div id="dropdown2" class="hidden absolute top-full right-0 mt-2 w-64 bg-white rounded-xl shadow-2xl z-50 border border-gray-100 max-h-72 overflow-y-auto"></div>
                                 </div>
                             </div>
                         </div>
@@ -216,44 +216,44 @@
 
                     <div id="step-3" class="mt-6 hidden animate-fadeIn">
                          <div class="bg-blue-50 rounded-2xl p-6 mb-6 border border-blue-100">
-                             <h3 class="text-lg font-bold text-[#1e3a8a] mb-4 border-b border-blue-200 pb-2">Resumen de Operación</h3>
-                             <div class="grid grid-cols-2 gap-6 text-base">
-                                 <div>
-                                     <span class="block text-gray-500 text-xs uppercase tracking-wide font-bold">Operación</span>
-                                     <span id="summary-operation" class="font-bold text-gray-900 text-lg">--</span>
+                             <h3 class="text-lg font-bold text-[#1e3a8a] mb-4 border-b border-blue-200 pb-2">Resumen de tu reserva</h3>
+                             
+                             <div class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8 text-sm md:text-base text-gray-700">
+                                 <div class="space-y-2">
+                                     <p><span class="font-bold text-gray-900">Día Reserva:</span> <span id="summary-date">--</span></p>
+                                     <p><span class="font-bold text-gray-900">Hora Reserva:</span> <span id="summary-time">--</span></p>
+                                     <p><span class="font-bold text-gray-900">Nombre:</span> <span id="summary-name">--</span></p>
+                                     <div class="break-all"><span class="font-bold text-gray-900">Correo:</span> <span id="summary-email">--</span></div>
+                                     <p id="summary-phone-container" class="hidden"><span class="font-bold text-gray-900">Teléfono:</span> <span id="summary-phone">--</span></p>
                                  </div>
-                                 <div>
-                                     <span class="block text-gray-500 text-xs uppercase tracking-wide font-bold">Divisa</span>
-                                     <span id="summary-currency-name" class="font-bold text-gray-900 text-lg flex items-center">--</span>
-                                 </div>
-                                 <div>
-                                     <span class="block text-gray-500 text-xs uppercase tracking-wide font-bold">Pagas</span>
-                                     <span id="summary-pay" class="font-bold text-blue-700 text-xl">--</span>
-                                 </div>
-                                 <div>
-                                     <span class="block text-gray-500 text-xs uppercase tracking-wide font-bold">Recibes</span>
-                                     <span id="summary-get" class="font-bold text-green-700 text-xl">--</span>
+                                 
+                                 <div class="space-y-2">
+                                     <p><span class="font-bold text-gray-900">Operación:</span> <span id="summary-operation">--</span></p>
+                                     <div class="flex items-center gap-2"><span class="font-bold text-gray-900">Divisa:</span> <span id="summary-currency-name" class="flex items-center">--</span></div>
+                                     <p><span class="font-bold text-gray-900">Pagas:</span> <span id="summary-pay" class="font-bold text-blue-700">--</span></p>
+                                     <p><span class="font-bold text-gray-900">Recibes:</span> <span id="summary-get" class="font-bold text-green-700">--</span></p>
+                                     <p><span class="font-bold text-gray-900">Precio:</span> <span id="summary-price">--</span></p>
                                  </div>
                              </div>
                          </div>
                          
-                         <div id="reservation-instructions" class="text-sm bg-yellow-50 text-yellow-900 p-4 rounded-xl border border-yellow-200 mb-6 font-medium"></div>
+                         <div id="reservation-instructions" class="text-sm bg-yellow-50 text-yellow-900 p-5 rounded-xl border border-yellow-200 mb-6 font-medium leading-relaxed"></div>
 
                          <div class="flex flex-col gap-4">
-                            <button id="confirmReservation" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl shadow-lg transition disabled:opacity-50 text-xl">
+                            <button id="confirmReservation" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed text-xl">
                                 Confirmar Reserva
                             </button>
                             <button id="contactExecutive" class="hidden w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-4 rounded-xl shadow-lg transition text-xl">
                                 Contactar Ejecutivo
                             </button>
-                             <p id="reservation-status" class="text-center text-base font-semibold mt-2"></p>
+                             <p id="reservation-status" class="text-center text-base font-semibold mt-2 min-h-[1.5rem]"></p>
                          </div>
                     </div>
 
                     <p id="conversor-stepper-error" class="text-red-600 font-bold text-base mt-4 text-center hidden bg-red-50 p-3 rounded-xl border border-red-100"></p>
 
                     <div id="stepperButtons" class="flex justify-between mt-10 pt-6 border-t border-gray-100">
-                        <button id="prevStep" class="text-gray-500 hover:text-gray-800 font-bold text-base hidden px-4 py-3">Atrás</button>
+                        <button id="prevStep" class="text-gray-500 hover:text-gray-800 font-bold text-base hidden px-6 py-3 bg-gray-100 rounded-lg transition">Anterior</button>
                         <button id="nextStep" class="bg-[#1e3a8a] hover:bg-blue-800 text-white px-10 py-4 rounded-full font-bold shadow-xl shadow-blue-900/20 transition w-full sm:w-auto ml-auto text-lg">
                             Continuar
                         </button>
@@ -475,7 +475,7 @@
     <script src="https://cambiosorion.cl/orionapp/public/scripts/header.js"></script>
     <script src="https://cambiosorion.cl/orionapp/public/scripts/landing.js"></script> 
     <script src="https://cambiosorion.cl/orionapp/public/scripts/conversor-2.js"></script>
-    <script src="https://cambiosorion.cl/orionapp/public/scripts/reservas.js"></script>
+    <script src="https://cambiosorion.cl/orionapp/public/scripts/reservas-2.js"></script>
     <script src="https://cambiosorion.cl/orionapp/public/scripts/alertas.js"></script>
     <script>
         // Lógica para el Header Móvil (Doble menú)
