@@ -435,10 +435,11 @@
                 
                 <div class="bg-black/30 px-6 py-4 border-t border-white/10 flex justify-between items-center backdrop-blur-md rounded-b-3xl">
                     <div class="relative">
-                        <button onclick="toggleDropdown('add-currency-dropdown', event)" class="flex items-center text-sm font-bold text-blue-300 hover:text-white transition uppercase tracking-wider">
+                        <button id="btn-add-divisa" onclick="toggleTableDropdown(event)" class="flex items-center text-sm font-bold text-blue-300 hover:text-white transition uppercase tracking-wider">
                             <span class="text-lg mr-2 bg-blue-600 rounded-full w-6 h-6 flex items-center justify-center text-white shadow">+</span> Agregar Divisa
                         </button>
-                        <div id="add-currency-dropdown" class="hidden absolute top-full left-0 mt-2 bg-white text-gray-900 rounded-xl shadow-2xl border border-gray-200 max-h-72 overflow-y-auto z-50"></div>
+                        
+                        <div id="add-currency-dropdown" class="hidden absolute bg-white text-gray-900 rounded-xl shadow-2xl border border-gray-200 max-h-72 overflow-y-auto z-[9999] w-56"></div>
                     </div>
                     <span id="last-updated2" class="text-sm text-gray-400 italic">Actualizado: --</span>
                 </div>

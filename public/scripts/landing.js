@@ -62,8 +62,10 @@ function loadCurrenciesWithSSE() {
                 if(dropdown2) dropdown2.appendChild(option2);
             });
 
-            filterDropdownCurrencies();
-            updateAddCurrencyDropdown();
+            // Actualizar UI
+            if (typeof filterDropdownCurrencies === "function") filterDropdownCurrencies();
+            updateAddCurrencyDropdown(); // Actualiza el dropdown de la tabla
+
             hideSkeleton();
             fillCurrencyTable();
 
@@ -233,6 +235,68 @@ function createDropdownOption(currency, icon, onClickHandler) {
     option.onclick = onClickHandler;
     return option;
 }
+
+// --- Lógica del Dropdown de la Tabla (PORTAL) ---
+function toggleTableDropdown(event) {
+    if(event) event.stopPropagation();
+    
+    const dropdown = document.getElementById("add-currency-dropdown");
+    const button = document.getElementById("btn-add-divisa") || event.currentTarget;
+
+    if (!dropdown) return;
+
+    // 1. Mover al body si no está ahí (para evitar cortes por overflow)
+    if (dropdown.parentElement !== document.body) {
+        document.body.appendChild(dropdown);
+    }
+
+    if (dropdown.classList.contains("hidden")) {
+        // 2. Calcular posición
+        const rect = button.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+
+        // 3. Aplicar estilos
+        dropdown.style.position = "absolute";
+        // Alinear a la izquierda del botón, pero subiendo un poco (top-full simulado)
+        // O mejor: abrir hacia ARRIBA si no hay espacio, o ABAJO si lo hay.
+        // Por simplicidad y petición, abrimos hacia ARRIBA (encima del footer)
+        // Para que se vea "encima", usamos z-index alto.
+        
+        dropdown.style.left = `${rect.left + scrollLeft}px`;
+        // drop hacia arriba: top = buttonTop - dropdownHeight
+        // drop hacia abajo: top = buttonBottom
+        
+        // Vamos a probar hacia abajo primero, como pediste "encima de todo"
+        dropdown.style.top = `${rect.bottom + scrollTop + 5}px`; 
+        
+        dropdown.style.zIndex = "9999";
+        dropdown.classList.remove("hidden");
+        activeTableDropdown = dropdown;
+        
+        // Si está vacío, mostrar skeleton
+        if (dropdown.children.length === 0) {
+            showDropdownSkeleton("add-currency-dropdown");
+        }
+    } else {
+        dropdown.classList.add("hidden");
+        activeTableDropdown = null;
+    }
+}
+// Exponer globalmente
+window.toggleTableDropdown = toggleTableDropdown;
+
+// Cerrar dropdown tabla al click fuera
+document.addEventListener("click", function (event) {
+    const dropdown = document.getElementById("add-currency-dropdown");
+    const button = document.getElementById("btn-add-divisa");
+    
+    if (dropdown && !dropdown.classList.contains("hidden")) {
+        if (!dropdown.contains(event.target) && (!button || !button.contains(event.target))) {
+            dropdown.classList.add("hidden");
+        }
+    }
+});
 
 function updateAddCurrencyDropdown() {
     const dropdown = document.getElementById("add-currency-dropdown");
