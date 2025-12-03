@@ -357,7 +357,7 @@ function fillCurrencyTable() {
             row.innerHTML = `
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="flex items-center">
-                        <img class="h-10 w-10 sm:h-8 sm:w-8 rounded-full shadow-md object-cover mr-4 ring-2 ring-white/10" src="${exchangeRates[currency].icono}" alt="${currency}">
+                        <img class="md:h-10 md:w-10 h-8 sm:w-8 rounded-full shadow-md object-cover mr-4 ring-2 ring-white/10" src="${exchangeRates[currency].icono}" alt="${currency}">
                         <div class="text-xl font-bold text-white tracking-wide">${currency}</div>
                     </div>
                 </td>
