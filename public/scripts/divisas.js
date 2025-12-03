@@ -1,5 +1,4 @@
 let exchangeRates = {};
-// Lista completa de monedas a mostrar
 let displayedCurrencies = [
     "USD", "EUR", "ARS", "BRL", "PEN", "COP",
     "UYU", "BOB", "CAD", "GBP", "JPY", "CNY",
@@ -14,16 +13,13 @@ function initializePage() {
 
 document.addEventListener('DOMContentLoaded', () => {
     initializePage();
-    // La lógica de menú móvil está ahora en el HTML inline o header.js, 
-    // pero mantenemos esto limpio por si acaso.
 });
 
-// Skeleton Loader Moderno (Dark Mode)
+// Skeleton Loader estilo Dark Glass
 function showSkeletonLoader() {
     const tableBody = document.getElementById("currency-table-body");
     if (!tableBody) return;
 
-    // Crear filas con animación de pulso y fondo semitransparente
     const skeletonRows = Array.from({ length: 8 }).map(() => `
         <tr class="animate-pulse border-b border-white/5">
             <td class="px-6 py-4">
@@ -54,13 +50,11 @@ function removeSkeletonLoader() {
 function removeTrailingZeros(value) {
     if (value === null || value === undefined) return '';
     const floatValue = parseFloat(value);
-    return floatValue.toString(); // Retorna string limpio
+    return floatValue.toString();
 }
 
-// Función auxiliar para formatear moneda (miles con punto)
 function formatCurrency(value) {
     if (!value) return '-';
-    // Convertir a float y luego formatear
     const num = parseFloat(value);
     return num.toLocaleString('es-CL');
 }
@@ -122,7 +116,7 @@ function fillCurrencyTable() {
         if (exchangeRates[currency]) {
             const row = document.createElement("tr");
             
-            // Estilos de fila: hover suave, transición, borde inferior sutil
+            // Estilos de fila oscura: Hover blanco translúcido
             row.className = "hover:bg-white/10 transition duration-200 group border-b border-white/5 last:border-0";
             
             const currencyIcon = exchangeRates[currency].icono;
@@ -133,7 +127,7 @@ function fillCurrencyTable() {
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="flex items-center">
                         <img src="${currencyIcon}" alt="${currency}" class="w-8 h-8 mr-3 rounded-full shadow-md object-cover ring-2 ring-white/10 group-hover:scale-110 transition-transform"> 
-                        <span class="font-bold text-white tracking-wide">${currency}</span>
+                        <span class="font-bold text-white tracking-wide text-lg">${currency}</span>
                     </div>
                 </td>
                 <td class="px-6 py-4 text-center whitespace-nowrap">
@@ -148,7 +142,6 @@ function fillCurrencyTable() {
     });
 }
 
-// Formato fecha: hh:mm dd/mm/yyyy
 function updateLastUpdatedTimestamp(fecha) {
     const lastUpdatedElement = document.getElementById("last-updated");
     if (lastUpdatedElement) {
@@ -163,9 +156,6 @@ function updateLastUpdatedTimestamp(fecha) {
         
         const dateStr = `${hour}:${minute} ${day}/${month}/${year}`;
         
-        // Mantenemos el ícono SVG dentro del HTML, solo cambiamos texto si es necesario o concatenamos
-        // Como el HTML ya tiene el icono, podemos actualizar solo el textNode si quisieramos ser muy precisos, 
-        // pero innerHTML es más fácil:
         lastUpdatedElement.innerHTML = `
             <svg class="w-3 h-3 mr-1 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             Actualizado: ${dateStr}
