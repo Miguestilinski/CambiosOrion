@@ -291,7 +291,7 @@ function fillCurrencyTable() {
                 </td>
                 
                 <td class="px-6 py-4 text-center whitespace-nowrap compra-column">
-                    <div class="text-xl font-bold text-white">${compra ? Math.floor(compra) : '-'} <span class="text-sm text-blue-300 ml-1">CLP</span></div>
+                    <div class="text-xl font-bold text-white">${compra ? Math.floor(compra) : '-'} <span class="text-md text-blue-300 ml-1">CLP</span></div>
                 </td>
 
                 <td class="px-6 py-4 text-center whitespace-nowrap compra-column">
@@ -299,7 +299,7 @@ function fillCurrencyTable() {
                 </td>
 
                 <td class="px-6 py-4 text-center whitespace-nowrap venta-column hidden">
-                    <div class="text-xl font-bold text-white">${venta ? Math.floor(venta) : '-'} <span class="text-sm text-blue-300 ml-1">CLP</span></div>
+                    <div class="text-xl font-bold text-white">${venta ? Math.floor(venta) : '-'} <span class="text-md text-blue-300 ml-1">CLP</span></div>
                 </td>
 
                 <td class="px-6 py-4 text-center whitespace-nowrap venta-column hidden">
