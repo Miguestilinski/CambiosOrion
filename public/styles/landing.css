@@ -1,16 +1,14 @@
-/* landing.css - Versión Orion Dark/Light */
+/* landing.css - Estilos Base y Dinámicos */
 
 body {
-    /* Fondo de la constelación fijo */
     background: url('https://cambiosorion.cl/orionapp/assets/FondoOrion.jpg') no-repeat center center fixed; 
     background-size: cover;
-    background-color: #0f172a; /* Color de respaldo azul oscuro */
-    color: #333; /* Color de texto por defecto para secciones blancas */
+    background-color: #0f172a; 
+    color: #333;
     position: relative;
     margin: 0;
 }
 
-/* Capa oscura superpuesta para mejorar legibilidad del texto blanco sobre las estrellas */
 body::before {
     content: "";
     position: fixed;
@@ -18,12 +16,11 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5); /* Oscurece un 50% la imagen */
+    background: rgba(0, 0, 0, 0.4); /* Oscuridad del fondo */
     z-index: -1;
     pointer-events: none;
 }
 
-/* Degradado final hacia el negro en la parte inferior */
 body::after {
     content: "";
     position: fixed;
@@ -36,11 +33,7 @@ body::after {
     pointer-events: none;
 }
 
-html {
-    scroll-behavior: smooth;
-}
-
-/* Animaciones */
+/* Animaciones básicas */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
@@ -49,115 +42,45 @@ html {
     animation: fadeIn 0.4s ease-out forwards;
 }
 
-/* === AJUSTES DE HEADER === */
-header .header-logo img {
-    height: 3.5rem; /* Aumenta el tamaño del logo */
-    width: auto;
-    transition: height 0.3s;
-}
-
-/* === ESTILOS DE LA TABLA (PIZARRA) === */
-#currency-table-body tr {
-    background-color: rgba(255, 255, 255, 0.05);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    transition: background-color 0.2s;
-    color: white; 
-}
-
-#currency-table-body tr:hover {
-    background-color: rgba(255, 255, 255, 0.15);
-}
-
-/* Columna de Variación - IMPORTANTE */
+/* Clases de Variación (Requeridas por tu JS actual) */
 .variation-up {
-    color: #10b981; /* Verde esmeralda (es-600) para subidas */
-    font-weight: 600;
-    font-size: 0.875rem; /* text-sm */
+    color: #10b981; /* Verde Tailwind emerald-500 */
+    font-weight: 700;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .variation-down {
-    color: #ef4444; /* Rojo (red-500) para bajadas */
-    font-weight: 600;
-    font-size: 0.875rem; /* text-sm */
+    color: #ef4444; /* Rojo Tailwind red-500 */
+    font-weight: 700;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .variation-neutral {
-    color: #9ca3af; /* Gris (gray-400) para neutral */
+    color: #9ca3af; /* Gris Tailwind gray-400 */
     font-weight: 400;
-    font-size: 0.875rem; /* text-sm */
     text-align: center;
 }
 
-/* Ajuste para centrar el contenido de las celdas en el nuevo diseño */
-#currency-table-body td {
-    padding: 1rem 1.5rem;
-    text-align: center;
-    vertical-align: middle;
+/* Asegurar que las filas de la tabla generadas por JS tengan estilo */
+#currency-table-body tr {
+    transition: background-color 0.2s;
+}
+#currency-table-body tr:hover {
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
-#currency-table-body td:first-child {
-    text-align: left;
-}
-
-/* Ajuste para el color de los encabezados de columna de variación (antes eran gray-400) */
-#currency-table-body th.font-normal {
-    color: #9ca3af !important; /* Asegurar que el color sea gris claro */
-}
-
-/* Primera fila destacada (USD usualmente) */
-#currency-table-body tr.first-row td {
-    background-color: rgba(30, 58, 138, 0.6) !important; /* Azul Orion semitransparente */
-    color: #fff !important;
-    font-weight: 700;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-/* Inputs numéricos sin flechas */
+/* Limpieza de inputs numéricos */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
 
-/* === ESTILOS DEL FOOTER === */
-/* Aseguramos que los iconos del footer tengan suficiente visibilidad */
-footer .social-icon {
-    opacity: 0.7;
-    transition: opacity 0.2s;
-}
-footer .social-icon:hover {
-    opacity: 1;
-}
-
-/* Ticker con máscara de desvanecimiento */
+/* Ticker Fade Mask */
 #ticker {
-    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-}
-
-/* Clases de utilidad específicas */
-.glass-panel {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.text-shadow {
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-}
-
-/* Skeleton Loader adaptado a modo oscuro */
-.skeleton-loader {
-    background-color: rgba(255,255,255,0.1);
-    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-@keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: .5; }
+    mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
 }
