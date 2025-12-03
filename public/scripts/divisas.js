@@ -1,4 +1,5 @@
 let exchangeRates = {};
+// Lista completa de monedas a mostrar
 let displayedCurrencies = [
     "USD", "EUR", "ARS", "BRL", "PEN", "COP",
     "UYU", "BOB", "CAD", "GBP", "JPY", "CNY",
@@ -15,11 +16,12 @@ document.addEventListener('DOMContentLoaded', () => {
     initializePage();
 });
 
-// Skeleton Loader estilo Dark Glass
+// Skeleton Loader Moderno (Dark Mode)
 function showSkeletonLoader() {
     const tableBody = document.getElementById("currency-table-body");
     if (!tableBody) return;
 
+    // Crear filas con animación de pulso y fondo semitransparente
     const skeletonRows = Array.from({ length: 8 }).map(() => `
         <tr class="animate-pulse border-b border-white/5">
             <td class="px-6 py-4">
@@ -50,11 +52,13 @@ function removeSkeletonLoader() {
 function removeTrailingZeros(value) {
     if (value === null || value === undefined) return '';
     const floatValue = parseFloat(value);
-    return floatValue.toString();
+    return floatValue.toString(); // Retorna string limpio
 }
 
+// Función auxiliar para formatear moneda (miles con punto)
 function formatCurrency(value) {
     if (!value) return '-';
+    // Convertir a float y luego formatear
     const num = parseFloat(value);
     return num.toLocaleString('es-CL');
 }
@@ -116,7 +120,7 @@ function fillCurrencyTable() {
         if (exchangeRates[currency]) {
             const row = document.createElement("tr");
             
-            // Estilos de fila oscura: Hover blanco translúcido
+            // Estilos de fila: hover suave, transición, borde inferior sutil
             row.className = "hover:bg-white/10 transition duration-200 group border-b border-white/5 last:border-0";
             
             const currencyIcon = exchangeRates[currency].icono;
@@ -142,6 +146,7 @@ function fillCurrencyTable() {
     });
 }
 
+// Formato fecha: hh:mm dd/mm/yyyy
 function updateLastUpdatedTimestamp(fecha) {
     const lastUpdatedElement = document.getElementById("last-updated");
     if (lastUpdatedElement) {
