@@ -115,6 +115,12 @@ function removeTrailingZeros(value) {
     return floatValue.toString();
 }
 
+// NUEVO: Formateador de miles
+function formatMoney(value) {
+    if(!value) return '-';
+    return parseFloat(value).toLocaleString('es-CL');
+}
+
 let eventSource;
 let retryTimeout;
 
