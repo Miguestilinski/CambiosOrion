@@ -122,7 +122,7 @@ function initializeSSE() {
     eventSource = new EventSource('https://cambiosorion.cl/api/stream/stream_divisas.php');
 
     eventSource.onopen = () => {
-        console.log('Conexión SSE establecida correctamente.');
+        console.log('Conexión SSE establecida.');
         clearTimeout(retryTimeout);
     };
 
@@ -130,47 +130,31 @@ function initializeSSE() {
         try {
             const data = JSON.parse(event.data);
 
-            // Capturar la fecha de última actualización
             if (data.length && data[0].fecha_actualizacion) {
                 updateLastUpdatedTimestamp(data[0].fecha_actualizacion);
             }
 
-            // Procesar datos de las divisas
             if (Array.isArray(data)) {
                 exchangeRates = {};
-
                 data.forEach(currency => {
-                    if (
-                        currency.nombre &&
-                        currency.compra &&
-                        currency.venta &&
-                        (currency.icono_circular || currency.icono_cuadrado)
-                    ) {
+                    if (currency.nombre) {
                         exchangeRates[currency.nombre] = {
                             compra: removeTrailingZeros(currency.compra),
                             venta: removeTrailingZeros(currency.venta),
                             icono: currency.icono_circular || currency.icono_cuadrado,
                         };
-                    } else {
-                        console.warn('Elemento inválido en los datos:', currency);
                     }
                 });
-
                 removeSkeletonLoader();
-            } else {
-                console.error('Formato de datos inesperado:', data);
             }
         } catch (error) {
-            console.error('Error procesando los datos SSE:', error);
+            console.error('Error SSE:', error);
         }
     };
 
     eventSource.onerror = (error) => {
-        console.error('Error con la conexión SSE:', error);
-        eventSource.close(); // Cerrar la conexión si algo sale mal
-        retryTimeout = setTimeout(() => {
-            initializeSSE();
-        }, 5000);
+        eventSource.close();
+        retryTimeout = setTimeout(() => initializeSSE(), 5000);
     };
 }
 
