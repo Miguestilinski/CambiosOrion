@@ -171,35 +171,103 @@ function fillCurrencyTable() {
 
     tableBody.innerHTML = '';
     
-    displayedCurrencies.forEach((currency) => {
+    displayedCurrencies.forEach((currency, index) => {
         if (exchangeRates[currency]) {
             const row = document.createElement("tr");
-            
-            // Estilos de fila oscura con hover suave
-            row.className = "hover:bg-white/10 transition duration-200 group border-b border-white/5 last:border-0";
-            
-            const currencyIcon = exchangeRates[currency].icono;
-            const compraFmt = formatMoney(exchangeRates[currency].compra);
-            const ventaFmt = formatMoney(exchangeRates[currency].venta);
 
-            // Inyección de HTML con clases 'text-white' y 'text-lg'
+            const compra = exchangeRates[currency].compra;
+            const venta = exchangeRates[currency].venta;
+            
+            const closingCompra = closingRates[currency]?.compra || 0;
+            const closingVenta = closingRates[currency]?.venta || 0;
+            const varCompra = calculateVariationPercentage(compra, closingCompra);
+            const varVenta = calculateVariationPercentage(venta, closingVenta);
+
+            const badgeCompra = (currency === 'CLP') ? '' : getVariationBadge(varCompra);
+            const badgeVenta = (currency === 'CLP') ? '' : getVariationBadge(varVenta);
+
+            const baseClasses = "hover:bg-white/10 transition duration-200";
+            const rowClass = index === 0 ? "bg-blue-900/20" : "";
+            
+            row.className = `${baseClasses} ${rowClass} currency-row`;
+
+            // CAMBIOS VISUALES AQUÍ:
+            // 1. Padding reducido a px-2 en móvil (md:px-6 en escritorio).
+            // 2. Icono reducido a w-5 h-5 en móvil (md:w-8 en escritorio).
+            // 3. Texto divisa reducido a text-sm en móvil.
             row.innerHTML = `
-                <td class="px-6 py-4 whitespace-nowrap">
+                <td class="px-2 md:px-6 py-3 whitespace-nowrap">
                     <div class="flex items-center">
-                        <img src="${currencyIcon}" alt="${currency}" class="w-8 h-8 mr-3 rounded-full shadow-md object-cover ring-2 ring-white/10 group-hover:scale-110 transition-transform"> 
-                        <span class="font-bold text-white tracking-wide text-lg">${currency}</span>
+                        <img class="w-5 h-5 md:w-8 md:h-8 rounded-full shadow-md object-cover mr-2 md:mr-3 ring-2 ring-white/10" src="${exchangeRates[currency].icono}" alt="${currency}">
+                        <div class="text-sm md:text-lg font-bold text-white tracking-wide">${currency}</div>
                     </div>
                 </td>
-                <td class="px-6 py-4 text-center whitespace-nowrap">
-                    <div class="text-white font-semibold text-lg">${compraFmt} <span class="text-xs text-blue-300 ml-1">CLP</span></div>
+                
+                <td class="px-2 md:px-6 py-3 text-center whitespace-nowrap compra-column">
+                    <div class="text-sm md:text-lg font-bold text-white">${compra ? Math.floor(compra) : '-'} <span class="text-[10px] md:text-xs text-blue-300 ml-0.5">CLP</span></div>
                 </td>
-                <td class="px-6 py-4 text-center whitespace-nowrap">
-                    <div class="text-white font-semibold text-lg">${ventaFmt} <span class="text-xs text-blue-300 ml-1">CLP</span></div>
+
+                <td class="px-2 md:px-6 py-3 text-center whitespace-nowrap compra-column">
+                    ${badgeCompra}
+                </td>
+
+                <td class="px-2 md:px-6 py-3 text-center whitespace-nowrap venta-column hidden">
+                    <div class="text-sm md:text-lg font-bold text-white">${venta ? Math.floor(venta) : '-'} <span class="text-[10px] md:text-xs text-blue-300 ml-0.5">CLP</span></div>
+                </td>
+
+                <td class="px-2 md:px-6 py-3 text-center whitespace-nowrap venta-column hidden">
+                    ${badgeVenta}
+                </td>
+
+                <td class="px-1 md:px-2 py-3 text-center whitespace-nowrap edit-column ${isEditMode ? '' : 'hidden'}">
+                    ${currency !== 'CLP' ? `
+                    <button onclick="deleteCurrency('${currency}')" class="text-red-400 hover:text-red-300 hover:bg-red-900/30 p-1 rounded-full transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                    </button>
+                    ` : ''}
                 </td>
             `;
+
             tableBody.appendChild(row);
         }
     });
+
+    toggleTableColumns();
+    toggleEditModeState();
+}
+
+function getVariationBadge(variation) {
+    let classes = "";
+    let iconSVG = "";
+    let sign = "";
+
+    const arrowUp = `<svg class="w-2 h-2 md:w-2.5 md:h-2.5 ml-0.5 md:ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>`;
+    const arrowDown = `<svg class="w-2 h-2 md:w-2.5 md:h-2.5 ml-0.5 md:ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>`;
+    const dash = `<svg class="w-2 h-2 md:w-2.5 md:h-2.5 ml-0.5 md:ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M20 12H4"></path></svg>`;
+
+    if (variation > 0) {
+        classes = "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+        iconSVG = arrowUp;
+        sign = "+";
+    } else if (variation < 0) {
+        classes = "bg-rose-500/20 text-rose-400 border border-rose-500/30";
+        iconSVG = arrowDown;
+        sign = ""; 
+    } else {
+        classes = "bg-gray-500/20 text-gray-400 border border-gray-500/30";
+        iconSVG = dash;
+        sign = "";
+    }
+
+    // Reducido px-1.5 en móvil para ahorrar espacio
+    return `
+        <div class="inline-flex items-center justify-center px-1.5 md:px-2 py-0.5 rounded-full text-[10px] md:text-xs font-bold tracking-wide ${classes}">
+            ${sign}${variation.toFixed(2)}%
+            ${iconSVG}
+        </div>
+    `;
 }
 
 function updateLastUpdatedTimestamp(fecha) {
