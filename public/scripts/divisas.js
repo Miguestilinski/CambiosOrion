@@ -42,15 +42,23 @@ document.addEventListener('DOMContentLoaded', () => {
 // Función para mostrar el Skeleton Loader
 function showSkeletonLoader() {
     const tableBody = document.getElementById("currency-table-body");
-
     if (!tableBody) return;
 
-    // Crear 5 filas como el diseño de la tabla con animación
-    const skeletonRows = Array.from({ length: 5 }).map(() => `
-        <tr class="skeleton-row">
-            <td class="px-4 py-2">&nbsp;</td>
-            <td class="px-4 py-2">&nbsp;</td>
-            <td class="px-4 py-2">&nbsp;</td>
+    // Skeleton loader con estilo Dark
+    const skeletonRows = Array.from({ length: 8 }).map(() => `
+        <tr class="animate-pulse border-b border-white/5">
+            <td class="px-6 py-4">
+                <div class="flex items-center space-x-3">
+                    <div class="rounded-full bg-white/10 h-8 w-8"></div>
+                    <div class="h-4 bg-white/10 rounded w-24"></div>
+                </div>
+            </td>
+            <td class="px-6 py-4 text-center">
+                <div class="h-4 bg-white/10 rounded w-16 mx-auto"></div>
+            </td>
+            <td class="px-6 py-4 text-center">
+                <div class="h-4 bg-white/10 rounded w-16 mx-auto"></div>
+            </td>
         </tr>
     `).join('');
 
