@@ -1,5 +1,4 @@
 let exchangeRates = {};
-// Lista completa de monedas
 let displayedCurrencies = [
     "USD", "EUR", "ARS", "BRL", "PEN", "COP",
     "UYU", "BOB", "CAD", "GBP", "JPY", "CNY",
@@ -16,63 +15,96 @@ function initializePage() {
 
 document.addEventListener('DOMContentLoaded', () => {
     initializePage();
-    // Lógica de menús móviles...
+
+    const navMenuButton = document.getElementById('nav-menu-button');
+    const sessionMenuButton = document.getElementById('session-menu-button');
+    const navMobileMenu = document.getElementById('nav-mobile-menu');
+    const sessionMobileMenu = document.getElementById('session-mobile-menu');
+
+    if (navMenuButton && sessionMenuButton && navMobileMenu && sessionMobileMenu) {
+        navMenuButton.addEventListener('click', (event) => {
+            toggleMenu(navMobileMenu);
+            event.stopPropagation();
+        });
+
+        sessionMenuButton.addEventListener('click', (event) => {
+            toggleMenu(sessionMobileMenu);
+            event.stopPropagation();
+        });
+
+        document.addEventListener('click', () => {
+            closeMenu(navMobileMenu);
+            closeMenu(sessionMobileMenu);
+        });
+    }
 });
 
+// Función para mostrar el Skeleton Loader
 function showSkeletonLoader() {
     const tableBody = document.getElementById("currency-table-body");
+
     if (!tableBody) return;
 
-    // Skeleton loader con estilo Dark
-    const skeletonRows = Array.from({ length: 8 }).map(() => `
-        <tr class="animate-pulse border-b border-white/5">
-            <td class="px-6 py-4">
-                <div class="flex items-center space-x-3">
-                    <div class="rounded-full bg-white/10 h-8 w-8"></div>
-                    <div class="h-4 bg-white/10 rounded w-24"></div>
-                </div>
-            </td>
-            <td class="px-6 py-4 text-center">
-                <div class="h-4 bg-white/10 rounded w-16 mx-auto"></div>
-            </td>
-            <td class="px-6 py-4 text-center">
-                <div class="h-4 bg-white/10 rounded w-16 mx-auto"></div>
-            </td>
+    // Crear 5 filas como el diseño de la tabla con animación
+    const skeletonRows = Array.from({ length: 5 }).map(() => `
+        <tr class="skeleton-row">
+            <td class="px-4 py-2">&nbsp;</td>
+            <td class="px-4 py-2">&nbsp;</td>
+            <td class="px-4 py-2">&nbsp;</td>
         </tr>
     `).join('');
 
     tableBody.innerHTML = skeletonRows;
 }
 
+// Función para ocultar el Skeleton Loader y mostrar la tabla
 function removeSkeletonLoader() {
     const tableBody = document.getElementById("currency-table-body");
-    if (!tableBody) return;
+
+    if (!tableBody) {
+        console.error("Error: 'currency-table-body' no se encuentra en el DOM.");
+        return;
+    }
+
+    // Limpiar el Skeleton Loader
     tableBody.innerHTML = '';
     fillCurrencyTable();
 }
 
+// Función para alternar visibilidad del menú
 function toggleMenu(menuToOpen, menuToClose) {
     if (menuToClose) closeMenu(menuToClose);
-    menuToOpen.classList.toggle('hidden');
+
+    if (menuToOpen.classList.contains('hidden')) {
+        menuToOpen.classList.remove('hidden');
+    } else {
+        menuToOpen.classList.add('hidden');
+    }
 }
 
 function closeMenu(menu) {
-    if (!menu.classList.contains('hidden')) menu.classList.add('hidden');
+    if (!menu.classList.contains('hidden')) {
+        menu.classList.add('hidden');
+    }
 }
 
+// Marcar la opción activa en el menú
 function setActiveLink(menuId) {
-    // Implementación original conservada
+    const links = document.querySelectorAll(`${menuId} a`);
+    const currentPath = window.location.pathname;
+    links.forEach(link => {
+        if (link.getAttribute('href') === currentPath) {
+            link.classList.add('selected');
+        } else {
+            link.classList.remove('selected');
+        }
+    });
 }
 
 function removeTrailingZeros(value) {
     if (value === null || value === undefined) return '';
-    return parseFloat(value).toString();
-}
-
-// NUEVO: Formateador de miles
-function formatMoney(value) {
-    if(!value) return '-';
-    return parseFloat(value).toLocaleString('es-CL');
+    const floatValue = parseFloat(value);
+    return floatValue.toString();
 }
 
 let eventSource;
@@ -82,7 +114,7 @@ function initializeSSE() {
     eventSource = new EventSource('https://cambiosorion.cl/api/stream/stream_divisas.php');
 
     eventSource.onopen = () => {
-        console.log('Conexión SSE establecida.');
+        console.log('Conexión SSE establecida correctamente.');
         clearTimeout(retryTimeout);
     };
 
@@ -90,31 +122,47 @@ function initializeSSE() {
         try {
             const data = JSON.parse(event.data);
 
+            // Capturar la fecha de última actualización
             if (data.length && data[0].fecha_actualizacion) {
                 updateLastUpdatedTimestamp(data[0].fecha_actualizacion);
             }
 
+            // Procesar datos de las divisas
             if (Array.isArray(data)) {
                 exchangeRates = {};
+
                 data.forEach(currency => {
-                    if (currency.nombre) {
+                    if (
+                        currency.nombre &&
+                        currency.compra &&
+                        currency.venta &&
+                        (currency.icono_circular || currency.icono_cuadrado)
+                    ) {
                         exchangeRates[currency.nombre] = {
                             compra: removeTrailingZeros(currency.compra),
                             venta: removeTrailingZeros(currency.venta),
                             icono: currency.icono_circular || currency.icono_cuadrado,
                         };
+                    } else {
+                        console.warn('Elemento inválido en los datos:', currency);
                     }
                 });
+
                 removeSkeletonLoader();
+            } else {
+                console.error('Formato de datos inesperado:', data);
             }
         } catch (error) {
-            console.error('Error SSE:', error);
+            console.error('Error procesando los datos SSE:', error);
         }
     };
 
     eventSource.onerror = (error) => {
-        eventSource.close();
-        retryTimeout = setTimeout(() => initializeSSE(), 5000);
+        console.error('Error con la conexión SSE:', error);
+        eventSource.close(); // Cerrar la conexión si algo sale mal
+        retryTimeout = setTimeout(() => {
+            initializeSSE();
+        }, 5000);
     };
 }
 
@@ -169,3 +217,4 @@ function updateLastUpdatedTimestamp(fecha) {
         `;
     }
 }
+

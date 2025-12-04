@@ -157,6 +157,11 @@
             </div>
         </div>
     </div>
+
+    <a href="https://wa.me/+56971846048?text=Hola,%20necesito%20consultar%20con%20un%20ejecutivo." 
+    class="fixed bottom-4 right-4 md:bottom-8 md:right-8 bg-[#25D366] text-white p-3 md:p-4 rounded-full shadow-2xl hover:scale-110 transition z-[100] flex items-center justify-center group border-2 border-white/20">
+        <img src="https://cambiosorion.cl/orionapp/icons/whatsapp-white.png" alt="WhatsApp" class="w-10 h-10 md:w-12 md:h-12">
+    </a>
     
     <footer>
       <div class="footer-container">
@@ -230,9 +235,52 @@
           © 2025 Cambios Orion. Todos los derechos reservados.
       </div>
   </footer>
+
     <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cambiosorion.cl/orionapp/public/scripts/header.js"></script>
     <script src="https://cambiosorion.cl/orionapp/public/scripts/divisas.js"></script>
+    <script>
+        const navBtn = document.getElementById('nav-menu-button');
+        const sessionBtn = document.getElementById('session-menu-button');
+        const navMenu = document.getElementById('nav-mobile-menu');
+        const sessionMenu = document.getElementById('session-mobile-menu');
+
+        if(navBtn){
+            navBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                navMenu.classList.toggle('hidden');
+                sessionMenu.classList.add('hidden');
+            });
+        }
+
+        if(sessionBtn){
+            sessionBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                sessionMenu.classList.toggle('hidden');
+                navMenu.classList.add('hidden');
+            });
+        }
+
+        document.addEventListener('click', function(e) {
+            if (navMenu && !navMenu.contains(e.target) && navBtn && !navBtn.contains(e.target)) {
+                navMenu.classList.add('hidden');
+            }
+            if (sessionMenu && !sessionMenu.contains(e.target) && sessionBtn && !sessionBtn.contains(e.target)) {
+                sessionMenu.classList.add('hidden');
+            }
+        });
+
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.classList.add('bg-black/80');
+                header.classList.remove('bg-black/30');
+            } else {
+                header.classList.remove('bg-black/80');
+                header.classList.add('bg-black/30');
+            }
+        });
+    </script>
 </body>
 </html>
