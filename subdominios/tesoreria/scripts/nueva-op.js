@@ -205,9 +205,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
             const res = await fetch("https://cambiosorion.cl/data/nueva-op.php", {
-                method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(payload)
+                method: "POST", credentials: 'include', headers: {"Content-Type":"application/json"}, body: JSON.stringify(payload)
             });
-            const data = await res.json();
+            const textoCrudo = await res.text();
+            console.log("Respuesta CRUDA del PHP:", textoCrudo);
+
+            let data;
+            try {
+                data = JSON.parse(textoCrudo);
+            } catch (errJson) {
+                console.error("El PHP no devolvió un JSON válido. Error:", errJson);
+                mostrarAlerta("Error crítico en servidor. Ver consola.");
+                return;
+            }
             
             if(data.success) {
                 document.getElementById("codigo-op-exito").textContent = data.codigo_operacion || "---";
