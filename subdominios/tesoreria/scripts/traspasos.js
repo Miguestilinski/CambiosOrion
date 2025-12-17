@@ -1,402 +1,222 @@
 let usuarioSesion = null;
 let caja_id = null;
-let modoCompletarPendientes = false;
-let totalesPorDivisa = {};
+let modoCompletar = false;
+let totalesSeleccionados = {};
 
 document.addEventListener('DOMContentLoaded', async () => {
-    const nuevoTraspasoBtn = document.getElementById('nuevo-tp');
-    const completarPendientesBtn = document.getElementById('activar-completado');
     const tabla = document.getElementById('tabla-transacciones');
+    const resumenDiv = document.getElementById('resumen-completado');
     const resumenTotales = document.getElementById('resumen-totales');
-    const contenedorAcciones = document.getElementById('resumen-completado');
+    const btnNuevo = document.getElementById('nuevo-tp');
+    const btnModo = document.getElementById('activar-completado');
 
+    // Filtros
     const filtros = {
         numero: document.getElementById("numero"),
         fecha: document.getElementById("fecha"),
-        transaccion: document.getElementById("transaccion"),
         origen: document.getElementById("origen"),
         destino: document.getElementById("destino"),
         divisa: document.getElementById("divisa"),
         monto: document.getElementById("monto"),
         estado: document.getElementById("estado"),
-        mostrar: document.getElementById("mostrar-registros"),
-        buscar: document.getElementById("buscar"),
-        caja_id: { value: "" }
+        limit: document.getElementById("mostrar-registros")
     };
 
+    // 1. Obtener Sesión
     try {
-        const res = await fetch("https://cambiosorion.cl/data/session_status.php", {
-            credentials: "include"
-        });
-        if (!res.ok) throw new Error("No se pudo obtener la sesión.");
-        const data = await res.json();
-        usuarioSesion = data;
-        console.log("Usuario autenticado:", usuarioSesion);
-
-        if (usuarioSesion && usuarioSesion.caja_id !== undefined) {
+        const res = await fetch("https://cambiosorion.cl/data/session_status.php", { credentials: "include" });
+        usuarioSesion = await res.json();
+        if (usuarioSesion && usuarioSesion.caja_id) {
             caja_id = usuarioSesion.caja_id;
-            filtros.caja_id.value = usuarioSesion.caja_id;
-            obtenerTraspasos();
-        }
-    } catch (error) {
-        console.error("Error obteniendo la sesión:", error);
-    }
-
-    if (nuevoTraspasoBtn) {
-        nuevoTraspasoBtn.addEventListener('click', () => {
-            window.location.href = 'https://tesoreria.cambiosorion.cl/nuevo-tp';
-        });
-    }
-    if (completarPendientesBtn) {
-        completarPendientesBtn.addEventListener('click', () => {
-            modoCompletarPendientes = !modoCompletarPendientes;
-            actualizarModoCompletar();
-        });
-    }
-
-    function actualizarModoCompletar() {
-        const thead = tabla.closest('table').querySelector('thead');
-        const checkboxes = tabla.querySelectorAll('.checkbox-completar');
-        const botonesIndividuales = tabla.querySelectorAll('.btn-completar-individual');
-        const selectAllRow = document.getElementById('fila-select-todos');
-
-        if (modoCompletarPendientes) {
-            completarPendientesBtn.textContent = 'Cancelar';
-
-            completarPendientesBtn.classList.remove(
-                'bg-yellow-600', 'hover:bg-yellow-700', 'focus:ring-yellow-300'
-            );
-            completarPendientesBtn.classList.add(
-                'bg-red-600', 'hover:bg-red-700', 'focus:ring-red-300'
-            );
-
-            contenedorAcciones.classList.remove('hidden');
-            checkboxes.forEach(cb => cb.classList.remove('hidden'));
-            botonesIndividuales.forEach(btn => btn.classList.remove('hidden'));
-
-            const filaEncabezado = thead.querySelector('tr');
-            if (filaEncabezado && filaEncabezado.children.length === 9) {
-                const nuevaColumna = document.createElement('th');
-                nuevaColumna.className = 'px-4 py-2';
-                nuevaColumna.textContent = '';
-                filaEncabezado.insertBefore(nuevaColumna, filaEncabezado.firstElementChild);
-            }
-            if (selectAllRow) selectAllRow.classList.remove('hidden');
+            cargarTraspasos();
         } else {
-            completarPendientesBtn.textContent = 'Completar Traspasos Pendientes';
-
-            completarPendientesBtn.classList.remove(
-                'bg-red-600', 'hover:bg-red-700', 'focus:ring-red-300'
-            );
-            completarPendientesBtn.classList.add(
-                'bg-yellow-600', 'hover:bg-yellow-700', 'focus:ring-yellow-300'
-            );
-
-            contenedorAcciones.classList.add('hidden');
-            checkboxes.forEach(cb => cb.classList.add('hidden'));
-            botonesIndividuales.forEach(btn => btn.classList.add('hidden'));
-
-            const filaEncabezado = thead.querySelector('tr');
-            const ths = filaEncabezado ? filaEncabezado.querySelectorAll('th') : [];
-            if (ths.length > 0 && ths[0].textContent.trim() === '') {
-                filaEncabezado.removeChild(ths[0]);
-            }
-            if (selectAllRow) selectAllRow.classList.add('hidden');
+            console.warn("Sin sesión de caja activa");
+            cargarTraspasos(); // Intentar cargar igual (quizás es admin global)
         }
+    } catch (e) { console.error("Error sesión", e); }
 
-        tabla.querySelectorAll('.checkbox-completar').forEach(cb => cb.checked = false);
-        totalesPorDivisa = {};
-        actualizarTotales();
-        obtenerTraspasos();
+    // 2. Eventos Filtros
+    Object.values(filtros).forEach(input => {
+        input.addEventListener('input', () => { clearTimeout(window.tFil); window.tFil = setTimeout(cargarTraspasos, 500); });
+        input.addEventListener('change', cargarTraspasos);
+    });
+
+    if(btnNuevo) btnNuevo.onclick = () => window.location.href = 'nuevo-tp'; // O la URL correcta cuando la crees
+    
+    // 3. Toggle Modo Completar
+    if(btnModo) {
+        btnModo.onclick = () => {
+            modoCompletar = !modoCompletar;
+            btnModo.textContent = modoCompletar ? "Cancelar Gestión" : "Gestionar Pendientes";
+            btnModo.classList.toggle("bg-gray-700", !modoCompletar);
+            btnModo.classList.toggle("bg-red-700", modoCompletar);
+            
+            resumenDiv.classList.toggle("hidden", !modoCompletar);
+            cargarTraspasos(); // Recargar para mostrar/ocultar checkboxes
+        };
     }
 
-    function actualizarTotales() {
-        const totalHtml = Object.entries(totalesPorDivisa).map(([divisa, monto]) => {
-            return `<span class="block">${divisa}: ${formatearNumero(monto)}</span>`;
-        }).join('');
-        resumenTotales.innerHTML = totalHtml;
-    }
-
-    function obtenerTraspasos() {
+    // 4. Cargar Datos
+    async function cargarTraspasos() {
         const params = new URLSearchParams();
-
-        for (const [clave, input] of Object.entries(filtros)) {
-            let valor = input.value;
-            if (typeof valor === 'string') {
-                valor = valor.trim();
-            } else if (valor === null || valor === undefined) {
-                valor = '';
-            } else {
-                valor = String(valor);
-            }
-            params.set(clave, valor);
+        if(caja_id) params.append("caja_id", caja_id);
+        
+        for (const [key, el] of Object.entries(filtros)) {
+            if(el.value) params.append(key, el.value);
         }
+        params.append("mostrar", filtros.limit.value);
 
-        fetch(`https://cambiosorion.cl/data/traspasos.php?${params.toString()}`)
-            .then(response => response.text()) // cambia a .text() en lugar de .json()
-            .then(rawText => {
-                //console.log("Respuesta cruda del servidor:");
-                //console.log(rawText);
-
-                try {
-                    const data = JSON.parse(rawText);
-                    //console.log('Traspasos recibidos:', data);
-                    mostrarResultados(data);
-                } catch (e) {
-                    console.error("Error al parsear JSON:", e);
-                }
-            })
-            .catch(error => console.error('Error al obtener traspasos:', error));
-
+        try {
+            const res = await fetch(`https://cambiosorion.cl/data/traspasos.php?${params}`);
+            const data = await res.json();
+            renderTabla(data);
+        } catch(e) { console.error(e); }
     }
 
-    function limpiarTexto(valor) {
-        return valor === null || valor === undefined ? '' : valor;
-    }
-
-    function formatearNumero(numero) {
-        if (!numero) return '';
-        return Number(numero).toLocaleString('es-CL');
-    }
-
-    function mostrarResultados(traspasos) {
+    // 5. Render
+    function renderTabla(data) {
         tabla.innerHTML = '';
+        totalesSeleccionados = {};
+        actualizarTotalesUI();
 
-        if (traspasos.length === 0) {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `<td colspan="9" class="text-center text-white py-4 bg-gray-800">No se encontraron traspasos</td>`;
-            tabla.appendChild(tr);
+        if(!data || data.length === 0) {
+            tabla.innerHTML = `<tr><td colspan="9" class="text-center py-8 text-gray-500">No hay registros</td></tr>`;
             return;
         }
 
-        // Eliminar fila previa si existe
-        const filaSelectTodosExistente = document.getElementById('fila-select-todos');
-        if (filaSelectTodosExistente) filaSelectTodosExistente.remove();
-
-        // Solo crear si el modo está activo
-        if (modoCompletarPendientes) {
-            const filaSelectTodos = document.createElement('tr');
-            filaSelectTodos.id = 'fila-select-todos';
-            filaSelectTodos.className = 'bg-gray-700';
-            filaSelectTodos.innerHTML = `
-                <td colspan="7" class="px-4 py-2 text-white">
-                    <label class="flex items-center">
-                        <input type="checkbox" id="checkbox-select-todos" class="rounded mr-2">
-                        Seleccionar todos los traspasos pendientes
+        // Fila "Seleccionar Todos" si estamos en modo completar
+        if(modoCompletar) {
+            const trAll = document.createElement("tr");
+            trAll.className = "bg-gray-800 border-b border-gray-700";
+            trAll.innerHTML = `
+                <td colspan="8" class="px-6 py-3 font-bold text-yellow-500">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="check-all" class="rounded bg-gray-700 border-gray-600 text-yellow-500 focus:ring-yellow-500">
+                        Seleccionar todos los pendientes visibles
                     </label>
                 </td>
-                <td colspan="3" class="px-4 py-2 text-right">
-                    <button id="btn-completar-masivo" class="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-1.5 rounded">
-                        Completar Traspasos Seleccionados
+                <td class="px-6 py-3 text-right">
+                    <button id="btn-completar-batch" class="bg-green-600 hover:bg-green-500 text-white text-xs font-bold px-3 py-2 rounded">
+                        Completar Seleccionados
                     </button>
                 </td>
             `;
-            tabla.appendChild(filaSelectTodos);
+            tabla.appendChild(trAll);
 
-            // Agrega evento después de insertar en el DOM
             setTimeout(() => {
-                const selectAllCheckbox = document.getElementById('checkbox-select-todos');
-                if (selectAllCheckbox) {
-                    selectAllCheckbox.addEventListener('change', (e) => {
-                        const checked = e.target.checked;
-                        tabla.querySelectorAll('.checkbox-completar').forEach(cb => {
-                            cb.checked = checked;
-                            cb.dispatchEvent(new Event('change'));
-                        });
+                const checkAll = document.getElementById("check-all");
+                const btnBatch = document.getElementById("btn-completar-batch");
+                
+                checkAll.addEventListener("change", (e) => {
+                    document.querySelectorAll(".check-tp").forEach(ck => {
+                        ck.checked = e.target.checked;
+                        ck.dispatchEvent(new Event('change'));
                     });
-                }
+                });
 
-                const btnCompletarMasivo = document.getElementById('btn-completar-masivo');
-                if (btnCompletarMasivo) {
-                    btnCompletarMasivo.addEventListener('click', () => {
-                        const seleccionados = Array.from(tabla.querySelectorAll('.checkbox-completar:checked'));
-                        const ids = seleccionados.map(cb => cb.dataset.id);
-                        if (ids.length === 0) {
-                            mostrarModalError({
-                                titulo: "❌ Error",
-                                mensaje: `No hay traspasos seleccionados para completar.`,
-                                textoConfirmar: "Entendido"
-                            });
-                            return;
-                        }
-                        completarTraspasos(ids);
-                    });
-                }
+                btnBatch.addEventListener("click", () => {
+                    const ids = Array.from(document.querySelectorAll(".check-tp:checked")).map(c => c.value);
+                    if(ids.length > 0) procesarCompletado(ids);
+                    else mostrarModal("Selecciona al menos uno.");
+                });
             }, 0);
         }
 
-        traspasos.forEach(tp => {
-            const tr = document.createElement('tr');
-            tr.className = 'bg-white border-b border-gray-700 text-gray-700';
+        data.forEach(t => {
+            const tr = document.createElement("tr");
+            tr.className = "bg-gray-800 hover:bg-gray-700 transition border-b border-gray-700";
+            
+            const esPendiente = t.estado === "Pendiente";
+            const badgeColor = esPendiente ? "bg-yellow-900 text-yellow-300 border-yellow-700" : 
+                               (t.estado === "Pagado" || t.estado === "Completado") ? "bg-green-900 text-green-300 border-green-700" : 
+                               "bg-red-900 text-red-300 border-red-700";
 
-            const esPendiente = (tp.estado || '').toLowerCase() === 'pendiente';
-
-            // Crear celda del checkbox (solo visible si modoCompletarPendientes está activo)
-            if (modoCompletarPendientes && esPendiente) {
-                const tdCheckbox = document.createElement('td');
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.className = 'checkbox-completar ml-4 rounded';
-                checkbox.setAttribute('data-id', tp.id);
-                checkbox.setAttribute('data-monto', tp.monto);
-                checkbox.setAttribute('data-divisa', tp.divisa);
-                tdCheckbox.appendChild(checkbox);
-
-                checkbox.addEventListener('change', () => {
-                    const monto = parseFloat(tp.monto);
-                    const divisa = tp.divisa;
-                    if (checkbox.checked) {
-                        totalesPorDivisa[divisa] = (totalesPorDivisa[divisa] || 0) + monto;
-                    } else {
-                        totalesPorDivisa[divisa] = (totalesPorDivisa[divisa] || 0) - monto;
-                        if (totalesPorDivisa[divisa] <= 0) delete totalesPorDivisa[divisa];
-                    }
-                    actualizarTotales();
-                });
-
-                tr.appendChild(tdCheckbox);
-            } else if (modoCompletarPendientes && !esPendiente) {
-                // Mantener alineación con celda vacía si modo está activo pero no es pendiente
-                const tdVacio = document.createElement('td');
-                tr.appendChild(tdVacio);
-            }
-
-            // Celdas de datos
-            const celdas = [
-                limpiarTexto(tp.id),
-                limpiarTexto(tp.fecha),
-                limpiarTexto(tp.transaccion_id),
-                limpiarTexto(tp.origen),
-                limpiarTexto(tp.destino),
-                limpiarTexto(tp.divisa),
-                formatearNumero(tp.monto),
-                limpiarTexto(tp.estado)
-            ];
-
-            celdas.forEach(texto => {
-                const td = document.createElement('td');
-                td.className = 'px-4 py-2';
-                td.textContent = texto;
-                tr.appendChild(td);
-            });
-
-            // Última celda (acciones)
-            const tdAcciones = document.createElement('td');
-            tdAcciones.className = 'px-4 py-2 acciones-cell';
-            tr.appendChild(tdAcciones);
-
-            // Botón de acción según estado
-            const accionesCell = tr.querySelector('.acciones-cell');
-
-            if (esPendiente) {
-                if (modoCompletarPendientes) {
-                    const btnCompletar = document.createElement('button');
-                    btnCompletar.textContent = 'Completar';
-                    btnCompletar.className = 'btn-completar-individual bg-green-600 text-white px-3 py-1 rounded';
-                    btnCompletar.addEventListener('click', () => {
-                        completarTraspasos([tp.id]);
-                    });
-                    accionesCell.appendChild(btnCompletar);
-                } else {
-                    const btnCompletar = document.createElement('button');
-                    btnCompletar.textContent = 'Completar';
-                    btnCompletar.className = 'bg-green-600 text-white px-3 py-1 rounded';
-                    btnCompletar.addEventListener('click', () => {
-                        completarTraspasos([tp.id]);
-                    });
-                    accionesCell.appendChild(btnCompletar);
-                }
+            // Checkbox logic
+            let checkHtml = "";
+            if(modoCompletar && esPendiente) {
+                checkHtml = `<input type="checkbox" class="check-tp rounded bg-gray-700 border-gray-600 text-yellow-500 focus:ring-yellow-500" value="${t.id}" data-monto="${t.monto}" data-divisa="${t.divisa}">`;
+            } else if (modoCompletar) {
+                checkHtml = `<span class="text-gray-600">-</span>`;
             } else {
-                const btnMostrar = document.createElement('button');
-                btnMostrar.textContent = 'Mostrar';
-                btnMostrar.className = 'text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1';
-                btnMostrar.addEventListener('click', () => {
-                    window.location.href = `detalle-tp?id=${tp.id}`;
-                });
-                accionesCell.appendChild(btnMostrar);
+                checkHtml = `<span class="font-mono text-gray-500">#${t.id}</span>`;
             }
+
+            tr.innerHTML = `
+                <td class="px-6 py-4 font-medium text-white whitespace-nowrap flex items-center gap-3">
+                    ${checkHtml} 
+                    ${!modoCompletar ? '' : `<span class="font-mono text-xs text-gray-500">#${t.id}</span>`}
+                </td>
+                <td class="px-6 py-4">${t.fecha.substring(0, 16)}</td>
+                <td class="px-6 py-4 text-gray-300">${t.origen}</td>
+                <td class="px-6 py-4 text-center text-gray-500">➝</td>
+                <td class="px-6 py-4 text-white">${t.destino}</td>
+                <td class="px-6 py-4 text-yellow-400 font-bold">${t.divisa}</td>
+                <td class="px-6 py-4 text-right font-mono text-white">${parseFloat(t.monto).toLocaleString("es-CL")}</td>
+                <td class="px-6 py-4 text-center">
+                    <span class="px-2 py-1 text-xs font-bold rounded border ${badgeColor}">${t.estado}</span>
+                </td>
+                <td class="px-6 py-4 text-right">
+                    ${(esPendiente && !modoCompletar) ? 
+                        `<button class="btn-completar-uno bg-green-700 hover:bg-green-600 text-white px-2 py-1 rounded text-xs" data-id="${t.id}">Completar</button>` 
+                        : ''}
+                </td>
+            `;
 
             tabla.appendChild(tr);
-        });
-    }
 
-    function completarTraspasos(ids) {
-        fetch('https://cambiosorion.cl/data/traspasos.php?caja_id=' + caja_id, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ ids })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.exito) {
-                mostrarModalExitoso()
-            } else {
-                mostrarModalError({
-                    titulo: "❌ Error",
-                    mensaje: `Hubo un error del servidor: ${data.mensaje}`,
-                    textoConfirmar: "Entendido"
+            // Listener para sumar totales al marcar checkbox
+            if(modoCompletar && esPendiente) {
+                const ck = tr.querySelector(".check-tp");
+                ck.addEventListener("change", (e) => {
+                    const m = parseFloat(t.monto);
+                    const d = t.divisa;
+                    if(e.target.checked) {
+                        totalesSeleccionados[d] = (totalesSeleccionados[d] || 0) + m;
+                    } else {
+                        totalesSeleccionados[d] = (totalesSeleccionados[d] || 0) - m;
+                        if(totalesSeleccionados[d] <= 0) delete totalesSeleccionados[d];
+                    }
+                    actualizarTotalesUI();
                 });
             }
-        })
-        .catch(err => {
-            mostrarModalError({
-                titulo: "❌ Error",
-                mensaje: `Hubo un error del servidor: ${err}`,
-                textoConfirmar: "Entendido"
-            });
+            
+            // Listener completar individual
+            const btnOne = tr.querySelector(".btn-completar-uno");
+            if(btnOne) btnOne.onclick = () => procesarCompletado([t.id]);
         });
     }
 
-    // Event listeners para filtros visibles
-    Object.entries(filtros).forEach(([clave, input]) => {
-        if (clave !== "caja_id") {
-            input.addEventListener('input', obtenerTraspasos);
-            input.addEventListener('change', obtenerTraspasos);
-        }
-    });
+    function actualizarTotalesUI() {
+        const txt = Object.entries(totalesSeleccionados)
+            .map(([div, mont]) => `<span class="bg-gray-900 px-2 py-1 rounded border border-gray-600 mr-2">${div}: ${mont.toLocaleString("es-CL")}</span>`)
+            .join("");
+        resumenTotales.innerHTML = txt || "Ninguno seleccionado";
+    }
+
+    async function procesarCompletado(ids) {
+        if(!confirm(`¿Completar ${ids.length} traspaso(s)? Esto moverá el inventario.`)) return;
+
+        try {
+            const res = await fetch("https://cambiosorion.cl/data/traspasos.php", {
+                method: "POST", headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ids: ids })
+            });
+            const data = await res.json();
+            
+            if(data.exito) {
+                mostrarModal("✅ Operación exitosa", "Traspasos completados.");
+                cargarTraspasos();
+            } else {
+                mostrarModal("❌ Error", data.mensaje);
+            }
+        } catch(e) { mostrarModal("Error de conexión"); }
+    }
+
+    function mostrarModal(titulo, msg) {
+        document.getElementById("modal-titulo").textContent = titulo;
+        document.getElementById("modal-mensaje").textContent = msg || "";
+        const m = document.getElementById("modal-generico");
+        m.classList.remove("hidden");
+        document.getElementById("modal-confirmar").onclick = () => m.classList.add("hidden");
+    }
 });
-
-function mostrarModalError({ titulo, mensaje, textoConfirmar = "Aceptar", textoCancelar = null, onConfirmar, onCancelar }) {
-  const modal = document.getElementById("modal-error");
-  const tituloElem = document.getElementById("modal-error-titulo");
-  const mensajeElem = document.getElementById("modal-error-mensaje");
-  const btnConfirmar = document.getElementById("modal-error-confirmar");
-  const btnCancelar = document.getElementById("modal-error-cancelar");
-
-  tituloElem.textContent = titulo;
-  mensajeElem.textContent = mensaje;
-  btnConfirmar.textContent = textoConfirmar;
-
-  if (textoCancelar) {
-    btnCancelar.classList.remove("hidden");
-    btnCancelar.textContent = textoCancelar;
-  } else {
-    btnCancelar.classList.add("hidden");
-  }
-
-  modal.classList.remove("hidden");
-
-  // Remover handlers anteriores
-  btnConfirmar.onclick = () => {
-    modal.classList.add("hidden");
-    if (onConfirmar) onConfirmar();
-  };
-
-  btnCancelar.onclick = () => {
-    modal.classList.add("hidden");
-    if (onCancelar) onCancelar();
-  };
-}
-
-function mostrarModalExitoso() {
-  const modal = document.getElementById("modal-exitoso");
-  modal.classList.remove("hidden");
-
-  document.getElementById("volver").onclick = () => {
-    modal.classList.add("hidden");
-    obtenerTraspasos();
-  };
-
-}
