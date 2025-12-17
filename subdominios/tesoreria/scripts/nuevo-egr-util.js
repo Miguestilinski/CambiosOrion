@@ -59,17 +59,14 @@ document.addEventListener("DOMContentLoaded", () => {
       if(val) e.target.value = new Intl.NumberFormat('es-CL').format(parseInt(val));
   });
 
-  // 4. BUSCADOR TIPO UTILIDAD (Con opción "Agregar Nuevo")
+  // 4. BUSCADORES
+
+  // --- Buscador Tipo Utilidad ---
   let conceptoTimeout;
   conceptoInput.addEventListener("input", () => {
     clearTimeout(conceptoTimeout);
     const query = conceptoInput.value.trim();
-    
-    // Si está vacío, ocultar lista
-    if (query.length === 0) { 
-        resultadoConceptos.classList.add("hidden"); 
-        return; 
-    }
+    if (query.length === 0) { resultadoConceptos.classList.add("hidden"); return; }
 
     conceptoTimeout = setTimeout(async () => {
       try {
@@ -78,7 +75,6 @@ document.addEventListener("DOMContentLoaded", () => {
         
         resultadoConceptos.innerHTML = "";
         
-        // Opción 1: Resultados encontrados
         items.forEach(c => {
             const li = document.createElement("li");
             li.textContent = c.nombre;
@@ -90,25 +86,48 @@ document.addEventListener("DOMContentLoaded", () => {
             resultadoConceptos.appendChild(li);
         });
 
-        // Opción 2: Agregar Nuevo (Siempre visible al final para confirmar que es texto libre)
-        // Verificamos si el texto exacto ya existe para no duplicar la opción visualmente
         const existeExacto = items.some(i => i.nombre.toLowerCase() === query.toLowerCase());
-        
         if (!existeExacto && query.length > 0) {
             const liNuevo = document.createElement("li");
             liNuevo.innerHTML = `<span class="text-yellow-600 font-bold">➕ Agregar:</span> "${query}"`;
             liNuevo.className = "p-3 hover:bg-yellow-50 cursor-pointer text-sm text-gray-800 border-t-2 border-gray-100";
             liNuevo.addEventListener("click", () => {
-                conceptoInput.value = query; // Se queda con lo escrito
+                conceptoInput.value = query;
                 resultadoConceptos.classList.add("hidden");
             });
             resultadoConceptos.appendChild(liNuevo);
         }
-
         resultadoConceptos.classList.remove("hidden");
       } catch (error) {}
     }, 300);
   });
+
+  // --- Buscador Cuentas ---
+  if(cuentaInput) {
+      cuentaInput.addEventListener("input", async (e) => {
+          const query = e.target.value.trim();
+          if(query.length < 2) { resultadoCuentas.classList.add("hidden"); return; }
+          
+          try {
+              const res = await fetch(`https://cambiosorion.cl/data/nuevo-egr-util.php?buscar_cuenta=${encodeURIComponent(query)}`);
+              const cuentas = await res.json();
+              resultadoCuentas.innerHTML = "";
+              
+              cuentas.forEach(c => {
+                  const li = document.createElement("li");
+                  li.className = "p-2 hover:bg-gray-100 cursor-pointer text-sm text-gray-800 border-b border-gray-100";
+                  li.innerHTML = `<strong>${c.nombre_cuenta}</strong> <span class="text-xs text-gray-500">(${c.moneda})</span>`;
+                  li.addEventListener("click", () => {
+                      cuentaInput.value = c.nombre_cuenta;
+                      cuentaInput.dataset.id = c.id; 
+                      resultadoCuentas.classList.add("hidden");
+                  });
+                  resultadoCuentas.appendChild(li);
+              });
+              resultadoCuentas.classList.remove("hidden");
+          } catch(e) {}
+      });
+  }
 
   // Buscador Divisas
   if(divisaInput) {
@@ -136,9 +155,11 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
+  // Cerrar listas al hacer clic fuera
   document.addEventListener("click", (e) => {
       if (!conceptoInput.contains(e.target) && !resultadoConceptos.contains(e.target)) resultadoConceptos.classList.add("hidden");
       if (divisaInput && !divisaInput.contains(e.target) && !divisaSugerencias.contains(e.target)) divisaSugerencias.classList.add("hidden");
+      if (cuentaInput && !cuentaInput.contains(e.target) && !resultadoCuentas.contains(e.target)) resultadoCuentas.classList.add("hidden");
   });
 
   // 5. Submit
@@ -157,9 +178,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const payload = {
       tipo_egreso: inputTipoHidden.value,
-      item_utilidad: concepto, // Se guarda lo que esté en el input (seleccionado o escrito)
+      item_utilidad: concepto,
       caja_id: cajaSelect.value,
-      // cuenta_id: cuentaInput.dataset.id || null, 
+      cuenta_id: cuentaInput.dataset.id || null, // Se habilita el envío del ID de cuenta
       divisa_id: divisaId,
       monto: montoRaw,
       usuario_id: usuarioSesionId,
@@ -176,6 +197,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("modal-exitoso").classList.remove("hidden");
         form.reset();
         divisaInput.dataset.id = "";
+        cuentaInput.dataset.id = ""; // Limpiar ID de cuenta
       } else {
         mostrarAlerta(data.error || data.message, "Error al Registrar");
       }
