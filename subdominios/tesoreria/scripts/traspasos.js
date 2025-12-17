@@ -2,9 +2,6 @@
 let sesionData = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // Inicializar iconos de Lucide
-    lucide.createIcons();
-
     // Obtener la sesión actual
     await obtenerSesion();
 
