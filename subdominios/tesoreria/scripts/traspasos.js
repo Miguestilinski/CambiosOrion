@@ -270,7 +270,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 tr.appendChild(td);
             });
 
-            // 3. Columna Acciones
+            // 3. Acciones (BOTÓN MODIFICADO)
             const tdAcciones = document.createElement('td');
             tdAcciones.className = 'px-4 py-2 text-center';
 
@@ -281,12 +281,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                 btnCompletar.addEventListener('click', () => completarTraspasos([tp.id]));
                 tdAcciones.appendChild(btnCompletar);
             } else {
+                // AQUÍ ESTÁ EL CAMBIO: Botón mostrar con redirección activa
                 const btnVer = document.createElement('button');
-                btnVer.textContent = 'Ver'; // O "Mostrar"
+                btnVer.textContent = 'Mostrar'; 
                 btnVer.className = 'text-white bg-blue-700 hover:bg-blue-800 font-medium rounded text-xs px-3 py-1';
                 btnVer.addEventListener('click', () => {
-                    // Ajusta la URL de detalle si existe
-                    // window.location.href = `detalle-tp?id=${tp.id}`; 
+                    window.location.href = `detalle-tp?id=${tp.id}`; 
                 });
                 tdAcciones.appendChild(btnVer);
             }
