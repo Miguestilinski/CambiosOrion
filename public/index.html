@@ -1,664 +1,573 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="scroll-smooth">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cambios Orion</title>
+    
     <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/header.css">
-    <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/index.css">
-    <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/footer.css">
+    <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/landing.css"> 
     <link href="https://cambiosorion.cl/orionapp/public/styles/output.css" rel="stylesheet">
     <link rel="icon" href="https://cambiosorion.cl/orionapp/icons/IsotipoOrion-blue.svg" type="image/png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
 </head>
 
-<body>
+<body class="flex flex-col min-h-screen">
     <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js"></script>
-    <header>
-        <!-- Logo y Nombre -->
-        <div class="header-logo">
-            <a href="https://cambiosorion.cl/">
-                <img src="/orionapp/assets/LogoOrion-white.svg" alt="Logo Cambios Orion" class="logo">
-            </a>
- 
-        </div>
-    
-        <!-- Botones para versión móvil -->
-        <div class="mobile-buttons">
-            <button class="menu-button" id="nav-menu-button">
-                <img src="/orionapp/icons/menu-white.svg" alt="Menú">
-            </button>
-            <button class="menu-button" id="session-menu-button">
-                <img src="/orionapp/icons/profile-white.png" alt="Sesión">
-            </button>
-        </div>
-    
-        <!-- Menús desplegables para móvil -->
-        <div id="nav-mobile-menu" class="mobile-menu hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
-            <ul class="py-2 text-sm text-gray-700">
-                <li><a href="index" class="block px-4 py-2 hover:bg-gray-100">Inicio</a></li>
-            </ul>
-            <ul class="py-2 text-sm text-gray-700">
-                <li><a href="nosotros" class="block px-4 py-2 hover:bg-gray-100">Nosotros</a></li>
-            </ul>
-            <ul class="py-2 text-sm text-gray-700">
-                <li><a href="contacto" class="block px-4 py-2 hover:bg-gray-100">Contacto</a></li>
-            </ul>
-        </div>
-    
-        <div class="mobile-menu hidden bg-white rounded-lg shadow w-44" id="session-mobile-menu">
-            <div id="guest-actions-mobile" class="divide-y divide-gray-100" style="display:none;">
-                <ul class="py-2 text-sm text-gray-700">
-                    <li><a href="#login" class="block px-4 py-2 hover:bg-gray-100">Iniciar Sesión</a></li>
-                </ul>
-                <ul class="py-2 text-sm text-gray-700">
-                    <li><a href="#registro" class="block px-4 py-2 hover:bg-gray-100">Registro</a></li>
-                </ul>
-            </div>
-            <div id="user-actions-mobile" class="divide-y divide-gray-100" style="display:none;">
-                <div class="px-2 py-2 text-sm text-gray-900">
-                    <div id="user-name">Nombre del usuario</div>
-                    <div id="user-email" class="mail font-medium truncate">Correo del usuario</div>
-                </div>
-                <ul class="py-2 text-sm text-gray-700">
-                    <li><a href="https://clientes.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Mi perfil</a></li>
-                </ul>
-                <ul class="py-2 text-sm text-gray-700" id="menu-admin" style="display: none;">
-                    <li><a href="https://admin.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Portal Admin</a></li>
-                </ul>
-                <ul class="py-2 text-sm text-gray-700">
-                    <li><a href="#" class="block px-4 py-2 hover:bg-gray-100" id="logout-button-mobile">Cerrar sesión</a></li>
-                </ul>
-            </div>
-        </div>
-    
-        <!-- Menú de navegación para escritorio -->
-        <nav>
-            <ul>
-                <li class="selected"><a href="index">Inicio</a></li>
-                <li><a href="nosotros">Nosotros</a></li>
-                <li><a href="contacto">Contacto</a></li>
-            </ul>
-        </nav>
-    
-        <!-- Acciones para escritorio -->
-        <div class="header-actions">
-            <!-- User actions -->
-            <div id="user-actions" style="display:none;">
-                <button id="profile-menu-button" class="text-white bg-transparent hover:bg-gray-200 focus:outline-none">
-                    <img src="/orionapp/icons/profile-white.png" alt="Profile">
-                </button>
-                <!-- Menú desplegable -->
-                <div id="dropdownInformation" class="hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
-                    <div class="px-4 py-3 text-sm text-gray-900">
-                        <div id="user-name">Nombre del usuario</div>
-                        <div id="user-email" class="mail font-medium truncate">Correo del usuario</div>
-                    </div>
-                    <ul class="py-2 text-sm text-gray-700" id="menu-cliente">
-                        <li><a href="https://clientes.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Mi perfil</a></li>
-                    </ul>
-                    <ul class="py-2 text-sm text-gray-700" id="menu-admin" style="display: none;">
-                        <li><a href="https://admin.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Portal Admin</a></li>
-                    </ul>
-                    <ul class="py-2 text-sm text-gray-700">
-                        <li><a href="#" class="block px-4 py-2 hover:bg-gray-100" id="logout-button">Cerrar sesión</a></li>
-                    </ul>
-                </div>
-            </div>
 
-            <!-- Guest actions -->
-            <div id="guest-actions" style="display:none;">
-                <a href="#login">Iniciar sesión</a>
-                <a href="#registro" class="register-button">Registrarse</a>
+    <header class="fixed w-full z-50 transition-all duration-300 bg-black/30 backdrop-blur-md border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+            <div class="flex justify-between items-center h-14 md:h-16"> 
+                
+                <div class="flex-shrink-0 flex items-center header-logo">
+                    <a href="https://cambiosorion.cl/">
+                        <img src="/orionapp/assets/LogoOrion-white.svg" alt="Logo Cambios Orion" class="h-14 md:h-16 w-auto drop-shadow-lg">
+                    </a>
+                </div>
+
+                <nav class="hidden md:flex space-x-10">
+                    <a href="index" class="text-white hover:text-blue-300 px-3 py-2 text-lg font-bold border-b-2 border-white text-shadow transition">Inicio</a>
+                    <a href="nosotros" class="text-white hover:text-blue-300 px-3 py-2 text-lg font-semibold text-shadow transition">Nosotros</a>
+                    <a href="contacto" class="text-white hover:text-blue-300 px-3 py-2 text-lg font-semibold text-shadow transition">Contacto</a>
+                </nav>
+
+                <div class="hidden md:flex items-center space-x-6">
+                     <div id="user-actions" style="display:none;" class="relative">
+                        <button id="profile-menu-button" class="flex text-sm rounded-full focus:outline-none ring-2 ring-white/50">
+                            <img class="h-10 w-10 rounded-full bg-white p-1" src="/orionapp/icons/profile-white.png" alt="Profile">
+                        </button>
+                        <div id="dropdownInformation" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl py-2 text-gray-800 z-50">
+                            <div class="px-4 py-3 text-sm border-b">
+                                <div id="user-name" class="font-bold text-lg">Usuario</div>
+                                <div id="user-email" class="text-gray-500 truncate">email@ejemplo.com</div>
+                            </div>
+                            <a href="https://clientes.cambiosorion.cl/" class="block px-4 py-2 text-base hover:bg-gray-100">Mi perfil</a>
+                            <a href="#" id="logout-button" class="block px-4 py-2 text-base hover:bg-gray-100 text-red-600 font-semibold">Cerrar sesión</a>
+                        </div>
+                    </div>
+                    
+                    <div id="guest-actions" class="flex items-center space-x-4">
+                        <a href="#login" class="text-white hover:text-blue-200 px-3 py-2 text-lg font-semibold text-shadow">Iniciar sesión</a>
+                        <a href="#registro" class="bg-[#3b82f6] hover:bg-[#2563eb] text-white px-6 py-3 rounded-full text-lg font-bold shadow-lg transition transform hover:scale-105">
+                            Registrarse
+                        </a>
+                    </div>
+                </div>
+
+                <div class="flex items-center md:hidden gap-4">
+                    <button id="session-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-white/20 focus:outline-none">
+                        <img src="/orionapp/icons/profile-white.png" class="h-8 w-8" alt="Sesión">
+                    </button>
+                    <button id="nav-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-white/20 focus:outline-none">
+                        <img src="/orionapp/icons/menu-white.svg" class="h-9 w-9" alt="Menú">
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="nav-mobile-menu" class="hidden md:hidden bg-[#0f172a] border-t border-gray-700 absolute top-24 left-0 w-full z-40 shadow-xl">
+             <div class="px-6 pt-6 pb-8 space-y-4 text-white">
+                <a href="index" class="block px-3 py-3 rounded-md text-xl font-bold text-blue-400 bg-white/5">Inicio</a>
+                <a href="nosotros" class="block px-3 py-3 rounded-md text-xl font-medium hover:bg-white/10">Nosotros</a>
+                <a href="contacto" class="block px-3 py-3 rounded-md text-xl font-medium hover:bg-white/10">Contacto</a>
+            </div>
+        </div>
+
+        <div id="session-mobile-menu" class="hidden md:hidden bg-[#0f172a] border-t border-gray-700 absolute top-24 left-0 w-full z-40 shadow-xl">
+            <div id="guest-actions-mobile" class="px-6 pt-6 pb-8 space-y-4">
+                 <a href="#login" class="block px-3 py-2 text-xl font-medium text-white hover:text-blue-300">Iniciar Sesión</a>
+                 <a href="#registro" class="block w-full text-center px-3 py-3 rounded-lg bg-blue-600 text-xl font-bold text-white">Registrarse</a>
+            </div>
+            <div id="user-actions-mobile" class="hidden px-6 pt-6 pb-8 space-y-4 text-white">
+                <div class="px-3 py-2 border-b border-gray-600 mb-2">
+                    <div id="user-name" class="font-bold text-lg">Usuario</div>
+                    <div id="user-email" class="text-sm text-gray-400">correo@ejemplo.com</div>
+                </div>
+                <a href="https://clientes.cambiosorion.cl/" class="block px-3 py-2 text-xl hover:bg-white/10">Mi perfil</a>
+                <a href="#" id="logout-button-mobile" class="block px-3 py-2 text-xl text-red-400 font-bold hover:bg-white/10">Cerrar sesión</a>
             </div>
         </div>
     </header>
-
-    <div class="header-divider"></div>
-    <div class="main-content">
-        <!-- ===== BANNER (CARRUSEL) ===== -->
-        <section id="hero-carousel" class="relative w-full h-[25rem] overflow-hidden">
-            <!-- Slides wrapper -->
-            <div id="carousel-slides" class="flex flex-nowrap h-full transition-transform duration-700 ease-in-out">
-                <!-- Slide 1 -->
-                <div class="carousel-slide flex-shrink-0 w-full h-full bg-center bg-cover flex items-center justify-center text-white"
-                    style="background-image: url('/orionapp/assets/image1.jpg');">
-                    <div class="bg-black/60 p-6 rounded-lg text-center max-w-xl mx-4">
-                        <h2 class="text-2xl md:text-4xl font-bold mb-2">Nuestras Divisas</h2>
-                        <p class="mb-4">Revisa en tiempo real las tasas de compra y venta de todas nuestras divisas.</p>
-                        <a href="https://cambiosorion.cl/divisas" 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            class="bg-white text-black px-4 py-2 rounded-lg font-semibold hover:bg-gray-200">
-                            Ver Catálogo
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Slide 2 -->
-                <div class="carousel-slide flex-shrink-0 w-full h-full bg-center bg-cover flex items-center justify-center text-white"
-                    style="background-image: url('/orionapp/assets/image2.jpg');">
-                    <div class="bg-black/60 p-6 rounded-lg text-center max-w-xl mx-4">
-                        <h2 class="text-2xl md:text-4xl font-bold mb-2">Reserva tu cambio</h2>
-                        <p class="mb-4">Asegura el precio de hoy para tu próxima operación.</p>
-                        <a href="#conversor" class="bg-white text-black px-4 py-2 rounded-lg font-semibold hover:bg-gray-200">Reservar</a>
-                    </div>
-                </div>
-
-                <!-- Slide 3 -->
-                <div class="carousel-slide flex-shrink-0 w-full h-full bg-center bg-cover flex items-center justify-center text-white"
-                    style="background-image: url('/orionapp/assets/image3.jpg');">
-                <div class="bg-black/60 p-6 rounded-lg text-center max-w-xl mx-4">
-                    <h2 class="text-2xl md:text-4xl font-bold mb-2">Alertas personalizadas</h2>
-                    <p class="mb-4">Recibe notificaciones cuando el tipo de cambio sea el que buscas.</p>
-                    <a id="alertaSlideBtn" href="#alerta-wrapper" class="bg-white text-black px-4 py-2 rounded-lg font-semibold hover:bg-gray-200">Crear alerta</a>
-                </div>
-                </div>
-            </div>
-
-            <!-- Controles Prev / Next (z-index alto para que se vean) -->
-            <button id="carousel-prev" aria-label="Anterior" class="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full border-2 border-white bg-black/60 text-white text-2xl cursor-pointer hover:bg-black/70 z-[10000]">
-                &#10094;
-            </button>
-            <button id="carousel-next" aria-label="Siguiente" class="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full border-2 border-white bg-black/60 text-white text-2xl cursor-pointer hover:bg-black/70 z-[10000]">
-                &#10095;
-            </button>
-
-            <!-- Indicadores (dots) -->
-            <div id="carousel-indicators" class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-[10000]">
-                <button class="dot w-3 h-3 rounded-full bg-white/60" data-slide="0" aria-label="Slide 1"></button>
-                <button class="dot w-3 h-3 rounded-full bg-white/30" data-slide="1" aria-label="Slide 2"></button>
-                <button class="dot w-3 h-3 rounded-full bg-white/30" data-slide="2" aria-label="Slide 3"></button>
-            </div>
-        </section>
-
-        <div id="ticker">
-            <div id="ticker-content"></div>
-        </div>
-        <span id="paridades-date" class="text-white text-sm">
-            Paridades Banco Central de Chile (--)
-        </span>
-
-        <!-- Conversor de divisas -->
-        <section id="conversor" class="max-w-2xl mx-auto my-10 bg-white p-8 mb-12 rounded-xl shadow-lg">
-            <h2 class="text-3xl font-extrabold text-[#1e3a8a] text-center mb-6 tracking-wide drop-shadow-md">Cotiza y Reserva</h2>
-            <!-- Stepper de Flowbite -->
-            <ol class="flex items-center w-full text-sm font-medium text-center text-gray-500 sm:text-base">
-                <li id="stepper-1" class="flex-1">1. Cotiza</li>
-                <li id="stepper-2" class="flex-1">2. Datos</li>
-                <li id="stepper-3" class="flex-1">3. Confirmación</li>
-            </ol>
-
-            <!-- Paso 1: Conversor -->
-            <div id="step-1" class="mt-6">
-                <!-- Switch Compra/Venta -->
-                <div id="trade-switch" class="flex justify-between mb-2 text-sm font-medium select-none">
-                    <div id="trade-buy" class="flex-1 p-2 text-center border-l border-t border-b rounded-l-md cursor-pointer">
-                        Compra: -- CLP
-                    </div>
-                    <div id="trade-sell" class="flex-1 p-2 text-center border-t border-b border-r rounded-r-md cursor-pointer">
-                        Venta: -- CLP
-                    </div>
-                </div>
-
-                <div id="currency-converter" class="currency-converter flex justify-between">
-
-                    <!-- Columna izquierda -->
-                    <div class="converter-box flex-1 relative">
-                        <label for="amount1" class="block text-lg font-bold mb-2">¿Qué divisa tienes?</label>
-                        <input type="text" id="amount1" placeholder="0.00" min="0"
-                            class="w-full p-4 border rounded-lg shadow-md text-right bg-white mb-3 appearance-none"
-                            oninput="convertCurrency()">
-                        <div id="dropdown1Button" class="currency-selector"
-                            onclick="toggleDropdown('dropdown1', event)">
-                            <img id="icon-currency1" src="/orionapp/node_modules/circle-flags/flags/cl.svg" alt="Icono divisa" class="w-5 h-5 mr-2">
-                            <span id="currency1-text" class="font-medium">CLP</span>
-                            <svg class="w-4 h-4 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-                            </svg>
-                        </div>
-                        <div id="dropdown1" class="dropdown-content hidden divide-y divide-gray-100 rounded-lg shadow-md overflow-y-auto">
-                            <ul class="py-1 text-sm text-gray-700" aria-labelledby="dropdown1Button">
-                                <li onclick="selectCurrency('USD', '/orionapp/node_modules/circle-flags/flags/us.svg', 'currency1', 'dropdown1')">
-                                    <a href="#" class="px-2 py-1 hover:bg-gray-100 flex items-center currency-option">
-                                        <img src="/orionapp/node_modules/circle-flags/flags/us.svg" alt="Icono USD" class="w-5 h-5 inline-block mr-2"> 
-                                        <span>USD</span>
-                                    </a>
-                                </li>
-                                <!-- Agrega más opciones según sea necesario -->
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- Flecha entre inputs -->
-                    <div class="mx-4 flex flex-col justify-center">
-                        <img src="/orionapp/icons/right-arrow.svg" alt="Flecha swap" class="w-6 h-6">
-                    </div>
-
-                    <!-- Botón para intercambio -->
-                    <button class="swap-button mx-4 p-2 rounded-full hover:bg-white text-black hidden"
-                        onclick="swapCurrencies()" aria-label="Intercambiar divisas">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 10h4m0 0V6m0 4l-4-4m-6 14H7m0 0v-4m0 4l4-4"/>
-                        </svg>
-                    </button>
-
-                    <!-- Columna derecha -->
-                    <div class="converter-box flex-1 relative">
-                        <label for="amount2" class="block text-lg font-bold mb-2">¿Qué divisa quieres?</label>
-                        <input type="readonly-input" id="amount2" placeholder="0.00" min="0"
-                            class="w-full p-4 border rounded-lg shadow-md text-right bg-white mb-3 appearance-none"
-                            oninput="convertFromAmount2()">
-                        <div id="dropdown2Button" class="currency-selector"
-                            onclick="toggleDropdown('dropdown2', event)">
-                            <img id="icon-currency2" src="/orionapp/node_modules/circle-flags/flags/us.svg" alt="Icono divisa" class="w-5 h-5 mr-2">
-                            <span id="currency2-text" class="font-medium">USD</span>
-                            <svg class="w-4 h-4 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-                            </svg>
-                        </div>
-                        
-                        <div id="dropdown2" class="dropdown-content hidden divide-y divide-gray-100 rounded-lg shadow-md overflow-y-auto">
-                            <ul class="py-1 text-sm text-gray-700" aria-labelledby="dropdown2Button">
-                                <li onclick="selectCurrency('CLP', '/orionapp/node_modules/circle-flags/flags/cl.svg', 'currency2', 'dropdown2')">
-                                    <a href="#" class="px-2 py-1 hover:bg-gray-100 flex items-center currency-option">
-                                        <img src="/orionapp/node_modules/circle-flags/flags/cl.svg" alt="Icono USD" class="w-5 h-5 inline-block mr-2"> 
-                                        <span>CLP</span>
-                                    </a>
-                                </li>
-                                <!-- Agrega más opciones según sea necesario -->
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <!-- Texto dinámico de compra/venta -->
-                <div id="trade-info" class="mb-4 text-center font-semibold text-md text-gray-700 hidden">
-                    Estás comprando USD
-                </div>
-                <!-- Texto dinámico de precio -->
-                <div id="trade-price" class="text-center text-gray-600 text-sm hidden">
-                    Precio: --
-                </div>
-            </div>
-
-            <!-- Paso 2: Formulario de reserva -->
-            <div id="step-2" class="mt-6 hidden">
-                <form id="formReserva">
-                    <label class="block mb-2 font-semibold">Nombre:</label>
-                    <input id="reserva-nombre" type="text" name="nombre" class="w-full border rounded p-2 mb-4" placeholder="Ingresa tu nombre">
-
-                    <label class="block mb-2 font-semibold">Email:</label>
-                    <input id="reserva-email" type="email" name="email" class="w-full border rounded p-2 mb-4" placeholder="ejemplo@correo.com">
-
-                    <!-- Teléfono solo si > 5000 USD -->
-                    <div id="telefono-container" class="hidden">
-                        <label class="block mb-2">Teléfono:</label>
-                        <input id="reserva-fono" type="tel" class="w-full border rounded p-2 mb-4" placeholder="+56 9 1234 5678">
-                    </div>
-                </form>
-            </div>
-
-            <!-- Paso 3: Confirmación / Resumen -->
-            <div id="step-3" class="mt-6 hidden">
-                <h2 class="text-lg font-semibold mb-4">Resumen de tu reserva</h2>
-                
-                <!-- Contenedor en dos columnas -->
-                <div id="reservation-summary" class="mb-4 p-4 border rounded bg-gray-50 grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Columna Datos Personales -->
-                    <div>
-                        <p><strong>Día Reserva:</strong> <span id="summary-date">--</span></p>
-                        <p><strong>Hora Reserva:</strong> <span id="summary-time">--</span></p>
-                        <p><strong>Nombre:</strong> <span id="summary-name">--</span></p>
-                        <p><strong>Correo:</strong> <span id="summary-email">--</span></p>
-                        <p id="summary-phone-container" class="hidden"><strong>Teléfono:</strong> <span id="summary-phone">--</span></p>
-                    </div>
-
-                    <!-- Columna Operación -->
-                    <div>
-                        <p><strong>Operación:</strong> <span id="summary-operation">--</span></p>
-                        <p class="flex"><strong>Divisa:</strong> <span id="summary-currency-name" class="flex ml-1">--</span></p>
-                        <p><strong>Pagas:</strong> <span id="summary-pay">--</span></p>
-                        <p><strong>Obtendrás:</strong> <span id="summary-get">--</span></p>
-                        <p><strong>Precio:</strong> <span id="summary-price">--</span></p>
-                    </div>
-                </div>
-
-                <!-- Instrucciones importantes -->
-                <div id="reservation-instructions" class="bg-yellow-100/60 p-4 text-sm rounded-lg border border-yellow-400 mb-4">
-                    <p class="font-semibold">📍 Lugar de atención:</p>
-                    <p>Cambios Orion - Agustinas 1035, Oficina 13</p>
-
-                    <p class="mt-2 font-semibold">🕒 Horario de atención:</p>
-                    <p>Lunes a Viernes de <strong>09:00 a 17:00 hrs</strong>.</p>
-
-                    <p class="mt-2">⚠️ La reserva es <strong>válida solo hasta el cierre del día</strong>. 
-                    A las 17:00 hrs deja de ser válida, y al día hábil siguiente deberás generar una nueva, 
-                    ya que los precios pueden cambiar.</p>
-
-                    <p class="mt-2">📧 Recibirás un correo con un código QR que deberás mostrar en el local para hacer efectiva la operación.</p>
-                </div>
-
-                <!-- Botón Confirmar -->
-                <div class="flex justify-center">
-                    <button id="confirmReservation" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg shadow disabled:opacity-50" disabled>
-                        Confirmar Reserva
-                    </button>
-
-                    <!-- 🔑 Botón nuevo (oculto al inicio) -->
-                    <button id="contactExecutive" class="hidden bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-lg shadow">
-                        Contactar con un ejecutivo
-                    </button>
-                </div>
-
-                <p id="reservation-status" class="mt-2 text-center text-sm text-gray-600"></p>
-            </div>
-
-            <!-- Mensaje de validación -->
-            <p id="conversor-stepper-error" class="text-red-600 text-sm mb-2 text-center hidden"></p>
-
-            <!-- Botones de navegación -->
-            <div id="stepperButtons" class="flex justify-center mt-6">
-                <button id="prevStep" class="bg-gray-300 px-4 py-2 rounded-lg hover:text-white hidden">Anterior</button>
-                <button id="nextStep" class="bg-[#1e3a8a] hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow">Reservar</button>
-            </div>
-
-            <span id="last-updated1" class="date-converter text-white text-xs">
-                Última actualización: --
-            </span>
-        </section>
-
-        <!-- Herramientas Rapidas -->
-        <section id="quick-tools" class="bg-transparent w-full p-8">
-            <h2 class="text-3xl font-extrabold text-white text-center mb-1 tracking-wide drop-shadow-md">
-                Herramientas rápidas
-            </h2>
-            <p class="text-center text-white mb-8 text-sm italic max-w-md mx-auto">
-                Accede rápido a las funciones que facilitan tu experiencia en Cambios Orion.
-            </p>
-            <div class="max-w-2xl mx-auto px-6">
-
-                <!-- Catálogo de Divisas (ancho completo arriba) -->
-                <a href="https://cambiosorion.cl/divisas" 
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="block bg-gradient-to-r from-[#1e3a8a] to-[#3b82f6] p-7 rounded-2xl shadow-2xl hover:shadow-[0_8px_30px_rgb(59,130,246,0.4)] transition-transform duration-300 hover:-translate-y-1 mb-10 text-center text-xl font-semibold text-white flex items-center justify-center gap-3 select-none">
-                <!-- Ícono pequeño al lado izquierdo, opcional -->
-                <span class="inline-block mr-2 text-xl align-middle">📊</span>
-                Catálogo de Divisas
-                </a>
-
-                <!-- Contenedor para Reserva y Alerta lado a lado -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-12">
-
-                    <a href="#conversor"
-                        class="flex items-center justify-center bg-[#1e3a8a] p-6 rounded-xl shadow-lg hover:shadow-2xl hover:-translate-y-1 transform transition duration-300 text-lg font-semibold text-white cursor-pointer">
-                        <!-- Opcional ícono pequeño -->
-                        <span class="inline-block mr-2 text-xl">📅</span>
-                        Reserva
-                    </a>
-
-                    <a id="alertaBtn"
-                        class="flex items-center justify-center bg-[#1e3a8a] p-6 rounded-xl shadow-lg hover:shadow-2xl hover:-translate-y-1 transform transition duration-300 text-lg font-semibold text-white cursor-pointer">
-                        <!-- Opcional ícono pequeño -->
-                        <span class="inline-block mr-2 text-xl">🔔</span>
-                        Alerta de Precio
-                    </a>
-
-                </div>
-            </div>
-        </section>
-
-        <div id="alerta-wrapper" class="overflow-hidden max-h-0 transition-all duration-500 ease-in-out bg-white shadow-lg w-full">
-            <!-- Contenedor de formulario de alerta -->
-            <div id="alerta-section" class="max-w-2xl mx-auto p-8">
-                <h2 class="text-2xl text-center font-bold mb-2 text-[#1e3a8a]">
-                    Configura tu Alerta de Precio
-                </h2>
-                <p class="text-center text-gray-600 mb-6 italic text-sm">
-                    Selecciona la divisa, el tipo de condición y tus datos para recibir notificaciones cuando el precio cambie.
-                </p>
-
-                <!-- Stepper -->
-                <ol class="flex items-center w-full text-sm font-medium text-center text-gray-500 sm:text-base mb-6">
-                    <li id="alerta-stepper-1" class="flex-1">1. Divisa</li>
-                    <li id="alerta-stepper-2" class="flex-1">2. Condición</li>
-                    <li id="alerta-stepper-3" class="flex-1">3. Datos</li>
-                </ol>
-
-                <!-- Paso 1 -->
-                <div id="alerta-step-1" class="step-content flex flex-col gap-4 items-center">
-                    <!-- Selector de divisa estilo conversor -->
-                    <div id="alerta-divisa-container" class="relative flex-shrink-0 w-[200px] mr-14 ml-14">
-                        <div id="alerta-divisa-button"
-                            class="currency-selector flex items-center justify-between px-3 py-2 bg-white rounded text-sm cursor-pointer w-full"
-                            onclick="showAlertaDropdown()">
-                            <img id="alerta-icon" src="" alt="Icono divisa" class="w-5 h-5 mr-2 hidden">
-                            <span id="alerta-currency-text" class="font-medium truncate">Selecciona una Divisa</span>
-                            <svg class="w-4 h-4 ml-2 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-                            </svg>
-                        </div>
-
-                        <!-- Dropdown -->
-                        <div id="alerta-divisa-dropdown"
-                            class="hidden absolute top-full left-1/2 mt-1 bg-white rounded-lg shadow-md z-[9999] w-[100px] max-h-[150px] overflow-y-auto">
-                            <ul class="m-0 p-0 list-none"></ul>
-                        </div>
-                    </div>
-
-                    <!-- Card de compra/venta a la derecha -->
-                    <div id="alerta-precios-card" class="hidden p-4 flex-1"></div>
-                </div>
-
-                <!-- Paso 2 -->
-                <div id="alerta-step-2" class="step-content hidden">
-                    <p id="alerta-step-2-summary" class="text-sm text-gray-700 mb-4"></p>
-                    
-                    <label class="block mb-2 font-semibold">Tipo de condición</label>
-                    <select id="alerta-condicion" class="w-full border rounded p-2 mb-1">
-                        <option value="alcanza">Alcanza el precio</option>
-                        <option value="sube">Precio sube sobre</option>
-                        <option value="baja">Precio baja a</option>
-                        <option value="cambio_sobre">Cambio sobre %</option>
-                        <option value="cambio_bajo">Cambio por debajo %</option>
-                        <option value="cambio_24h_sube">Cambio en 24h sobre %</option>
-                        <option value="cambio_24h_baja">Cambio en 24h por debajo %</option>
-                    </select>
-                    <!-- Texto de ayuda dinámico -->
-                    <p id="alerta-condicion-help" class="text-xs text-gray-500 italic mb-4"></p>
-
-                    <label class="block mb-2 font-semibold">Valor objetivo</label>
-                    <input id="alerta-valor" type="number" step="0.01" class="w-full border rounded p-2 mb-4" placeholder="Ej: 950">
-                </div>
-
-                <!-- Paso 3 -->
-                <div id="alerta-step-3" class="step-content hidden">
-                    <p id="alerta-step-3-summary" class="text-sm text-gray-700 mb-4"></p>
-                
-                    <label class="block mb-2 font-semibold">Nombre: </label>
-                    <input id="alerta-nombre" type="text" class="w-full border rounded p-2 mb-4" placeholder="Ingresa tu nombre">
-
-                    <label class="block mb-2 font-semibold">Email: </label>
-                    <input id="alerta-email" type="email" class="w-full border rounded p-2 mb-4" placeholder="ejemplo@correo.com">
-
-                    <p id="alerta-status" class="mt-3 text-center text-sm text-gray-600"></p>
-                </div>
-
-                <!-- Mensaje de validación -->
-                <p id="alerta-stepper-error" class="text-red-600 text-sm mb-2 text-center hidden"></p>
-
-                <!-- Botones Stepper -->
-                <div id="alerta-stepper-buttons" class="flex justify-between items-center mt-6">
-                    <button id="alerta-prev" class="bg-gray-300 px-4 py-2 rounded-lg hover:bg-gray-400 text-black hidden">
-                        Anterior
-                    </button>
-
-                    <div class="flex gap-2">
-                        <button id="alerta-next" class="bg-[#1e3a8a] text-white px-4 py-2 rounded-lg hover:bg-blue-700 shadow hidden">
-                            Siguiente
-                        </button>
-                        <button id="guardar-alerta" class="bg-[#1e3a8a] hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow hidden">
-                            Crear Alerta
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Envío de Dinero -->
-        <section id="sending-money" class="sending-money-section bg-white w-full shadow-lg p-8 hidden">
-            <div class="sending-money-container">
-                <!-- Mitad con Imagen -->
-                <div class="sending-money-image">
-                    <img src="/orionapp/assets/image1.jpg" alt="Imagen de Envío de Dinero" class="w-full h-full object-cover rounded-l-lg">
-                </div>
-                <!-- Mitad con Texto -->
-                <div class="sending-money-content">
-                    <h2 class="text-2xl font-semibold mb-2">Envío de Dinero</h2>
-                    <p class="mb-6 text-gray-200">Envía dinero de manera rápida y segura a tus seres queridos o para tus necesidades financieras.</p>
-                    <a href="#" class="sending-money-button">Enviar Ahora</a>
-                </div>
-            </div>
-        </section>
-
-        <!-- Tabla de comparación divisas -->
-        <section class="max-w-4xl mx-auto my-10 rounded-xl shadow-lg p-8 relative">
-            <h2 class="text-2xl font-bold mb-2 text-white text-center drop-shadow-lg">Comparación de Precios de Divisas</h2>
-            <p class="mb-6 text-white text-center text-sm max-w-xl mx-auto italic drop-shadow-sm">
-                Compara los precios de compra y venta actuales con los valores al cierre del último día hábil. 
-                Mantente informado sobre las variaciones en tiempo real para tomar decisiones más acertadas.
-            </p>
-
-            <!-- Toggle para dispositivos móviles -->
-            <div id="mobile-toggle" class="flex justify-center items-center md:hidden">
-                <label class="relative inline-flex items-center cursor-pointer">
-                <span class="mr-3 text-sm font-medium text-white">Compra</span>
-                <input type="checkbox" id="toggle-switch" value="" class="sr-only peer" onchange="toggleTableColumns()">
-                <div class="relative w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"></div>
-                <span class="ml-3 text-sm font-medium text-white">Venta</span>
-                </label>
-            </div>  
-            <!-- Botón "Editar" fuera de la tabla -->
-            <button onclick="toggleEditMode()" class="edit-btn absolute right-4 text-[#1e3a8a] rounded-md px-3 py-1 font-semibold shadow hover:text-white transition">
-                Editar
-            </button>
-            <table class="content-table w-full mt-12">
-                <thead class="text-sm uppercase text-white">
-                    <tr>
-                        <th scope="col" class="px-6 py-3"></th>
-                        <th scope="col" class="px-6 py-3 compra-col">Compra Actual (CLP)</th>
-                        <th scope="col" class="px-6 py-3 compra-col">Variación 24hrs (%)</th>
-                        <th scope="col" class="px-6 py-3 venta-col hidden">Venta Actual (CLP)</th>
-                        <th scope="col" class="px-6 py-3 venta-col hidden">Variación 24hrs (%)</th>
-                        <th scope="col" class="px-6 py-3 edit-column hidden"></th>
-                    </tr>
-                </thead>
-                <tbody id="currency-table-body">
-                    <!-- Skeleton loading -->
-                </tbody>
-            </table>
-            <div class="flex justify-between items-center mb-4">
-                <div class="relative">
-                    <!-- El botón "Agregar Divisa" ahora es el único elemento aquí -->
-                    <button onclick="toggleDropdown('add-currency-dropdown', event)" 
-                            class="add-currency-btn flex items-center space-x-2 text-[#1e3a8a] font-semibold hover:text-[#3b82f6] transition">
-                        <span class="add-icon">+</span> <span>Agregar Divisa</span>
-                    </button>
-                    <div id="add-currency-dropdown" class="dropdown-content hidden divide-y divide-gray-100 rounded-lg shadow-md overflow-y-auto">
-                        <!-- Opciones de divisas a agregar se llenarán dinámicamente -->
-                    </div>
-                </div>
-            </div>
-            <span id="last-updated2" class="absolute bottom-2 right-2 text-white text-xs">
-                Última actualización: --
-            </span>                
-        </section>
-        <!-- Botón flotante de WhatsApp -->
-        <a href="https://wa.me/+56971846048?text=Hola,%20necesito%20consultar%20con%20un%20ejecutivo." 
-        class="fab fixed text-white rounded-full p-4 shadow-lg transition-all">
-            <img src="https://cambiosorion.cl/orionapp/icons/whatsapp-white.png" alt="WhatsApp" class="w-10 h-10">
-        </a>
-    </div>
     
-    <footer>
-      <div class="footer-container">
-          <!-- Sección del logo -->
-          <div class="footer-logo">
-              <img src="/orionapp/assets/LogoOrion-white.svg" alt="Logo Orion" class="logo">
-               
-          </div>
-          <!-- Mapa de navegación -->
-          <div class="footer-navigation flex justify-between">
-              <div class="nav-section">
-                  <h3 class="font-bold text-lg">Servicios</h3>
-                    <ul class="list-none p-0">
-                        <li><a href="https://cambiosorion.cl/divisas" class="block py-1">Divisas</a></li>
-                        <li><a href="#conversor" class="block py-1">Reservar</a></li>
-                        <li><a href="#alerta-wrapper" class="block py-1">Alerta de Precio</a></li>
-                    </ul>
-              </div>
-              <div class="nav-section">
-                  <h3 href="nosotros" class="font-bold text-lg">Nosotros</h3>
-                  <ul class="list-none p-0">
-                      <li><a href="#" class="block py-1">Quienes Somos</a></li>
-                      <li><a href="nosotros#map" class="block py-1">Mapa</a></li>
-                  </ul>
-              </div>
-              <div class="nav-section">
-                  <h3 class="font-bold text-lg">Soporte</h3>
-                  <ul class="list-none p-0">
-                      <li><a href="faq" class="block py-1">Preguntas frecuentes</a></li>
-                      <li><a href="contacto" class="block py-1">Contacto</a></li>
-                  </ul>
-              </div>
-          </div>
-          <!-- Información de contacto -->
-          <div class="footer-contact flex flex-wrap justify-between">
-              <div class="contact-info">
-                    <!-- Dirección -->
-                    <div class="contact-item">
-                        <a href="https://maps.app.goo.gl/6fQ31ySCJWSButxQ9" target="_blank">
-                            <img src="/orionapp/icons/location-white.png" alt="Icono de ubicación" class="icon">
-                        </a>
-                        <div>
-                            <a href="https://maps.app.goo.gl/6fQ31ySCJWSButxQ9" target="_blank"><p>Agustinas 1035 Of 13, Santiago</p></a>
-                            <small>Lunes a Viernes 09:00 a 17:00 hrs</small>
+    <section class="relative pt-40 pb-20 lg:pt-48 lg:pb-32">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center gap-12">
+            
+            <div class="text-center lg:text-left lg:w-1/2 z-10 w-full">
+                <h1 class="text-5xl sm:text-6xl md:text-7xl tracking-tight font-extrabold text-white drop-shadow-xl leading-tight">
+                    <span class="block">El cambio más seguro</span>
+                    <span class="block text-blue-400">al mejor precio.</span>
+                </h1>
+                <p class="mt-8 text-xl md:text-2xl text-gray-100 max-w-2xl mx-auto lg:mx-0 drop-shadow-md leading-relaxed font-light">
+                    Cotiza en tiempo real, reserva tu tasa y retira en nuestras oficinas con total seguridad. Sin comisiones ocultas.
+                </p>
+                
+                <div class="mt-12 flex flex-col sm:flex-row gap-6 justify-center lg:justify-start">
+                     <a href="https://cambiosorion.cl/divisas" target="_blank" class="px-10 py-4 bg-white text-[#1e3a8a] text-lg md:text-xl font-bold rounded-full shadow-xl hover:bg-gray-100 transition transform hover:-translate-y-1">
+                        Ver Catálogo
+                    </a>
+                    <button id="heroAlertaBtn" class="px-10 py-4 border-2 border-white text-white text-lg md:text-xl font-bold rounded-full hover:bg-white/10 transition">
+                        Crear Alerta
+                    </button>
+                </div>
+                
+                <div class="mt-16 bg-black/40 backdrop-blur-md rounded-2xl p-5 border border-white/10 shadow-lg block w-full max-w-xl mx-auto lg:mx-0">
+                     <div class="flex justify-between items-center mb-3 text-sm text-blue-200 uppercase font-bold tracking-wider">
+                         <span>Indicadores Banco Central</span>
+                         <span id="paridades-date" class="bg-blue-900/50 px-2 py-0.5 rounded text-xs">--</span> 
+                     </div>
+                     <div id="ticker" class="w-full overflow-hidden relative">
+                        <div id="ticker-content" class="text-white text-base font-mono whitespace-nowrap animate-pulse">
+                            Cargando indicadores...
                         </div>
-                    </div> 
-                  <!-- Teléfono -->
-                  <div class="contact-item">
-                      <img src="/orionapp/icons/phone-white.png" alt="Icono de teléfono" class="icon">
-                      <div>
-                          <p>+56 9 7184 6048</p>
-                      </div>
-                  </div>
-                  <!-- Correo -->
-                  <div class="contact-item">
-                      <img src="/orionapp/icons/email-white.png" alt="Icono de correo" class="icon">
-                      <div>
-                          <p>contacto@cambiosorion.cl</p>
-                      </div>
-                  </div>
-              </div>
-          </div>
-          <!-- Redes Sociales -->
-            <div class="social-media flex gap-4">
-                <a href="https://wa.me/+56971846048?text=Hola,%20necesito%20consultar%20con%20un%20ejecutivo." target="_blank"><img src="/orionapp/icons/whatsapp-white.png" alt="WhatsApp" class="icon"></a>
-                <a href="https://www.facebook.com/CambiosOrion" target="_blank"><img src="/orionapp/icons/facebook-white.png" alt="Facebook" class="icon"></a>
-                <a href="https://www.instagram.com/CambiosOrion.cl" target="_blank"><img src="/orionapp/icons/instagram-white.png" alt="Instagram" class="icon"></a>
-                <a href="https://www.tiktok.com/@cambios.orion" target="_blank"><img src="/orionapp/icons/tik-tok-white.png" alt="TikTok" class="icon"></a>
+                    </div>
+                </div>
             </div>
-      </div>
-      <div class="footer-bottom text-xs text-center p-4">
-          © 2025 Cambios Orion. Todos los derechos reservados.
-      </div>
-  </footer>
+
+            <div class="w-full lg:w-1/2 z-20">
+                <div id="conversor" class="bg-white rounded-[2rem] shadow-2xl p-8 md:p-10 transform transition-all border border-gray-200">
+                    <div class="flex items-center justify-between mb-8">
+                        <h2 class="text-3xl md:text-4xl font-extrabold text-[#1e3a8a]">Cotiza y Reserva</h2>
+                         <span id="last-updated1" class="text-xs md:text-sm font-semibold text-gray-600 bg-gray-100 px-3 py-1.5 rounded-full">Actualizado: --</span>
+                    </div>
+
+                    <ol class="flex items-center w-full text-sm md:text-base font-medium text-center text-gray-500 mb-8 justify-between md:justify-start">
+                        <li id="stepper-1" class="flex md:w-full items-center text-[#1e3a8a] font-bold sm:after:content-[''] after:w-full after:h-1 after:border-b-2 after:border-gray-200 after:mx-4">
+                            <span id="badge-1" class="flex items-center justify-center w-8 h-8 min-w-[2rem] bg-[#1e3a8a] text-white rounded-full mr-2 md:mr-3 text-sm transition-colors duration-300">1</span> Cotiza
+                        </li>
+                        <li id="stepper-2" class="flex md:w-full items-center sm:after:content-[''] after:content-none after:w-full after:h-1 after:border-b-2 after:border-gray-200 after:mx-4 transition-colors duration-300">
+                            <span id="badge-2" class="flex items-center justify-center w-8 h-8 min-w-[2rem] bg-gray-200 text-gray-500 rounded-full mr-2 md:mr-3 text-sm transition-colors duration-300">2</span> Datos
+                        </li>
+                        <li id="stepper-3" class="flex items-center transition-colors duration-300">
+                            <span id="badge-3" class="flex items-center justify-center w-8 h-8 min-w-[2rem] bg-gray-200 text-gray-500 rounded-full mr-2 md:mr-3 text-sm transition-colors duration-300">3</span> Fin
+                        </li>
+                    </ol>
+
+                    <div id="step-1">
+                        <div id="trade-switch" class="flex bg-gray-100 p-1.5 rounded-2xl mb-8 select-none relative">
+                             <div id="trade-buy" class="flex-1 py-3 text-center rounded-xl cursor-pointer md:text-lg text-md font-bold transition-all duration-300">Compra</div>
+                             <div id="trade-sell" class="flex-1 py-3 text-center rounded-xl cursor-pointer md:text-lg text-md font-bold transition-all duration-300">Venta</div>
+                        </div>
+
+                        <div class="relative space-y-6">
+                            <div class="relative group">
+                                <label class="block text-sm font-bold text-gray-500 mb-2 ml-1 uppercase tracking-wide">Tienes</label>
+                                <div class="flex items-center border-2 border-gray-200 rounded-2xl bg-gray-50 focus-within:ring-4 focus-within:ring-blue-100 focus-within:border-blue-500 transition-all overflow-hidden h-20">
+                                    <input type="text" id="amount1" placeholder="0" class="w-full h-full px-6 bg-transparent border-none text-3xl md:text-4xl font-extrabold text-gray-900 focus:ring-0 text-right" oninput="convertCurrency()">
+                                    
+                                    <div class="border-l-2 border-gray-200 h-full flex items-center bg-white hover:bg-gray-50 cursor-pointer px-4 md:px-5 transition min-w-[120px] md:min-w-[140px]" id="dropdown1Button" onclick="toggleDropdown('dropdown1', event)">
+                                        <img id="icon-currency1" src="/orionapp/node_modules/circle-flags/flags/cl.svg" class="w-8 h-8 rounded-full shadow-sm mr-3">
+                                        <span id="currency1-text" class="text-xl font-bold text-gray-800">CLP</span>
+                                        <svg class="w-5 h-5 ml-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    </div>
+                                    <div id="dropdown1" class="hidden absolute top-full right-0 mt-2 bg-white rounded-xl shadow-2xl z-50 border border-gray-100 max-h-72 overflow-y-auto"></div>
+                                </div>
+                            </div>
+
+                            <div class="absolute left-1/2 top-[45%] -translate-x-1/2 -translate-y-1/2 z-10">
+                                <button onclick="swapCurrencies()" class="bg-white border-2 border-gray-200 p-3 rounded-full shadow-lg hover:shadow-xl hover:text-blue-600 hover:border-blue-200 transition text-gray-400 transform active:rotate-180 duration-300">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path></svg>
+                                </button>
+                            </div>
+
+                            <div class="relative group">
+                                <label class="block text-sm font-bold text-gray-500 mb-2 ml-1 uppercase tracking-wide">Obtienes</label>
+                                <div class="flex items-center border-2 border-gray-200 rounded-2xl bg-gray-50 focus-within:ring-4 focus-within:ring-blue-100 focus-within:border-blue-500 transition-all overflow-hidden h-20">
+                                    <input type="text" id="amount2" readonly class="w-full h-full px-6 bg-gray-100 border-none text-3xl md:text-4xl font-extrabold text-gray-900 focus:ring-0 text-right cursor-default">
+                                    
+                                    <div class="border-l-2 border-gray-200 h-full flex items-center bg-white hover:bg-gray-50 cursor-pointer px-4 md:px-5 transition min-w-[120px] md:min-w-[140px]" id="dropdown2Button" onclick="toggleDropdown('dropdown2', event)">
+                                        <img id="icon-currency2" src="/orionapp/node_modules/circle-flags/flags/us.svg" class="w-8 h-8 rounded-full shadow-sm mr-3">
+                                        <span id="currency2-text" class="text-xl font-bold text-gray-800">USD</span>
+                                        <svg class="w-5 h-5 ml-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    </div>
+                                    <div id="dropdown2" class="hidden absolute top-full right-0 mt-2 bg-white rounded-xl shadow-2xl z-50 border border-gray-100 max-h-72 overflow-y-auto"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 flex flex-col items-center justify-center">
+                            <div id="trade-info" class="text-lg font-bold text-[#1e3a8a]"></div>
+                            <div id="trade-price" class="text-gray-500 text-base font-medium mt-1"></div>
+                        </div>
+                    </div>
+
+                    <div id="step-2" class="mt-6 hidden animate-fadeIn">
+                        <form id="formReserva" class="space-y-5">
+                            <div>
+                                <label class="block text-base font-bold text-gray-700 mb-2">Nombre Completo</label>
+                                <input id="reserva-nombre" type="text" class="w-full border-gray-300 rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 p-4 text-lg" placeholder="Ej: Juan Pérez">
+                            </div>
+                            <div>
+                                <label class="block text-base font-bold text-gray-700 mb-2">Correo Electrónico</label>
+                                <input id="reserva-email" type="email" class="w-full border-gray-300 rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 p-4 text-lg" placeholder="juan@ejemplo.com">
+                            </div>
+                            <div id="telefono-container" class="hidden">
+                                <label class="block text-base font-bold text-gray-700 mb-2">Teléfono</label>
+                                <input id="reserva-fono" type="tel" class="w-full border-gray-300 rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 p-4 text-lg" placeholder="+56 9 1234 5678">
+                            </div>
+                        </form>
+                    </div>
+
+                    <div id="step-3" class="mt-6 hidden animate-fadeIn">
+                         <div class="bg-blue-50 rounded-2xl p-6 mb-6 border border-blue-100">
+                             <h3 class="text-lg font-bold text-[#1e3a8a] mb-4 border-b border-blue-200 pb-2">Resumen de tu reserva</h3>
+                             
+                             <div class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8 text-sm md:text-base text-gray-700">
+                                 <div class="space-y-2">
+                                     <p><span class="font-bold text-gray-900">Día Reserva:</span> <span id="summary-date">--</span></p>
+                                     <p><span class="font-bold text-gray-900">Hora Reserva:</span> <span id="summary-time">--</span></p>
+                                     <p><span class="font-bold text-gray-900">Nombre:</span> <span id="summary-name">--</span></p>
+                                     <div class="break-all"><span class="font-bold text-gray-900">Correo:</span> <span id="summary-email">--</span></div>
+                                     <p id="summary-phone-container" class="hidden"><span class="font-bold text-gray-900">Teléfono:</span> <span id="summary-phone">--</span></p>
+                                 </div>
+                                 
+                                 <div class="space-y-2">
+                                     <p><span class="font-bold text-gray-900">Operación:</span> <span id="summary-operation">--</span></p>
+                                     <div class="flex items-center gap-2"><span class="font-bold text-gray-900">Divisa:</span> <span id="summary-currency-name" class="flex items-center">--</span></div>
+                                     <p><span class="font-bold text-gray-900">Pagas:</span> <span id="summary-pay" class="font-bold text-blue-700">--</span></p>
+                                     <p><span class="font-bold text-gray-900">Recibes:</span> <span id="summary-get" class="font-bold text-green-700">--</span></p>
+                                     <p><span class="font-bold text-gray-900">Precio:</span> <span id="summary-price">--</span></p>
+                                 </div>
+                             </div>
+                         </div>
+                         
+                         <div id="reservation-instructions" class="text-sm bg-yellow-50 text-yellow-900 p-5 rounded-xl border border-yellow-200 mb-6 font-medium leading-relaxed"></div>
+
+                         <div class="flex flex-col gap-4">
+                            <button id="confirmReservation" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed text-xl">
+                                Confirmar Reserva
+                            </button>
+                            <button id="contactExecutive" class="hidden w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-4 rounded-xl shadow-lg transition text-xl">
+                                Contactar Ejecutivo
+                            </button>
+                             <p id="reservation-status" class="text-center text-base font-semibold mt-2 min-h-[1.5rem]"></p>
+                         </div>
+                    </div>
+
+                    <p id="conversor-stepper-error" class="text-red-600 font-bold text-base mt-4 text-center hidden bg-red-50 p-3 rounded-xl border border-red-100"></p>
+
+                    <div id="stepperButtons" class="flex justify-between mt-10 pt-6 border-t border-gray-100">
+                        <button id="prevStep" class="text-gray-500 hover:text-gray-800 font-bold text-base hidden px-6 py-3 bg-gray-100 rounded-lg transition">Anterior</button>
+                        <button id="nextStep" class="bg-[#1e3a8a] hover:bg-blue-800 text-white px-10 py-4 rounded-full font-bold shadow-xl shadow-blue-900/20 transition w-full sm:w-auto ml-auto text-lg">
+                            Continuar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-white py-24 relative z-20 shadow-[0_-20px_60px_rgba(0,0,0,0.6)]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                    <h2 class="text-4xl font-extrabold text-gray-900">Herramientas Rápidas</h2>
+                    <p class="mt-4 text-xl text-gray-500">Todo lo que necesitas en un solo lugar</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <div class="group p-10 bg-gray-50 rounded-[2rem] hover:bg-white hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-blue-100 cursor-pointer text-center">
+                    <div class="w-20 h-20 bg-blue-100 text-[#1e3a8a] rounded-3xl flex items-center justify-center mx-auto mb-8 text-4xl group-hover:rotate-6 transition duration-300">
+                        📊
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-3">Catálogo Completo</h3>
+                    <p class="text-gray-500 text-base mb-8 leading-relaxed">Accede a nuestra lista completa de divisas exóticas y tradicionales.</p>
+                    <a href="https://cambiosorion.cl/divisas" target="_blank" class="inline-block px-8 py-3 bg-white border-2 border-gray-200 rounded-full text-[#1e3a8a] font-bold text-base group-hover:bg-[#1e3a8a] group-hover:text-white transition shadow-sm hover:shadow-md">Ver catálogo</a>
+                </div>
+
+                <div class="group p-10 bg-gray-50 rounded-[2rem] hover:bg-white hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-blue-100 cursor-pointer text-center" onclick="document.getElementById('conversor').scrollIntoView({behavior: 'smooth'})">
+                    <div class="w-20 h-20 bg-green-100 text-green-600 rounded-3xl flex items-center justify-center mx-auto mb-8 text-4xl group-hover:rotate-6 transition duration-300">
+                        ⚡
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-3">Reserva Online</h3>
+                    <p class="text-gray-500 text-base mb-8 leading-relaxed">Asegura el precio que ves en pantalla. Congela la tasa ahora.</p>
+                    <span class="inline-block px-8 py-3 bg-white border-2 border-gray-200 rounded-full text-green-600 font-bold text-base group-hover:bg-green-600 group-hover:text-white transition shadow-sm hover:shadow-md">Ir a reservar</span>
+                </div>
+
+                <div class="group p-10 bg-gray-50 rounded-[2rem] hover:bg-white hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-blue-100 cursor-pointer text-center" onclick="document.getElementById('heroAlertaBtn').click()">
+                    <div class="w-20 h-20 bg-orange-100 text-orange-600 rounded-3xl flex items-center justify-center mx-auto mb-8 text-4xl group-hover:rotate-6 transition duration-300">
+                        🔔
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-3">Alertas de Precio</h3>
+                    <p class="text-gray-500 text-base mb-8 leading-relaxed">No pierdas tiempo mirando la pantalla. Te avisamos por correo.</p>
+                    <span class="inline-block px-8 py-3 bg-white border-2 border-gray-200 rounded-full text-orange-600 font-bold text-base group-hover:bg-orange-600 group-hover:text-white transition shadow-sm hover:shadow-md">Crear alerta</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="alerta-wrapper" class="overflow-hidden max-h-0 transition-all duration-700 ease-in-out bg-white border-b border-gray-200 shadow-inner relative z-30">
+        <div id="alerta-section" class="max-w-4xl mx-auto p-6 md:p-12">
+             <div class="text-center mb-10">
+                <span class="text-[#1e3a8a] font-bold tracking-widest text-sm uppercase">Notificaciones Inteligentes</span>
+                <h2 class="text-4xl font-extrabold text-[#1e3a8a] mt-2">Configura tu Alerta</h2>
+                <p class="text-gray-500 mt-3 text-lg">Te avisaremos automáticamente cuando el precio llegue a tu objetivo.</p>
+             </div>
+             
+             <ol class="flex items-center w-full text-xs md:text-base font-medium text-center text-gray-500 mb-10 max-w-2xl mx-auto justify-between md:justify-start">
+                <li class="flex md:w-full items-center text-[#1e3a8a] font-bold sm:after:content-[''] after:content-none after:w-full after:h-1 after:border-b-2 after:border-gray-200 after:mx-4">
+                    <span id="alerta-badge-1" class="flex items-center justify-center w-8 h-8 min-w-[2rem] bg-[#1e3a8a] text-white rounded-full mr-1 md:mr-3 text-sm transition-colors duration-300">1</span> 
+                    <span id="alerta-text-1">Divisa</span>
+                </li>
+                <li class="flex md:w-full items-center sm:after:content-[''] after:content-none after:w-full after:h-1 after:border-b-2 after:border-gray-200 after:mx-4">
+                    <span id="alerta-badge-2" class="flex items-center justify-center w-8 h-8 min-w-[2rem] bg-gray-200 text-gray-500 rounded-full mr-1 md:mr-3 text-sm transition-colors duration-300">2</span> 
+                    <span id="alerta-text-2">Condición</span>
+                </li>
+                <li class="flex items-center">
+                    <span id="alerta-badge-3" class="flex items-center justify-center w-8 h-8 min-w-[2rem] bg-gray-200 text-gray-500 rounded-full mr-1 md:mr-3 text-sm transition-colors duration-300">3</span> 
+                    <span id="alerta-text-3">Datos</span>
+                </li>
+            </ol>
+             
+             <div id="alerta-step-1" class="step-content flex flex-col gap-8 items-center">
+                <div id="alerta-divisa-container" class="relative w-full max-w-sm">
+                    <div id="alerta-divisa-button" class="flex items-center justify-between px-6 py-5 border-2 border-gray-200 rounded-2xl cursor-pointer bg-gray-50 hover:bg-white hover:border-blue-300 transition shadow-sm" onclick="showAlertaDropdown()">
+                         <div class="flex items-center">
+                            <img id="alerta-icon" src="" class="w-8 h-8 mr-4 hidden rounded-full">
+                            <span id="alerta-currency-text" class="font-bold text-xl text-gray-700">Seleccionar Divisa</span>
+                         </div>
+                         <svg class="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </div>
+                     <div id="alerta-divisa-dropdown" class="hidden absolute top-full left-0 mt-2 bg-white rounded-2xl shadow-2xl z-[60] w-full max-h-72 overflow-y-auto border border-gray-100">
+                         <ul class="divide-y divide-gray-100"></ul>
+                     </div>
+                </div>
+                <div id="alerta-precios-card" class="hidden w-full max-w-xl"></div>
+             </div>
+
+             <div id="alerta-step-2" class="step-content hidden text-center max-w-md mx-auto">
+                  <p id="alerta-step-2-summary" class="text-base font-semibold text-[#1e3a8a] mb-6 bg-blue-50 p-4 rounded-xl border border-blue-100"></p>
+                  
+                  <label class="block text-left font-bold text-gray-700 mb-2">Cuando el precio...</label>
+                  <select id="alerta-condicion" class="w-full border-gray-300 rounded-xl p-4 mb-3 bg-white focus:ring-blue-500 text-lg shadow-sm">
+                      <option value="alcanza">Alcanza el precio</option>
+                      <option value="sube">Sube sobre</option>
+                      <option value="baja">Baja a</option>
+                      <option value="cambio_sobre">Varíe más de %</option>
+                      <option value="cambio_bajo">Varíe menos de %</option>
+                  </select>
+                  
+                  <p id="alerta-condicion-help" class="text-sm text-gray-500 mb-6 italic text-left"></p>
+                  
+                  <label class="block text-left font-bold text-gray-700 mb-2">Valor Objetivo</label>
+                  <input id="alerta-valor" type="number" step="0.01" class="w-full border-gray-300 rounded-xl p-4 text-2xl font-bold text-center shadow-sm focus:ring-[#1e3a8a] focus:border-[#1e3a8a]" placeholder="Ej: 950">
+             </div>
+
+             <div id="alerta-step-3" class="step-content hidden max-w-md mx-auto">
+                  <p id="alerta-step-3-summary" class="text-base font-semibold text-[#1e3a8a] mb-6 bg-blue-50 p-4 rounded-xl border border-blue-100 text-center"></p>
+                  
+                  <div class="space-y-4">
+                      <div>
+                          <label class="block text-left font-bold text-gray-700 mb-1">Nombre</label>
+                          <input id="alerta-nombre" type="text" class="w-full border-gray-300 rounded-xl p-4 text-lg shadow-sm focus:ring-[#1e3a8a] focus:border-[#1e3a8a]" placeholder="Tu Nombre">
+                      </div>
+                      <div>
+                          <label class="block text-left font-bold text-gray-700 mb-1">Correo Electrónico</label>
+                          <input id="alerta-email" type="email" class="w-full border-gray-300 rounded-xl p-4 text-lg shadow-sm focus:ring-[#1e3a8a] focus:border-[#1e3a8a]" placeholder="Tu Email">
+                      </div>
+                  </div>
+                  <p id="alerta-status" class="text-center text-base font-bold mt-4 min-h-[1.5rem]"></p>
+             </div>
+
+             <p id="alerta-stepper-error" class="text-red-600 text-center font-bold text-base mt-6 hidden bg-red-50 p-3 rounded-xl border border-red-100"></p>
+             
+             <div id="alerta-stepper-buttons" class="flex justify-between mt-10 max-w-md mx-auto pt-6 border-t border-gray-100">
+                  <button id="alerta-prev" class="text-gray-500 hover:text-gray-800 font-bold hidden text-lg px-4 py-2">Atrás</button>
+                  <div class="flex gap-4 ml-auto">
+                    <button id="alerta-next" class="bg-[#1e3a8a] text-white px-8 py-3 rounded-full font-bold shadow-xl hover:bg-blue-800 transition text-lg hidden">Siguiente</button>
+                    <button id="guardar-alerta" class="bg-green-600 text-white px-8 py-3 rounded-full font-bold shadow-xl hover:bg-green-700 transition text-lg hidden">Crear Alerta</button>
+                  </div>
+             </div>
+        </div>
+    </div>
+
+    <section class="relative py-24 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-extrabold text-white drop-shadow-xl">
+                    Tabla de Variación
+                </h2>
+                <p class="mt-4 text-xl text-blue-200 drop-shadow-md font-light">
+                    Monitorea el mercado en tiempo real.
+                </p>
+            </div>
+
+            <div class="bg-white/5 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl">
+                
+                <div class="bg-black/20 px-4 md:px-6 py-4 flex justify-between items-center flex-wrap gap-4 border-b border-white/10 rounded-t-3xl">
+                    
+                    <div id="mobile-toggle" class="flex items-center md:hidden text-white">
+                        <span class="mr-3 text-xs font-bold uppercase tracking-wider">Compra</span>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="toggle-switch" class="sr-only peer" onchange="toggleTableColumns()">
+                            <div class="w-11 h-6 bg-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                        </label>
+                        <span class="ml-3 text-xs font-bold uppercase tracking-wider">Venta</span>
+                    </div>
+
+                    <button onclick="toggleEditMode()" class="text-blue-200 hover:text-white px-4 py-2 rounded-xl text-xs md:text-sm font-bold transition flex items-center border border-blue-200/30 hover:bg-white/10 ml-auto uppercase tracking-wide">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                        Editar
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-black/20 text-blue-200 text-[10px] md:text-xs uppercase tracking-widest font-bold border-b border-white/10">
+                            <tr>
+                                <th class="px-2 md:px-6 py-4 text-left">Divisa</th>
+                                <th class="px-2 md:px-6 py-4 text-center compra-col text-white">Compra</th>
+                                <th class="px-2 md:px-6 py-4 text-center compra-col text-gray-400 font-bold opacity-80">Var. 24h</th>
+                                <th class="px-2 md:px-6 py-4 text-center venta-col text-white hidden md:table-cell">Venta</th>
+                                <th class="px-2 md:px-6 py-4 text-center venta-col text-gray-400 font-bold hidden md:table-cell opacity-80">Var. 24h</th>
+                                <th class="px-1 md:px-2 py-4 edit-column hidden w-8"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="currency-table-body" class="divide-y divide-white/5 text-sm md:text-base">
+                            </tbody>
+                    </table>
+                </div>
+                
+                <div class="bg-black/30 px-4 md:px-6 py-4 border-t border-white/10 flex justify-between items-center backdrop-blur-md rounded-b-3xl">
+                    <div class="relative">
+                        <button id="btn-add-divisa" onclick="toggleTableDropdown(event)" class="flex items-center text-xs md:text-sm font-bold text-blue-300 hover:text-white transition uppercase tracking-wider">
+                            <span class="text-lg mr-2 bg-blue-600 rounded-full w-6 h-6 flex items-center justify-center text-white shadow">+</span> Agregar Divisa
+                        </button>
+                        
+                        <div id="add-currency-dropdown" class="hidden absolute bg-white text-gray-900 rounded-xl shadow-2xl border border-gray-200 max-h-72 overflow-y-auto z-[9999]"></div>
+                    </div>
+                    <span id="last-updated2" class="text-[10px] md:text-xs text-gray-400 italic">Actualizado: --</span>
+                </div>
+            </div>
+        </section>
+
+    <a href="https://wa.me/+56971846048?text=Hola,%20necesito%20consultar%20con%20un%20ejecutivo." 
+    class="fixed bottom-4 right-4 md:bottom-8 md:right-8 bg-[#25D366] text-white p-3 md:p-4 rounded-full shadow-2xl hover:scale-110 transition z-[100] flex items-center justify-center group border-2 border-white/20">
+        <img src="https://cambiosorion.cl/orionapp/icons/whatsapp-white.png" alt="WhatsApp" class="w-10 h-10 md:w-12 md:h-12">
+        <span class="max-w-0 overflow-hidden group-hover:max-w-xs group-hover:ml-3 transition-all duration-500 whitespace-nowrap font-bold text-base md:text-lg">¡Hablemos!</span>
+    </a>
+
+    <footer class="bg-black text-white pt-20 pb-10 border-t border-gray-900 relative z-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <div class="col-span-1 md:col-span-1">
+                     <img src="/orionapp/assets/LogoOrion-white.svg" alt="Logo Orion" class="h-20 mb-8 opacity-90">
+                     <p class="text-gray-400 text-base leading-relaxed">
+                         Expertos en cambio de divisas con la mejor tasa del mercado. Seguridad, rapidez y confianza en cada operación.
+                     </p>
+                </div>
+                <div>
+                    <h4 class="text-xl font-bold mb-6 text-gray-200">Servicios</h4>
+                    <ul class="space-y-3 text-gray-400 text-base">
+                        <li><a href="https://cambiosorion.cl/divisas" class="hover:text-white transition">Catálogo de Divisas</a></li>
+                        <li><a href="#conversor" class="hover:text-white transition">Cotizador Online</a></li>
+                        <li><a href="#alerta-wrapper" class="hover:text-white transition">Sistema de Alertas</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-bold mb-6 text-gray-200">Compañía</h4>
+                    <ul class="space-y-3 text-gray-400 text-base">
+                        <li><a href="nosotros" class="hover:text-white transition">Quiénes Somos</a></li>
+                        <li><a href="contacto" class="hover:text-white transition">Ubicación</a></li>
+                        <li><a href="faq" class="hover:text-white transition">Preguntas Frecuentes</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-bold mb-6 text-gray-200">Contacto</h4>
+                    <ul class="space-y-4 text-gray-400 text-base">
+                        <li class="flex items-start">
+                             <img src="/orionapp/icons/location-white.png" class="w-6 h-6 mr-3 mt-0.5 opacity-60">
+                             <span>Agustinas 1035 Of 13,<br>Santiago Centro, Chile</span>
+                        </li>
+                        <li class="flex items-center">
+                            <img src="/orionapp/icons/phone-white.png" class="w-6 h-6 mr-3 opacity-60">
+                            +56 9 7184 6048
+                        </li>
+                        <li class="flex items-center">
+                             <img src="/orionapp/icons/email-white.png" class="w-6 h-6 mr-3 opacity-60">
+                             contacto@cambiosorion.cl
+                        </li>
+                    </ul>
+                    <div class="flex space-x-5 mt-8">
+                        <a href="https://wa.me/+56971846048?text=Hola,%20necesito%20consultar%20con%20un%20ejecutivo." target="_blank" class="opacity-60 hover:opacity-100 transition"><img src="/orionapp/icons/whatsapp-white.png" class="w-7 h-7" alt="WhatsApp"></a>
+                        <a href="https://www.facebook.com/CambiosOrion" target="_blank" class="opacity-60 hover:opacity-100 transition"><img src="/orionapp/icons/facebook-white.png" class="w-7 h-7" alt="Facebook"></a>
+                        <a href="https://www.instagram.com/CambiosOrion.cl" target="_blank" class="opacity-60 hover:opacity-100 transition"><img src="/orionapp/icons/instagram-white.png" class="w-7 h-7" alt="Instagram"></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-900 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-600 text-sm">© 2025 Cambios Orion. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
     <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
     <script src="https://cambiosorion.cl/orionapp/public/scripts/header.js"></script>
-    <script src="https://cambiosorion.cl/orionapp/public/scripts/index.js"></script>
-    <script src="https://cambiosorion.cl/orionapp/public/scripts/conversor.js"></script>
-    <script src="https://cambiosorion.cl/orionapp/public/scripts/reservas.js"></script>
-    <script src="https://cambiosorion.cl/orionapp/public/scripts/alertas.js"></script>
+    <script src="https://cambiosorion.cl/orionapp/public/scripts/landing.js"></script> 
+    <script src="https://cambiosorion.cl/orionapp/public/scripts/conversor-2.js"></script>
+    <script src="https://cambiosorion.cl/orionapp/public/scripts/reservas-2.js"></script>
+    <script src="https://cambiosorion.cl/orionapp/public/scripts/alertas-2.js"></script>
+    <script>
+        // Lógica para el Header Móvil (Doble menú)
+        const navBtn = document.getElementById('nav-menu-button');
+        const sessionBtn = document.getElementById('session-menu-button');
+        const navMenu = document.getElementById('nav-mobile-menu');
+        const sessionMenu = document.getElementById('session-mobile-menu');
+
+        // Toggle Menú Navegación
+        navBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            navMenu.classList.toggle('hidden');
+            // Si abro navegación, cierro sesión
+            sessionMenu.classList.add('hidden');
+        });
+
+        // Toggle Menú Sesión
+        sessionBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            sessionMenu.classList.toggle('hidden');
+            // Si abro sesión, cierro navegación
+            navMenu.classList.add('hidden');
+        });
+
+        // Cerrar menús al hacer click fuera
+        document.addEventListener('click', function(e) {
+            if (!navMenu.contains(e.target) && !navBtn.contains(e.target)) {
+                navMenu.classList.add('hidden');
+            }
+            if (!sessionMenu.contains(e.target) && !sessionBtn.contains(e.target)) {
+                sessionMenu.classList.add('hidden');
+            }
+        });
+        
+        // Botón de alerta suave
+        document.getElementById('heroAlertaBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            const wrapper = document.getElementById('alerta-wrapper');
+             if (wrapper.classList.contains("max-h-0")) {
+                wrapper.classList.remove("max-h-0");
+                wrapper.classList.add("max-h-[1000px]");
+                setTimeout(() => wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
+            }
+        });
+        
+        // Efecto scroll en el header
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.classList.add('bg-black/80');
+                header.classList.remove('bg-black/30');
+            } else {
+                header.classList.remove('bg-black/80');
+                header.classList.add('bg-black/30');
+            }
+        });
+    </script>
 </body>
 </html>
