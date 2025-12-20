@@ -1,181 +1,219 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="scroll-smooth">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nosotros</title>
+    <title>Nosotros - Cambios Orion</title>
+    
     <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/header.css">
-    <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/nosotros.css">
-    <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/footer.css">
+    <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/landing.css"> 
     <link href="https://cambiosorion.cl/orionapp/public/styles/output.css" rel="stylesheet">
     <link rel="icon" href="https://cambiosorion.cl/orionapp/icons/IsotipoOrion-blue.svg" type="image/png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
 </head>
 
-<body class="min-h-screen flex flex-col">
+<body class="flex flex-col min-h-screen bg-gray-50">
     <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js"></script>
 
-    <header>
-        <!-- Logo y Nombre -->
-        <div class="header-logo">
-            <a href="https://cambiosorion.cl/">
-                <img src="/orionapp/assets/LogoOrion-white.svg" alt="Logo Cambios Orion" class="logo">
-            </a>
-        </div>
-
-        <!-- Botones para versión móvil -->
-        <div class="mobile-buttons">
-            <button class="menu-button" id="nav-menu-button">
-                <img src="/orionapp/icons/menu-white.svg" alt="Menú">
-            </button>
-            <button class="menu-button" id="session-menu-button">
-                <img src="/orionapp/icons/profile-white.png" alt="Sesión">
-            </button>
-        </div>
-
-        <!-- Menús desplegables para móvil -->
-        <div id="nav-mobile-menu" class="mobile-menu hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
-            <ul class="py-2 text-sm text-gray-700">
-                <li><a href="index" class="block px-4 py-2 hover:bg-gray-100">Inicio</a></li>
-            </ul>
-            <ul class="py-2 text-sm text-gray-700">
-                <li><a href="nosotros" class="block px-4 py-2 hover:bg-gray-100">Nosotros</a></li>
-            </ul>
-            <ul class="py-2 text-sm text-gray-700">
-                <li><a href="contacto" class="block px-4 py-2 hover:bg-gray-100">Contacto</a></li>
-            </ul>
-        </div>
-
-        <div class="mobile-menu hidden bg-white rounded-lg shadow w-44" id="session-mobile-menu">
-            <div id="guest-actions-mobile" class="divide-y divide-gray-100" style="display:none;">
-                <ul class="py-2 text-sm text-gray-700">
-                    <li><a href="#login" class="block px-4 py-2 hover:bg-gray-100">Iniciar Sesión</a></li>
-                </ul>
-                <ul class="py-2 text-sm text-gray-700">
-                    <li><a href="#registro" class="block px-4 py-2 hover:bg-gray-100">Registro</a></li>
-                </ul>
-            </div>
-            <div id="user-actions-mobile" class="divide-y divide-gray-100" style="display:none;">
-                <div class="px-2 py-2 text-sm text-gray-900">
-                    <div id="user-name">Nombre del usuario</div>
-                    <div id="user-email" class="mail font-medium truncate">Correo del usuario</div>
+    <header class="fixed w-full z-50 transition-all duration-300 bg-black/30 backdrop-blur-md border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+            <div class="flex justify-between items-center h-14 md:h-16 relative"> 
+                
+                <div class="flex items-center md:hidden">
+                    <button id="nav-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-white/20 focus:outline-none">
+                        <img src="/orionapp/icons/menu-white.svg" class="h-9 w-9" alt="Menú">
+                    </button>
                 </div>
-                <ul class="py-2 text-sm text-gray-700">
-                    <li><a href="https://clientes.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Mi perfil</a></li>
-                </ul>
-                <ul class="py-2 text-sm text-gray-700" id="menu-admin-mobile" style="display: none;">
-                    <li><a href="https://admin.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Portal Admin</a></li>
-                </ul>
-                <ul class="py-2 text-sm text-gray-700">
-                    <li><a href="#" class="block px-4 py-2 hover:bg-gray-100" id="logout-button-mobile">Cerrar sesión</a></li>
-                </ul>
-            </div>
-        </div>
 
-        <!-- Menú de navegación para escritorio -->
-        <nav>
-            <ul>
-                <li><a href="index">Inicio</a></li>
-                <li class="selected"><a href="nosotros">Nosotros</a></li>
-                <li><a href="contacto">Contacto</a></li>
-            </ul>
-        </nav>
+                <div class="flex-shrink-0 flex items-center header-logo absolute left-1/2 transform -translate-x-1/2 md:static md:transform-none md:translate-x-0">
+                    <a href="https://cambiosorion.cl/">
+                        <img src="/orionapp/assets/LogoOrion-white.svg" alt="Logo Cambios Orion" class="h-14 md:h-16 w-auto drop-shadow-lg">
+                    </a>
+                </div>
 
-        <!-- Acciones para escritorio -->
-        <div class="header-actions">
-            <!-- User actions -->
-            <div id="user-actions" style="display:none;">
-                <button id="profile-menu-button" class="text-white bg-transparent hover:bg-gray-200 focus:outline-none">
-                    <img src="/orionapp/icons/profile-white.png" alt="Profile">
-                </button>
-                <!-- Menú desplegable -->
-                <div id="dropdownInformation" class="hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
-                    <div class="px-4 py-3 text-sm text-gray-900">
-                        <div id="user-name">Nombre del usuario</div>
-                        <div id="user-email" class="mail font-medium truncate">Correo del usuario</div>
+                <nav class="hidden md:flex space-x-10">
+                    <a href="index" class="text-white hover:text-blue-300 px-3 py-2 text-lg font-semibold text-shadow transition">Inicio</a>
+                    <a href="nosotros" class="text-white hover:text-blue-300 px-3 py-2 text-lg font-bold border-b-2 border-white text-shadow transition">Nosotros</a>
+                    <a href="contacto" class="text-white hover:text-blue-300 px-3 py-2 text-lg font-semibold text-shadow transition">Contacto</a>
+                </nav>
+
+                <div class="hidden md:flex items-center space-x-6">
+                     <div id="user-actions" style="display:none;" class="relative">
+                        <button id="profile-menu-button" class="flex text-sm rounded-full focus:outline-none ring-2 ring-white/50">
+                            <img class="h-10 w-10 rounded-full bg-white p-1" src="/orionapp/icons/profile-white.png" alt="Profile">
+                        </button>
+                        <div id="dropdownInformation" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl py-2 text-gray-800 z-50">
+                            <div class="px-4 py-3 text-sm border-b">
+                                <div id="user-name" class="font-bold text-lg">Usuario</div>
+                                <div id="user-email" class="text-gray-500 truncate">email@ejemplo.com</div>
+                            </div>
+                            <a href="https://clientes.cambiosorion.cl/" class="block px-4 py-2 text-base hover:bg-gray-100">Mi perfil</a>
+                            <a href="#" id="logout-button" class="block px-4 py-2 text-base hover:bg-gray-100 text-red-600 font-semibold">Cerrar sesión</a>
+                        </div>
                     </div>
-                    <ul class="py-2 text-sm text-gray-700" id="menu-cliente">
-                        <li><a href="https://clientes.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Mi perfil</a></li>
-                    </ul>
-                    <ul class="py-2 text-sm text-gray-700" id="menu-admin" style="display: none;">
-                        <li><a href="https://admin.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Portal Admin</a></li>
-                    </ul>
-                    <ul class="py-2 text-sm text-gray-700">
-                        <li><a href="#" class="block px-4 py-2 hover:bg-gray-100" id="logout-button">Cerrar sesión</a></li>
-                    </ul>
+                    
+                    <div id="guest-actions" class="flex items-center space-x-4">
+                        <a href="#login" class="text-white hover:text-blue-200 px-3 py-2 text-lg font-semibold text-shadow">Iniciar sesión</a>
+                        <a href="#registro" class="bg-[#3b82f6] hover:bg-[#2563eb] text-white px-6 py-3 rounded-full text-lg font-bold shadow-lg transition transform hover:scale-105">
+                            Registrarse
+                        </a>
+                    </div>
+                </div>
+
+                <div class="flex items-center md:hidden">
+                    <button id="session-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-white/20 focus:outline-none">
+                        <img src="/orionapp/icons/profile-white.png" class="h-8 w-8" alt="Sesión">
+                    </button>
                 </div>
             </div>
+        </div>
 
-            <!-- Guest actions -->
-            <div id="guest-actions" style="display:none;">
-                <a href="#login">Iniciar sesión</a>
-                <a href="#registro" class="register-button">Registrarse</a>
+        <div id="nav-mobile-menu" class="hidden md:hidden bg-[#0f172a] border-t border-gray-700 absolute top-14 left-0 w-full z-40 shadow-xl">
+             <div class="px-6 pt-6 pb-8 space-y-4 text-white">
+                <a href="index" class="block px-3 py-3 rounded-md text-xl font-medium hover:bg-white/10">Inicio</a>
+                <a href="nosotros" class="block px-3 py-3 rounded-md text-xl font-bold text-blue-400 bg-white/5">Nosotros</a>
+                <a href="contacto" class="block px-3 py-3 rounded-md text-xl font-medium hover:bg-white/10">Contacto</a>
+            </div>
+        </div>
+
+        <div id="session-mobile-menu" class="hidden md:hidden bg-[#0f172a] border-t border-gray-700 absolute top-14 left-0 w-full z-40 shadow-xl">
+            <div id="guest-actions-mobile" class="px-6 pt-6 pb-8 space-y-4">
+                 <a href="#login" class="block px-3 py-2 text-xl font-medium text-white hover:text-blue-300">Iniciar Sesión</a>
+                 <a href="#registro" class="block w-full text-center px-3 py-3 rounded-lg bg-blue-600 text-xl font-bold text-white">Registrarse</a>
+            </div>
+            <div id="user-actions-mobile" class="hidden px-6 pt-6 pb-8 space-y-4 text-white">
+                <div class="px-3 py-2 border-b border-gray-600 mb-2">
+                    <div id="user-name" class="font-bold text-lg">Usuario</div>
+                    <div id="user-email" class="text-sm text-gray-400">correo@ejemplo.com</div>
+                </div>
+                <a href="https://clientes.cambiosorion.cl/" class="block px-3 py-2 text-xl hover:bg-white/10">Mi perfil</a>
+                <a href="#" id="logout-button-mobile" class="block px-3 py-2 text-xl text-red-400 font-bold hover:bg-white/10">Cerrar sesión</a>
             </div>
         </div>
     </header>
 
-    <div class="header-divider"></div>
+    <section class="relative pt-32 pb-16 lg:pt-48 lg:pb-24 bg-[#0f172a] overflow-hidden">
+        <div class="absolute inset-0 z-0 opacity-30">
+            <div class="absolute top-0 right-0 w-1/2 h-full bg-blue-900 filter blur-[120px]"></div>
+            <div class="absolute bottom-0 left-0 w-1/2 h-full bg-blue-900 filter blur-[120px]"></div>
+        </div>
 
-    <!-- CONTENIDO PRINCIPAL -->
-    <div class="main-content">
-            <!-- Banner -->
-            <div class="banner overflow-hidden shadow-lg">
-                <img 
-                    class="front-orion object-cover w-full" 
-                    src="/orionapp/assets/Front-Orion.jpg" 
-                    alt="Frontis Orion"
-                    width="1280" 
-                    height="530">
-            </div>
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white tracking-tight mb-6">
+                Expertos en <span class="text-blue-400">Divisas</span>
+            </h1>
+            <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-300 leading-relaxed">
+                Más que una casa de cambios, somos tu aliado financiero. Seguridad, rapidez y las mejores tasas del mercado.
+            </p>
+        </div>
+    </section>
 
-            <!-- Texto de presentación -->
-            <div class="mt-6 mb-6 text-center text-white p-8">
-                <h1 class="text-3xl mb-6 font-bold">¿Quiénes Somos?</h1>
-                <p class="text-up mt-6 p-4 px-8 leading-relaxed">
-                    En <strong>Orion Financial Group SPA</strong>, nos especializamos en ofrecer un servicio confiable y seguro de cambio de divisas. 
-                    Con años de experiencia en el mercado financiero, nuestra misión es brindar a nuestros clientes la mejor tasa de cambio, 
-                    junto con un servicio personalizado que prioriza la transparencia y la satisfacción. 
-                </p>
-                <p class="text-down p-4 px-8 leading-relaxed">
-                    Escógenos porque somos sinónimo de confianza, eficiencia y compromiso. 
-                    Ya sea que necesites cambiar moneda para viajar o realizar operaciones comerciales, en Cambios Orion siempre encontrarás una solución a tu medida.
-                </p>
-            </div>
-
-            <!-- Misión y Visión (centrados) -->
-            <section class="mt-6 mb-4 text-white p-8">
-                <h2 class="text-2xl font-bold text-center">Nuestra Filosofía</h2>
-                <div class="mt-8 flex flex-wrap justify-center gap-8">
-                    <!-- Misión -->
-                    <div class="bg-white text-gray-700 p-6 rounded-lg shadow-md w-full sm:w-80 text-center">
-                        <h3 class="text-xl font-bold">Misión</h3>
-                        <p class="mt-4 text-sm leading-relaxed">
-                            Ofrecer un servicio confiable y seguro de cambio de divisas, priorizando la transparencia y satisfacción de nuestros clientes en cada operación.
-                        </p>
-                    </div>
-                    <!-- Visión -->
-                    <div class="bg-white text-gray-700 p-6 rounded-lg shadow-md w-full sm:w-80 text-center">
-                        <h3 class="text-xl font-bold">Visión</h3>
-                        <p class="mt-4 text-sm leading-relaxed">
-                            Convertirnos en el referente número uno en el mercado financiero nacional, reconocido por nuestra eficiencia, confianza y compromiso con la excelencia.
-                        </p>
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row items-center gap-12">
+                <div class="w-full lg:w-1/2">
+                    <div class="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white transform rotate-2 hover:rotate-0 transition duration-500">
+                        <img src="/orionapp/assets/Front-Orion.jpg" alt="Frontis Orion" class="w-full h-auto object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                        <div class="absolute bottom-6 left-6 text-white">
+                            <p class="font-bold text-lg">Nuestra Casa Matriz</p>
+                            <p class="text-sm opacity-90">Santiago Centro</p>
+                        </div>
                     </div>
                 </div>
-            </section>
 
-            <!-- Opiniones de Clientes -->
-            <script src="https://static.elfsight.com/platform/platform.js" async></script>
-            <div class="elfsight-app-792662a7-26ae-40e4-994e-f94a3e1f6780 p-8" data-elfsight-app-lazy></div>
+                <div class="w-full lg:w-1/2">
+                    <span class="text-blue-600 font-bold tracking-wider uppercase text-sm">Nuestra Historia</span>
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mt-2 mb-6">¿Quiénes Somos?</h2>
+                    <div class="space-y-4 text-gray-600 text-lg leading-relaxed">
+                        <p>
+                            En <strong>Orion Financial Group SPA</strong>, nos especializamos en ofrecer un servicio confiable y seguro de cambio de divisas. 
+                            Con años de experiencia en el mercado financiero, nuestra misión es brindar a nuestros clientes la mejor tasa de cambio, 
+                            junto con un servicio personalizado que prioriza la transparencia.
+                        </p>
+                        <p>
+                            Escógenos porque somos sinónimo de confianza, eficiencia y compromiso. 
+                            Ya sea que necesites cambiar moneda para viajar o realizar operaciones comerciales, en Cambios Orion siempre encontrarás una solución a tu medida.
+                        </p>
+                    </div>
+                    
+                    <div class="mt-8 flex gap-4">
+                        <div class="flex items-center gap-2 text-gray-700 font-semibold">
+                            <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-600">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            </div>
+                            Seguridad Total
+                        </div>
+                        <div class="flex items-center gap-2 text-gray-700 font-semibold">
+                            <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
+                            Rapidez
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-            <!-- Mapa de Ubicación -->
-            <div class="mt-4 mx-auto p-8">
-                <h2 class="text-2xl font-bold text-center text-white">Encuéntranos Aquí</h2>
-                <div id="map" class="mt-6 rounded-lg shadow-lg overflow-hidden flex justify-center">
+    <section class="py-20 bg-gray-50 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-extrabold text-gray-900">Nuestra Filosofía</h2>
+                <p class="mt-4 text-xl text-gray-500">Los pilares que mueven nuestras operaciones diarias</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-4xl mx-auto">
+                <div class="group p-10 bg-white rounded-[2rem] shadow-xl hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-blue-100 text-center">
+                    <div class="w-20 h-20 bg-blue-100 text-[#1e3a8a] rounded-3xl flex items-center justify-center mx-auto mb-8 text-4xl group-hover:scale-110 transition duration-300">
+                        🎯
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Misión</h3>
+                    <p class="text-gray-500 text-base leading-relaxed">
+                        Ofrecer un servicio confiable y seguro de cambio de divisas, priorizando la transparencia y satisfacción de nuestros clientes en cada operación.
+                    </p>
+                </div>
+
+                <div class="group p-10 bg-white rounded-[2rem] shadow-xl hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-blue-100 text-center">
+                    <div class="w-20 h-20 bg-purple-100 text-purple-600 rounded-3xl flex items-center justify-center mx-auto mb-8 text-4xl group-hover:scale-110 transition duration-300">
+                        🚀
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Visión</h3>
+                    <p class="text-gray-500 text-base leading-relaxed">
+                        Convertirnos en el referente número uno en el mercado financiero nacional, reconocido por nuestra eficiencia, confianza y compromiso con la excelencia.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-12 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+             <script src="https://static.elfsight.com/platform/platform.js" async></script>
+             <div class="elfsight-app-792662a7-26ae-40e4-994e-f94a3e1f6780" data-elfsight-app-lazy></div>
+        </div>
+    </section>
+
+    <section class="py-20 bg-gray-900 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-extrabold">Encuéntranos Aquí</h2>
+                <p class="mt-2 text-gray-400">Visítanos en nuestra oficina central</p>
+            </div>
+            
+            <div class="bg-gray-800 p-2 rounded-3xl shadow-2xl max-w-5xl mx-auto">
+                <div id="map" class="rounded-2xl overflow-hidden h-[450px] w-full relative z-10">
                     <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d46762.177454555!2d-70.6873334106774!3d-33.440928664510665!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9662c5e69badcd55%3A0xf30a3babd2003868!2sOrion%20Financial%20Group%20SPA!5e0!3m2!1ses-419!2scl!4v1732029637567!5m2!1ses-419!2scl" 
+                        src="https://maps.google.com/maps?q=Agustinas%201035%20Of%2013,%20Santiago&t=&z=15&ie=UTF8&iwloc=&output=embed" 
                         width="100%" 
-                        height="450" 
+                        height="100%" 
                         style="border:0;" 
                         allowfullscreen="" 
                         loading="lazy" 
@@ -183,93 +221,115 @@
                     </iframe>
                 </div>
             </div>
-
-            <!-- Botón flotante de WhatsApp -->
-            <a href="https://wa.me/+56971846048?text=Hola,%20necesito%20consultar%20con%20un%20ejecutivo." 
-               class="fab fixed bottom-6 right-6 z-50 bg-green-600 hover:bg-green-700 text-white rounded-full p-3 shadow-lg transition-all">
-                <img src="https://cambiosorion.cl/orionapp/icons/whatsapp-white.png" alt="WhatsApp" class="w-10 h-10">
-            </a>
-    </div>
-
-    <!-- FOOTER -->
-    <footer class="w-full bg-black text-white mt-12">
-        <div class="footer-container max-w-7xl mx-auto px-6 py-10">
-            <!-- Sección del logo -->
-            <div class="footer-logo mb-8">
-                <img src="/orionapp/assets/LogoOrion-white.svg" alt="Logo Orion" class="logo">
-            </div>
-
-            <!-- Mapa de navegación responsivo -->
-            <div class="footer-navigation grid grid-cols-1 md:grid-cols-3 gap-12">
-                <!-- Servicios -->
-                <div class="nav-section">
-                    <h3 class="font-bold text-lg inline-block border-b-4 border-white leading-tight">Servicios</h3>
-                    <ul class="list-none p-0 mt-2">
-                        <li><a href="#" class="block py-1 hover:text-gray-300">Envíos</a></li>
-                        <li><a href="#" class="block py-1 hover:text-gray-300">Transferencias</a></li>
-                    </ul>
-                </div>
-                <!-- Nosotros -->
-                <div class="nav-section">
-                    <h3 class="font-bold text-lg inline-block border-b-4 border-white leading-tight">Nosotros</h3>
-                    <ul class="list-none p-0 mt-2">
-                        <li><a href="nosotros" class="block py-1 hover:text-gray-300">Quiénes Somos</a></li>
-                        <li><a href="nosotros#map" class="block py-1 hover:text-gray-300">Mapa</a></li>
-                    </ul>
-                </div>
-                <!-- Soporte -->
-                <div class="nav-section">
-                    <h3 class="font-bold text-lg inline-block border-b-4 border-white leading-tight">Soporte</h3>
-                    <ul class="list-none p-0 mt-2">
-                        <li><a href="faq" class="block py-1 hover:text-gray-300">Preguntas frecuentes</a></li>
-                        <li><a href="contacto" class="block py-1 hover:text-gray-300">Contacto</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Información de contacto -->
-            <div class="footer-contact flex flex-wrap justify-between mt-10">
-                <div class="contact-info">
-                    <div class="contact-item flex items-start gap-3 mb-4">
-                        <a href="https://maps.app.goo.gl/6fQ31ySCJWSButxQ9" target="_blank">
-                            <img src="/orionapp/icons/location-white.png" alt="Icono de ubicación" class="icon">
-                        </a>
-                        <div>
-                            <a href="https://maps.app.goo.gl/6fQ31ySCJWSButxQ9" target="_blank"><p>Agustinas 1035 Of 13, Santiago</p></a>
-                            <small>Lunes a Viernes 09:00 a 17:00 hrs</small>
-                        </div>
-                    </div>
-                    <div class="contact-item flex items-start gap-3 mb-4">
-                        <img src="/orionapp/icons/phone-white.png" alt="Icono de teléfono" class="icon">
-                        <div>
-                            <p>+56 9 7184 6048</p>
-                        </div>
-                    </div>
-                    <div class="contact-item flex items-start gap-3">
-                        <img src="/orionapp/icons/email-white.png" alt="Icono de correo" class="icon">
-                        <div>
-                            <p>contacto@cambiosorion.cl</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Redes Sociales -->
-            <div class="social-media flex gap-4 mt-8">
-                <a href="https://wa.me/+56971846048?text=Hola,%20necesito%20consultar%20con%20un%20ejecutivo." target="_blank"><img src="/orionapp/icons/whatsapp-white.png" alt="WhatsApp" class="icon"></a>
-                <a href="https://www.facebook.com/CambiosOrion" target="_blank"><img src="/orionapp/icons/facebook-white.png" alt="Facebook" class="icon"></a>
-                <a href="https://www.instagram.com/Cambios.Orion.cl" target="_blank"><img src="/orionapp/icons/instagram-white.png" alt="Instagram" class="icon"></a>
-                <a href="https://www.tiktok.com/@cambios.orion" target="_blank"><img src="/orionapp/icons/tik-tok-white.png" alt="TikTok" class="icon"></a>
-            </div>
         </div>
+    </section>
 
-        <div class="footer-bottom text-xs text-center p-4 bg-black">
-            © 2025 Cambios Orion. Todos los derechos reservados.
+    <footer class="bg-black text-white pt-20 pb-10 border-t border-gray-900 relative z-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <div class="col-span-1 md:col-span-1">
+                     <img src="/orionapp/assets/LogoOrion-white.svg" alt="Logo Orion" class="h-20 mb-8 opacity-90">
+                     <p class="text-gray-400 text-base leading-relaxed">
+                         Expertos en cambio de divisas con la mejor tasa del mercado. Seguridad, rapidez y confianza en cada operación.
+                     </p>
+                </div>
+                <div>
+                    <h4 class="text-xl font-bold mb-6 text-gray-200">Servicios</h4>
+                    <ul class="space-y-3 text-gray-400 text-base">
+                        <li><a href="https://cambiosorion.cl/divisas" class="hover:text-white transition">Catálogo de Divisas</a></li>
+                        <li><a href="index#conversor" class="hover:text-white transition">Cotizador Online</a></li>
+                        <li><a href="index#alerta-wrapper" class="hover:text-white transition">Sistema de Alertas</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-bold mb-6 text-gray-200">Compañía</h4>
+                    <ul class="space-y-3 text-gray-400 text-base">
+                        <li><a href="nosotros" class="text-white font-bold transition">Quiénes Somos</a></li>
+                        <li><a href="contacto" class="hover:text-white transition">Ubicación</a></li>
+                        <li><a href="faq" class="hover:text-white transition">Preguntas Frecuentes</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-bold mb-6 text-gray-200">Contacto</h4>
+                    <ul class="space-y-4 text-gray-400 text-base">
+                        <li class="flex items-start">
+                             <img src="/orionapp/icons/location-white.png" class="w-6 h-6 mr-3 mt-0.5 opacity-60">
+                             <span>Agustinas 1035 Of 13,<br>Santiago Centro, Chile</span>
+                        </li>
+                        <li class="flex items-center">
+                            <img src="/orionapp/icons/phone-white.png" class="w-6 h-6 mr-3 opacity-60">
+                            +56 9 7184 6048
+                        </li>
+                        <li class="flex items-center">
+                             <img src="/orionapp/icons/email-white.png" class="w-6 h-6 mr-3 opacity-60">
+                             contacto@cambiosorion.cl
+                        </li>
+                    </ul>
+                    <div class="flex space-x-5 mt-8">
+                        <a href="https://wa.me/+56971846048?text=Hola,%20necesito%20consultar%20con%20un%20ejecutivo." target="_blank" class="opacity-60 hover:opacity-100 transition"><img src="/orionapp/icons/whatsapp-white.png" class="w-7 h-7" alt="WhatsApp"></a>
+                        <a href="https://www.facebook.com/CambiosOrion" target="_blank" class="opacity-60 hover:opacity-100 transition"><img src="/orionapp/icons/facebook-white.png" class="w-7 h-7" alt="Facebook"></a>
+                        <a href="https://www.instagram.com/Cambios.Orion.cl" target="_blank" class="opacity-60 hover:opacity-100 transition"><img src="/orionapp/icons/instagram-white.png" class="w-7 h-7" alt="Instagram"></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-900 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-600 text-sm">© 2025 Cambios Orion. Todos los derechos reservados.</p>
+            </div>
         </div>
     </footer>
 
+    <a href="https://wa.me/+56971846048?text=Hola,%20necesito%20consultar%20con%20un%20ejecutivo." 
+    class="fixed bottom-4 right-4 md:bottom-8 md:right-8 bg-[#25D366] text-white p-3 md:p-4 rounded-full shadow-2xl hover:scale-110 transition z-[100] flex items-center justify-center group border-2 border-white/20">
+        <img src="https://cambiosorion.cl/orionapp/icons/whatsapp-white.png" alt="WhatsApp" class="w-10 h-10 md:w-12 md:h-12">
+        <span class="max-w-0 overflow-hidden group-hover:max-w-xs group-hover:ml-3 transition-all duration-500 whitespace-nowrap font-bold text-base md:text-lg">¡Hablemos!</span>
+    </a>
+
     <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
     <script src="https://cambiosorion.cl/orionapp/public/scripts/header.js"></script>
-    <script src="https://cambiosorion.cl/orionapp/public/scripts/nosotros.js"></script>
+    <script>
+        // Efecto scroll en header (igual que en index)
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.classList.add('bg-black/80');
+                header.classList.remove('bg-black/30');
+            } else {
+                header.classList.remove('bg-black/80');
+                header.classList.add('bg-black/30');
+            }
+        });
+        
+        // Lógica para el Header Móvil (Doble menú)
+        const navBtn = document.getElementById('nav-menu-button');
+        const sessionBtn = document.getElementById('session-menu-button');
+        const navMenu = document.getElementById('nav-mobile-menu');
+        const sessionMenu = document.getElementById('session-mobile-menu');
+
+        if(navBtn && navMenu) {
+            navBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                navMenu.classList.toggle('hidden');
+                if(sessionMenu) sessionMenu.classList.add('hidden');
+            });
+        }
+
+        if(sessionBtn && sessionMenu) {
+            sessionBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                sessionMenu.classList.toggle('hidden');
+                if(navMenu) navMenu.classList.add('hidden');
+            });
+        }
+
+        document.addEventListener('click', function(e) {
+            if (navMenu && !navMenu.contains(e.target) && !navBtn.contains(e.target)) {
+                navMenu.classList.add('hidden');
+            }
+            if (sessionMenu && !sessionMenu.contains(e.target) && !sessionBtn.contains(e.target)) {
+                sessionMenu.classList.add('hidden');
+            }
+        });
+    </script>
 </body>
 </html>
