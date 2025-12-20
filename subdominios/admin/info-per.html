@@ -10,10 +10,17 @@
     <link rel="stylesheet" href="https://admin.cambiosorion.cl/styles/index.css">
     <link href="https://cambiosorion.cl/orionapp/public/styles/output.css" rel="stylesheet">
     <link rel="icon" href="https://cambiosorion.cl/orionapp/icons/IsotipoOrion-blue.svg" type="image/png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
         body { font-family: 'Inter', sans-serif; }
         /* Transiciones suaves */
         input, select { transition: all 0.2s ease-in-out; }
+        /* Ajuste para que el sidebar llegue hasta abajo */
+        .sidebar-container-fixed { min-height: calc(100vh - 64px); }
     </style>
 </head>
 
@@ -21,7 +28,7 @@
     <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js" crossorigin="anonymous"></script>
 
     <header class="fixed w-full z-50 transition-all duration-300 bg-slate-900 shadow-md border-b border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <div class="w-full px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16"> 
                 
                 <div class="flex items-center gap-4">
@@ -34,33 +41,19 @@
                 </div>
 
                 <nav class="hidden lg:flex space-x-1 bg-slate-800/50 p-1 rounded-lg border border-slate-700/50">
-                    <a href="info-per" class="px-4 py-2 text-sm font-medium rounded-md text-white bg-white/10 shadow-sm transition">
-                        Perfil
-                    </a>
-                    <a href="https://pizarras.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-slate-700 transition">
-                        Pizarras
-                    </a>
-                    <a href="https://caja.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-slate-700 transition">
-                        Caja
-                    </a>
-                    <a href="https://tesoreria.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-slate-700 transition">
-                        Tesorería
-                    </a>
+                    <a href="info-per" class="px-4 py-2 text-sm font-medium rounded-md text-white bg-white/10 shadow-sm transition">Perfil</a>
+                    <a href="https://pizarras.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-slate-700 transition">Pizarras</a>
+                    <a href="https://caja.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-slate-700 transition">Caja</a>
+                    <a href="https://tesoreria.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-slate-700 transition">Tesorería</a>
                 </nav>
 
                 <div class="flex items-center gap-4">
-                    <button class="text-slate-400 hover:text-white transition relative">
-                        <span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-500 ring-2 ring-slate-900"></span>
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
-                    </button>
-
                     <div class="relative ml-2">
                         <button id="profile-menu-button" class="flex items-center gap-2 text-sm rounded-full focus:outline-none ring-2 ring-slate-700 hover:ring-slate-500 transition p-0.5 bg-slate-800">
                             <img class="h-8 w-8 rounded-full object-cover" src="https://cambiosorion.cl/orionapp/icons/profile-white.png" alt="Profile">
                             <span class="hidden md:block text-slate-200 font-medium px-2" id="header-user-name">...</span>
                             <svg class="w-4 h-4 text-slate-400 hidden md:block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                         </button>
-                        
                         <div id="dropdownInformation" class="hidden absolute right-0 mt-2 w-60 bg-white rounded-xl shadow-2xl py-2 z-50 border border-slate-100 transform origin-top-right transition-all">
                             <div class="px-4 py-3 border-b border-gray-100 bg-gray-50/50">
                                 <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Conectado como</p>
@@ -77,7 +70,6 @@
                             </a>
                         </div>
                     </div>
-
                     <button id="nav-menu-button" class="lg:hidden text-white p-2">
                         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </button>
@@ -87,30 +79,31 @@
 
         <div id="nav-mobile-menu" class="hidden lg:hidden bg-slate-800 border-t border-slate-700">
             <div class="px-4 pt-4 pb-6 space-y-2">
-                <span class="text-xs font-bold text-slate-500 uppercase tracking-widest px-2">Navegación</span>
                 <a href="info-per" class="block px-3 py-2 rounded-md text-base font-medium text-white bg-slate-700">Perfil</a>
                 <a href="https://pizarras.cambiosorion.cl/" class="block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-700">Pizarras</a>
                 <a href="https://caja.cambiosorion.cl/" class="block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-700">Caja</a>
                 <a href="https://tesoreria.cambiosorion.cl/" class="block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-700">Tesorería</a>
-                
                 <div class="border-t border-slate-700 my-4 pt-4"></div>
                 <a href="#" id="logout-button-mobile" class="block px-3 py-2 rounded-md text-base font-medium text-red-400 hover:bg-slate-700">Cerrar Sesión</a>
             </div>
         </div>
     </header>
 
-    <div class="flex-grow pt-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full pb-12">
-        <div class="flex flex-col lg:flex-row gap-8">
-            
-            <aside class="w-full lg:w-72 flex-shrink-0 hidden lg:block" id="sidebar-container">
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 min-h-[500px] animate-pulse">
-                    <div class="h-4 bg-gray-200 rounded w-3/4 mb-4"></div>
-                    <div class="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
-                    <div class="h-4 bg-gray-200 rounded w-5/6"></div>
+    <div class="flex pt-16 min-h-screen">
+        
+        <aside class="w-72 flex-shrink-0 hidden lg:block bg-white border-r border-gray-200 sidebar-container-fixed" id="sidebar-container">
+            <div class="p-6 space-y-4 animate-pulse">
+                <div class="h-6 bg-gray-200 rounded w-1/2"></div>
+                <div class="space-y-2 pt-4">
+                    <div class="h-10 bg-gray-100 rounded w-full"></div>
+                    <div class="h-10 bg-gray-100 rounded w-full"></div>
+                    <div class="h-10 bg-gray-100 rounded w-full"></div>
                 </div>
-            </aside>
+            </div>
+        </aside>
 
-            <main class="flex-1 min-w-0">
+        <main class="flex-1 w-full bg-slate-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
                 
                 <div class="mb-8">
                     <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Mi Perfil</h1>
@@ -119,21 +112,14 @@
 
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8 flex flex-col md:flex-row items-center gap-6 relative overflow-hidden">
                     <div id="profile-color-bar" class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-slate-400 to-slate-600"></div>
-                    
                     <div class="flex-shrink-0">
-                        <div class="h-20 w-20 rounded-full bg-slate-100 flex items-center justify-center text-3xl shadow-inner text-slate-400">
-                            👤
-                        </div>
+                        <div class="h-20 w-20 rounded-full bg-slate-100 flex items-center justify-center text-3xl shadow-inner text-slate-400">👤</div>
                     </div>
                     <div class="text-center md:text-left flex-1">
                         <h2 id="user-name-dashboard" class="text-2xl font-bold text-slate-800">Cargando...</h2>
                         <div class="flex flex-wrap gap-2 justify-center md:justify-start mt-2">
-                            <span id="role-type" class="px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200 uppercase tracking-wide">
-                                Rol
-                            </span>
-                            <span id="user-type" class="px-3 py-1 rounded-full text-xs font-semibold bg-slate-50 text-slate-500 border border-slate-200 uppercase tracking-wide">
-                                Tipo
-                            </span>
+                            <span id="role-type" class="px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200 uppercase tracking-wide">Rol</span>
+                            <span id="user-type" class="px-3 py-1 rounded-full text-xs font-semibold bg-slate-50 text-slate-500 border border-slate-200 uppercase tracking-wide">Tipo</span>
                         </div>
                     </div>
                     <div class="flex-shrink-0 mt-4 md:mt-0 hidden" id="edit-button-container">
@@ -144,7 +130,7 @@
                     </div>
                 </div>
 
-                <form id="personal-info-form" class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                <form id="personal-info-form" class="grid grid-cols-1 xl:grid-cols-2 gap-8 pb-12">
                     
                     <div class="space-y-8">
                         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
@@ -160,7 +146,6 @@
                                     <label class="text-sm font-medium text-slate-500">RUT</label>
                                     <div class="sm:col-span-2 text-slate-900 font-semibold" id="rut">--</div>
                                 </div>
-
                                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
                                     <label class="text-sm font-medium text-slate-500">Correo</label>
                                     <div class="sm:col-span-2">
@@ -168,7 +153,6 @@
                                         <input type="email" id="email" name="email" class="hidden w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5">
                                     </div>
                                 </div>
-
                                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
                                     <label class="text-sm font-medium text-slate-500">Teléfono</label>
                                     <div class="sm:col-span-2">
@@ -176,7 +160,6 @@
                                         <input type="text" id="telefono" name="telefono" class="hidden w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5">
                                     </div>
                                 </div>
-
                                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
                                     <label class="text-sm font-medium text-slate-500">Dirección</label>
                                     <div class="sm:col-span-2">
@@ -184,7 +167,6 @@
                                         <input type="text" id="direccion" name="direccion" class="hidden w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5">
                                     </div>
                                 </div>
-
                                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
                                     <label class="text-sm font-medium text-slate-500">Estado Civil</label>
                                     <div class="sm:col-span-2">
@@ -199,7 +181,6 @@
                                         </select>
                                     </div>
                                 </div>
-
                                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
                                     <label class="text-sm font-medium text-slate-500">Cumpleaños</label>
                                     <div class="sm:col-span-2">
@@ -228,7 +209,6 @@
                                         <input type="text" id="banco" name="banco" class="hidden w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 p-2.5">
                                     </div>
                                 </div>
-
                                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
                                     <label class="text-sm font-medium text-slate-500">Tipo Cuenta</label>
                                     <div class="sm:col-span-2">
@@ -241,7 +221,6 @@
                                         </select>
                                     </div>
                                 </div>
-
                                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
                                     <label class="text-sm font-medium text-slate-500">N° Cuenta</label>
                                     <div class="sm:col-span-2">
@@ -277,10 +256,9 @@
                         </button>
                         <button type="button" onclick="location.reload()" class="text-slate-400 hover:text-white font-medium text-sm">Cancelar</button>
                     </div>
-
                 </form>
-            </main>
-        </div>
+            </div>
+        </main>
     </div>
 
     <div id="modal-exitoso" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-[70] hidden">
@@ -290,31 +268,16 @@
             </div>
             <h2 class="text-xl font-bold text-slate-900 mb-2">¡Datos Actualizados!</h2>
             <p class="text-slate-500 mb-6">Tu perfil se ha guardado correctamente.</p>
-            <button id="volver" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition shadow-lg">
-                Entendido
-            </button>
+            <button id="volver" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition shadow-lg">Entendido</button>
         </div>
     </div>
 
-    <footer class="bg-slate-900 border-t border-slate-800 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="flex items-center gap-3">
-                    <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Orion" class="h-8 opacity-50 grayscale hover:grayscale-0 transition">
-                    <span class="text-slate-600 text-sm">| Sistema de Gestión Interna</span>
-                </div>
-                <p class="text-slate-600 text-xs">© 2025 Orion Financial Group. Todos los derechos reservados.</p>
-            </div>
-        </div>
-    </footer>
-
     <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
     <script type="module" src="https://cambiosorion.cl/orionapp/public/scripts/header.js" crossorigin="anonymous"></script>
     <script type="module" src="https://admin.cambiosorion.cl/scripts/info-per.js"></script>
     
     <script>
-        // Scripts visuales inline (para interacciones que no dependen de la sesión)
+        // Scripts visuales
         const editBtn = document.getElementById('edit-button');
         const saveBar = document.getElementById('save-bar');
         const passwordGroup = document.getElementById('password-group');
@@ -327,7 +290,7 @@
                 texts.forEach(p => p.classList.add('hidden'));
                 if(passwordGroup) passwordGroup.classList.remove('hidden');
                 if(saveBar) saveBar.classList.remove('hidden');
-                editBtn.parentElement.classList.add('hidden'); // Ocultar contenedor botón
+                editBtn.parentElement.classList.add('hidden');
             });
         }
 
