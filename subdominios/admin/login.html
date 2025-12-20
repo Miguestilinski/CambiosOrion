@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Intranet - Cambios Orion</title>
+    <title>Intranet</title>
     
     <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/header.css">
     <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/footer.css">
@@ -18,15 +18,15 @@
     
     <style>
         body { font-family: 'Inter', sans-serif; }
-        /* Ajuste para que el placeholder se vea bien en fondo oscuro */
-        input::placeholder { color: #64748b !important; }
+        /* Placeholder en color gris claro para que se vea sobre fondo oscuro */
+        input::placeholder { color: #94a3b8 !important; }
     </style>
 </head>
 
 <body class="flex flex-col min-h-screen text-white">
     <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js"></script>
 
-    <header class="fixed w-full z-50 transition-all duration-300 bg-slate-900/90 backdrop-blur-md border-b border-white/10">
+    <header class="fixed w-full z-50 transition-all duration-300 bg-slate-900/80 backdrop-blur-md border-b border-white/5">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
             <div class="flex justify-between items-center h-14 md:h-16 relative"> 
                 
@@ -34,7 +34,7 @@
                     <a href="https://admin.cambiosorion.cl/">
                         <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Logo Cambios Orion" class="h-12 md:h-14 w-auto drop-shadow-lg opacity-90 hover:opacity-100 transition">
                     </a>
-                    <span class="ml-3 px-2 py-0.5 rounded bg-indigo-600 text-[10px] font-bold tracking-wider uppercase hidden md:block">Intranet</span>
+                    <span class="ml-3 px-2 py-0.5 rounded bg-indigo-600/80 border border-indigo-500/30 text-[10px] font-bold tracking-wider uppercase hidden md:block text-white shadow-lg shadow-indigo-500/20">Intranet</span>
                 </div>
 
                 <nav class="hidden md:flex space-x-6">
@@ -45,37 +45,37 @@
                 </nav>
 
                 <div class="flex items-center md:hidden gap-4">
-                    <button id="session-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-white/20 focus:outline-none">
+                    <button id="session-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-white/10 focus:outline-none">
                         <img src="https://cambiosorion.cl/orionapp/icons/profile-white.png" class="h-7 w-7" alt="Sesión">
                     </button>
-                    <button id="nav-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-white/20 focus:outline-none">
+                    <button id="nav-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-white/10 focus:outline-none">
                         <img src="https://cambiosorion.cl/orionapp/icons/menu-white.svg" class="h-8 w-8" alt="Menú">
                     </button>
                 </div>
                 
                 <div class="hidden md:flex items-center">
                     <div id="user-actions" style="display:none;" class="relative">
-                        <button id="profile-menu-button" class="flex text-sm rounded-full focus:outline-none ring-2 ring-indigo-500">
-                            <img class="h-9 w-9 rounded-full bg-slate-700 p-1" src="/orionapp/icons/profile-white.png" alt="Profile">
+                        <button id="profile-menu-button" class="flex text-sm rounded-full focus:outline-none ring-2 ring-indigo-500/50">
+                            <img class="h-9 w-9 rounded-full bg-slate-800 p-1" src="/orionapp/icons/profile-white.png" alt="Profile">
                         </button>
-                        <div id="dropdownInformation" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl py-2 text-gray-800 z-50">
-                            <div class="px-4 py-3 text-sm border-b">
+                        <div id="dropdownInformation" class="hidden absolute right-0 mt-2 w-56 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl py-2 text-white z-50">
+                            <div class="px-4 py-3 text-sm border-b border-slate-700">
                                 <div id="user-name" class="font-bold text-lg">Usuario</div>
-                                <div id="user-email" class="text-gray-500 truncate">email@ejemplo.com</div>
+                                <div id="user-email" class="text-gray-400 truncate">email@ejemplo.com</div>
                             </div>
-                            <a href="https://admin.cambiosorion.cl/" class="block px-4 py-2 text-base hover:bg-gray-100">Portal Admin</a>
-                            <a href="https://cambiosorion.cl/webmail" class="block px-4 py-2 text-base hover:bg-gray-100">Correo</a>
-                            <a href="#" id="logout-button" class="block px-4 py-2 text-base hover:bg-gray-100 text-red-600 font-semibold">Cerrar sesión</a>
+                            <a href="https://admin.cambiosorion.cl/" class="block px-4 py-2 text-base hover:bg-slate-700">Portal Admin</a>
+                            <a href="https://cambiosorion.cl/webmail" class="block px-4 py-2 text-base hover:bg-slate-700">Correo</a>
+                            <a href="#" id="logout-button" class="block px-4 py-2 text-base hover:bg-slate-700 text-red-400 font-semibold">Cerrar sesión</a>
                         </div>
                     </div>
                     <div id="guest-actions" style="display:none;">
-                        <span class="text-xs text-gray-400 font-mono">NO_SESSION</span>
+                        <span class="text-xs text-gray-500 font-mono">NO_SESSION</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div id="nav-mobile-menu" class="hidden md:hidden bg-slate-800 border-t border-slate-700 absolute top-14 left-0 w-full z-40 shadow-xl">
+        <div id="nav-mobile-menu" class="hidden md:hidden bg-slate-900/95 border-t border-slate-800 absolute top-14 left-0 w-full z-40 shadow-xl backdrop-blur-md">
              <div class="px-6 pt-6 pb-8 space-y-4 text-white">
                 <span class="text-xs font-bold text-indigo-400 uppercase tracking-widest">Herramientas</span>
                 <a href="https://admin.cambiosorion.cl/" class="block px-3 py-2 rounded-md text-lg font-medium hover:bg-white/10">Portal Admin</a>
@@ -85,12 +85,12 @@
             </div>
         </div>
 
-        <div id="session-mobile-menu" class="hidden md:hidden bg-slate-800 border-t border-slate-700 absolute top-14 left-0 w-full z-40 shadow-xl">
+        <div id="session-mobile-menu" class="hidden md:hidden bg-slate-900/95 border-t border-slate-800 absolute top-14 left-0 w-full z-40 shadow-xl backdrop-blur-md">
             <div id="guest-actions-mobile" class="px-6 pt-6 pb-8 space-y-4" style="display:none;">
                  <a href="https://admin.cambiosorion.cl/login" class="block px-3 py-2 text-lg font-medium text-white bg-indigo-600 rounded text-center">Iniciar Sesión</a>
             </div>
             <div id="user-actions-mobile" class="hidden px-6 pt-6 pb-8 space-y-4 text-white">
-                <div class="px-3 py-2 border-b border-gray-600 mb-2">
+                <div class="px-3 py-2 border-b border-slate-700 mb-2">
                     <div id="user-name" class="font-bold text-lg">Administrativo</div>
                     <div id="user-email" class="text-sm text-gray-400">admin@cambiosorion.cl</div>
                 </div>
@@ -101,77 +101,77 @@
         </div>
     </header>
 
-    <main class="flex-grow pt-32 pb-20 px-4 sm:px-6 flex flex-col items-center justify-center">
+    <main class="flex-grow pt-32 pb-20 px-4 sm:px-6 flex flex-col items-center justify-center relative z-10">
         
         <div class="w-full max-w-md">
             <div class="text-center mb-8">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-indigo-600 shadow-lg shadow-indigo-500/30 mb-4">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-indigo-600/90 shadow-lg shadow-indigo-500/30 mb-4 backdrop-blur-sm border border-indigo-400/30">
                     <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                 </div>
                 <h1 class="text-3xl font-extrabold text-white tracking-tight drop-shadow-md">Acceso Corporativo</h1>
                 <p class="mt-2 text-slate-300 font-medium">Portal exclusivo para colaboradores</p>
             </div>
 
-            <div class="bg-slate-900/60 backdrop-blur-xl border border-slate-600/50 rounded-[2rem] p-8 md:p-10 shadow-2xl relative overflow-hidden">
+            <div class="bg-slate-900/60 backdrop-blur-xl border border-slate-500/30 rounded-[2rem] p-8 md:p-10 shadow-2xl relative overflow-hidden">
                 <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500"></div>
 
                 <form id="loginForm" class="space-y-6 relative z-10">
                     <div id="administrativo-form" class="form-section active">
-                        <div>
+                        <div class="mb-1">
                             <label for="correo" class="block mb-2 text-sm font-bold text-slate-300">Correo Corporativo</label>
                             <div class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-20">
                                     <svg class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" /></svg>
                                 </div>
                                 <input type="email" name="correo" id="correo" 
-                                    class="!w-full !bg-slate-900/50 !border !border-slate-500 !rounded-xl !py-3 !pl-10 !pr-3 !text-white !m-0 focus:!ring-2 focus:!ring-indigo-500 focus:!border-transparent transition outline-none" 
+                                    class="!w-full !bg-slate-900/50 !border !border-slate-500 !rounded-xl !py-3 !pl-10 !pr-3 !text-white !m-0 focus:!ring-2 focus:!ring-indigo-500 focus:!border-transparent transition outline-none shadow-inner" 
                                     placeholder="usuario@cambiosorion.cl" required>
                             </div>
                             <p id="email-error" class="mt-2 text-xs text-red-400 hidden"></p>
                         </div>
                     </div>
             
-                    <div>
+                    <div class="mb-1">
                         <label for="password" class="block mb-2 text-sm font-bold text-slate-300">Contraseña</label>
                         <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-20">
                                 <svg class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
                             </div>
                             <input type="password" name="password" id="password" 
-                                class="!w-full !bg-slate-900/50 !border !border-slate-500 !rounded-xl !py-3 !pl-10 !pr-3 !text-white !m-0 focus:!ring-2 focus:!ring-indigo-500 focus:!border-transparent transition outline-none" 
+                                class="!w-full !bg-slate-900/50 !border !border-slate-500 !rounded-xl !py-3 !pl-10 !pr-3 !text-white !m-0 focus:!ring-2 focus:!ring-indigo-500 focus:!border-transparent transition outline-none shadow-inner" 
                                 placeholder="••••••••" required>
                         </div>
                         <p id="password-error" class="mt-2 text-xs text-red-400 hidden"></p>
                     </div>
             
-                    <div class="flex items-center justify-between">
+                    <div class="flex items-center justify-between mt-2">
                         <div class="flex items-center">
-                            <input id="remember" type="checkbox" class="w-4 h-4 rounded border-slate-600 bg-slate-700 text-indigo-600 focus:ring-indigo-500 focus:ring-offset-slate-800 !m-0">
-                            <label for="remember" class="ml-2 text-sm font-medium text-slate-400 select-none cursor-pointer">Recordarme</label>
+                            <input id="remember" type="checkbox" class="w-4 h-4 rounded border-slate-600 bg-slate-700 text-indigo-600 focus:ring-indigo-500 focus:ring-offset-slate-800 !m-0 cursor-pointer">
+                            <label for="remember" class="ml-2 text-sm font-medium text-slate-300 select-none cursor-pointer">Recordarme</label>
                         </div>
-                        <a href="forgot" id="forgotPasswordLink" class="text-sm text-indigo-400 hover:text-indigo-300 font-medium">¿Olvidaste tu clave?</a>
+                        <a href="forgot" id="forgotPasswordLink" class="text-sm text-indigo-400 hover:text-indigo-300 font-medium transition">¿Olvidaste tu clave?</a>
                     </div>
             
-                    <button type="submit" class="!w-full !bg-indigo-600 hover:!bg-indigo-700 !text-white font-bold !py-3.5 !rounded-xl shadow-lg shadow-indigo-900/20 transition transform hover:scale-[1.02] !border-0 !mt-2">
+                    <button type="submit" class="!w-full !bg-indigo-600 hover:!bg-indigo-700 !text-white font-bold !py-3.5 !rounded-xl shadow-lg shadow-indigo-900/20 transition transform hover:scale-[1.02] !border-0 !mt-6">
                         Ingresar al Portal
                     </button>
             
-                    <p id="error-message" class="hidden text-red-400 text-center text-sm bg-red-900/20 p-3 rounded-lg border border-red-900/50 mt-4">
+                    <p id="error-message" class="hidden text-red-300 text-center text-sm bg-red-900/30 p-3 rounded-lg border border-red-500/30 mt-4 backdrop-blur-sm">
                         Credenciales incorrectas.
                     </p>
                 </form>
             </div>
             
             <div class="text-center mt-8">
-                <a href="https://cambiosorion.cl/login" class="text-sm text-white/70 hover:text-white transition flex items-center justify-center gap-2 bg-black/30 py-2 px-4 rounded-full inline-flex backdrop-blur-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                <a href="https://cambiosorion.cl/login" class="text-sm text-white/80 hover:text-white transition flex items-center justify-center gap-2 bg-black/40 hover:bg-black/60 border border-white/10 py-2.5 px-6 rounded-full inline-flex backdrop-blur-md shadow-lg group">
+                    <svg class="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                     Volver al sitio público
                 </a>
             </div>
         </div>
         
         <div id="modal-error" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[60] hidden">
-            <div class="bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
+            <div class="bg-slate-900 border border-slate-600 rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
                 <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-900/30 mb-4">
                     <svg class="h-6 w-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -187,11 +187,11 @@
         </div>
     </main>      
     
-    <footer class="bg-slate-900/90 text-slate-300 pt-16 pb-8 border-t border-slate-800 relative z-20 backdrop-blur-md">
+    <footer class="bg-black/80 text-slate-300 pt-16 pb-8 relative z-20 backdrop-blur-lg">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
                 <div class="col-span-1 md:col-span-1">
-                     <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Logo Orion" class="h-16 mb-6 opacity-80 grayscale hover:grayscale-0 transition">
+                     <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Logo Orion" class="h-16 mb-6 opacity-80 grayscale hover:grayscale-0 transition duration-500">
                      <p class="text-slate-500 text-sm leading-relaxed">
                          Portal de uso exclusivo para personal autorizado de Orion Financial Group.
                      </p>
@@ -219,7 +219,7 @@
                 </div>
             </div>
             
-            <div class="border-t border-slate-800 pt-8 text-center">
+            <div class="border-t border-white/5 pt-8 text-center">
                 <p class="text-slate-600 text-xs">© 2025 Orion Financial Group. Acceso restringido.</p>
             </div>
         </div>
