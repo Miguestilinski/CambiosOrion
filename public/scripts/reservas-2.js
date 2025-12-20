@@ -166,7 +166,7 @@ function showStep3Summary() {
     const amount = parseFloat(document.getElementById("amount1").dataset.rawValue || '0');
     const tradePriceElem = document.getElementById("trade-price");
     const tradePrice = Number(tradePriceElem.dataset.price || '0');
-    const tradePriceText = `${formatMoney(tradePrice)} CLP`;
+    const tradePriceText = `${tradePrice.toLocaleString("es-CL", {maximumFractionDigits: 5})} CLP`;
 
     let currencyName, currencyIcon, payText, getText;
     const name = window.reservaNombre || 'No indicado';

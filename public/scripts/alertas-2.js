@@ -254,13 +254,13 @@ function loadAlertaCurrenciesFromArray() {
                     <div class="cursor-pointer bg-white border-2 border-blue-100 hover:border-[#1e3a8a] hover:bg-blue-50 rounded-xl p-4 text-center transition shadow-sm group"
                          onclick="setPrecioRef('compra', ${divisa.compra})">
                         <div class="text-xs text-gray-500 uppercase font-bold mb-1">Precio Compra</div>
-                        <div class="text-xl font-extrabold text-[#1e3a8a] group-hover:scale-105 transition-transform">${Math.floor(divisa.compra)}</div>
+                        <div class="text-xl font-extrabold text-[#1e3a8a] group-hover:scale-105 transition-transform">${divisa.compra.toLocaleString("es-CL", {maximumFractionDigits: 5})}</div>
                         <div class="text-xs text-gray-400 mt-1">CLP</div>
                     </div>
                     <div class="cursor-pointer bg-white border-2 border-blue-100 hover:border-[#1e3a8a] hover:bg-blue-50 rounded-xl p-4 text-center transition shadow-sm group"
                          onclick="setPrecioRef('venta', ${divisa.venta})">
                         <div class="text-xs text-gray-500 uppercase font-bold mb-1">Precio Venta</div>
-                        <div class="text-xl font-extrabold text-[#1e3a8a] group-hover:scale-105 transition-transform">${Math.floor(divisa.venta)}</div>
+                        <div class="text-xl font-extrabold text-[#1e3a8a] group-hover:scale-105 transition-transform">${divisa.venta.toLocaleString("es-CL", {maximumFractionDigits: 5})}</div>
                         <div class="text-xs text-gray-400 mt-1">CLP</div>
                     </div>
                 </div>

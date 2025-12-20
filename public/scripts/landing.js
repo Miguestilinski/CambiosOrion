@@ -357,7 +357,7 @@ function fillCurrencyTable() {
                 </td>
                 
                 <td class="px-4 md:px-6 py-3 text-center whitespace-nowrap compra-column">
-                    <div class="text-base md:text-lg font-bold text-white">${compra ? Math.floor(compra) : '-'} <span class="text-xs text-blue-300 ml-0.5">CLP</span></div>
+                    <div class="text-base md:text-lg font-bold text-white">${compra ? compra.toLocaleString("es-CL", {maximumFractionDigits: 5}) : '-'} <span class="text-xs text-blue-300 ml-0.5">CLP</span></div>
                 </td>
 
                 <td class="px-4 md:px-6 py-3 text-center whitespace-nowrap compra-column">
@@ -365,7 +365,7 @@ function fillCurrencyTable() {
                 </td>
 
                 <td class="px-4 md:px-6 py-3 text-center whitespace-nowrap venta-column hidden">
-                    <div class="text-base md:text-lg font-bold text-white">${venta ? Math.floor(venta) : '-'} <span class="text-xs text-blue-300 ml-0.5">CLP</span></div>
+                    <div class="text-base md:text-lg font-bold text-white">${venta ? venta.toLocaleString("es-CL", {maximumFractionDigits: 5}) : '-'} <span class="text-xs text-blue-300 ml-0.5">CLP</span></div>
                 </td>
 
                 <td class="px-4 md:px-6 py-3 text-center whitespace-nowrap venta-column hidden">

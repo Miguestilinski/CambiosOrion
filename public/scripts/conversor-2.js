@@ -111,21 +111,21 @@ function convertCurrency() {
             priceNumber = exchangeRates[currency2].venta;
             actionText = `Estás comprando ${currency2}`;
             actionColor = 'text-green-600';
-            priceText = `Precio: ${formatWithThousandsSeparator(priceNumber)} CLP`;
+            priceText = `Precio: ${priceNumber.toLocaleString("es-CL", {maximumFractionDigits: 5})} CLP`;
         } else if (currency2 === "CLP" && currency1 !== "CLP") {
             // Compra (Usuario vende Divisa)
             result = amount1 * exchangeRates[currency1].compra;
             priceNumber = exchangeRates[currency1].compra;
             actionText = `Estás vendiendo ${currency1}`;
             actionColor = 'text-red-600';
-            priceText = `Precio: ${formatWithThousandsSeparator(priceNumber)} CLP`;
+            priceText = `Precio: ${priceNumber.toLocaleString("es-CL", {maximumFractionDigits: 5})} CLP`;
         } else {
             // Cruce
             result = amount1 * exchangeRates[currency1].compra / exchangeRates[currency2].venta;
             priceNumber = exchangeRates[currency1].compra / exchangeRates[currency2].venta;
             actionText = `Estás cambiando ${currency1} a ${currency2}`;
             actionColor = 'text-blue-600';
-            priceText = `Precio: ${formatWithThousandsSeparator(priceNumber)}`;
+            priceText = `Precio: ${priceNumber.toLocaleString("es-CL", {maximumFractionDigits: 5})}`;
         }
 
         document.getElementById("amount2").value = formatWithThousandsSeparator(Math.round(result));
@@ -199,8 +199,8 @@ function updateTradeSwitch() {
     }
 
     // Texto descriptivo (Opcional: podrías quitar "Compra:" y dejar solo el valor si prefieres minimalismo)
-    buyDiv.textContent = `Compra: ${formatWithThousandsSeparator(Math.floor(buyPrice))} CLP`;
-    sellDiv.textContent = `Venta: ${formatWithThousandsSeparator(Math.floor(sellPrice))} CLP`;
+    buyDiv.textContent = `Compra: ${buyPrice.toLocaleString("es-CL", {maximumFractionDigits: 5})} CLP`;
+    sellDiv.textContent = `Venta: ${sellPrice.toLocaleString("es-CL", {maximumFractionDigits: 5})} CLP`;
 
     // Clases base para el estado "Inactivo" (Gris, texto suave)
     const baseClass = "flex-1 py-3 text-center rounded-xl cursor-pointer md:text-lg text-md font-bold transition-all duration-300 text-gray-500 hover:text-gray-700";
