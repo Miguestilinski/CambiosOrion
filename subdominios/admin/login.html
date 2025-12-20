@@ -4,13 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Intranet</title>
+    <title>Intranet - Cambios Orion</title>
     
     <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/header.css">
     <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/footer.css">
     <link rel="stylesheet" href="https://admin.cambiosorion.cl/styles/login.css">
     <link href="https://cambiosorion.cl/orionapp/public/styles/output.css" rel="stylesheet">
-    <link rel="icon" href="https://cambiosorion.cl/orionapp/icons/IsotipoOrion-blue.svg" type="image/png"> 
+    <link rel="icon" href="https://cambiosorion.cl/orionapp/icons/IsotipoOrion-blue.svg" type="image/png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
         body { font-family: 'Inter', sans-serif; }
         /* Placeholder en color gris claro para que se vea sobre fondo oscuro */
@@ -23,7 +28,7 @@
 
     <header class="fixed w-full z-50 transition-all duration-300 bg-slate-900/80 backdrop-blur-md border-b border-white/5">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-            <div class="flex justify-between items-center h-14 md:h-16 relative"> 
+            <div class="flex justify-center md:justify-between items-center h-14 md:h-16 relative"> 
                 
                 <div class="flex-shrink-0 flex items-center header-logo">
                     <a href="https://admin.cambiosorion.cl/">
@@ -32,66 +37,8 @@
                     <span class="ml-3 px-2 py-0.5 rounded bg-indigo-600/80 border border-indigo-500/30 text-[10px] font-bold tracking-wider uppercase hidden md:block text-white shadow-lg shadow-indigo-500/20">Intranet</span>
                 </div>
 
-                <nav class="hidden md:flex space-x-6">
-                    <a href="https://admin.cambiosorion.cl/" class="text-gray-300 hover:text-white px-3 py-2 text-sm font-medium transition">Portal Admin</a>
-                    <a href="https://pizarras.cambiosorion.cl/" class="text-gray-300 hover:text-white px-3 py-2 text-sm font-medium transition">Pizarras</a>
-                    <a href="https://caja.cambiosorion.cl/" class="text-gray-300 hover:text-white px-3 py-2 text-sm font-medium transition">Sist. Caja</a>
-                    <a href="https://tesoreria.cambiosorion.cl/" class="text-gray-300 hover:text-white px-3 py-2 text-sm font-medium transition">Sist. Tesorería</a>
-                </nav>
-
-                <div class="flex items-center md:hidden gap-4">
-                    <button id="session-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-white/10 focus:outline-none">
-                        <img src="https://cambiosorion.cl/orionapp/icons/profile-white.png" class="h-7 w-7" alt="Sesión">
-                    </button>
-                    <button id="nav-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-white/10 focus:outline-none">
-                        <img src="https://cambiosorion.cl/orionapp/icons/menu-white.svg" class="h-8 w-8" alt="Menú">
-                    </button>
-                </div>
-                
-                <div class="hidden md:flex items-center">
-                    <div id="user-actions" style="display:none;" class="relative">
-                        <button id="profile-menu-button" class="flex text-sm rounded-full focus:outline-none ring-2 ring-indigo-500/50">
-                            <img class="h-9 w-9 rounded-full bg-slate-800 p-1" src="/orionapp/icons/profile-white.png" alt="Profile">
-                        </button>
-                        <div id="dropdownInformation" class="hidden absolute right-0 mt-2 w-56 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl py-2 text-white z-50">
-                            <div class="px-4 py-3 text-sm border-b border-slate-700">
-                                <div id="user-name" class="font-bold text-lg">Usuario</div>
-                                <div id="user-email" class="text-gray-400 truncate">email@ejemplo.com</div>
-                            </div>
-                            <a href="https://admin.cambiosorion.cl/" class="block px-4 py-2 text-base hover:bg-slate-700">Portal Admin</a>
-                            <a href="https://cambiosorion.cl/webmail" class="block px-4 py-2 text-base hover:bg-slate-700">Correo</a>
-                            <a href="#" id="logout-button" class="block px-4 py-2 text-base hover:bg-slate-700 text-red-400 font-semibold">Cerrar sesión</a>
-                        </div>
+                <div class="hidden md:block">
                     </div>
-                    <div id="guest-actions" style="display:none;">
-                        <span class="text-xs text-gray-500 font-mono">NO_SESSION</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="nav-mobile-menu" class="hidden md:hidden bg-slate-900/95 border-t border-slate-800 absolute top-14 left-0 w-full z-40 shadow-xl backdrop-blur-md">
-             <div class="px-6 pt-6 pb-8 space-y-4 text-white">
-                <span class="text-xs font-bold text-indigo-400 uppercase tracking-widest">Herramientas</span>
-                <a href="https://admin.cambiosorion.cl/" class="block px-3 py-2 rounded-md text-lg font-medium hover:bg-white/10">Portal Admin</a>
-                <a href="https://pizarras.cambiosorion.cl/" class="block px-3 py-2 rounded-md text-lg font-medium hover:bg-white/10">Pizarras</a>
-                <a href="https://caja.cambiosorion.cl/" class="block px-3 py-2 rounded-md text-lg font-medium hover:bg-white/10">Sist. Caja</a>
-                <a href="https://tesoreria.cambiosorion.cl/" class="block px-3 py-2 rounded-md text-lg font-medium hover:bg-white/10">Sist. Tesorería</a>
-            </div>
-        </div>
-
-        <div id="session-mobile-menu" class="hidden md:hidden bg-slate-900/95 border-t border-slate-800 absolute top-14 left-0 w-full z-40 shadow-xl backdrop-blur-md">
-            <div id="guest-actions-mobile" class="px-6 pt-6 pb-8 space-y-4" style="display:none;">
-                 <a href="https://admin.cambiosorion.cl/login" class="block px-3 py-2 text-lg font-medium text-white bg-indigo-600 rounded text-center">Iniciar Sesión</a>
-            </div>
-            <div id="user-actions-mobile" class="hidden px-6 pt-6 pb-8 space-y-4 text-white">
-                <div class="px-3 py-2 border-b border-slate-700 mb-2">
-                    <div id="user-name" class="font-bold text-lg">Administrativo</div>
-                    <div id="user-email" class="text-sm text-gray-400">admin@cambiosorion.cl</div>
-                </div>
-                <a href="https://admin.cambiosorion.cl/" class="block px-3 py-2 text-lg hover:bg-white/10">Portal Admin</a>
-                <a href="https://cambiosorion.cl/webmail" class="block px-3 py-2 text-lg hover:bg-white/10">Correo Web</a>
-                <a href="#" id="logout-button-mobile" class="block px-3 py-2 text-lg text-red-400 font-bold hover:bg-white/10">Cerrar sesión</a>
             </div>
         </div>
     </header>
@@ -182,79 +129,17 @@
         </div>
     </main>      
     
-    <footer class="bg-black/80 text-slate-300 pt-16 pb-8 relative z-20 backdrop-blur-lg">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-                <div class="col-span-1 md:col-span-1">
-                     <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Logo Orion" class="h-20 mb-6 opacity-80 grayscale hover:grayscale-0 transition duration-500">
-                     <p class="text-slate-500 text-sm leading-relaxed">
-                         Portal de uso exclusivo para personal autorizado de Orion Financial Group.
-                     </p>
-                </div>
-                <div>
-                    <h4 class="text-lg font-bold mb-4 text-white">Administración</h4>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="https://admin.cambiosorion.cl/#vacaciones" class="hover:text-indigo-400 transition">Solicitar Anticipos</a></li>
-                        <li><a href="https://admin.cambiosorion.cl/" class="hover:text-indigo-400 transition">Gestionar Vacaciones</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-lg font-bold mb-4 text-white">Pizarras</h4>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="https://pizarras.cambiosorion.cl/normal" class="hover:text-indigo-400 transition">Vista Normal</a></li>
-                        <li><a href="https://pizarras.cambiosorion.cl/destacadas" class="hover:text-indigo-400 transition">Vista Destacadas</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-lg font-bold mb-4 text-white">Sistemas</h4>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="https://caja.cambiosorion.cl/" class="hover:text-indigo-400 transition">Sistema de Cajas</a></li>
-                        <li><a href="https://tesoreria.cambiosorion.cl/" class="hover:text-indigo-400 transition">Sistema de Tesorería</a></li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="border-t border-white/5 pt-8 text-center">
-                <p class="text-slate-600 text-xs">© 2025 Orion Financial Group. Acceso restringido.</p>
-            </div>
+    <footer class="bg-black/80 text-slate-300 py-6 relative z-20 backdrop-blur-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-500 text-xs tracking-wide">
+                © 2025 Orion Financial Group. Acceso restringido únicamente a personal autorizado.
+            </p>
         </div>
     </footer>
 
     <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
     <script type="module" src="https://cambiosorion.cl/orionapp/public/scripts/header.js" crossorigin="anonymous"></script>
     <script src="https://admin.cambiosorion.cl/scripts/login.js"></script>
     
-    <script>
-        const navBtn = document.getElementById('nav-menu-button');
-        const sessionBtn = document.getElementById('session-menu-button');
-        const navMenu = document.getElementById('nav-mobile-menu');
-        const sessionMenu = document.getElementById('session-mobile-menu');
-
-        if(navBtn && navMenu) {
-            navBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                navMenu.classList.toggle('hidden');
-                if(sessionMenu) sessionMenu.classList.add('hidden');
-            });
-        }
-
-        if(sessionBtn && sessionMenu) {
-            sessionBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                sessionMenu.classList.toggle('hidden');
-                if(navMenu) navMenu.classList.add('hidden');
-            });
-        }
-
-        document.addEventListener('click', function(e) {
-            if (navMenu && !navMenu.contains(e.target) && !navBtn.contains(e.target)) {
-                navMenu.classList.add('hidden');
-            }
-            if (sessionMenu && !sessionMenu.contains(e.target) && !sessionBtn.contains(e.target)) {
-                sessionMenu.classList.add('hidden');
-            }
-        });
-    </script>
 </body>
 </html>
