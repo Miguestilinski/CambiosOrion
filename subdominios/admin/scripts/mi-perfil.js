@@ -1,18 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // UI References
+    // Referencias DOM
     const editButtonContainer = document.getElementById('edit-button-container'); 
     const editBtn = document.getElementById('edit-button');
     const saveButton = document.getElementById('save_changes');
     const saveBar = document.getElementById('save-bar');
     const passwordGroup = document.getElementById('password-group');
     
-    // Data Display References
     const userTypeElement = document.getElementById('user-type');
     const userNameElement = document.getElementById('user-name-dashboard');
     const roleTypeElement = document.getElementById('role-type');
     const rutElement = document.getElementById('rut');
 
-    // Field Mapping
     const editableFields = [
         { id: 'correo', viewId: 'email-view', inputId: 'email' },
         { id: 'telefono', viewId: 'telefono-view', inputId: 'telefono' },
@@ -25,62 +23,70 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     let userCanEdit = false;
+    let currentUserId = null; // Guardamos el ID aquí
 
-    // --- 1. Load Data ---
-    async function getUserData() {
+    // --- 1. PASO CLAVE: Obtener Sesión de session_status.php ---
+    async function initProfile() {
         try {
-            const res = await fetch('https://cambiosorion.cl/data/mi-perfil.php', {
-                method: 'GET',
-                credentials: 'include'
+            // Pedimos la sesión al archivo confiable
+            const sessionRes = await fetch('https://cambiosorion.cl/data/session_status.php', {
+                credentials: 'include' 
             });
+            const sessionData = await sessionRes.json();
 
-            // Si hay error HTTP (raro ahora que el PHP siempre devuelve 200)
-            if (!res.ok) {
-                console.error("Error HTTP:", res.status);
+            if (!sessionData.isAuthenticated || !sessionData.equipo_id) {
+                console.warn("No hay sesión activa. Redirigiendo...");
+                window.location.href = 'https://admin.cambiosorion.cl/login';
                 return;
             }
 
+            // Tenemos ID, ahora cargamos el perfil
+            currentUserId = sessionData.equipo_id;
+            loadUserProfile(currentUserId);
+
+        } catch (error) {
+            console.error("Error verificando sesión:", error);
+        }
+    }
+
+    // --- 2. Cargar Perfil usando el ID ---
+    async function loadUserProfile(id) {
+        try {
+            // Llamada limpia sin credenciales (el ID va en la URL)
+            const res = await fetch(`https://cambiosorion.cl/data/mi-perfil.php?id=${id}`);
             const data = await res.json();
 
-            // Manejo de respuesta lógica
             if (!data.success) {
-                if (data.message === 'No autorizado') {
-                    console.warn("Sesión expirada o inválida. Redirigiendo a login.");
-                    window.location.href = 'https://admin.cambiosorion.cl/login';
-                } else {
-                    console.error('Error de API:', data.message);
-                }
+                console.error("Error API Perfil:", data.message);
                 return;
             }
 
             const user = data.user;
-            userCanEdit = data.can_edit; 
+            userCanEdit = data.can_edit;
 
-            // Populate Static Header Data
+            // Renderizar datos
             if(userNameElement) userNameElement.textContent = user.nombre;
             if(rutElement) rutElement.textContent = user.rut || '—';
             if(roleTypeElement) roleTypeElement.textContent = user.rol;
             if(userTypeElement) userTypeElement.textContent = "Colaborador";
 
-            // Populate Form Fields
             fillUserData(user);
 
-            // Handle Edit Permission UI
+            // Lógica del botón editar
             if (userCanEdit) {
                 if(editButtonContainer) editButtonContainer.classList.remove('hidden');
                 
-                // UX: Abrir editor si faltan datos críticos (Primera vez)
+                // Si es primera vez (sin datos), abrir editor
                 if (!user.direccion || user.direccion.length < 3 || !user.rut) {
                     toggleEditMode(true);
                 }
             } else {
                 if(editButtonContainer) editButtonContainer.classList.add('hidden');
-                toggleEditMode(false); // Asegurar modo lectura
+                toggleEditMode(false);
             }
 
         } catch (error) {
-            // AQUÍ ESTABA EL PROBLEMA: No redirigimos en caso de error de red/CORS
-            console.error('Error cargando perfil (Posible bloqueo CORS o Red):', error);
+            console.error("Error cargando datos del perfil:", error);
         }
     }
 
@@ -95,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 2. Edit Mode Toggle ---
+    // --- 3. UI Helpers ---
     function toggleEditMode(enable) {
         const inputs = document.querySelectorAll('form input, form select');
         const texts = document.querySelectorAll('form p[id$="-view"]');
@@ -117,26 +123,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if(editBtn) editBtn.addEventListener('click', () => toggleEditMode(true));
 
-    // Cancel Button Logic
     const cancelBtn = document.querySelector('#save-bar button:first-child'); 
     if(cancelBtn) {
         cancelBtn.addEventListener('click', () => {
             toggleEditMode(false);
-            getUserData(); 
+            loadUserProfile(currentUserId); // Recargar original
         });
     }
 
-    // --- 3. Save Data ---
+    // --- 4. Guardar ---
     if(saveButton) {
         saveButton.addEventListener('click', async (e) => {
             e.preventDefault();
 
             if (!userCanEdit) {
-                alert("No tienes permiso para editar.");
+                alert("No tienes permiso.");
                 return;
             }
 
-            const dataToSend = {};
+            const dataToSend = { user_id: currentUserId }; // Enviamos ID para que PHP sepa a quién actualizar
+            
             editableFields.forEach(field => {
                 const input = document.getElementById(field.inputId);
                 if (input) dataToSend[field.id] = input.value.trim();
@@ -146,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const confirm = document.getElementById('confirm-password')?.value.trim();
             if (pass) {
                 if (pass !== confirm) {
-                    alert("Las contraseñas no coinciden.");
+                    alert("Contraseñas no coinciden.");
                     return;
                 }
                 dataToSend.password = pass;
@@ -155,7 +161,6 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 const res = await fetch('https://cambiosorion.cl/data/mi-perfil.php', {
                     method: 'POST',
-                    credentials: 'include',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(dataToSend)
                 });
@@ -170,12 +175,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
             } catch (error) {
-                console.error("Save error:", error);
-                alert("Error de conexión al guardar.");
+                console.error("Error guardando:", error);
+                alert("Error de conexión.");
             }
         });
     }
 
-    // Initialize
-    getUserData();
+    // Arrancar el proceso
+    initProfile();
 });
