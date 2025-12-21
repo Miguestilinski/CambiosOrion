@@ -23,7 +23,7 @@
 <body class="flex flex-col min-h-screen bg-slate-50 text-slate-800">
     <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js" crossorigin="anonymous"></script>
 
-    <header class="fixed w-full z-50 transition-all duration-300 bg-slate-900/90 backdrop-blur-md shadow-md border-b border-slate-800">
+    <header class="fixed w-full z-50 transition-all duration-300 bg-slate-900/80 backdrop-blur-md shadow-md border-b border-slate-800">
         <div class="w-full px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16"> 
                 
@@ -37,19 +37,19 @@
                 </div>
 
                 <nav class="hidden lg:flex space-x-1 bg-slate-800/50 p-1 rounded-lg border border-slate-700/50">
-                    <a href="index" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-slate-700 transition">Inicio</a>
+                    <a href="index" class="px-4 py-2 text-sm font-medium rounded-md text-white bg-white/10 shadow-sm transition">Inicio</a>
                     <a href="https://pizarras.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-slate-700 transition">Pizarras</a>
                     <a href="https://caja.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-slate-700 transition">Caja</a>
                     <a href="https://tesoreria.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-slate-700 transition">Tesorería</a>
                 </nav>
 
-                <div class="flex items-center gap-4 pr-2"> 
-                    <div id="guest-actions" class="hidden"></div>
-                    <div id="user-actions" class="relative block">
-                        <button id="profile-menu-button" class="flex items-center gap-3 rounded-full focus:outline-none ring-2 ring-slate-700 hover:ring-indigo-500 transition pl-1 pr-3 py-1 bg-slate-800 hover:bg-slate-700">
+                <div class="flex items-center gap-4 lg:gap-6 mr-1"> <div id="guest-actions" class="hidden"></div>
+
+                    <div id="user-actions" class="relative ml-2 block">
+                        <button id="profile-menu-button" class="flex items-center gap-3 text-sm rounded-full focus:outline-none ring-2 ring-slate-700 hover:ring-indigo-500 transition pl-1 pr-3 py-1 bg-slate-800 hover:bg-slate-700">
                             <img class="h-8 w-8 rounded-full object-cover border border-slate-600" src="https://cambiosorion.cl/orionapp/icons/profile-white.png" alt="Profile">
                             <div class="hidden md:flex flex-col items-start">
-                                <span class="text-slate-200 text-sm font-medium leading-tight" id="header-user-name">...</span>
+                                <span class="text-slate-200 font-medium leading-tight" id="header-user-name">...</span>
                             </div>
                             <svg class="w-4 h-4 text-slate-400 hidden md:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                         </button>
@@ -70,6 +70,7 @@
                             </a>
                         </div>
                     </div>
+
                     <button id="nav-menu-button" class="lg:hidden text-white p-2 hover:bg-slate-800 rounded-lg transition">
                         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </button>
@@ -101,13 +102,13 @@
             </div>
         </aside>
 
-        <main class="flex-1 w-full bg-slate-50">
+        <main class="flex-1 w-full">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
                 
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                     <div>
-                        <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Liquidaciones</h1>
-                        <p class="mt-1 text-slate-500">Historial de pagos y documentos firmados.</p>
+                        <h1 class="text-3xl font-extrabold text-white tracking-tight">Liquidaciones</h1>
+                        <p class="mt-1 text-slate-400">Historial de pagos y documentos firmados.</p>
                     </div>
                     
                     <div class="flex gap-3">
