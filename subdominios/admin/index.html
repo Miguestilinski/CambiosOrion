@@ -39,7 +39,8 @@
                     <a href="https://tesoreria.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-slate-700 transition">Tesorería</a>
                 </nav>
 
-                <div class="flex items-center gap-4 lg:gap-6">
+                <div class="flex items-center gap-4 lg:gap-6 mr-1"> <div id="guest-actions" class="hidden"></div>
+
                     <div id="user-actions" class="relative ml-2 block">
                         <button id="profile-menu-button" class="flex items-center gap-3 text-sm rounded-full focus:outline-none ring-2 ring-slate-700 hover:ring-indigo-500 transition pl-1 pr-3 py-1 bg-slate-800 hover:bg-slate-700">
                             <img class="h-8 w-8 rounded-full object-cover border border-slate-600" src="https://cambiosorion.cl/orionapp/icons/profile-white.png" alt="Profile">
@@ -213,7 +214,7 @@
                 mobileMenu.classList.toggle('hidden');
             });
         }
-        // Nota: El botón de perfil ahora es controlado exclusivamente por header.js
+        // El resto de la lógica de perfil la maneja header.js
     </script>
 </body>
 </html>
