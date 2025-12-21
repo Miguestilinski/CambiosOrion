@@ -39,14 +39,17 @@
                     <a href="https://tesoreria.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-slate-700 transition">Tesorería</a>
                 </nav>
 
-                <div class="flex items-center gap-4">
-                    <div class="relative ml-2">
-                        <button id="profile-menu-button" class="flex items-center gap-2 text-sm rounded-full focus:outline-none ring-2 ring-slate-700 hover:ring-slate-500 transition p-0.5 bg-slate-800">
-                            <img class="h-8 w-8 rounded-full object-cover" src="https://cambiosorion.cl/orionapp/icons/profile-white.png" alt="Profile">
-                            <span class="hidden md:block text-slate-200 font-medium px-2" id="header-user-name">...</span>
-                            <svg class="w-4 h-4 text-slate-400 hidden md:block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                <div class="flex items-center gap-4 lg:gap-6">
+                    <div id="user-actions" class="relative ml-2 block">
+                        <button id="profile-menu-button" class="flex items-center gap-3 text-sm rounded-full focus:outline-none ring-2 ring-slate-700 hover:ring-indigo-500 transition pl-1 pr-3 py-1 bg-slate-800 hover:bg-slate-700">
+                            <img class="h-8 w-8 rounded-full object-cover border border-slate-600" src="https://cambiosorion.cl/orionapp/icons/profile-white.png" alt="Profile">
+                            <div class="hidden md:flex flex-col items-start">
+                                <span class="text-slate-200 font-medium leading-tight" id="header-user-name">...</span>
+                            </div>
+                            <svg class="w-4 h-4 text-slate-400 hidden md:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                         </button>
-                        <div id="dropdownInformation" class="hidden absolute right-0 mt-2 w-60 bg-white rounded-xl shadow-2xl py-2 z-50 border border-slate-100 transform origin-top-right transition-all">
+                        
+                        <div id="dropdownInformation" class="hidden absolute right-0 mt-3 w-60 bg-white rounded-xl shadow-2xl py-2 z-50 border border-slate-200 transform origin-top-right transition-all">
                             <div class="px-4 py-3 border-b border-gray-100 bg-gray-50/50">
                                 <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Conectado como</p>
                                 <p class="text-sm font-bold text-gray-900 truncate" id="dropdown-user-email">...</p>
@@ -62,14 +65,15 @@
                             </a>
                         </div>
                     </div>
-                    <button id="nav-menu-button" class="lg:hidden text-white p-2">
+
+                    <button id="nav-menu-button" class="lg:hidden text-white p-2 hover:bg-slate-800 rounded-lg transition">
                         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </button>
                 </div>
             </div>
         </div>
 
-        <div id="nav-mobile-menu" class="hidden lg:hidden bg-slate-800 border-t border-slate-700">
+        <div id="nav-mobile-menu" class="hidden lg:hidden bg-slate-900/95 border-t border-slate-700 backdrop-blur-xl">
             <div class="px-4 pt-4 pb-6 space-y-2">
                 <a href="index" class="block px-3 py-2 rounded-md text-base font-medium text-white bg-slate-700">Inicio</a>
                 <a href="https://pizarras.cambiosorion.cl/" class="block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-700">Pizarras</a>
@@ -201,7 +205,7 @@
     <script type="module" src="https://admin.cambiosorion.cl/scripts/index.js"></script>
     
     <script>
-        // Menu toggle
+        // Menu toggle móvil
         const navBtn = document.getElementById('nav-menu-button');
         const mobileMenu = document.getElementById('nav-mobile-menu');
         if(navBtn && mobileMenu) {
@@ -209,21 +213,7 @@
                 mobileMenu.classList.toggle('hidden');
             });
         }
-        
-        // Profile Dropdown
-        const profileBtn = document.getElementById('profile-menu-button');
-        const profileDropdown = document.getElementById('dropdownInformation');
-        if(profileBtn && profileDropdown) {
-            profileBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                profileDropdown.classList.toggle('hidden');
-            });
-            document.addEventListener('click', (e) => {
-                if(!profileDropdown.contains(e.target) && !profileBtn.contains(e.target)) {
-                    profileDropdown.classList.add('hidden');
-                }
-            });
-        }
+        // Nota: El botón de perfil ahora es controlado exclusivamente por header.js
     </script>
 </body>
 </html>
