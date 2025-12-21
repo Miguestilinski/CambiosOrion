@@ -1,8 +1,9 @@
-/* Estilos globales */
+/* Estilos globales y Fondo */
 body {
     @apply font-sans bg-white;
     margin: 0;
     padding: 0;
+    /* Tu imagen de fondo original */
     background: rgba(0, 0, 0, 0.45) url('https://cambiosorion.cl/orionapp/assets/FondoOrion.jpg') no-repeat center top;
     background-size: cover;
     background-attachment: fixed;
@@ -10,7 +11,7 @@ body {
     z-index: 1;
 }
 
-/* Degradado solo en la imagen de fondo */
+/* Degradado negro superpuesto */
 body::before {
     content: "";
     position: fixed;
@@ -24,6 +25,7 @@ body::before {
 }
 
 html, body {
+    height: 100%;
     display: flex;
     flex-direction: column;
 }
@@ -32,182 +34,14 @@ html {
     scroll-behavior: smooth;
 }
 
-/* Sección principal del conversor */
-.container {
-    @apply max-w-lg mx-auto bg-white p-10 rounded-lg shadow-lg;
-}
-
-h2 {
-    @apply text-2xl font-semibold text-white text-center mb-6;
-}
-
-.relative {
-    position: relative;
-}
-
-.main-content {
-    display: flex;
-    height: 100%;
-}
-
-/* Sidebar styles */
-.sidebar {
-    width: 250px;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    padding: 2rem;
-    background: transparent;
-    border-right: 0.5px solid white;
-}
-
-.sidebar-header {
-    font-size: 1.5rem;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 1rem;
-}
-
-.menu {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-}
-
-.menu-item {
-    padding: 1rem;
-    cursor: pointer;
-    border-radius: 0.5rem;
-    transition: background-color 0.3s ease;
-}
-  
-.menu-item:hover {
-    background-color: #76767676;
-}
-
-.menu-item.active {
-    background-color: #76767676;
-}
-
-.dashboard-content {
-    flex-grow: 1; /* Ocupa el espacio restante */
-    padding: 2rem;
-}
-  
-.content-section {
+/* Utilidades específicas */
+.hidden {
     display: none;
 }
 
-.content-section.active {
-    display: block;
-}
-
-input#email{
-    width: 70%;
-    justify-self: center;
-}
-
-.file-list {
-    list-style: none;
-    padding: 0;
-}
-
-.file-list li {
-    display: flex;
-    justify-content: space-between;
-    background: rgba(0, 0, 0, 0.1);
-    margin-bottom: 5px;
-    padding: 5px 10px;
-    border-radius: 5px;
-    color: black;
-}
-
-.file-list button {
-    background: red;
-    color: white;
-    border: none;
-    padding: 0 5px;
-    cursor: pointer;
-    border-radius: 3px;
-}
-
-.form-button{
-    background-color: #3b82f6;
-    color:white;
-}
-
-@media (max-width: 887px) {
-    .main-content {
-        flex-direction: column; /* Ajusta a diseño vertical en pantallas pequeñas */
-    }
-
-    .sidebar-header{
-        margin-top: 1rem;
-    }
-
-    /* Sidebar como pestañas */
-    .sidebar {
-        width: 100%; /* Sidebar ocupa toda la anchura */
-        border-right: none; /* Elimina la línea divisoria en diseño vertical */
-        border-bottom: 0.5px solid white; /* Línea divisora horizontal */
-        display: flex; /* Mostrar barra horizontal */
-        justify-content: space-around; /* Centrado de pestañas */
-        padding: 0; /* Eliminar padding */
-    }
-
-    .menu {
-        display: flex;
-        justify-content: space-between;
-        width: 100%;
-        padding: 0;
-    }
-
-    .menu-item {
-        padding: 0.75rem;
-        font-size: 0.875rem;
-        flex: 1;
-        text-align: center;
-        border-radius: 0;
-        background-color: transparent;
-    }
-
-    .menu-item.active {
-        background-color: #76767676;
-    }
-
-    .dashboard-content {
-        margin-top: 1rem;
-        padding: 1rem;
-    }
-
-    div#password-group {
-        flex-direction: column;
-    }
-
-    div#new_pass {
-        padding: 0;
-        width: 100%;
-        margin-bottom: 2rem;
-    }
-
-    div#confirm_pass {
-        padding: 0;
-        width: 100%;
-        margin-bottom: 2rem;
-    }
-
-    input#password {
-        width: 70%;
-        justify-self: center;
-    }
-
-    input#confirm-password {
-        width: 70%;
-        justify-self: center;
-    }
-
-    div#save_changes {
-        justify-self: center;
-    }
-
+/* Clases para animaciones o transiciones si las necesitas */
+.transition-all {
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms;
 }
