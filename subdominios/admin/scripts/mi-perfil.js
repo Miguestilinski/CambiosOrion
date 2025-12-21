@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     
                     // Marcar activo el link actual
-                    const currentPath = window.location.pathname.split('/').pop() || 'info-per';
+                    const currentPath = window.location.pathname.split('/').pop() || 'mi-perfil';
                     const activeLink = sidebarContainer.querySelector(`a[href="${currentPath}"]`);
                     if(activeLink) {
                         activeLink.classList.add('bg-indigo-50', 'text-indigo-700', 'font-bold');
@@ -122,14 +122,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 3. Obtener Datos del Usuario
     function getUserData() {
-        fetch(`https://cambiosorion.cl/data/info-per.php?equipo_id=${equipoId}`, {
+        fetch(`https://cambiosorion.cl/data/mi-perfil.php?equipo_id=${equipoId}`, {
             method: 'GET',
             credentials: 'include'
         })
             .then(res => res.json())
             .then(data => {
                 if (!data.success) {
-                    console.error("Error success false en info-per");
+                    console.error("Error success false en mi-perfil");
                     return;
                 }
 
@@ -208,7 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             try {
-                const res = await fetch('https://cambiosorion.cl/data/info-per.php', {
+                const res = await fetch('https://cambiosorion.cl/data/mi-perfil.php', {
                     method: 'POST',
                     credentials: 'include',
                     headers: { 'Content-Type': 'application/json' },
