@@ -29,7 +29,7 @@ RewriteEngine on
 #RewriteRule ^ https://cambiosorion.cl/sin-acceso [R=302,L]
 
 # Establecer index.html como página de inicio
-DirectoryIndex info-per.html
+DirectoryIndex index.html
 
 # Ocultar extensión .html
 RewriteCond %{REQUEST_FILENAME} !-d

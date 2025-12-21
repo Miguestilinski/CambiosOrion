@@ -75,12 +75,8 @@ document.addEventListener("DOMContentLoaded", function() {
                     const rol = result.rol?.toLowerCase().trim();
                     console.log("Login exitoso, redirigiendo...");
                     localStorage.setItem('sessionActive', 'true');
-
-                    if (rol === 'socio') {
-                        window.location.href = "https://admin.cambiosorion.cl/info-per-socios";
-                    } else {
-                        window.location.href = "https://admin.cambiosorion.cl/info-per";
-                    }
+                    window.location.href = "https://admin.cambiosorion.cl/index";
+                    
                 } else {
                     console.warn("Error en login:", result.message);
                     mostrarModalError({
