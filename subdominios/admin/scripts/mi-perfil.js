@@ -33,15 +33,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'GET',
                 credentials: 'include'
             });
+
+            // Si hay error HTTP (raro ahora que el PHP siempre devuelve 200)
+            if (!res.ok) {
+                console.error("Error HTTP:", res.status);
+                return;
+            }
+
             const data = await res.json();
 
+            // Manejo de respuesta lógica
             if (!data.success) {
-                if(data.message === 'No autorizado') window.location.href = 'https://admin.cambiosorion.cl/login';
+                if (data.message === 'No autorizado') {
+                    console.warn("Sesión expirada o inválida. Redirigiendo a login.");
+                    window.location.href = 'https://admin.cambiosorion.cl/login';
+                } else {
+                    console.error('Error de API:', data.message);
+                }
                 return;
             }
 
             const user = data.user;
-            userCanEdit = data.can_edit; // Backend decide logic
+            userCanEdit = data.can_edit; 
 
             // Populate Static Header Data
             if(userNameElement) userNameElement.textContent = user.nombre;
@@ -54,19 +67,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Handle Edit Permission UI
             if (userCanEdit) {
-                editButtonContainer.classList.remove('hidden');
+                if(editButtonContainer) editButtonContainer.classList.remove('hidden');
                 
-                // Auto-open edit mode if critical data is missing (First Time UX)
+                // UX: Abrir editor si faltan datos críticos (Primera vez)
                 if (!user.direccion || user.direccion.length < 3 || !user.rut) {
                     toggleEditMode(true);
                 }
             } else {
-                editButtonContainer.classList.add('hidden');
-                toggleEditMode(false); // Ensure readonly
+                if(editButtonContainer) editButtonContainer.classList.add('hidden');
+                toggleEditMode(false); // Asegurar modo lectura
             }
 
         } catch (error) {
-            console.error('Error fetching profile:', error);
+            // AQUÍ ESTABA EL PROBLEMA: No redirigimos en caso de error de red/CORS
+            console.error('Error cargando perfil (Posible bloqueo CORS o Red):', error);
         }
     }
 
@@ -108,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if(cancelBtn) {
         cancelBtn.addEventListener('click', () => {
             toggleEditMode(false);
-            getUserData(); // Reset data to original state
+            getUserData(); 
         });
     }
 
