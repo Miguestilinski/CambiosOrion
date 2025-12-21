@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await res.json();
 
             if (!data.success) {
-                if(data.message === 'No autorizado') window.location.href = 'login';
+                if(data.message === 'No autorizado') window.location.href = 'https://admin.cambiosorion.cl/login';
                 return;
             }
 
@@ -104,8 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if(editBtn) editBtn.addEventListener('click', () => toggleEditMode(true));
 
     // Cancel Button Logic
-    // Buscamos el botón de cancelar dentro de la barra flotante
-    const cancelBtn = document.querySelector('#save-bar button[type="button"]'); 
+    const cancelBtn = document.querySelector('#save-bar button:first-child'); 
     if(cancelBtn) {
         cancelBtn.addEventListener('click', () => {
             toggleEditMode(false);
