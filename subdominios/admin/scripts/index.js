@@ -1,105 +1,103 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const menuItems = document.querySelectorAll('.menu-item');
-    const sections = document.querySelectorAll('.content-section');
+    // Referencias DOM
+    const welcomeName = document.getElementById('welcome-name');
+    const welcomeRole = document.getElementById('welcome-role');
+    const headerBadge = document.getElementById('header-badge');
+    const headerName = document.getElementById('header-user-name');
+    const headerEmail = document.getElementById('dropdown-user-email');
+    const sidebarContainer = document.getElementById('sidebar-container');
 
-    // Funcionalidad de menú para mostrar las secciones correspondientes
-    menuItems.forEach(item => {
-        item.addEventListener('click', () => {
-            menuItems.forEach(menu => menu.classList.remove('active'));
-            sections.forEach(section => section.classList.remove('active'));
-            item.classList.add('active');
-
-            const sectionId = item.getAttribute('data-section');
-            const targetSection = document.getElementById(sectionId);
-            if (targetSection) {
-                targetSection.classList.add('active');
-            } else {
-                console.error(`No se encontró la sección con id: ${sectionId}`);
-            }
-        });
-    });
-
-    const userTypeElement = document.getElementById('user-type');
-    const userNameElement = document.getElementById('user-name-dashboard');
-    const roleTypeElement = document.getElementById('role-type');
-    const emailElement = document.getElementById('email');
-    const rutGroupElement = document.getElementById('rut-group');
-    const rutElement = document.getElementById('rut');
-
-    // Función para obtener los datos del usuario
-    function getUserData() {
-        fetch('https://cambiosorion.cl/data/get_user_data.php', {
-            method: 'GET',
-            credentials: 'include' // Asegura que se envíen las cookies de sesión
-        })
-            .then(response => response.json()) // Parsear directamente como JSON
-            .then(data => {
-                if (data.success) {
-                    const { nombre, correo, rut, tipo_cliente, rol } = data.user;
-
-                    // Actualiza la UI
-                    userNameElement.textContent = nombre || "Usuario desconocido";
-                    emailElement.placeholder = correo || "Correo no disponible";
-                    rutElement.textContent = rut || "RUT no disponible";
-                    emailElement.value = "";
-
-                    if (tipo_cliente === 'persona') {
-                        userTypeElement.textContent = "Cliente";
-                        roleTypeElement.textContent = "Persona";
-                        rutGroupElement.classList.remove('hidden');
-                    } else if (tipo_cliente === 'empresa') {
-                        userTypeElement.textContent = "Cliente";
-                        roleTypeElement.textContent = "Empresa";
-                        rutGroupElement.classList.remove('hidden');
-                    } else if (rol === 'caja') {
-                        userTypeElement.textContent = "Administrativo";
-                        roleTypeElement.textContent = "Caja";
-                    } else if (rol === 'admin') {
-                        userTypeElement.textContent = "Administrativo";
-                        roleTypeElement.textContent = "Admin";
-                    } else if (rol === 'socio') {
-                        userTypeElement.textContent = "Administrativo";
-                        roleTypeElement.textContent = "Socio";
-                    } else if (rol === 'otro') {
-                        userTypeElement.textContent = "Administrativo";
-                        roleTypeElement.textContent = "Otro";
-                    } else {
-                        userTypeElement.textContent = "Tipo desconocido";
-                        rutGroupElement.classList.add('hidden');
-                    }
-
-                } else {
-                    console.error('Error: ', data.message);
-                    window.location.href = 'https://cambiosorion.cl/sin-acceso';
-                }
-            })
-            .catch(error => {
-                console.error('Error al cargar los datos del usuario:', error);
+    // 1. Obtener Sesión y determinar Rol
+    async function getSession() {
+        try {
+            const res = await fetch("https://cambiosorion.cl/data/session_status.php", {
+                credentials: "include"
             });
+            if (!res.ok) throw new Error("No se pudo obtener la sesión.");
+            
+            const data = await res.json();
+            
+            if (!data.isAuthenticated || !data.equipo_id) {
+                window.location.href = 'https://admin.cambiosorion.cl/login';
+                return;
+            }
+
+            const rol = (data.rol || '').toLowerCase().trim();
+            const nombre = data.nombre || 'Usuario';
+            const primerNombre = nombre.split(' ')[0];
+
+            // Poblar datos básicos
+            if (welcomeName) welcomeName.textContent = primerNombre;
+            if (welcomeRole) welcomeRole.textContent = capitalizeFirstLetter(rol);
+            if (headerName) headerName.textContent = primerNombre;
+            if (headerEmail) headerEmail.textContent = data.correo;
+
+            // Configurar UI según Rol
+            configureDashboardByRole(rol);
+
+        } catch (error) {
+            console.error("Error obteniendo la sesión:", error);
+            window.location.href = 'https://admin.cambiosorion.cl/login';
+        }
     }
 
-    getUserData();
-    
-    // Manejar la selección y eliminación de archivos
-    document.querySelectorAll('input[type="file"]').forEach(input => {
-        const fileListContainer = document.getElementById(`${input.id}-file-list`);
-        const dataTransfer = new DataTransfer(); // Para mantener los archivos acumulados
+    // 2. Configuración Visual y Sidebar según Rol
+    function configureDashboardByRole(rol) {
+        const superUsers = ['socio', 'admin', 'gerente']; 
+        const isSuperUser = superUsers.includes(rol);
 
-        input.addEventListener('change', event => {
-            const newFiles = Array.from(event.target.files);
-            console.log(`Archivos seleccionados: ${newFiles.length}`, newFiles);
+        // Cargar Sidebar Único
+        fetch('sidebar.html')
+            .then(response => response.text())
+            .then(html => {
+                if(sidebarContainer) {
+                    sidebarContainer.innerHTML = html;
+                    
+                    const adminItems = sidebarContainer.querySelectorAll('.admin-only');
+                    
+                    if (isSuperUser) {
+                        adminItems.forEach(item => item.classList.remove('hidden'));
+                    } else {
+                        adminItems.forEach(item => item.remove());
+                    }
+                    
+                    // Marcar activo el link "Inicio"
+                    const activeLink = sidebarContainer.querySelector('a[href="index"]');
+                    if(activeLink) {
+                        activeLink.classList.add('bg-indigo-50', 'text-indigo-700', 'font-bold');
+                        activeLink.classList.remove('text-slate-600');
+                    }
+                }
+            })
+            .catch(err => console.error("Error cargando sidebar:", err));
 
-            // Añadir los nuevos archivos al DataTransfer
-            newFiles.forEach(file => {
-                dataTransfer.items.add(file);
-            });
+        // Ajustes visuales Dashboard
+        if (isSuperUser) {
+            // Estilos ADMIN
+            if(headerBadge) {
+                headerBadge.textContent = "PORTAL SOCIOS";
+                headerBadge.className = "hidden md:inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 tracking-wider uppercase";
+            }
+            // Mostrar sección exclusiva de Admin en el Dashboard
+            const adminSections = document.querySelectorAll('.admin-only');
+            adminSections.forEach(el => el.classList.remove('hidden'));
 
-            // Actualizar el objeto FileList del input
-            input.files = dataTransfer.files;
-            console.log(`Archivos en input después de agregar: ${input.files.length}`);
+        } else {
+            // Estilos NORMAL
+            if(headerBadge) {
+                headerBadge.textContent = "PORTAL COLABORADOR";
+                headerBadge.className = "hidden md:inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 tracking-wider uppercase";
+            }
+            // Asegurar que secciones admin estén ocultas
+            const adminSections = document.querySelectorAll('.admin-only');
+            adminSections.forEach(el => el.classList.add('hidden'));
+        }
+    }
 
-            // Llamar a la función para actualizar la lista visual
-            updateFileList(input.id); // Actualiza la lista de archivos al cambiar el input
-        });
-    });
+    function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    // Iniciar
+    getSession();
 });
