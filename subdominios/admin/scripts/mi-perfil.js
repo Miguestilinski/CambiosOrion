@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Estilos NORMAL
             if(headerBadge) {
                 headerBadge.textContent = "PORTAL ORION";
-                headerBadge.className = "hidden md:inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 tracking-wider uppercase";
+                headerBadge.className = "hidden md:inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 tracking-wider uppercase";
             }
             // Asegurar que secciones admin estén ocultas
             const adminSections = document.querySelectorAll('.admin-only');
