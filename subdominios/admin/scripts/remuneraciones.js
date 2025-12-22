@@ -12,13 +12,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const filterMonth = document.getElementById('filter-month');
     const filterYear = document.getElementById('filter-year');
     
+    // Botón Masivo
+    const btnProcessAll = document.getElementById('btn-process-all');
+    if(btnProcessAll) {
+        btnProcessAll.innerHTML = `
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            Pagar Pendientes
+        `;
+    }
+
     // Modal
     const modal = document.getElementById('modal-payroll');
     const modalClose = document.getElementById('modal-close');
     const modalCancel = document.getElementById('modal-cancel');
-    const btnActionGenerate = document.getElementById('modal-save'); // Reusamos este botón
-    // Creamos botón extra para Pagar dinámicamente o lo insertamos en HTML, 
-    // pero por simplicidad vamos a manejar un segundo botón via JS.
+    const modalSave = document.getElementById('modal-save');
     
     const modalName = document.getElementById('modal-employee-name');
     const modalBase = document.getElementById('modal-base-display');
@@ -27,7 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputId = document.getElementById('modal-id');
     const inputBonuses = document.getElementById('modal-bonuses');
     const inputDiscounts = document.getElementById('modal-discounts');
-    const modalActionsContainer = document.querySelector('#modal-payroll .flex.justify-end'); // Contenedor botones footer modal
 
     let currentUserId = null;
     let employeesData = [];
@@ -57,10 +63,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if(headerName) headerName.textContent = (data.nombre || 'Usuario').split(' ')[0];
             if(headerEmail) headerEmail.textContent = data.correo;
-            if(headerBadge) headerBadge.textContent = "PORTAL ADMIN";
+            if(headerBadge) headerBadge.textContent = "FINANZAS";
 
             loadSidebar();
-            fetchEmployees(); // Cargar tabla
+            fetchEmployees();
 
         } catch (e) { console.error(e); }
     }
@@ -70,11 +76,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if(sidebarContainer) {
                 sidebarContainer.innerHTML = html;
                 sidebarContainer.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
-                const activeLink = sidebarContainer.querySelector('a[href="remuneraciones"]');
-                if(activeLink) {
-                    activeLink.classList.add('bg-indigo-50', 'text-indigo-700', 'font-bold');
-                    activeLink.classList.remove('text-slate-600');
-                }
+                const link = sidebarContainer.querySelector('a[href="remuneraciones"]');
+                if(link) link.classList.add('bg-indigo-50', 'text-indigo-700', 'font-bold');
             }
         });
     }
@@ -113,28 +116,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         data.forEach(emp => {
-            const isGenerated = emp.status_code === 'generada';
-            const isPaid = emp.status_code === 'pagada';
+            const isPaid = emp.is_paid;
             
-            let badge = '<span class="px-2 py-0.5 rounded text-xs font-bold bg-slate-100 text-slate-500 border border-slate-200">Sin Proc.</span>';
-            let actionBtn = `<button onclick="window.openModal(${emp.id})" class="text-indigo-600 font-medium hover:underline">Generar</button>`;
-            
-            // Lógica de visualización del monto
-            // Si ya se generó liquidación, mostramos ese monto guardado. Si no, mostramos base.
-            let displayMonto = emp.base;
-            if (isGenerated || isPaid) {
-                displayMonto = emp.monto_guardado;
-            }
+            let badge, actionBtn, displayMonto;
 
-            if (isGenerated) {
-                badge = '<span class="px-2 py-0.5 rounded text-xs font-bold bg-yellow-100 text-yellow-800 border border-yellow-200">Emitida</span>';
-                actionBtn = `<button onclick="window.openModal(${emp.id})" class="text-emerald-600 font-bold hover:underline flex items-center justify-end w-full gap-1">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                                PAGAR
-                             </button>`;
-            } else if (isPaid) {
-                badge = '<span class="px-2 py-0.5 rounded text-xs font-bold bg-green-100 text-green-800 border border-green-200">Pagada</span>';
-                actionBtn = `<button onclick="window.openModal(${emp.id})" class="text-slate-400 hover:text-slate-600 font-medium">Ver Detalle</button>`;
+            if (isPaid) {
+                displayMonto = emp.monto_pagado;
+                badge = '<span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-800 border border-green-200">Pagado</span>';
+                actionBtn = `<button onclick="window.openModal(${emp.id})" class="text-slate-400 hover:text-slate-600 font-medium text-xs">Ver / Editar</button>`;
+            } else {
+                displayMonto = emp.base;
+                badge = '<span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-500 border border-slate-200">Pendiente</span>';
+                actionBtn = `<button onclick="window.openModal(${emp.id})" class="text-white bg-indigo-600 hover:bg-indigo-700 font-medium rounded text-xs px-3 py-1.5 transition shadow-sm">Pagar Ahora</button>`;
             }
 
             const tr = document.createElement('tr');
@@ -155,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- MODAL ---
+    // --- MODAL (Pago Individual) ---
     window.openModal = (id) => {
         const emp = employeesData.find(e => e.id === id);
         if(!emp) return;
@@ -165,64 +158,23 @@ document.addEventListener('DOMContentLoaded', () => {
         modalBase.textContent = formatMoney(emp.base);
         modalTotal.dataset.base = emp.base;
 
-        // Reset inputs
+        // Reset
         inputBonuses.value = 0;
         inputDiscounts.value = 0;
         
-        // Si ya está generada/pagada, intentamos reconstruir el cálculo 
-        // (Nota: como la BD no guarda bonos, mostramos la diferencia como "Otros")
-        if (emp.status_code === 'generada' || emp.status_code === 'pagada') {
-            const diff = emp.monto_guardado - emp.base;
+        // Si ya está pagado, intentamos calcular diferencias visuales
+        if (emp.is_paid) {
+            const diff = emp.monto_pagado - emp.base;
             if(diff > 0) inputBonuses.value = diff;
             if(diff < 0) inputDiscounts.value = Math.abs(diff);
+            modalSave.textContent = "Actualizar Pago";
+        } else {
+            modalSave.textContent = "Confirmar Pago";
         }
         
         calculateTotal();
-
-        // Configurar botones según estado
-        setupModalButtons(emp);
-
         modal.classList.remove('hidden');
     };
-
-    function setupModalButtons(emp) {
-        // Limpiar botones dinámicos anteriores (excepto cancelar)
-        const oldBtns = modalActionsContainer.querySelectorAll('.dynamic-btn');
-        oldBtns.forEach(b => b.remove());
-        
-        // Ocultar botón original "Guardar" para usar los dinámicos
-        modalCancel.nextElementSibling.style.display = 'none'; 
-
-        // Botón 1: Generar / Actualizar Liquidación
-        if (emp.status_code !== 'pagada') {
-            const btnGen = document.createElement('button');
-            btnGen.className = "dynamic-btn px-5 py-2.5 bg-white border border-indigo-600 text-indigo-600 font-bold rounded-lg hover:bg-indigo-50 transition mr-2";
-            btnGen.textContent = emp.status_code === 'generada' ? "Actualizar Liquidación" : "Generar Liquidación";
-            btnGen.onclick = () => submitPayroll('generar');
-            modalActionsContainer.appendChild(btnGen);
-        }
-
-        // Botón 2: Pagar (Solo si ya está generada o si queremos flujo directo, 
-        // pero siguiendo tu lógica: primero generamos, luego pagamos).
-        if (emp.status_code !== 'pagada') {
-            const btnPay = document.createElement('button');
-            btnPay.className = "dynamic-btn px-5 py-2.5 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition shadow-lg";
-            btnPay.textContent = "Confirmar Pago (Remunerar)";
-            // Si no está generada, podríamos bloquear el pago, pero permitiremos que el backend lo maneje (crea liq al vuelo)
-            btnPay.onclick = () => {
-                if(confirm("¿Estás seguro de realizar el pago? Esto registrará la remuneración.")) {
-                    submitPayroll('pagar');
-                }
-            };
-            modalActionsContainer.appendChild(btnPay);
-        } else {
-            // Si ya está pagada, solo texto informativo
-            const msg = document.createElement('span');
-            msg.className = "dynamic-btn text-green-600 font-bold px-4 self-center";
-            msg.textContent = "✓ Remuneración Completada";
-            modalActionsContainer.appendChild(msg);
-        }
-    }
 
     function calculateTotal() {
         const base = parseFloat(modalTotal.dataset.base) || 0;
@@ -233,10 +185,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     [inputBonuses, inputDiscounts].forEach(i => i.addEventListener('input', calculateTotal));
 
-    async function submitPayroll(accion) {
+    // ACCIÓN: Pagar Individual (Guardar desde Modal)
+    modalSave.addEventListener('click', async () => {
         const id = parseInt(inputId.value);
-        const emp = employeesData.find(e => e.id === id);
-        
         const base = parseFloat(modalTotal.dataset.base) || 0;
         const b = parseFloat(inputBonuses.value) || 0;
         const d = parseFloat(inputDiscounts.value) || 0;
@@ -244,11 +195,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const payload = {
             current_user_id: currentUserId,
+            accion: 'pagar_uno',
             integrante_id: id,
             periodo: `${filterYear.value}-${filterMonth.value.toString().padStart(2, '0')}`,
-            monto: finalAmount,
-            accion: accion // 'generar' o 'pagar'
+            monto: finalAmount
         };
+
+        modalSave.disabled = true;
+        modalSave.textContent = "Procesando...";
 
         try {
             const res = await fetch("https://cambiosorion.cl/data/remuneraciones.php", {
@@ -260,19 +214,64 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (json.success) {
                 modal.classList.add('hidden');
-                fetchEmployees(); // Recargar para ver cambio de estado
+                fetchEmployees(); // Recargar tabla
             } else {
                 alert("Error: " + json.message);
             }
         } catch (e) {
             console.error(e);
-            alert("Error de red");
+            alert("Error de conexión");
+        } finally {
+            modalSave.disabled = false;
         }
+    });
+
+    // ACCIÓN: Pagar Todos (Masivo)
+    if(btnProcessAll) {
+        btnProcessAll.addEventListener('click', async () => {
+            if(!confirm(`¿Estás seguro de pagar a TODOS los pendientes del mes ${filterMonth.options[filterMonth.selectedIndex].text}?`)) {
+                return;
+            }
+
+            const payload = {
+                current_user_id: currentUserId,
+                accion: 'pagar_todos',
+                periodo: `${filterYear.value}-${filterMonth.value.toString().padStart(2, '0')}`
+            };
+
+            btnProcessAll.disabled = true;
+            btnProcessAll.textContent = "Procesando...";
+
+            try {
+                const res = await fetch("https://cambiosorion.cl/data/remuneraciones.php", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+                const json = await res.json();
+
+                if (json.success) {
+                    alert(json.message);
+                    fetchEmployees(); // Refrescar tabla
+                } else {
+                    alert("Error: " + json.message);
+                }
+            } catch (e) {
+                console.error(e);
+                alert("Error de conexión");
+            } finally {
+                btnProcessAll.disabled = false;
+                btnProcessAll.innerHTML = `
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    Pagar Pendientes
+                `;
+            }
+        });
     }
 
     function updateKPIs(data) {
         const total = data.reduce((acc, curr) => {
-            return acc + (curr.status_code === 'pagada' || curr.status_code === 'generada' ? curr.monto_guardado : curr.base);
+            return acc + (curr.is_paid ? curr.monto_pagado : curr.base);
         }, 0);
         kpiTotal.textContent = formatMoney(total);
         kpiEmployees.textContent = data.length;
