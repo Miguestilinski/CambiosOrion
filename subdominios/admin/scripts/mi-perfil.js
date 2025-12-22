@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const headerName = document.getElementById('header-user-name');
     const headerEmail = document.getElementById('dropdown-user-email');
     const sidebarContainer = document.getElementById('sidebar-container');
+    const headerBadge = document.getElementById('header-badge');
 
     // UI Perfil
     const editButtonContainer = document.getElementById('edit-button-container'); 
