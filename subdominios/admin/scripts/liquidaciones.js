@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!data.isAuthenticated) return window.location.href = 'https://admin.cambiosorion.cl/login';
 
             currentUserId = data.equipo_id;
-            headerName.textContent = data.nombre;
+            headerName.textContent = (data.nombre || 'Usuario').split(' ')[0];
             
             // Determinar si es Admin/Socio/RRHH
             const role = (data.rol || '').toLowerCase();
@@ -64,9 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (headerBadge) {
                 headerBadge.textContent = isAdmin ? "PORTAL ADMIN" : "PORTAL ORION";
-                headerBadge.className = isAdmin 
-                    ? "px-2 py-0.5 rounded text-xs font-bold bg-indigo-100 text-indigo-700 uppercase"
-                    : "px-2 py-0.5 rounded text-xs font-bold bg-emerald-100 text-emerald-700 uppercase";
+                headerBadge.className = "hidden md:inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-indigo-600 text-white border border-indigo-500/30 tracking-wider uppercase shadow-lg shadow-indigo-500/20";
             }
 
             // Si es admin, el título de la columna cambia
