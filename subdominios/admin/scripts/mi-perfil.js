@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     
                     // Marcar activo el link "Inicio"
-                    const activeLink = sidebarContainer.querySelector('a[href="index"]');
+                    const activeLink = sidebarContainer.querySelector('a[href="mi-perfil"]');
                     if(activeLink) {
                         activeLink.classList.add('bg-indigo-50', 'text-indigo-700', 'font-bold');
                         activeLink.classList.remove('text-slate-600');

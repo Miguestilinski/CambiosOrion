@@ -80,8 +80,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (isSuperUser) {
                         sidebarContainer.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
                     }
-                    const active = sidebarContainer.querySelector('a[href="liquidaciones"]');
-                    if(active) active.classList.add('bg-indigo-50', 'text-indigo-700', 'font-bold');
+                    const activeLink = sidebarContainer.querySelector('a[href="liquidaciones"]');
+                    if(activeLink) {
+                        activeLink.classList.add('bg-indigo-50', 'text-indigo-700', 'font-bold');
+                        activeLink.classList.remove('text-slate-600');
+                    }
                 }
             });
 
