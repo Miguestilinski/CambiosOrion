@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if(headerName) headerName.textContent = (data.nombre || 'Usuario').split(' ')[0];
             if(headerEmail) headerEmail.textContent = data.correo;
-            if(headerBadge) headerBadge.textContent = "FINANZAS";
+            if(headerBadge) headerBadge.textContent = "PORTAL ADMIN";
 
             loadSidebar();
             fetchEmployees();
