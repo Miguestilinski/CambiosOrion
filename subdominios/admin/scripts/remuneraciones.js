@@ -55,9 +55,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            if(headerName) headerName.textContent = data.nombre;
+            if(headerName) headerName.textContent = (data.nombre || 'Usuario').split(' ')[0];
             if(headerEmail) headerEmail.textContent = data.correo;
-            if(headerBadge) headerBadge.textContent = "FINANZAS ADMIN";
+            if(headerBadge) headerBadge.textContent = "PORTAL ADMIN";
 
             loadSidebar();
             fetchEmployees(); // Cargar tabla
@@ -70,8 +70,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if(sidebarContainer) {
                 sidebarContainer.innerHTML = html;
                 sidebarContainer.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
-                const link = sidebarContainer.querySelector('a[href="remuneraciones"]');
-                if(link) link.classList.add('bg-indigo-50', 'text-indigo-700', 'font-bold');
+                const activeLink = sidebarContainer.querySelector('a[href="remuneraciones"]');
+                if(activeLink) {
+                    activeLink.classList.add('bg-indigo-50', 'text-indigo-700', 'font-bold');
+                    activeLink.classList.remove('text-slate-600');
+                }
             }
         });
     }
