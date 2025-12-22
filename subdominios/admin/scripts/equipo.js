@@ -51,8 +51,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if(headerEmail) headerEmail.textContent = data.correo;
             
             if(headerBadge) {
-                headerBadge.textContent = "PORTAL RRHH";
-                headerBadge.className = "hidden md:inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 tracking-wider uppercase";
+                headerBadge.textContent = "PORTAL ADMIN";
+                headerBadge.className = "hidden md:inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-indigo-600 text-white border border-indigo-500/30 tracking-wider uppercase shadow-lg shadow-indigo-500/20";
             }
 
             loadSidebar();
