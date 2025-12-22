@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function initYearSelector() {
         if (!yearSelector) return;
         const currentYear = new Date().getFullYear();
+        yearSelector.innerHTML = ''; // Limpiar opciones previas
         for (let i = currentYear; i >= 2020; i--) {
             const option = document.createElement('option');
             option.value = i;
@@ -31,32 +32,38 @@ document.addEventListener('DOMContentLoaded', () => {
         yearSelector.addEventListener('change', () => fetchLiquidaciones());
     }
 
-    // --- 1. Obtener Sesión ---
+    // --- 1. Obtener Sesión (Fuente de Verdad) ---
     async function getSession() {
         try {
+            // Solicitamos la sesión al archivo que sí funciona bien con cookies
             const res = await fetch("https://cambiosorion.cl/data/session_status.php", {
                 credentials: "include"
             });
             const data = await res.json();
             
+            // Si no hay sesión válida, redirigir
             if (!data.isAuthenticated || !data.equipo_id) {
+                console.warn("Sesión no válida en session_status.php");
                 window.location.href = 'https://admin.cambiosorion.cl/login';
                 return;
             }
 
+            // Datos obtenidos
             currentUserId = data.equipo_id;
             currentUserRole = (data.rol || '').toLowerCase().trim();
             
+            // UI Header
             if(headerName) headerName.textContent = (data.nombre || 'Usuario').split(' ')[0];
             if(headerEmail) headerEmail.textContent = data.correo;
 
+            // Configurar UI según Rol
             configureViewByRole(currentUserRole);
             
-            // IMPORTANTE: Llamar al fetch una vez tengamos el ID
+            // Iniciar carga de datos (Ahora que tenemos el ID)
             fetchLiquidaciones();
 
         } catch (error) {
-            console.error("Error sesión:", error);
+            console.error("Error crítico obteniendo sesión:", error);
         }
     }
 
@@ -104,15 +111,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 3. Fetch Liquidaciones (FIXED) ---
+    // --- 3. Fetch Liquidaciones (API Call) ---
     async function fetchLiquidaciones() {
-        if (!tableBody || !currentUserId) return; // Esperar a tener el ID
+        // Seguridad: No llamar si no tenemos el ID del usuario
+        if (!currentUserId || !tableBody) return;
         
         tableBody.innerHTML = '<tr><td colspan="5" class="text-center py-4">Cargando...</td></tr>';
 
         const year = yearSelector ? yearSelector.value : new Date().getFullYear();
         
-        // AHORA PASAMOS EL ID EN LA URL
+        // PARAMETROS URL: Enviamos current_user_id explícitamente
         let url = `https://cambiosorion.cl/data/liquidaciones.php?year=${year}&current_user_id=${currentUserId}`;
         
         if (selectedFilterUser) {
@@ -120,24 +128,32 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
+            // Nota: No necesitamos credentials: 'include' aquí porque pasamos el ID en la URL
+            // y PHP ya no verifica la cookie de sesión, sino el ID y la BD.
             const res = await fetch(url);
+            
+            // Verificar respuesta HTTP
+            if (!res.ok) {
+                throw new Error(`Error HTTP: ${res.status}`);
+            }
+
             const result = await res.json();
 
             if (!result.success) {
-                // Si el error es "No autorizado", redirigir
-                if(result.message.includes("No autorizado") || result.message.includes("Usuario no válido")) {
+                if(result.message === 'No autorizado' || result.message === 'Usuario no válido') {
+                     console.warn("API rechazó el ID de usuario.");
                      window.location.href = 'https://admin.cambiosorion.cl/login';
                      return;
                 }
-                tableBody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-red-500">${result.message || 'Error'}</td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-red-500">${result.message}</td></tr>`;
                 return;
             }
 
             renderTable(result.data);
 
         } catch (error) {
-            console.error("Error fetch:", error);
-            tableBody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-red-500">Error de conexión</td></tr>`;
+            console.error("Error fetch liquidaciones:", error);
+            tableBody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-red-500">Error de conexión con el servidor</td></tr>`;
         }
     }
 
@@ -145,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tableBody.innerHTML = '';
 
         if (data.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-slate-400">No hay liquidaciones encontradas para este periodo.</td></tr>`;
+            tableBody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-slate-400">No hay documentos disponibles para este periodo.</td></tr>`;
             return;
         }
 
