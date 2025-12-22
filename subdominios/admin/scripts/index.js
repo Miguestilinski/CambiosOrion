@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Estilos ADMIN
             if(headerBadge) {
                 headerBadge.textContent = "PORTAL ADMIN";
-                headerBadge.className = "hidden md:inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 tracking-wider uppercase";
+                headerBadge.className = "hidden md:inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-indigo-600 text-white border border-indigo-500/30 tracking-wider uppercase shadow-lg shadow-indigo-500/20";
             }
             // Mostrar sección exclusiva de Admin en el Dashboard
             const adminSections = document.querySelectorAll('.admin-only');
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Estilos NORMAL
             if(headerBadge) {
                 headerBadge.textContent = "PORTAL ADMIN";
-                headerBadge.className = "hidden md:inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 tracking-wider uppercase";
+                headerBadge.className = "hidden md:inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-indigo-600 text-white border border-indigo-500/30 tracking-wider uppercase shadow-lg shadow-indigo-500/20";
             }
             // Asegurar que secciones admin estén ocultas
             const adminSections = document.querySelectorAll('.admin-only');
