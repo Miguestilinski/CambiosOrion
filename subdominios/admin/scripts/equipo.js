@@ -70,8 +70,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 if(sidebarContainer) {
                     sidebarContainer.innerHTML = html;
                     sidebarContainer.querySelectorAll('.admin-only').forEach(item => item.classList.remove('hidden'));
-                    const active = sidebarContainer.querySelector('a[href="equipo"]');
-                    if(active) active.classList.add('bg-indigo-50', 'text-indigo-700', 'font-bold');
+                    const activeLink = sidebarContainer.querySelector('a[href="equipo"]');
+                    if(activeLink) {
+                        activeLink.classList.add('bg-indigo-50', 'text-indigo-700', 'font-bold');
+                        activeLink.classList.remove('text-slate-600');
+                    }
                 }
             });
     }
