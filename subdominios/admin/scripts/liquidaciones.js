@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if(headerEmail) headerEmail.textContent = data.correo;
 
             // Configurar UI según Rol
-            configureViewByRole(currentUserRole);
+            configureDashboardByRole(currentUserRole);
             
             // Iniciar carga de datos (Ahora que tenemos el ID)
             fetchLiquidaciones();
@@ -68,41 +68,55 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- 2. Vista según Rol ---
-    function configureViewByRole(rol) {
-        const superUsers = ['socio', 'admin', 'gerente', 'rrhh'];
+        function configureDashboardByRole(rol) {
+        const superUsers = ['socio', 'admin', 'gerente']; 
         const isSuperUser = superUsers.includes(rol);
 
+        // Cargar Sidebar Único
         fetch('sidebar.html')
-            .then(res => res.text())
+            .then(response => response.text())
             .then(html => {
                 if(sidebarContainer) {
                     sidebarContainer.innerHTML = html;
+                    
+                    const adminItems = sidebarContainer.querySelectorAll('.admin-only');
+                    
                     if (isSuperUser) {
-                        sidebarContainer.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
+                        adminItems.forEach(item => item.classList.remove('hidden'));
+                    } else {
+                        adminItems.forEach(item => item.remove());
                     }
+                    
+                    // Marcar activo el link "Inicio"
                     const activeLink = sidebarContainer.querySelector('a[href="liquidaciones"]');
                     if(activeLink) {
                         activeLink.classList.add('bg-indigo-50', 'text-indigo-700', 'font-bold');
                         activeLink.classList.remove('text-slate-600');
                     }
                 }
-            });
+            })
+            .catch(err => console.error("Error cargando sidebar:", err));
 
+        // Ajustes visuales Dashboard
         if (isSuperUser) {
+            // Estilos ADMIN
             if(headerBadge) {
                 headerBadge.textContent = "PORTAL ADMIN";
                 headerBadge.className = "hidden md:inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 tracking-wider uppercase";
             }
-            if(adminControls) adminControls.classList.remove('hidden');
-            if(tableTitle) tableTitle.textContent = "Liquidaciones del Equipo";
-            loadEmployeesList(); 
+            // Mostrar sección exclusiva de Admin en el Dashboard
+            const adminSections = document.querySelectorAll('.admin-only');
+            adminSections.forEach(el => el.classList.remove('hidden'));
+
         } else {
+            // Estilos NORMAL
             if(headerBadge) {
                 headerBadge.textContent = "PORTAL ORION";
                 headerBadge.className = "hidden md:inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 tracking-wider uppercase";
             }
-            if(adminControls) adminControls.classList.add('hidden');
-            if(tableTitle) tableTitle.textContent = "Mis Liquidaciones";
+            // Asegurar que secciones admin estén ocultas
+            const adminSections = document.querySelectorAll('.admin-only');
+            adminSections.forEach(el => el.classList.add('hidden'));
         }
     }
 
