@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (headerEmail) headerEmail.textContent = sessionData.correo;
 
             // B) CARGAR SIDEBAR
-            loadSidebar(rol);
+            configureDashboardByRole(rol);
 
             // C) CARGAR DATOS DEL PERFIL
             loadUserProfile(currentUserId);
@@ -70,26 +70,31 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- 2. LOGICA DEL SIDEBAR ---
-    function loadSidebar(rol) {
-        if (!sidebarContainer) return;
+    function configureDashboardByRole(rol) {
+        const superUsers = ['socio', 'admin', 'gerente']; 
+        const isSuperUser = superUsers.includes(rol);
 
+        // Cargar Sidebar Único
         fetch('sidebar.html')
-            .then(res => res.text())
+            .then(response => response.text())
             .then(html => {
-                sidebarContainer.innerHTML = html;
-                
-                // Mostrar opciones de Admin si corresponde
-                const superUsers = ['socio', 'admin', 'gerente'];
-                if (superUsers.includes(rol)) {
-                     const adminItems = sidebarContainer.querySelectorAll('.admin-only');
-                     adminItems.forEach(item => item.classList.remove('hidden'));
-                }
-
-                // Marcar "Mi Perfil" como activo visualmente
-                const activeLink = sidebarContainer.querySelector('a[href="mi-perfil"]');
-                if(activeLink) {
-                    activeLink.classList.add('bg-indigo-50', 'text-indigo-700', 'font-bold');
-                    activeLink.classList.remove('text-slate-600');
+                if(sidebarContainer) {
+                    sidebarContainer.innerHTML = html;
+                    
+                    const adminItems = sidebarContainer.querySelectorAll('.admin-only');
+                    
+                    if (isSuperUser) {
+                        adminItems.forEach(item => item.classList.remove('hidden'));
+                    } else {
+                        adminItems.forEach(item => item.remove());
+                    }
+                    
+                    // Marcar activo el link "Inicio"
+                    const activeLink = sidebarContainer.querySelector('a[href="index"]');
+                    if(activeLink) {
+                        activeLink.classList.add('bg-indigo-50', 'text-indigo-700', 'font-bold');
+                        activeLink.classList.remove('text-slate-600');
+                    }
                 }
             })
             .catch(err => console.error("Error cargando sidebar:", err));
