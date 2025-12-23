@@ -9,6 +9,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const roleFilter = document.getElementById('filter-role');
     const addMemberBtn = document.getElementById('btn-add-member');
 
+    // Modal Notifications
+    const modalNotif = document.getElementById('modal-notification');
+    const modalIcon = document.getElementById('modal-icon-container');
+    const modalTitle = document.getElementById('modal-title');
+    const modalMsg = document.getElementById('modal-message');
+    const modalBtn = document.getElementById('modal-btn');
+
     let currentUserId = null;
     let currentUserRole = ''; // Para validar permisos en UI
 
@@ -17,6 +24,26 @@ document.addEventListener('DOMContentLoaded', () => {
     function init() {
         getSession();
         setupEventListeners();
+    }
+
+    function showAlert(title, message, isError = false) {
+        const iconSuccess = `<svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
+        const iconError = `<svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>`;
+
+        modalIcon.innerHTML = isError ? iconError : iconSuccess;
+        modalIcon.className = isError 
+            ? "w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4"
+            : "w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4";
+
+        modalTitle.textContent = title;
+        modalMsg.textContent = message;
+        
+        modalBtn.className = isError 
+            ? "w-full px-4 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 font-bold transition shadow-lg shadow-red-500/30"
+            : "w-full px-4 py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-bold transition shadow-lg shadow-indigo-500/30";
+
+        modalBtn.onclick = () => modalNotif.classList.add('hidden');
+        modalNotif.classList.remove('hidden');
     }
 
     // --- UTILS ---
@@ -55,8 +82,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const role = (data.rol || '').toLowerCase().trim();
             
             if (!['socio', 'admin', 'gerente', 'rrhh'].includes(role)) {
-                alert("Acceso restringido");
-                window.location.href = 'index';
+                showAlert("Acceso Restringido", "No tienes permisos para ver el equipo.", true);
+                setTimeout(() => window.location.href = 'index', 2000);
                 return;
             }
 
