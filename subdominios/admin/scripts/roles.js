@@ -31,16 +31,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function formatName(fullName) {
         if (!fullName) return '';
         const parts = fullName.trim().split(/\s+/);
-        // Si tiene 3 o más partes (Juan Esteban Perez), retornamos Juan Perez (1era + 3era)
-        // Si tiene 4 partes (Juan Esteban Perez Cotapos), retornamos Juan Perez (1era + 3era)
-        // Si tiene 2 partes (Juan Perez), retornamos Juan Perez
-        // Si tiene 1, retorna solo ese.
-        
-        if (parts.length >= 3) {
-            return `${parts[0]} ${parts[2]}`;
-        } else if (parts.length === 2) {
-            return `${parts[0]} ${parts[1]}`;
-        }
+        // Si tiene al menos 3 partes (Juan Esteban Perez), toma 1ro y 3ro
+        if (parts.length >= 3) return `${parts[0]} ${parts[2]}`;
+        // Si tiene 2, las toma ambas
+        if (parts.length === 2) return `${parts[0]} ${parts[1]}`;
         return parts[0];
     }
 
@@ -64,12 +58,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            if(headerName) headerName.textContent = (data.nombre || 'Usuario').split(' ')[0];
+            if(headerName) headerName.textContent = formatName(data.nombre);
             if(headerEmail) headerEmail.textContent = data.correo;
             if(headerBadge) {
                 headerBadge.textContent = "PORTAL ADMIN";
                 headerBadge.className = "hidden md:inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-indigo-600 text-white border border-indigo-500/30 tracking-wider uppercase shadow-lg shadow-indigo-500/20";
-            
             }
 
             loadSidebar();
@@ -121,12 +114,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const isActive = isMulti ? box.users.length > 0 : box.currentUserId !== null;
             const isGhost = box.id === 0;
 
-            // Estilos especiales para Caja 0
             let borderClass = isActive ? 'border-indigo-300 ring-1 ring-indigo-50' : 'border-slate-200';
             let bgClass = 'bg-white';
             
             if (isGhost) {
-                bgClass = 'bg-slate-50'; // Caja 0 un poco más gris
+                bgClass = 'bg-slate-50'; 
                 borderClass = isActive ? 'border-slate-400' : 'border-slate-300 border-dashed';
             }
 
@@ -169,8 +161,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="flex justify-between items-start mb-4">
                         <div class="${user ? 'bg-indigo-100 text-indigo-600' : 'bg-slate-100 text-slate-400'} p-2.5 rounded-xl transition-colors">
                             ${isGhost 
-                                ? '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>' // Icono Documento para Caja 0
-                                : '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>' // Icono PC para Cajas
+                                ? '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>'
+                                : '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>'
                             }
                         </div>
                         ${user ? `<button onclick="window.unassignUser(${user.id})" class="text-xs text-red-500 bg-red-50 border border-red-100 px-2 py-1 rounded hover:bg-red-100 transition">Liberar</button>` : ''}
@@ -190,11 +182,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- RENDER TABLA PERMISOS ---
+    // --- RENDER PERMISOS ---
     function renderPermissions() {
         permissionsTable.innerHTML = '';
         
-        // FILTRO: No mostrar a los Socios en esta tabla
+        // FILTRO SOCIOS: No mostrar Socios en la tabla
         const filteredUsers = usersData.filter(u => u.role.toLowerCase() !== 'socio');
 
         filteredUsers.forEach(u => {
@@ -230,29 +222,37 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     }
 
-    // --- MODAL ---
+    // --- MODAL ASIGNAR ---
     window.openAssignModal = (boxId, boxName) => {
         modalBoxName.textContent = boxName;
         targetBoxIdInput.value = boxId;
         
         modalUserSelect.innerHTML = '<option value="">Seleccione...</option>';
         
-        // Ordenar y Filtrar
         const sortedUsers = [...usersData].sort((a,b) => formatName(a.name).localeCompare(formatName(b.name)));
 
         sortedUsers.forEach(u => {
-            // REGLA FRONTEND: Si es Caja 0, solo mostrar Tesoreros/RRHH/Socio
+            const r = u.role.toLowerCase();
+            
+            // 1. FILTRO SOCIOS: Jamás aparecen en el dropdown
+            if (r.includes('socio')) return;
+
+            // 2. FILTRO CAJA 0: Solo Tesoreros/RRHH/Oficiales
             if (boxId === 0) {
-                const r = u.role.toLowerCase();
-                if (!r.includes('tesorero') && !r.includes('rrhh') && !r.includes('socio') && !r.includes('gerente')) {
-                    return; // Skip this user
+                if (!r.includes('tesorero') && !r.includes('rrhh') && !r.includes('gerente') && !r.includes('oficial')) {
+                    return; 
                 }
             }
 
-            const cajaStatus = (u.caja_id !== null) ? `(En Caja ${u.caja_id})` : '';
+            // 3. ETIQUETA DE UBICACIÓN ACTUAL
+            let statusLabel = '(Disponible)';
+            if (u.caja_id === 99) statusLabel = '(En Tesorería)';
+            else if (u.caja_id === 0) statusLabel = '(En Caja 0)';
+            else if (u.caja_id !== null) statusLabel = `(En Caja ${u.caja_id})`;
+
             const opt = document.createElement('option');
             opt.value = u.id;
-            opt.textContent = `${formatName(u.name)} ${cajaStatus}`;
+            opt.textContent = `${formatName(u.name)} ${statusLabel}`;
             modalUserSelect.appendChild(opt);
         });
 
