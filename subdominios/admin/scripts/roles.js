@@ -22,6 +22,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalUnassignConfirm = document.getElementById('modal-unassign-confirm');
     const targetUnassignUserIdInput = document.getElementById('target-unassign-user-id');
 
+    // Modal Notification
+    const modalNotif = document.getElementById('modal-notification');
+    const modalIcon = document.getElementById('modal-icon-container');
+    const modalTitle = document.getElementById('modal-title');
+    const modalMsg = document.getElementById('modal-message');
+    const modalBtn = document.getElementById('modal-btn');
+
     let currentUserId = null;
     let boxesData = [];
     let usersData = [];
@@ -31,6 +38,27 @@ document.addEventListener('DOMContentLoaded', () => {
     function init() {
         getSession();
         setupEventListeners();
+    }
+
+    // --- FUNCIÓN ALERT REEMPLAZO ---
+    function showAlert(title, message, isError = false) {
+        const iconSuccess = `<svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
+        const iconError = `<svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>`;
+
+        modalIcon.innerHTML = isError ? iconError : iconSuccess;
+        modalIcon.className = isError 
+            ? "w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4"
+            : "w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4";
+
+        modalTitle.textContent = title;
+        modalMsg.textContent = message;
+        
+        modalBtn.className = isError 
+            ? "w-full px-4 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 font-bold transition shadow-lg shadow-red-500/30"
+            : "w-full px-4 py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-bold transition shadow-lg shadow-indigo-500/30";
+
+        modalBtn.onclick = () => modalNotif.classList.add('hidden');
+        modalNotif.classList.remove('hidden');
     }
 
     // --- UTILS ---
@@ -101,11 +129,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 renderBoxes();
                 renderPermissions();
             } else {
-                alert("Error: " + json.message);
+                showAlert("Error de Datos", json.message, true);
             }
         } catch (e) {
             console.error(e);
-            alert("Error de conexión");
+            showAlert("Error de Conexión", "No se pudieron cargar los datos.", true);
         }
     }
 
@@ -276,7 +304,10 @@ document.addEventListener('DOMContentLoaded', () => {
         modalConfirm.addEventListener('click', async () => {
             const boxId = targetBoxIdInput.value;
             const userId = modalUserSelect.value;
-            if(!userId) return alert("Seleccione un usuario");
+            if(!userId) {
+                showAlert("Atención", "Debe seleccionar un usuario para asignar.", true);
+                return;
+            }
 
             try {
                 const res = await fetch("https://cambiosorion.cl/data/roles.php", {
@@ -294,7 +325,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     modalAssign.classList.add('hidden');
                     fetchData(); 
                 } else {
-                    alert("Error: " + json.message);
+                    showAlert("Error Asignación", json.message, true);
                 }
             } catch (e) { console.error(e); }
         });
@@ -322,7 +353,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     modalUnassign.classList.add('hidden');
                     fetchData();
                 } else {
-                    alert("Error: " + json.message);
+                    showAlert("Error", json.message, true);
                 }
             } catch (e) { console.error(e); }
             finally {
@@ -347,7 +378,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             const json = await res.json();
             if(!json.success) {
-                alert("Error: " + json.message);
+                showAlert("Error", json.message, true);
                 fetchData(); 
             }
         } catch (e) { console.error(e); fetchData(); }
