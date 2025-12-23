@@ -164,22 +164,35 @@ document.addEventListener('DOMContentLoaded', () => {
             fCivil.value = u.estado_civil || '';
             fDireccion.value = u.direccion || '';
 
-            // LOGICA ROL PERSONALIZADO
-            const rolExistente = Array.from(fRol.options).some(opt => opt.value === u.rol);
-            if (rolExistente) {
+            // --- LÓGICA ROL PERSONALIZADO ---
+            // Revisamos si el rol que viene de BD existe en el select
+            const roleOptions = Array.from(fRol.options).map(o => o.value);
+            
+            if (u.rol && !roleOptions.includes(u.rol)) {
+                // Si NO existe (es personalizado), creamos la opción dinámicamente
+                const newOpt = document.createElement('option');
+                newOpt.value = u.rol;
+                newOpt.textContent = u.rol;
+                
+                // La insertamos antes de la opción "custom"
+                const customOpt = fRol.querySelector('option[value="custom"]');
+                fRol.insertBefore(newOpt, customOpt);
+                
+                // Seleccionamos y ocultamos el input
                 fRol.value = u.rol;
                 fRolCustom.classList.add('hidden');
             } else {
-                fRol.value = 'custom';
-                fRolCustom.value = u.rol;
-                fRolCustom.classList.remove('hidden');
+                // Si es estándar (o vacío), simplemente lo seleccionamos
+                fRol.value = u.rol;
+                fRolCustom.classList.add('hidden');
             }
             
-            fRol.value = u.rol; 
+            // --- CONTRATO ---
+            // Si viene "Dueño", funcionará porque la opción oculta existe en HTML
             fContrato.value = u.tipo_contrato;
+            
             fIngreso.value = u.fecha_ingreso;
             fSueldo.value = u.sueldo_liquido;
-
             profileName.textContent = u.nombre;
 
         } catch (e) {
@@ -198,7 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
         }
-        
+
         const payload = {
             current_user_id: currentUserId,
             id: fId.value,
