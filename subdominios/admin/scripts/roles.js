@@ -20,9 +20,29 @@ document.addEventListener('DOMContentLoaded', () => {
     let boxesData = [];
     let usersData = [];
 
-    // --- INIT ---
-    getSession();
-    setupEventListeners();
+    init();
+
+    function init() {
+        getSession();
+        setupEventListeners();
+    }
+
+    // --- UTILS: FORMATO NOMBRE ---
+    function formatName(fullName) {
+        if (!fullName) return '';
+        const parts = fullName.trim().split(/\s+/);
+        // Si tiene 3 o más partes (Juan Esteban Perez), retornamos Juan Perez (1era + 3era)
+        // Si tiene 4 partes (Juan Esteban Perez Cotapos), retornamos Juan Perez (1era + 3era)
+        // Si tiene 2 partes (Juan Perez), retornamos Juan Perez
+        // Si tiene 1, retorna solo ese.
+        
+        if (parts.length >= 3) {
+            return `${parts[0]} ${parts[2]}`;
+        } else if (parts.length === 2) {
+            return `${parts[0]} ${parts[1]}`;
+        }
+        return parts[0];
+    }
 
     // --- SESIÓN ---
     async function getSession() {
@@ -37,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             currentUserId = data.equipo_id;
             const role = (data.rol || '').toLowerCase().trim();
-            // Solo socios, admins o gerentes pueden tocar roles
+            
             if (!['socio', 'admin', 'gerente'].includes(role)) {
                 alert("Acceso restringido");
                 window.location.href = 'index';
@@ -49,6 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if(headerBadge) {
                 headerBadge.textContent = "PORTAL ADMIN";
                 headerBadge.className = "hidden md:inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-indigo-600 text-white border border-indigo-500/30 tracking-wider uppercase shadow-lg shadow-indigo-500/20";
+            
             }
 
             loadSidebar();
@@ -66,23 +87,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 if(sidebarContainer) {
                     sidebarContainer.innerHTML = html;
                     sidebarContainer.querySelectorAll('.admin-only').forEach(item => item.classList.remove('hidden'));
-                    const activeLink = sidebarContainer.querySelector('a[href="roles"]');
-                    if(activeLink) {
-                        activeLink.classList.add('bg-indigo-50', 'text-indigo-700', 'font-bold');
-                        activeLink.classList.remove('text-slate-600');
-                    }
+                    const active = sidebarContainer.querySelector('a[href="roles"]');
+                    if(active) active.classList.add('bg-indigo-50', 'text-indigo-700', 'font-bold');
                 }
             });
     }
 
-    // --- CARGAR DATOS ---
     async function fetchData() {
         boxesGrid.innerHTML = '<div class="col-span-full text-center py-10 text-slate-500">Cargando configuración...</div>';
-        
         try {
             const res = await fetch(`https://cambiosorion.cl/data/roles.php?current_user_id=${currentUserId}`);
             const json = await res.json();
-
             if (json.success) {
                 boxesData = json.boxes;
                 usersData = json.users;
@@ -97,28 +112,37 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- RENDERIZAR CAJAS ---
+    // --- RENDER CAJAS ---
     function renderBoxes() {
         boxesGrid.innerHTML = '';
         
         boxesData.forEach(box => {
-            const isMulti = box.type === 'multi'; // Es Tesorería
-            // Está activa si tiene al menos un usuario (multi) o un usuario asignado (single)
+            const isMulti = box.type === 'multi'; 
             const isActive = isMulti ? box.users.length > 0 : box.currentUserId !== null;
+            const isGhost = box.id === 0;
+
+            // Estilos especiales para Caja 0
+            let borderClass = isActive ? 'border-indigo-300 ring-1 ring-indigo-50' : 'border-slate-200';
+            let bgClass = 'bg-white';
             
+            if (isGhost) {
+                bgClass = 'bg-slate-50'; // Caja 0 un poco más gris
+                borderClass = isActive ? 'border-slate-400' : 'border-slate-300 border-dashed';
+            }
+
             const card = document.createElement('div');
-            card.className = `box-card bg-white border rounded-2xl p-5 shadow-sm relative transition hover:shadow-md ${isActive ? 'border-indigo-300 ring-1 ring-indigo-50' : 'border-slate-200'}`;
+            card.className = `box-card ${bgClass} border rounded-2xl p-5 shadow-sm relative transition hover:shadow-md ${borderClass}`;
             
             let contentHtml = '';
             
             if (isMulti) {
-                // === TESORERÍA (Múltiples Usuarios) ===
+                // TESORERÍA (99)
                 const userList = box.users.map(uid => {
                     const u = usersData.find(user => user.id === uid);
                     return u ? `
-                        <li class="text-sm text-slate-700 mb-2 flex items-center justify-between bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
-                            <span class="font-medium flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-purple-500"></span> ${u.name}
+                        <li class="text-sm text-slate-700 mb-2 flex items-center justify-between bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
+                            <span class="font-medium flex items-center gap-2 truncate">
+                                <span class="w-2 h-2 rounded-full bg-purple-500 shrink-0"></span> ${formatName(u.name)}
                             </span>
                             <button onclick="window.unassignUser(${uid})" class="text-slate-400 hover:text-red-500 transition px-1 font-bold">×</button>
                         </li>` : '';
@@ -134,25 +158,28 @@ document.addEventListener('DOMContentLoaded', () => {
                         </button>
                     </div>
                     <h3 class="font-bold text-slate-800 text-lg mb-1">${box.name}</h3>
-                    <p class="text-xs text-slate-400 mb-3">Múltiples tesoreros permitidos</p>
-                    <ul class="max-h-40 overflow-y-auto pr-1">${userList || '<span class="text-xs text-slate-400 italic">Sin personal asignado</span>'}</ul>
+                    <p class="text-xs text-slate-400 mb-3">Zona de Tesorería</p>
+                    <ul class="max-h-40 overflow-y-auto pr-1 custom-scrollbar">${userList || '<span class="text-xs text-slate-400 italic">Sin personal</span>'}</ul>
                 `;
             } else {
-                // === CAJAS NORMALES (Un solo usuario) ===
+                // CAJAS NORMALES + CAJA 0
                 const user = usersData.find(u => u.id === box.currentUserId);
                 
                 contentHtml = `
                     <div class="flex justify-between items-start mb-4">
                         <div class="${user ? 'bg-indigo-100 text-indigo-600' : 'bg-slate-100 text-slate-400'} p-2.5 rounded-xl transition-colors">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                            ${isGhost 
+                                ? '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>' // Icono Documento para Caja 0
+                                : '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>' // Icono PC para Cajas
+                            }
                         </div>
                         ${user ? `<button onclick="window.unassignUser(${user.id})" class="text-xs text-red-500 bg-red-50 border border-red-100 px-2 py-1 rounded hover:bg-red-100 transition">Liberar</button>` : ''}
                     </div>
                     <h3 class="font-bold text-slate-800 text-lg mb-1">${box.name}</h3>
                     <div class="mt-2">
                         ${user 
-                            ? `<div class="text-sm font-bold text-indigo-700 bg-indigo-50 px-3 py-2 rounded-lg border border-indigo-100 truncate">${user.name}</div>` 
-                            : `<button onclick="window.openAssignModal(${box.id}, '${box.name}')" class="w-full py-2 border-2 border-dashed border-slate-300 text-slate-400 rounded-lg text-sm hover:border-indigo-400 hover:text-indigo-600 transition font-medium">Asignar Cajero</button>`
+                            ? `<div class="text-sm font-bold text-indigo-700 bg-indigo-50 px-3 py-2 rounded-lg border border-indigo-100 truncate text-center" title="${user.name}">${formatName(user.name)}</div>` 
+                            : `<button onclick="window.openAssignModal(${box.id}, '${box.name}')" class="w-full py-2 border-2 border-dashed border-slate-300 text-slate-400 rounded-lg text-sm hover:border-indigo-400 hover:text-indigo-600 transition font-medium">Asignar</button>`
                         }
                     </div>
                 `;
@@ -163,25 +190,25 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- RENDERIZAR TABLA PERMISOS ---
+    // --- RENDER TABLA PERMISOS ---
     function renderPermissions() {
         permissionsTable.innerHTML = '';
         
-        usersData.forEach(u => {
-            const p = u.permissions; // Objeto {acceso_rrhh: true, ...}
-            
+        // FILTRO: No mostrar a los Socios en esta tabla
+        const filteredUsers = usersData.filter(u => u.role.toLowerCase() !== 'socio');
+
+        filteredUsers.forEach(u => {
+            const p = u.permissions;
             const row = document.createElement('tr');
-            row.className = "bg-white border-b hover:bg-slate-50 transition group";
+            row.className = "bg-white border-b hover:bg-slate-50 transition";
             
-            // Badge del Rol
             let roleBadgeClass = 'bg-slate-100 text-slate-600';
-            if(u.role.toLowerCase() === 'socio') roleBadgeClass = 'bg-purple-100 text-purple-700';
             if(u.role.toLowerCase() === 'tesorero') roleBadgeClass = 'bg-indigo-100 text-indigo-700';
             if(u.role.toLowerCase() === 'rrhh') roleBadgeClass = 'bg-pink-100 text-pink-700';
 
             row.innerHTML = `
                 <td class="px-6 py-4">
-                    <div class="font-bold text-slate-800">${u.name}</div>
+                    <div class="font-bold text-slate-800">${formatName(u.name)}</div>
                     <span class="inline-flex mt-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide ${roleBadgeClass}">${u.role}</span>
                 </td>
                 <td class="px-6 py-4 text-center">${createToggle(u.id, 'acceso_rrhh', p.acceso_rrhh)}</td>
@@ -203,24 +230,29 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     }
 
-    // --- LÓGICA DE ASIGNACIÓN (MODAL) ---
+    // --- MODAL ---
     window.openAssignModal = (boxId, boxName) => {
         modalBoxName.textContent = boxName;
         targetBoxIdInput.value = boxId;
         
-        // Llenar select solo con usuarios que tienen permiso 'manejo_caja' (Opcional, o mostrar todos)
-        // Por ahora mostramos a todos los activos para simplificar, o podrías filtrar usersData
-        modalUserSelect.innerHTML = '<option value="">Seleccione Colaborador...</option>';
+        modalUserSelect.innerHTML = '<option value="">Seleccione...</option>';
         
-        // Ordenar alfabéticamente
-        const sortedUsers = [...usersData].sort((a,b) => a.name.localeCompare(b.name));
+        // Ordenar y Filtrar
+        const sortedUsers = [...usersData].sort((a,b) => formatName(a.name).localeCompare(formatName(b.name)));
 
         sortedUsers.forEach(u => {
-            // Mostrar si ya tiene caja asignada
-            const cajaStatus = u.caja_id ? `(En Caja ${u.caja_id})` : '(Disponible)';
+            // REGLA FRONTEND: Si es Caja 0, solo mostrar Tesoreros/RRHH/Socio
+            if (boxId === 0) {
+                const r = u.role.toLowerCase();
+                if (!r.includes('tesorero') && !r.includes('rrhh') && !r.includes('socio') && !r.includes('gerente')) {
+                    return; // Skip this user
+                }
+            }
+
+            const cajaStatus = (u.caja_id !== null) ? `(En Caja ${u.caja_id})` : '';
             const opt = document.createElement('option');
             opt.value = u.id;
-            opt.textContent = `${u.name} ${cajaStatus}`;
+            opt.textContent = `${formatName(u.name)} ${cajaStatus}`;
             modalUserSelect.appendChild(opt);
         });
 
@@ -230,11 +262,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function setupEventListeners() {
         modalCancel.addEventListener('click', () => modalAssign.classList.add('hidden'));
         
-        // ASIGNAR CAJA
         modalConfirm.addEventListener('click', async () => {
             const boxId = targetBoxIdInput.value;
             const userId = modalUserSelect.value;
-            
             if(!userId) return alert("Seleccione un usuario");
 
             try {
@@ -251,7 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const json = await res.json();
                 if(json.success) {
                     modalAssign.classList.add('hidden');
-                    fetchData(); // Recargar todo
+                    fetchData(); 
                 } else {
                     alert("Error: " + json.message);
                 }
@@ -259,12 +289,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- ACCIONES GLOBALES ---
-    
-    // DESASIGNAR
+    // --- ACCIONES ---
     window.unassignUser = async (userId) => {
         if(!confirm("¿Liberar puesto de este usuario?")) return;
-        
         try {
             const res = await fetch("https://cambiosorion.cl/data/roles.php", {
                 method: "POST",
@@ -280,7 +307,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (e) { console.error(e); }
     };
 
-    // ACTUALIZAR PERMISO
     window.updatePermission = async (userId, key, value) => {
         try {
             const res = await fetch("https://cambiosorion.cl/data/roles.php", {
@@ -296,12 +322,9 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             const json = await res.json();
             if(!json.success) {
-                alert("Error al guardar permiso: " + json.message);
-                fetchData(); // Revertir visualmente
+                alert("Error: " + json.message);
+                fetchData(); 
             }
-        } catch (e) { 
-            console.error(e); 
-            fetchData();
-        }
+        } catch (e) { console.error(e); fetchData(); }
     };
 });
