@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalConfirm = document.getElementById('modal-confirm');
     const targetBoxIdInput = document.getElementById('target-box-id');
 
-    // Modal Liberar (Nuevo)
+    // Modal Liberar
     const modalUnassign = document.getElementById('modal-unassign');
     const modalUnassignCancel = document.getElementById('modal-unassign-cancel');
     const modalUnassignConfirm = document.getElementById('modal-unassign-confirm');
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setupEventListeners();
     }
 
-    // --- UTILS: FORMATO NOMBRE ---
+    // --- UTILS ---
     function formatName(fullName) {
         if (!fullName) return '';
         const parts = fullName.trim().split(/\s+/);
@@ -236,9 +236,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const r = u.role.toLowerCase();
             if (r.includes('socio')) return;
 
+            // Filtro para Caja 0
             if (boxId === 0) {
                 if (!r.includes('tesorero') && !r.includes('rrhh') && !r.includes('gerente') && !r.includes('oficial')) {
                     return; 
+                }
+            } 
+            // Filtro para Cajas Físicas (Cualquiera ID >= 1)
+            else if (boxId >= 1) {
+                // SOLO MOSTRAR SI TIENE PERMISO 'manejo_caja'
+                if (!u.permissions.manejo_caja) {
+                    return;
                 }
             }
 
@@ -256,15 +264,15 @@ document.addEventListener('DOMContentLoaded', () => {
         modalAssign.classList.remove('hidden');
     };
 
-    // --- ACCIÓN: LIBERAR PUESTO (MOSTRAR MODAL) ---
+    // --- ACCIONES ---
     window.unassignUser = (userId) => {
         targetUnassignUserIdInput.value = userId;
         modalUnassign.classList.remove('hidden');
     };
 
     function setupEventListeners() {
-        // Modal Asignar
         modalCancel.addEventListener('click', () => modalAssign.classList.add('hidden'));
+        
         modalConfirm.addEventListener('click', async () => {
             const boxId = targetBoxIdInput.value;
             const userId = modalUserSelect.value;
@@ -291,13 +299,11 @@ document.addEventListener('DOMContentLoaded', () => {
             } catch (e) { console.error(e); }
         });
 
-        // Modal Liberar (Eventos)
         modalUnassignCancel.addEventListener('click', () => modalUnassign.classList.add('hidden'));
         modalUnassignConfirm.addEventListener('click', async () => {
             const userId = targetUnassignUserIdInput.value;
             if(!userId) return;
 
-            // UI Loading
             modalUnassignConfirm.textContent = 'Procesando...';
             modalUnassignConfirm.disabled = true;
 
@@ -326,7 +332,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- ACTUALIZAR PERMISO ---
     window.updatePermission = async (userId, key, value) => {
         try {
             const res = await fetch("https://cambiosorion.cl/data/roles.php", {
