@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (isTargetSocio && !amISocio) {
                 actionHtml = `<span class="text-xs text-slate-300 italic">Privado</span>`;
             } else {
-                actionHtml = `<button onclick="window.location.href='detalle_int?id=${u.id}'" class="text-indigo-600 hover:text-indigo-900 font-medium hover:underline flex items-center justify-end w-full">
+                actionHtml = `<button onclick="window.location.href='detalle-int?id=${u.id}'" class="text-indigo-600 hover:text-indigo-900 font-medium hover:underline flex items-center justify-end w-full">
                                 Ver / Editar <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                               </button>`;
             }
@@ -159,6 +159,6 @@ document.addEventListener('DOMContentLoaded', () => {
         searchInput.addEventListener('input', fetchEmployees);
         roleFilter.addEventListener('change', fetchEmployees);
         // El botón "Nuevo Integrante" lleva a la nueva página en modo creación (id=0 o sin id)
-        addMemberBtn.addEventListener('click', () => window.location.href = 'detalle_int?id=new');
+        addMemberBtn.addEventListener('click', () => window.location.href = 'detalle-int?id=new');
     }
 });
