@@ -23,9 +23,12 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const btnSave = document.getElementById('btn-save');
 
-    // Modal
-    const modalSuccess = document.getElementById('modal-success');
-    const modalSuccessBtn = document.getElementById('modal-success-btn');
+    // Modal Notification Elements
+    const modalNotif = document.getElementById('modal-notification');
+    const modalIcon = document.getElementById('modal-icon-container');
+    const modalTitle = document.getElementById('modal-title');
+    const modalMsg = document.getElementById('modal-message');
+    const modalBtn = document.getElementById('modal-btn');
 
     let currentUserId = null;
 
@@ -34,6 +37,32 @@ document.addEventListener('DOMContentLoaded', () => {
     function init() {
         getSession();
         setupEventListeners();
+    }
+
+    // --- FUNCIÓN ALERT REEMPLAZO ---
+    function showAlert(title, message, isError = false, callback = null) {
+        // Iconos
+        const iconSuccess = `<svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
+        const iconError = `<svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>`;
+
+        modalIcon.innerHTML = isError ? iconError : iconSuccess;
+        modalIcon.className = isError 
+            ? "w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4"
+            : "w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4";
+
+        modalTitle.textContent = title;
+        modalMsg.textContent = message;
+        
+        modalBtn.className = isError 
+            ? "w-full px-4 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 font-bold transition shadow-lg shadow-red-500/30"
+            : "w-full px-4 py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-bold transition shadow-lg shadow-indigo-500/30";
+
+        modalBtn.onclick = () => {
+            modalNotif.classList.add('hidden');
+            if(callback) callback();
+        };
+
+        modalNotif.classList.remove('hidden');
     }
 
     // --- UTILS ---
@@ -118,8 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const json = await res.json();
 
             if (!json.success) {
-                alert(json.message);
-                window.location.href = 'equipo';
+                showAlert("Error", json.message, true, () => window.location.href = 'equipo');
                 return;
             }
 
@@ -144,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (e) {
             console.error(e);
-            alert("Error cargando perfil");
+            showAlert("Error", "Error al cargar el perfil. Revisa tu conexión.", true);
         }
     }
 
@@ -166,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         if(!payload.nombre || !payload.rut || !payload.email) {
-            alert("Nombre, RUT y Email son obligatorios");
+            showAlert("Faltan Datos", "Nombre, RUT y Email son obligatorios.", true);
             return;
         }
 
@@ -174,7 +202,6 @@ document.addEventListener('DOMContentLoaded', () => {
         btnSave.textContent = "Guardando...";
 
         try {
-            // CAMBIO: Apunta a detalle-int.php
             const res = await fetch("https://cambiosorion.cl/data/detalle-int.php", {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
@@ -183,24 +210,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const json = await res.json();
 
             if (json.success) {
-                // MODAL ÉXITO
-                modalSuccess.classList.remove('hidden');
-                
-                // Configurar botón para redirección
-                modalSuccessBtn.onclick = () => {
-                    modalSuccess.classList.add('hidden');
-                    if (fId.value == 0) {
-                        window.location.href = 'equipo'; // Volver a lista tras crear
-                    } else {
-                        location.reload(); // Recargar para ver cambios limpios
-                    }
-                };
+                showAlert("¡Éxito!", "El perfil ha sido guardado correctamente.", false, () => {
+                    if (fId.value == 0) window.location.href = 'equipo';
+                    else location.reload();
+                });
             } else {
-                alert("Error: " + json.message);
+                showAlert("Error al Guardar", json.message, true);
             }
         } catch (e) {
             console.error(e);
-            alert("Error de conexión");
+            showAlert("Error de Conexión", "No se pudo conectar con el servidor.", true);
         } finally {
             btnSave.disabled = false;
             btnSave.textContent = "Guardar Cambios";
