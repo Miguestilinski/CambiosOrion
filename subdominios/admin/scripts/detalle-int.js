@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const fEmail = document.getElementById('f-email');
     const fTelefono = document.getElementById('f-telefono');
     const fRol = document.getElementById('f-rol');
+    const fRolCustom = document.getElementById('f-rol-custom');
     const fContrato = document.getElementById('f-contrato');
     const fIngreso = document.getElementById('f-ingreso');
     const fSueldo = document.getElementById('f-sueldo');
@@ -162,6 +163,17 @@ document.addEventListener('DOMContentLoaded', () => {
             fNacimiento.value = u.fecha_nacimiento || '';
             fCivil.value = u.estado_civil || '';
             fDireccion.value = u.direccion || '';
+
+            // LOGICA ROL PERSONALIZADO
+            const rolExistente = Array.from(fRol.options).some(opt => opt.value === u.rol);
+            if (rolExistente) {
+                fRol.value = u.rol;
+                fRolCustom.classList.add('hidden');
+            } else {
+                fRol.value = 'custom';
+                fRolCustom.value = u.rol;
+                fRolCustom.classList.remove('hidden');
+            }
             
             fRol.value = u.rol; 
             fContrato.value = u.tipo_contrato;
@@ -177,6 +189,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function saveProfile() {
+        // Determinar rol final
+        let finalRole = fRol.value;
+        if (finalRole === 'custom') {
+            finalRole = fRolCustom.value.trim();
+            if(!finalRole) {
+                showAlert("Faltan Datos", "Debe especificar el nombre del Cargo personalizado.", true);
+                return;
+            }
+        }
+        
         const payload = {
             current_user_id: currentUserId,
             id: fId.value,
@@ -230,6 +252,27 @@ document.addEventListener('DOMContentLoaded', () => {
         btnSave.addEventListener('click', (e) => {
             e.preventDefault();
             saveProfile();
+        });
+
+        // Evento cambio de Rol
+        fRol.addEventListener('change', () => {
+            // 1. Mostrar/Ocultar input personalizado
+            if (fRol.value === 'custom') {
+                fRolCustom.classList.remove('hidden');
+                fRolCustom.focus();
+            } else {
+                fRolCustom.classList.add('hidden');
+            }
+
+            // 2. Lógica Dueño/Socio
+            if (fRol.value === 'Socio') {
+                fContrato.value = 'Dueño';
+            } else {
+                // Si cambiamos a algo que no es socio y estaba en Dueño, sugerir Indefinido
+                if (fContrato.value === 'Dueño') {
+                    fContrato.value = 'Indefinido';
+                }
+            }
         });
     }
 });
