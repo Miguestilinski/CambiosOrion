@@ -53,6 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             currentUserId = data.equipo_id;
             const role = (data.rol || '').toLowerCase().trim();
+            
             if (!['socio', 'admin', 'gerente', 'rrhh'].includes(role)) {
                 alert("Acceso restringido");
                 window.location.href = 'index';
