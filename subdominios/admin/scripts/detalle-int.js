@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Referencias
     const headerName = document.getElementById('header-user-name');
     const headerBadge = document.getElementById('header-badge');
+    const headerEmail = document.getElementById('dropdown-user-email');
     const sidebarContainer = document.getElementById('sidebar-container');
     
     // Campos Form
@@ -86,7 +87,10 @@ document.addEventListener('DOMContentLoaded', () => {
         fetch('sidebar.html').then(r => r.text()).then(html => {
             if(sidebarContainer) {
                 sidebarContainer.innerHTML = html;
+                // Mostrar items de admin
                 sidebarContainer.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
+                
+                // Marcar "Equipo" como activo ya que Detalle es hijo de Equipo
                 const link = sidebarContainer.querySelector('a[href="equipo"]');
                 if(link) link.classList.add('bg-indigo-50', 'text-indigo-700', 'font-bold');
             }
@@ -104,7 +108,8 @@ document.addEventListener('DOMContentLoaded', () => {
         pageTitle.textContent = "Detalles del Perfil";
         
         try {
-            const res = await fetch(`https://cambiosorion.cl/data/equipo.php?current_user_id=${currentUserId}&id=${id}`);
+            // CAMBIO: Apunta a detalle-int.php
+            const res = await fetch(`https://cambiosorion.cl/data/detalle-int.php?current_user_id=${currentUserId}&id=${id}`);
             const json = await res.json();
 
             if (!json.success) {
@@ -125,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
             fCivil.value = u.estado_civil || '';
             fDireccion.value = u.direccion || '';
             
-            fRol.value = u.rol; // El value debe coincidir exactamente con el texto de la opción
+            fRol.value = u.rol; 
             fContrato.value = u.tipo_contrato;
             fIngreso.value = u.fecha_ingreso;
             fSueldo.value = u.sueldo_liquido;
@@ -164,7 +169,8 @@ document.addEventListener('DOMContentLoaded', () => {
         btnSave.textContent = "Guardando...";
 
         try {
-            const res = await fetch("https://cambiosorion.cl/data/equipo.php", {
+            // CAMBIO: Apunta a detalle-int.php
+            const res = await fetch("https://cambiosorion.cl/data/detalle-int.php", {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify(payload)

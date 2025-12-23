@@ -82,7 +82,16 @@
     </header>
 
     <div class="flex pt-16 min-h-screen">
-        <aside class="w-72 hidden lg:block bg-white border-r border-gray-200" id="sidebar-container"></aside>
+        
+        <aside class="w-72 flex-shrink-0 hidden lg:block bg-white border-r border-gray-200 sidebar-container-fixed" id="sidebar-container">
+            <div class="p-6 space-y-4 animate-pulse">
+                <div class="h-6 bg-gray-200 rounded w-1/2"></div>
+                <div class="space-y-2 pt-4">
+                    <div class="h-10 bg-gray-100 rounded w-full"></div>
+                    <div class="h-10 bg-gray-100 rounded w-full"></div>
+                </div>
+            </div>
+        </aside>
 
         <main class="flex-1 w-full p-8">
             <div class="max-w-4xl mx-auto">
