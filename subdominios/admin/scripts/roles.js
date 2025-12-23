@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            if(headerName) headerName.textContent = data.nombre;
+            if(headerName) headerName.textContent = (data.nombre || 'Usuario').split(' ')[0];
             if(headerEmail) headerEmail.textContent = data.correo;
             if(headerBadge) {
                 headerBadge.textContent = "PORTAL ADMIN";
