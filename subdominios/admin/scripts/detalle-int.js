@@ -23,6 +23,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const btnSave = document.getElementById('btn-save');
 
+    // Modal
+    const modalSuccess = document.getElementById('modal-success');
+    const modalSuccessBtn = document.getElementById('modal-success-btn');
+
     let currentUserId = null;
 
     init();
@@ -179,12 +183,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const json = await res.json();
 
             if (json.success) {
-                alert("Perfil guardado correctamente");
-                if (fId.value == 0) {
-                    window.location.href = 'equipo'; // Volver a lista tras crear
-                } else {
-                    location.reload(); // Recargar para ver cambios limpios
-                }
+                // MODAL ÉXITO
+                modalSuccess.classList.remove('hidden');
+                
+                // Configurar botón para redirección
+                modalSuccessBtn.onclick = () => {
+                    modalSuccess.classList.add('hidden');
+                    if (fId.value == 0) {
+                        window.location.href = 'equipo'; // Volver a lista tras crear
+                    } else {
+                        location.reload(); // Recargar para ver cambios limpios
+                    }
+                };
             } else {
                 alert("Error: " + json.message);
             }
