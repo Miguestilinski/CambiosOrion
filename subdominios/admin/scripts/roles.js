@@ -16,42 +16,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalConfirm = document.getElementById('modal-confirm');
     const targetBoxIdInput = document.getElementById('target-box-id');
 
-    // Data Models
-    // Configuración de cajas físicas
-    const boxes = [
-        { id: 1, name: 'Caja 1', type: 'single', currentUserId: 101 }, // Single user
-        { id: 2, name: 'Caja 2', type: 'single', currentUserId: null }, // Vacía
-        { id: 3, name: 'Caja 3', type: 'single', currentUserId: null },
-        { id: 99, name: 'Tesorería', type: 'multi', users: [102, 103] } // Multi user
-    ];
-
-    // Usuarios del sistema
-    const users = [
-        { id: 101, name: 'Juan Pérez', role: 'Cajero' },
-        { id: 102, name: 'Maria Soto', role: 'Tesorero' },
-        { id: 103, name: 'Carlos Diaz', role: 'Tesorero' },
-        { id: 104, name: 'Ana Lopez', role: 'Cajero' }, // Sin asignar
-        { id: 105, name: 'Pedro Ruiz', role: 'Administrativo' }
-    ];
-
-    // Matriz de permisos
-    const permissions = [
-        { userId: 101, access: true, authorize: false, reports: false, rates: false },
-        { userId: 102, access: true, authorize: true, reports: true, rates: true },
-        { userId: 103, access: true, authorize: true, reports: false, rates: false },
-        { userId: 104, access: true, authorize: false, reports: false, rates: false },
-        { userId: 105, access: true, authorize: false, reports: true, rates: false }
-    ];
+    let currentUserId = null;
+    let boxesData = [];
+    let usersData = [];
 
     // --- INIT ---
     getSession();
-    setupModalListeners();
+    setupEventListeners();
 
-    // --- SESSION ---
+    // --- SESIÓN ---
     async function getSession() {
         try {
             const res = await fetch("https://cambiosorion.cl/data/session_status.php", { credentials: "include" });
-            if (!res.ok) throw new Error("Error sesión");
             const data = await res.json();
             
             if (!data.isAuthenticated) {
@@ -59,17 +35,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            currentUserId = data.equipo_id;
             const role = (data.rol || '').toLowerCase().trim();
-            const superUsers = ['socio', 'admin', 'gerente'];
-            
-            if (!superUsers.includes(role)) {
+            // Solo socios, admins o gerentes pueden tocar roles
+            if (!['socio', 'admin', 'gerente'].includes(role)) {
                 alert("Acceso restringido");
                 window.location.href = 'index';
                 return;
             }
 
-            // UI
-            if(headerName) headerName.textContent = (data.nombre || 'Usuario').split(' ')[0];
+            if(headerName) headerName.textContent = data.nombre;
             if(headerEmail) headerEmail.textContent = data.correo;
             if(headerBadge) {
                 headerBadge.textContent = "PORTAL ADMIN";
@@ -77,8 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             loadSidebar();
-            renderBoxes();
-            renderPermissions();
+            fetchData(); 
 
         } catch (error) {
             console.error(error);
@@ -91,65 +65,96 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(html => {
                 if(sidebarContainer) {
                     sidebarContainer.innerHTML = html;
-                    const adminItems = sidebarContainer.querySelectorAll('.admin-only');
-                    adminItems.forEach(item => item.classList.remove('hidden'));
-                    
-                    const active = sidebarContainer.querySelector('a[href="roles"]');
-                    if(active) active.classList.add('bg-indigo-50', 'text-indigo-700', 'font-bold');
+                    sidebarContainer.querySelectorAll('.admin-only').forEach(item => item.classList.remove('hidden'));
+                    const activeLink = sidebarContainer.querySelector('a[href="roles"]');
+                    if(activeLink) {
+                        activeLink.classList.add('bg-indigo-50', 'text-indigo-700', 'font-bold');
+                        activeLink.classList.remove('text-slate-600');
+                    }
                 }
             });
     }
 
-    // --- BOX ASSIGNMENT RENDER ---
+    // --- CARGAR DATOS ---
+    async function fetchData() {
+        boxesGrid.innerHTML = '<div class="col-span-full text-center py-10 text-slate-500">Cargando configuración...</div>';
+        
+        try {
+            const res = await fetch(`https://cambiosorion.cl/data/roles.php?current_user_id=${currentUserId}`);
+            const json = await res.json();
+
+            if (json.success) {
+                boxesData = json.boxes;
+                usersData = json.users;
+                renderBoxes();
+                renderPermissions();
+            } else {
+                alert("Error: " + json.message);
+            }
+        } catch (e) {
+            console.error(e);
+            alert("Error de conexión");
+        }
+    }
+
+    // --- RENDERIZAR CAJAS ---
     function renderBoxes() {
         boxesGrid.innerHTML = '';
         
-        boxes.forEach(box => {
-            const card = document.createElement('div');
-            // Estilo diferente para Tesorería vs Cajas Normales
-            const isMulti = box.type === 'multi';
+        boxesData.forEach(box => {
+            const isMulti = box.type === 'multi'; // Es Tesorería
+            // Está activa si tiene al menos un usuario (multi) o un usuario asignado (single)
             const isActive = isMulti ? box.users.length > 0 : box.currentUserId !== null;
             
-            card.className = `box-card bg-white border rounded-2xl p-5 shadow-sm relative ${isActive ? 'border-indigo-200' : 'border-slate-200'}`;
+            const card = document.createElement('div');
+            card.className = `box-card bg-white border rounded-2xl p-5 shadow-sm relative transition hover:shadow-md ${isActive ? 'border-indigo-300 ring-1 ring-indigo-50' : 'border-slate-200'}`;
             
             let contentHtml = '';
             
             if (isMulti) {
-                // Render Tesorería (Lista)
+                // === TESORERÍA (Múltiples Usuarios) ===
                 const userList = box.users.map(uid => {
-                    const u = users.find(user => user.id === uid);
-                    return u ? `<li class="text-sm text-slate-600 mb-1 flex items-center justify-between">
-                                    <span>${u.name}</span>
-                                    <button onclick="window.unassignUser(${box.id}, ${uid})" class="text-red-400 hover:text-red-600 ml-2">×</button>
-                                </li>` : '';
+                    const u = usersData.find(user => user.id === uid);
+                    return u ? `
+                        <li class="text-sm text-slate-700 mb-2 flex items-center justify-between bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
+                            <span class="font-medium flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-purple-500"></span> ${u.name}
+                            </span>
+                            <button onclick="window.unassignUser(${uid})" class="text-slate-400 hover:text-red-500 transition px-1 font-bold">×</button>
+                        </li>` : '';
                 }).join('');
 
                 contentHtml = `
                     <div class="flex justify-between items-start mb-3">
-                        <div class="bg-purple-100 text-purple-600 p-2 rounded-lg">
+                        <div class="bg-purple-100 text-purple-700 p-2.5 rounded-xl">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         </div>
-                        <button onclick="window.openAssignModal(${box.id}, '${box.name}')" class="text-xs bg-indigo-50 text-indigo-600 px-2 py-1 rounded font-bold hover:bg-indigo-100 transition">+ Añadir</button>
+                        <button onclick="window.openAssignModal(${box.id}, '${box.name}')" class="text-xs bg-indigo-600 text-white px-3 py-1.5 rounded-lg font-bold hover:bg-indigo-700 transition shadow-sm flex items-center gap-1">
+                           + Asignar
+                        </button>
                     </div>
-                    <h3 class="font-bold text-slate-800 text-lg mb-2">${box.name}</h3>
-                    <ul class="pl-1 max-h-24 overflow-y-auto">${userList || '<span class="text-xs text-slate-400 italic">Sin asignaciones</span>'}</ul>
+                    <h3 class="font-bold text-slate-800 text-lg mb-1">${box.name}</h3>
+                    <p class="text-xs text-slate-400 mb-3">Múltiples tesoreros permitidos</p>
+                    <ul class="max-h-40 overflow-y-auto pr-1">${userList || '<span class="text-xs text-slate-400 italic">Sin personal asignado</span>'}</ul>
                 `;
             } else {
-                // Render Caja Normal (Único)
-                const user = users.find(u => u.id === box.currentUserId);
+                // === CAJAS NORMALES (Un solo usuario) ===
+                const user = usersData.find(u => u.id === box.currentUserId);
                 
                 contentHtml = `
                     <div class="flex justify-between items-start mb-4">
-                        <div class="${user ? 'bg-indigo-100 text-indigo-600' : 'bg-slate-100 text-slate-400'} p-2 rounded-lg">
+                        <div class="${user ? 'bg-indigo-100 text-indigo-600' : 'bg-slate-100 text-slate-400'} p-2.5 rounded-xl transition-colors">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                         </div>
-                        ${user ? `<button onclick="window.unassignUser(${box.id}, ${user.id})" class="text-xs text-red-400 hover:text-red-600 font-medium">Liberar</button>` : ''}
+                        ${user ? `<button onclick="window.unassignUser(${user.id})" class="text-xs text-red-500 bg-red-50 border border-red-100 px-2 py-1 rounded hover:bg-red-100 transition">Liberar</button>` : ''}
                     </div>
                     <h3 class="font-bold text-slate-800 text-lg mb-1">${box.name}</h3>
-                    <p class="text-sm ${user ? 'text-indigo-600 font-medium' : 'text-slate-400 italic'}">
-                        ${user ? user.name : 'Disponible'}
-                    </p>
-                    ${!user ? `<button onclick="window.openAssignModal(${box.id}, '${box.name}')" class="mt-4 w-full py-2 border border-dashed border-slate-300 text-slate-500 rounded-lg text-sm hover:border-indigo-300 hover:text-indigo-600 transition">Asignar Usuario</button>` : ''}
+                    <div class="mt-2">
+                        ${user 
+                            ? `<div class="text-sm font-bold text-indigo-700 bg-indigo-50 px-3 py-2 rounded-lg border border-indigo-100 truncate">${user.name}</div>` 
+                            : `<button onclick="window.openAssignModal(${box.id}, '${box.name}')" class="w-full py-2 border-2 border-dashed border-slate-300 text-slate-400 rounded-lg text-sm hover:border-indigo-400 hover:text-indigo-600 transition font-medium">Asignar Cajero</button>`
+                        }
+                    </div>
                 `;
             }
 
@@ -158,98 +163,145 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- PERMISSIONS RENDER ---
+    // --- RENDERIZAR TABLA PERMISOS ---
     function renderPermissions() {
         permissionsTable.innerHTML = '';
-        users.forEach(u => {
-            const perms = permissions.find(p => p.userId === u.id) || { access: false, authorize: false, reports: false, rates: false };
+        
+        usersData.forEach(u => {
+            const p = u.permissions; // Objeto {acceso_rrhh: true, ...}
             
             const row = document.createElement('tr');
-            row.className = "bg-white border-b hover:bg-slate-50 transition";
+            row.className = "bg-white border-b hover:bg-slate-50 transition group";
             
+            // Badge del Rol
+            let roleBadgeClass = 'bg-slate-100 text-slate-600';
+            if(u.role.toLowerCase() === 'socio') roleBadgeClass = 'bg-purple-100 text-purple-700';
+            if(u.role.toLowerCase() === 'tesorero') roleBadgeClass = 'bg-indigo-100 text-indigo-700';
+            if(u.role.toLowerCase() === 'rrhh') roleBadgeClass = 'bg-pink-100 text-pink-700';
+
             row.innerHTML = `
-                <td class="px-6 py-4 font-medium text-slate-900">${u.name} <span class="text-xs text-slate-400 ml-1">(${u.role})</span></td>
-                <td class="px-6 py-4 text-center">${renderToggle(u.id, 'access', perms.access)}</td>
-                <td class="px-6 py-4 text-center">${renderToggle(u.id, 'authorize', perms.authorize)}</td>
-                <td class="px-6 py-4 text-center">${renderToggle(u.id, 'reports', perms.reports)}</td>
-                <td class="px-6 py-4 text-center">${renderToggle(u.id, 'rates', perms.rates)}</td>
+                <td class="px-6 py-4">
+                    <div class="font-bold text-slate-800">${u.name}</div>
+                    <span class="inline-flex mt-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide ${roleBadgeClass}">${u.role}</span>
+                </td>
+                <td class="px-6 py-4 text-center">${createToggle(u.id, 'acceso_rrhh', p.acceso_rrhh)}</td>
+                <td class="px-6 py-4 text-center">${createToggle(u.id, 'autorizar_traslados', p.autorizar_traslados)}</td>
+                <td class="px-6 py-4 text-center">${createToggle(u.id, 'manejo_caja', p.manejo_caja)}</td>
+                <td class="px-6 py-4 text-center">${createToggle(u.id, 'ver_finanzas_global', p.ver_finanzas_global)}</td>
+                <td class="px-6 py-4 text-center">${createToggle(u.id, 'editar_tasas', p.editar_tasas)}</td>
             `;
             permissionsTable.appendChild(row);
         });
     }
 
-    function renderToggle(uid, key, value) {
+    function createToggle(uid, key, isActive) {
         return `
-            <label class="inline-flex items-center cursor-pointer">
-                <input type="checkbox" class="sr-only peer" ${value ? 'checked' : ''} onchange="window.togglePermission(${uid}, '${key}')">
-                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+            <label class="inline-flex items-center cursor-pointer relative">
+                <input type="checkbox" class="sr-only peer" ${isActive ? 'checked' : ''} onchange="window.updatePermission(${uid}, '${key}', this.checked)">
+                <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
             </label>
         `;
     }
 
-    // --- MODAL & ASSIGNMENT LOGIC ---
+    // --- LÓGICA DE ASIGNACIÓN (MODAL) ---
     window.openAssignModal = (boxId, boxName) => {
         modalBoxName.textContent = boxName;
         targetBoxIdInput.value = boxId;
         
-        // Llenar select con usuarios no asignados (simplificado para demo)
-        // En prod: filtrar usuarios que ya tienen caja (si la regla es estricta)
-        modalUserSelect.innerHTML = '<option value="">Seleccione...</option>';
-        users.forEach(u => {
+        // Llenar select solo con usuarios que tienen permiso 'manejo_caja' (Opcional, o mostrar todos)
+        // Por ahora mostramos a todos los activos para simplificar, o podrías filtrar usersData
+        modalUserSelect.innerHTML = '<option value="">Seleccione Colaborador...</option>';
+        
+        // Ordenar alfabéticamente
+        const sortedUsers = [...usersData].sort((a,b) => a.name.localeCompare(b.name));
+
+        sortedUsers.forEach(u => {
+            // Mostrar si ya tiene caja asignada
+            const cajaStatus = u.caja_id ? `(En Caja ${u.caja_id})` : '(Disponible)';
             const opt = document.createElement('option');
             opt.value = u.id;
-            opt.textContent = u.name;
+            opt.textContent = `${u.name} ${cajaStatus}`;
             modalUserSelect.appendChild(opt);
         });
 
         modalAssign.classList.remove('hidden');
     };
 
-    function setupModalListeners() {
+    function setupEventListeners() {
         modalCancel.addEventListener('click', () => modalAssign.classList.add('hidden'));
         
-        modalConfirm.addEventListener('click', () => {
-            const boxId = parseInt(targetBoxIdInput.value);
-            const userId = parseInt(modalUserSelect.value);
+        // ASIGNAR CAJA
+        modalConfirm.addEventListener('click', async () => {
+            const boxId = targetBoxIdInput.value;
+            const userId = modalUserSelect.value;
             
-            if(!userId) return;
+            if(!userId) return alert("Seleccione un usuario");
 
-            const box = boxes.find(b => b.id === boxId);
-            if (box) {
-                if (box.type === 'single') {
-                    // Reemplazo simple
-                    box.currentUserId = userId;
+            try {
+                const res = await fetch("https://cambiosorion.cl/data/roles.php", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({
+                        action: 'assign_box',
+                        current_user_id: currentUserId,
+                        box_id: boxId,
+                        user_id: userId
+                    })
+                });
+                const json = await res.json();
+                if(json.success) {
+                    modalAssign.classList.add('hidden');
+                    fetchData(); // Recargar todo
                 } else {
-                    // Tesorería: Agregar sin duplicar
-                    if (!box.users.includes(userId)) {
-                        box.users.push(userId);
-                    }
+                    alert("Error: " + json.message);
                 }
-                renderBoxes();
-                modalAssign.classList.add('hidden');
-                // Aquí fetch save...
-            }
+            } catch (e) { console.error(e); }
         });
     }
 
-    window.unassignUser = (boxId, userId) => {
-        const box = boxes.find(b => b.id === boxId);
-        if (box) {
-            if (box.type === 'single') {
-                box.currentUserId = null;
-            } else {
-                box.users = box.users.filter(id => id !== userId);
-            }
-            renderBoxes();
-        }
+    // --- ACCIONES GLOBALES ---
+    
+    // DESASIGNAR
+    window.unassignUser = async (userId) => {
+        if(!confirm("¿Liberar puesto de este usuario?")) return;
+        
+        try {
+            const res = await fetch("https://cambiosorion.cl/data/roles.php", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    action: 'unassign_box',
+                    current_user_id: currentUserId,
+                    user_id: userId
+                })
+            });
+            const json = await res.json();
+            if(json.success) fetchData();
+        } catch (e) { console.error(e); }
     };
 
-    window.togglePermission = (userId, key) => {
-        const perm = permissions.find(p => p.userId === userId);
-        if (perm) {
-            perm[key] = !perm[key];
-            console.log(`User ${userId} ${key} changed to ${perm[key]}`);
-            // Aquí fetch update permission...
+    // ACTUALIZAR PERMISO
+    window.updatePermission = async (userId, key, value) => {
+        try {
+            const res = await fetch("https://cambiosorion.cl/data/roles.php", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    action: 'update_permission',
+                    current_user_id: currentUserId,
+                    user_id: userId,
+                    permission_key: key,
+                    value: value
+                })
+            });
+            const json = await res.json();
+            if(!json.success) {
+                alert("Error al guardar permiso: " + json.message);
+                fetchData(); // Revertir visualmente
+            }
+        } catch (e) { 
+            console.error(e); 
+            fetchData();
         }
     };
 });
