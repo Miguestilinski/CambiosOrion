@@ -8,13 +8,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const boxesGrid = document.getElementById('boxes-grid');
     const permissionsTable = document.getElementById('permissions-table-body');
     
-    // Modal
+    // Modal Asignar
     const modalAssign = document.getElementById('modal-assign');
     const modalBoxName = document.getElementById('modal-box-name');
     const modalUserSelect = document.getElementById('user-select');
     const modalCancel = document.getElementById('modal-cancel');
     const modalConfirm = document.getElementById('modal-confirm');
     const targetBoxIdInput = document.getElementById('target-box-id');
+
+    // Modal Liberar (Nuevo)
+    const modalUnassign = document.getElementById('modal-unassign');
+    const modalUnassignCancel = document.getElementById('modal-unassign-cancel');
+    const modalUnassignConfirm = document.getElementById('modal-unassign-confirm');
+    const targetUnassignUserIdInput = document.getElementById('target-unassign-user-id');
 
     let currentUserId = null;
     let boxesData = [];
@@ -31,9 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function formatName(fullName) {
         if (!fullName) return '';
         const parts = fullName.trim().split(/\s+/);
-        // Si tiene al menos 3 partes (Juan Esteban Perez), toma 1ro y 3ro
         if (parts.length >= 3) return `${parts[0]} ${parts[2]}`;
-        // Si tiene 2, las toma ambas
         if (parts.length === 2) return `${parts[0]} ${parts[1]}`;
         return parts[0];
     }
@@ -185,8 +189,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- RENDER PERMISOS ---
     function renderPermissions() {
         permissionsTable.innerHTML = '';
-        
-        // FILTRO SOCIOS: No mostrar Socios en la tabla
         const filteredUsers = usersData.filter(u => u.role.toLowerCase() !== 'socio');
 
         filteredUsers.forEach(u => {
@@ -226,25 +228,20 @@ document.addEventListener('DOMContentLoaded', () => {
     window.openAssignModal = (boxId, boxName) => {
         modalBoxName.textContent = boxName;
         targetBoxIdInput.value = boxId;
-        
         modalUserSelect.innerHTML = '<option value="">Seleccione...</option>';
         
         const sortedUsers = [...usersData].sort((a,b) => formatName(a.name).localeCompare(formatName(b.name)));
 
         sortedUsers.forEach(u => {
             const r = u.role.toLowerCase();
-            
-            // 1. FILTRO SOCIOS: Jamás aparecen en el dropdown
             if (r.includes('socio')) return;
 
-            // 2. FILTRO CAJA 0: Solo Tesoreros/RRHH/Oficiales
             if (boxId === 0) {
                 if (!r.includes('tesorero') && !r.includes('rrhh') && !r.includes('gerente') && !r.includes('oficial')) {
                     return; 
                 }
             }
 
-            // 3. ETIQUETA DE UBICACIÓN ACTUAL
             let statusLabel = '(Disponible)';
             if (u.caja_id === 99) statusLabel = '(En Tesorería)';
             else if (u.caja_id === 0) statusLabel = '(En Caja 0)';
@@ -259,9 +256,15 @@ document.addEventListener('DOMContentLoaded', () => {
         modalAssign.classList.remove('hidden');
     };
 
+    // --- ACCIÓN: LIBERAR PUESTO (MOSTRAR MODAL) ---
+    window.unassignUser = (userId) => {
+        targetUnassignUserIdInput.value = userId;
+        modalUnassign.classList.remove('hidden');
+    };
+
     function setupEventListeners() {
+        // Modal Asignar
         modalCancel.addEventListener('click', () => modalAssign.classList.add('hidden'));
-        
         modalConfirm.addEventListener('click', async () => {
             const boxId = targetBoxIdInput.value;
             const userId = modalUserSelect.value;
@@ -287,26 +290,43 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             } catch (e) { console.error(e); }
         });
+
+        // Modal Liberar (Eventos)
+        modalUnassignCancel.addEventListener('click', () => modalUnassign.classList.add('hidden'));
+        modalUnassignConfirm.addEventListener('click', async () => {
+            const userId = targetUnassignUserIdInput.value;
+            if(!userId) return;
+
+            // UI Loading
+            modalUnassignConfirm.textContent = 'Procesando...';
+            modalUnassignConfirm.disabled = true;
+
+            try {
+                const res = await fetch("https://cambiosorion.cl/data/roles.php", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({
+                        action: 'unassign_box',
+                        current_user_id: currentUserId,
+                        user_id: userId
+                    })
+                });
+                const json = await res.json();
+                if(json.success) {
+                    modalUnassign.classList.add('hidden');
+                    fetchData();
+                } else {
+                    alert("Error: " + json.message);
+                }
+            } catch (e) { console.error(e); }
+            finally {
+                modalUnassignConfirm.textContent = 'Liberar Puesto';
+                modalUnassignConfirm.disabled = false;
+            }
+        });
     }
 
-    // --- ACCIONES ---
-    window.unassignUser = async (userId) => {
-        if(!confirm("¿Liberar puesto de este usuario?")) return;
-        try {
-            const res = await fetch("https://cambiosorion.cl/data/roles.php", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({
-                    action: 'unassign_box',
-                    current_user_id: currentUserId,
-                    user_id: userId
-                })
-            });
-            const json = await res.json();
-            if(json.success) fetchData();
-        } catch (e) { console.error(e); }
-    };
-
+    // --- ACTUALIZAR PERMISO ---
     window.updatePermission = async (userId, key, value) => {
         try {
             const res = await fetch("https://cambiosorion.cl/data/roles.php", {
