@@ -143,7 +143,6 @@ document.addEventListener('DOMContentLoaded', () => {
         pageTitle.textContent = "Detalles del Perfil";
         
         try {
-            // CAMBIO: Apunta a detalle-int.php
             const res = await fetch(`https://cambiosorion.cl/data/detalle-int.php?current_user_id=${currentUserId}&id=${id}`);
             const json = await res.json();
 
@@ -155,7 +154,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const u = json.data;
             fId.value = u.id;
             
-            // Llenar campos
             fNombre.value = u.nombre;
             fRut.value = u.rut;
             fEmail.value = u.email;
