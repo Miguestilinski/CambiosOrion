@@ -139,6 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fIngreso.valueAsDate = new Date();
     }
 
+    // --- CARGA DE PERFIL ---
     async function loadProfile(id) {
         pageTitle.textContent = "Detalles del Perfil";
         
@@ -153,7 +154,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const u = json.data;
             fId.value = u.id;
-            
             fNombre.value = u.nombre;
             fRut.value = u.rut;
             fEmail.value = u.email;
@@ -161,51 +161,64 @@ document.addEventListener('DOMContentLoaded', () => {
             fNacimiento.value = u.fecha_nacimiento || '';
             fCivil.value = u.estado_civil || '';
             fDireccion.value = u.direccion || '';
-
-            // --- LÓGICA ROL PERSONALIZADO ---
-            // Revisamos si el rol que viene de BD existe en el select
-            const roleOptions = Array.from(fRol.options).map(o => o.value);
             
-            if (u.rol && !roleOptions.includes(u.rol)) {
-                // Si NO existe (es personalizado), creamos la opción dinámicamente
+            // === LÓGICA DE ROL ===
+            // Obtenemos los valores existentes en el select
+            const existingOptions = Array.from(fRol.options).map(opt => opt.value);
+            const rolDB = (u.rol || '').trim();
+
+            if (rolDB && rolDB.toLowerCase() !== 'custom' && !existingOptions.includes(rolDB)) {
+                // CASO 1: Es un rol personalizado válido (ej: "Piloto Jefe")
+                // Creamos la opción para que aparezca en el select
                 const newOpt = document.createElement('option');
-                newOpt.value = u.rol;
-                newOpt.textContent = u.rol;
+                newOpt.value = rolDB;
+                newOpt.textContent = rolDB;
                 
-                // La insertamos antes de la opción "custom"
+                // Insertamos antes de "Agregar Nuevo..."
                 const customOpt = fRol.querySelector('option[value="custom"]');
                 fRol.insertBefore(newOpt, customOpt);
                 
                 // Seleccionamos y ocultamos el input
-                fRol.value = u.rol;
+                fRol.value = rolDB;
                 fRolCustom.classList.add('hidden');
+                
+            } else if (rolDB.toLowerCase() === 'custom') {
+                // CASO 2: Error de datos, en la BD dice "custom"
+                // Seleccionamos "Agregar Nuevo" y mostramos el input vacío para corregir
+                fRol.value = 'custom';
+                fRolCustom.value = ''; 
+                fRolCustom.classList.remove('hidden');
             } else {
-                // Si es estándar (o vacío), simplemente lo seleccionamos
-                fRol.value = u.rol;
+                // CASO 3: Rol estándar (ej: "Cajero")
+                fRol.value = rolDB;
                 fRolCustom.classList.add('hidden');
             }
-            
-            // --- CONTRATO ---
-            // Si viene "Dueño", funcionará porque la opción oculta existe en HTML
+
+            // === LÓGICA CONTRATO ===
             fContrato.value = u.tipo_contrato;
-            
             fIngreso.value = u.fecha_ingreso;
             fSueldo.value = u.sueldo_liquido;
             profileName.textContent = u.nombre;
 
         } catch (e) {
             console.error(e);
-            showAlert("Error", "Error al cargar el perfil. Revisa tu conexión.", true);
+            showAlert("Error", "Error al cargar el perfil.", true);
         }
     }
 
+    // --- GUARDADO ---
     async function saveProfile() {
-        // Determinar rol final
+        // Validación Rol
         let finalRole = fRol.value;
         if (finalRole === 'custom') {
             finalRole = fRolCustom.value.trim();
             if(!finalRole) {
-                showAlert("Faltan Datos", "Debe especificar el nombre del Cargo personalizado.", true);
+                showAlert("Faltan Datos", "Debe escribir el nombre del cargo personalizado.", true);
+                fRolCustom.focus();
+                return;
+            }
+            if(finalRole.toLowerCase() === 'custom') {
+                showAlert("Error", "El nombre del cargo no puede ser 'custom'.", true);
                 return;
             }
         }
@@ -220,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
             fecha_nacimiento: fNacimiento.value,
             estado_civil: fCivil.value,
             direccion: fDireccion.value,
-            rol: fRol.value,
+            rol: finalRole, // Enviamos el texto real, nunca "custom"
             tipo_contrato: fContrato.value,
             fecha_ingreso: fIngreso.value,
             sueldo_liquido: fSueldo.value
@@ -243,16 +256,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const json = await res.json();
 
             if (json.success) {
-                showAlert("¡Éxito!", "El perfil ha sido guardado correctamente.", false, () => {
+                showAlert("¡Éxito!", "Perfil actualizado correctamente.", false, () => {
                     if (fId.value == 0) window.location.href = 'equipo';
                     else location.reload();
                 });
             } else {
-                showAlert("Error al Guardar", json.message, true);
+                showAlert("Error", json.message, true);
             }
         } catch (e) {
             console.error(e);
-            showAlert("Error de Conexión", "No se pudo conectar con el servidor.", true);
+            showAlert("Error de Conexión", "No se pudo contactar al servidor.", true);
         } finally {
             btnSave.disabled = false;
             btnSave.textContent = "Guardar Cambios";
@@ -267,19 +280,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Evento cambio de Rol
         fRol.addEventListener('change', () => {
-            // 1. Mostrar/Ocultar input personalizado
+            // 1. Mostrar/Ocultar input
             if (fRol.value === 'custom') {
                 fRolCustom.classList.remove('hidden');
+                fRolCustom.value = ''; // Limpiar para escribir nuevo
                 fRolCustom.focus();
             } else {
                 fRolCustom.classList.add('hidden');
             }
 
-            // 2. Lógica Dueño/Socio
+            // 2. Lógica Automática Socio/Dueño
             if (fRol.value === 'Socio') {
                 fContrato.value = 'Dueño';
             } else {
-                // Si cambiamos a algo que no es socio y estaba en Dueño, sugerir Indefinido
                 if (fContrato.value === 'Dueño') {
                     fContrato.value = 'Indefinido';
                 }
