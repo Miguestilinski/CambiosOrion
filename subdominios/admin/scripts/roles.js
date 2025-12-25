@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function getSession() {
         try {
-            const res = await fetch("https://cambiosorion.cl/data/session_status.php", { credentials: "include" });
+            const res = await fetch("https://cambiosorion.cl/data/session_status_admin.php", { credentials: "include" });
             const data = await res.json();
             
             if (!data.isAuthenticated) return window.location.href = 'https://admin.cambiosorion.cl/login';

@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. Obtener Sesión y determinar Rol
     async function getSession() {
         try {
-            const res = await fetch("https://cambiosorion.cl/data/session_status.php", {
+            const res = await fetch("https://cambiosorion.cl/data/session_status_admin.php", {
                 credentials: "include"
             });
             if (!res.ok) throw new Error("No se pudo obtener la sesión.");
