@@ -129,12 +129,17 @@
                 </div>
 
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div class="p-6 border-b border-gray-100 bg-slate-50/50">
-                        <h2 class="text-lg font-bold text-slate-800 flex items-center">
-                            <span class="w-2 h-6 bg-emerald-500 rounded-full mr-3"></span>
-                            Matriz de Permisos Específicos
-                        </h2>
-                        <p class="text-xs text-slate-500 mt-1 ml-5">Activa funciones adicionales independientemente del cargo principal.</p>
+                    <div class="p-6 border-b border-gray-100 bg-slate-50/50 flex justify-between items-center">
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-800 flex items-center">
+                                <span class="w-2 h-6 bg-emerald-500 rounded-full mr-3"></span>
+                                Matriz de Permisos Específicos
+                            </h2>
+                            <p class="text-xs text-slate-500 mt-1 ml-5">Solo los Socios pueden modificar estos permisos.</p>
+                        </div>
+                        <div id="read-only-badge" class="hidden px-3 py-1 bg-gray-100 border border-gray-200 text-gray-500 text-xs font-bold rounded-lg uppercase">
+                            Modo Lectura
+                        </div>
                     </div>
                     
                     <div class="overflow-x-auto">
@@ -145,8 +150,8 @@
                                     <th scope="col" class="px-6 py-4 text-center">Acceso RRHH</th>
                                     <th scope="col" class="px-6 py-4 text-center">Aut. Traslados</th>
                                     <th scope="col" class="px-6 py-4 text-center">Manejo Caja</th>
-                                    <th scope="col" class="px-6 py-4 text-center">Ver Global</th>
-                                    <th scope="col" class="px-6 py-4 text-center">Editar Tasas</th>
+                                    <th scope="col" class="px-6 py-4 text-center">Editar Pizarras</th>
+                                    <th scope="col" class="px-6 py-4 text-center">Editar Perfil Propio</th>
                                 </tr>
                             </thead>
                             <tbody id="permissions-table-body">
