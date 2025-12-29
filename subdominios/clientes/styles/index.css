@@ -2,8 +2,7 @@
 
 /* 1. Fondo Global */
 .global-bg {
-    background-color: #0f172a; /* Azul oscuro de fondo base */
-    background-image: url('https://cambiosorion.cl/orionapp/assets/FondoOrionLanding.jpg'); /* URL de tu imagen de fondo */
+    background: rgba(0, 0, 0, 0.45) url('https://cambiosorion.cl/orionapp/assets/FondoOrion.jpg') no-repeat center top;
     background-size: cover;
     background-position: center;
     background-attachment: fixed; /* Fondo fijo al hacer scroll */
