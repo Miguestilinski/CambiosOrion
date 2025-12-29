@@ -37,10 +37,10 @@
                 </div>
 
                 <nav class="hidden md:flex space-x-10">
-                    <a href="https://cambiosorion.cl/" class="text-white hover:text-blue-300 px-3 py-2 text-lg font-semibold text-shadow transition">Inicio</a>
-                    <a href="index" class="text-white hover:text-blue-300 px-3 py-2 text-lg font-bold border-b-2 border-white text-shadow transition">Portal Cliente</a>
-                    <a href="https://cambiosorion.cl/nosotros" class="text-white hover:text-blue-300 px-3 py-2 text-lg font-semibold text-shadow transition">Nosotros</a>
-                    <a href="https://cambiosorion.cl/contacto" class="text-white hover:text-blue-300 px-3 py-2 text-lg font-semibold text-shadow transition">Contacto</a>
+                    <a href="https://cambiosorion.cl/" class="text-white hover:text-blue-300 px-3 py-2 text-md font-semibold text-shadow transition">Inicio</a>
+                    <a href="index" class="text-white hover:text-blue-300 px-3 py-2 text-md font-bold border-b-2 border-white text-shadow transition">Portal Clientes</a>
+                    <a href="https://cambiosorion.cl/nosotros" class="text-white hover:text-blue-300 px-3 py-2 text-md font-semibold text-shadow transition">Nosotros</a>
+                    <a href="https://cambiosorion.cl/contacto" class="text-white hover:text-blue-300 px-3 py-2 text-md font-semibold text-shadow transition">Contacto</a>
                 </nav>
 
                 <div class="flex items-center gap-4 lg:gap-6 mr-1"> 
@@ -301,22 +301,15 @@
     <script type="module" src="https://clientes.cambiosorion.cl/scripts/header.js" crossorigin="anonymous"></script>
     <script type="module" src="https://clientes.cambiosorion.cl/scripts/index.js"></script>
     <script>
-        const profileBtn = document.getElementById('profile-menu-button');
-        const dropdown = document.getElementById('dropdownInformation');
+        // Menu toggle móvil
         const navBtn = document.getElementById('nav-menu-button');
         const mobileMenu = document.getElementById('nav-mobile-menu');
-
-        if(profileBtn && dropdown) {
-            profileBtn.addEventListener('click', () => dropdown.classList.toggle('hidden'));
-            document.addEventListener('click', (e) => {
-                if (!profileBtn.contains(e.target) && !dropdown.contains(e.target)) {
-                    dropdown.classList.add('hidden');
-                }
+        if(navBtn && mobileMenu) {
+            navBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
             });
         }
-        if(navBtn && mobileMenu) {
-            navBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
-        }
+        // El resto de la lógica de perfil la maneja header.js
     </script>
 </body>
 </html>
