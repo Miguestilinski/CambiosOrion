@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Clientes</title>
+    <title>Portal Clientes | Cambios Orion</title>
 
-    <link rel="stylesheet" href="https://clientes.cambiosorion.cl/styles/index.css">
     <link href="https://cambiosorion.cl/orionapp/public/styles/output.css" rel="stylesheet">
+    <link href="https://clientes.cambiosorion.cl/index.css" rel="stylesheet">
     <link rel="icon" href="https://cambiosorion.cl/orionapp/icons/IsotipoOrion-blue.svg" type="image/png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,197 +15,231 @@
     
     <style>
         body { font-family: 'Inter', sans-serif; }
-        .sidebar-container-fixed { min-height: calc(100vh - 64px); }
         .hidden-section { display: none; }
         .fade-in { animation: fadeIn 0.3s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 
-<body class="flex flex-col min-h-screen text-slate-800 bg-gray-50">
-    <header class="fixed w-full z-50 transition-all duration-300 bg-white shadow-sm border-b border-gray-200">
+<body class="flex flex-col min-h-screen text-gray-200 bg-dark-blue global-bg">
+    
+    <header class="fixed w-full z-50 transition-all duration-300 glass-header border-b border-white/10">
         <div class="w-full px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16"> 
                 
                 <div class="flex items-center gap-4">
                     <a href="index" class="flex-shrink-0">
-                        <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-blue.svg" alt="Logo Cambios Orion" class="h-10 w-auto transition hover:opacity-80">
+                        <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Logo Cambios Orion" class="h-10 w-auto transition hover:opacity-80">
                     </a>
-                    <span class="hidden md:inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-blue-100 text-blue-800 border border-blue-200 tracking-wider uppercase">
+                    <span class="hidden md:inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-blue-900/50 text-blue-200 border border-blue-800/50 tracking-wider uppercase">
                         Zona Clientes
                     </span>
                 </div>
 
                 <div class="flex items-center gap-4 lg:gap-6 mr-1"> 
                     <div id="user-actions" class="relative ml-2 block">
-                        <button id="profile-menu-button" class="flex items-center gap-3 text-sm rounded-full focus:outline-none ring-2 ring-gray-100 hover:ring-blue-200 transition pl-1 pr-3 py-1 bg-gray-50 hover:bg-white border border-gray-200">
-                            <img class="h-8 w-8 rounded-full object-cover border border-gray-300" src="https://cambiosorion.cl/orionapp/icons/profile-black.png" alt="Profile">
+                        <button id="profile-menu-button" class="flex items-center gap-3 text-sm rounded-full focus:outline-none ring-2 ring-white/10 hover:ring-blue-500/50 transition pl-1 pr-3 py-1 glass-card hover:bg-white/10 border border-white/10">
+                            <img class="h-8 w-8 rounded-full object-cover border border-white/20" src="https://cambiosorion.cl/orionapp/icons/profile-black.png" alt="Profile">
                             <div class="hidden md:flex flex-col items-start">
-                                <span class="text-gray-700 font-bold leading-tight" id="header-user-name">Cargando...</span>
+                                <span class="text-gray-200 font-bold leading-tight" id="header-user-name">Cargando...</span>
                             </div>
                             <svg class="w-4 h-4 text-gray-400 hidden md:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                         </button>
-                        <div id="dropdownInformation" class="hidden absolute right-0 mt-3 w-60 bg-white rounded-xl shadow-2xl py-2 z-50 border border-gray-100 transform origin-top-right transition-all">
-                            <div class="px-4 py-3 border-b border-gray-100 bg-gray-50/50">
-                                <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Sesión Activa</p>
-                                <p class="text-sm font-bold text-gray-900 truncate" id="dropdown-user-email">...</p>
+                        <div id="dropdownInformation" class="hidden absolute right-0 mt-3 w-60 glass-card rounded-xl shadow-2xl py-2 z-50 border border-white/10 transform origin-top-right transition-all">
+                            <div class="px-4 py-3 border-b border-white/10 bg-white/5">
+                                <p class="text-xs text-gray-400 uppercase font-bold tracking-wider">Sesión Activa</p>
+                                <p class="text-sm font-bold text-gray-200 truncate" id="dropdown-user-email">...</p>
                             </div>
-                            <a href="#" id="logout-button" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-medium flex items-center border-t border-gray-100">
+                            <a href="#" id="logout-button" class="block px-4 py-2 text-sm text-red-400 hover:bg-red-500/10 font-medium flex items-center border-t border-white/10 transition">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                                 Cerrar sesión
                             </a>
                         </div>
                     </div>
-                    <button id="nav-menu-button" class="lg:hidden text-gray-500 p-2 hover:bg-gray-100 rounded-lg transition">
+                    <button id="nav-menu-button" class="lg:hidden text-gray-400 p-2 hover:bg-white/10 rounded-lg transition">
                         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </button>
                 </div>
             </div>
         </div>
-        <div id="nav-mobile-menu" class="hidden lg:hidden bg-white border-t border-gray-200">
+        <div id="nav-mobile-menu" class="hidden lg:hidden glass-header border-t border-white/10">
             <div id="mobile-sidebar-container" class="px-4 pt-4 pb-6 space-y-2">
                 </div>
         </div>
     </header>
 
     <div class="flex pt-16 min-h-screen">
-        <aside class="w-72 flex-shrink-0 hidden lg:block bg-white border-r border-gray-200 sidebar-container-fixed" id="sidebar-container">
+        <aside class="w-72 flex-shrink-0 hidden lg:block glass-sidebar border-r border-white/10 sidebar-container-fixed" id="sidebar-container">
             <div class="p-6 space-y-4 animate-pulse">
-                <div class="h-6 bg-gray-200 rounded w-1/2"></div>
+                <div class="h-6 bg-white/10 rounded w-1/2"></div>
                 <div class="space-y-2 pt-4">
-                    <div class="h-10 bg-gray-100 rounded w-full"></div>
-                    <div class="h-10 bg-gray-100 rounded w-full"></div>
+                    <div class="h-10 bg-white/10 rounded w-full"></div>
+                    <div class="h-10 bg-white/10 rounded w-full"></div>
                 </div>
             </div>
         </aside>
 
-        <main class="flex-1 w-full bg-gray-50">
+        <main class="flex-1 w-full">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
                 
                 <div id="section-dashboard" class="content-section fade-in">
-                    <div class="bg-gradient-to-r from-blue-900 to-blue-700 rounded-3xl p-8 mb-8 shadow-lg relative overflow-hidden text-white">
+                    <div class="glass-card rounded-3xl p-8 mb-8 shadow-lg relative overflow-hidden text-white bg-gradient-to-r from-blue-900/80 to-blue-600/80">
                         <div class="absolute right-0 top-0 w-64 h-64 bg-white opacity-10 rounded-full mix-blend-overlay filter blur-3xl -mr-10 -mt-10"></div>
                         <div class="relative z-10">
                             <h1 class="text-3xl md:text-4xl font-extrabold mb-2 flex items-center flex-wrap gap-2">
-                                Hola, <span id="welcome-name" class="text-blue-200">Cliente</span>
+                                Hola, <span id="welcome-name" class="text-blue-300">Cliente</span>
                             </h1>
-                            <p class="text-blue-100 text-lg">Bienvenido a tu banca digital Orion.</p>
+                            <p class="text-blue-100 text-lg">Bienvenido a tu portal financiero.</p>
                             <div class="mt-6 flex flex-wrap gap-3">
-                                <span id="welcome-role" class="px-3 py-1 rounded-full text-sm font-semibold bg-white/20 text-white border border-white/30 backdrop-blur-sm">
-                                    Cliente Verificado
+                                <span id="welcome-role" class="px-3 py-1 rounded-full text-sm font-semibold bg-blue-500/20 text-blue-200 border border-blue-400/30 backdrop-blur-sm">
+                                    Usuario Verificado
                                 </span>
                             </div>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition group cursor-pointer" onclick="document.querySelector('[data-section=transacciones]').click()">
+                        <div class="glass-card p-6 rounded-2xl shadow-sm border border-white/10 hover:border-blue-500/50 transition group cursor-pointer" onclick="document.querySelector('[data-section=transacciones]').click()">
                             <div class="flex items-start justify-between mb-4">
-                                <div class="p-3 bg-blue-50 rounded-xl text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition">
+                                <div class="p-3 bg-blue-500/20 rounded-xl text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition">
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                 </div>
                                 <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Historial</span>
                             </div>
-                            <h3 class="text-2xl font-bold text-gray-800 mb-1">Mis Operaciones</h3>
-                            <p class="text-sm text-gray-500 mb-4">Revisa tus movimientos recientes</p>
-                            <span class="text-sm font-semibold text-blue-600 hover:text-blue-700 flex items-center">
+                            <h3 class="text-2xl font-bold text-gray-200 mb-1">Mis Operaciones</h3>
+                            <p class="text-sm text-gray-400 mb-4">Revisa tus movimientos recientes</p>
+                            <span class="text-sm font-semibold text-blue-400 hover:text-blue-300 flex items-center transition">
                                 Ver detalle <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                             </span>
                         </div>
 
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition group cursor-pointer" onclick="document.querySelector('[data-section=documentacion]').click()">
+                        <div class="glass-card p-6 rounded-2xl shadow-sm border border-white/10 hover:border-orange-500/50 transition group cursor-pointer" onclick="document.querySelector('[data-section=documentacion]').click()">
                             <div class="flex items-start justify-between mb-4">
-                                <div class="p-3 bg-orange-50 rounded-xl text-orange-600 group-hover:bg-orange-600 group-hover:text-white transition">
+                                <div class="p-3 bg-orange-500/20 rounded-xl text-orange-400 group-hover:bg-orange-500 group-hover:text-white transition">
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                                 </div>
                                 <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Legal</span>
                             </div>
-                            <h3 class="text-2xl font-bold text-gray-800 mb-1">Documentación</h3>
-                            <p class="text-sm text-gray-500 mb-4">Estado de carpeta legal</p>
-                            <span class="text-sm font-semibold text-orange-600 hover:text-orange-700 flex items-center">
+                            <h3 class="text-2xl font-bold text-gray-200 mb-1">Documentación</h3>
+                            <p class="text-sm text-gray-400 mb-4">Estado de carpeta legal</p>
+                            <span class="text-sm font-semibold text-orange-400 hover:text-orange-300 flex items-center transition">
                                 Gestionar <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                             </span>
                         </div>
 
-                         <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition group cursor-pointer" onclick="document.querySelector('[data-section=info-personal]').click()">
+                         <div class="glass-card p-6 rounded-2xl shadow-sm border border-white/10 hover:border-emerald-500/50 transition group cursor-pointer" onclick="document.querySelector('[data-section=info-personal]').click()">
                             <div class="flex items-start justify-between mb-4">
-                                <div class="p-3 bg-emerald-50 rounded-xl text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition">
+                                <div class="p-3 bg-emerald-500/20 rounded-xl text-emerald-400 group-hover:bg-emerald-500 group-hover:text-white transition">
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                                 </div>
                                 <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Perfil</span>
                             </div>
-                            <h3 class="text-2xl font-bold text-gray-800 mb-1">Mis Datos</h3>
-                            <p class="text-sm text-gray-500 mb-4">Actualizar contraseña y datos</p>
-                            <span class="text-sm font-semibold text-emerald-600 hover:text-emerald-700 flex items-center">
+                            <h3 class="text-2xl font-bold text-gray-200 mb-1">Mis Datos</h3>
+                            <p class="text-sm text-gray-400 mb-4">Actualizar contraseña y datos</p>
+                            <span class="text-sm font-semibold text-emerald-400 hover:text-emerald-300 flex items-center transition">
                                 Configurar <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                             </span>
+                        </div>
+                    </div>
+
+                    <div class="glass-card rounded-2xl p-6 border border-white/10">
+                        <div class="flex justify-between items-center mb-6">
+                            <div>
+                                <h2 class="text-xl font-bold text-gray-200">Tipo de Cambio</h2>
+                                <p class="text-sm text-gray-400">Tasas referenciales y citas de vivo.</p>
+                            </div>
+                            <button class="px-4 py-2 bg-white/10 text-gray-300 text-sm font-medium rounded-lg hover:bg-white/20 transition flex items-center border border-white/10">
+                                Ver histórico <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center p-4 bg-white/5 rounded-xl border border-white/10">
+                                <div class="flex items-center">
+                                    <span class="text-2xl mr-3">🇺🇸</span>
+                                    <div>
+                                        <p class="font-bold text-gray-200">USD / US%</p>
+                                        <p class="text-xs text-gray-400">Dólar Americano</p>
+                                    </div>
+                                </div>
+                                <p class="text-lg font-mono font-bold text-gray-200">28.39730</p>
+                            </div>
+                             <div class="flex justify-between items-center p-4 bg-white/5 rounded-xl border border-white/10">
+                                <div class="flex items-center">
+                                    <span class="text-2xl mr-3">🇬🇧</span>
+                                    <div>
+                                        <p class="font-bold text-gray-200">GBP / OS%</p>
+                                        <p class="text-xs text-gray-400">Libra Esterlina</p>
+                                    </div>
+                                </div>
+                                <p class="text-lg font-mono font-bold text-gray-200">28.30933</p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div id="section-info-personal" class="content-section hidden-section fade-in">
-                    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-                        <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b border-gray-100 pb-4">Información Personal</h2>
+                    <div class="glass-card rounded-2xl shadow-sm border border-white/10 p-8">
+                        <h2 class="text-2xl font-bold text-gray-200 mb-6 border-b border-white/10 pb-4">Información Personal</h2>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                            <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                                <label class="text-xs text-gray-500 font-bold uppercase">Nombre Registrado</label>
-                                <p id="user-name-dashboard" class="text-lg font-bold text-gray-800">Cargando...</p>
+                            <div class="glass-card p-4 rounded-xl border border-white/10 bg-white/5">
+                                <label class="text-xs text-gray-400 font-bold uppercase">Nombre Registrado</label>
+                                <p id="user-name-dashboard" class="text-lg font-bold text-gray-200">Cargando...</p>
                             </div>
-                            <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                                <label class="text-xs text-gray-500 font-bold uppercase">Tipo de Cuenta</label>
-                                <p id="role-type" class="text-lg font-bold text-blue-600">...</p>
+                            <div class="glass-card p-4 rounded-xl border border-white/10 bg-white/5">
+                                <label class="text-xs text-gray-400 font-bold uppercase">Tipo de Cuenta</label>
+                                <p id="role-type" class="text-lg font-bold text-blue-400">...</p>
                             </div>
                         </div>
 
                         <form id="personal-info-form">
                             <div class="grid gap-6 mb-6 md:grid-cols-2">
                                 <div id="rut-group" class="hidden">
-                                    <label class="block mb-2 text-sm font-medium text-gray-700">RUT</label>
-                                    <div id="rut" class="bg-gray-100 border border-gray-300 text-gray-600 text-sm rounded-lg p-2.5 font-mono"></div>
+                                    <label class="block mb-2 text-sm font-medium text-gray-300">RUT</label>
+                                    <div id="rut" class="glass-input border border-white/10 text-gray-300 text-sm rounded-lg p-2.5 font-mono bg-white/5"></div>
                                 </div>
                                 <div>
-                                    <label class="block mb-2 text-sm font-medium text-gray-700">Correo Electrónico</label>
-                                    <input type="email" id="email" readonly class="bg-gray-100 border border-gray-300 text-gray-500 text-sm rounded-lg block w-full p-2.5 cursor-not-allowed">
+                                    <label class="block mb-2 text-sm font-medium text-gray-300">Correo Electrónico</label>
+                                    <input type="email" id="email" readonly class="glass-input border border-white/10 text-gray-400 text-sm rounded-lg block w-full p-2.5 cursor-not-allowed bg-white/5">
                                 </div>
                             </div>
 
-                            <div class="border-t border-gray-100 pt-6 mt-6">
-                                <h3 class="text-lg font-bold text-gray-800 mb-4">Seguridad</h3>
+                            <div class="border-t border-white/10 pt-6 mt-6">
+                                <h3 class="text-lg font-bold text-gray-200 mb-4">Seguridad</h3>
                                 <div class="grid gap-6 mb-6 md:grid-cols-2">
                                     <div>
-                                        <label for="password" class="block mb-2 text-sm font-medium text-gray-700">Nueva Contraseña</label>
-                                        <input type="password" id="password" name="password" placeholder="••••••••" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                                        <label for="password" class="block mb-2 text-sm font-medium text-gray-300">Nueva Contraseña</label>
+                                        <input type="password" id="password" name="password" placeholder="••••••••" class="glass-input border border-white/10 text-gray-200 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 bg-white/5">
                                     </div>
                                     <div>
-                                        <label for="confirm-password" class="block mb-2 text-sm font-medium text-gray-700">Confirmar Contraseña</label>
-                                        <input type="password" id="confirm-password" name="confirm-password" placeholder="••••••••" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                                        <label for="confirm-password" class="block mb-2 text-sm font-medium text-gray-300">Confirmar Contraseña</label>
+                                        <input type="password" id="confirm-password" name="confirm-password" placeholder="••••••••" class="glass-input border border-white/10 text-gray-200 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 bg-white/5">
                                     </div>
                                 </div>
-                                <button id="save_changes" type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center shadow-lg shadow-blue-500/30 transition">Guardar Cambios</button>
+                                <button id="save_changes" type="submit" class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center shadow-lg shadow-blue-500/30 transition">Guardar Cambios</button>
                             </div>
                         </form>
                     </div>
                 </div>
 
                 <div id="section-transacciones" class="content-section hidden-section fade-in">
-                    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 min-h-[400px] flex flex-col items-center justify-center text-center">
-                        <div class="p-4 bg-blue-50 rounded-full mb-4">
+                    <div class="glass-card rounded-2xl shadow-sm border border-white/10 p-8 min-h-[400px] flex flex-col items-center justify-center text-center">
+                        <div class="p-4 bg-blue-500/20 rounded-full mb-4">
                             <svg class="w-12 h-12 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
                         </div>
-                        <h2 class="text-2xl font-bold text-gray-800">Historial de Transacciones</h2>
-                        <p class="text-gray-500 mt-2 max-w-md">Aquí podrás visualizar todas tus operaciones de cambio realizadas con Orion. Esta funcionalidad estará disponible muy pronto.</p>
+                        <h2 class="text-2xl font-bold text-gray-200">Historial de Transacciones</h2>
+                        <p class="text-gray-400 mt-2 max-w-md">Aquí podrás visualizar todas tus operaciones de cambio realizadas con Orion. Esta funcionalidad estará disponible muy pronto.</p>
                     </div>
                 </div>
 
                 <div id="section-documentacion" class="content-section hidden-section fade-in">
-                    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 border-b border-gray-100 pb-4">
+                    <div class="glass-card rounded-2xl shadow-sm border border-white/10 p-8">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 border-b border-white/10 pb-4">
                             <div>
-                                <h2 class="text-2xl font-bold text-gray-800">Carpeta Digital</h2>
-                                <p class="text-gray-500 text-sm mt-1">Sube aquí los documentos requeridos para operar.</p>
+                                <h2 class="text-2xl font-bold text-gray-200">Carpeta Digital</h2>
+                                <p class="text-gray-400 text-sm mt-1">Sube aquí los documentos requeridos para operar.</p>
                             </div>
-                            <a href="https://clientes.cambiosorion.cl/form_doc" class="mt-4 md:mt-0 px-4 py-2 bg-blue-50 text-blue-700 font-bold rounded-lg hover:bg-blue-100 transition flex items-center">
+                            <a href="https://clientes.cambiosorion.cl/form_doc" class="mt-4 md:mt-0 px-4 py-2 bg-blue-500/20 text-blue-300 font-bold rounded-lg hover:bg-blue-500/30 transition flex items-center border border-blue-500/30">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                                 Descargar Formulario Base
                             </a>
@@ -213,30 +247,30 @@
                         
                         <form id="documentation-form" enctype="multipart/form-data" class="space-y-6">
                             
-                            <div class="border border-gray-200 rounded-xl p-4 hover:border-blue-300 transition bg-gray-50/50">
-                                <label class="block text-sm font-bold text-gray-700 mb-2">1. Copia de Cédula (Representante Legal y Socios)</label>
-                                <input type="file" id="doc2" name="doc2[]" multiple class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition cursor-pointer" onchange="updateFileList('doc2')">
-                                <ul id="doc2-file-list" class="mt-2 space-y-1 text-sm text-gray-600 pl-4 list-disc"></ul>
-                                <p id="doc2-error" class="text-xs text-red-500 mt-1 hidden"></p>
+                            <div class="border border-white/10 rounded-xl p-4 hover:border-blue-500/50 transition bg-white/5">
+                                <label class="block text-sm font-bold text-gray-300 mb-2">1. Copia de Cédula (Representante Legal y Socios)</label>
+                                <input type="file" id="doc2" name="doc2[]" multiple class="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-500/20 file:text-blue-300 hover:file:bg-blue-500/30 transition cursor-pointer bg-transparent">
+                                <ul id="doc2-file-list" class="mt-2 space-y-1 text-sm text-gray-400 pl-4 list-disc"></ul>
+                                <p id="doc2-error" class="text-xs text-red-400 mt-1 hidden"></p>
                             </div>
 
-                            <div class="border border-gray-200 rounded-xl p-4 hover:border-blue-300 transition bg-gray-50/50">
-                                <label class="block text-sm font-bold text-gray-700 mb-2">2. Copia del RUT de la Empresa</label>
-                                <input type="file" id="doc3" name="doc3[]" multiple class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition cursor-pointer" onchange="updateFileList('doc3')">
-                                <ul id="doc3-file-list" class="mt-2 space-y-1 text-sm text-gray-600 pl-4 list-disc"></ul>
-                                <p id="doc3-error" class="text-xs text-red-500 mt-1 hidden"></p>
+                            <div class="border border-white/10 rounded-xl p-4 hover:border-blue-500/50 transition bg-white/5">
+                                <label class="block text-sm font-bold text-gray-300 mb-2">2. Copia del RUT de la Empresa</label>
+                                <input type="file" id="doc3" name="doc3[]" multiple class="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-500/20 file:text-blue-300 hover:file:bg-blue-500/30 transition cursor-pointer bg-transparent">
+                                <ul id="doc3-file-list" class="mt-2 space-y-1 text-sm text-gray-400 pl-4 list-disc"></ul>
+                                <p id="doc3-error" class="text-xs text-red-400 mt-1 hidden"></p>
                             </div>
 
-                            <div class="border border-gray-200 rounded-xl p-4 hover:border-blue-300 transition bg-gray-50/50">
-                                <label class="block text-sm font-bold text-gray-700 mb-2">3. Constitución de Sociedad y Modificaciones</label>
-                                <input type="file" id="doc4" name="doc4[]" multiple class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition cursor-pointer" onchange="updateFileList('doc4')">
-                                <ul id="doc4-file-list" class="mt-2 space-y-1 text-sm text-gray-600 pl-4 list-disc"></ul>
-                                <p id="doc4-error" class="text-xs text-red-500 mt-1 hidden"></p>
+                            <div class="border border-white/10 rounded-xl p-4 hover:border-blue-500/50 transition bg-white/5">
+                                <label class="block text-sm font-bold text-gray-300 mb-2">3. Constitución de Sociedad y Modificaciones</label>
+                                <input type="file" id="doc4" name="doc4[]" multiple class="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-500/20 file:text-blue-300 hover:file:bg-blue-500/30 transition cursor-pointer bg-transparent">
+                                <ul id="doc4-file-list" class="mt-2 space-y-1 text-sm text-gray-400 pl-4 list-disc"></ul>
+                                <p id="doc4-error" class="text-xs text-red-400 mt-1 hidden"></p>
                             </div>
 
-                            <div class="pt-4 border-t border-gray-200 flex flex-col md:flex-row items-center justify-between gap-4">
+                            <div class="pt-4 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
                                 <p id="upload-status" class="text-sm font-bold"></p>
-                                <button type="submit" class="w-full md:w-auto text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-xl text-sm px-8 py-3 text-center shadow-lg shadow-blue-500/30 transition">
+                                <button type="submit" class="w-full md:w-auto text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-800 font-medium rounded-xl text-sm px-8 py-3 text-center shadow-lg shadow-blue-500/30 transition">
                                     Subir Archivos
                                 </button>
                             </div>
@@ -248,10 +282,10 @@
         </main>
     </div>
 
-    <footer class="bg-gray-900 mt-auto text-white py-8">
+    <footer class="glass-header mt-auto text-white py-8 border-t border-white/10">
         <div class="max-w-7xl mx-auto px-4 text-center">
-            <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Orion" class="h-8 mx-auto mb-4 grayscale hover:grayscale-0 transition">
-            <p class="text-gray-500 text-xs">© 2025 Orion Financial Group. Todos los derechos reservados.</p>
+            <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Orion" class="h-8 mx-auto mb-4 grayscale hover:grayscale-0 transition opacity-70 hover:opacity-100">
+            <p class="text-gray-400 text-xs">© 2025 Orion Financial Group. Todos los derechos reservados.</p>
         </div>
     </footer>
 
@@ -260,7 +294,6 @@
     <script type="module" src="https://clientes.cambiosorion.cl/scripts/header.js" crossorigin="anonymous"></script>
     <script type="module" src="https://clientes.cambiosorion.cl/scripts/index.js"></script>
     <script>
-        // Lógica simple para dropdown de usuario y menú móvil
         const profileBtn = document.getElementById('profile-menu-button');
         const dropdown = document.getElementById('dropdownInformation');
         const navBtn = document.getElementById('nav-menu-button');
@@ -268,7 +301,6 @@
 
         if(profileBtn && dropdown) {
             profileBtn.addEventListener('click', () => dropdown.classList.toggle('hidden'));
-            // Cerrar al hacer click fuera
             document.addEventListener('click', (e) => {
                 if (!profileBtn.contains(e.target) && !dropdown.contains(e.target)) {
                     dropdown.classList.add('hidden');

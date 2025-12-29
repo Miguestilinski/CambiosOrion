@@ -90,18 +90,23 @@ document.addEventListener('DOMContentLoaded', () => {
             item.addEventListener('click', (e) => {
                 e.preventDefault(); // Evitar salto de ancla
 
-                // 1. Actualizar estilo Sidebar
+                // 1. Actualizar estilo Sidebar (Modo Oscuro/Glass)
                 menuItems.forEach(menu => {
-                    menu.classList.remove('bg-blue-50', 'text-blue-600', 'font-bold');
-                    menu.classList.add('text-gray-600');
+                    // Remover clases de estado activo (azul brillante)
+                    menu.classList.remove('bg-blue-500/20', 'text-blue-300', 'font-bold');
+                    // Añadir clases de estado inactivo (gris claro)
+                    menu.classList.add('text-gray-400');
+                    
                     // Resetear icono
                     const icon = menu.querySelector('svg');
-                    if(icon) icon.classList.remove('text-blue-600');
+                    if(icon) icon.classList.remove('text-blue-300');
                 });
                 
-                // Activar actual
-                item.classList.remove('text-gray-600');
-                item.classList.add('bg-blue-50', 'text-blue-600', 'font-bold');
+                // Activar elemento actual
+                item.classList.remove('text-gray-400');
+                item.classList.add('bg-blue-500/20', 'text-blue-300', 'font-bold');
+                const activeIcon = item.querySelector('svg');
+                if(activeIcon) activeIcon.classList.add('text-blue-300');
 
                 // 2. Mostrar Sección
                 const targetId = item.getAttribute('data-section');
@@ -116,7 +121,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Simular click en "Inicio" al cargar
         const defaultLink = container.querySelector('[data-section="dashboard"]');
-        if(defaultLink) defaultLink.click();
+        if(defaultLink) {
+            defaultLink.click();
+            defaultLink.classList.add('active-nav'); // Asegurar clase active al inicio
+        }
     }
 
     // 3. LOGICA FORMULARIO DOCUMENTOS (Mantenida del original pero adaptada)
