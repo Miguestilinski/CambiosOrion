@@ -23,11 +23,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 credentials: "include"
             });
             const data = await res.json();
+            console.log("Datos recibidos:", data);
             
             if (!data.isAuthenticated) {
-                window.location.href = 'https://cambiosorion.cl/login';
-                return;
-            }
+            console.error("No autenticado. Razón:", data); // <--- Ver razón
+            // window.location.href = 'https://cambiosorion.cl/login'; // <--- COMENTA ESTA LÍNEA CON //
+            alert("Me hubiera redirigido, pero lo detuve. Revisa la consola."); // Aviso visual
+            return;
+        }
 
             // Poblar datos en la UI
             const nombre = data.nombre || 'Cliente';
@@ -59,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error("Error validando sesión:", error);
-            window.location.href = 'https://cambiosorion.cl/login';
+            //window.location.href = 'https://cambiosorion.cl/login';
         }
     }
 
