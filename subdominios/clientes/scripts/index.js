@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 2. CARGAR SIDEBAR Y GESTIONAR NAVEGACIÓN
     function loadSidebar() {
-        fetch('sidebar-cliente.html')
+        fetch('sidebar.html')
             .then(response => response.text())
             .then(html => {
                 // Inyectar en escritorio
