@@ -1,303 +1,280 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portal Clientes</title>
-  <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/header.css">
-  <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/footer.css">
-  <link rel="stylesheet" href="./styles/index.css">
-  <link href="https://cambiosorion.cl/orionapp/public/styles/output.css" rel="stylesheet">
-  <link rel="icon" href="https://cambiosorion.cl/orionapp/icons/IsotipoOrion-blue.svg" type="image/png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Clientes</title>
+
+    <link href="https://cambiosorion.cl/orionapp/public/styles/output.css" rel="stylesheet">
+    <link rel="icon" href="https://cambiosorion.cl/orionapp/icons/IsotipoOrion-blue.svg" type="image/png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .sidebar-container-fixed { min-height: calc(100vh - 64px); }
+        .hidden-section { display: none; }
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
 </head>
 
-<body>
-    <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js" crossorigin="anonymous"></script>
-    <header>
-        <!-- Logo y Nombre -->
-        <div class="header-logo">
-            <a href="https://cambiosorion.cl/">
-                <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Logo Cambios Orion" class="logo">
-            </a>
-        </div>
-    
-        <!-- Botones para versión móvil -->
-        <div class="mobile-buttons">
-            <button class="menu-button" id="nav-menu-button">
-                <img src="https://cambiosorion.cl/orionapp/icons/menu-white.svg" alt="Menú">
-            </button>
-            <button class="menu-button" id="session-menu-button">
-                <img src="https://cambiosorion.cl/orionapp/icons/profile-white.png" alt="Sesión">
-            </button>
-        </div>
-    
-        <!-- Menús desplegables para móvil -->
-        <div id="nav-mobile-menu" class="mobile-menu hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
-            <ul class="py-2 text-sm text-gray-700">
-                <li><a href="https://cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Inicio</a></li>
-            </ul>
-            <ul class="py-2 text-sm text-gray-700">
-                <li><a href="https://cambiosorion.cl/servicios" class="block px-4 py-2 hover:bg-gray-100">Servicios</a></li>
-            </ul>
-            <ul class="py-2 text-sm text-gray-700">
-                <li><a href="https://cambiosorion.cl/nosotros" class="block px-4 py-2 hover:bg-gray-100">Nosotros</a></li>
-            </ul>
-            <ul class="py-2 text-sm text-gray-700">
-                <li><a href="https://cambiosorion.cl/contacto" class="block px-4 py-2 hover:bg-gray-100">Contacto</a></li>
-            </ul>
-        </div>
-    
-        <div class="mobile-menu hidden bg-white rounded-lg shadow w-44" id="session-mobile-menu">
-            <div id="guest-actions-mobile" class="divide-y divide-gray-100" style="display:none;">
-                <ul class="py-2 text-sm text-gray-700">
-                    <li><a href="https://cambiosorion.cl/login" class="block px-4 py-2 hover:bg-gray-100">Iniciar Sesión</a></li>
-                </ul>
-                <ul class="py-2 text-sm text-gray-700">
-                    <li><a href="rhttps://cambiosorion.cl/egistro" class="block px-4 py-2 hover:bg-gray-100">Registro</a></li>
-                </ul>
-            </div>
-            <div id="user-actions-mobile" class="divide-y divide-gray-100" style="display:none;">
-                <div class="px-2 py-2 text-sm text-gray-900">
-                    <div id="user-name">Nombre del usuario</div>
-                    <div id="user-email" class="mail font-medium truncate">Correo del usuario</div>
+<body class="flex flex-col min-h-screen text-slate-800 bg-gray-50">
+    <header class="fixed w-full z-50 transition-all duration-300 bg-white shadow-sm border-b border-gray-200">
+        <div class="w-full px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16"> 
+                
+                <div class="flex items-center gap-4">
+                    <a href="index" class="flex-shrink-0">
+                        <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-blue.svg" alt="Logo Cambios Orion" class="h-10 w-auto transition hover:opacity-80">
+                    </a>
+                    <span class="hidden md:inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-blue-100 text-blue-800 border border-blue-200 tracking-wider uppercase">
+                        Zona Clientes
+                    </span>
                 </div>
-                <ul class="py-2 text-sm text-gray-700">
-                    <li><a href="https://clientes.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Mi perfil</a></li>
-                </ul>
-                <ul class="py-2 text-sm text-gray-700" id="menu-admin-mobile" style="display: none;">
-                    <li><a href="https://admin.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Portal Admin</a></li>
-                </ul>
-                <ul class="py-2 text-sm text-gray-700">
-                    <li><a href="#" class="block px-4 py-2 hover:bg-gray-100" id="logout-button-mobile">Cerrar sesión</a></li>
-                </ul>
-            </div>
-        </div>
-    
-        <!-- Menú de navegación para escritorio -->
-        <nav>
-            <ul>
-                <li class="selected"><a href="https://cambiosorion.cl/">Inicio</a></li>
-                <li><a href="https://cambiosorion.cl/nosotros">Nosotros</a></li>
-                <li><a href="https://cambiosorion.cl/contacto">Contacto</a></li>
-            </ul>
-        </nav>
-    
-        <!-- Acciones para escritorio -->
-        <div class="header-actions">
-            <!-- User actions -->
-            <div id="user-actions" style="display:none;">
-                <button id="profile-menu-button" class="text-white bg-transparent hover:bg-gray-200 focus:outline-none">
-                    <img src="https://cambiosorion.cl/orionapp/icons/profile-white.png" alt="Profile">
-                </button>
-                <!-- Menú desplegable -->
-                <div id="dropdownInformation" class="hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
-                    <div class="px-4 py-3 text-sm text-gray-900">
-                        <div id="user-name">Nombre del usuario</div>
-                        <div id="user-email" class="mail font-medium truncate">Correo del usuario</div>
-                    </div>
-                    <ul class="py-2 text-sm text-gray-700" id="menu-cliente">
-                        <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Mi perfil</a></li>
-                    </ul>
-                    <ul class="py-2 text-sm text-gray-700" id="menu-admin" style="display: none;">
-                        <li><a href="https://admin.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Portal Admin</a></li>
-                    </ul>
-                    <ul class="py-2 text-sm text-gray-700">
-                        <li><a href="#" class="block px-4 py-2 hover:bg-gray-100" id="logout-button">Cerrar sesión</a></li>
-                    </ul>
-                </div>
-            </div>
 
-            <!-- Guest actions -->
-            <div id="guest-actions" style="display:none;">
-                <a href="https://cambiosorion.cl/login">Iniciar sesión</a>
-                <a href="https://cambiosorion.cl/registro" class="register-button">Registrarse</a>
+                <div class="flex items-center gap-4 lg:gap-6 mr-1"> 
+                    <div id="user-actions" class="relative ml-2 block">
+                        <button id="profile-menu-button" class="flex items-center gap-3 text-sm rounded-full focus:outline-none ring-2 ring-gray-100 hover:ring-blue-200 transition pl-1 pr-3 py-1 bg-gray-50 hover:bg-white border border-gray-200">
+                            <img class="h-8 w-8 rounded-full object-cover border border-gray-300" src="https://cambiosorion.cl/orionapp/icons/profile-black.png" alt="Profile">
+                            <div class="hidden md:flex flex-col items-start">
+                                <span class="text-gray-700 font-bold leading-tight" id="header-user-name">Cargando...</span>
+                            </div>
+                            <svg class="w-4 h-4 text-gray-400 hidden md:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div id="dropdownInformation" class="hidden absolute right-0 mt-3 w-60 bg-white rounded-xl shadow-2xl py-2 z-50 border border-gray-100 transform origin-top-right transition-all">
+                            <div class="px-4 py-3 border-b border-gray-100 bg-gray-50/50">
+                                <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Sesión Activa</p>
+                                <p class="text-sm font-bold text-gray-900 truncate" id="dropdown-user-email">...</p>
+                            </div>
+                            <a href="#" id="logout-button" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-medium flex items-center border-t border-gray-100">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                                Cerrar sesión
+                            </a>
+                        </div>
+                    </div>
+                    <button id="nav-menu-button" class="lg:hidden text-gray-500 p-2 hover:bg-gray-100 rounded-lg transition">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                    </button>
+                </div>
             </div>
+        </div>
+        <div id="nav-mobile-menu" class="hidden lg:hidden bg-white border-t border-gray-200">
+            <div id="mobile-sidebar-container" class="px-4 pt-4 pb-6 space-y-2">
+                </div>
         </div>
     </header>
-    <div class="header-divider"></div>
-    <div class="main-content">
-        <aside id="sidebar" class="sidebar">
-            <div class="sidebar-header">
-                <h2>Mi Perfil</h2>
+
+    <div class="flex pt-16 min-h-screen">
+        <aside class="w-72 flex-shrink-0 hidden lg:block bg-white border-r border-gray-200 sidebar-container-fixed" id="sidebar-container">
+            <div class="p-6 space-y-4 animate-pulse">
+                <div class="h-6 bg-gray-200 rounded w-1/2"></div>
+                <div class="space-y-2 pt-4">
+                    <div class="h-10 bg-gray-100 rounded w-full"></div>
+                    <div class="h-10 bg-gray-100 rounded w-full"></div>
+                </div>
             </div>
-            <ul class="menu">
-                <li class="menu-item mt-2 mb-2 rounded-lg active" data-section="info-personal">Informacion personal</li>
-                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="transacciones">Transacciones</li>
-                <li class="menu-item mt-2 mb-2 rounded-lg" data-section="documentacion">Documentación</li>
-            </ul>
         </aside>
-        <main id="dashboard-content" class="dashboard-content">
-            <section id="info-personal" class="content-section active">
-                <!-- Título de la sección -->
-                <h1 class="mb-2 text-2xl font-medium leading-none text-white">informacion personal</h1>
-            
-                <!-- Tipo de Usuario -->
-                <h2 id="user-type" class="mb-4 text-md font-semibold leading-none text-white">Tipo Usuario</h2>
-            
-                <!-- Nombre del Usuario -->
-                <div class="text-center">
-                    <div id="user-name-dashboard" class="text-3xl font-bold text-white"></div>
-                </div>
-            
-                <!-- Persona/Empresa o Rol -->
-                <div class="text-center mb-4">
-                    <p id="role-type" class="text-lg font-medium text-white">Rol</p>
-                </div>
-            
-                <form id="personal-info-form" class="grid gap-4 mb-4 sm:grid-cols-2">
-                    <!-- RUT (Visible solo para Clientes) -->
-                    <div id="rut-group" class="hidden flex">
-                        <label for="rut" class="block mb-2 mr-2 text-lg font-medium text-white">RUT:</label>
-                        <div id="rut" class="ml-2 text-lg font-medium text-white"></div>
-                    </div>
-            
-                    <!-- Correo -->
-                    <div>
-                        <label for="email" class="block text-lg font-medium text-white">Correo:</label>
-                        <input type="email" id="email" name="email" placeholder="Ingresa tu correo" readonly class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg block w-full p-2.5">
-                    </div>
 
-                    <div id="password-group" class="flex mt-4">
-                        <!-- Contraseña -->
-                        <div id="new_pass" class="w-1/2 pr-4">
-                            <label for="password" class="block mb-2 text-lg font-medium text-white">Nueva Contraseña:</label>
-                            <input type="password" id="password" name="password" placeholder="Ingrese su nueva contraseña" class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg block w-full p-2.5">
-                        </div>
+        <main class="flex-1 w-full bg-gray-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
                 
-                        <!-- Confirmar Contraseña -->
-                        <div id="confirm_pass" class="w-1/2 pl-4">
-                            <label for="confirm-password" class="block mb-2 text-lg font-medium text-white">Confirmar Contraseña:</label>
-                            <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirme su contraseña" class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg block w-full p-2.5">
+                <div id="section-dashboard" class="content-section fade-in">
+                    <div class="bg-gradient-to-r from-blue-900 to-blue-700 rounded-3xl p-8 mb-8 shadow-lg relative overflow-hidden text-white">
+                        <div class="absolute right-0 top-0 w-64 h-64 bg-white opacity-10 rounded-full mix-blend-overlay filter blur-3xl -mr-10 -mt-10"></div>
+                        <div class="relative z-10">
+                            <h1 class="text-3xl md:text-4xl font-extrabold mb-2 flex items-center flex-wrap gap-2">
+                                Hola, <span id="welcome-name" class="text-blue-200">Cliente</span>
+                            </h1>
+                            <p class="text-blue-100 text-lg">Bienvenido a tu banca digital Orion.</p>
+                            <div class="mt-6 flex flex-wrap gap-3">
+                                <span id="welcome-role" class="px-3 py-1 rounded-full text-sm font-semibold bg-white/20 text-white border border-white/30 backdrop-blur-sm">
+                                    Cliente Verificado
+                                </span>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Botón Guardar Cambios -->
-                    <div class="sm:col-span-2">
-                        <button id="save_changes" type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-                            Guardar Cambios
-                        </button>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition group cursor-pointer" onclick="document.querySelector('[data-section=transacciones]').click()">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="p-3 bg-blue-50 rounded-xl text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                </div>
+                                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Historial</span>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-800 mb-1">Mis Operaciones</h3>
+                            <p class="text-sm text-gray-500 mb-4">Revisa tus movimientos recientes</p>
+                            <span class="text-sm font-semibold text-blue-600 hover:text-blue-700 flex items-center">
+                                Ver detalle <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                            </span>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition group cursor-pointer" onclick="document.querySelector('[data-section=documentacion]').click()">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="p-3 bg-orange-50 rounded-xl text-orange-600 group-hover:bg-orange-600 group-hover:text-white transition">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                </div>
+                                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Legal</span>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-800 mb-1">Documentación</h3>
+                            <p class="text-sm text-gray-500 mb-4">Estado de carpeta legal</p>
+                            <span class="text-sm font-semibold text-orange-600 hover:text-orange-700 flex items-center">
+                                Gestionar <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                            </span>
+                        </div>
+
+                         <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition group cursor-pointer" onclick="document.querySelector('[data-section=info-personal]').click()">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="p-3 bg-emerald-50 rounded-xl text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                </div>
+                                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Perfil</span>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-800 mb-1">Mis Datos</h3>
+                            <p class="text-sm text-gray-500 mb-4">Actualizar contraseña y datos</p>
+                            <span class="text-sm font-semibold text-emerald-600 hover:text-emerald-700 flex items-center">
+                                Configurar <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                            </span>
+                        </div>
                     </div>
-                </form>
-            </section>                                                 
-            <section id="transacciones" class="content-section">
-                <h1 class="mb-2 text-2xl font-medium leading-none text-white">Transacciones</h1>
-                <p class="mb-6 text-md text-white">Consulta tu historial de transacciones.</p>
-            </section>
-            <section id="documentacion" class="content-section">
-                <h1 class="mb-4 text-2xl font-medium leading-none text-white">Documentación Requerida</h1>
-                <p class="mb-6 text-md text-white">Por favor, complete y suba los siguientes documentos:</p>
-                
-                <form id="documentation-form" enctype="multipart/form-data">
-                    <div class="mb-6 p-6 bg-white rounded-lg">
-                        <label for="doc1" class="block mb-2 text-lg font-medium text-black">Formulario Documentación</label>
-                        <p class="mt-1 mb-4 text-sm text-gray-500 " id="file_input_help">Es necesario que complete y firme el formulario para generar su documentación.</p>
-                        <button class="mt-t px-4 py-2 form-button rounded-lg" onclick="window.location.href='https://clientes.cambiosorion.cl/form_doc'">Ir al Formulario</button>
-                        <p id="doc1-error" class="text-sm text-red-500 hidden"></p>
-                        <ul id="doc1-file-list" class="file-list mt-2"></ul>
+                </div>
+
+                <div id="section-info-personal" class="content-section hidden-section fade-in">
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b border-gray-100 pb-4">Información Personal</h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                            <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                <label class="text-xs text-gray-500 font-bold uppercase">Nombre Registrado</label>
+                                <p id="user-name-dashboard" class="text-lg font-bold text-gray-800">Cargando...</p>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                <label class="text-xs text-gray-500 font-bold uppercase">Tipo de Cuenta</label>
+                                <p id="role-type" class="text-lg font-bold text-blue-600">...</p>
+                            </div>
+                        </div>
+
+                        <form id="personal-info-form">
+                            <div class="grid gap-6 mb-6 md:grid-cols-2">
+                                <div id="rut-group" class="hidden">
+                                    <label class="block mb-2 text-sm font-medium text-gray-700">RUT</label>
+                                    <div id="rut" class="bg-gray-100 border border-gray-300 text-gray-600 text-sm rounded-lg p-2.5 font-mono"></div>
+                                </div>
+                                <div>
+                                    <label class="block mb-2 text-sm font-medium text-gray-700">Correo Electrónico</label>
+                                    <input type="email" id="email" readonly class="bg-gray-100 border border-gray-300 text-gray-500 text-sm rounded-lg block w-full p-2.5 cursor-not-allowed">
+                                </div>
+                            </div>
+
+                            <div class="border-t border-gray-100 pt-6 mt-6">
+                                <h3 class="text-lg font-bold text-gray-800 mb-4">Seguridad</h3>
+                                <div class="grid gap-6 mb-6 md:grid-cols-2">
+                                    <div>
+                                        <label for="password" class="block mb-2 text-sm font-medium text-gray-700">Nueva Contraseña</label>
+                                        <input type="password" id="password" name="password" placeholder="••••••••" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                                    </div>
+                                    <div>
+                                        <label for="confirm-password" class="block mb-2 text-sm font-medium text-gray-700">Confirmar Contraseña</label>
+                                        <input type="password" id="confirm-password" name="confirm-password" placeholder="••••••••" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                                    </div>
+                                </div>
+                                <button id="save_changes" type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center shadow-lg shadow-blue-500/30 transition">Guardar Cambios</button>
+                            </div>
+                        </form>
                     </div>
-                    <div class="mb-6 p-6 bg-white rounded-lg">
-                        <label for="doc2" class="block mb-2 text-lg font-medium text-black">1. Copia de la cédula de identidad del representante legal y socios</label>
-                        <input type="file" id="doc2" name="doc2[]" multiple class="block mb-2 w-full text-sm text-black bg-gray-50 rounded-lg border border-gray-300 cursor-pointer" onchange="updateFileList('doc1')">
-                        <p class="mt-1 text-sm text-gray-500 " id="file_input_help">PDF, DOCX, JPG o PNG.</p>
-                        <p id="doc2-error" class="text-sm text-red-500 hidden"></p>
-                        <ul id="doc2-file-list" class="file-list mt-2"></ul>
-                    </div>                    
-                    <div class="mb-6 p-6 bg-white rounded-lg">
-                        <label for="doc3" class="block mb-2 text-lg font-medium text-black">2. Copia del RUT de la empresa</label>
-                        <input type="file" id="doc3" name="doc3[]" multiple class="block mb-2 w-full text-sm text-black bg-gray-50 rounded-lg border border-gray-300 cursor-pointer" onchange="updateFileList('doc2')">
-                        <p class="mt-1 text-sm text-gray-500 " id="file_input_help">PDF, DOCX, JPG o PNG.</p>
-                        <p id="doc3-error" class="text-sm text-red-500 hidden"></p>
-                        <ul id="doc3-file-list" class="file-list mt-2"></ul>
+                </div>
+
+                <div id="section-transacciones" class="content-section hidden-section fade-in">
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 min-h-[400px] flex flex-col items-center justify-center text-center">
+                        <div class="p-4 bg-blue-50 rounded-full mb-4">
+                            <svg class="w-12 h-12 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-800">Historial de Transacciones</h2>
+                        <p class="text-gray-500 mt-2 max-w-md">Aquí podrás visualizar todas tus operaciones de cambio realizadas con Orion. Esta funcionalidad estará disponible muy pronto.</p>
                     </div>
-                    <div class="mb-6 p-6 bg-white rounded-lg">
-                        <label for="doc4" class="block mb-2 text-lg font-medium text-black">3. Copia de la Constitución de la Sociedad y todas sus modificaciones</label>
-                        <input type="file" id="doc4" name="doc4[]" multiple class="block mb-2 w-full text-sm text-black bg-gray-50 rounded-lg border border-gray-300 cursor-pointer" onchange="updateFileList('doc3')">
-                        <p class="mt-1 text-sm text-gray-500 " id="file_input_help">PDF, DOCX, JPG o PNG.</p>
-                        <p id="doc4-error" class="text-sm text-red-500 hidden"></p>
-                        <ul id="doc4-file-list" class="file-list mt-2"></ul>
+                </div>
+
+                <div id="section-documentacion" class="content-section hidden-section fade-in">
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 border-b border-gray-100 pb-4">
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-800">Carpeta Digital</h2>
+                                <p class="text-gray-500 text-sm mt-1">Sube aquí los documentos requeridos para operar.</p>
+                            </div>
+                            <a href="https://clientes.cambiosorion.cl/form_doc" class="mt-4 md:mt-0 px-4 py-2 bg-blue-50 text-blue-700 font-bold rounded-lg hover:bg-blue-100 transition flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                Descargar Formulario Base
+                            </a>
+                        </div>
+                        
+                        <form id="documentation-form" enctype="multipart/form-data" class="space-y-6">
+                            
+                            <div class="border border-gray-200 rounded-xl p-4 hover:border-blue-300 transition bg-gray-50/50">
+                                <label class="block text-sm font-bold text-gray-700 mb-2">1. Copia de Cédula (Representante Legal y Socios)</label>
+                                <input type="file" id="doc2" name="doc2[]" multiple class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition cursor-pointer" onchange="updateFileList('doc2')">
+                                <ul id="doc2-file-list" class="mt-2 space-y-1 text-sm text-gray-600 pl-4 list-disc"></ul>
+                                <p id="doc2-error" class="text-xs text-red-500 mt-1 hidden"></p>
+                            </div>
+
+                            <div class="border border-gray-200 rounded-xl p-4 hover:border-blue-300 transition bg-gray-50/50">
+                                <label class="block text-sm font-bold text-gray-700 mb-2">2. Copia del RUT de la Empresa</label>
+                                <input type="file" id="doc3" name="doc3[]" multiple class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition cursor-pointer" onchange="updateFileList('doc3')">
+                                <ul id="doc3-file-list" class="mt-2 space-y-1 text-sm text-gray-600 pl-4 list-disc"></ul>
+                                <p id="doc3-error" class="text-xs text-red-500 mt-1 hidden"></p>
+                            </div>
+
+                            <div class="border border-gray-200 rounded-xl p-4 hover:border-blue-300 transition bg-gray-50/50">
+                                <label class="block text-sm font-bold text-gray-700 mb-2">3. Constitución de Sociedad y Modificaciones</label>
+                                <input type="file" id="doc4" name="doc4[]" multiple class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition cursor-pointer" onchange="updateFileList('doc4')">
+                                <ul id="doc4-file-list" class="mt-2 space-y-1 text-sm text-gray-600 pl-4 list-disc"></ul>
+                                <p id="doc4-error" class="text-xs text-red-500 mt-1 hidden"></p>
+                            </div>
+
+                            <div class="pt-4 border-t border-gray-200 flex flex-col md:flex-row items-center justify-between gap-4">
+                                <p id="upload-status" class="text-sm font-bold"></p>
+                                <button type="submit" class="w-full md:w-auto text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-xl text-sm px-8 py-3 text-center shadow-lg shadow-blue-500/30 transition">
+                                    Subir Archivos
+                                </button>
+                            </div>
+                        </form>
                     </div>
-                    <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-                        Subir Documentos
-                    </button>
-                    <p id="upload-status" class="mt-4 text-md text-red-500"></p>
-                </form>
-            </section>
+                </div>
+
+            </div>
         </main>
-    </div>    
-  <footer>
-    <div class="footer-container">
-        <!-- Sección del logo -->
-        <div class="footer-logo">
-            <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Logo Orion" class="logo">
-             
-        </div>
-        <!-- Mapa de navegación -->
-        <div class="footer-navigation flex justify-between">
-            <div class="nav-section">
-                <h3 class="font-bold text-lg">Servicios</h3>
-                <ul class="list-none p-0">
-                    <li><a href="#" class="block py-1">Envíos</a></li>
-                    <li><a href="#" class="block py-1">Transferencias</a></li>
-                </ul>
-            </div>
-            <div class="nav-section">
-                <h3 href="nosotros" class="font-bold text-lg">Nosotros</h3>
-                <ul class="list-none p-0">
-                    <li><a href="#" class="block py-1">Quienes Somos</a></li>
-                    <li><a href="nosotros#map" class="block py-1">Mapa</a></li>
-                </ul>
-            </div>
-            <div class="nav-section">
-                <h3 class="font-bold text-lg">Soporte</h3>
-                <ul class="list-none p-0">
-                    <li><a href="faq" class="block py-1">Preguntas frecuentes</a></li>
-                    <li><a href="contacto" class="block py-1">Contacto</a></li>
-                </ul>
-            </div>
-        </div>
-        <!-- Información de contacto -->
-        <div class="footer-contact flex flex-wrap justify-between">
-            <div class="contact-info">
-                  <!-- Dirección -->
-                  <div class="contact-item">
-                      <a href="https://maps.app.goo.gl/6fQ31ySCJWSButxQ9" target="_blank">
-                          <img src="https://cambiosorion.cl/orionapp/icons/location-white.png" alt="Icono de ubicación" class="icon">
-                      </a>
-                      <div>
-                          <a href="https://maps.app.goo.gl/6fQ31ySCJWSButxQ9" target="_blank"><p>Agustinas 1035 Of 13, Santiago</p></a>
-                          <small>Lunes a Viernes 09:00 a 17:00 hrs</small>
-                      </div>
-                  </div> 
-                <!-- Teléfono -->
-                <div class="contact-item">
-                    <img src="https://cambiosorion.cl/orionapp/icons/phone-white.png" alt="Icono de teléfono" class="icon">
-                    <div>
-                        <p>+56 9 7184 6048</p>
-                    </div>
-                </div>
-                <!-- Correo -->
-                <div class="contact-item">
-                    <img src="https://cambiosorion.cl/orionapp/icons/email-white.png" alt="Icono de correo" class="icon">
-                    <div>
-                        <p>contacto@cambiosorion.cl</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Redes Sociales -->
-          <div class="social-media flex gap-4">
-              <a href="https://wa.me/+56971846048?text=Hola,%20necesito%20consultar%20con%20un%20ejecutivo." target="_blank"><img src="https://cambiosorion.cl/orionapp/icons/whatsapp-white.png" alt="WhatsApp" class="icon"></a>
-              <a href="https://www.facebook.com/CambiosOrion" target="_blank"><img src="https://cambiosorion.cl/orionapp/icons/facebook-white.png" alt="Facebook" class="icon"></a>
-              <a href="https://www.instagram.com/Cambios.Orion.cl" target="_blank"><img src="https://cambiosorion.cl/orionapp/icons/instagram-white.png" alt="Instagram" class="icon"></a>
-                <a href="https://www.tiktok.com/@cambios.orion" target="_blank"><img src="https://cambiosorion.cl/orionapp/icons/tik-tok-white.png" alt="TikTok" class="icon"></a>
-          </div>
     </div>
-    <div class="footer-bottom text-xs text-center p-4">
-        © 2025 Cambios Orion. Todos los derechos reservados.
-    </div>
+
+    <footer class="bg-gray-900 mt-auto text-white py-8">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Orion" class="h-8 mx-auto mb-4 grayscale hover:grayscale-0 transition">
+            <p class="text-gray-500 text-xs">© 2025 Orion Financial Group. Todos los derechos reservados.</p>
+        </div>
     </footer>
-        <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
-        <script type="module" src="https://cambiosorion.cl/orionapp/public/scripts/header.js" crossorigin="anonymous"></script>
-        <script type="module" src="./scripts/index.js"></script>
-    </body>
+
+    <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
+    <script type="module" src="./scripts/index.js"></script>
+    <script>
+        // Lógica simple para dropdown de usuario y menú móvil
+        const profileBtn = document.getElementById('profile-menu-button');
+        const dropdown = document.getElementById('dropdownInformation');
+        const navBtn = document.getElementById('nav-menu-button');
+        const mobileMenu = document.getElementById('nav-mobile-menu');
+
+        if(profileBtn && dropdown) {
+            profileBtn.addEventListener('click', () => dropdown.classList.toggle('hidden'));
+            // Cerrar al hacer click fuera
+            document.addEventListener('click', (e) => {
+                if (!profileBtn.contains(e.target) && !dropdown.contains(e.target)) {
+                    dropdown.classList.add('hidden');
+                }
+            });
+        }
+        if(navBtn && mobileMenu) {
+            navBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+        }
+    </script>
+</body>
 </html>
