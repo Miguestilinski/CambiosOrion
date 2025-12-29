@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfil</title>
+    <title>Operaciones</title>
 
     <link href="https://cambiosorion.cl/orionapp/public/styles/output.css" rel="stylesheet">
     <link href="https://clientes.cambiosorion.cl/styles/index.css" rel="stylesheet">
@@ -20,8 +20,7 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-
-<body class="flex flex-col min-h-screen text-gray-200" data-page="perfil">
+<body class="flex flex-col min-h-screen text-gray-200" data-page="operaciones">
     <header class="fixed w-full z-50 transition-all duration-300 glass-header border-b border-white/10">
         <div class="w-full px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16"> 
@@ -77,52 +76,13 @@
     <div class="flex pt-16 min-h-screen">
         <aside class="w-72 flex-shrink-0 hidden lg:block border-r border-white/10" id="sidebar-container"></aside>
 
-        <main class="flex-1 w-full p-4 md:p-10">
-            <div class="max-w-4xl mx-auto">
-                
-                <div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-8">
-                    <h2 class="text-2xl font-bold text-white mb-6 border-b border-white/10 pb-4">Información Personal</h2>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                        <div class="bg-white/5 border border-white/10 p-4 rounded-xl flex flex-col gap-1">
-                            <label class="text-xs text-gray-400 font-bold uppercase tracking-wider">Nombre Registrado</label>
-                            <p id="user-name-dashboard" class="text-lg font-bold text-gray-100 truncate">Cargando...</p>
-                        </div>
-                        <div class="bg-white/5 border border-white/10 p-4 rounded-xl flex flex-col gap-1">
-                            <label class="text-xs text-gray-400 font-bold uppercase tracking-wider">Tipo de Cuenta</label>
-                            <p id="role-type" class="text-lg font-bold text-blue-400">...</p>
-                        </div>
-                    </div>
-
-                    <form id="personal-info-form">
-                        <div class="grid gap-6 mb-6 md:grid-cols-2">
-                            <div id="rut-group" class="hidden">
-                                <label class="block mb-2 text-sm font-medium text-gray-300">RUT</label>
-                                <div id="rut" class="bg-slate-900/50 border border-white/10 text-gray-300 text-sm rounded-lg p-2.5 font-mono"></div>
-                            </div>
-                            <div>
-                                <label class="block mb-2 text-sm font-medium text-gray-300">Correo Electrónico</label>
-                                <input type="email" id="email" readonly class="bg-slate-900/50 border border-white/10 text-gray-500 text-sm rounded-lg block w-full p-2.5 cursor-not-allowed">
-                            </div>
-                        </div>
-
-                        <div class="border-t border-white/10 pt-6 mt-6">
-                            <h3 class="text-lg font-bold text-white mb-4">Seguridad</h3>
-                            <div class="grid gap-6 mb-6 md:grid-cols-2">
-                                <div>
-                                    <label class="block mb-2 text-sm font-medium text-gray-300">Nueva Contraseña</label>
-                                    <input type="password" class="bg-white/5 border border-white/10 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 placeholder-gray-600" placeholder="••••••••">
-                                </div>
-                                <div>
-                                    <label class="block mb-2 text-sm font-medium text-gray-300">Confirmar</label>
-                                    <input type="password" class="bg-white/5 border border-white/10 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 placeholder-gray-600" placeholder="••••••••">
-                                </div>
-                            </div>
-                            <button type="button" class="text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg text-sm px-6 py-2.5 shadow-lg shadow-blue-500/30 transition">Guardar Cambios</button>
-                        </div>
-                    </form>
+        <main class="flex-1 w-full p-4 md:p-10 flex items-center justify-center">
+            <div class="text-center max-w-md">
+                <div class="p-4 bg-blue-500/20 rounded-full inline-block mb-4">
+                    <svg class="w-12 h-12 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
                 </div>
-
+                <h2 class="text-2xl font-bold text-white mb-2">Historial de Operaciones</h2>
+                <p class="text-gray-400">Pronto podrás ver el detalle de todas tus transacciones pasadas y descargar comprobantes.</p>
             </div>
         </main>
     </div>

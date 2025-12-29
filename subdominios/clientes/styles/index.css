@@ -1,69 +1,41 @@
-/* ESTILOS PERSONALIZADOS PARA EL TEMA OSCURO Y GLASSMORPHISM */
-
-/* 1. Fondo Global */
-.global-bg {
+/* Estilos globales y Fondo */
+body {
+    @apply font-sans bg-white;
+    margin: 0;
+    padding: 0;
+    /* Tu imagen de fondo original */
     background: rgba(0, 0, 0, 0.45) url('https://cambiosorion.cl/orionapp/assets/FondoOrion.jpg') no-repeat center top;
     background-size: cover;
-    background-position: center;
-    background-attachment: fixed; /* Fondo fijo al hacer scroll */
+    background-attachment: fixed;
     position: relative;
+    z-index: 1;
 }
 
-/* Superposición oscura para mejorar la legibilidad */
-.global-bg::before {
-    content: '';
-    position: absolute;
+/* Degradado negro superpuesto */
+body::before {
+    content: "";
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(15, 23, 42, 0.75); /* Capa azul oscura semitransparente */
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7) 60%, black 100%);
+    pointer-events: none;
     z-index: -1;
 }
 
-/* 2. Efecto Glassmorphism Genérico */
-.glass-effect {
-    background: rgba(255, 255, 255, 0.05); /* Fondo blanco muy transparente */
-    backdrop-filter: blur(12px); /* Desenfoque del fondo */
-    -webkit-backdrop-filter: blur(12px); /* Soporte para Safari */
-    border: 1px solid rgba(255, 255, 255, 0.1); /* Borde sutil */
+html {
+    scroll-behavior: smooth;
 }
 
-/* 3. Componentes Específicos */
-.glass-header {
-    @apply glass-effect;
-    background: rgba(15, 23, 42, 0.6); /* Un poco más oscuro para el header */
+/* Utilidades específicas */
+.hidden {
+    display: none;
 }
 
-.glass-sidebar {
-    @apply glass-effect;
-    background: rgba(15, 23, 42, 0.4); /* Sidebar semitransparente */
-}
-
-.glass-card {
-    @apply glass-effect;
-    /* Las tarjetas usan el fondo por defecto del efecto */
-}
-
-/* Inputs en modo glass */
-.glass-input {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #e2e8f0; /* Texto claro */
-}
-.glass-input:focus {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(59, 130, 246, 0.5); /* Azul al enfocar */
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-}
-
-/* Color de fondo base para el body */
-.bg-dark-blue {
-    background-color: #0f172a;
-}
-
-/* Ajuste para inputs de archivo */
-input[type="file"]::file-selector-button {
-    @apply bg-blue-500/20 text-blue-300 border-0 hover:bg-blue-500/30 transition cursor-pointer mr-4 py-2 px-4 rounded-full font-semibold;
+/* Clases para animaciones o transiciones si las necesitas */
+.transition-all {
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms;
 }
