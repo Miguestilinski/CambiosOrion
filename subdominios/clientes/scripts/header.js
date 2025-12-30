@@ -6,19 +6,16 @@ document.addEventListener('DOMContentLoaded', function() {
     initializePage();
 });
 
-// --- FUNCIÓN DE CORRECCIÓN DE CARACTERES (Ñ / Tildes) ---
+// --- HELPER PARA CARACTERES ---
 function fixEncoding(str) {
     if (!str) return "";
     try {
-        // Si el texto viene como "MuÃ±oz", esto lo convierte a "Muñoz"
         return decodeURIComponent(escape(str));
     } catch (e) {
-        // Si ya estaba bien o falla, devuelve el original
         return str;
     }
-} 
-  
-// Configurar eventos de clic para la sesión
+}
+
 function setupEventListeners() {
     const logoutButtonMobile = document.getElementById('logout-button-mobile');
     const logoutButtonMenu = document.getElementById('logout-button');
@@ -29,7 +26,6 @@ function setupEventListeners() {
     const navMenuButton = document.getElementById('nav-menu-button');
     const mobileMenu = document.getElementById('nav-mobile-menu');
     
-    // Toggle Menú Móvil
     if (navMenuButton && mobileMenu) {
         navMenuButton.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -42,7 +38,6 @@ function setupEventListeners() {
         });
     }
 
-    // Toggle Perfil Desktop
     const profileBtn = document.getElementById('profile-menu-button');
     const dropdown = document.getElementById('dropdownInformation');
     if (profileBtn && dropdown) {
@@ -58,7 +53,6 @@ function setupEventListeners() {
     }
 }
 
-// Función para comprobar el estado de sesión con AJAX
 function checkSession() {
     fetch('https://cambiosorion.cl/data/session_status_clientes.php', {
             method: 'GET',
@@ -75,7 +69,6 @@ function checkSession() {
         .catch(error => console.error('Error sesión:', error));
 }
 
-// Mostrar la interfaz de usuario para usuarios autenticados
 function showUserUI(data) {
     const userActions = document.getElementById('user-actions');
     const guestActions = document.getElementById('guest-actions');
@@ -83,26 +76,31 @@ function showUserUI(data) {
     if (userActions) userActions.style.display = 'block';
     if (guestActions) guestActions.style.display = 'none';
 
+    // 1. CORRECCIÓN DE NOMBRE
     const nombreFixed = fixEncoding(data.nombre);
 
-    // 1. Header Desktop (Botón Redondo)
+    // Header (Botón)
     const headerName = document.getElementById('header-user-name');
-    if (headerName) headerName.textContent = nombreFixed.split(' ')[0]; // Solo primer nombre
+    if (headerName) headerName.textContent = nombreFixed.split(' ')[0];
 
-    // 2. Dropdown (Nombre Completo)
+    // Dropdown (Info Completa)
     const dropdownInfo = document.getElementById('dropdownInformation');
     if (dropdownInfo) {
-        const nameEl = dropdownInfo.querySelector('.px-4 > p.text-sm'); // Busca el párrafo del nombre
-        if (nameEl) nameEl.textContent = data.correo; // Usamos correo aquí según tu diseño
-        dropdownInfo.querySelector('div:first-child').innerHTML = `
-            <div>${data.nombre}</div>
-            <div class="mail font-medium truncate">${data.correo}</div>
-            <div class="text-sm text-gray-500">${data.tipo}</div>
-        `;
+        const nameEl = dropdownInfo.querySelector('.px-4 > p.text-sm');
+        if (nameEl) nameEl.textContent = data.correo;
+        
+        // Aquí corregimos para que el dropdown use nombreFixed y no data.nombre directo
+        const userInfoContainer = dropdownInfo.querySelector('.px-4.py-3');
+        if(userInfoContainer) {
+             userInfoContainer.innerHTML = `
+                <p class="text-xs text-gray-400 uppercase font-bold tracking-wider">Conectado como</p>
+                <div class="font-bold text-white text-base truncate">${nombreFixed}</div>
+                <div class="text-xs text-gray-400 truncate">${data.correo}</div>
+            `;
+        }
     }
 }
-  
-// Mostrar la interfaz de usuario para invitados
+
 function showGuestUI() {
     const userActions = document.getElementById('user-actions');
     const guestActions = document.getElementById('guest-actions');
@@ -115,8 +113,6 @@ function logout() {
     .then(() => window.location.href = 'https://cambiosorion.cl/login');
 }
 
-// Función principal para configurar la inicialización de la página
 function initializePage() {
-    setActiveLink('#nav-menu');
-    setActiveLink('#session-menu');
+    // setActiveLink logic if needed
 }
