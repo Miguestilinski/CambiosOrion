@@ -74,15 +74,37 @@
     </header>
 
     <div class="flex pt-16 min-h-screen">
-        <aside class="w-72 flex-shrink-0 hidden lg:block border-r border-white/10" id="sidebar-container"></aside>
+        <aside class="w-72 flex-shrink-0 hidden lg:block border-r border-gray-200 bg-white min-h-[calc(100vh-64px)]" id="sidebar-container"></aside>
 
-        <main class="flex-1 w-full p-4 md:p-10 flex items-center justify-center">
-            <div class="text-center max-w-md">
-                <div class="p-4 bg-blue-500/20 rounded-full inline-block mb-4">
-                    <svg class="w-12 h-12 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+        <main class="flex-1 w-full p-4 md:p-10">
+            <div class="max-w-7xl mx-auto">
+                
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-white">Historial de Operaciones</h2>
+                    <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-lg text-sm transition">
+                        Nueva Cotización
+                    </button>
                 </div>
-                <h2 class="text-2xl font-bold text-white mb-2">Historial de Operaciones</h2>
-                <p class="text-gray-400">Pronto podrás ver el detalle de todas tus transacciones pasadas y descargar comprobantes.</p>
+
+                <div class="glass-card border border-white/10 rounded-2xl overflow-hidden shadow-xl">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left text-gray-300">
+                            <thead class="text-xs text-gray-400 uppercase bg-black/20 border-b border-white/10">
+                                <tr>
+                                    <th scope="col" class="px-6 py-4">ID</th>
+                                    <th scope="col" class="px-6 py-4">Fecha</th>
+                                    <th scope="col" class="px-6 py-4">Tipo</th>
+                                    <th scope="col" class="px-6 py-4 text-right">Monto</th>
+                                    <th scope="col" class="px-6 py-4 text-center">Estado</th>
+                                    <th scope="col" class="px-6 py-4 text-right">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="operaciones-body" class="divide-y divide-white/5">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+
             </div>
         </main>
     </div>
