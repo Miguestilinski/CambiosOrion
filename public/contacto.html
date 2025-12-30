@@ -26,77 +26,84 @@
 
     <header class="fixed w-full z-50 transition-all duration-300 bg-black/30 backdrop-blur-md border-b border-white/10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-            <div class="flex justify-between items-center h-14 md:h-16 relative"> 
+            <div class="flex justify-between items-center h-16 relative"> 
                 
-                <div class="flex items-center md:hidden">
-                    <button id="nav-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-white/20 focus:outline-none">
-                        <img src="/orionapp/icons/menu-white.svg" class="h-9 w-9" alt="Menú">
+                <div class="flex items-center md:hidden z-20">
+                    <button id="nav-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-white/20 focus:outline-none transition-colors">
+                        <img src="/orionapp/icons/menu-white.svg" class="h-8 w-8" alt="Menú">
                     </button>
                 </div>
 
-                <div class="flex-shrink-0 flex items-center header-logo absolute left-1/2 transform -translate-x-1/2 md:static md:transform-none md:translate-x-0">
-                    <a href="https://cambiosorion.cl/">
-                        <img src="/orionapp/assets/LogoOrion-white.svg" alt="Logo Cambios Orion" class="h-14 md:h-16 w-auto drop-shadow-lg">
+                <div class="flex-shrink-0 flex items-center absolute left-1/2 transform -translate-x-1/2 md:static md:transform-none md:translate-x-0 z-10">
+                    <a href="https://cambiosorion.cl/" class="flex items-center">
+                        <img src="/orionapp/assets/LogoOrion-white.svg" alt="Logo Cambios Orion" class="h-10 md:h-12 w-auto drop-shadow-lg object-contain">
                     </a>
                 </div>
 
-                <nav class="hidden md:flex space-x-10">
-                    <a href="index" class="text-white hover:text-blue-300 px-3 py-2 text-lg font-semibold text-shadow transition">Inicio</a>
-                    <a href="nosotros" class="text-white hover:text-blue-300 px-3 py-2 text-lg font-semibold text-shadow transition">Nosotros</a>
-                    <a href="contacto" class="text-white hover:text-blue-300 px-3 py-2 text-lg font-bold border-b-2 border-white text-shadow transition">Contacto</a>
+                <nav class="hidden md:flex space-x-8 lg:space-x-10 absolute left-1/2 transform -translate-x-1/2">
+                    <a href="index" class="text-white hover:text-blue-300 px-3 py-2 text-base lg:text-lg font-medium text-shadow transition-colors">Inicio</a>
+                    <a href="nosotros" class="text-white hover:text-blue-300 px-3 py-2 text-base lg:text-lg font-medium text-shadow transition-colors">Nosotros</a>
+                    <a href="contacto" class="text-white hover:text-blue-300 px-3 py-2 text-base lg:text-lg font-bold border-b-2 border-transparent hover:border-blue-300 text-shadow transition-all">Contacto</a>
                 </nav>
 
-                <div class="hidden md:flex items-center space-x-6">
-                     <div id="user-actions" style="display:none;" class="relative">
-                        <button id="profile-menu-button" class="flex text-sm rounded-full focus:outline-none ring-2 ring-white/50">
-                            <img class="h-10 w-10 rounded-full bg-white p-1" src="/orionapp/icons/profile-white.png" alt="Profile">
-                        </button>
-                        <div id="dropdownInformation" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl py-2 text-gray-800 z-50">
-                            <div class="px-4 py-3 text-sm border-b">
-                                <div id="user-name" class="font-bold text-lg">Usuario</div>
-                                <div id="user-email" class="text-gray-500 truncate">email@ejemplo.com</div>
+                <div class="flex items-center justify-end z-20">
+                    <div class="hidden md:flex items-center space-x-4">
+                        
+                        <div id="user-actions" style="display:none;" class="relative group">
+                            <button id="profile-menu-button" class="flex items-center gap-2 text-sm rounded-full focus:outline-none ring-2 ring-white/50 hover:ring-white transition-all">
+                                <img class="h-9 w-9 rounded-full p-0.5 object-cover" src="/orionapp/icons/profile-white.png" alt="Profile">
+                            </button>
+                            <div id="dropdownInformation" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl py-2 text-gray-800 z-50 border border-gray-100 transform origin-top-right">
+                                <div class="px-4 py-3 text-sm border-b border-gray-100 bg-gray-50/50">
+                                    <div id="user-name" class="font-bold text-gray-900 truncate">Usuario</div>
+                                    <div id="user-email" class="text-gray-500 text-xs truncate">email@ejemplo.com</div>
+                                </div>
+                                <a href="https://clientes.cambiosorion.cl/" class="block px-4 py-2 text-sm hover:bg-blue-50 text-gray-700">Mi perfil</a>
+                                <a href="#" id="logout-button" class="block px-4 py-2 text-sm hover:bg-red-50 text-red-600 font-semibold">Cerrar sesión</a>
                             </div>
-                            <a href="https://clientes.cambiosorion.cl/" class="block px-4 py-2 text-base hover:bg-gray-100">Mi perfil</a>
-                            <a href="#" id="logout-button" class="block px-4 py-2 text-base hover:bg-gray-100 text-red-600 font-semibold">Cerrar sesión</a>
+                        </div>
+                        
+                        <div id="guest-actions" class="flex items-center space-x-3">
+                            <a href="#login" class="text-white hover:text-blue-200 text-sm font-semibold text-shadow transition-colors">Iniciar sesión</a>
+                            <a href="#registro" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-full text-sm font-bold shadow-lg transition-transform transform hover:scale-105 border border-blue-500">
+                                Registrarse
+                            </a>
                         </div>
                     </div>
-                    
-                    <div id="guest-actions" class="flex items-center space-x-4">
-                        <a href="#login" class="text-white hover:text-blue-200 px-3 py-2 text-lg font-semibold text-shadow">Iniciar sesión</a>
-                        <a href="#registro" class="bg-[#3b82f6] hover:bg-[#2563eb] text-white px-6 py-3 rounded-full text-lg font-bold shadow-lg transition transform hover:scale-105">
-                            Registrarse
-                        </a>
+
+                    <div class="flex items-center md:hidden">
+                        <button id="session-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-white/20 focus:outline-none transition-colors">
+                            <img src="/orionapp/icons/profile-white.png" class="h-7 w-7" alt="Sesión">
+                        </button>
                     </div>
                 </div>
-
-                <div class="flex items-center md:hidden">
-                    <button id="session-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-white/20 focus:outline-none">
-                        <img src="/orionapp/icons/profile-white.png" class="h-8 w-8" alt="Sesión">
-                    </button>
-                </div>
             </div>
         </div>
 
-        <div id="nav-mobile-menu" class="hidden md:hidden bg-[#0f172a] border-t border-gray-700 absolute top-14 left-0 w-full z-40 shadow-xl">
-             <div class="px-6 pt-6 pb-8 space-y-4 text-white">
-                <a href="index" class="block px-3 py-3 rounded-md text-xl font-medium hover:bg-white/10">Inicio</a>
-                <a href="nosotros" class="block px-3 py-3 rounded-md text-xl font-medium hover:bg-white/10">Nosotros</a>
-                <a href="contacto" class="block px-3 py-3 rounded-md text-xl font-bold text-blue-400 bg-white/5">Contacto</a>
+        <div id="nav-mobile-menu" class="hidden md:hidden bg-slate-900/95 backdrop-blur-xl border-t border-white/10 absolute top-16 left-0 w-full z-40 shadow-2xl">
+            <div class="px-4 pt-4 pb-6 space-y-2 text-white">
+                <a href="index" class="block px-4 py-3 rounded-lg text-lg font-medium hover:bg-white/10 transition-colors">Inicio</a>
+                <a href="nosotros" class="block px-4 py-3 rounded-lg text-lg font-medium hover:bg-white/10 transition-colors">Nosotros</a>
+                <a href="contacto" class="block px-4 py-3 rounded-lg text-lg font-bold bg-blue-600/20 text-blue-300 border border-blue-500/30">Contacto</a>
             </div>
         </div>
 
-        <div id="session-mobile-menu" class="hidden md:hidden bg-[#0f172a] border-t border-gray-700 absolute top-14 left-0 w-full z-40 shadow-xl">
+        <div id="session-mobile-menu" class="hidden md:hidden bg-slate-900/95 backdrop-blur-xl border-t border-white/10 absolute top-16 left-0 w-full z-40 shadow-2xl">
             <div id="guest-actions-mobile" class="px-6 pt-6 pb-8 space-y-4">
-                 <a href="#login" class="block px-3 py-2 text-xl font-medium text-white hover:text-blue-300">Iniciar Sesión</a>
-                 <a href="#registro" class="block w-full text-center px-3 py-3 rounded-lg bg-blue-600 text-xl font-bold text-white">Registrarse</a>
+                <a href="#login" class="block w-full text-center px-4 py-3 rounded-lg border border-white/20 text-white font-medium hover:bg-white/10 transition-colors">Iniciar Sesión</a>
+                <a href="#registro" class="block w-full text-center px-4 py-3 rounded-lg bg-blue-600 text-white font-bold hover:bg-blue-700 transition-colors shadow-lg">Registrarse</a>
             </div>
-            <div id="user-actions-mobile" class="hidden px-6 pt-6 pb-8 space-y-4 text-white">
-                <div class="px-3 py-2 border-b border-gray-600 mb-2">
-                    <div id="user-name" class="font-bold text-lg">Usuario</div>
-                    <div id="user-email" class="text-sm text-gray-400">correo@ejemplo.com</div>
+            <div id="user-actions-mobile" class="hidden px-4 pt-4 pb-6 space-y-2 text-white">
+                <div class="px-4 py-3 bg-white/5 rounded-lg border border-white/10 mb-4">
+                    <div id="user-name-mobile" class="font-bold text-lg text-blue-300">Usuario</div>
+                    <div id="user-email-mobile" class="text-sm text-gray-400 truncate">correo@ejemplo.com</div>
                 </div>
-                <a href="https://clientes.cambiosorion.cl/" class="block px-3 py-2 text-xl hover:bg-white/10">Mi perfil</a>
-                <a href="#" id="logout-button-mobile" class="block px-3 py-2 text-xl text-red-400 font-bold hover:bg-white/10">Cerrar sesión</a>
+                <a href="https://clientes.cambiosorion.cl/" class="flex items-center px-4 py-3 rounded-lg text-lg hover:bg-white/10 transition-colors">
+                    <span class="mr-3">👤</span> Mi perfil
+                </a>
+                <a href="#" id="logout-button-mobile" class="flex items-center px-4 py-3 rounded-lg text-lg text-red-400 font-bold hover:bg-red-500/10 transition-colors">
+                    <span class="mr-3">🚪</span> Cerrar sesión
+                </a>
             </div>
         </div>
     </header>

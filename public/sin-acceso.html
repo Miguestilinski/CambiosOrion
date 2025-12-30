@@ -7,109 +7,99 @@
     <title>Acceso Denegado</title>
     <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/header.css">
     <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/sin-acceso.css">
-    <link rel="stylesheet" href="https://cambiosorion.cl/orionapp/public/styles/footer.css">
     <link href="https://cambiosorion.cl/orionapp/public/styles/output.css" rel="stylesheet">
     <link rel="icon" href="https://cambiosorion.cl/orionapp/icons/IsotipoOrion-blue.svg" type="image/png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
 </head>
 
 <body>
     <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js"></script>
-    <header>
-        <!-- Logo y Nombre -->
-        <div class="header-logo">
-            <a href="https://cambiosorion.cl/">
-                <img src="/orionapp/assets/LogoOrion-white.svg" alt="Logo Cambios Orion" class="logo">
-            </a>
- 
-        </div>
-    
-        <!-- Botones para versión móvil -->
-        <div class="mobile-buttons">
-            <button class="menu-button" id="nav-menu-button">
-                <img src="/orionapp/icons/menu-white.svg" alt="Menú">
-            </button>
-            <button class="menu-button" id="session-menu-button">
-                <img src="/orionapp/icons/profile-white.png" alt="Sesión">
-            </button>
-        </div>
-    
-<div id="nav-mobile-menu" class="mobile-menu hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
-            <ul class="py-2 text-sm text-gray-700">
-                <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Inicio</a></li>
-            </ul>
-            <ul class="py-2 text-sm text-gray-700">
-                <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Nosotros</a></li>
-            </ul>
-            <ul class="py-2 text-sm text-gray-700">
-                <li><a href="contacto" class="block px-4 py-2 hover:bg-gray-100">Contacto</a></li>
-            </ul>
-        </div>
-    
-        <div class="mobile-menu hidden bg-white rounded-lg shadow w-44" id="session-mobile-menu">
-            <div id="guest-actions-mobile" class="divide-y divide-gray-100" style="display:none;">
-                <ul class="py-2 text-sm text-gray-700">
-                    <li><a href="#login" class="block px-4 py-2 hover:bg-gray-100">Iniciar Sesión</a></li>
-                </ul>
-                <ul class="py-2 text-sm text-gray-700">
-                    <li><a href="#registro" class="block px-4 py-2 hover:bg-gray-100">Registro</a></li>
-                </ul>
-            </div>
-            <div id="user-actions-mobile" class="divide-y divide-gray-100" style="display:none;">
-                <div class="px-2 py-2 text-sm text-gray-900">
-                    <div id="user-name">Nombre del usuario</div>
-                    <div id="user-email" class="mail font-medium truncate">Correo del usuario</div>
+    <header class="fixed w-full z-50 transition-all duration-300 bg-black/30 backdrop-blur-md border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+            <div class="flex justify-between items-center h-16 relative"> 
+                
+                <div class="flex items-center md:hidden z-20">
+                    <button id="nav-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-white/20 focus:outline-none transition-colors">
+                        <img src="/orionapp/icons/menu-white.svg" class="h-8 w-8" alt="Menú">
+                    </button>
                 </div>
-                <ul class="py-2 text-sm text-gray-700">
-                    <li><a href="https://clientes.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Mi perfil</a></li>
-                </ul>
-                <ul class="py-2 text-sm text-gray-700" id="menu-admin-mobile" style="display: none;">
-                    <li><a href="https://admin.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Portal Admin</a></li>
-                </ul>
-                <ul class="py-2 text-sm text-gray-700">
-                    <li><a href="#" class="block px-4 py-2 hover:bg-gray-100" id="logout-button-mobile">Cerrar sesión</a></li>
-                </ul>
-            </div>
-        </div>
-    
-        <!-- Menú de navegación para escritorio -->
-        <nav>
-            <ul>
-                <li class="selected"><a href="#">Inicio</a></li>
-                <li><a href="#">Nosotros</a></li>
-                <li><a href="contacto">Contacto</a></li>
-            </ul>
-        </nav>
-    
-        <!-- Acciones para escritorio -->
-        <div class="header-actions">
-            <!-- User actions -->
-            <div id="user-actions" style="display:none;">
-                <button id="profile-menu-button" class="text-white bg-transparent hover:bg-gray-200 focus:outline-none">
-                    <img src="/orionapp/icons/profile-white.png" alt="Profile">
-                </button>
-                <!-- Menú desplegable -->
-                <div id="dropdownInformation" class="hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
-                    <div class="px-4 py-3 text-sm text-gray-900">
-                        <div id="user-name">Nombre del usuario</div>
-                        <div id="user-email" class="mail font-medium truncate">Correo del usuario</div>
-                    </div>
-                    <ul class="py-2 text-sm text-gray-700" id="menu-cliente">
-                        <li><a href="https://clientes.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Mi perfil</a></li>
-                    </ul>
-                    <ul class="py-2 text-sm text-gray-700" id="menu-admin" style="display: none;">
-                        <li><a href="https://admin.cambiosorion.cl/" class="block px-4 py-2 hover:bg-gray-100">Portal Admin</a></li>
-                    </ul>
-                    <ul class="py-2 text-sm text-gray-700">
-                        <li><a href="#" class="block px-4 py-2 hover:bg-gray-100" id="logout-button">Cerrar sesión</a></li>
-                    </ul>
-                </div>
-            </div>
 
-            <!-- Guest actions -->
-            <div id="guest-actions" style="display:none;">
-                <a href="login">Iniciar sesión</a>
-                <a href="registro" class="register-button">Registrarse</a>
+                <div class="flex-shrink-0 flex items-center absolute left-1/2 transform -translate-x-1/2 md:static md:transform-none md:translate-x-0 z-10">
+                    <a href="https://cambiosorion.cl/" class="flex items-center">
+                        <img src="/orionapp/assets/LogoOrion-white.svg" alt="Logo Cambios Orion" class="h-10 md:h-12 w-auto drop-shadow-lg object-contain">
+                    </a>
+                </div>
+
+                <nav class="hidden md:flex space-x-8 lg:space-x-10 absolute left-1/2 transform -translate-x-1/2">
+                    <a href="index" class="text-white hover:text-blue-300 px-3 py-2 text-base lg:text-lg font-bold border-b-2 border-transparent hover:border-blue-300 text-shadow transition-all">Inicio</a>
+                    <a href="nosotros" class="text-white hover:text-blue-300 px-3 py-2 text-base lg:text-lg font-medium text-shadow transition-colors">Nosotros</a>
+                    <a href="contacto" class="text-white hover:text-blue-300 px-3 py-2 text-base lg:text-lg font-medium text-shadow transition-colors">Contacto</a>
+                </nav>
+
+                <div class="flex items-center justify-end z-20">
+                    <div class="hidden md:flex items-center space-x-4">
+                        
+                        <div id="user-actions" style="display:none;" class="relative group">
+                            <button id="profile-menu-button" class="flex items-center gap-2 text-sm rounded-full focus:outline-none ring-2 ring-white/50 hover:ring-white transition-all">
+                                <img class="h-9 w-9 rounded-full p-0.5 object-cover" src="/orionapp/icons/profile-white.png" alt="Profile">
+                            </button>
+                            <div id="dropdownInformation" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl py-2 text-gray-800 z-50 border border-gray-100 transform origin-top-right">
+                                <div class="px-4 py-3 text-sm border-b border-gray-100 bg-gray-50/50">
+                                    <div id="user-name" class="font-bold text-gray-900 truncate">Usuario</div>
+                                    <div id="user-email" class="text-gray-500 text-xs truncate">email@ejemplo.com</div>
+                                </div>
+                                <a href="https://clientes.cambiosorion.cl/" class="block px-4 py-2 text-sm hover:bg-blue-50 text-gray-700">Mi perfil</a>
+                                <a href="#" id="logout-button" class="block px-4 py-2 text-sm hover:bg-red-50 text-red-600 font-semibold">Cerrar sesión</a>
+                            </div>
+                        </div>
+                        
+                        <div id="guest-actions" class="flex items-center space-x-3">
+                            <a href="#login" class="text-white hover:text-blue-200 text-sm font-semibold text-shadow transition-colors">Iniciar sesión</a>
+                            <a href="#registro" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-full text-sm font-bold shadow-lg transition-transform transform hover:scale-105 border border-blue-500">
+                                Registrarse
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center md:hidden">
+                        <button id="session-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-white/20 focus:outline-none transition-colors">
+                            <img src="/orionapp/icons/profile-white.png" class="h-7 w-7" alt="Sesión">
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="nav-mobile-menu" class="hidden md:hidden bg-slate-900/95 backdrop-blur-xl border-t border-white/10 absolute top-16 left-0 w-full z-40 shadow-2xl">
+            <div class="px-4 pt-4 pb-6 space-y-2 text-white">
+                <a href="index" class="block px-4 py-3 rounded-lg text-lg font-bold bg-blue-600/20 text-blue-300 border border-blue-500/30">Inicio</a>
+                <a href="nosotros" class="block px-4 py-3 rounded-lg text-lg font-medium hover:bg-white/10 transition-colors">Nosotros</a>
+                <a href="contacto" class="block px-4 py-3 rounded-lg text-lg font-medium hover:bg-white/10 transition-colors">Contacto</a>
+            </div>
+        </div>
+
+        <div id="session-mobile-menu" class="hidden md:hidden bg-slate-900/95 backdrop-blur-xl border-t border-white/10 absolute top-16 left-0 w-full z-40 shadow-2xl">
+            <div id="guest-actions-mobile" class="px-6 pt-6 pb-8 space-y-4">
+                <a href="#login" class="block w-full text-center px-4 py-3 rounded-lg border border-white/20 text-white font-medium hover:bg-white/10 transition-colors">Iniciar Sesión</a>
+                <a href="#registro" class="block w-full text-center px-4 py-3 rounded-lg bg-blue-600 text-white font-bold hover:bg-blue-700 transition-colors shadow-lg">Registrarse</a>
+            </div>
+            <div id="user-actions-mobile" class="hidden px-4 pt-4 pb-6 space-y-2 text-white">
+                <div class="px-4 py-3 bg-white/5 rounded-lg border border-white/10 mb-4">
+                    <div id="user-name-mobile" class="font-bold text-lg text-blue-300">Usuario</div>
+                    <div id="user-email-mobile" class="text-sm text-gray-400 truncate">correo@ejemplo.com</div>
+                </div>
+                <a href="https://clientes.cambiosorion.cl/" class="flex items-center px-4 py-3 rounded-lg text-lg hover:bg-white/10 transition-colors">
+                    <span class="mr-3">👤</span> Mi perfil
+                </a>
+                <a href="#" id="logout-button-mobile" class="flex items-center px-4 py-3 rounded-lg text-lg text-red-400 font-bold hover:bg-red-500/10 transition-colors">
+                    <span class="mr-3">🚪</span> Cerrar sesión
+                </a>
             </div>
         </div>
     </header>
@@ -122,78 +112,61 @@
         <a href="https://cambiosorion.cl/" class="button-inicio w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Volver al Inicio</a>
     </div>
     
-    <footer>
-      <div class="footer-container">
-          <!-- Sección del logo -->
-          <div class="footer-logo">
-              <img src="/orionapp/assets/LogoOrion-white.svg" alt="Logo Orion" class="logo">
-               
-          </div>
-          <!-- Mapa de navegación -->
-          <div class="footer-navigation flex justify-between">
-              <div class="nav-section">
-                  <h3 class="font-bold text-lg">Servicios</h3>
-                  <ul class="list-none p-0">
-                      <li><a href="#" class="block py-1">Envíos</a></li>
-                      <li><a href="#" class="block py-1">Transferencias</a></li>
-                  </ul>
-              </div>
-              <div class="nav-section">
-                  <h3 href="nosotros" class="font-bold text-lg">Nosotros</h3>
-                  <ul class="list-none p-0">
-                      <li><a href="#" class="block py-1">Quienes Somos</a></li>
-                      <li><a href="nosotros#map" class="block py-1">Mapa</a></li>
-                  </ul>
-              </div>
-              <div class="nav-section">
-                  <h3 class="font-bold text-lg">Soporte</h3>
-                  <ul class="list-none p-0">
-                      <li><a href="faq" class="block py-1">Preguntas frecuentes</a></li>
-                      <li><a href="contacto" class="block py-1">Contacto</a></li>
-                  </ul>
-              </div>
-          </div>
-          <!-- Información de contacto -->
-          <div class="footer-contact flex flex-wrap justify-between">
-              <div class="contact-info">
-                    <!-- Dirección -->
-                    <div class="contact-item">
-                        <a href="https://maps.app.goo.gl/6fQ31ySCJWSButxQ9" target="_blank">
-                            <img src="/orionapp/icons/location-white.png" alt="Icono de ubicación" class="icon">
-                        </a>
-                        <div>
-                            <a href="https://maps.app.goo.gl/6fQ31ySCJWSButxQ9" target="_blank"><p>Agustinas 1035 Of 13, Santiago</p></a>
-                            <small>Lunes a Viernes 09:00 a 17:00 hrs</small>
-                        </div>
-                    </div> 
-                  <!-- Teléfono -->
-                  <div class="contact-item">
-                      <img src="/orionapp/icons/phone-white.png" alt="Icono de teléfono" class="icon">
-                      <div>
-                          <p>+56 9 7184 6048</p>
-                      </div>
-                  </div>
-                  <!-- Correo -->
-                  <div class="contact-item">
-                      <img src="/orionapp/icons/email-white.png" alt="Icono de correo" class="icon">
-                      <div>
-                          <p>contacto@cambiosorion.cl</p>
-                      </div>
-                  </div>
-              </div>
-          </div>
-          <!-- Redes Sociales -->
-            <div class="social-media flex gap-4">
-                <a href="https://wa.me/+56971846048?text=Hola,%20necesito%20consultar%20con%20un%20ejecutivo." target="_blank"><img src="/orionapp/icons/whatsapp-white.png" alt="WhatsApp" class="icon"></a>
-                <a href="https://www.facebook.com/profile.php?id=61571014313474" target="_blank"><img src="/orionapp/icons/facebook-white.png" alt="Facebook" class="icon"></a>
-                <a href="https://www.instagram.com/Cambios.Orion.cl" target="_blank"><img src="/orionapp/icons/instagram-white.png" alt="Instagram" class="icon"></a>
-                <a href="https://www.tiktok.com/@cambios.orion" target="_blank"><img src="/orionapp/icons/tik-tok-white.png" alt="TikTok" class="icon"></a>
+    <footer class="bg-black text-white pt-20 pb-10 border-t border-gray-900 relative z-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <div class="col-span-1 md:col-span-1">
+                     <img src="/orionapp/assets/LogoOrion-white.svg" alt="Logo Orion" class="h-20 mb-8 opacity-90">
+                     <p class="text-gray-400 text-base leading-relaxed">
+                         Expertos en cambio de divisas con la mejor tasa del mercado. Seguridad, rapidez y confianza en cada operación.
+                     </p>
+                </div>
+                <div>
+                    <h4 class="text-xl font-bold mb-6 text-gray-200">Servicios</h4>
+                    <ul class="space-y-3 text-gray-400 text-base">
+                        <li><a href="https://cambiosorion.cl/divisas" class="hover:text-white transition">Catálogo de Divisas</a></li>
+                        <li><a href="#conversor" class="hover:text-white transition">Cotizador Online</a></li>
+                        <li><a href="#alerta-wrapper" class="hover:text-white transition">Sistema de Alertas</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-bold mb-6 text-gray-200">Compañía</h4>
+                    <ul class="space-y-3 text-gray-400 text-base">
+                        <li><a href="nosotros" class="hover:text-white transition">Quiénes Somos</a></li>
+                        <li><a href="contacto" class="hover:text-white transition">Ubicación</a></li>
+                        <li><a href="faq" class="hover:text-white transition">Preguntas Frecuentes</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-bold mb-6 text-gray-200">Contacto</h4>
+                    <ul class="space-y-4 text-gray-400 text-base">
+                        <li class="flex items-start">
+                             <img src="/orionapp/icons/location-white.png" class="w-6 h-6 mr-3 mt-0.5 opacity-60">
+                             <span>Agustinas 1035 Of 13,<br>Santiago Centro, Chile</span>
+                        </li>
+                        <li class="flex items-center">
+                            <img src="/orionapp/icons/phone-white.png" class="w-6 h-6 mr-3 opacity-60">
+                            +56 9 7184 6048
+                        </li>
+                        <li class="flex items-center">
+                             <img src="/orionapp/icons/email-white.png" class="w-6 h-6 mr-3 opacity-60">
+                             contacto@cambiosorion.cl
+                        </li>
+                    </ul>
+                    <div class="flex space-x-5 mt-8">
+                        <a href="https://wa.me/+56971846048?text=Hola,%20necesito%20consultar%20con%20un%20ejecutivo." target="_blank" class="opacity-60 hover:opacity-100 transition"><img src="/orionapp/icons/whatsapp-white.png" class="w-7 h-7" alt="WhatsApp"></a>
+                        <a href="https://www.facebook.com/CambiosOrion" target="_blank" class="opacity-60 hover:opacity-100 transition"><img src="/orionapp/icons/facebook-white.png" class="w-7 h-7" alt="Facebook"></a>
+                        <a href="https://www.instagram.com/CambiosOrion.cl" target="_blank" class="opacity-60 hover:opacity-100 transition"><img src="/orionapp/icons/instagram-white.png" class="w-7 h-7" alt="Instagram"></a>
+                    </div>
+                </div>
             </div>
-      </div>
-      <div class="footer-bottom text-xs text-center p-4">
-          © 2025 Cambios Orion. Todos los derechos reservados.
-      </div>
-  </footer>
+            
+            <div class="border-t border-gray-900 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-600 text-sm">© 2025 Cambios Orion. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
     <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
     <script src="https://cambiosorion.cl/orionapp/public/scripts/header.js"></script>
     <script src="https://cambiosorion.cl/orionapp/public/scripts/sin-acceso.js"></script>
