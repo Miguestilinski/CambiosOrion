@@ -6,28 +6,43 @@ document.addEventListener('DOMContentLoaded', async () => {
     const user = await checkSession();
     if (!user) return; // checkSession redirige si falla
 
-    // 3. Lógica específica del Dashboard
+    // 3. Lógica específica del Dashboard (Saludo y Roles)
     const welcomeName = document.getElementById('welcome-name');
     const welcomeRole = document.getElementById('welcome-role');
     const userNameDashboard = document.getElementById('user-name-dashboard');
     const roleType = document.getElementById('role-type');
 
-    if (welcomeName) welcomeName.textContent = user.nombre.split(' ')[0];
+    // Procesar nombre (Primer nombre para saludos)
+    const primerNombre = user.nombre.split(' ')[0];
+
+    // Actualizar Banner de Bienvenida
+    if (welcomeName) welcomeName.textContent = primerNombre;
     if (welcomeRole) welcomeRole.textContent = user.tipo_cliente === 'empresa' ? 'Empresa Verificada' : 'Usuario Verificado';
-    if (userNameDashboard) userNameDashboard.textContent = user.nombre; // Nombre completo
+    
+    // Actualizar Panel de Datos (si existe en el DOM)
+    if (userNameDashboard) userNameDashboard.textContent = user.nombre; 
     if (roleType) roleType.textContent = user.tipo_cliente === 'empresa' ? 'Cuenta Empresa' : 'Cuenta Personal';
+
+    // 4. Actualizar Header (Nombre y Correo)
+    // Esto asegura que el nombre aparezca arriba a la derecha
+    const headerName = document.getElementById('header-user-name');
+    const dropdownEmail = document.getElementById('dropdown-user-email');
+
+    if (headerName) headerName.textContent = primerNombre;
+    if (dropdownEmail) dropdownEmail.textContent = user.correo;
 });
 
-// --- Funciones de Soporte (Copiadas para independencia) ---
+// --- Funciones de Soporte ---
 
 async function loadSidebar(activePageId) {
     const container = document.getElementById('sidebar-container');
     if (!container) return;
     try {
         const response = await fetch('sidebar.html');
+        if (!response.ok) throw new Error('No se pudo cargar sidebar.html');
         container.innerHTML = await response.text();
         
-        // Marcar activo (Estilo Azul y Negrita)
+        // Marcar activo (Estilo para Sidebar Blanco)
         const activeLink = container.querySelector(`a[data-page="${activePageId}"]`);
         if (activeLink) {
             activeLink.classList.remove('text-gray-600');
