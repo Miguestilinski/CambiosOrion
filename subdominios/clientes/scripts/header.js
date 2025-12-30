@@ -4,98 +4,55 @@ document.addEventListener('DOMContentLoaded', function() {
     checkSession();
     setupEventListeners();
     initializePage();
-});  
+});
+
+// --- FUNCIÓN DE CORRECCIÓN DE CARACTERES (Ñ / Tildes) ---
+function fixEncoding(str) {
+    if (!str) return "";
+    try {
+        // Si el texto viene como "MuÃ±oz", esto lo convierte a "Muñoz"
+        return decodeURIComponent(escape(str));
+    } catch (e) {
+        // Si ya estaba bien o falla, devuelve el original
+        return str;
+    }
+} 
   
 // Configurar eventos de clic para la sesión
 function setupEventListeners() {
     const logoutButtonMobile = document.getElementById('logout-button-mobile');
     const logoutButtonMenu = document.getElementById('logout-button');
 
-    if (logoutButtonMobile) {
-        logoutButtonMobile.addEventListener('click', logout);
-    }
-
-    if (logoutButtonMenu) {
-        logoutButtonMenu.addEventListener('click', logout);
-    }
+    if (logoutButtonMobile) logoutButtonMobile.addEventListener('click', logout);
+    if (logoutButtonMenu) logoutButtonMenu.addEventListener('click', logout);
 
     const navMenuButton = document.getElementById('nav-menu-button');
-    const sessionMenuButton = document.getElementById('session-menu-button');
-    const navMobileMenu = document.getElementById('nav-mobile-menu');
-    const sessionMobileMenu = document.getElementById('session-mobile-menu');
-
-    if (navMenuButton && sessionMenuButton && navMobileMenu && sessionMobileMenu) {
-        navMenuButton.addEventListener('click', () => {
-            toggleMenu(navMobileMenu);
-            if (sessionMobileMenu && sessionMobileMenu.style.display === 'block') {
-                closeMenu(sessionMobileMenu);
-            }
+    const mobileMenu = document.getElementById('nav-mobile-menu');
+    
+    // Toggle Menú Móvil
+    if (navMenuButton && mobileMenu) {
+        navMenuButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            mobileMenu.classList.toggle('hidden');
         });
-
-        sessionMenuButton.addEventListener('click', () => {
-            toggleMenu(sessionMobileMenu);
-            if (navMobileMenu && navMobileMenu.style.display === 'block') {
-                closeMenu(navMobileMenu);
+        document.addEventListener('click', (e) => {
+            if (!navMenuButton.contains(e.target) && !mobileMenu.contains(e.target)) {
+                mobileMenu.classList.add('hidden');
             }
         });
     }
 
-    // Añadir el cierre de los menús móviles si se hace clic fuera de ellos
-    document.addEventListener('click', function (event) {
-        const isClickInsideNavMenu = navMobileMenu && navMobileMenu.contains(event.target);
-        const isClickInsideSessionMenu = sessionMobileMenu && sessionMobileMenu.contains(event.target);
-        const isClickInsideMenuButton = navMenuButton && navMenuButton.contains(event.target) || sessionMenuButton && sessionMenuButton.contains(event.target);
-
-        // Si el clic no está dentro de los menús ni de los botones de menú, cerramos los menús
-        if (!isClickInsideNavMenu && !isClickInsideSessionMenu && !isClickInsideMenuButton) {
-            closeMenu(navMobileMenu);
-            closeMenu(sessionMobileMenu);
-        }
-    });
-
-    const profileMenuButton = document.getElementById('profile-menu-button');
-    if (profileMenuButton) {
-        profileMenuButton.addEventListener('click', toggleHeaderDropdown);
-    }
-    document.addEventListener('click', function (event) {
-        const dropdown = document.getElementById('dropdownInformation');
-
-        // Cerrar si el clic está fuera del menú y del botón
-        if (
-            dropdown &&
-            !dropdown.contains(event.target) &&
-            !event.target.closest('#profile-menu-button')
-        ) {
-            dropdown.classList.add('hidden');
-        }
-    });
-
-    // --- NUEVO: Manejo botón y dropdown de notificaciones ---
-    const notificationsButton = document.getElementById('notifications-button');
-    const notificationsDropdown = document.getElementById('notifications-dropdown');
-
-    if (notificationsButton && notificationsDropdown) {
-        notificationsButton.addEventListener('click', (e) => {
-            e.stopPropagation(); // para que no cierre inmediatamente con el document click
-            const isHidden = notificationsDropdown.classList.contains('hidden');
-            // Cerrar dropdown de perfil si está abierto
-            const dropdownInformation = document.getElementById('dropdownInformation');
-            if (dropdownInformation) dropdownInformation.classList.add('hidden');
-
-            if (isHidden) {
-                notificationsDropdown.classList.remove('hidden');
-            } else {
-                notificationsDropdown.classList.add('hidden');
-            }
+    // Toggle Perfil Desktop
+    const profileBtn = document.getElementById('profile-menu-button');
+    const dropdown = document.getElementById('dropdownInformation');
+    if (profileBtn && dropdown) {
+        profileBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdown.classList.toggle('hidden');
         });
-
-        // Cerrar dropdown de notificaciones si clic fuera
-        document.addEventListener('click', (event) => {
-            if (
-                !notificationsDropdown.contains(event.target) &&
-                event.target !== notificationsButton
-            ) {
-                notificationsDropdown.classList.add('hidden');
+        document.addEventListener('click', (e) => {
+            if (!profileBtn.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.add('hidden');
             }
         });
     }
@@ -105,202 +62,57 @@ function setupEventListeners() {
 function checkSession() {
     fetch('https://cambiosorion.cl/data/session_status_clientes.php', {
             method: 'GET',
-            credentials: 'include' // Asegura que las cookies de sesión sean enviadas
+            credentials: 'include'
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
-            console.log('Session Status Data:', data);
             if (data.isAuthenticated) {
                 showUserUI(data);
             } else {
                 showGuestUI();
             }
         })
-        .catch(error => console.error('Error al verificar la sesión:', error));
+        .catch(error => console.error('Error sesión:', error));
 }
 
 // Mostrar la interfaz de usuario para usuarios autenticados
 function showUserUI(data) {
     const userActions = document.getElementById('user-actions');
-    const userActionsMobile = document.getElementById('user-actions-mobile');
     const guestActions = document.getElementById('guest-actions');
-    const guestActionsMobile = document.getElementById('guest-actions-mobile');
-  
-    if (userActions && guestActions) {
-      userActions.style.display = 'block';
-      userActionsMobile.style.display = 'block';
-      guestActions.style.display = 'none';
-      guestActionsMobile.style.display = 'none';
-    }
-
-    // Actualiza el dropdown con los datos del usuario
-    const dropdownInformation = document.getElementById('dropdownInformation');
-    if (dropdownInformation) {
-        dropdownInformation.querySelector('div:first-child').innerHTML = `
-            <div>${data.nombre}</div>
-            <div class="mail font-medium truncate">${data.correo}</div>
-            <div class="text-sm text-gray-500">${data.tipo}</div>
-        `;
-    }
-
-    if (userActionsMobile) {
-        userActionsMobile.querySelector('div:first-child').innerHTML = `
-            <div>${data.nombre}</div>
-            <div class="mail font-medium truncate">${data.correo}</div>
-            <div class="text-sm text-gray-500">${data.tipo}</div>
-        `;
-    }
-
-    // Actualiza la información en la versión móvil
-    const userNameMobile = document.querySelector('#user-actions-mobile #user-name');
-    const userEmailMobile = document.querySelector('#user-actions-mobile #user-email');
-    if (userNameMobile && userEmailMobile) {
-        userNameMobile.textContent = data.nombre;
-        userEmailMobile.textContent = data.correo;
-    }
-
-    const notifications = [];
-
-    const traspasos = parseInt(data.traspasos_pendientes);
-    if (
-        data.tipo &&
-        data.tipo.trim().toLowerCase() === 'administrativo' &&
-        !isNaN(traspasos) &&
-        traspasos > 0
-    ) {
-        notifications.push({
-            text: `Traspasos Pendientes: ${traspasos}`,
-            url: 'https://caja.cambiosorion.cl/traspasos'
-        });
-    }
-
-    updateNotificationsUI(notifications);
-}
-
-// --- NUEVO: Mostrar notificaciones de traspasos en botón y dropdown ---
-function updateNotificationsUI(notifications = []) {
-    const notificationsBadge = document.getElementById('notifications-badge');
-    const notificationsList = document.getElementById('notifications-list');
     
-    if (!notifications.length) {
-        if (notificationsBadge) notificationsBadge.classList.add('hidden');
-        if (notificationsList) notificationsList.innerHTML = '<li class="px-4 py-2">No hay notificaciones</li>';
-    } else {
-        if (notificationsBadge) {
-            notificationsBadge.textContent = notifications.length;
-            notificationsBadge.classList.remove('hidden');
-        }
-        if (notificationsList) {
-            notificationsList.innerHTML = '';
-            notifications.forEach(n => {
-                const li = document.createElement('li');
-                li.className = 'px-4 py-2 hover:bg-gray-100 cursor-pointer';
-                li.textContent = n.text;
-                if (n.url) {
-                    li.addEventListener('click', () => {
-                        window.location.href = n.url;
-                    });
-                }
-                notificationsList.appendChild(li);
-            });
-        }
+    if (userActions) userActions.style.display = 'block';
+    if (guestActions) guestActions.style.display = 'none';
+
+    const nombreFixed = fixEncoding(data.nombre);
+
+    // 1. Header Desktop (Botón Redondo)
+    const headerName = document.getElementById('header-user-name');
+    if (headerName) headerName.textContent = nombreFixed.split(' ')[0]; // Solo primer nombre
+
+    // 2. Dropdown (Nombre Completo)
+    const dropdownInfo = document.getElementById('dropdownInformation');
+    if (dropdownInfo) {
+        const nameEl = dropdownInfo.querySelector('.px-4 > p.text-sm'); // Busca el párrafo del nombre
+        if (nameEl) nameEl.textContent = data.correo; // Usamos correo aquí según tu diseño
+        dropdownInfo.querySelector('div:first-child').innerHTML = `
+            <div>${data.nombre}</div>
+            <div class="mail font-medium truncate">${data.correo}</div>
+            <div class="text-sm text-gray-500">${data.tipo}</div>
+        `;
     }
 }
   
 // Mostrar la interfaz de usuario para invitados
 function showGuestUI() {
     const userActions = document.getElementById('user-actions');
-    const userActionsMobile = document.getElementById('user-actions-mobile');
     const guestActions = document.getElementById('guest-actions');
-    const guestActionsMobile = document.getElementById('guest-actions-mobile');
-  
-    if (userActions && guestActions) {
-      userActions.style.display = 'none';
-      userActionsMobile.style.display = 'none';
-      guestActions.style.display = 'block';
-      guestActionsMobile.style.display = 'block';
-    }
+    if (userActions) userActions.style.display = 'none';
+    if (guestActions) guestActions.style.display = 'block';
 }
-  
-// Función para cerrar sesión con AJAX
+
 function logout() {
-    console.log('Intentando cerrar sesión...');
-    
-    fetch('https://cambiosorion.cl/data/cerrar_sesion.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => {
-        console.log('Respuesta recibida:', response);
-        if (!response.ok) {
-            throw new Error('Error en la solicitud');
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log('Datos devueltos desde el servidor:', data);
-
-        if (data.message === 'Sesión cerrada') {
-            console.log('Redirigiendo a index...');
-            window.location.href = 'https://cambiosorion.cl/login';
-        } else {
-            console.error('No se pudo cerrar la sesión correctamente');
-        }
-    })
-    .catch(error => {
-        console.error('Error al enviar la solicitud:', error);
-    });
-}
-
-// Alternar la visibilidad de los menús
-function toggleMenu(menu) {
-    if (menu) {
-        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-    }
-}
-
-// Cerrar un menú específico
-function closeMenu(menu) {
-    if (menu) {
-        menu.style.display = 'none';
-    }
-}
-
-// Mostrar el menú desplegable en escritorio
-function toggleHeaderDropdown(event) {
-    event.stopPropagation(); // Prevenir propagación del evento
-    const dropdown = document.getElementById('dropdownInformation');
-    const notificationsDropdown = document.getElementById('notifications-dropdown');
-
-    // Cerrar el dropdown de notificaciones si está abierto
-    if (notificationsDropdown) {
-        notificationsDropdown.classList.add('hidden');
-    }
-
-    // Alternar el dropdown de perfil
-    if (dropdown) {
-        dropdown.classList.toggle('hidden');
-    }
-}
-
-// Marcar los enlaces activos
-function setActiveLink(menuId) {
-    const links = document.querySelectorAll(`${menuId} a`);
-    const currentPath = window.location.pathname;
-    links.forEach(link => {
-        if (link.getAttribute('href') === currentPath) {
-            link.classList.add('selected');
-        } else {
-            link.classList.remove('selected');
-        }
-    });
+    fetch('https://cambiosorion.cl/data/cerrar_sesion.php', { method: 'POST' })
+    .then(() => window.location.href = 'https://cambiosorion.cl/login');
 }
 
 // Función principal para configurar la inicialización de la página

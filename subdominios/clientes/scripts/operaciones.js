@@ -23,54 +23,32 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-// --- Funciones Compartidas (Independientes) ---
+function fixEncoding(str) {
+    if (!str) return "";
+    try { return decodeURIComponent(escape(str)); } catch (e) { return str; }
+}
 
 async function loadSidebar(activePageId) {
     const container = document.getElementById('sidebar-container');
     if (!container) return;
     try {
-        // Asegúrate de que sidebar.html esté en la raíz o ajusta la ruta "../sidebar.html"
-        const response = await fetch('sidebar.html'); 
-        if (!response.ok) throw new Error('No se encontró sidebar.html');
-        
+        const response = await fetch('sidebar.html');
         container.innerHTML = await response.text();
-        
-        // Marcar activo (Estilo Azul y Negrita para Sidebar Blanco)
         const activeLink = container.querySelector(`a[data-page="${activePageId}"]`);
         if (activeLink) {
             activeLink.classList.remove('text-gray-600');
             activeLink.classList.add('bg-blue-50', 'text-blue-700', 'font-bold');
-            // Colorear el icono también
             const icon = activeLink.querySelector('svg');
             if(icon) icon.classList.add('text-blue-700');
         }
-    } catch (e) { 
-        console.error("Error cargando sidebar:", e); 
-    }
+    } catch (e) { console.error("Error sidebar", e); }
 }
 
 async function checkSession() {
     try {
-        const res = await fetch("https://cambiosorion.cl/data/session_status_clientes.php", { 
-            credentials: "include" 
-        });
+        const res = await fetch("https://cambiosorion.cl/data/session_status_clientes.php", { credentials: "include" });
         const data = await res.json();
-        
-        if (!data.isAuthenticated) {
-            window.location.href = 'https://cambiosorion.cl/login';
-            return null;
-        }
-        
-        // Actualizar Header (Nombre usuario)
-        const headerName = document.getElementById('header-user-name');
-        const dropdownEmail = document.getElementById('dropdown-user-email');
-        
-        if(headerName && data.nombre) headerName.textContent = data.nombre.split(' ')[0];
-        if(dropdownEmail && data.correo) dropdownEmail.textContent = data.correo;
-
+        if (!data.isAuthenticated) { window.location.href = 'https://cambiosorion.cl/login'; return null; }
         return data;
-    } catch (e) {
-        console.error("Error validando sesión:", e);
-        return null;
-    }
+    } catch (e) { return null; }
 }

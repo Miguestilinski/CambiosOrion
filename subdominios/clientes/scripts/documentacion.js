@@ -47,7 +47,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-// Copiar aquí loadSidebar y checkSession igual que en los anteriores
+function fixEncoding(str) {
+    if (!str) return "";
+    try { return decodeURIComponent(escape(str)); } catch (e) { return str; }
+}
+
 async function loadSidebar(activePageId) {
     const container = document.getElementById('sidebar-container');
     if (!container) return;
@@ -58,6 +62,8 @@ async function loadSidebar(activePageId) {
         if (activeLink) {
             activeLink.classList.remove('text-gray-600');
             activeLink.classList.add('bg-blue-50', 'text-blue-700', 'font-bold');
+            const icon = activeLink.querySelector('svg');
+            if(icon) icon.classList.add('text-blue-700');
         }
     } catch (e) { console.error("Error sidebar", e); }
 }

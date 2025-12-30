@@ -4,8 +4,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     const user = await checkSession();
     if (!user) return;
 
+    const nombreCorrecto = fixEncoding(user.nombre);
+
     // Llenar formulario
-    document.getElementById('user-name-dashboard').textContent = user.nombre;
+    const nameDisplay = document.getElementById('user-name-dashboard');
+    if(nameDisplay) nameDisplay.textContent = nombreCorrecto;
+
     document.getElementById('role-type').textContent = user.tipo_cliente === 'empresa' ? 'Empresa' : 'Persona';
     document.getElementById('email').value = user.correo;
     
@@ -16,7 +20,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         rutInput.textContent = user.rut;
     }
 
-    // Listener para guardar cambios (Aquí agregarías tu fetch a update_profile.php)
     const btnSave = document.querySelector('#personal-info-form button');
     if(btnSave) {
         btnSave.addEventListener('click', (e) => {
@@ -26,8 +29,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-// Incluir las mismas funciones loadSidebar y checkSession aquí abajo 
-// (O crear un archivo utils.js pequeño e importarlo si prefieres no repetir código)
+function fixEncoding(str) {
+    if (!str) return "";
+    try { return decodeURIComponent(escape(str)); } catch (e) { return str; }
+}
+
 async function loadSidebar(activePageId) {
     const container = document.getElementById('sidebar-container');
     if (!container) return;
