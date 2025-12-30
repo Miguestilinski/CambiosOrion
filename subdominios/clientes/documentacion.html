@@ -22,7 +22,8 @@
 </head>
 
 <body class="flex flex-col min-h-screen text-gray-200" data-page="documentacion">
-    <header class="fixed w-full z-50 transition-all duration-300 glass-header border-b border-white/10">
+    
+    <header class="fixed w-full z-50 transition-all duration-300 bg-slate-900/80 backdrop-blur-md shadow-md border-b border-slate-800">
         <div class="w-full px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16"> 
                 
@@ -35,11 +36,9 @@
                     </span>
                 </div>
 
-                <nav class="hidden md:flex space-x-10">
-                    <a href="https://cambiosorion.cl/" class="text-white hover:text-blue-300 px-3 py-2 text-md font-semibold text-shadow transition">Inicio</a>
-                    <a href="index" class="text-white hover:text-blue-300 px-3 py-2 text-md font-bold border-b-2 border-white text-shadow transition">Portal Clientes</a>
-                    <a href="https://cambiosorion.cl/nosotros" class="text-white hover:text-blue-300 px-3 py-2 text-md font-semibold text-shadow transition">Nosotros</a>
-                    <a href="https://cambiosorion.cl/contacto" class="text-white hover:text-blue-300 px-3 py-2 text-md font-semibold text-shadow transition">Contacto</a>
+                <nav class="hidden lg:flex space-x-1 bg-slate-800/50 p-1 rounded-lg border border-slate-700/50">
+                    <a href="index" class="px-4 py-2 text-sm font-medium rounded-md text-white bg-blue-600 shadow-lg shadow-blue-500/20 transition">Portal Cliente</a>
+                    <a href="https://cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-slate-700 transition">Sitio Público</a>
                 </nav>
 
                 <div class="flex items-center gap-4 lg:gap-6 mr-1"> 
@@ -47,16 +46,16 @@
                         <button id="profile-menu-button" class="flex items-center gap-3 text-sm rounded-full focus:outline-none ring-2 ring-white/10 hover:ring-blue-500/50 transition pl-1 pr-3 py-1 glass-card hover:bg-white/10 border border-white/10">
                             <img class="h-8 w-8 rounded-full object-cover border border-white/20" src="https://cambiosorion.cl/orionapp/icons/profile-white.png" alt="Profile">
                             <div class="hidden md:flex flex-col items-start">
-                                <span class="text-gray-200 font-bold leading-tight" id="header-user-name">Cargando...</span>
+                                <span class="text-gray-200 font-bold leading-tight" id="header-user-name">...</span>
                             </div>
                             <svg class="w-4 h-4 text-gray-400 hidden md:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                         </button>
-                        <div id="dropdownInformation" class="hidden absolute right-0 mt-3 w-60 glass-card rounded-xl shadow-2xl py-2 z-50 border border-white/10 transform origin-top-right transition-all">
-                            <div class="px-4 py-3 border-b border-white/10 bg-white/5">
-                                <p class="text-xs text-gray-400 uppercase font-bold tracking-wider">Sesión Activa</p>
-                                <p class="text-sm font-bold text-gray-200 truncate" id="dropdown-user-email">...</p>
+                        
+                        <div id="dropdownInformation" class="hidden absolute right-0 mt-3 w-60 bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl py-2 z-50 transform origin-top-right transition-all">
+                            <div class="px-4 py-3 border-b border-white/10">
+                                <p class="text-xs text-gray-400 uppercase font-bold tracking-wider">Cargando...</p>
                             </div>
-                            <a href="#" id="logout-button" class="block px-4 py-2 text-sm text-red-400 hover:bg-red-500/10 font-medium flex items-center border-t border-white/10 transition">
+                            <a href="#" id="logout-button" class="block px-4 py-2 text-sm text-red-400 hover:bg-white/5 font-medium flex items-center transition">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                                 Cerrar sesión
                             </a>
