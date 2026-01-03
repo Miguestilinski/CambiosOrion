@@ -1,0 +1,157 @@
+<div class="flex flex-1 overflow-hidden relative layout-container">
+        
+        <div id="sidebar-container" class="hidden lg:block h-full z-10"></div>
+        
+        <main class="flex-1 overflow-y-auto p-4 md:p-8 relative" id="dashboard-content">
+            <div class="absolute inset-0 -z-10"></div>
+
+            <section id="transacciones" class="max-w-7xl mx-auto fade-in">
+                
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+                    <div>
+                        <h1 class="text-3xl font-extrabold text-white drop-shadow-sm">Transacciones</h1>
+                        <p class="text-slate-400 text-sm mt-1 font-medium">Gestión y búsqueda de movimientos de caja.</p>
+                    </div>
+                    <button type="button" id="nueva-tr"
+                        class="text-white bg-cyan-600 hover:bg-cyan-700 shadow-lg shadow-cyan-500/30 font-bold rounded-full text-sm px-6 py-2.5 transition-transform hover:scale-105 flex items-center border border-cyan-500">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        Nueva Transacción
+                    </button>
+                </div>
+                
+                <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100 mb-8">
+                    <div class="flex flex-col lg:flex-row items-end gap-4 mb-6">
+                        <div class="grid grid-cols-2 gap-4 w-full lg:w-auto flex-1">
+                            <div>
+                                <label for="fecha-inicio" class="block mb-1 text-xs font-bold text-gray-500 uppercase">Desde</label>
+                                <input type="date" id="fecha-inicio" class="block w-full px-3 py-2 text-sm rounded-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-cyan-500 focus:border-cyan-500">
+                            </div>
+                            <div>
+                                <label for="fecha-fin" class="block mb-1 text-xs font-bold text-gray-500 uppercase">Hasta</label>
+                                <input type="date" id="fecha-fin" class="block w-full px-3 py-2 text-sm rounded-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-cyan-500 focus:border-cyan-500">
+                            </div>
+                        </div>
+                        
+                        <button type="button" id="borrar-filtros" class="w-full lg:w-auto px-4 py-2 text-sm font-bold text-gray-600 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-cyan-600 transition">
+                            Limpiar Filtros
+                        </button>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-6 mb-6 pb-6 border-b border-gray-100">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="emitidas" class="w-4 h-4 text-cyan-600 bg-gray-100 border-gray-300 rounded focus:ring-cyan-500">
+                            <label for="emitidas" class="ml-2 text-sm font-medium text-gray-700">Sólo emitidas en SII</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="no-emitidas" class="w-4 h-4 text-cyan-600 bg-gray-100 border-gray-300 rounded focus:ring-cyan-500">
+                            <label for="no-emitidas" class="ml-2 text-sm font-medium text-gray-700">Sólo NO emitidas en SII</label>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-4">
+                        <div>
+                            <label class="block mb-1 text-xs font-bold text-gray-400">Número</label>
+                            <input type="text" id="numero" class="w-full text-sm rounded-md border-gray-300 focus:border-cyan-500 focus:ring-cyan-500 px-3 py-2">
+                        </div>
+                        <div class="col-span-2">
+                            <label class="block mb-1 text-xs font-bold text-gray-400">Cliente</label>
+                            <input type="text" id="cliente" class="w-full text-sm rounded-md border-gray-300 focus:border-cyan-500 focus:ring-cyan-500 px-3 py-2">
+                        </div>
+                        <div>
+                            <label class="block mb-1 text-xs font-bold text-gray-400">Tipo Doc</label>
+                            <select id="tipo-doc" class="w-full text-sm rounded-md border-gray-300 focus:border-cyan-500 focus:ring-cyan-500 px-3 py-2">
+                                <option value="">Todos</option>
+                                <option value="boleta">Boleta</option>
+                                <option value="factura">Factura</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block mb-1 text-xs font-bold text-gray-400">Nº Doc</label>
+                            <input type="text" id="n-doc" class="w-full text-sm rounded-md border-gray-300 focus:border-cyan-500 focus:ring-cyan-500 px-3 py-2">
+                        </div>
+                        <div>
+                            <label class="block mb-1 text-xs font-bold text-gray-400">Operación</label>
+                            <select id="tipo-transaccion" class="w-full text-sm rounded-md border-gray-300 focus:border-cyan-500 focus:ring-cyan-500 px-3 py-2">
+                                <option value="">Todas</option>
+                                <option value="compra">Compra</option>
+                                <option value="venta">Venta</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block mb-1 text-xs font-bold text-gray-400">Divisa</label>
+                            <input type="text" id="divisa" class="w-full text-sm rounded-md border-gray-300 focus:border-cyan-500 focus:ring-cyan-500 px-3 py-2">
+                        </div>
+                        <div>
+                            <label class="block mb-1 text-xs font-bold text-gray-400">Estado</label>
+                            <select id="estado" class="w-full text-sm rounded-md border-gray-300 focus:border-cyan-500 focus:ring-cyan-500 px-3 py-2">
+                                <option value="">Todos</option>
+                                <option value="vigente">Vigente</option>
+                                <option value="anulado">Anulado</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-100">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm text-gray-500 font-medium">Mostrar</span>
+                            <select id="mostrar-registros" class="text-sm border-gray-300 rounded-md focus:ring-cyan-500 focus:border-cyan-500 px-3 py-1">
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                        </div>
+                        <div class="relative w-64">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            </div>
+                            <input type="text" id="buscar" class="block w-full pl-10 text-sm border-gray-300 rounded-full bg-gray-50 focus:ring-cyan-500 focus:border-cyan-500" placeholder="Búsqueda rápida...">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white/95 backdrop-blur-md rounded-xl shadow-xl border border-white/20 overflow-hidden flex flex-col w-full">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left border-collapse">
+                            <thead class="text-xs uppercase bg-gray-100 text-gray-600 font-extrabold tracking-wide sticky top-0 z-20 shadow-sm border-b border-gray-200">
+                                <tr>
+                                    <th class="px-4 py-3">Fecha</th>
+                                    <th class="px-4 py-3">Nº</th>
+                                    <th class="px-4 py-3">Cliente</th>
+                                    <th class="px-4 py-3">Doc</th>
+                                    <th class="px-4 py-3">Folio</th>
+                                    <th class="px-4 py-3">Nota</th>
+                                    <th class="px-4 py-3 text-center">Tipo</th>
+                                    <th class="px-4 py-3 text-center">Divisa</th>
+                                    <th class="px-4 py-3 text-right">Monto</th>
+                                    <th class="px-4 py-3 text-right">Tasa</th>
+                                    <th class="px-4 py-3 text-right">Total</th>
+                                    <th class="px-4 py-3 text-center">Estado</th>
+                                    <th class="px-4 py-3 text-center">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-transacciones" class="divide-y divide-gray-100 text-gray-700">
+                                </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="bg-gray-50 px-4 py-3 border-t border-gray-200 flex justify-between items-center text-xs text-gray-500">
+                        <div class="flex items-center gap-3">
+                            <span id="contador-registros" class="font-medium">Cargando...</span>
+                        </div>
+
+                        <div class="flex items-center gap-2" id="pagination-controls">
+                            <button id="btn-prev" class="px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition">
+                                Anterior
+                            </button>
+                            <span id="page-indicator" class="font-bold text-slate-700 px-2">Página 1</span>
+                            <button id="btn-next" class="px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition">
+                                Siguiente
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="h-8"></div>
+            </section>        
+        </main>
+    </div>
