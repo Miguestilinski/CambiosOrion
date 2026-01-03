@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transacciones</title>
+    <title>Sistema de Cajas | Transacciones</title>
 
     <link href="https://cambiosorion.cl/orionapp/public/styles/output.css" rel="stylesheet">
     <link href="https://caja.cambiosorion.cl/styles/index.css" rel="stylesheet">
@@ -17,8 +17,18 @@
         body { font-family: 'Inter', sans-serif; }
         .fade-in { animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        /* Layout flex para sidebar y main */
-        .layout-container { min-height: calc(100vh - 64px); }
+        
+        /* Estilos para inputs de tabla compactos */
+        .table-input {
+            @apply w-full text-xs border-gray-300 rounded focus:ring-cyan-500 focus:border-cyan-500 px-2 py-1 h-8;
+        }
+        
+        /* Ocultar icono de calendario en algunos navegadores si molesta, o dejarlo */
+        input[type="date"]::-webkit-inner-spin-button,
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            opacity: 0.6;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body class="h-screen flex flex-col overflow-hidden text-slate-800">
@@ -41,15 +51,11 @@
                 <nav class="hidden lg:flex space-x-1 bg-white/5 p-1 rounded-lg border border-white/10">
                     <a href="https://admin.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-white/10 transition">Inicio</a>
                     <a href="https://pizarras.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-green-600/20 hover:text-green-300 transition">Pizarras</a>
-                    
                     <a href="#" class="px-4 py-2 text-sm font-medium rounded-md text-white bg-cyan-600 shadow-lg shadow-cyan-500/20 transition">Caja</a>
-                    
                     <a href="https://tesoreria.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-amber-600/20 hover:text-amber-300 transition">Tesorería</a>
                 </nav>
 
                 <div class="flex items-center gap-4 lg:gap-6 mr-1"> 
-                    <div id="guest-actions" class="hidden"></div>
-
                     <div id="user-actions" class="relative ml-2 block">
                         <button id="profile-menu-button" class="flex items-center gap-3 text-sm rounded-full focus:outline-none ring-2 ring-slate-700 hover:ring-cyan-500 transition pl-1 pr-3 py-1 bg-slate-800 hover:bg-slate-700 text-white">
                             <img class="h-8 w-8 rounded-full object-cover border border-slate-600" src="https://cambiosorion.cl/orionapp/icons/profile-white.png" alt="Profile">
@@ -64,189 +70,140 @@
                                 <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Conectado como</p>
                                 <p class="text-sm font-bold text-gray-900 truncate" id="dropdown-user-email">...</p>
                             </div>
-                            <a href="https://cambiosorion.cl/webmail" class="block px-4 py-2 text-sm text-gray-700 hover:bg-cyan-50 hover:text-cyan-700 transition flex items-center">
-                                Webmail Corporativo
-                            </a>
-                            <div class="border-t border-gray-100 my-1"></div>
                             <a href="#" id="logout-button" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-medium flex items-center">
                                 Cerrar sesión
                             </a>
                         </div>
                     </div>
-
-                    <button id="nav-menu-button" class="lg:hidden text-white p-2 hover:bg-slate-800 rounded-lg transition">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-                    </button>
                 </div>
-            </div>
-        </div>
-
-        <div id="nav-mobile-menu" class="hidden lg:hidden bg-slate-900/95 border-t border-slate-700 backdrop-blur-xl absolute w-full z-50">
-            <div class="px-4 pt-4 pb-6 space-y-2">
-                <a href="https://admin.cambiosorion.cl/" class="block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-700">Inicio</a>
-                <a href="https://pizarras.cambiosorion.cl/" class="block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-700">Pizarras</a>
-                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-white bg-cyan-600">Caja</a>
-                <a href="https://tesoreria.cambiosorion.cl/" class="block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-700">Tesorería</a>
-                <div class="border-t border-slate-700 my-4 pt-4"></div>
-                <a href="#" id="logout-button-mobile" class="block px-3 py-2 rounded-md text-base font-medium text-red-400 hover:bg-slate-700">Cerrar Sesión</a>
             </div>
         </div>
     </header>
 
-    <div class="flex flex-1 overflow-hidden relative layout-container">
+    <div class="flex flex-1 overflow-hidden relative">
         
-        <div id="sidebar-container" class="hidden lg:block h-full z-10"></div>
-        
-        <main class="flex-1 overflow-y-auto p-4 md:p-8 relative" id="dashboard-content">
-            <div class="absolute inset-0 -z-10"></div>
-
-            <section id="transacciones" class="max-w-7xl mx-auto fade-in">
-                
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-                    <div>
-                        <h1 class="text-3xl font-extrabold text-white drop-shadow-sm">Transacciones</h1>
-                        <p class="text-slate-400 text-sm mt-1 font-medium">Gestión y búsqueda de movimientos de caja.</p>
-                    </div>
-                    <button type="button" id="nueva-tr"
-                        class="text-white bg-cyan-600 hover:bg-cyan-700 shadow-lg shadow-cyan-500/30 font-bold rounded-full text-sm px-6 py-2.5 transition-transform hover:scale-105 flex items-center border border-cyan-500">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                        Nueva Transacción
-                    </button>
-                </div>
-                
-                <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100 mb-8">
-                    <div class="flex flex-col lg:flex-row items-end gap-4 mb-6">
-                        <div class="grid grid-cols-2 gap-4 w-full lg:w-auto flex-1">
-                            <div>
-                                <label for="fecha-inicio" class="block mb-1 text-xs font-bold text-gray-500 uppercase">Desde</label>
-                                <input type="date" id="fecha-inicio" class="block w-full px-3 py-2 text-sm rounded-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-cyan-500 focus:border-cyan-500">
-                            </div>
-                            <div>
-                                <label for="fecha-fin" class="block mb-1 text-xs font-bold text-gray-500 uppercase">Hasta</label>
-                                <input type="date" id="fecha-fin" class="block w-full px-3 py-2 text-sm rounded-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-cyan-500 focus:border-cyan-500">
-                            </div>
+        <aside class="w-64 bg-white/95 backdrop-blur-sm border-r border-gray-200 hidden lg:flex flex-col z-10 shadow-lg relative">
+            <div class="p-5">
+                <h2 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Herramientas</h2>
+                <nav class="space-y-1">
+                    <a href="https://caja.cambiosorion.cl/nueva-tr" class="flex items-center px-4 py-3 text-gray-700 hover:bg-cyan-50 hover:text-cyan-700 rounded-lg transition-colors group mb-2 border border-transparent hover:border-cyan-100">
+                        <div class="bg-cyan-100 text-cyan-600 p-1.5 rounded-md mr-3 group-hover:bg-cyan-200 transition">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                         </div>
-                        
-                        <button type="button" id="borrar-filtros" class="w-full lg:w-auto px-4 py-2 text-sm font-bold text-gray-600 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-cyan-600 transition">
+                        <span class="font-bold">Nueva Transacción</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 bg-cyan-50 text-cyan-800 rounded-lg transition-colors border-l-4 border-cyan-600 shadow-sm">
+                        <svg class="w-5 h-5 mr-3 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                        <span class="font-bold">Transacciones</span>
+                    </a>
+                    <a href="ingresos" class="flex items-center px-4 py-3 text-gray-600 hover:bg-green-50 hover:text-green-700 rounded-lg transition-colors group"><span class="font-medium">Ingresos</span></a>
+                    <a href="egresos" class="flex items-center px-4 py-3 text-gray-600 hover:bg-red-50 hover:text-red-700 rounded-lg transition-colors group"><span class="font-medium">Egresos</span></a>
+                    <a href="traspasos-caja" class="flex items-center px-4 py-3 text-gray-600 hover:bg-indigo-50 hover:text-indigo-700 rounded-lg transition-colors group"><span class="font-medium">Traspasos</span></a>
+                    <a href="arqueo-caja" class="flex items-center px-4 py-3 text-gray-600 hover:bg-amber-50 hover:text-amber-700 rounded-lg transition-colors group"><span class="font-medium">Arqueo</span></a>
+                </nav>
+            </div>
+        </aside>
+        
+        <main class="flex-1 overflow-y-auto p-4 md:p-6 relative" id="dashboard-content">
+            
+            <section id="transacciones" class="max-w-full mx-auto fade-in h-full flex flex-col">
+                
+                <div class="flex justify-between items-center mb-4">
+                    <h1 class="text-2xl font-bold text-white drop-shadow-md">Movimientos de Caja</h1>
+                    
+                    <div class="flex gap-2">
+                        <button type="button" id="borrar-filtros" class="bg-white/10 hover:bg-white/20 text-white border border-white/20 text-xs px-3 py-2 rounded-lg transition">
                             Limpiar Filtros
                         </button>
+                        <button type="button" id="nueva-tr" class="text-white bg-cyan-600 hover:bg-cyan-700 shadow-lg shadow-cyan-500/30 font-bold rounded-lg text-xs px-4 py-2 transition flex items-center border border-cyan-500">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                            Nueva
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="bg-white/95 backdrop-blur-md rounded-xl shadow-xl border border-white/20 flex-1 overflow-hidden flex flex-col">
+                    <div class="overflow-auto flex-1">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs uppercase bg-gray-100 text-gray-600 font-extrabold tracking-wide sticky top-0 z-10 shadow-sm">
+                                <tr>
+                                    <th class="px-2 py-2 min-w-[140px]">Fecha / Hora</th>
+                                    <th class="px-2 py-2 w-20">Nº</th>
+                                    <th class="px-2 py-2">Cliente</th>
+                                    <th class="px-2 py-2 w-24">Tipo Doc</th>
+                                    <th class="px-2 py-2 w-24">Folio</th>
+                                    <th class="px-2 py-2">Nota</th>
+                                    <th class="px-2 py-2 text-center w-24">Operación</th>
+                                    <th class="px-2 py-2 text-center w-20">Divisa</th>
+                                    <th class="px-2 py-2 text-right">Monto</th>
+                                    <th class="px-2 py-2 text-right">Tasa</th>
+                                    <th class="px-2 py-2 text-right">Total</th>
+                                    <th class="px-2 py-2 text-center w-28">Estado</th>
+                                    <th class="px-2 py-2 text-center w-16">Ver</th>
+                                </tr>
+                                
+                                <tr class="bg-gray-50 border-b border-gray-200">
+                                    <td class="p-1 space-y-1">
+                                        <input type="date" id="fecha-inicio" class="table-input" placeholder="Desde">
+                                        <input type="date" id="fecha-fin" class="table-input" placeholder="Hasta">
+                                    </td>
+                                    <td class="p-1"><input type="text" id="numero" class="table-input" placeholder="#"></td>
+                                    <td class="p-1"><input type="text" id="cliente" class="table-input" placeholder="Cliente..."></td>
+                                    <td class="p-1">
+                                        <select id="tipo-doc" class="table-input">
+                                            <option value="">Todos</option>
+                                            <option value="boleta">Boleta</option>
+                                            <option value="factura">Factura</option>
+                                        </select>
+                                    </td>
+                                    <td class="p-1"><input type="text" id="n-doc" class="table-input" placeholder="Folio"></td>
+                                    <td class="p-1"><input type="text" id="n-nota" class="table-input" placeholder="Nota..."></td>
+                                    <td class="p-1">
+                                        <select id="tipo-transaccion" class="table-input">
+                                            <option value="">Todas</option>
+                                            <option value="compra">Compra</option>
+                                            <option value="venta">Venta</option>
+                                        </select>
+                                    </td>
+                                    <td class="p-1"><input type="text" id="divisa" class="table-input text-center" placeholder="USD"></td>
+                                    <td class="p-1 bg-gray-50/50"></td>
+                                    <td class="p-1 bg-gray-50/50"></td>
+                                    <td class="p-1 bg-gray-50/50"></td>
+                                    
+                                    <td class="p-1">
+                                        <select id="estado" class="table-input">
+                                            <option value="">Todos</option>
+                                            <option value="vigente">Vigente</option>
+                                            <option value="anulado">Anulado</option>
+                                        </select>
+                                    </td>
+                                    <td class="p-1"></td>
+                                </tr>
+                            </thead>
+                            
+                            <tbody id="tabla-transacciones" class="divide-y divide-gray-100 text-gray-700">
+                                </tbody>
+                        </table>
                     </div>
                     
-                    <div class="flex flex-wrap gap-6 mb-6 pb-6 border-b border-gray-100">
-                        <div class="flex items-center">
-                            <input type="checkbox" id="emitidas" class="w-4 h-4 text-cyan-600 bg-gray-100 border-gray-300 rounded focus:ring-cyan-500">
-                            <label for="emitidas" class="ml-2 text-sm font-medium text-gray-700">Sólo emitidas en SII</label>
-                        </div>
-                        <div class="flex items-center">
-                            <input type="checkbox" id="no-emitidas" class="w-4 h-4 text-cyan-600 bg-gray-100 border-gray-300 rounded focus:ring-cyan-500">
-                            <label for="no-emitidas" class="ml-2 text-sm font-medium text-gray-700">Sólo NO emitidas en SII</label>
-                        </div>
-                    </div>
-                    
-                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-4">
-                        <div>
-                            <label class="block mb-1 text-xs font-bold text-gray-400">Número</label>
-                            <input type="text" id="numero" class="w-full text-sm rounded-md border-gray-300 focus:border-cyan-500 focus:ring-cyan-500">
-                        </div>
-                        <div class="col-span-2">
-                            <label class="block mb-1 text-xs font-bold text-gray-400">Cliente</label>
-                            <input type="text" id="cliente" class="w-full text-sm rounded-md border-gray-300 focus:border-cyan-500 focus:ring-cyan-500">
-                        </div>
-                        <div>
-                            <label class="block mb-1 text-xs font-bold text-gray-400">Tipo Doc</label>
-                            <select id="tipo-doc" class="w-full text-sm rounded-md border-gray-300 focus:border-cyan-500 focus:ring-cyan-500">
-                                <option value="">Todos</option>
-                                <option value="boleta">Boleta</option>
-                                <option value="factura">Factura</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block mb-1 text-xs font-bold text-gray-400">Nº Doc</label>
-                            <input type="text" id="n-doc" class="w-full text-sm rounded-md border-gray-300 focus:border-cyan-500 focus:ring-cyan-500">
-                        </div>
-                        <div>
-                            <label class="block mb-1 text-xs font-bold text-gray-400">Operación</label>
-                            <select id="tipo-transaccion" class="w-full text-sm rounded-md border-gray-300 focus:border-cyan-500 focus:ring-cyan-500">
-                                <option value="">Todas</option>
-                                <option value="compra">Compra</option>
-                                <option value="venta">Venta</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block mb-1 text-xs font-bold text-gray-400">Divisa</label>
-                            <input type="text" id="divisa" class="w-full text-sm rounded-md border-gray-300 focus:border-cyan-500 focus:ring-cyan-500">
-                        </div>
-                        <div>
-                            <label class="block mb-1 text-xs font-bold text-gray-400">Estado</label>
-                            <select id="estado" class="w-full text-sm rounded-md border-gray-300 focus:border-cyan-500 focus:ring-cyan-500">
-                                <option value="">Todos</option>
-                                <option value="vigente">Vigente</option>
-                                <option value="anulado">Anulado</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-100">
-                        <div class="flex items-center space-x-2">
-                            <span class="text-sm text-gray-500 font-medium">Mostrar</span>
-                            <select id="mostrar-registros" class="text-sm border-gray-300 rounded-md focus:ring-cyan-500 focus:border-cyan-500">
+                    <div class="bg-gray-50 px-4 py-2 border-t border-gray-200 flex justify-between items-center text-xs text-gray-500">
+                        <div class="flex items-center gap-2">
+                            <span>Mostrar</span>
+                            <select id="mostrar-registros" class="border-gray-300 rounded text-xs py-1">
                                 <option value="25">25</option>
                                 <option value="50">50</option>
                                 <option value="100">100</option>
                             </select>
                         </div>
-                        <div class="relative w-64">
-                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                            </div>
-                            <input type="text" id="buscar" class="block w-full pl-10 text-sm border-gray-300 rounded-full bg-gray-50 focus:ring-cyan-500 focus:border-cyan-500" placeholder="Búsqueda rápida...">
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm text-left">
-                            <thead class="text-xs uppercase bg-gray-50 text-gray-600 border-b border-gray-200 font-extrabold tracking-wide">
-                                <tr>
-                                    <th class="px-4 py-4">Fecha</th>
-                                    <th class="px-4 py-4">Nº</th>
-                                    <th class="px-4 py-4">Cliente</th>
-                                    <th class="px-4 py-4">Doc</th>
-                                    <th class="px-4 py-4">Folio</th>
-                                    <th class="px-4 py-4">Nota</th>
-                                    <th class="px-4 py-4 text-center">Tipo</th>
-                                    <th class="px-4 py-4 text-center">Divisa</th>
-                                    <th class="px-4 py-4 text-right">Monto</th>
-                                    <th class="px-4 py-4 text-right">Tasa</th>
-                                    <th class="px-4 py-4 text-right">Total</th>
-                                    <th class="px-4 py-4 text-center">Estado</th>
-                                    <th class="px-4 py-4 text-center">Acción</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabla-transacciones" class="divide-y divide-gray-100 text-gray-700">
-                                </tbody>
-                        </table>
+                        <span id="contador-registros">Cargando...</span>
                     </div>
                 </div>
             </section>        
         </main>
     </div>
 
-    <footer class="bg-black/95 backdrop-blur z-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-slate-400">
-                <div class="flex items-center gap-3">
-                    <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Orion" class="h-10 grayscale hover:grayscale-0 transition opacity-80 hover:opacity-100">
-                    <span class="text-xs font-medium uppercase tracking-wider">| Sistema Cajas</span>
-                </div>
-                <p class="text-xs">© 2025 Orion Financial Group. Todos los derechos reservados.</p>
-            </div>
-        </div>
-    </footer>
-
     <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
     <script type="module" src="https://cambiosorion.cl/orionapp/public/scripts/header.js" crossorigin="anonymous"></script>
-    <script type="module" src="https://caja.cambiosorion.cl/scripts/transacciones.js"></script>
+    <script type="module" src="./scripts/transacciones.js"></script>
 </body>
 </html>
