@@ -1,8 +1,9 @@
-/* Estilos globales */
+/* Estilos globales y Fondo */
 body {
     @apply font-sans bg-white;
     margin: 0;
     padding: 0;
+    /* Tu imagen de fondo original */
     background: rgba(0, 0, 0, 0.45) url('https://cambiosorion.cl/orionapp/assets/FondoOrion.jpg') no-repeat center top;
     background-size: cover;
     background-attachment: fixed;
@@ -10,7 +11,7 @@ body {
     z-index: 1;
 }
 
-/* Degradado solo en la imagen de fondo */
+/* Degradado negro superpuesto */
 body::before {
     content: "";
     position: fixed;
@@ -23,163 +24,18 @@ body::before {
     z-index: -1;
 }
 
-html, body {
-    display: flex;
-    flex-direction: column;
-}
-
 html {
     scroll-behavior: smooth;
 }
 
-.header-logo{
-    gap: 7rem;
+/* Utilidades específicas */
+.hidden {
+    display: none;
 }
 
-/* Estilo para el contenedor de la tabla */
-.table-container {
-    background-color: rgba(0, 0, 0, 0.3); /* Fondo oscuro semi-transparente */
-    padding: 20px;
-    border-radius: 10px;
-    width: 90%; /* Ancho ajustado según tus necesidades */
-    margin-top: 1rem;
-    margin-bottom: 2.5rem;
-    max-width: 800px; /* Ancho máximo para evitar ser demasiado grande */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Sombra para el contenedor */
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    color: white;
-    table-layout: fixed; /* Mantiene el tamaño fijo de las columnas */
-    margin-bottom: 0; /* Eliminar el margen inferior de la tabla */
-}
-
-th, td {
-    padding: 0.5px; /* Cambia el padding a un valor más pequeño */
-    text-align: center; /* Centrar el texto en todas las celdas */
-    font-size: 1.3em;
-    line-height: 1.1;
-    vertical-align: bottom; /* Alinear el contenido al fondo */
-    width: 25%; /* Todas las columnas tendrán el mismo ancho */
-}
-
-th {
-    background-color: transparent;
-}
-
-th.compra, th.venta {
-    font-size: 1.6em;
-}
-
-th.icono, th.nombre {
-    visibility: hidden; /* Opcional: si deseas ocultar estos encabezados */
-}
-
-.logo-container img {
-    width: 200px; /* Tamaño del logo */
-    height: auto;
-    margin-bottom: -10px; /* Reduce la distancia entre el logo y la tabla */
-}
-
-tr {
-    border-bottom: 1px solid white;
-}
-
-thead tr {
-    border-bottom: none; /* Sin borde para la fila del encabezado */
-}
-
-img {
-    width: 35px;
-    height: 35px;
-    object-fit: cover; /* Ajustar el contenido dentro del círculo */
-}
-
-/* Ajustar padding para mantener iconos cerca del borde izquierdo */
-td.icono {
-    padding-left: 5px; /* Menos espacio a la izquierda */
-    text-align: left; /* Alinear a la izquierda */
-}
-
-/* Ajustar padding para acercar nombres a los iconos */
-td.nombre {
-    padding-left: 1px; /* Menos espacio a la izquierda para nombres */
-}
-
-.save-button-container {
-    display: flex;
-    justify-content: center; /* Centrar el botón */
-    margin-top: 2.5rem;
-}
-
-/* Estilo para los botones */
-#save-button {
-    width: 100%;
-    margin-top: 20px;
-    max-width: 600px;
-    padding: 0.6rem 1rem;
-    font-size: 1.2em;
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s;
-}
-
-#save-button:hover {
-    background-color: #0056b3; /* Color de fondo al pasar el mouse */
-}
-
-/* Estilo para el contenedor de los botones de catálogo */
-.catalog-button-container {
-    display: flex;
-    justify-content: center; /* Espacio entre los botones */
-    width: 100%; /* Ancho completo */
-    margin-top: 10px; /* Espaciado arriba */
-}
-
-/* Estilo para los botones de catálogo */
-#pizarra-button-normal, #pizarra-button-detacadas {
-    max-width: 300px;
-    padding: 0.6rem 1rem;
-    font-size: 1.2em;
-    background-color: #28a745; /* Color verde para el botón */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    flex: 1; /* Para que ocupen el mismo espacio */
-    margin: 0 5px; /* Espacio entre los botones */
-    transition: background-color 0.3s; /* Transición suave para el hover */
-}
-
-#pizarra-button-normal:hover, #pizarra-button-detacadas:hover {
-    background-color: #218838; /* Color de fondo al pasar el mouse */
-}
-
-/* Estilo para los inputs de precios */
-input[type="number"] {
-    padding: 10px;
-    margin: 10px 0;
-    width: 90%;
-    border: none;
-    border-radius: 5px;
-    background-color: rgba(255, 255, 255, 0.1); /* Fondo semi-transparente */
-    color: white; /* Color del texto */
-    display: inline-block; /* Asegura que se mantenga el tamaño */
-}
-
-/* Estilo para el texto adicional */
-.info {
-    margin-top: 5px; /* Distancia mínima con la tabla */
-    text-align: center; /* Centrar el texto */
-    font-size: 1.1em; /* Ajustar el tamaño de la fuente */
-}
-
-@media (max-width: 887px) {
-
+/* Clases para animaciones o transiciones si las necesitas */
+.transition-all {
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms;
 }
