@@ -91,7 +91,13 @@
 
     <div class="header-divider"></div>
     <div class="main-content">
-        <div id="sidebar-container"></div>
+        <aside class="w-72 flex-shrink-0 hidden lg:block border-r border-gray-200 bg-white min-h-[calc(100vh-64px)]" id="sidebar-container">
+            <div class="p-6 space-y-4 animate-pulse">
+                <div class="h-6 bg-gray-200 rounded w-1/2"></div>
+                <div class="h-10 bg-gray-100 rounded w-full mt-4"></div>
+            </div>
+        </aside>
+        
         <main id="dashboard-content" class="dashboard-content">
             <section id="transacciones" class="content-section active">
                 <!-- Título y botón Nueva Operación -->
@@ -259,43 +265,15 @@
         </main>
     </div>
 
-    <footer>
-        <div class="footer-container">
-            <!-- Sección del logo -->
-            <div class="footer-logo">
-                <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Logo Orion" class="logo">
-                 
+    <footer class="bg-black  mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-3">
+                    <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Orion" class="h-12 grayscale hover:grayscale-0 transition">
+                    <span class="text-slate-400 text-sm">| Sistema Corporativo</span>
+                </div>
+                <p class="text-slate-400 text-xs">© 2025 Orion Financial Group. Todos los derechos reservados.</p>
             </div>
-            <!-- Mapa de navegación -->
-            <div class="footer-navigation flex justify-between">
-                <div class="nav-section">
-                    <h3 href="https://admin.cambiosorion.cl/" class="font-bold text-lg">Admin</h3>
-                    <ul class="list-none p-0">
-                        <li><a href="https://admin.cambiosorion.cl/#vacaciones" class="block py-1">Vacaciones</a></li>
-                        <li><a href="https://admin.cambiosorion.cl/" class="block py-1">Adelantos</a></li>
-                    </ul>
-                </div>
-                <div class="nav-section">
-                    <h3 href="https://pizarras.cambiosorion.cl/" class="font-bold text-lg">Pizarras</h3>
-                    <ul class="list-none p-0">
-                        <li><a href="https://pizarras.cambiosorion.cl/normal" class="block py-1">Normal</a></li>
-                        <li><a href="https://pizarras.cambiosorion.cl/destacadas" class="block py-1">Destacadas</a></li>
-                    </ul>
-                </div>
-                <div class="nav-section">
-                    <h3 class="font-bold text-lg">Intranet</h3>
-                    <ul class="list-none p-0">
-                        <li><a href="https://caja.cambiosorion.cl/" class="block py-1">Sist. Cajas</a></li>
-                        <li><a href="https://tesoreria.cambiosorion.cl/" class="block py-1">Sist. Tesorería</a></li>
-                    </ul>
-                </div>
-            </div>
-            <!-- Información de contacto -->
-            <div class="footer-contact flex flex-wrap justify-between">
-            </div>         
-        </div>
-        <div class="footer-bottom text-xs text-center p-4">
-            © 2025 Cambios Orion. Todos los derechos reservados.
         </div>
     </footer>
 
