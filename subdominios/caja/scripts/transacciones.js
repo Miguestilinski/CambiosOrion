@@ -39,6 +39,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Lógica de exclusión mutua para checkboxes
+    if (filtros.emitidas && filtros.noEmitidas) {
+        filtros.emitidas.addEventListener('change', () => {
+            if (filtros.emitidas.checked) filtros.noEmitidas.checked = false;
+        });
+        filtros.noEmitidas.addEventListener('change', () => {
+            if (filtros.noEmitidas.checked) filtros.emitidas.checked = false;
+        });
+    }
+
     function initDatePickers() {
         const config = {
             locale: "es",
