@@ -71,111 +71,107 @@
         <div id="sidebar-container" class="hidden lg:block h-full z-10"></div>
         
         <main class="flex-1 overflow-y-auto p-4 md:p-8 relative" id="dashboard-content">
-            <div class="absolute inset-0 -z-10"></div>
-
-            <section id="transacciones" class="max-w-7xl mx-auto fade-in">
+            
+            <section id="transacciones" class="max-w-7xl mx-auto fade-in h-full flex flex-col">
                 
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-                    <div>
-                        <h1 class="text-3xl font-extrabold text-white drop-shadow-sm">Transacciones</h1>
-                        <p class="text-slate-400 text-sm mt-1 font-medium">Gestión y búsqueda de movimientos de caja.</p>
-                    </div>
-                    <button type="button" id="nueva-tr"
-                        class="text-white bg-cyan-600 hover:bg-cyan-700 shadow-lg shadow-cyan-500/30 font-bold rounded-full text-sm px-6 py-2.5 transition-transform hover:scale-105 flex items-center border border-cyan-500">
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-2xl font-bold text-white drop-shadow-md">Movimientos de Caja</h1>
+                    <button type="button" id="nueva-tr" class="text-white bg-cyan-600 hover:bg-cyan-700 shadow-lg shadow-cyan-500/30 font-bold rounded-lg text-sm px-5 py-2.5 transition flex items-center border border-cyan-500">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                         Nueva Transacción
                     </button>
                 </div>
-                
-                <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100 mb-8">
-                    <div class="flex flex-col lg:flex-row items-end gap-4 mb-6">
-                        <div class="grid grid-cols-2 gap-4 w-full lg:w-auto flex-1">
-                            <div>
-                                <label for="fecha-inicio" class="block mb-1 text-xs font-bold text-gray-500 uppercase">Desde</label>
-                                <input type="date" id="fecha-inicio" class="block w-full px-3 py-2 text-sm rounded-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-cyan-500 focus:border-cyan-500">
-                            </div>
-                            <div>
-                                <label for="fecha-fin" class="block mb-1 text-xs font-bold text-gray-500 uppercase">Hasta</label>
-                                <input type="date" id="fecha-fin" class="block w-full px-3 py-2 text-sm rounded-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-cyan-500 focus:border-cyan-500">
-                            </div>
-                        </div>
+
+                <div class="bg-white/95 backdrop-blur-md rounded-xl shadow-lg border border-white/20 p-5 mb-6">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-4 mb-5 pb-5 border-b border-gray-100">
                         
-                        <button type="button" id="borrar-filtros" class="w-full lg:w-auto px-4 py-2 text-sm font-bold text-gray-600 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-cyan-600 transition">
-                            Limpiar Filtros
-                        </button>
-                    </div>
-                    
-                    <div class="flex flex-wrap gap-6 mb-6 pb-6 border-b border-gray-100">
-                        <div class="flex items-center">
-                            <input type="checkbox" id="emitidas" class="w-4 h-4 text-cyan-600 bg-gray-100 border-gray-300 rounded focus:ring-cyan-500">
-                            <label for="emitidas" class="ml-2 text-sm font-medium text-gray-700">Sólo emitidas en SII</label>
+                        <div class="md:col-span-5 flex gap-4">
+                            <div class="flex-1 relative date-input-wrapper">
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Desde</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <svg class="w-4 h-4 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    </div>
+                                    <input type="text" id="fecha-inicio" class="flatpickr block w-full pl-10 pr-3 py-2 text-sm rounded-lg bg-gray-50 border border-gray-300 focus:ring-cyan-500 focus:border-cyan-500 transition-colors" placeholder="Seleccionar...">
+                                </div>
+                            </div>
+                            <div class="flex-1 relative date-input-wrapper">
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Hasta</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <svg class="w-4 h-4 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    </div>
+                                    <input type="text" id="fecha-fin" class="flatpickr block w-full pl-10 pr-3 py-2 text-sm rounded-lg bg-gray-50 border border-gray-300 focus:ring-cyan-500 focus:border-cyan-500 transition-colors" placeholder="Seleccionar...">
+                                </div>
+                            </div>
                         </div>
-                        <div class="flex items-center">
-                            <input type="checkbox" id="no-emitidas" class="w-4 h-4 text-cyan-600 bg-gray-100 border-gray-300 rounded focus:ring-cyan-500">
-                            <label for="no-emitidas" class="ml-2 text-sm font-medium text-gray-700">Sólo NO emitidas en SII</label>
+
+                        <div class="md:col-span-4 flex items-end">
+                            <div class="flex gap-4 items-center bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 w-full h-[38px] mt-6">
+                                <label class="cursor-pointer select-none inline-flex items-center text-xs font-medium text-gray-600 hover:text-cyan-700 transition">
+                                    <input type="checkbox" id="emitidas" class="w-3.5 h-3.5 mr-2 rounded text-cyan-600 border-gray-300 focus:ring-cyan-500">
+                                    Emitidas SII
+                                </label>
+                                <div class="w-px h-4 bg-gray-300"></div>
+                                <label class="cursor-pointer select-none inline-flex items-center text-xs font-medium text-gray-600 hover:text-cyan-700 transition">
+                                    <input type="checkbox" id="no-emitidas" class="w-3.5 h-3.5 mr-2 rounded text-cyan-600 border-gray-300 focus:ring-cyan-500">
+                                    No Emitidas
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="md:col-span-3 flex items-end justify-end">
+                            <button type="button" id="borrar-filtros" class="w-full text-gray-500 hover:text-cyan-600 hover:bg-cyan-50 bg-white border border-gray-300 hover:border-cyan-200 font-medium rounded-lg text-xs px-4 py-2.5 transition flex items-center justify-center h-[38px]">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                                Limpiar Filtros
+                            </button>
                         </div>
                     </div>
-                    
-                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-4">
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
                         <div>
-                            <label class="block mb-1 text-xs font-bold text-gray-400">Número</label>
-                            <input type="text" id="numero" class="w-full text-sm rounded-md border-gray-300 focus:border-cyan-500 focus:ring-cyan-500 px-3 py-2">
+                            <label class="block mb-1 text-[10px] font-bold text-gray-400 uppercase">Nº Interno</label>
+                            <input type="text" id="numero" class="w-full text-xs border-gray-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 h-9 bg-gray-50" placeholder="#">
                         </div>
                         <div class="col-span-2">
-                            <label class="block mb-1 text-xs font-bold text-gray-400">Cliente</label>
-                            <input type="text" id="cliente" class="w-full text-sm rounded-md border-gray-300 focus:border-cyan-500 focus:ring-cyan-500 px-3 py-2">
+                            <label class="block mb-1 text-[10px] font-bold text-gray-400 uppercase">Cliente</label>
+                            <input type="text" id="cliente" class="w-full text-xs border-gray-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 h-9 bg-gray-50" placeholder="Nombre del cliente...">
                         </div>
                         <div>
-                            <label class="block mb-1 text-xs font-bold text-gray-400">Tipo Doc</label>
-                            <select id="tipo-doc" class="w-full text-sm rounded-md border-gray-300 focus:border-cyan-500 focus:ring-cyan-500 px-3 py-2">
+                            <label class="block mb-1 text-[10px] font-bold text-gray-400 uppercase">Tipo Doc</label>
+                            <select id="tipo-doc" class="w-full text-xs border-gray-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 h-9 bg-gray-50">
                                 <option value="">Todos</option>
                                 <option value="boleta">Boleta</option>
                                 <option value="factura">Factura</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block mb-1 text-xs font-bold text-gray-400">Nº Doc</label>
-                            <input type="text" id="n-doc" class="w-full text-sm rounded-md border-gray-300 focus:border-cyan-500 focus:ring-cyan-500 px-3 py-2">
+                            <label class="block mb-1 text-[10px] font-bold text-gray-400 uppercase">Folio</label>
+                            <input type="text" id="n-doc" class="w-full text-xs border-gray-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 h-9 bg-gray-50" placeholder="Nº Documento">
                         </div>
                         <div>
-                            <label class="block mb-1 text-xs font-bold text-gray-400">Operación</label>
-                            <select id="tipo-transaccion" class="w-full text-sm rounded-md border-gray-300 focus:border-cyan-500 focus:ring-cyan-500 px-3 py-2">
+                            <label class="block mb-1 text-[10px] font-bold text-gray-400 uppercase">Operación</label>
+                            <select id="tipo-transaccion" class="w-full text-xs border-gray-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 h-9 bg-gray-50">
                                 <option value="">Todas</option>
                                 <option value="compra">Compra</option>
                                 <option value="venta">Venta</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block mb-1 text-xs font-bold text-gray-400">Divisa</label>
-                            <input type="text" id="divisa" class="w-full text-sm rounded-md border-gray-300 focus:border-cyan-500 focus:ring-cyan-500 px-3 py-2">
+                            <label class="block mb-1 text-[10px] font-bold text-gray-400 uppercase">Divisa</label>
+                            <input type="text" id="divisa" class="w-full text-xs border-gray-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 h-9 bg-gray-50 text-center" placeholder="Ej: USD">
                         </div>
                         <div>
-                            <label class="block mb-1 text-xs font-bold text-gray-400">Estado</label>
-                            <select id="estado" class="w-full text-sm rounded-md border-gray-300 focus:border-cyan-500 focus:ring-cyan-500 px-3 py-2">
+                            <label class="block mb-1 text-[10px] font-bold text-gray-400 uppercase">Estado</label>
+                            <select id="estado" class="w-full text-xs border-gray-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 h-9 bg-gray-50">
                                 <option value="">Todos</option>
                                 <option value="vigente">Vigente</option>
                                 <option value="anulado">Anulado</option>
                             </select>
                         </div>
                     </div>
-                    
-                    <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-100">
-                        <div class="flex items-center space-x-2">
-                            <span class="text-sm text-gray-500 font-medium">Mostrar</span>
-                            <select id="mostrar-registros" class="text-sm border-gray-300 rounded-md focus:ring-cyan-500 focus:border-cyan-500 px-3 py-1">
-                                <option value="25">25</option>
-                                <option value="50">50</option>
-                                <option value="100">100</option>
-                            </select>
-                        </div>
-                        <div class="relative w-64">
-                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                            </div>
-                            <input type="text" id="buscar" class="block w-full pl-10 text-sm border-gray-300 rounded-full bg-gray-50 focus:ring-cyan-500 focus:border-cyan-500" placeholder="Búsqueda rápida...">
-                        </div>
-                    </div>
-                </div>
+                    <input type="hidden" id="n-nota"> </div>
                 
                 <div class="bg-white/95 backdrop-blur-md rounded-xl shadow-xl border border-white/20 overflow-hidden flex flex-col w-full">
                     <div class="overflow-x-auto">
@@ -204,6 +200,12 @@
                     
                     <div class="bg-gray-50 px-4 py-3 border-t border-gray-200 flex justify-between items-center text-xs text-gray-500">
                         <div class="flex items-center gap-3">
+                            <span>Mostrar</span>
+                            <select id="mostrar-registros" class="border-gray-300 rounded text-xs py-1 h-7 focus:ring-cyan-500 focus:border-cyan-500">
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
                             <span id="contador-registros" class="font-medium">Cargando...</span>
                         </div>
 
