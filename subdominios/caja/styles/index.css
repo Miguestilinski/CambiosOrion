@@ -3,7 +3,7 @@ body {
     @apply font-sans bg-white;
     margin: 0;
     padding: 0;
-    /* Imagen de fondo original */
+    /* Tu imagen de fondo original */
     background: rgba(0, 0, 0, 0.45) url('https://cambiosorion.cl/orionapp/assets/FondoOrion.jpg') no-repeat center top;
     background-size: cover;
     background-attachment: fixed;
@@ -11,7 +11,7 @@ body {
     z-index: 1;
 }
 
-/* Degradado negro superpuesto para mejorar contraste general */
+/* Degradado negro superpuesto */
 body::before {
     content: "";
     position: fixed;
