@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor de Pizarras | Orion</title>
+
+    <link rel="stylesheet" href="https://pizarras.cambiosorion.cl/styles/index.css">
+    <link href="https://cambiosorion.cl/orionapp/public/styles/output.css" rel="stylesheet">
+    <link rel="icon" href="https://cambiosorion.cl/orionapp/icons/IsotipoOrion-blue.svg" type="image/png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* Ajustes específicos para inputs dentro de la tabla glass */
+        .glass-input {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 0.5rem;
+            text-align: center;
+            width: 100%;
+            padding: 0.5rem;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        .glass-input:focus {
+            background: rgba(0, 0, 0, 0.4);
+            border-color: #6366f1; /* Indigo 500 */
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3);
+        }
+        /* Ocultar flechas de number input */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+    </style>
+</head>
+<body class="font-sans text-white">
+    <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js"></script>
+
+    <header class="fixed w-full z-50 transition-all duration-300 bg-slate-900/80 backdrop-blur-md shadow-md border-b border-slate-800">
+        <div class="w-full px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16"> 
+                
+                <div class="flex items-center gap-4">
+                    <a href="index" class="flex-shrink-0">
+                        <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Logo Cambios Orion" class="h-10 w-auto opacity-90 hover:opacity-100 transition">
+                    </a>
+                    <span id="header-badge" class="hidden md:inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-green-600 text-white border border-green-500/30 tracking-wider uppercase shadow-lg shadow-green-500/20">
+                        Cargando...
+                    </span>
+                </div>
+
+                <nav class="hidden lg:flex space-x-1 bg-slate-800/50 p-1 rounded-lg border border-slate-700/50">
+                    <a href="index" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-slate-700 transition">Inicio</a>
+                    <a href="https://pizarras.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-white bg-green-600 shadow-lg shadow-green-500/20 transition">Pizarras</a>
+                    <a href="https://caja.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-slate-700 transition">Caja</a>
+                    <a href="https://tesoreria.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-slate-700 transition">Tesorería</a>
+                </nav>
+
+                <div class="flex items-center gap-4 lg:gap-6 mr-1"> <div id="guest-actions" class="hidden"></div>
+
+                    <div id="user-actions" class="relative ml-2 block">
+                        <button id="profile-menu-button" class="flex items-center gap-3 text-sm rounded-full focus:outline-none ring-2 ring-slate-700 hover:ring-indigo-500 transition pl-1 pr-3 py-1 bg-slate-800 hover:bg-slate-700">
+                            <img class="h-8 w-8 rounded-full object-cover border border-slate-600" src="https://cambiosorion.cl/orionapp/icons/profile-white.png" alt="Profile">
+                            <div class="hidden md:flex flex-col items-start">
+                                <span class="text-slate-200 font-medium leading-tight" id="header-user-name">...</span>
+                            </div>
+                            <svg class="w-4 h-4 text-slate-400 hidden md:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        
+                        <div id="dropdownInformation" class="hidden absolute right-0 mt-3 w-60 bg-white rounded-xl shadow-2xl py-2 z-50 border border-slate-200 transform origin-top-right transition-all">
+                            <div class="px-4 py-3 border-b border-gray-100 bg-gray-50/50">
+                                <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Conectado como</p>
+                                <p class="text-sm font-bold text-gray-900 truncate" id="dropdown-user-email">...</p>
+                            </div>
+                            <a href="https://cambiosorion.cl/webmail" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition flex items-center">
+                                <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                                Webmail Corporativo
+                            </a>
+                            <div class="border-t border-gray-100 my-1"></div>
+                            <a href="#" id="logout-button" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-medium flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                                Cerrar sesión
+                            </a>
+                        </div>
+                    </div>
+
+                    <button id="nav-menu-button" class="lg:hidden text-white p-2 hover:bg-slate-800 rounded-lg transition">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="nav-mobile-menu" class="hidden lg:hidden bg-slate-900/95 border-t border-slate-700 backdrop-blur-xl">
+            <div class="px-4 pt-4 pb-6 space-y-2">
+                <a href="index" class="block px-3 py-2 rounded-md text-base font-medium text-white bg-slate-700">Inicio</a>
+                <a href="https://pizarras.cambiosorion.cl/" class="block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-700">Pizarras</a>
+                <a href="https://caja.cambiosorion.cl/" class="block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-700">Caja</a>
+                <a href="https://tesoreria.cambiosorion.cl/" class="block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-700">Tesorería</a>
+                <div class="border-t border-slate-700 my-4 pt-4"></div>
+                <a href="#" id="logout-button-mobile" class="block px-3 py-2 rounded-md text-base font-medium text-red-400 hover:bg-slate-700">Cerrar Sesión</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="header-divider h-16"></div>
+    <main class="relative px-4 sm:px-6 lg:px-8 py-10 max-w-4xl mx-auto">
+        
+        <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+            <div>
+                <h1 class="text-3xl font-bold text-white drop-shadow-md">Editor de Tasas</h1>
+                <p class="text-blue-200 text-sm mt-1">Modifica los valores y guarda para actualizar las pantallas.</p>
+            </div>
+            
+            <button id="save-button" class="group relative inline-flex items-center justify-center px-8 py-3 text-base font-bold text-white transition-all duration-200 bg-indigo-600 border border-transparent rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-500/40 hover:scale-105">
+                <span class="mr-2">💾</span> Guardar Cambios
+                <div class="absolute inset-0 rounded-full ring-2 ring-white/20 group-hover:ring-white/40 transition-all"></div>
+            </button>
+        </div>
+
+        <div class="bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden shadow-2xl relative">
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-black/40 text-blue-200 text-xs uppercase tracking-widest font-bold border-b border-white/10">
+                        <tr>
+                            <th class="px-6 py-4 text-center w-16">Icono</th>
+                            <th class="px-6 py-4 text-left">Divisa</th>
+                            <th class="px-6 py-4 text-center w-32 md:w-40 text-white">Compra</th>
+                            <th class="px-6 py-4 text-center w-32 md:w-40 text-white">Venta</th>
+                        </tr>
+                    </thead>
+                    <tbody id="currency-list" class="divide-y divide-white/5 text-base">
+                        </tbody>
+                </table>
+            </div>
+            <div class="bg-black/20 px-6 py-3 border-t border-white/5 flex justify-between items-center backdrop-blur-sm">
+                <span class="text-xs text-slate-400">Editando en tiempo real</span>
+                <span class="text-xs text-indigo-300 font-mono">Status: Ready</span>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
+    <script type="module" src="https://cambiosorion.cl/orionapp/public/scripts/header.js" crossorigin="anonymous"></script>
+    <script type="module" src="https://pizarras.cambiosorion.cl/scripts/index.js"></script>
+
+    <script>
+        // Observador para cuando se cargue la tabla dinámica, estilizar los inputs
+        const targetNode = document.getElementById('currency-list');
+        const config = { childList: true };
+
+        const callback = function(mutationsList, observer) {
+            for(const mutation of mutationsList) {
+                if (mutation.type === 'childList') {
+                    const inputs = document.querySelectorAll('#currency-list input');
+                    inputs.forEach(input => {
+                        // Aplicar clase glass-input a los inputs generados por index.js
+                        input.classList.add('glass-input');
+                        // Remover clases viejas si existen
+                        input.classList.remove('edit-input'); 
+                        input.classList.add('edit-input'); // Mantener para JS logic
+                    });
+                }
+            }
+        };
+
+        const observer = new MutationObserver(callback);
+        if(targetNode) observer.observe(targetNode, config);
+    </script>
+</body>
+</html>
