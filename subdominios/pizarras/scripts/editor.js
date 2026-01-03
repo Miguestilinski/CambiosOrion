@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. Inicializar carga de datos
     loadCurrenciesForEdit();
 
-    // 3. Configurar BOTONES de guardar (Todos los que tengan la clase)
+    // 3. Configurar BOTONES de guardar
     const saveButtons = document.querySelectorAll('.save-action-btn');
     saveButtons.forEach(btn => {
         btn.addEventListener('click', saveEditedCurrencies);
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Función de sesión ADMIN (Copiada de index-admin.js)
+// Función de sesión ADMIN
 async function getSession() {
     try {
         const res = await fetch("https://cambiosorion.cl/data/session_status_admin.php", {
@@ -46,7 +46,6 @@ async function getSession() {
         
         const data = await res.json();
         
-        // Validación de seguridad
         if (!data.isAuthenticated || !data.equipo_id) {
             window.location.href = 'https://admin.cambiosorion.cl/login';
             return;
@@ -55,7 +54,6 @@ async function getSession() {
         const nombre = data.nombre || 'Usuario';
         const primerNombre = nombre.split(' ')[0];
 
-        // Actualizar elementos del Header
         const headerName = document.getElementById('header-user-name');
         const headerEmail = document.getElementById('dropdown-user-email');
         const userActions = document.getElementById('user-actions');
@@ -64,7 +62,6 @@ async function getSession() {
         if (headerName) headerName.textContent = primerNombre;
         if (headerEmail) headerEmail.textContent = data.correo;
 
-        // Asegurar que se vea el menú de usuario logueado
         if (userActions) {
             userActions.classList.remove('hidden');
             userActions.style.display = 'block';
@@ -77,7 +74,6 @@ async function getSession() {
     }
 }
 
-// Función global para abrir ventanas (Pizarras)
 window.openPopupWindow = function(url, title, width, height) {
     const left = (screen.width - width) / 2;
     const top = (screen.height - height) / 2;
@@ -108,6 +104,23 @@ function loadCurrenciesForEdit() {
         });
 }
 
+// === LÓGICA DE FORMATEO ===
+
+// Convierte 1042.5 -> "1.042,5" para mostrar
+function formatNumberCL(value) {
+    if (value === null || value === undefined) return '';
+    // Convierte a string y reemplaza punto decimal por coma
+    let str = parseFloat(value).toString();
+    str = str.replace('.', ',');
+    
+    // Separa enteros y decimales
+    let parts = str.split(',');
+    // Agrega puntos de mil a la parte entera
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    
+    return parts.join(',');
+}
+
 function fillEditCurrencyTable(divisas) {
     const tableBody = document.querySelector('#currency-list');
     if (!tableBody) return;
@@ -118,8 +131,9 @@ function fillEditCurrencyTable(divisas) {
     divisas.forEach(divisa => {
         if (divisa.nombre === 'CLP') return; 
 
-        const formattedCompra = removeTrailingZeros(divisa.compra);
-        const formattedVenta = removeTrailingZeros(divisa.venta);
+        // Formato inicial para mostrar (con puntos y comas)
+        const formattedCompra = formatNumberCL(divisa.compra);
+        const formattedVenta = formatNumberCL(divisa.venta);
 
         const row = document.createElement('tr');
         
@@ -129,28 +143,27 @@ function fillEditCurrencyTable(divisas) {
             </td>
             <td class="font-medium text-slate-200">${divisa.nombre}</td>
             <td class="p-2">
-                <input type="number" 
+                <input type="text" inputmode="decimal"
                        class="glass-input edit-input" 
                        data-currency="${divisa.nombre}" 
                        data-field="compra" 
-                       value="${formattedCompra}" 
-                       step="any" min="0">
+                       value="${formattedCompra}">
             </td>
             <td class="p-2">
-                <input type="number" 
+                <input type="text" inputmode="decimal"
                        class="glass-input edit-input" 
                        data-currency="${divisa.nombre}" 
                        data-field="venta" 
-                       value="${formattedVenta}" 
-                       step="any" min="0">
+                       value="${formattedVenta}">
             </td>
         `;
         tableBody.appendChild(row);
 
+        // Guardamos los valores numéricos reales en memoria
         editableCurrencies[divisa.nombre] = {
             nombre: divisa.nombre,
-            compra: parseFloat(formattedCompra) || 0,
-            venta: parseFloat(formattedVenta) || 0,
+            compra: parseFloat(divisa.compra) || 0,
+            venta: parseFloat(divisa.venta) || 0,
             icono_circular: divisa.icono_circular
         };
     });
@@ -158,23 +171,69 @@ function fillEditCurrencyTable(divisas) {
     setupEditInputs();
 }
 
-function removeTrailingZeros(value) {
-    if (value === null || value === undefined) return '';
-    return parseFloat(value).toString();
-}
-
 function setupEditInputs() {
     const editInputs = document.querySelectorAll('.edit-input');
     editInputs.forEach(input => {
-        input.addEventListener('input', event => {
-            const { currency, field } = event.target.dataset;
-            const newValue = parseFloat(event.target.value);
-
-            if (editableCurrencies[currency]) {
-                editableCurrencies[currency][field] = isNaN(newValue) ? 0 : newValue;
-            }
-        });
+        input.addEventListener('input', handleCurrencyInput);
     });
+}
+
+// Maneja la escritura: Formatea visualmente y guarda el número real
+function handleCurrencyInput(e) {
+    const input = e.target;
+    let value = input.value;
+
+    // 1. Limpiar: Permitir solo números y coma
+    // Eliminamos todo lo que no sea dígito o coma
+    value = value.replace(/[^0-9,]/g, '');
+
+    // 2. Control de Comas: Solo permitir una coma
+    const parts = value.split(',');
+    if (parts.length > 2) {
+        // Si hay más de una coma, tomamos la primera parte como entero y el resto lo unimos
+        value = parts[0] + ',' + parts.slice(1).join('');
+    }
+
+    // 3. Formatear la parte entera (agregar puntos)
+    // Quitamos puntos previos para reformatear
+    let integerPart = parts[0].replace(/\./g, '');
+    
+    // Si empieza con 0 y tiene más dígitos, quitamos el 0 (ej: 05 -> 5), salvo que sea "0,"
+    if (integerPart.length > 1 && integerPart.startsWith('0')) {
+        integerPart = integerPart.substring(1);
+    }
+    if (integerPart === '') integerPart = ''; // Permitir vacío mientras escribe
+
+    // Aplicar puntos de mil
+    if (integerPart !== '') {
+        integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
+    // 4. Reconstruir el valor
+    let newValue = integerPart;
+    if (value.includes(',')) {
+        // Si el usuario escribió coma, la agregamos (con sus decimales si los tiene)
+        newValue += ',' + (parts[1] ? parts[1] : '');
+    }
+
+    // 5. Actualizar el input solo si cambió (para no entorpecer el cursor más de lo necesario)
+    if (newValue !== input.value) {
+        input.value = newValue;
+    }
+
+    // 6. Actualizar el objeto de datos con el valor numérico real
+    updateCurrencyData(input);
+}
+
+function updateCurrencyData(input) {
+    const { currency, field } = input.dataset;
+    // Para guardar: quitar puntos, cambiar coma por punto
+    let cleanVal = input.value.replace(/\./g, '').replace(',', '.');
+    let numVal = parseFloat(cleanVal);
+
+    if (editableCurrencies[currency]) {
+        editableCurrencies[currency][field] = isNaN(numVal) ? 0 : numVal;
+    }
 }
 
 function saveEditedCurrencies() {
@@ -185,7 +244,6 @@ function saveEditedCurrencies() {
         return;
     }
 
-    // Actualizar TODOS los botones de guardar para dar feedback visual
     const saveButtons = document.querySelectorAll('.save-action-btn');
     const originalTexts = [];
     
@@ -223,7 +281,6 @@ function saveEditedCurrencies() {
         showStatusModal('error', 'Error al guardar', 'Hubo un problema al conectar con el servidor. Inténtalo de nuevo.');
     })
     .finally(() => {
-        // Restaurar botones
         saveButtons.forEach((btn, index) => {
             btn.innerHTML = originalTexts[index] || 'Guardar Cambios';
             btn.disabled = false;
