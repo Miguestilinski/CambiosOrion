@@ -88,13 +88,13 @@ function processData(data) {
                     </div>
                     
                     <div class="w-[37.5%] flex justify-center">
-                        <span class="${priceSize} leading-none font-black text-white tracking-widest font-mono text-shadow-glow bg-black/20 px-3 py-2 rounded-lg min-w-[90%] text-center whitespace-nowrap">
+                        <span class="${priceSize} leading-none font-black text-white tracking-widest font-mono text-shadow-glow px-3 py-2 rounded-lg min-w-[90%] text-center whitespace-nowrap">
                             ${compraFmt}
                         </span>
                     </div>
                     
                     <div class="w-[37.5%] flex justify-center">
-                        <span class="${priceSize} leading-none font-black text-white tracking-widest font-mono text-shadow-glow bg-black/20 px-3 py-2 rounded-lg min-w-[90%] text-center whitespace-nowrap">
+                        <span class="${priceSize} leading-none font-black text-white tracking-widest font-mono text-shadow-glow px-3 py-2 rounded-lg min-w-[90%] text-center whitespace-nowrap">
                             ${ventaFmt}
                         </span>
                     </div>
