@@ -2,22 +2,25 @@ let editableCurrencies = {};
 let isFetchingCurrencies = false;
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Inicializar carga de datos
+    // 1. Verificar Sesión ADMIN Primero
+    getSession();
+
+    // 2. Inicializar carga de datos
     loadCurrenciesForEdit();
 
-    // 2. Configurar BOTONES de guardar (Todos los que tengan la clase)
+    // 3. Configurar BOTONES de guardar (Todos los que tengan la clase)
     const saveButtons = document.querySelectorAll('.save-action-btn');
     saveButtons.forEach(btn => {
         btn.addEventListener('click', saveEditedCurrencies);
     });
 
-    // 3. Configurar botón del modal
+    // 4. Configurar botón del modal
     const modalBtn = document.getElementById('modal-close-btn');
     if (modalBtn) {
         modalBtn.addEventListener('click', hideStatusModal);
     }
 
-    // 4. Configurar menú móvil
+    // 5. Configurar menú móvil
     const navBtn = document.getElementById('nav-menu-button');
     const mobileMenu = document.getElementById('nav-mobile-menu');
     if(navBtn && mobileMenu) {
@@ -32,6 +35,47 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// Función de sesión ADMIN (Copiada de index-admin.js)
+async function getSession() {
+    try {
+        const res = await fetch("https://cambiosorion.cl/data/session_status_admin.php", {
+            credentials: "include"
+        });
+        if (!res.ok) throw new Error("No se pudo obtener la sesión.");
+        
+        const data = await res.json();
+        
+        // Validación de seguridad
+        if (!data.isAuthenticated || !data.equipo_id) {
+            window.location.href = 'https://admin.cambiosorion.cl/login';
+            return;
+        }
+
+        const nombre = data.nombre || 'Usuario';
+        const primerNombre = nombre.split(' ')[0];
+
+        // Actualizar elementos del Header
+        const headerName = document.getElementById('header-user-name');
+        const headerEmail = document.getElementById('dropdown-user-email');
+        const userActions = document.getElementById('user-actions');
+        const guestActions = document.getElementById('guest-actions');
+
+        if (headerName) headerName.textContent = primerNombre;
+        if (headerEmail) headerEmail.textContent = data.correo;
+
+        // Asegurar que se vea el menú de usuario logueado
+        if (userActions) {
+            userActions.classList.remove('hidden');
+            userActions.style.display = 'block';
+        }
+        if (guestActions) guestActions.classList.add('hidden');
+
+    } catch (error) {
+        console.error("Error obteniendo la sesión:", error);
+        window.location.href = 'https://admin.cambiosorion.cl/login';
+    }
+}
 
 // Función global para abrir ventanas (Pizarras)
 window.openPopupWindow = function(url, title, width, height) {
