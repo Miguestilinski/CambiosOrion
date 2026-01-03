@@ -5,65 +5,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pizarra Normal</title>
     
-    <link rel="stylesheet" href="./styles/normal.css">
-    <link href="https://cambiosorion.cl/orionapp/public/styles/output.css" rel="stylesheet">
-    <link rel="icon" href="https://cambiosorion.cl/orionapp/icons/IsotipoOrion-blue.svg" type="image/png">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
 
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: url('https://cambiosorion.cl/orionapp/assets/FondoOrion.jpg') no-repeat center center fixed;
+            background-size: cover;
+            overflow: hidden; /* IMPORTANTE: Evita barras de desplazamiento */
+        }
+        /* Unidades VH para asegurar que quepa verticalmente sin importar la resolución */
+        .h-row { height: 3.8vh; } 
+        .text-row { font-size: 2.2vh; }
+        .text-header { font-size: 1.8vh; }
+        .text-price { font-size: 2.8vh; }
+        
+        /* Sombra para mejorar lectura sobre fondo */
+        .text-shadow { text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
     </style>
 </head>
-<body class="h-screen w-full overflow-hidden text-white flex flex-col items-center justify-center relative">
+<body class="h-screen w-screen flex flex-col text-white bg-black/50">
     
-    <div class="fixed inset-0 bg-black/60 z-0"></div>
+    <div class="fixed inset-0 bg-black/40 -z-10"></div>
 
-    <main class="relative z-10 w-full max-w-7xl h-[95vh] flex flex-col bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-3xl shadow-2xl overflow-hidden p-6">
-        
-        <header class="flex-shrink-0 flex justify-center pb-4 border-b border-white/10 mb-2">
-            <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Orion Financial Group" class="h-16 md:h-20 drop-shadow-lg filter brightness-110">
-        </header>
+    <header class="h-[10vh] flex flex-col justify-center items-center border-b border-white/20 bg-black/20 backdrop-blur-sm">
+        <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Orion" class="h-[7vh] drop-shadow-lg">
+    </header>
 
-        <div class="flex-grow overflow-hidden relative">
-            <table class="w-full table-fixed">
-                <thead class="bg-white/5 text-blue-200 border-b-2 border-white/20">
-                    <tr>
-                        <th class="py-3 text-center w-20 opacity-60 text-sm uppercase tracking-wider">Ref</th>
-                        <th class="py-3 text-left pl-4 text-lg font-bold tracking-widest uppercase opacity-80">Divisa</th>
-                        <th class="py-3 text-center text-3xl font-extrabold text-white tracking-widest bg-white/5 rounded-t-lg">COMPRA</th>
-                        <th class="py-3 text-center text-3xl font-extrabold text-white tracking-widest">VENTA</th>
-                    </tr>
-                </thead>
-                <tbody id="currency-list" class="divide-y divide-white/5">
-                    </tbody>
-            </table>
-        </div>
-
-        <footer class="flex-shrink-0 mt-4 pt-4 border-t border-white/10 text-center space-y-2">
-            <div class="flex justify-center items-center gap-8">
-                <p class="text-xl font-bold text-blue-100 bg-blue-900/30 px-6 py-2 rounded-full border border-blue-500/30">
-                    TRANSFERENCIAS AL EXTRANJERO
-                </p>
-                <p class="text-lg text-slate-300">
-                    Lun - Vie 09:00 - 17:00 hrs
-                </p>
-            </div>
-            <p class="text-xs text-slate-500 uppercase tracking-widest opacity-70">
-                * Precios sujetos a disponibilidad, estado y denominación de los billetes
-            </p>
-        </footer>
+    <main class="flex-grow w-full max-w-6xl mx-auto px-4 relative">
+        <table class="w-full h-full table-fixed border-collapse">
+            <thead class="h-[4vh] text-blue-200 uppercase tracking-widest border-b-2 border-white/30">
+                <tr>
+                    <th class="w-[15%] text-left pl-4 text-header">Divisa</th>
+                    <th class="w-[30%] text-center"></th> <th class="w-[27%] text-center font-bold text-header bg-black/20">COMPRA</th>
+                    <th class="w-[28%] text-center font-bold text-header">VENTA</th>
+                </tr>
+            </thead>
+            
+            <tbody id="currency-list" class="divide-y divide-white/10">
+                </tbody>
+        </table>
     </main>
 
-    <div id="offline-popup" class="hidden fixed bottom-10 right-10 bg-red-600 text-white px-6 py-4 rounded-xl shadow-2xl z-50 animate-bounce flex items-center gap-3">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-        <span class="font-bold">Sin conexión a internet</span>
+    <footer class="h-[8vh] flex flex-col justify-center items-center bg-black/60 backdrop-blur-md border-t border-white/20">
+        <div class="flex items-center gap-4">
+            <span class="bg-blue-600/80 px-4 py-1 rounded-full text-[2vh] font-bold shadow-lg shadow-blue-500/30">
+                TRANSFERENCIAS AL EXTRANJERO
+            </span>
+            <span class="text-slate-300 text-[1.8vh]">Lunes a Viernes 09:00 - 17:00 hrs</span>
+        </div>
+        <p class="text-[1.2vh] text-slate-500 mt-1 uppercase tracking-wider">
+            * Precios sujetos a disponibilidad y denominación de billetes
+        </p>
+    </footer>
+
+    <div id="offline-popup" class="hidden fixed bottom-0 left-0 w-full bg-red-600 text-white py-2 text-center text-[2vh] font-bold z-50 shadow-[0_-5px_20px_rgba(255,0,0,0.5)]">
+        ⚠ SIN CONEXIÓN A INTERNET - PRECIOS PODRÍAN NO ESTAR ACTUALIZADOS
     </div>
 
     <audio id="priceAlert" src="https://cambiosorion.cl/orionapp/sounds/alert.mp3"></audio>
-    <script src="https://cdn.tailwindcss.com"></script>
     <script type="module" src="./scripts/normal.js"></script>
 </body>
 </html>

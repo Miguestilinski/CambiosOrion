@@ -1,37 +1,31 @@
 let preciosAnteriores = {};
 let eventSource;
-let offlineTimer = null; // Timer para el debounce de desconexión
+let offlineTimer = null;
 
 document.addEventListener('DOMContentLoaded', () => {
     initSSE();
 });
 
 function initSSE() {
-    if (eventSource) {
-        eventSource.close();
-    }
-
+    if (eventSource) eventSource.close();
     eventSource = new EventSource('https://cambiosorion.cl/data/stream_divisas.php');
 
     eventSource.onopen = () => {
-        console.log('🟢 SSE Conectado');
         handleConnectionSuccess();
     };
-
+    
     eventSource.onmessage = (event) => {
         handleConnectionSuccess();
         try {
             const responseData = JSON.parse(event.data);
             processData(responseData);
         } catch (error) {
-            console.error('Error procesando datos:', error);
+            console.error(error);
         }
-    };  
+    };
 
-    eventSource.onerror = (error) => {
-        console.warn('🟡 SSE inestable, esperando recuperación...', error);
+    eventSource.onerror = () => {
         handleConnectionError();
-        
         if (eventSource.readyState === EventSource.CLOSED) {
             setTimeout(initSSE, 5000);
         }
@@ -39,98 +33,82 @@ function initSSE() {
 }
 
 function handleConnectionSuccess() {
-    if (offlineTimer) {
-        clearTimeout(offlineTimer);
-        offlineTimer = null;
-    }
-    hideOfflinePopup();
+    if (offlineTimer) { clearTimeout(offlineTimer); offlineTimer = null; }
+    document.getElementById('offline-popup').classList.add('hidden');
 }
 
 function handleConnectionError() {
-    // Solo programamos la alerta si no está ya programada
     if (!offlineTimer) {
         offlineTimer = setTimeout(() => {
-            showOfflinePopup();
-        }, 5000); // 5 segundos de gracia
+            document.getElementById('offline-popup').classList.remove('hidden');
+        }, 5000);
     }
 }
 
 function processData(data) {
-    const highlightedList = document.getElementById("highlighted-currencies");
-    const normalList = document.getElementById("normal-currencies");
-    
-    if (!highlightedList || !normalList) return;
-  
-    highlightedList.innerHTML = '';
+    const heroList = document.getElementById("hero-list");
+    const normalList = document.getElementById("normal-list");
+    if (!heroList || !normalList) return;
+
+    heroList.innerHTML = '';
     normalList.innerHTML = '';
-  
-    let cambiosDetectados = false;
-  
-    // Filtro estricto de divisas a mostrar
-    const divisasFiltradas = ["USD", "EUR", "BRL", "ARS", "PEN", "MXN", "ORO 100"]; 
-  
+    let cambios = false;
+
+    // Solo estas 7 divisas, en este orden
+    const divisasFiltradas = ["USD", "EUR", "BRL", "ARS", "PEN", "MXN", "ORO 100"];
+
     divisasFiltradas.forEach((key) => {
         const divisa = data.find(d => d.nombre === key);
-  
-        if (divisa && divisa.compra && divisa.venta) {
+        if (divisa) {
             const { icono_circular, compra, venta } = divisa;
-    
-            // Detección de cambios
+            const compraFmt = parseFloat(compra).toString();
+            const ventaFmt = parseFloat(venta).toString();
+
+            // Detectar cambios
             let flashClass = "";
-            if (preciosAnteriores[key] && (preciosAnteriores[key].compra !== compra || preciosAnteriores[key].venta !== venta)) {
-                cambiosDetectados = true;
-                flashClass = "animate-pulse bg-white/20";
+            if (preciosAnteriores[key]) {
+                if (preciosAnteriores[key].compra !== compra || preciosAnteriores[key].venta !== venta) {
+                    cambios = true;
+                    flashClass = "animate-pulse bg-white/20";
+                }
             }
             preciosAnteriores[key] = { compra, venta };
-    
-            const formattedCompra = removeTrailingZeros(compra);
-            const formattedVenta = removeTrailingZeros(venta);
-    
-            // LOGICA DE RENDERIZADO DIFERENCIADO
+
             if (key === "USD" || key === "EUR") {
-                // === DESTACADAS (Tarjetas Grandes) ===
+                // === HERO (Gigantes) ===
                 const card = document.createElement("div");
-                card.className = `grid grid-cols-12 gap-4 items-center bg-white/10 rounded-2xl p-6 border border-white/20 shadow-lg transform transition-all duration-300 hover:scale-[1.02] ${flashClass}`;
+                card.className = `grid grid-cols-12 items-center bg-white/5 rounded-2xl border border-white/10 shadow-lg px-4 h-[16vh] ${flashClass}`; // Altura fija 16vh
                 
                 card.innerHTML = `
                     <div class="col-span-4 flex items-center gap-6">
-                        <img src="${icono_circular}" alt="${key}" class="w-20 h-20 object-contain drop-shadow-xl">
-                        <span class="text-5xl font-black text-white tracking-tighter">${key}</span>
+                        <img src="${icono_circular}" class="h-[10vh] w-[10vh] rounded-full shadow-lg">
+                        <span class="text-[6vh] font-black tracking-tighter">${key}</span>
                     </div>
-                    <div class="col-span-4 text-center bg-black/20 rounded-xl py-3 border border-white/5">
-                        <span class="text-6xl font-extrabold text-white tracking-widest font-mono text-shadow-glow">
-                            ${formattedCompra}
-                        </span>
+                    <div class="col-span-4 text-center">
+                        <span class="text-[7vh] font-black text-white tracking-widest font-mono text-shadow-glow">${compraFmt}</span>
                     </div>
-                    <div class="col-span-4 text-center py-3">
-                        <span class="text-6xl font-extrabold text-white tracking-widest font-mono text-shadow-glow">
-                            ${formattedVenta}
-                        </span>
+                    <div class="col-span-4 text-center">
+                        <span class="text-[7vh] font-black text-white tracking-widest font-mono text-shadow-glow">${ventaFmt}</span>
                     </div>
                 `;
-                highlightedList.appendChild(card);
-
+                heroList.appendChild(card);
             } else {
-                // === NORMALES (Filas Compactas) ===
+                // === LISTA (Grandes) ===
                 const row = document.createElement("tr");
-                row.className = `group transition-colors duration-300 hover:bg-white/5 ${flashClass}`;
+                row.className = `border-b border-white/5 ${flashClass}`;
                 
                 row.innerHTML = `
-                    <td class="py-3 pl-4 text-left w-1/3">
+                    <td class="w-[33%] py-1 pl-6">
                         <div class="flex items-center gap-4">
-                            <img src="${icono_circular}" alt="${key}" class="w-12 h-12 object-contain opacity-90 group-hover:opacity-100 transition">
-                            <span class="text-2xl font-bold text-slate-200">${key}</span>
+                            <img src="${icono_circular}" class="h-[5vh] w-[5vh] rounded-full">
+                            <span class="text-[3.5vh] font-bold text-slate-200">${key}</span>
                         </div>
                     </td>
-                    <td class="py-3 text-center w-1/3">
-                        <span class="text-4xl font-bold text-slate-100 tracking-wider font-mono bg-black/10 px-4 py-1 rounded-lg">
-                            ${formattedCompra}
-                        </span>
+                    <td class="w-[33%] text-center text-[4.5vh] font-bold font-mono tracking-wide text-shadow-glow bg-black/10 rounded-lg">
+                        ${compraFmt}
                     </td>
-                    <td class="py-3 text-center w-1/3">
-                        <span class="text-4xl font-bold text-slate-100 tracking-wider font-mono px-4 py-1">
-                            ${formattedVenta}
-                        </span>
+                    <td class="w-[33%] text-center text-[4.5vh] font-bold font-mono tracking-wide text-shadow-glow">
+                        ${ventaFmt}
                     </td>
                 `;
                 normalList.appendChild(row);
@@ -138,27 +116,7 @@ function processData(data) {
         }
     });
 
-    if (cambiosDetectados) {
-        playAlertSound();
+    if (cambios) {
+        document.getElementById('priceAlert').play().catch(e => console.log(e));
     }
-}
-
-function removeTrailingZeros(value) {
-    if (value == null) return '';
-    return parseFloat(value).toString();
-}
-
-function playAlertSound() {
-    const audio = document.getElementById('priceAlert');
-    if (audio) audio.play().catch(e => console.log("Audio prevent:", e));
-}
-
-function showOfflinePopup() {
-    const popup = document.getElementById('offline-popup');
-    if(popup) popup.classList.remove('hidden');
-}
-
-function hideOfflinePopup() {
-    const popup = document.getElementById('offline-popup');
-    if(popup) popup.classList.add('hidden');
 }
