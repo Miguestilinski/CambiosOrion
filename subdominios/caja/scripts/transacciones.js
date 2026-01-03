@@ -1,15 +1,20 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Iniciar Sesión y Sidebar
+    // 1. Iniciar Sesión, Sidebar y Fechas
     getSession();
     cargarSidebar();
-
-    // 2. Inicializar Flatpickr (Calendario Bonito)
     initDatePickers();
 
     const nuevaTransaccionBtn = document.getElementById('nueva-tr');
     const tablaTransacciones = document.getElementById('tabla-transacciones');
     const borrarFiltrosBtn = document.getElementById('borrar-filtros');
     const contadorRegistros = document.getElementById('contador-registros');
+    
+    // Controles de Paginación
+    const btnPrev = document.getElementById('btn-prev');
+    const btnNext = document.getElementById('btn-next');
+    const pageIndicator = document.getElementById('page-indicator');
+    
+    let paginaActual = 1;
 
     // Mapeo de Filtros
     const filtros = {
@@ -34,20 +39,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- CONFIGURACIÓN FLATPICKR ---
     function initDatePickers() {
         const config = {
             locale: "es",
             dateFormat: "Y-m-d",
-            allowInput: true, // Permitir escribir manualmente también
-            disableMobile: "true" // Usar el nativo en móviles si se prefiere, o quitar para forzar estilo
+            allowInput: true,
+            disableMobile: "true"
         };
-        
-        flatpickr("#fecha-inicio", config);
-        flatpickr("#fecha-fin", config);
+        flatpickr(".flatpickr", config);
     }
 
-    // --- SIDEBAR ---
     function cargarSidebar() {
         fetch('sidebar.html')
             .then(response => response.text())
@@ -78,7 +79,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 100);
     }
 
-    // --- SESIÓN ADMIN ---
     async function getSession() {
         try {
             const res = await fetch("https://cambiosorion.cl/data/session_status_admin.php", { credentials: "include" });
@@ -101,10 +101,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- DATOS ---
+    // --- LÓGICA DE DATOS ---
     function obtenerTransacciones() {
         const params = new URLSearchParams();
 
+        // Agregar filtros
         for (const [clave, input] of Object.entries(filtros)) {
             if (!input) continue;
             if (input.type === "checkbox") {
@@ -114,13 +115,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        // Agregar paginación
+        params.set('pagina', paginaActual);
+
         tablaTransacciones.innerHTML = `<tr><td colspan="13" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-cyan-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
 
         fetch(`https://cambiosorion.cl/data/transacciones.php?${params.toString()}`)
             .then(response => response.json())
             .then(data => {
                 mostrarResultados(data);
-                if(contadorRegistros) contadorRegistros.textContent = `${data.length} registros encontrados`;
+                actualizarPaginacion(data.length);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -128,6 +132,69 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     }
 
+    function actualizarPaginacion(cantidadResultados) {
+        if (pageIndicator) pageIndicator.textContent = `Página ${paginaActual}`;
+        if (contadorRegistros) contadorRegistros.textContent = `${cantidadResultados} registros`;
+
+        // Lógica simple de botones (si no hay resultados, deshabilitar Siguiente)
+        // Nota: Idealmente el backend debería devolver el total de páginas.
+        // Aquí asumimos que si devuelve menos del límite, es la última página.
+        const limite = parseInt(filtros.mostrar.value) || 25;
+        
+        if (btnPrev) btnPrev.disabled = (paginaActual <= 1);
+        
+        // Si llegaron menos registros que el límite, no hay más páginas
+        if (btnNext) btnNext.disabled = (cantidadResultados < limite);
+    }
+
+    // --- EVENTOS PAGINACIÓN ---
+    if (btnPrev) {
+        btnPrev.addEventListener('click', () => {
+            if (paginaActual > 1) {
+                paginaActual--;
+                obtenerTransacciones();
+            }
+        });
+    }
+
+    if (btnNext) {
+        btnNext.addEventListener('click', () => {
+            paginaActual++;
+            obtenerTransacciones();
+        });
+    }
+
+    // --- EVENTOS FILTROS ---
+    if (borrarFiltrosBtn) {
+        borrarFiltrosBtn.addEventListener('click', () => {
+            Object.values(filtros).forEach(input => {
+                if(!input) return;
+                if(input.type === 'checkbox') input.checked = false;
+                else {
+                    input.value = '';
+                    if(input._flatpickr) input._flatpickr.clear();
+                }
+            });
+            if(filtros.mostrar) filtros.mostrar.value = '25';
+            
+            paginaActual = 1; // Reiniciar a pag 1
+            obtenerTransacciones();
+        });
+    }
+
+    Object.values(filtros).forEach(input => {
+        if(input) {
+            // Al cambiar un filtro, volver a la página 1
+            const resetAndFetch = () => {
+                paginaActual = 1;
+                obtenerTransacciones();
+            };
+            input.addEventListener('input', resetAndFetch);
+            input.addEventListener('change', resetAndFetch);
+        }
+    });
+
+    // --- UTILIDADES ---
     function limpiarTexto(valor) { return valor === null || valor === undefined ? '' : valor; }
 
     function formatearNumero(numero) {
@@ -141,8 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const [datePart, timePart] = fechaString.split(' ');
             const [y, m, d] = datePart.split('-');
             const [h, min] = timePart.split(':');
-            // Formato solicitado: HH:mm dd/mm/aaaa
-            return `<span class="font-mono font-bold text-gray-600">${h}:${min}</span> <span class="text-gray-500">${d}/${m}/${y}</span>`;
+            return `<div class="flex flex-col"><span class="font-mono font-bold text-gray-600">${h}:${min}</span><span class="text-gray-400 text-[10px]">${d}/${m}/${y}</span></div>`;
         } catch (e) {
             return fechaString;
         }
@@ -160,7 +226,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const tr = document.createElement('tr');
             tr.className = 'hover:brightness-95 transition-all text-gray-800 font-medium border-b border-gray-100 last:border-0';
 
-            // Colores
             if (trx.tipo_transaccion === 'Compra') {
                 tr.style.backgroundColor = '#c3e8f1'; 
             } else if (trx.tipo_transaccion === 'Venta') {
@@ -169,7 +234,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 tr.style.backgroundColor = '#ffffff';
             }
 
-            // Botón VER DETALLE (Ojo)
             const btnMostrar = document.createElement('button');
             btnMostrar.innerHTML = `
                 <svg class="w-5 h-5 text-gray-600 hover:text-cyan-700 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -179,13 +243,11 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             btnMostrar.className = 'flex items-center justify-center p-1.5 bg-white/50 rounded-full hover:bg-white shadow-sm border border-transparent hover:border-cyan-300 mx-auto';
             btnMostrar.title = "Ver detalle";
-            
             btnMostrar.addEventListener('click', (e) => {
                 e.stopPropagation();
                 window.location.href = `detalle-tr?id=${trx.id}`;
             });
 
-            // Badge Estado
             let estadoClass = "bg-gray-100 text-gray-600";
             if(String(trx.estado).toLowerCase() === 'vigente') estadoClass = "bg-green-100 text-green-700 border border-green-200";
             if(String(trx.estado).toLowerCase() === 'anulado') estadoClass = "bg-red-100 text-red-700 border border-red-200";
@@ -213,30 +275,5 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- EVENTOS ---
-    if (borrarFiltrosBtn) {
-        borrarFiltrosBtn.addEventListener('click', () => {
-            Object.values(filtros).forEach(input => {
-                if(!input) return;
-                if(input.type === 'checkbox') input.checked = false;
-                else {
-                    input.value = '';
-                    // Limpiar también el Flatpickr visualmente si existe instancia
-                    if(input._flatpickr) input._flatpickr.clear(); 
-                }
-            });
-            if(filtros.mostrar) filtros.mostrar.value = '25';
-            obtenerTransacciones();
-        });
-    }
-
-    Object.values(filtros).forEach(input => {
-        if(input) {
-            input.addEventListener('input', obtenerTransacciones);
-            input.addEventListener('change', obtenerTransacciones);
-        }
-    });
-
-    // Cargar inicial
     obtenerTransacciones();
 });
