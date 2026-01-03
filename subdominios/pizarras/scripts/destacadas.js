@@ -54,7 +54,6 @@ function processData(data) {
     normalList.innerHTML = '';
     let cambios = false;
 
-    // Solo estas 7 divisas, en este orden
     const divisasFiltradas = ["USD", "EUR", "BRL", "ARS", "PEN", "MXN", "ORO 100"];
 
     divisasFiltradas.forEach((key) => {
@@ -63,6 +62,9 @@ function processData(data) {
             const { icono_circular, compra, venta } = divisa;
             const compraFmt = parseFloat(compra).toString();
             const ventaFmt = parseFloat(venta).toString();
+
+            // Lógica para detectar números largos (ej: ORO 100 -> 1900000)
+            const isLongPrice = (compraFmt.length > 5 || ventaFmt.length > 5);
 
             // Detectar cambios
             let flashClass = "";
@@ -75,42 +77,55 @@ function processData(data) {
             preciosAnteriores[key] = { compra, venta };
 
             if (key === "USD" || key === "EUR") {
-                // === HERO (Gigantes Flexibles) ===
+                // === HERO (Gigantes) ===
                 const card = document.createElement("div");
-                // Usamos h-full para que se expanda en su mitad del contenedor
-                // flex-1 asegura que ambas tarjetas (USD/EUR) ocupen el mismo espacio
-                card.className = `flex-1 grid grid-cols-12 items-center bg-white/5 rounded-2xl border border-white/10 shadow-lg px-4 ${flashClass}`; 
+                card.className = `flex-1 grid grid-cols-12 items-center bg-white/5 rounded-2xl border border-white/10 shadow-lg px-2 ${flashClass}`; 
                 
+                // Reducimos tamaños de fuente para evitar choques
+                // Si es largo, usamos 4vh, si es normal 5.5vh (antes era 7vh)
+                const priceSize = isLongPrice ? 'text-[4vh]' : 'text-[5.5vh]';
+
                 card.innerHTML = `
-                    <div class="col-span-4 flex items-center gap-4 lg:gap-6">
-                        <img src="${icono_circular}" class="h-[8vh] w-[8vh] lg:h-[10vh] lg:w-[10vh] rounded-full shadow-lg object-contain">
-                        <span class="text-[5vh] lg:text-[6vh] font-black tracking-tighter">${key}</span>
+                    <div class="col-span-3 flex items-center justify-start gap-3 pl-4">
+                        <img src="${icono_circular}" class="h-[7vh] w-[7vh] rounded-full shadow-lg object-contain">
+                        <span class="text-[4.5vh] font-black tracking-tighter">${key}</span>
                     </div>
-                    <div class="col-span-4 text-center">
-                        <span class="text-[6vh] lg:text-[7vh] font-black text-white tracking-widest font-mono text-shadow-glow">${compraFmt}</span>
+                    <div class="col-span-4 flex justify-center items-center">
+                        <span class="${priceSize} font-black text-white tracking-widest font-mono text-shadow-glow bg-black/20 px-4 py-1 rounded-lg w-full text-center">
+                            ${compraFmt}
+                        </span>
                     </div>
-                    <div class="col-span-4 text-center">
-                        <span class="text-[6vh] lg:text-[7vh] font-black text-white tracking-widest font-mono text-shadow-glow">${ventaFmt}</span>
+                    <div class="col-span-1"></div> <div class="col-span-4 flex justify-center items-center">
+                        <span class="${priceSize} font-black text-white tracking-widest font-mono text-shadow-glow bg-black/20 px-4 py-1 rounded-lg w-full text-center">
+                            ${ventaFmt}
+                        </span>
                     </div>
                 `;
                 heroList.appendChild(card);
             } else {
-                // === LISTA (Grandes) ===
+                // === LISTA NORMAL (Destacadas) ===
                 const row = document.createElement("tr");
                 row.className = `border-b border-white/5 ${flashClass}`;
                 
+                // Ajuste de fuente para lista normal si es muy largo
+                const listPriceSize = isLongPrice ? 'text-[3vh]' : 'text-[4vh]';
+
                 row.innerHTML = `
-                    <td class="w-[33%] py-1 pl-6">
+                    <td class="w-[30%] py-1 pl-6">
                         <div class="flex items-center gap-4">
-                            <img src="${icono_circular}" class="h-[5vh] w-[5vh] rounded-full">
-                            <span class="text-[3.5vh] font-bold text-slate-200">${key}</span>
+                            <img src="${icono_circular}" class="h-[4.5vh] w-[4.5vh] rounded-full">
+                            <span class="text-[3vh] font-bold text-slate-200">${key}</span>
                         </div>
                     </td>
-                    <td class="w-[33%] text-center text-[4.5vh] font-bold font-mono tracking-wide text-shadow-glow bg-black/10 rounded-lg">
-                        ${compraFmt}
+                    <td class="w-[35%] text-center">
+                        <span class="${listPriceSize} font-bold font-mono tracking-wide text-shadow-glow bg-black/10 rounded-lg px-2">
+                            ${compraFmt}
+                        </span>
                     </td>
-                    <td class="w-[33%] text-center text-[4.5vh] font-bold font-mono tracking-wide text-shadow-glow">
-                        ${ventaFmt}
+                    <td class="w-[35%] text-center">
+                        <span class="${listPriceSize} font-bold font-mono tracking-wide text-shadow-glow px-2">
+                            ${ventaFmt}
+                        </span>
                     </td>
                 `;
                 normalList.appendChild(row);

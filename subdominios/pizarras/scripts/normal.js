@@ -8,12 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function initSSE() {
     if (eventSource) eventSource.close();
-
-    // Usamos el Stream SSE (Nueva tecnología) en lugar de Firebase (Vieja)
     eventSource = new EventSource('https://cambiosorion.cl/data/stream_divisas.php');
 
     eventSource.onopen = () => {
-        console.log('🟢 Conectado a Pizarra Normal');
         handleConnectionSuccess();
     };
     
@@ -55,7 +52,6 @@ function processData(data) {
     list.innerHTML = ''; 
     let cambios = false;
 
-    // Lista EXACTA del sistema antiguo para mantener el orden
     const divisasOrdenadas = [
         "USD", "EUR", "ARS", "BRL", "PEN", "COP",
         "UYU", "BOB", "CAD", "GBP", "JPY", "CNY",
@@ -70,6 +66,13 @@ function processData(data) {
             const compraFmt = parseFloat(compra).toString();
             const ventaFmt = parseFloat(venta).toString();
 
+            // Detectar números largos (para ORO 100 u otras inflacionarias)
+            // Si tiene más de 6 caracteres (ej: 1900000 es 7 chars), reducimos fuente
+            const isLong = (compraFmt.length > 6 || ventaFmt.length > 6);
+            
+            // Clase de tamaño dinámica: Normal 2.8vh, Largo 2.2vh
+            const priceClass = isLong ? 'text-[2.1vh]' : 'text-[2.8vh]';
+
             // Detectar cambios
             let flashClass = "";
             if (preciosAnteriores[key]) {
@@ -80,7 +83,6 @@ function processData(data) {
             }
             preciosAnteriores[key] = { compra, venta };
 
-            // Renderizado COMPACTO (h-row definido en CSS)
             const row = document.createElement("tr");
             row.className = `h-row hover:bg-white/5 ${flashClass}`;
             row.innerHTML = `
@@ -90,10 +92,10 @@ function processData(data) {
                 <td class="text-left text-row font-semibold tracking-wide text-shadow">
                     ${key}
                 </td>
-                <td class="text-center text-price font-bold bg-black/10 tracking-widest text-shadow font-mono">
+                <td class="text-center ${priceClass} font-bold bg-black/10 tracking-widest text-shadow font-mono">
                     ${compraFmt}
                 </td>
-                <td class="text-center text-price font-bold tracking-widest text-shadow font-mono">
+                <td class="text-center ${priceClass} font-bold tracking-widest text-shadow font-mono">
                     ${ventaFmt}
                 </td>
             `;
