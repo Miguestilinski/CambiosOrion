@@ -1,48 +1,53 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Transacciones</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transacciones</title>
 
-        <link href="https://cambiosorion.cl/orionapp/public/styles/output.css" rel="stylesheet">
-        <link href="https://clientes.cambiosorion.cl/styles/index.css" rel="stylesheet">
-        <link rel="icon" href="https://cambiosorion.cl/orionapp/icons/IsotipoOrion-blue.svg" type="image/png">
+    <link href="https://cambiosorion.cl/orionapp/public/styles/output.css" rel="stylesheet">
+    <link href="https://clientes.cambiosorion.cl/styles/index.css" rel="stylesheet">
+    <link rel="icon" href="https://cambiosorion.cl/orionapp/icons/IsotipoOrion-blue.svg" type="image/png">
 
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-        
-        <style>
-            body { font-family: 'Inter', sans-serif; }
-            .hidden-section { display: none; }
-            .fade-in { animation: fadeIn 0.3s ease-in-out; }
-            @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        </style>
-    </head>
-<body>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        /* Animación suave para la entrada de contenido */
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-gray-100 h-screen flex flex-col overflow-hidden">
+    
     <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js" crossorigin="anonymous"></script>
-    <header class="fixed w-full z-50 transition-all duration-300 bg-slate-900/80 backdrop-blur-md shadow-md border-b border-slate-800">
+    
+    <header class="flex-shrink-0 z-50 bg-slate-900 shadow-lg border-b border-slate-800">
         <div class="w-full px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16"> 
                 
                 <div class="flex items-center gap-4">
-                    <a href="https://cambiosorion.cl/" class="flex-shrink-0">
-                        <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Logo Cambios Orion" class="h-10 w-auto opacity-90 hover:opacity-100 transition">
+                    <a href="https://cambiosorion.cl/" class="flex-shrink-0 group">
+                        <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Logo" class="h-10 w-auto opacity-90 group-hover:opacity-100 transition">
                     </a>
-                    <span id="header-badge" class="hidden md:inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-green-600 text-white border border-green-500/30 tracking-wider uppercase shadow-lg shadow-green-500/20">
-                        Cajas
+                    <span class="hidden md:inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-amber-600 text-white border border-amber-500/30 tracking-wider uppercase shadow-lg shadow-amber-500/20">
+                        Sistema Cajas
                     </span>
                 </div>
 
                 <nav class="hidden lg:flex space-x-1 bg-slate-800/50 p-1 rounded-lg border border-slate-700/50">
                     <a href="https://admin.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-slate-700 transition">Inicio</a>
                     <a href="https://pizarras.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-slate-700 transition">Pizarras</a>
-                    <a href="https://caja.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-white bg-green-600 shadow-lg shadow-green-500/20 transition">Caja</a>
-                    <a href="https://tesoreria.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-slate-700 transition">Tesorería</a>
+                    
+                    <a href="#" class="px-4 py-2 text-sm font-medium rounded-md text-white bg-amber-600 shadow-lg shadow-amber-500/20 transition">Caja</a>
+                    
+                    <a href="https://tesoreria.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-purple-600/20 hover:text-purple-300 transition">Tesorería</a>
                 </nav>
 
-                <div class="flex items-center gap-4 lg:gap-6 mr-1"> <div id="guest-actions" class="hidden"></div>
+                <div class="flex items-center gap-4 lg:gap-6 mr-1"> 
+                    <div id="guest-actions" class="hidden"></div>
 
                     <div id="user-actions" class="relative ml-2 block">
                         <button id="profile-menu-button" class="flex items-center gap-3 text-sm rounded-full focus:outline-none ring-2 ring-slate-700 hover:ring-indigo-500 transition pl-1 pr-3 py-1 bg-slate-800 hover:bg-slate-700">
@@ -53,18 +58,16 @@
                             <svg class="w-4 h-4 text-slate-400 hidden md:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                         </button>
                         
-                        <div id="dropdownInformation" class="hidden absolute right-0 mt-3 w-60 bg-white rounded-xl shadow-2xl py-2 z-50 border border-slate-200 transform origin-top-right transition-all">
+                        <div id="dropdownInformation" class="hidden absolute right-0 mt-3 w-60 bg-white rounded-xl shadow-2xl py-2 z-50 border border-slate-200 transform origin-top-right transition-all text-gray-800">
                             <div class="px-4 py-3 border-b border-gray-100 bg-gray-50/50">
                                 <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Conectado como</p>
                                 <p class="text-sm font-bold text-gray-900 truncate" id="dropdown-user-email">...</p>
                             </div>
                             <a href="https://cambiosorion.cl/webmail" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition flex items-center">
-                                <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                                 Webmail Corporativo
                             </a>
                             <div class="border-t border-gray-100 my-1"></div>
                             <a href="#" id="logout-button" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-medium flex items-center">
-                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                                 Cerrar sesión
                             </a>
                         </div>
@@ -77,11 +80,11 @@
             </div>
         </div>
 
-        <div id="nav-mobile-menu" class="hidden lg:hidden bg-slate-900/95 border-t border-slate-700 backdrop-blur-xl">
+        <div id="nav-mobile-menu" class="hidden lg:hidden bg-slate-900/95 border-t border-slate-700 backdrop-blur-xl absolute w-full z-50">
             <div class="px-4 pt-4 pb-6 space-y-2">
                 <a href="https://admin.cambiosorion.cl/" class="block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-700">Inicio</a>
                 <a href="https://pizarras.cambiosorion.cl/" class="block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-700">Pizarras</a>
-                <a href="https://caja.cambiosorion.cl/" class="block px-3 py-2 rounded-md text-base font-medium text-white bg-slate-700">Caja</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-white bg-amber-600">Caja</a>
                 <a href="https://tesoreria.cambiosorion.cl/" class="block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-700">Tesorería</a>
                 <div class="border-t border-slate-700 my-4 pt-4"></div>
                 <a href="#" id="logout-button-mobile" class="block px-3 py-2 rounded-md text-base font-medium text-red-400 hover:bg-slate-700">Cerrar Sesión</a>
@@ -89,202 +92,175 @@
         </div>
     </header>
 
-    <div class="header-divider"></div>
-    <div class="main-content">
-        <aside class="w-72 flex-shrink-0 hidden lg:block border-r border-gray-200 bg-white min-h-[calc(100vh-64px)]" id="sidebar-container">
-            <div class="p-6 space-y-4 animate-pulse">
-                <div class="h-6 bg-gray-200 rounded w-1/2"></div>
-                <div class="h-10 bg-gray-100 rounded w-full mt-4"></div>
+    <div class="flex flex-1 overflow-hidden relative">
+        
+        <aside class="w-64 bg-white border-r border-gray-200 hidden lg:flex flex-col z-10 shadow-sm relative">
+            <div class="p-6">
+                <h2 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Operaciones</h2>
+                <nav class="space-y-1">
+                    <a href="https://caja.cambiosorion.cl/nueva-tr" class="flex items-center px-4 py-3 text-gray-600 hover:bg-amber-50 hover:text-amber-700 rounded-lg transition-colors group">
+                        <svg class="w-5 h-5 mr-3 text-gray-400 group-hover:text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        <span class="font-medium">Nueva Transacción</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 bg-amber-50 text-amber-700 rounded-lg transition-colors border-l-4 border-amber-500 shadow-sm">
+                        <svg class="w-5 h-5 mr-3 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                        <span class="font-bold">Historial / Filtros</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-amber-50 hover:text-amber-700 rounded-lg transition-colors group">
+                        <svg class="w-5 h-5 mr-3 text-gray-400 group-hover:text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                        <span class="font-medium">Cierre de Caja</span>
+                    </a>
+                </nav>
+            </div>
+            
+            <div class="mt-auto p-6 border-t border-gray-100">
+                <div class="bg-indigo-50 rounded-xl p-4 border border-indigo-100">
+                    <p class="text-xs text-indigo-500 font-bold uppercase mb-1">Estado de Caja</p>
+                    <div class="flex items-center gap-2">
+                        <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                        <span class="text-sm font-semibold text-indigo-900">Abierta</span>
+                    </div>
+                </div>
             </div>
         </aside>
         
-        <main id="dashboard-content" class="dashboard-content">
-            <section id="transacciones" class="content-section active">
-                <!-- Título y botón Nueva Operación -->
-                <div class="flex items-center mb-6">
-                    <h1 class="text-2xl font-medium mr-4 leading-none text-white">Transacciones</h1>
+        <main class="flex-1 overflow-y-auto bg-gray-50 p-4 md:p-8 relative" id="dashboard-content">
+            
+            <section id="transacciones" class="max-w-7xl mx-auto fade-in">
+                
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-800">Transacciones</h1>
+                        <p class="text-gray-500 text-sm mt-1">Gestión y búsqueda de movimientos de caja.</p>
+                    </div>
                     <button type="button" id="nueva-tr"
-                        class="text-white bg-blue-700 mr-4 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
+                        class="text-white bg-amber-600 hover:bg-amber-700 shadow-lg shadow-amber-500/30 font-bold rounded-full text-sm px-6 py-2.5 transition-transform hover:scale-105 flex items-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                         Nueva Transacción
                     </button>
                 </div>
                 
-                <!-- Filtros de fecha y botón Borrar Filtros -->
-                <div class="flex items-center mb-6 space-x-4">
-                    <div class="flex">
-                        <div class="mr-2">
-                            <label for="fecha-inicio" class="block mb-1 text-sm text-white">Desde</label>
-                            <input type="date" id="fecha-inicio" 
-                                class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 mb-8">
+                    <div class="flex flex-col lg:flex-row items-end gap-4 mb-6">
+                        <div class="grid grid-cols-2 gap-4 w-full lg:w-auto flex-1">
+                            <div>
+                                <label for="fecha-inicio" class="block mb-1 text-xs font-bold text-gray-500 uppercase">Desde</label>
+                                <input type="date" id="fecha-inicio" class="block w-full px-3 py-2 text-sm rounded-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-amber-500 focus:border-amber-500">
+                            </div>
+                            <div>
+                                <label for="fecha-fin" class="block mb-1 text-xs font-bold text-gray-500 uppercase">Hasta</label>
+                                <input type="date" id="fecha-fin" class="block w-full px-3 py-2 text-sm rounded-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-amber-500 focus:border-amber-500">
+                            </div>
+                        </div>
+                        
+                        <button type="button" id="borrar-filtros" class="w-full lg:w-auto px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-amber-600 transition">
+                            Limpiar Filtros
+                        </button>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-6 mb-6 pb-6 border-b border-gray-100">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="emitidas" class="w-4 h-4 text-amber-600 bg-gray-100 border-gray-300 rounded focus:ring-amber-500">
+                            <label for="emitidas" class="ml-2 text-sm font-medium text-gray-700">Sólo emitidas en SII</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="no-emitidas" class="w-4 h-4 text-amber-600 bg-gray-100 border-gray-300 rounded focus:ring-amber-500">
+                            <label for="no-emitidas" class="ml-2 text-sm font-medium text-gray-700">Sólo NO emitidas en SII</label>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-4">
+                        <div>
+                            <label class="block mb-1 text-xs font-bold text-gray-400">Número</label>
+                            <input type="text" id="numero" class="w-full text-sm rounded-md border-gray-300 focus:border-amber-500 focus:ring-amber-500">
+                        </div>
+                        <div class="col-span-2">
+                            <label class="block mb-1 text-xs font-bold text-gray-400">Cliente</label>
+                            <input type="text" id="cliente" class="w-full text-sm rounded-md border-gray-300 focus:border-amber-500 focus:ring-amber-500">
                         </div>
                         <div>
-                            <label for="fecha-fin" class="block mb-1 text-sm text-white">Hasta</label>
-                            <input type="date" id="fecha-fin" 
-                                class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                            <label class="block mb-1 text-xs font-bold text-gray-400">Tipo Doc</label>
+                            <select id="tipo-doc" class="w-full text-sm rounded-md border-gray-300 focus:border-amber-500 focus:ring-amber-500">
+                                <option value="">Todos</option>
+                                <option value="boleta">Boleta</option>
+                                <option value="factura">Factura</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block mb-1 text-xs font-bold text-gray-400">Nº Doc</label>
+                            <input type="text" id="n-doc" class="w-full text-sm rounded-md border-gray-300 focus:border-amber-500 focus:ring-amber-500">
+                        </div>
+                        <div>
+                            <label class="block mb-1 text-xs font-bold text-gray-400">Operación</label>
+                            <select id="tipo-transaccion" class="w-full text-sm rounded-md border-gray-300 focus:border-amber-500 focus:ring-amber-500">
+                                <option value="">Todas</option>
+                                <option value="compra">Compra</option>
+                                <option value="venta">Venta</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block mb-1 text-xs font-bold text-gray-400">Divisa</label>
+                            <input type="text" id="divisa" class="w-full text-sm rounded-md border-gray-300 focus:border-amber-500 focus:ring-amber-500">
+                        </div>
+                        <div>
+                            <label class="block mb-1 text-xs font-bold text-gray-400">Estado</label>
+                            <select id="estado" class="w-full text-sm rounded-md border-gray-300 focus:border-amber-500 focus:ring-amber-500">
+                                <option value="">Todos</option>
+                                <option value="vigente">Vigente</option>
+                                <option value="anulado">Anulado</option>
+                            </select>
                         </div>
                     </div>
-                    <button type="button" id="borrar-filtros" 
-                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mt-6">
-                    Borrar Filtros
-                </button>
-                </div>
-                
-                <!-- Checkboxes -->
-                <div class="flex mb-6">
-                    <div class="flex items-center">
-                        <input type="checkbox" id="emitidas" 
-                            class="w-4 h-4 mr-2 text-blue-600 bg-white border-gray-600 rounded focus:ring-blue-500">
-                        <label for="emitidas" class="text-sm text-white">Mostrar sólo emitidas/timbradas en SII</label>
-                    </div>
-                    <div class="flex items-center ml-4">
-                        <input type="checkbox" id="no-emitidas" 
-                            class="w-4 h-4 mr-2 text-blue-600 bg-white border-gray-600 rounded focus:ring-blue-500">
-                        <label for="no-emitidas" class="text-sm text-white">Mostrar sólo NO emitidas/timbradas en SII</label>
-                    </div>
-                </div>
-                
-                <!-- Filtros avanzados -->
-                <div class="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-6">
-                    <div>
-                        <label for="numero" class="block mb-1 text-sm text-white">Número</label>
-                        <input type="text" id="numero" 
-                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label for="cliente" class="block mb-1 text-sm text-white">Cliente</label>
-                        <input type="text" id="cliente" 
-                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label for="tipo-doc" class="block mb-1 text-sm text-white">Tipo de Documento</label>
-                        <select id="tipo-doc"
-                            class="select-list block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Seleccionar</option>
-                            <option value="boleta">Boleta</option>
-                            <option value="factura">Factura</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="n-doc" class="block mb-1 text-sm text-white">Nº Doc</label>
-                        <input type="text" id="n-doc"
-                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label for="n-nota" class="block mb-1 text-sm text-white">Nº Nota</label>
-                        <input type="text" id="n-nota" 
-                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label for="tipo-transaccion" class="block mb-1 text-sm text-white">Tipo de Transacción</label>
-                        <select id="tipo-transaccion" 
-                            class="select-list block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Seleccionar</option>
-                            <option value="compra">Compra</option>
-                            <option value="venta">Venta</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="divisa" class="block mb-1 text-sm text-white">Divisa</label>
-                        <input type="text" id="divisa" 
-                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label for="estado" class="block mb-1 text-sm text-white">Estado</label>
-                        <select id="estado" 
-                            class="select-list block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Seleccionar</option>
-                            <option value="vigente">Vigente</option>
-                            <option value="anulado">Anulado</option>
-                        </select>
+                    
+                    <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-100">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm text-gray-500">Mostrar</span>
+                            <select id="mostrar-registros" class="text-sm border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500">
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                        </div>
+                        <div class="relative w-64">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            </div>
+                            <input type="text" id="buscar" class="block w-full pl-10 text-sm border-gray-300 rounded-full bg-gray-50 focus:ring-amber-500 focus:border-amber-500" placeholder="Búsqueda rápida...">
+                        </div>
                     </div>
                 </div>
                 
-                <!-- Mostrar registros y buscar -->
-                <div class="flex items-center justify-between mb-6">
-                    <div class="flex items-center space-x-2">
-                        <label for="mostrar-registros" class="text-sm text-white">Mostrar</label>
-                        <select id="mostrar-registros" 
-                            class="block px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="25">25</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                        </select>
-                        <span class="text-sm text-white">registros</span>
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs uppercase bg-gray-50 text-gray-500 border-b border-gray-200 font-bold">
+                                <tr>
+                                    <th class="px-4 py-3">Fecha</th>
+                                    <th class="px-4 py-3">Nº</th>
+                                    <th class="px-4 py-3">Cliente</th>
+                                    <th class="px-4 py-3">Doc</th>
+                                    <th class="px-4 py-3">Folio</th>
+                                    <th class="px-4 py-3">Nota</th>
+                                    <th class="px-4 py-3 text-center">Tipo</th>
+                                    <th class="px-4 py-3 text-center">Divisa</th>
+                                    <th class="px-4 py-3 text-right">Monto</th>
+                                    <th class="px-4 py-3 text-right">Tasa</th>
+                                    <th class="px-4 py-3 text-right">Total</th>
+                                    <th class="px-4 py-3 text-center">Estado</th>
+                                    <th class="px-4 py-3"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-transacciones" class="divide-y divide-gray-100">
+                                </tbody>
+                        </table>
                     </div>
-                    <div>
-                        <input type="text" id="buscar" placeholder="Buscar" 
-                            class="block w-64 px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                </div>
-                
-                <!-- Tabla de operaciones -->
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left text-white bg-gray-800">
-                        <thead class="text-xs uppercase bg-gray-800 text-white">
-                            <tr>
-                                <th class="px-4 py-2">Fecha</th>
-                                <th class="px-4 py-2">Número</th>
-                                <th class="px-4 py-2">Cliente</th>
-                                <th class="px-4 py-2">Tipo de Documento</th>
-                                <th class="px-4 py-2">Nº Doc</th>
-                                <th class="px-4 py-2">Nº Nota</th>
-                                <th class="px-4 py-2">Tipo de Transacción</th>
-                                <th class="px-4 py-2">Divisa</th>
-                                <th class="px-4 py-2">Monto</th>
-                                <th class="px-4 py-2">Tasa de Cambio</th>
-                                <th class="px-4 py-2">Total</th>
-                                <th class="px-4 py-2">Estado</th>
-                                <th class="px-4 py-2"></th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabla-transacciones">
-                            <tr class="venta border-b border-gray-700 text-gray-700">
-                                <td class="px-4 py-2">2025-01-28</td>
-                                <td class="px-4 py-2">12345</td>
-                                <td class="px-4 py-2">Cliente 1</td>
-                                <td class="px-4 py-2">Factura</td>
-                                <td class="px-4 py-2">123</td>
-                                <td class="px-4 py-2">456</td>
-                                <td class="px-4 py-2">Venta</td>
-                                <td class="px-4 py-2">USD</td>
-                                <td class="px-4 py-2">1.000</td>
-                                <td class="px-4 py-2">$983</td>
-                                <td class="px-4 py-2">$1.200</td>
-                                <td class="px-4 py-2">Pagado</td>
-                                <td class="px-4 py-2">
-                                    <button class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1">
-                                        Mostrar
-                                    </button>
-                                </td>
-                            </tr>
-                            <!-- Más filas -->
-                        </tbody>
-                    </table>
                 </div>
             </section>        
         </main>
     </div>
 
-    <footer class="bg-black  mt-auto">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="flex items-center gap-3">
-                    <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Orion" class="h-12 grayscale hover:grayscale-0 transition">
-                    <span class="text-slate-400 text-sm">| Sistema Corporativo</span>
-                </div>
-                <p class="text-slate-400 text-xs">© 2025 Orion Financial Group. Todos los derechos reservados.</p>
-            </div>
-        </div>
-    </footer>
-
     <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
     <script type="module" src="https://cambiosorion.cl/orionapp/public/scripts/header.js" crossorigin="anonymous"></script>
     <script type="module" src="./scripts/transacciones.js"></script>
-    <script>
-        fetch('sidebar.html')
-            .then(response => response.text())
-            .then(data => document.getElementById('sidebar-container').innerHTML = data);
-    </script>
 </body>
 </html>
