@@ -1,17 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Obtener Sesión ADMIN
+    // 1. Iniciar Sesión y Sidebar
     getSession();
+    cargarSidebar();
 
-    // 2. Elementos
     const nuevaTransaccionBtn = document.getElementById('nueva-tr');
     const tablaTransacciones = document.getElementById('tabla-transacciones');
     const borrarFiltrosBtn = document.getElementById('borrar-filtros');
     const contadorRegistros = document.getElementById('contador-registros');
 
-    // 3. Mapeo de Filtros (IDs coinciden con los inputs en el HTML)
+    // Mapeo de Filtros
     const filtros = {
         fechaInicio: document.getElementById("fecha-inicio"),
         fechaFin: document.getElementById("fecha-fin"),
+        emitidas: document.getElementById("emitidas"),
+        noEmitidas: document.getElementById("no-emitidas"),
         numero: document.getElementById("numero"),
         cliente: document.getElementById("cliente"),
         tipoDoc: document.getElementById("tipo-doc"),
@@ -29,7 +31,40 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- SESIÓN ---
+    // --- SIDEBAR ---
+    function cargarSidebar() {
+        fetch('sidebar.html')
+            .then(response => response.text())
+            .then(html => {
+                const container = document.getElementById('sidebar-container');
+                if (container) {
+                    container.innerHTML = html;
+                    activarLinkSidebar('transacciones');
+                }
+            });
+    }
+
+    function activarLinkSidebar(pagina) {
+        setTimeout(() => {
+            const links = document.querySelectorAll('#sidebar-nav a');
+            links.forEach(link => {
+                // Reset styles
+                link.classList.remove('bg-cyan-50', 'text-cyan-800', 'border-l-4', 'border-cyan-600', 'shadow-sm', 'font-bold');
+                link.classList.add('text-gray-600', 'border-transparent');
+                const icon = link.querySelector('svg');
+                if(icon) { icon.classList.remove('text-cyan-600'); icon.classList.add('text-gray-400'); }
+
+                // Set Active
+                if (link.dataset.page === pagina) {
+                    link.classList.remove('text-gray-600', 'border-transparent');
+                    link.classList.add('bg-cyan-50', 'text-cyan-800', 'border-l-4', 'border-cyan-600', 'shadow-sm', 'font-bold');
+                    if(icon) { icon.classList.remove('text-gray-400'); icon.classList.add('text-cyan-600'); }
+                }
+            });
+        }, 100);
+    }
+
+    // --- SESIÓN ADMIN ---
     async function getSession() {
         try {
             const res = await fetch("https://cambiosorion.cl/data/session_status_admin.php", { credentials: "include" });
@@ -48,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (headerEmail) headerEmail.textContent = data.correo;
 
         } catch (error) {
-            console.error(error);
+            console.error("Error sesión:", error);
         }
     }
 
@@ -57,12 +92,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const params = new URLSearchParams();
 
         for (const [clave, input] of Object.entries(filtros)) {
-            if (input && input.value) {
+            if (input && input.type === "checkbox") {
+                if (input.checked) params.set(clave, '1');
+            } else if (input && input.value) {
                 params.set(clave, input.value.trim());
             }
         }
 
-        // Feedback de carga
         tablaTransacciones.innerHTML = `<tr><td colspan="13" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-cyan-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
 
         fetch(`https://cambiosorion.cl/data/transacciones.php?${params.toString()}`)
@@ -77,7 +113,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     }
 
-    // --- UTILIDADES ---
     function limpiarTexto(valor) { return valor === null || valor === undefined ? '' : valor; }
 
     function formatearNumero(numero) {
@@ -87,12 +122,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function formatearFechaHora(fechaString) {
         if (!fechaString) return '';
-        // Asumiendo formato SQL: YYYY-MM-DD HH:MM:SS
+        // Entrada esperada: YYYY-MM-DD HH:MM:SS
         try {
             const [datePart, timePart] = fechaString.split(' ');
             const [y, m, d] = datePart.split('-');
             const [h, min] = timePart.split(':');
-            return `<span class="font-mono text-xs font-bold text-gray-500">${h}:${min}</span> <span class="text-xs">${d}/${m}/${y}</span>`;
+            // Salida: HH:mm dd/mm/aaaa
+            return `<div class="flex flex-col"><span class="font-mono font-bold text-gray-600">${h}:${min}</span><span class="text-gray-400 text-[10px]">${d}/${m}/${y}</span></div>`;
         } catch (e) {
             return fechaString;
         }
@@ -110,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const tr = document.createElement('tr');
             tr.className = 'hover:brightness-95 transition-all text-gray-800 font-medium border-b border-gray-100 last:border-0';
 
-            // Colores de fila
+            // Colores
             if (trx.tipo_transaccion === 'Compra') {
                 tr.style.backgroundColor = '#c3e8f1'; 
             } else if (trx.tipo_transaccion === 'Venta') {
@@ -119,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 tr.style.backgroundColor = '#ffffff';
             }
 
-            // Botón VER DETALLE (Mostrar)
+            // Botón VER DETALLE (Ojo)
             const btnMostrar = document.createElement('button');
             btnMostrar.innerHTML = `
                 <svg class="w-5 h-5 text-gray-600 hover:text-cyan-700 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -130,7 +166,6 @@ document.addEventListener('DOMContentLoaded', () => {
             btnMostrar.className = 'flex items-center justify-center p-1.5 bg-white/50 rounded-full hover:bg-white shadow-sm border border-transparent hover:border-cyan-300 mx-auto';
             btnMostrar.title = "Ver detalle";
             
-            // Redirección
             btnMostrar.addEventListener('click', (e) => {
                 e.stopPropagation();
                 window.location.href = `detalle-tr?id=${trx.id}`;
@@ -142,12 +177,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if(String(trx.estado).toLowerCase() === 'anulado') estadoClass = "bg-red-100 text-red-700 border border-red-200";
 
             tr.innerHTML = `
-                <td class="px-2 py-2 whitespace-nowrap text-center">${formatearFechaHora(trx.fecha)}</td>
+                <td class="px-2 py-2 whitespace-nowrap">${formatearFechaHora(trx.fecha)}</td>
                 <td class="px-2 py-2 font-mono text-xs font-bold text-gray-600">${limpiarTexto(trx.id)}</td>
                 <td class="px-2 py-2 font-semibold text-xs truncate max-w-[120px]" title="${limpiarTexto(trx.cliente)}">${limpiarTexto(trx.cliente)}</td>
                 <td class="px-2 py-2 text-xs uppercase font-bold text-gray-500">${limpiarTexto(trx.tipo_doc)}</td>
                 <td class="px-2 py-2 font-mono text-xs">${limpiarTexto(trx.n_doc)}</td>
-                <td class="px-2 py-2 text-xs text-gray-500 max-w-[100px] truncate">${limpiarTexto(trx.n_nota)}</td>
+                <td class="px-2 py-2 text-xs text-gray-500 max-w-[100px] truncate" title="${limpiarTexto(trx.n_nota)}">${limpiarTexto(trx.n_nota)}</td>
                 <td class="px-2 py-2 text-center font-bold uppercase text-xs tracking-wider">${limpiarTexto(trx.tipo_transaccion)}</td>
                 <td class="px-2 py-2 text-center font-black text-slate-700 text-xs">${limpiarTexto(trx.divisa)}</td>
                 <td class="px-2 py-2 text-right font-mono text-sm">${formatearNumero(trx.monto)}</td>
@@ -168,7 +203,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (borrarFiltrosBtn) {
         borrarFiltrosBtn.addEventListener('click', () => {
             Object.values(filtros).forEach(input => {
-                if (input) input.value = '';
+                if (input.type === 'checkbox') {
+                    input.checked = false;
+                } else if (input) {
+                    input.value = '';
+                }
             });
             if(filtros.mostrar) filtros.mostrar.value = '25';
             obtenerTransacciones();

@@ -18,16 +18,31 @@
         .fade-in { animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* Estilos para inputs de tabla compactos */
-        .table-input {
-            @apply w-full text-xs border-gray-300 rounded focus:ring-cyan-500 focus:border-cyan-500 px-2 py-1 h-8;
+        .layout-container { min-height: calc(100vh - 64px); }
+
+        /* Estilo para los inputs de filtro dentro de la tabla */
+        .filter-input {
+            width: 100%;
+            font-size: 0.75rem; /* text-xs */
+            padding: 0.25rem 0.5rem;
+            border: 1px solid #e5e7eb; /* gray-200 */
+            border-radius: 0.375rem; /* rounded-md */
+            background-color: #f9fafb; /* gray-50 */
+            transition: all 0.2s;
+            height: 32px; /* Altura fija uniforme */
+        }
+        .filter-input:focus {
+            outline: none;
+            border-color: #06b6d4; /* cyan-500 */
+            box-shadow: 0 0 0 1px #06b6d4;
+            background-color: white;
         }
         
-        /* Ocultar icono de calendario en algunos navegadores si molesta, o dejarlo */
-        input[type="date"]::-webkit-inner-spin-button,
-        input[type="date"]::-webkit-calendar-picker-indicator {
-            opacity: 0.6;
-            cursor: pointer;
+        /* Ajuste específico para las fechas apiladas */
+        .date-input-compact {
+            height: 24px; 
+            font-size: 0.7rem;
+            padding: 0 0.25rem;
         }
     </style>
 </head>
@@ -70,9 +85,9 @@
                                 <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Conectado como</p>
                                 <p class="text-sm font-bold text-gray-900 truncate" id="dropdown-user-email">...</p>
                             </div>
-                            <a href="#" id="logout-button" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-medium flex items-center">
-                                Cerrar sesión
-                            </a>
+                            <a href="https://cambiosorion.cl/webmail" class="block px-4 py-2 text-sm text-gray-700 hover:bg-cyan-50 hover:text-cyan-700 transition flex items-center">Webmail Corporativo</a>
+                            <div class="border-t border-gray-100 my-1"></div>
+                            <a href="#" id="logout-button" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-medium flex items-center">Cerrar sesión</a>
                         </div>
                     </div>
                 </div>
@@ -80,29 +95,9 @@
         </div>
     </header>
 
-    <div class="flex flex-1 overflow-hidden relative">
+    <div class="flex flex-1 overflow-hidden relative layout-container">
         
-        <aside class="w-64 bg-white/95 backdrop-blur-sm border-r border-gray-200 hidden lg:flex flex-col z-10 shadow-lg relative">
-            <div class="p-5">
-                <h2 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Herramientas</h2>
-                <nav class="space-y-1">
-                    <a href="https://caja.cambiosorion.cl/nueva-tr" class="flex items-center px-4 py-3 text-gray-700 hover:bg-cyan-50 hover:text-cyan-700 rounded-lg transition-colors group mb-2 border border-transparent hover:border-cyan-100">
-                        <div class="bg-cyan-100 text-cyan-600 p-1.5 rounded-md mr-3 group-hover:bg-cyan-200 transition">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                        </div>
-                        <span class="font-bold">Nueva Transacción</span>
-                    </a>
-                    <a href="#" class="flex items-center px-4 py-3 bg-cyan-50 text-cyan-800 rounded-lg transition-colors border-l-4 border-cyan-600 shadow-sm">
-                        <svg class="w-5 h-5 mr-3 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
-                        <span class="font-bold">Transacciones</span>
-                    </a>
-                    <a href="ingresos" class="flex items-center px-4 py-3 text-gray-600 hover:bg-green-50 hover:text-green-700 rounded-lg transition-colors group"><span class="font-medium">Ingresos</span></a>
-                    <a href="egresos" class="flex items-center px-4 py-3 text-gray-600 hover:bg-red-50 hover:text-red-700 rounded-lg transition-colors group"><span class="font-medium">Egresos</span></a>
-                    <a href="traspasos-caja" class="flex items-center px-4 py-3 text-gray-600 hover:bg-indigo-50 hover:text-indigo-700 rounded-lg transition-colors group"><span class="font-medium">Traspasos</span></a>
-                    <a href="arqueo-caja" class="flex items-center px-4 py-3 text-gray-600 hover:bg-amber-50 hover:text-amber-700 rounded-lg transition-colors group"><span class="font-medium">Arqueo</span></a>
-                </nav>
-            </div>
-        </aside>
+        <div id="sidebar-container" class="hidden lg:block h-full z-10"></div>
         
         <main class="flex-1 overflow-y-auto p-4 md:p-6 relative" id="dashboard-content">
             
@@ -111,9 +106,20 @@
                 <div class="flex justify-between items-center mb-4">
                     <h1 class="text-2xl font-bold text-white drop-shadow-md">Movimientos de Caja</h1>
                     
-                    <div class="flex gap-2">
-                        <button type="button" id="borrar-filtros" class="bg-white/10 hover:bg-white/20 text-white border border-white/20 text-xs px-3 py-2 rounded-lg transition">
-                            Limpiar Filtros
+                    <div class="flex gap-3">
+                        <div class="flex bg-white/10 backdrop-blur rounded-lg p-1 gap-1">
+                            <label class="cursor-pointer select-none inline-flex items-center px-3 py-1.5 rounded-md text-xs font-medium text-white hover:bg-white/10 transition">
+                                <input type="checkbox" id="emitidas" class="w-3 h-3 mr-2 rounded text-cyan-600 focus:ring-offset-0 focus:ring-0">
+                                Emitidas SII
+                            </label>
+                            <label class="cursor-pointer select-none inline-flex items-center px-3 py-1.5 rounded-md text-xs font-medium text-white hover:bg-white/10 transition">
+                                <input type="checkbox" id="no-emitidas" class="w-3 h-3 mr-2 rounded text-cyan-600 focus:ring-offset-0 focus:ring-0">
+                                No Emitidas
+                            </label>
+                        </div>
+
+                        <button type="button" id="borrar-filtros" class="bg-white/10 hover:bg-white/20 text-white border border-white/20 text-xs px-4 py-2 rounded-lg transition">
+                            Limpiar
                         </button>
                         <button type="button" id="nueva-tr" class="text-white bg-cyan-600 hover:bg-cyan-700 shadow-lg shadow-cyan-500/30 font-bold rounded-lg text-xs px-4 py-2 transition flex items-center border border-cyan-500">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
@@ -124,60 +130,74 @@
                 
                 <div class="bg-white/95 backdrop-blur-md rounded-xl shadow-xl border border-white/20 flex-1 overflow-hidden flex flex-col">
                     <div class="overflow-auto flex-1">
-                        <table class="w-full text-sm text-left">
-                            <thead class="text-xs uppercase bg-gray-100 text-gray-600 font-extrabold tracking-wide sticky top-0 z-10 shadow-sm">
-                                <tr>
-                                    <th class="px-2 py-2 min-w-[140px]">Fecha / Hora</th>
-                                    <th class="px-2 py-2 w-20">Nº</th>
-                                    <th class="px-2 py-2">Cliente</th>
-                                    <th class="px-2 py-2 w-24">Tipo Doc</th>
-                                    <th class="px-2 py-2 w-24">Folio</th>
-                                    <th class="px-2 py-2">Nota</th>
-                                    <th class="px-2 py-2 text-center w-24">Operación</th>
-                                    <th class="px-2 py-2 text-center w-20">Divisa</th>
-                                    <th class="px-2 py-2 text-right">Monto</th>
-                                    <th class="px-2 py-2 text-right">Tasa</th>
-                                    <th class="px-2 py-2 text-right">Total</th>
-                                    <th class="px-2 py-2 text-center w-28">Estado</th>
-                                    <th class="px-2 py-2 text-center w-16">Ver</th>
-                                </tr>
+                        <table class="w-full text-sm text-left border-collapse">
+                            <thead class="text-xs uppercase bg-gray-100 text-gray-600 font-extrabold tracking-wide sticky top-0 z-20 shadow-sm">
                                 
-                                <tr class="bg-gray-50 border-b border-gray-200">
-                                    <td class="p-1 space-y-1">
-                                        <input type="date" id="fecha-inicio" class="table-input" placeholder="Desde">
-                                        <input type="date" id="fecha-fin" class="table-input" placeholder="Hasta">
+                                <tr>
+                                    <th class="px-2 py-2 w-[140px] text-left border-b border-gray-200">Fecha</th>
+                                    <th class="px-2 py-2 w-20 text-left border-b border-gray-200">Nº</th>
+                                    <th class="px-2 py-2 text-left border-b border-gray-200">Cliente</th>
+                                    <th class="px-2 py-2 w-24 text-left border-b border-gray-200">Tipo Doc</th>
+                                    <th class="px-2 py-2 w-24 text-left border-b border-gray-200">Folio</th>
+                                    <th class="px-2 py-2 text-left border-b border-gray-200">Nota</th>
+                                    <th class="px-2 py-2 w-24 text-center border-b border-gray-200">Operación</th>
+                                    <th class="px-2 py-2 w-20 text-center border-b border-gray-200">Divisa</th>
+                                    <th class="px-2 py-2 w-28 text-right border-b border-gray-200">Monto</th>
+                                    <th class="px-2 py-2 w-20 text-right border-b border-gray-200">Tasa</th>
+                                    <th class="px-2 py-2 w-28 text-right border-b border-gray-200">Total</th>
+                                    <th class="px-2 py-2 w-28 text-center border-b border-gray-200">Estado</th>
+                                    <th class="px-2 py-2 w-12 text-center border-b border-gray-200">Ver</th>
+                                </tr>
+
+                                <tr class="bg-gray-50/80">
+                                    <td class="p-1 align-top border-b border-gray-200">
+                                        <div class="flex flex-col gap-1">
+                                            <input type="date" id="fecha-inicio" class="filter-input date-input-compact" placeholder="Desde">
+                                            <input type="date" id="fecha-fin" class="filter-input date-input-compact" placeholder="Hasta">
+                                        </div>
                                     </td>
-                                    <td class="p-1"><input type="text" id="numero" class="table-input" placeholder="#"></td>
-                                    <td class="p-1"><input type="text" id="cliente" class="table-input" placeholder="Cliente..."></td>
-                                    <td class="p-1">
-                                        <select id="tipo-doc" class="table-input">
+                                    <td class="p-1 align-top border-b border-gray-200">
+                                        <input type="text" id="numero" class="filter-input" placeholder="#">
+                                    </td>
+                                    <td class="p-1 align-top border-b border-gray-200">
+                                        <input type="text" id="cliente" class="filter-input" placeholder="Buscar cliente...">
+                                    </td>
+                                    <td class="p-1 align-top border-b border-gray-200">
+                                        <select id="tipo-doc" class="filter-input">
                                             <option value="">Todos</option>
                                             <option value="boleta">Boleta</option>
                                             <option value="factura">Factura</option>
                                         </select>
                                     </td>
-                                    <td class="p-1"><input type="text" id="n-doc" class="table-input" placeholder="Folio"></td>
-                                    <td class="p-1"><input type="text" id="n-nota" class="table-input" placeholder="Nota..."></td>
-                                    <td class="p-1">
-                                        <select id="tipo-transaccion" class="table-input">
+                                    <td class="p-1 align-top border-b border-gray-200">
+                                        <input type="text" id="n-doc" class="filter-input" placeholder="Nº">
+                                    </td>
+                                    <td class="p-1 align-top border-b border-gray-200">
+                                        <input type="text" id="n-nota" class="filter-input" placeholder="Nota...">
+                                    </td>
+                                    <td class="p-1 align-top border-b border-gray-200">
+                                        <select id="tipo-transaccion" class="filter-input">
                                             <option value="">Todas</option>
                                             <option value="compra">Compra</option>
                                             <option value="venta">Venta</option>
                                         </select>
                                     </td>
-                                    <td class="p-1"><input type="text" id="divisa" class="table-input text-center" placeholder="USD"></td>
-                                    <td class="p-1 bg-gray-50/50"></td>
-                                    <td class="p-1 bg-gray-50/50"></td>
-                                    <td class="p-1 bg-gray-50/50"></td>
+                                    <td class="p-1 align-top border-b border-gray-200">
+                                        <input type="text" id="divisa" class="filter-input text-center" placeholder="Ex: USD">
+                                    </td>
                                     
-                                    <td class="p-1">
-                                        <select id="estado" class="table-input">
+                                    <td class="p-1 border-b border-gray-200 bg-gray-50"></td>
+                                    <td class="p-1 border-b border-gray-200 bg-gray-50"></td>
+                                    <td class="p-1 border-b border-gray-200 bg-gray-50"></td>
+                                    
+                                    <td class="p-1 align-top border-b border-gray-200">
+                                        <select id="estado" class="filter-input">
                                             <option value="">Todos</option>
                                             <option value="vigente">Vigente</option>
                                             <option value="anulado">Anulado</option>
                                         </select>
                                     </td>
-                                    <td class="p-1"></td>
+                                    <td class="p-1 border-b border-gray-200"></td>
                                 </tr>
                             </thead>
                             
@@ -189,13 +209,13 @@
                     <div class="bg-gray-50 px-4 py-2 border-t border-gray-200 flex justify-between items-center text-xs text-gray-500">
                         <div class="flex items-center gap-2">
                             <span>Mostrar</span>
-                            <select id="mostrar-registros" class="border-gray-300 rounded text-xs py-1">
+                            <select id="mostrar-registros" class="filter-input w-auto h-7 py-0">
                                 <option value="25">25</option>
                                 <option value="50">50</option>
                                 <option value="100">100</option>
                             </select>
                         </div>
-                        <span id="contador-registros">Cargando...</span>
+                        <span id="contador-registros">Cargando datos...</span>
                     </div>
                 </div>
             </section>        
