@@ -7,8 +7,8 @@
     
     <link rel="stylesheet" href="https://pizarras.cambiosorion.cl/styles/index.css">
     <link href="https://cambiosorion.cl/orionapp/public/styles/output.css" rel="stylesheet">
-    <link rel="icon" href="https://cambiosorion.cl/orionapp/icons/IsotipoOrion-blue.svg" type="image/png">
-    
+    <script src="https://cdn.tailwindcss.com"></script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
 
@@ -17,11 +17,13 @@
             font-family: 'Inter', sans-serif; 
             background: url('https://cambiosorion.cl/orionapp/assets/FondoOrion.jpg') no-repeat center center fixed;
             background-size: cover;
-            overflow: hidden; /* Vital para digital signage */
+            overflow: hidden; 
         }
-        /* Ajuste fino de alturas para que 20 filas quepan perfecto en 1080x1920 */
-        .h-row { height: 3.5vh; } 
-        .text-header { font-size: 1.6vh; }
+        /* Alturas Críticas para Pantalla Vertical */
+        .h-row { height: 3.3vh; } /* 20 filas * 3.3 = 66vh */
+        
+        /* Ajuste de fuentes para que no se corten */
+        .text-header { font-size: 1.5vh; }
         
         .text-shadow { text-shadow: 2px 2px 4px rgba(0,0,0,0.9); }
     </style>
@@ -30,33 +32,32 @@
     
     <div class="fixed inset-0 bg-black/40 -z-10"></div>
 
-    <header class="h-[9vh] flex flex-col justify-center items-center border-b border-white/20 bg-black/20 backdrop-blur-sm shrink-0">
-        <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Orion" class="h-[6vh] drop-shadow-lg">
+    <header class="h-[8vh] flex flex-col justify-center items-center border-b border-white/20 bg-black/20 backdrop-blur-sm shrink-0">
+        <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Orion" class="h-[5vh] drop-shadow-lg">
     </header>
 
-    <main class="flex-grow w-full max-w-6xl mx-auto px-2 relative flex flex-col justify-start pt-2">
+    <main class="flex-grow w-full max-w-6xl mx-auto px-2 relative flex flex-col justify-start pt-1">
         <table class="w-full table-fixed border-collapse">
             <thead class="h-[4vh] text-blue-200 uppercase tracking-widest border-b-2 border-white/30">
                 <tr>
-                    <th class="w-[15%] text-left pl-4 text-header">Divisa</th>
-                    <th class="w-[25%] text-center"></th> 
-                    <th class="w-[30%] text-center font-bold text-header bg-black/20 rounded-t-lg">COMPRA</th>
-                    <th class="w-[30%] text-center font-bold text-header">VENTA</th>
+                    <th class="w-[20%] text-left pl-4 text-header">Divisa</th>
+                    <th class="w-[10%]"></th> 
+                    <th class="w-[35%] text-center font-bold text-header bg-black/20 rounded-t-lg">COMPRA</th>
+                    <th class="w-[35%] text-center font-bold text-header">VENTA</th>
                 </tr>
             </thead>
-            
             <tbody id="currency-list" class="divide-y divide-white/10">
                 </tbody>
         </table>
     </main>
 
-    <footer class="h-[7vh] flex flex-col justify-center items-center bg-black/80 backdrop-blur-md border-t border-white/20 shrink-0 z-20">
+    <footer class="h-[6vh] flex flex-col justify-center items-center bg-black/80 backdrop-blur-md border-t border-white/20 shrink-0 z-20">
         <div class="flex items-center gap-4">
-            <span class="bg-blue-600/90 px-4 py-1 rounded-full text-[1.8vh] font-bold shadow-lg shadow-blue-500/30 tracking-wide">
+            <span class="bg-blue-600/90 px-4 py-0.5 rounded-full text-[1.6vh] font-bold shadow-lg shadow-blue-500/30 tracking-wide">
                 TRANSFERENCIAS AL EXTRANJERO
             </span>
         </div>
-        <p class="text-[1.2vh] text-slate-400 mt-1 uppercase tracking-wider">
+        <p class="text-[1.1vh] text-slate-400 mt-0.5 uppercase tracking-wider">
             Lun a Vie 09:00 - 17:00 hrs
         </p>
     </footer>
@@ -66,7 +67,6 @@
     </div>
 
     <audio id="priceAlert" src="https://cambiosorion.cl/orionapp/sounds/alert.mp3"></audio>
-    <script src="https://cdn.tailwindcss.com"></script>
     <script type="module" src="./scripts/normal.js"></script>
 </body>
 </html>

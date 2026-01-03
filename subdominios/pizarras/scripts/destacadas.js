@@ -10,9 +10,7 @@ function initSSE() {
     if (eventSource) eventSource.close();
     eventSource = new EventSource('https://cambiosorion.cl/data/stream_divisas.php');
 
-    eventSource.onopen = () => {
-        handleConnectionSuccess();
-    };
+    eventSource.onopen = () => handleConnectionSuccess();
     
     eventSource.onmessage = (event) => {
         handleConnectionSuccess();
@@ -63,10 +61,8 @@ function processData(data) {
             const compraFmt = parseFloat(compra).toString();
             const ventaFmt = parseFloat(venta).toString();
             
-            // Detectar números largos
             const isLongPrice = (compraFmt.length > 5 || ventaFmt.length > 5);
 
-            // Detectar cambios
             let flashClass = "";
             if (preciosAnteriores[key]) {
                 if (preciosAnteriores[key].compra !== compra || preciosAnteriores[key].venta !== venta) {
@@ -77,48 +73,45 @@ function processData(data) {
             preciosAnteriores[key] = { compra, venta };
 
             if (key === "USD" || key === "EUR") {
-                // === HERO CARD (USD / EUR) ===
+                // === HERO CARD (USD / EUR) - SOLUCIÓN SUPERPOSICIÓN ===
                 const card = document.createElement("div");
-                // flex-1 hace que ocupen la mitad de la altura disponible cada una
-                card.className = `flex-1 grid grid-cols-12 items-center bg-white/5 rounded-2xl border border-white/10 shadow-lg px-2 ${flashClass}`; 
+                // Usamos FLEX en lugar de Grid para control total
+                card.className = `flex-1 flex items-center justify-between bg-white/5 rounded-2xl border border-white/10 shadow-lg px-4 ${flashClass}`; 
                 
-                // Ajuste de fuente: 5.5vh para normal, 4.5vh si es largo. Leading-none evita superposicion vertical.
-                const priceSize = isLongPrice ? 'text-[4.5vh]' : 'text-[5.5vh]';
+                // Reduje la fuente de 5.5vh a 4vh para que no choque
+                const priceSize = isLongPrice ? 'text-[3.5vh]' : 'text-[4vh]';
 
                 card.innerHTML = `
-                    <div class="col-span-3 flex items-center justify-start gap-4 pl-4">
-                        <img src="${icono_circular}" class="h-[8vh] w-[8vh] rounded-full shadow-lg object-contain">
-                        <span class="text-[5vh] font-black tracking-tighter">${key}</span>
+                    <div class="w-[25%] flex items-center gap-3">
+                        <img src="${icono_circular}" class="h-[7vh] w-[7vh] rounded-full shadow-lg object-contain">
+                        <span class="text-[4vh] font-black tracking-tighter">${key}</span>
                     </div>
                     
-                    <div class="col-span-4 flex justify-center items-center h-full">
-                        <span class="${priceSize} leading-none font-black text-white tracking-widest font-mono text-shadow-glow bg-black/20 px-2 py-1 rounded-lg min-w-[80%] text-center whitespace-nowrap">
+                    <div class="w-[37.5%] flex justify-center">
+                        <span class="${priceSize} leading-none font-black text-white tracking-widest font-mono text-shadow-glow bg-black/20 px-3 py-2 rounded-lg min-w-[90%] text-center whitespace-nowrap">
                             ${compraFmt}
                         </span>
                     </div>
                     
-                    <div class="col-span-1"></div> 
-
-                    <div class="col-span-4 flex justify-center items-center h-full">
-                        <span class="${priceSize} leading-none font-black text-white tracking-widest font-mono text-shadow-glow bg-black/20 px-2 py-1 rounded-lg min-w-[80%] text-center whitespace-nowrap">
+                    <div class="w-[37.5%] flex justify-center">
+                        <span class="${priceSize} leading-none font-black text-white tracking-widest font-mono text-shadow-glow bg-black/20 px-3 py-2 rounded-lg min-w-[90%] text-center whitespace-nowrap">
                             ${ventaFmt}
                         </span>
                     </div>
                 `;
                 heroList.appendChild(card);
             } else {
-                // === LISTA NORMAL (Resto) ===
+                // === LISTA NORMAL ===
                 const row = document.createElement("tr");
                 row.className = `border-b border-white/5 ${flashClass}`;
                 
-                // Fuente lista inferior
-                const listPriceSize = isLongPrice ? 'text-[3vh]' : 'text-[4vh]';
+                const listPriceSize = isLongPrice ? 'text-[3vh]' : 'text-[3.8vh]';
 
                 row.innerHTML = `
                     <td class="w-[30%] py-1 pl-6">
                         <div class="flex items-center gap-4">
-                            <img src="${icono_circular}" class="h-[4.5vh] w-[4.5vh] rounded-full">
-                            <span class="text-[3vh] font-bold text-slate-200">${key}</span>
+                            <img src="${icono_circular}" class="h-[4vh] w-[4vh] rounded-full">
+                            <span class="text-[2.8vh] font-bold text-slate-200">${key}</span>
                         </div>
                     </td>
                     <td class="w-[35%] text-center align-middle">

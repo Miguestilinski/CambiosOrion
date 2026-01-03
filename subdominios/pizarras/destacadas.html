@@ -7,7 +7,7 @@
     
     <link rel="stylesheet" href="https://pizarras.cambiosorion.cl/styles/index.css">
     <link href="https://cambiosorion.cl/orionapp/public/styles/output.css" rel="stylesheet">
-    <link rel="icon" href="https://cambiosorion.cl/orionapp/icons/IsotipoOrion-blue.svg" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
@@ -19,7 +19,7 @@
             background-size: cover;
             overflow: hidden;
         }
-        .text-shadow-glow { text-shadow: 0 0 20px rgba(255,255,255,0.25); }
+        .text-shadow-glow { text-shadow: 0 0 15px rgba(255,255,255,0.25); }
     </style>
 </head>
 <body class="h-screen w-screen flex flex-col text-white bg-black/50 overflow-hidden">
@@ -37,7 +37,7 @@
             <div class="col-span-4">Venta</div>
         </div>
 
-        <div id="hero-list" class="flex-none h-[35vh] flex flex-col justify-center gap-4 py-1">
+        <div id="hero-list" class="flex-none h-[35vh] flex flex-col justify-center gap-3 py-1">
             </div>
 
         <div class="border-t border-white/20 my-2 shrink-0"></div>
@@ -65,7 +65,6 @@
     </div>
 
     <audio id="priceAlert" src="https://cambiosorion.cl/orionapp/sounds/alert.mp3"></audio>
-    <script src="https://cdn.tailwindcss.com"></script>
     <script type="module" src="./scripts/destacadas.js"></script>
 </body>
 </html>

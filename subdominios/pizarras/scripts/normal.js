@@ -10,9 +10,7 @@ function initSSE() {
     if (eventSource) eventSource.close();
     eventSource = new EventSource('https://cambiosorion.cl/data/stream_divisas.php');
 
-    eventSource.onopen = () => {
-        handleConnectionSuccess();
-    };
+    eventSource.onopen = () => handleConnectionSuccess();
     
     eventSource.onmessage = (event) => {
         handleConnectionSuccess();
@@ -24,7 +22,7 @@ function initSSE() {
         }
     };
 
-    eventSource.onerror = (error) => {
+    eventSource.onerror = () => {
         handleConnectionError();
         if (eventSource.readyState === EventSource.CLOSED) {
             setTimeout(initSSE, 5000);
@@ -52,7 +50,6 @@ function processData(data) {
     list.innerHTML = ''; 
     let cambios = false;
 
-    // Orden exacto
     const divisasOrdenadas = [
         "USD", "EUR", "ARS", "BRL", "PEN", "COP",
         "UYU", "BOB", "CAD", "GBP", "JPY", "CNY",
@@ -67,13 +64,11 @@ function processData(data) {
             const compraFmt = parseFloat(compra).toString();
             const ventaFmt = parseFloat(venta).toString();
 
-            // === LÓGICA DE TAMAÑO DE FUENTE ===
-            // Si tiene más de 6 caracteres (ej: 1900000), usa fuente pequeña.
-            // Si es normal (ej: 905), usa fuente grande.
+            // Detectar números largos (más de 5 caracteres)
             const isLong = (compraFmt.length > 5 || ventaFmt.length > 5);
             
-            // 2.7vh es bueno para números normales. 1.9vh para millones.
-            const fontSizeClass = isLong ? 'text-[1.9vh]' : 'text-[2.7vh]';
+            // Fuentes reducidas: 1.8vh para millones, 2.5vh para normales
+            const fontSizeClass = isLong ? 'text-[1.8vh]' : 'text-[2.5vh]';
 
             // Detectar cambios
             let flashClass = "";
@@ -86,13 +81,13 @@ function processData(data) {
             preciosAnteriores[key] = { compra, venta };
 
             const row = document.createElement("tr");
-            row.className = `h-row hover:bg-white/5 ${flashClass}`; // h-row está definido como 3.5vh en CSS
+            row.className = `h-row hover:bg-white/5 ${flashClass}`; 
             
             row.innerHTML = `
                 <td class="pl-4 py-0 align-middle">
-                    <img src="${icono_circular}" class="h-[2.8vh] w-[2.8vh] object-contain rounded-full shadow-sm">
+                    <img src="${icono_circular}" class="h-[2.5vh] w-[2.5vh] object-contain rounded-full shadow-sm">
                 </td>
-                <td class="text-left align-middle font-semibold tracking-wide text-shadow text-[2vh]">
+                <td class="text-left align-middle font-semibold tracking-wide text-shadow text-[1.8vh]">
                     ${key}
                 </td>
                 <td class="text-center align-middle ${fontSizeClass} font-bold bg-black/10 tracking-widest text-shadow font-mono text-white">
