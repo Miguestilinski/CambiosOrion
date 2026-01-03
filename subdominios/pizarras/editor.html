@@ -15,7 +15,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
-        /* Ajustes específicos para inputs dentro de la tabla glass */
         .glass-input {
             background: rgba(0, 0, 0, 0.2);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -29,11 +28,10 @@
         }
         .glass-input:focus {
             background: rgba(0, 0, 0, 0.4);
-            border-color: #6366f1; /* Indigo 500 */
+            border-color: #6366f1;
             outline: none;
             box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3);
         }
-        /* Ocultar flechas de number input */
         input[type=number]::-webkit-inner-spin-button, 
         input[type=number]::-webkit-outer-spin-button { 
             -webkit-appearance: none; 
@@ -114,22 +112,30 @@
     <div class="header-divider h-16"></div>
     <main class="relative px-4 sm:px-6 lg:px-8 py-10 max-w-4xl mx-auto">
         
-        <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 gap-4">
             <div>
                 <h1 class="text-3xl font-bold text-white drop-shadow-md">Editor de Tasas</h1>
-                <p class="text-blue-200 text-sm mt-1">Modifica los valores y guarda para actualizar las pantallas.</p>
+                <p class="text-blue-200 text-sm mt-1">Modifica los valores y guarda para actualizar.</p>
             </div>
             
-            <button id="save-button" class="group relative inline-flex items-center justify-center px-8 py-3 text-base font-bold text-white transition-all duration-200 bg-indigo-600 border border-transparent rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-500/40 hover:scale-105">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>
-                </svg>
-                Guardar Cambios
-                <div class="absolute inset-0 rounded-full ring-2 ring-white/20 group-hover:ring-white/40 transition-all"></div>
-            </button>
+            <div class="flex flex-wrap gap-3">
+                <button onclick="openPopupWindow('https://pizarras.cambiosorion.cl/normal', 'Pizarra Normal', 1080, 1920)" class="inline-flex items-center px-4 py-2 border border-emerald-500/50 rounded-lg text-sm font-medium text-emerald-300 hover:bg-emerald-500/10 transition">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                    Abrir Normal
+                </button>
+                <button onclick="openPopupWindow('https://pizarras.cambiosorion.cl/destacadas', 'Pizarra Destacadas', 1080, 1920)" class="inline-flex items-center px-4 py-2 border border-purple-500/50 rounded-lg text-sm font-medium text-purple-300 hover:bg-purple-500/10 transition">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                    Abrir Destacada
+                </button>
+
+                <button class="save-action-btn group relative inline-flex items-center justify-center px-6 py-2 text-sm font-bold text-white transition-all duration-200 bg-indigo-600 border border-transparent rounded-full focus:outline-none hover:bg-indigo-700 shadow-lg shadow-indigo-500/40 hover:scale-105">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                    Guardar
+                </button>
+            </div>
         </div>
 
-        <div class="bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden shadow-2xl relative">
+        <div class="bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden shadow-2xl relative mb-8">
             <div class="overflow-x-auto">
                 <table class="w-full">
                     <thead class="bg-black/40 text-blue-200 text-xs uppercase tracking-widest font-bold border-b border-white/10">
@@ -140,14 +146,21 @@
                             <th class="px-6 py-4 text-center w-32 md:w-40 text-white">Venta</th>
                         </tr>
                     </thead>
-                    <tbody id="currency-list" class="divide-y divide-white/5 text-base">
-                        </tbody>
+                    <tbody id="currency-list" class="divide-y divide-white/5 text-base"></tbody>
                 </table>
             </div>
             <div class="bg-black/20 px-6 py-3 border-t border-white/5 flex justify-between items-center backdrop-blur-sm">
                 <span class="text-xs text-slate-400">Editando en tiempo real</span>
                 <span class="text-xs text-indigo-300 font-mono">Status: Ready</span>
             </div>
+        </div>
+
+        <div class="flex justify-end pb-8">
+            <button class="save-action-btn group relative inline-flex items-center justify-center px-8 py-3 text-base font-bold text-white transition-all duration-200 bg-indigo-600 border border-transparent rounded-full focus:outline-none hover:bg-indigo-700 shadow-lg shadow-indigo-500/40 hover:scale-105">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                Guardar Cambios
+                <div class="absolute inset-0 rounded-full ring-2 ring-white/20 group-hover:ring-white/40 transition-all"></div>
+            </button>
         </div>
 
     </main>

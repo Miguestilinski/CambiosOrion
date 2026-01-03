@@ -5,11 +5,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. Inicializar carga de datos
     loadCurrenciesForEdit();
 
-    // 2. Configurar botón de guardar
-    const saveButton = document.getElementById('save-button');
-    if (saveButton) {
-        saveButton.addEventListener('click', saveEditedCurrencies);
-    }
+    // 2. Configurar BOTONES de guardar (Todos los que tengan la clase)
+    const saveButtons = document.querySelectorAll('.save-action-btn');
+    saveButtons.forEach(btn => {
+        btn.addEventListener('click', saveEditedCurrencies);
+    });
 
     // 3. Configurar botón del modal
     const modalBtn = document.getElementById('modal-close-btn');
@@ -32,6 +32,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// Función global para abrir ventanas (Pizarras)
+window.openPopupWindow = function(url, title, width, height) {
+    const left = (screen.width - width) / 2;
+    const top = (screen.height - height) / 2;
+    window.open(url, title, `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=yes`);
+};
 
 function loadCurrenciesForEdit() {
     if (isFetchingCurrencies) return;
@@ -134,13 +141,15 @@ function saveEditedCurrencies() {
         return;
     }
 
-    const saveBtn = document.getElementById('save-button');
-    const originalBtnText = saveBtn ? saveBtn.innerHTML : '';
+    // Actualizar TODOS los botones de guardar para dar feedback visual
+    const saveButtons = document.querySelectorAll('.save-action-btn');
+    const originalTexts = [];
     
-    if(saveBtn) {
-        saveBtn.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Guardando...`;
-        saveBtn.disabled = true;
-    }
+    saveButtons.forEach((btn, index) => {
+        originalTexts[index] = btn.innerHTML;
+        btn.innerHTML = `<svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Guardando...`;
+        btn.disabled = true;
+    });
 
     const currentTimestamp = new Date().toLocaleString('en-US', { timeZone: 'America/Santiago' });
 
@@ -163,23 +172,21 @@ function saveEditedCurrencies() {
         });
     }))
     .then(() => {
-        // REEMPLAZO DE ALERT POR MODAL DE ÉXITO
         showStatusModal('success', '¡Guardado!', 'Los precios han sido actualizados correctamente en todas las pizarras.');
     })
     .catch(error => {
         console.error("Error guardando:", error);
-        // REEMPLAZO DE ALERT POR MODAL DE ERROR
         showStatusModal('error', 'Error al guardar', 'Hubo un problema al conectar con el servidor. Inténtalo de nuevo.');
     })
     .finally(() => {
-        if(saveBtn) {
-            saveBtn.innerHTML = originalBtnText;
-            saveBtn.disabled = false;
-        }
+        // Restaurar botones
+        saveButtons.forEach((btn, index) => {
+            btn.innerHTML = originalTexts[index] || 'Guardar Cambios';
+            btn.disabled = false;
+        });
     });
 }
 
-// === LÓGICA DEL MODAL ===
 function showStatusModal(type, title, message) {
     const modal = document.getElementById('status-modal');
     const modalTitle = document.getElementById('modal-title');
@@ -193,22 +200,17 @@ function showStatusModal(type, title, message) {
     modalTitle.textContent = title;
     modalMessage.textContent = message;
 
-    // Configuración visual según tipo
     if (type === 'success') {
-        // Icono Check Verde
         modalIconBg.className = "mx-auto flex items-center justify-center h-16 w-16 rounded-full mb-4 bg-green-900/30 border border-green-500/30";
         modalIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>';
         modalIcon.classList.remove('text-red-500');
         modalIcon.classList.add('text-green-500');
-        
         modalBtn.className = "w-full inline-flex justify-center rounded-xl shadow-lg px-4 py-3 text-base font-bold text-white bg-green-600 hover:bg-green-700 focus:outline-none transition-transform hover:scale-105";
     } else {
-        // Icono X Rojo
         modalIconBg.className = "mx-auto flex items-center justify-center h-16 w-16 rounded-full mb-4 bg-red-900/30 border border-red-500/30";
         modalIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>';
         modalIcon.classList.remove('text-green-500');
         modalIcon.classList.add('text-red-500');
-
         modalBtn.className = "w-full inline-flex justify-center rounded-xl shadow-lg px-4 py-3 text-base font-bold text-white bg-red-600 hover:bg-red-700 focus:outline-none transition-transform hover:scale-105";
     }
 
