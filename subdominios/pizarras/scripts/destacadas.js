@@ -62,8 +62,8 @@ function processData(data) {
             const { icono_circular, compra, venta } = divisa;
             const compraFmt = parseFloat(compra).toString();
             const ventaFmt = parseFloat(venta).toString();
-
-            // Lógica para detectar números largos (ej: ORO 100 -> 1900000)
+            
+            // Detectar números largos
             const isLongPrice = (compraFmt.length > 5 || ventaFmt.length > 5);
 
             // Detectar cambios
@@ -77,37 +77,41 @@ function processData(data) {
             preciosAnteriores[key] = { compra, venta };
 
             if (key === "USD" || key === "EUR") {
-                // === HERO (Gigantes) ===
+                // === HERO CARD (USD / EUR) ===
                 const card = document.createElement("div");
+                // flex-1 hace que ocupen la mitad de la altura disponible cada una
                 card.className = `flex-1 grid grid-cols-12 items-center bg-white/5 rounded-2xl border border-white/10 shadow-lg px-2 ${flashClass}`; 
                 
-                // Reducimos tamaños de fuente para evitar choques
-                // Si es largo, usamos 4vh, si es normal 5.5vh (antes era 7vh)
-                const priceSize = isLongPrice ? 'text-[4vh]' : 'text-[5.5vh]';
+                // Ajuste de fuente: 5.5vh para normal, 4.5vh si es largo. Leading-none evita superposicion vertical.
+                const priceSize = isLongPrice ? 'text-[4.5vh]' : 'text-[5.5vh]';
 
                 card.innerHTML = `
-                    <div class="col-span-3 flex items-center justify-start gap-3 pl-4">
-                        <img src="${icono_circular}" class="h-[7vh] w-[7vh] rounded-full shadow-lg object-contain">
-                        <span class="text-[4.5vh] font-black tracking-tighter">${key}</span>
+                    <div class="col-span-3 flex items-center justify-start gap-4 pl-4">
+                        <img src="${icono_circular}" class="h-[8vh] w-[8vh] rounded-full shadow-lg object-contain">
+                        <span class="text-[5vh] font-black tracking-tighter">${key}</span>
                     </div>
-                    <div class="col-span-4 flex justify-center items-center">
-                        <span class="${priceSize} font-black text-white tracking-widest font-mono text-shadow-glow bg-black/20 px-4 py-1 rounded-lg w-full text-center">
+                    
+                    <div class="col-span-4 flex justify-center items-center h-full">
+                        <span class="${priceSize} leading-none font-black text-white tracking-widest font-mono text-shadow-glow bg-black/20 px-2 py-1 rounded-lg min-w-[80%] text-center whitespace-nowrap">
                             ${compraFmt}
                         </span>
                     </div>
-                    <div class="col-span-1"></div> <div class="col-span-4 flex justify-center items-center">
-                        <span class="${priceSize} font-black text-white tracking-widest font-mono text-shadow-glow bg-black/20 px-4 py-1 rounded-lg w-full text-center">
+                    
+                    <div class="col-span-1"></div> 
+
+                    <div class="col-span-4 flex justify-center items-center h-full">
+                        <span class="${priceSize} leading-none font-black text-white tracking-widest font-mono text-shadow-glow bg-black/20 px-2 py-1 rounded-lg min-w-[80%] text-center whitespace-nowrap">
                             ${ventaFmt}
                         </span>
                     </div>
                 `;
                 heroList.appendChild(card);
             } else {
-                // === LISTA NORMAL (Destacadas) ===
+                // === LISTA NORMAL (Resto) ===
                 const row = document.createElement("tr");
                 row.className = `border-b border-white/5 ${flashClass}`;
                 
-                // Ajuste de fuente para lista normal si es muy largo
+                // Fuente lista inferior
                 const listPriceSize = isLongPrice ? 'text-[3vh]' : 'text-[4vh]';
 
                 row.innerHTML = `
@@ -117,13 +121,13 @@ function processData(data) {
                             <span class="text-[3vh] font-bold text-slate-200">${key}</span>
                         </div>
                     </td>
-                    <td class="w-[35%] text-center">
-                        <span class="${listPriceSize} font-bold font-mono tracking-wide text-shadow-glow bg-black/10 rounded-lg px-2">
+                    <td class="w-[35%] text-center align-middle">
+                        <span class="${listPriceSize} font-bold font-mono tracking-wide text-shadow-glow bg-black/10 rounded-lg px-3 py-1 whitespace-nowrap">
                             ${compraFmt}
                         </span>
                     </td>
-                    <td class="w-[35%] text-center">
-                        <span class="${listPriceSize} font-bold font-mono tracking-wide text-shadow-glow px-2">
+                    <td class="w-[35%] text-center align-middle">
+                        <span class="${listPriceSize} font-bold font-mono tracking-wide text-shadow-glow px-3 py-1 whitespace-nowrap">
                             ${ventaFmt}
                         </span>
                     </td>

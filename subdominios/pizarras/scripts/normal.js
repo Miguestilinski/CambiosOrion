@@ -52,6 +52,7 @@ function processData(data) {
     list.innerHTML = ''; 
     let cambios = false;
 
+    // Orden exacto
     const divisasOrdenadas = [
         "USD", "EUR", "ARS", "BRL", "PEN", "COP",
         "UYU", "BOB", "CAD", "GBP", "JPY", "CNY",
@@ -66,12 +67,13 @@ function processData(data) {
             const compraFmt = parseFloat(compra).toString();
             const ventaFmt = parseFloat(venta).toString();
 
-            // Detectar números largos (para ORO 100 u otras inflacionarias)
-            // Si tiene más de 6 caracteres (ej: 1900000 es 7 chars), reducimos fuente
-            const isLong = (compraFmt.length > 6 || ventaFmt.length > 6);
+            // === LÓGICA DE TAMAÑO DE FUENTE ===
+            // Si tiene más de 6 caracteres (ej: 1900000), usa fuente pequeña.
+            // Si es normal (ej: 905), usa fuente grande.
+            const isLong = (compraFmt.length > 5 || ventaFmt.length > 5);
             
-            // Clase de tamaño dinámica: Normal 2.8vh, Largo 2.2vh
-            const priceClass = isLong ? 'text-[2.1vh]' : 'text-[2.8vh]';
+            // 2.7vh es bueno para números normales. 1.9vh para millones.
+            const fontSizeClass = isLong ? 'text-[1.9vh]' : 'text-[2.7vh]';
 
             // Detectar cambios
             let flashClass = "";
@@ -84,18 +86,19 @@ function processData(data) {
             preciosAnteriores[key] = { compra, venta };
 
             const row = document.createElement("tr");
-            row.className = `h-row hover:bg-white/5 ${flashClass}`;
+            row.className = `h-row hover:bg-white/5 ${flashClass}`; // h-row está definido como 3.5vh en CSS
+            
             row.innerHTML = `
-                <td class="pl-4 py-0">
-                    <img src="${icono_circular}" class="h-[3vh] w-[3vh] object-contain rounded-full shadow-sm">
+                <td class="pl-4 py-0 align-middle">
+                    <img src="${icono_circular}" class="h-[2.8vh] w-[2.8vh] object-contain rounded-full shadow-sm">
                 </td>
-                <td class="text-left text-row font-semibold tracking-wide text-shadow">
+                <td class="text-left align-middle font-semibold tracking-wide text-shadow text-[2vh]">
                     ${key}
                 </td>
-                <td class="text-center ${priceClass} font-bold bg-black/10 tracking-widest text-shadow font-mono">
+                <td class="text-center align-middle ${fontSizeClass} font-bold bg-black/10 tracking-widest text-shadow font-mono text-white">
                     ${compraFmt}
                 </td>
-                <td class="text-center ${priceClass} font-bold tracking-widest text-shadow font-mono">
+                <td class="text-center align-middle ${fontSizeClass} font-bold tracking-widest text-shadow font-mono text-white">
                     ${ventaFmt}
                 </td>
             `;
