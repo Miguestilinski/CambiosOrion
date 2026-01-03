@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Cajas | Transacciones</title>
+    <title>Transacciones</title>
 
     <link href="https://cambiosorion.cl/orionapp/public/styles/output.css" rel="stylesheet">
     <link href="https://caja.cambiosorion.cl/styles/index.css" rel="stylesheet">
@@ -12,6 +12,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/airbnb.css">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { font-family: 'Inter', sans-serif; }
@@ -27,7 +30,6 @@
     <header class="flex-shrink-0 z-50 bg-slate-900/90 backdrop-blur-md shadow-lg border-b border-white/10">
         <div class="w-full px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16"> 
-                
                 <div class="flex items-center gap-4">
                     <a href="https://cambiosorion.cl/" class="flex-shrink-0 group">
                         <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Logo" class="h-10 w-auto opacity-90 group-hover:opacity-100 transition">
@@ -36,17 +38,13 @@
                         Sistema Cajas
                     </span>
                 </div>
-
                 <nav class="hidden lg:flex space-x-1 bg-white/5 p-1 rounded-lg border border-white/10">
-                    <a href="https://admin.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-white/10 transition">Inicio</a>
-                    <a href="https://pizarras.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-green-600/20 hover:text-green-300 transition">Pizarras</a>
+                    <a href="https://admin.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:bg-indigo-600/20 hover:text-white transition">Inicio</a>
+                    <a href="https://pizarras.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:bg-green-600/20 hover:text-white transition">Pizarras</a>
                     <a href="#" class="px-4 py-2 text-sm font-medium rounded-md text-white bg-cyan-600 shadow-lg shadow-cyan-500/20 transition">Caja</a>
-                    <a href="https://tesoreria.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-amber-600/20 hover:text-amber-300 transition">Tesorería</a>
+                    <a href="https://tesoreria.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:bg-amber-600/20 hover:text-white transition">Tesorería</a>
                 </nav>
-
                 <div class="flex items-center gap-4 lg:gap-6 mr-1"> 
-                    <div id="guest-actions" class="hidden"></div>
-
                     <div id="user-actions" class="relative ml-2 block">
                         <button id="profile-menu-button" class="flex items-center gap-3 text-sm rounded-full focus:outline-none ring-2 ring-slate-700 hover:ring-cyan-500 transition pl-1 pr-3 py-1 bg-slate-800 hover:bg-slate-700 text-white">
                             <img class="h-8 w-8 rounded-full object-cover border border-slate-600" src="https://cambiosorion.cl/orionapp/icons/profile-white.png" alt="Profile">
@@ -55,19 +53,12 @@
                             </div>
                             <svg class="w-4 h-4 text-slate-400 hidden md:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                         </button>
-                        
                         <div id="dropdownInformation" class="hidden absolute right-0 mt-3 w-60 bg-white rounded-xl shadow-2xl py-2 z-50 border border-slate-200 transform origin-top-right transition-all text-gray-800">
                             <div class="px-4 py-3 border-b border-gray-100 bg-gray-50/50">
                                 <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Conectado como</p>
                                 <p class="text-sm font-bold text-gray-900 truncate" id="dropdown-user-email">...</p>
                             </div>
-                            <a href="https://cambiosorion.cl/webmail" class="block px-4 py-2 text-sm text-gray-700 hover:bg-cyan-50 hover:text-cyan-700 transition flex items-center">
-                                Webmail Corporativo
-                            </a>
-                            <div class="border-t border-gray-100 my-1"></div>
-                            <a href="#" id="logout-button" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-medium flex items-center">
-                                Cerrar sesión
-                            </a>
+                            <a href="#" id="logout-button" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-medium flex items-center">Cerrar sesión</a>
                         </div>
                     </div>
                 </div>
@@ -186,48 +177,73 @@
                     </div>
                 </div>
                 
-                <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+                <div class="bg-white/95 backdrop-blur-md rounded-xl shadow-xl border border-white/20 overflow-hidden flex flex-col w-full">
                     <div class="overflow-x-auto">
-                        <table class="w-full text-sm text-left">
-                            <thead class="text-xs uppercase bg-gray-50 text-gray-600 border-b border-gray-200 font-extrabold tracking-wide">
+                        <table class="w-full text-sm text-left border-collapse">
+                            <thead class="text-xs uppercase bg-gray-100 text-gray-600 font-extrabold tracking-wide sticky top-0 z-20 shadow-sm border-b border-gray-200">
                                 <tr>
-                                    <th class="px-4 py-4">Fecha</th>
-                                    <th class="px-4 py-4">Nº</th>
-                                    <th class="px-4 py-4">Cliente</th>
-                                    <th class="px-4 py-4">Doc</th>
-                                    <th class="px-4 py-4">Folio</th>
-                                    <th class="px-4 py-4">Nota</th>
-                                    <th class="px-4 py-4 text-center">Tipo</th>
-                                    <th class="px-4 py-4 text-center">Divisa</th>
-                                    <th class="px-4 py-4 text-right">Monto</th>
-                                    <th class="px-4 py-4 text-right">Tasa</th>
-                                    <th class="px-4 py-4 text-right">Total</th>
-                                    <th class="px-4 py-4 text-center">Estado</th>
-                                    <th class="px-4 py-4 text-center">Acción</th>
+                                    <th class="px-4 py-3">Fecha</th>
+                                    <th class="px-4 py-3">Nº</th>
+                                    <th class="px-4 py-3">Cliente</th>
+                                    <th class="px-4 py-3">Doc</th>
+                                    <th class="px-4 py-3">Folio</th>
+                                    <th class="px-4 py-3">Nota</th>
+                                    <th class="px-4 py-3 text-center">Tipo</th>
+                                    <th class="px-4 py-3 text-center">Divisa</th>
+                                    <th class="px-4 py-3 text-right">Monto</th>
+                                    <th class="px-4 py-3 text-right">Tasa</th>
+                                    <th class="px-4 py-3 text-right">Total</th>
+                                    <th class="px-4 py-3 text-center">Estado</th>
+                                    <th class="px-4 py-3 text-center">Acción</th>
                                 </tr>
                             </thead>
                             <tbody id="tabla-transacciones" class="divide-y divide-gray-100 text-gray-700">
                                 </tbody>
                         </table>
                     </div>
+                    
+                    <div class="bg-gray-50 px-4 py-3 border-t border-gray-200 flex justify-between items-center text-xs text-gray-500">
+                        <div class="flex items-center gap-3">
+                            <span>Mostrar</span>
+                            <select id="mostrar-registros" class="border-gray-300 rounded text-xs py-1 h-7 focus:ring-cyan-500 focus:border-cyan-500">
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                            <span id="contador-registros" class="font-medium">Cargando...</span>
+                        </div>
+
+                        <div class="flex items-center gap-2" id="pagination-controls">
+                            <button id="btn-prev" class="px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition">
+                                Anterior
+                            </button>
+                            <span id="page-indicator" class="font-bold text-slate-700 px-2">Página 1</span>
+                            <button id="btn-next" class="px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition">
+                                Siguiente
+                            </button>
+                        </div>
+                    </div>
                 </div>
+
+                <div class="h-8"></div>
             </section>        
         </main>
     </div>
 
-    <footer class="bg-black/95 backdrop-blur z-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-slate-400">
+    <footer class="bg-black  mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
                 <div class="flex items-center gap-3">
-                    <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Orion" class="h-10 grayscale hover:grayscale-0 transition opacity-80 hover:opacity-100">
-                    <span class="text-xs font-medium uppercase tracking-wider">| Sistema Cajas</span>
+                    <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Orion" class="h-12 grayscale hover:grayscale-0 transition">
+                    <span class="text-slate-400 text-sm">| Sistema Corporativo</span>
                 </div>
-                <p class="text-xs">© 2025 Orion Financial Group. Todos los derechos reservados.</p>
+                <p class="text-slate-400 text-xs">© 2025 Orion Financial Group. Todos los derechos reservados.</p>
             </div>
         </div>
     </footer>
 
-    <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script> <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
     <script type="module" src="https://cambiosorion.cl/orionapp/public/scripts/header.js" crossorigin="anonymous"></script>
     <script type="module" src="./scripts/transacciones.js"></script>
 </body>
