@@ -28,14 +28,6 @@ html {
     scroll-behavior: smooth;
 }
 
-/* Header Divider */
-.header-divider {
-    background-color: white;
-    width: 60%;
-    margin-left: 7rem;
-    height: 1px;
-}
-
 /* Colores de Transacciones (NO TOCAR) */
 tr.venta, .venta {
     background-color: #dbf599;
@@ -43,11 +35,6 @@ tr.venta, .venta {
 
 tr.compra, .compra {
     background-color: #c3e8f1;
-}
-
-/* Utilidades para la tabla */
-.mostrar-btn-cell {
-    width: 50px;
 }
 
 /* Scrollbar personalizado para el dashboard */
