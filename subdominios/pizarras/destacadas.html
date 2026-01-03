@@ -4,53 +4,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pizarra Destacadas</title>
+    
     <link rel="stylesheet" href="./styles/destacadas.css">
     <link href="https://cambiosorion.cl/orionapp/public/styles/output.css" rel="stylesheet">
     <link rel="icon" href="https://cambiosorion.cl/orionapp/icons/IsotipoOrion-blue.svg" type="image/png">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
 </head>
-<body>
-    <div class="logo-container">
-        <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Logo de Orion" class="logo-image">
-        <img src="https://cambiosorion.cl/orionapp/assets/NombreOrion-white.png" alt="Nombre Orion" class="name-image">
-    </div>    
+<body class="h-screen w-full overflow-hidden text-white flex flex-col items-center justify-center relative">
     
-    <!-- Tabla de Divisas Destacadas -->
-    <table class="divisas-destacadas">
-        <thead>
-            <tr>
-                <th class="icono">Ícono</th>
-                <th class="nombre">Nombre</th>
-                <th class="compra">COMPRA</th>
-                <th class="venta">VENTA</th>
-            </tr>
-        </thead>
-        <tbody id="highlighted-currencies">
-            <!-- Los datos se llenarán aquí con JavaScript -->
-        </tbody>
-    </table>
+    <div class="fixed inset-0 bg-black/60 z-0"></div>
 
-    <!-- Tabla de Divisas Normales -->
-    <table class="divisas-normales">
-        <tbody id="normal-currencies">
-            <!-- Los datos se llenarán aquí con JavaScript -->
-        </tbody>
-    </table>
+    <main class="relative z-10 w-full max-w-6xl h-[95vh] flex flex-col bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-3xl shadow-2xl overflow-hidden p-8">
+        
+        <header class="flex-shrink-0 flex justify-center pb-6 border-b border-white/10 mb-6">
+            <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Orion Financial Group" class="h-20 drop-shadow-lg filter brightness-110">
+        </header>
 
-    <!-- Texto adicional -->
-    <div class="info">
-        SE REALIZAN TRANSFERENCIAS AL EXTRANJERO<br>
-        HORARIO: LUN - VIE 09:00 - 17:00HRS
+        <div class="grid grid-cols-12 gap-4 mb-4 px-4 text-blue-200 opacity-80 uppercase tracking-widest font-bold text-lg">
+            <div class="col-span-4 text-left">Divisa</div>
+            <div class="col-span-4 text-center">Compra</div>
+            <div class="col-span-4 text-center">Venta</div>
+        </div>
+
+        <div id="highlighted-currencies" class="flex flex-col gap-6 mb-8">
+            </div>
+
+        <div class="border-t border-white/10 my-4"></div>
+
+        <div class="flex-grow overflow-hidden">
+            <table class="w-full table-fixed">
+                <tbody id="normal-currencies" class="divide-y divide-white/5">
+                    </tbody>
+            </table>
+        </div>
+
+        <footer class="flex-shrink-0 mt-6 pt-4 border-t border-white/10 text-center space-y-2">
+            <div class="flex justify-center items-center gap-6">
+                <p class="text-2xl font-bold text-blue-100 bg-blue-900/30 px-8 py-3 rounded-full border border-blue-500/30">
+                    TRANSFERENCIAS AL EXTRANJERO
+                </p>
+                <p class="text-xl text-slate-300">
+                    Lun - Vie 09:00 - 17:00 hrs
+                </p>
+            </div>
+            <p class="text-sm text-slate-500 uppercase tracking-widest opacity-70">
+                * Precios sujetos a disponibilidad y denominación de billetes.
+            </p>
+        </footer>
+    </main>
+
+    <div id="offline-popup" class="hidden fixed bottom-10 right-10 bg-red-600 text-white px-6 py-4 rounded-xl shadow-2xl z-50 animate-bounce flex items-center gap-3">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+        <span class="font-bold">Sin conexión</span>
     </div>
 
-    <!-- audio id="priceAlert" src="/sounds/alert.mp3"></audio -->
-
-    <!-- Pop-up para mostrar el estado offline -->
-    <div id="offline-popup" class="offline-popup">
-        <p>No hay conexión a Internet. Los precios pueden no estar actualizados.</p>
-    </div>
-    
-    <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
+    <audio id="priceAlert" src="https://cambiosorion.cl/orionapp/sounds/alert.mp3"></audio>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script type="module" src="./scripts/destacadas.js"></script>
 </body>
 </html>
