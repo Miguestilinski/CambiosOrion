@@ -28,48 +28,65 @@
             <div class="flex justify-between items-center h-16"> 
                 
                 <div class="flex items-center gap-4">
-                    <a href="index" class="flex-shrink-0">
-                        <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Logo Cambios Orion" class="h-10 w-auto transition hover:opacity-80">
+                    <a href="https://cambiosorion.cl/" class="flex-shrink-0">
+                        <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Logo Cambios Orion" class="h-10 w-auto opacity-90 hover:opacity-100 transition">
                     </a>
-                    <span class="hidden md:inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-blue-600 text-white border border-blue-500/30 tracking-wider uppercase shadow-lg shadow-blue-500/20">
-                        Portal Clientes
+                    <span id="header-badge" class="hidden md:inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-green-600 text-white border border-green-500/30 tracking-wider uppercase shadow-lg shadow-green-500/20">
+                        Cajas
                     </span>
                 </div>
 
                 <nav class="hidden lg:flex space-x-1 bg-slate-800/50 p-1 rounded-lg border border-slate-700/50">
-                    <a href="index" class="px-4 py-2 text-sm font-medium rounded-md text-white bg-blue-600 shadow-lg shadow-blue-500/20 transition">Portal Cliente</a>
-                    <a href="https://cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-slate-700 transition">Sitio Público</a>
+                    <a href="https://admin.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-slate-700 transition">Inicio</a>
+                    <a href="https://pizarras.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-slate-700 transition">Pizarras</a>
+                    <a href="https://caja.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-white bg-green-600 shadow-lg shadow-green-500/20 transition">Caja</a>
+                    <a href="https://tesoreria.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-slate-700 transition">Tesorería</a>
                 </nav>
 
-                <div class="flex items-center gap-4 lg:gap-6 mr-1"> 
+                <div class="flex items-center gap-4 lg:gap-6 mr-1"> <div id="guest-actions" class="hidden"></div>
+
                     <div id="user-actions" class="relative ml-2 block">
-                        <button id="profile-menu-button" class="flex items-center gap-3 text-sm rounded-full focus:outline-none ring-2 ring-white/10 hover:ring-blue-500/50 transition pl-1 pr-3 py-1 glass-card hover:bg-white/10 border border-white/10">
-                            <img class="h-8 w-8 rounded-full object-cover border border-white/20" src="https://cambiosorion.cl/orionapp/icons/profile-white.png" alt="Profile">
+                        <button id="profile-menu-button" class="flex items-center gap-3 text-sm rounded-full focus:outline-none ring-2 ring-slate-700 hover:ring-indigo-500 transition pl-1 pr-3 py-1 bg-slate-800 hover:bg-slate-700">
+                            <img class="h-8 w-8 rounded-full object-cover border border-slate-600" src="https://cambiosorion.cl/orionapp/icons/profile-white.png" alt="Profile">
                             <div class="hidden md:flex flex-col items-start">
-                                <span class="text-gray-200 font-bold leading-tight" id="header-user-name">...</span>
+                                <span class="text-slate-200 font-medium leading-tight" id="header-user-name">...</span>
                             </div>
-                            <svg class="w-4 h-4 text-gray-400 hidden md:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            <svg class="w-4 h-4 text-slate-400 hidden md:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                         </button>
                         
-                        <div id="dropdownInformation" class="hidden absolute right-0 mt-3 w-60 bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl py-2 z-50 transform origin-top-right transition-all">
-                            <div class="px-4 py-3 border-b border-white/10">
-                                <p class="text-xs text-gray-400 uppercase font-bold tracking-wider">Cargando...</p>
+                        <div id="dropdownInformation" class="hidden absolute right-0 mt-3 w-60 bg-white rounded-xl shadow-2xl py-2 z-50 border border-slate-200 transform origin-top-right transition-all">
+                            <div class="px-4 py-3 border-b border-gray-100 bg-gray-50/50">
+                                <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Conectado como</p>
+                                <p class="text-sm font-bold text-gray-900 truncate" id="dropdown-user-email">...</p>
                             </div>
-                            <a href="#" id="logout-button" class="block px-4 py-2 text-sm text-red-400 hover:bg-white/5 font-medium flex items-center transition">
+                            <a href="https://cambiosorion.cl/webmail" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition flex items-center">
+                                <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                                Webmail Corporativo
+                            </a>
+                            <div class="border-t border-gray-100 my-1"></div>
+                            <a href="#" id="logout-button" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-medium flex items-center">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                                 Cerrar sesión
                             </a>
                         </div>
                     </div>
-                    <button id="nav-menu-button" class="lg:hidden text-gray-400 p-2 hover:bg-white/10 rounded-lg transition">
+
+                    <button id="nav-menu-button" class="lg:hidden text-white p-2 hover:bg-slate-800 rounded-lg transition">
                         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </button>
                 </div>
             </div>
         </div>
-        <div id="nav-mobile-menu" class="hidden lg:hidden glass-header border-t border-white/10">
-            <div id="mobile-sidebar-container" class="px-4 pt-4 pb-6 space-y-2">
-                </div>
+
+        <div id="nav-mobile-menu" class="hidden lg:hidden bg-slate-900/95 border-t border-slate-700 backdrop-blur-xl">
+            <div class="px-4 pt-4 pb-6 space-y-2">
+                <a href="https://admin.cambiosorion.cl/" class="block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-700">Inicio</a>
+                <a href="https://pizarras.cambiosorion.cl/" class="block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-700">Pizarras</a>
+                <a href="https://caja.cambiosorion.cl/" class="block px-3 py-2 rounded-md text-base font-medium text-white bg-slate-700">Caja</a>
+                <a href="https://tesoreria.cambiosorion.cl/" class="block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-700">Tesorería</a>
+                <div class="border-t border-slate-700 my-4 pt-4"></div>
+                <a href="#" id="logout-button-mobile" class="block px-3 py-2 rounded-md text-base font-medium text-red-400 hover:bg-slate-700">Cerrar Sesión</a>
+            </div>
         </div>
     </header>
 
