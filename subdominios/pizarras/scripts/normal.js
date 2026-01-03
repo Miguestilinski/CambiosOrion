@@ -61,10 +61,14 @@ function processData(data) {
         const divisa = data.find(d => d.nombre === key);
         if (divisa) {
             const { icono_circular, compra, venta } = divisa;
-            const compraFmt = parseFloat(compra).toString();
-            const ventaFmt = parseFloat(venta).toString();
+            
+            // FORMATEO CON PUNTOS Y COMAS (es-CL)
+            // maximumFractionDigits: 10 asegura que no se corten decimales importantes (ej: 0,00005)
+            const compraFmt = parseFloat(compra).toLocaleString('es-CL', { minimumFractionDigits: 0, maximumFractionDigits: 10 });
+            const ventaFmt = parseFloat(venta).toLocaleString('es-CL', { minimumFractionDigits: 0, maximumFractionDigits: 10 });
 
             // Detectar números largos (más de 5 caracteres)
+            // Ahora '1.900.000' tiene 9 caracteres, así que la lógica funciona perfecto
             const isLong = (compraFmt.length > 5 || ventaFmt.length > 5);
             
             // Fuentes reducidas: 1.8vh para millones, 2.5vh para normales

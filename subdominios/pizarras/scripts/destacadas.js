@@ -58,8 +58,10 @@ function processData(data) {
         const divisa = data.find(d => d.nombre === key);
         if (divisa) {
             const { icono_circular, compra, venta } = divisa;
-            const compraFmt = parseFloat(compra).toString();
-            const ventaFmt = parseFloat(venta).toString();
+            
+            // FORMATEO ES-CL (Puntos miles, Comas decimales)
+            const compraFmt = parseFloat(compra).toLocaleString('es-CL', { minimumFractionDigits: 0, maximumFractionDigits: 10 });
+            const ventaFmt = parseFloat(venta).toLocaleString('es-CL', { minimumFractionDigits: 0, maximumFractionDigits: 10 });
             
             const isLongPrice = (compraFmt.length > 5 || ventaFmt.length > 5);
 
@@ -73,12 +75,10 @@ function processData(data) {
             preciosAnteriores[key] = { compra, venta };
 
             if (key === "USD" || key === "EUR") {
-                // === HERO CARD (USD / EUR) - SOLUCIÓN SUPERPOSICIÓN ===
+                // === HERO CARD (USD / EUR) ===
                 const card = document.createElement("div");
-                // Usamos FLEX en lugar de Grid para control total
                 card.className = `flex-1 flex items-center justify-between bg-white/5 rounded-2xl border border-white/10 shadow-lg px-4 ${flashClass}`; 
                 
-                // Reduje la fuente de 5.5vh a 4vh para que no choque
                 const priceSize = isLongPrice ? 'text-[3.5vh]' : 'text-[4vh]';
 
                 card.innerHTML = `
