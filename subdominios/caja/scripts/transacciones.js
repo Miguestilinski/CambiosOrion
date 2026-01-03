@@ -3,6 +3,9 @@ document.addEventListener('DOMContentLoaded', () => {
     getSession();
     cargarSidebar();
 
+    // 2. Inicializar Flatpickr (Calendario Bonito)
+    initDatePickers();
+
     const nuevaTransaccionBtn = document.getElementById('nueva-tr');
     const tablaTransacciones = document.getElementById('tabla-transacciones');
     const borrarFiltrosBtn = document.getElementById('borrar-filtros');
@@ -29,6 +32,19 @@ document.addEventListener('DOMContentLoaded', () => {
         nuevaTransaccionBtn.addEventListener('click', () => {
             window.location.href = 'https://caja.cambiosorion.cl/nueva-tr';
         });
+    }
+
+    // --- CONFIGURACIÓN FLATPICKR ---
+    function initDatePickers() {
+        const config = {
+            locale: "es",
+            dateFormat: "Y-m-d",
+            allowInput: true, // Permitir escribir manualmente también
+            disableMobile: "true" // Usar el nativo en móviles si se prefiere, o quitar para forzar estilo
+        };
+        
+        flatpickr("#fecha-inicio", config);
+        flatpickr("#fecha-fin", config);
     }
 
     // --- SIDEBAR ---
@@ -90,8 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const params = new URLSearchParams();
 
         for (const [clave, input] of Object.entries(filtros)) {
-            if (!input) continue; // Por seguridad si falta alguno (ej: n-nota oculto)
-            
+            if (!input) continue;
             if (input.type === "checkbox") {
                 if (input.checked) params.set(clave, '1');
             } else if (input.value) {
@@ -122,13 +137,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function formatearFechaHora(fechaString) {
         if (!fechaString) return '';
-        // Entrada esperada: YYYY-MM-DD HH:MM:SS
         try {
             const [datePart, timePart] = fechaString.split(' ');
             const [y, m, d] = datePart.split('-');
             const [h, min] = timePart.split(':');
-            // Salida: HH:mm dd/mm/aaaa
-            return `<div class="flex flex-col"><span class="font-mono font-bold text-gray-600">${h}:${min}</span><span class="text-gray-400 text-[10px]">${d}/${m}/${y}</span></div>`;
+            // Formato solicitado: HH:mm dd/mm/aaaa
+            return `<span class="font-mono font-bold text-gray-600">${h}:${min}</span> <span class="text-gray-500">${d}/${m}/${y}</span>`;
         } catch (e) {
             return fechaString;
         }
@@ -155,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 tr.style.backgroundColor = '#ffffff';
             }
 
-            // Botón VER DETALLE
+            // Botón VER DETALLE (Ojo)
             const btnMostrar = document.createElement('button');
             btnMostrar.innerHTML = `
                 <svg class="w-5 h-5 text-gray-600 hover:text-cyan-700 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -177,10 +191,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if(String(trx.estado).toLowerCase() === 'anulado') estadoClass = "bg-red-100 text-red-700 border border-red-200";
 
             tr.innerHTML = `
-                <td class="px-4 py-3 whitespace-nowrap">${formatearFechaHora(trx.fecha)}</td>
+                <td class="px-4 py-3 whitespace-nowrap text-xs">${formatearFechaHora(trx.fecha)}</td>
                 <td class="px-4 py-3 font-mono text-xs font-bold text-gray-600">${limpiarTexto(trx.id)}</td>
                 <td class="px-4 py-3 font-semibold text-xs truncate max-w-[140px]" title="${limpiarTexto(trx.cliente)}">${limpiarTexto(trx.cliente)}</td>
-                <td class="px-4 py-3 text-xs uppercase font-bold text-gray-500">${limpiarTexto(trx.tipo_doc)}</td>
+                <td class="px-4 py-3 text-xs uppercase font-bold text-gray-500 tracking-wide">${limpiarTexto(trx.tipo_doc)}</td>
                 <td class="px-4 py-3 font-mono text-xs">${limpiarTexto(trx.n_doc)}</td>
                 <td class="px-4 py-3 text-xs text-gray-500 max-w-[100px] truncate" title="${limpiarTexto(trx.n_nota)}">${limpiarTexto(trx.n_nota)}</td>
                 <td class="px-4 py-3 text-center font-bold uppercase text-xs tracking-wider">${limpiarTexto(trx.tipo_transaccion)}</td>
@@ -205,7 +219,11 @@ document.addEventListener('DOMContentLoaded', () => {
             Object.values(filtros).forEach(input => {
                 if(!input) return;
                 if(input.type === 'checkbox') input.checked = false;
-                else input.value = '';
+                else {
+                    input.value = '';
+                    // Limpiar también el Flatpickr visualmente si existe instancia
+                    if(input._flatpickr) input._flatpickr.clear(); 
+                }
             });
             if(filtros.mostrar) filtros.mostrar.value = '25';
             obtenerTransacciones();
