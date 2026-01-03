@@ -1,127 +1,16 @@
+/* Solo definimos el fondo aquí porque Tailwind no conoce la URL por defecto */
 body {
-    background: rgba(0, 0, 0, 0.45) url('https://cambiosorion.cl/orionapp/assets/FondoOrion.jpg') no-repeat center top;
+    background: url('https://cambiosorion.cl/orionapp/assets/FondoOrion.jpg') no-repeat center center fixed;
     background-size: cover;
-    background-position: center;
-    color: white;
-    font-family: 'Helvetica', sans-serif;
-    margin: 0;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }
 
-body::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7) 60%, black 100%);
-    pointer-events: none;
-    z-index: -1;
+/* Opcional: una clase utilitaria para darle "brillo" al texto de los números si quieres extra efecto */
+.text-shadow-blue {
+    text-shadow: 0 0 20px rgba(59, 130, 246, 0.5); /* Azul brillante */
 }
 
-html, body {
-    display: flex;
-    flex-direction: column;
-}
-
-html {
-    scroll-behavior: smooth;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed; /* Mantiene el tamaño fijo de las columnas */
-    margin-bottom: 0; /* Eliminar el margen inferior de la tabla */
-}
-
-th, td {
-    padding: 0.5px; /* Cambia el padding a un valor más pequeño */
-    text-align: center; /* Centrar el texto en todas las celdas */
-    font-size: 1.3em;
-    line-height: 1.1;
-    vertical-align: bottom; /* Alinear el contenido al fondo */
-    width: 25%; /* Todas las columnas tendrán el mismo ancho */
-}
-
-th {
-    background-color: transparent;
-}
-
-th.compra, th.venta {
-    font-size: 1.6em;
-}
-
-th.icono, th.nombre {
-    visibility: hidden; /* Opcional: si deseas ocultar estos encabezados */
-}
-
-.logo-container img {
-    height: auto;
-    display: flex;
-    flex-direction: column; /* Apilar elementos verticalmente */
-    align-items: center;    /* Centrar las imágenes horizontalmente */
-    justify-content: center; /* Centrar las imágenes verticalmente si es necesario */
-    gap: 10px; /* Reduce la distancia entre el logo y la tabla */
-}
-
-.logo-image {
-    width: 140px; /* Ajusta según el tamaño deseado */
-}
-
-.name-image { 
-    width: 140px; /* Ajusta según el tamaño deseado */
-    margin-bottom: 1rem;
-    justify-self: center;
-}
-
-tr {
-    border-bottom: 1px solid white;
-}
-
-thead tr {
-    border-bottom: none; /* Sin borde para la fila del encabezado */
-}
-
-img {
-    width: 25px; /* Reduce el tamaño de los iconos */
-    height: 25px;
-    object-fit: cover; /* Ajustar el contenido dentro del círculo */
-    margin-bottom: 4px;
-}
-
-/* Ajustar padding para mantener iconos cerca del borde izquierdo */
-td.icono {
-    padding-left: 5px; /* Menos espacio a la izquierda */
-    text-align: left; /* Alinear a la izquierda */
-}
-
-/* Ajustar padding para acercar nombres a los iconos */
-td.nombre {
-    padding-left: 1px; /* Menos espacio a la izquierda para nombres */
-}
-
-/* Estilo para el texto adicional */
-.info {
-    margin-top: 5px; /* Distancia mínima con la tabla */
-    text-align: center; /* Centrar el texto */
-    font-size: 1.1em; /* Ajustar el tamaño de la fuente */
-}
-
-.offline-popup {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: red;
-    color: white;
-    text-align: center;
-    padding: 15px;
-    font-size: 18px;
-    display: none; /* Oculto por defecto */
-    z-index: 1000; /* Asegúrate de que esté encima de otros elementos */
+/* Ocultar barra de scroll para modo kiosco/TV */
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
 }
