@@ -15,11 +15,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { font-family: 'Inter', sans-serif; }
-        /* Animación suave */
         .fade-in { animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        /* Asegurar que el sidebar y el main tengan altura completa */
+        /* Layout flex para sidebar y main */
         .layout-container { min-height: calc(100vh - 64px); }
     </style>
 </head>
@@ -97,65 +95,7 @@
 
     <div class="flex flex-1 overflow-hidden relative layout-container">
         
-        <aside class="w-64 bg-white/95 backdrop-blur-sm border-r border-gray-200 hidden lg:flex flex-col z-10 shadow-lg relative">
-            <div class="p-5">
-                <h2 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Herramientas</h2>
-                <nav class="space-y-1">
-                    
-                    <a href="https://caja.cambiosorion.cl/nueva-tr" class="flex items-center px-4 py-3 text-gray-700 hover:bg-cyan-50 hover:text-cyan-700 rounded-lg transition-colors group mb-2 border border-transparent hover:border-cyan-100">
-                        <div class="bg-cyan-100 text-cyan-600 p-1.5 rounded-md mr-3 group-hover:bg-cyan-200 transition">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                        </div>
-                        <span class="font-bold">Nueva Transacción</span>
-                    </a>
-
-                    <a href="transacciones" class="flex items-center px-4 py-3 bg-cyan-50 text-cyan-800 rounded-lg transition-colors border-l-4 border-cyan-600 shadow-sm">
-                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
-                        <span class="font-bold">Transacciones</span>
-                    </a>
-
-                    <a href="ingresos" class="flex items-center px-4 py-3 text-gray-600 hover:bg-green-50 hover:text-green-700 rounded-lg transition-colors group">
-                        <svg class="w-5 h-5 mr-3 text-gray-400 group-hover:text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
-                        <span class="font-medium">Ingresos</span>
-                    </a>
-
-                    <a href="egresos" class="flex items-center px-4 py-3 text-gray-600 hover:bg-red-50 hover:text-red-700 rounded-lg transition-colors group">
-                        <svg class="w-5 h-5 mr-3 text-gray-400 group-hover:text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
-                        <span class="font-medium">Egresos</span>
-                    </a>
-
-                    <a href="traspasos-caja" class="flex items-center px-4 py-3 text-gray-600 hover:bg-indigo-50 hover:text-indigo-700 rounded-lg transition-colors group">
-                        <svg class="w-5 h-5 mr-3 text-gray-400 group-hover:text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
-                        <span class="font-medium">Traspasos</span>
-                    </a>
-
-                    <a href="arqueo-caja" class="flex items-center px-4 py-3 text-gray-600 hover:bg-amber-50 hover:text-amber-700 rounded-lg transition-colors group">
-                        <svg class="w-5 h-5 mr-3 text-gray-400 group-hover:text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
-                        <span class="font-medium">Arqueo de Caja</span>
-                    </a>
-
-                    <a href="inventario" class="flex items-center px-4 py-3 text-gray-600 hover:bg-cyan-50 hover:text-cyan-700 rounded-lg transition-colors group">
-                        <svg class="w-5 h-5 mr-3 text-gray-400 group-hover:text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
-                        <span class="font-medium">Inventario</span>
-                    </a>
-
-                    <a href="divisas" class="flex items-center px-4 py-3 text-gray-600 hover:bg-emerald-50 hover:text-emerald-700 rounded-lg transition-colors group">
-                        <svg class="w-5 h-5 mr-3 text-gray-400 group-hover:text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        <span class="font-medium">Divisas</span>
-                    </a>
-                </nav>
-            </div>
-            
-            <div class="mt-auto p-6 border-t border-gray-100 bg-gray-50/50">
-                <div class="bg-indigo-50 rounded-xl p-4 border border-indigo-100 shadow-sm">
-                    <p class="text-xs text-indigo-500 font-bold uppercase mb-1">Estado de Caja</p>
-                    <div class="flex items-center gap-2">
-                        <div class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse ring-2 ring-green-200"></div>
-                        <span class="text-sm font-bold text-indigo-900">Abierta</span>
-                    </div>
-                </div>
-            </div>
-        </aside>
+        <div id="sidebar-container" class="hidden lg:block h-full z-10"></div>
         
         <main class="flex-1 overflow-y-auto p-4 md:p-8 relative" id="dashboard-content">
             <div class="absolute inset-0 bg-white/80 -z-10"></div>
@@ -307,6 +247,6 @@
 
     <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
     <script type="module" src="https://cambiosorion.cl/orionapp/public/scripts/header.js" crossorigin="anonymous"></script>
-    <script type="module" src="https://caja.cambiosorion.cl/scripts/transacciones.js"></script>
+    <script type="module" src="https:://caja.cambiosorion.cl/scripts/transacciones.js"></script>
 </body>
 </html>
