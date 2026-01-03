@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Cargar Sidebar y luego inicializar lógica
+    cargarSidebar();
+
     const nuevaTransaccionBtn = document.getElementById('nueva-tr');
     const tablaTransacciones = document.getElementById('tabla-transacciones');
     const borrarFiltrosBtn = document.getElementById('borrar-filtros');
@@ -23,6 +26,42 @@ document.addEventListener('DOMContentLoaded', () => {
     if (nuevaTransaccionBtn) {
         nuevaTransaccionBtn.addEventListener('click', () => {
             window.location.href = 'https://caja.cambiosorion.cl/nueva-tr';
+        });
+    }
+
+    function cargarSidebar() {
+        fetch('sidebar.html')
+            .then(response => response.text())
+            .then(html => {
+                const container = document.getElementById('sidebar-container');
+                if (container) {
+                    container.innerHTML = html;
+                    activarLinkSidebar('transacciones'); // Marca "Transacciones" como activo
+                }
+            })
+            .catch(err => console.error('Error cargando sidebar:', err));
+    }
+
+    function activarLinkSidebar(pagina) {
+        const links = document.querySelectorAll('#sidebar-nav a');
+        links.forEach(link => {
+            // Limpiar estilos activos previos
+            link.classList.remove('bg-cyan-50', 'text-cyan-800', 'border-l-4', 'border-cyan-600', 'shadow-sm', 'font-bold');
+            link.classList.add('text-gray-600', 'border-transparent');
+            
+            // Icono volver a gris
+            const icon = link.querySelector('svg');
+            if(icon) icon.classList.remove('text-cyan-600'); 
+
+            // Aplicar activo si coincide
+            if (link.dataset.page === pagina) {
+                link.classList.remove('text-gray-600', 'border-transparent');
+                link.classList.add('bg-cyan-50', 'text-cyan-800', 'border-l-4', 'border-cyan-600', 'shadow-sm', 'font-bold');
+                if(icon) {
+                    icon.classList.remove('text-gray-400');
+                    icon.classList.add('text-cyan-600');
+                }
+            }
         });
     }
 
@@ -80,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 tr.style.backgroundColor = '#ffffff';
             }
 
-            // Botón VER DETALLE (Restaurado)
+            // Botón VER DETALLE (Icono Ojo)
             const btnMostrar = document.createElement('button');
             btnMostrar.innerHTML = `
                 <svg class="w-5 h-5 text-gray-500 hover:text-cyan-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -88,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                 </svg>
             `;
-            btnMostrar.className = 'p-2 rounded-full hover:bg-white/50 focus:outline-none focus:ring-2 focus:ring-cyan-500';
+            btnMostrar.className = 'p-2 rounded-full hover:bg-white/50 focus:outline-none focus:ring-2 focus:ring-cyan-500 shadow-sm border border-transparent hover:border-gray-200';
             btnMostrar.title = "Ver detalle";
             btnMostrar.addEventListener('click', (e) => {
                 e.stopPropagation();
