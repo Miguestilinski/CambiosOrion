@@ -83,7 +83,7 @@ function processData(data) {
 
                 card.innerHTML = `
                     <div class="w-[25%] flex items-center gap-3">
-                        <img src="${icono_circular}" class="h-[7vh] w-[7vh] rounded-full shadow-lg object-contain">
+                        <img src="${icono_circular}" class="h-[6vh] w-[6vh] rounded-full shadow-lg object-contain">
                         <span class="text-[4vh] font-black tracking-tighter">${key}</span>
                     </div>
                     
