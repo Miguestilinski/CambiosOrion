@@ -42,7 +42,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function initDatePickers() {
         const config = {
             locale: "es",
-            dateFormat: "Y-m-d",
+            dateFormat: "Y-m-d", // Formato real (valor oculto para la lógica)
+            altInput: true,      // Activar máscara visual
+            altFormat: "d/m/Y",  // Formato visual (dd/mm/aaaa)
             allowInput: true,
             disableMobile: "true"
         };
@@ -208,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const [datePart, timePart] = fechaString.split(' ');
             const [y, m, d] = datePart.split('-');
             const [h, min] = timePart.split(':');
-            return `<div class="flex flex-col"><span class="font-mono font-bold text-gray-600">${h}:${min}</span><span class="text-gray-400 text-[10px]">${d}/${m}/${y}</span></div>`;
+            return `<div class="flex flex-col"><span class="font-mono font-bold text-gray-600">${h}:${min}</span><span class="text-gray-600 text-xs">${d}/${m}/${y}</span></div>`;
         } catch (e) {
             return fechaString;
         }
