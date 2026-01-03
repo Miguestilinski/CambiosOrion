@@ -48,13 +48,11 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             const links = document.querySelectorAll('#sidebar-nav a');
             links.forEach(link => {
-                // Reset styles
                 link.classList.remove('bg-cyan-50', 'text-cyan-800', 'border-l-4', 'border-cyan-600', 'shadow-sm', 'font-bold');
                 link.classList.add('text-gray-600', 'border-transparent');
                 const icon = link.querySelector('svg');
                 if(icon) { icon.classList.remove('text-cyan-600'); icon.classList.add('text-gray-400'); }
 
-                // Set Active
                 if (link.dataset.page === pagina) {
                     link.classList.remove('text-gray-600', 'border-transparent');
                     link.classList.add('bg-cyan-50', 'text-cyan-800', 'border-l-4', 'border-cyan-600', 'shadow-sm', 'font-bold');
@@ -92,9 +90,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const params = new URLSearchParams();
 
         for (const [clave, input] of Object.entries(filtros)) {
-            if (input && input.type === "checkbox") {
+            if (!input) continue; // Por seguridad si falta alguno (ej: n-nota oculto)
+            
+            if (input.type === "checkbox") {
                 if (input.checked) params.set(clave, '1');
-            } else if (input && input.value) {
+            } else if (input.value) {
                 params.set(clave, input.value.trim());
             }
         }
@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 tr.style.backgroundColor = '#ffffff';
             }
 
-            // Botón VER DETALLE (Ojo)
+            // Botón VER DETALLE
             const btnMostrar = document.createElement('button');
             btnMostrar.innerHTML = `
                 <svg class="w-5 h-5 text-gray-600 hover:text-cyan-700 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -177,21 +177,21 @@ document.addEventListener('DOMContentLoaded', () => {
             if(String(trx.estado).toLowerCase() === 'anulado') estadoClass = "bg-red-100 text-red-700 border border-red-200";
 
             tr.innerHTML = `
-                <td class="px-2 py-2 whitespace-nowrap">${formatearFechaHora(trx.fecha)}</td>
-                <td class="px-2 py-2 font-mono text-xs font-bold text-gray-600">${limpiarTexto(trx.id)}</td>
-                <td class="px-2 py-2 font-semibold text-xs truncate max-w-[120px]" title="${limpiarTexto(trx.cliente)}">${limpiarTexto(trx.cliente)}</td>
-                <td class="px-2 py-2 text-xs uppercase font-bold text-gray-500">${limpiarTexto(trx.tipo_doc)}</td>
-                <td class="px-2 py-2 font-mono text-xs">${limpiarTexto(trx.n_doc)}</td>
-                <td class="px-2 py-2 text-xs text-gray-500 max-w-[100px] truncate" title="${limpiarTexto(trx.n_nota)}">${limpiarTexto(trx.n_nota)}</td>
-                <td class="px-2 py-2 text-center font-bold uppercase text-xs tracking-wider">${limpiarTexto(trx.tipo_transaccion)}</td>
-                <td class="px-2 py-2 text-center font-black text-slate-700 text-xs">${limpiarTexto(trx.divisa)}</td>
-                <td class="px-2 py-2 text-right font-mono text-sm">${formatearNumero(trx.monto)}</td>
-                <td class="px-2 py-2 text-right font-mono text-xs text-gray-600">${formatearNumero(trx.tasa_cambio)}</td>
-                <td class="px-2 py-2 text-right font-bold font-mono text-slate-800 text-sm">${formatearNumero(trx.total)}</td>
-                <td class="px-2 py-2 text-center">
+                <td class="px-4 py-3 whitespace-nowrap">${formatearFechaHora(trx.fecha)}</td>
+                <td class="px-4 py-3 font-mono text-xs font-bold text-gray-600">${limpiarTexto(trx.id)}</td>
+                <td class="px-4 py-3 font-semibold text-xs truncate max-w-[140px]" title="${limpiarTexto(trx.cliente)}">${limpiarTexto(trx.cliente)}</td>
+                <td class="px-4 py-3 text-xs uppercase font-bold text-gray-500">${limpiarTexto(trx.tipo_doc)}</td>
+                <td class="px-4 py-3 font-mono text-xs">${limpiarTexto(trx.n_doc)}</td>
+                <td class="px-4 py-3 text-xs text-gray-500 max-w-[100px] truncate" title="${limpiarTexto(trx.n_nota)}">${limpiarTexto(trx.n_nota)}</td>
+                <td class="px-4 py-3 text-center font-bold uppercase text-xs tracking-wider">${limpiarTexto(trx.tipo_transaccion)}</td>
+                <td class="px-4 py-3 text-center font-black text-slate-700 text-xs">${limpiarTexto(trx.divisa)}</td>
+                <td class="px-4 py-3 text-right font-mono text-sm">${formatearNumero(trx.monto)}</td>
+                <td class="px-4 py-3 text-right font-mono text-xs text-gray-600">${formatearNumero(trx.tasa_cambio)}</td>
+                <td class="px-4 py-3 text-right font-bold font-mono text-slate-800 text-sm">${formatearNumero(trx.total)}</td>
+                <td class="px-4 py-3 text-center">
                     <span class="px-2 py-0.5 rounded text-[10px] uppercase font-bold ${estadoClass}">${limpiarTexto(trx.estado)}</span>
                 </td>
-                <td class="px-2 py-2 text-center mostrar-btn-cell"></td>
+                <td class="px-4 py-3 text-center mostrar-btn-cell"></td>
             `;
 
             tr.querySelector('.mostrar-btn-cell').appendChild(btnMostrar);
@@ -203,11 +203,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (borrarFiltrosBtn) {
         borrarFiltrosBtn.addEventListener('click', () => {
             Object.values(filtros).forEach(input => {
-                if (input.type === 'checkbox') {
-                    input.checked = false;
-                } else if (input) {
-                    input.value = '';
-                }
+                if(!input) return;
+                if(input.type === 'checkbox') input.checked = false;
+                else input.value = '';
             });
             if(filtros.mostrar) filtros.mostrar.value = '25';
             obtenerTransacciones();
