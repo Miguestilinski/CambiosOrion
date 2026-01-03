@@ -121,7 +121,10 @@
             </div>
             
             <button id="save-button" class="group relative inline-flex items-center justify-center px-8 py-3 text-base font-bold text-white transition-all duration-200 bg-indigo-600 border border-transparent rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-500/40 hover:scale-105">
-                <span class="mr-2">💾</span> Guardar Cambios
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>
+                </svg>
+                Guardar Cambios
                 <div class="absolute inset-0 rounded-full ring-2 ring-white/20 group-hover:ring-white/40 transition-all"></div>
             </button>
         </div>
@@ -131,7 +134,7 @@
                 <table class="w-full">
                     <thead class="bg-black/40 text-blue-200 text-xs uppercase tracking-widest font-bold border-b border-white/10">
                         <tr>
-                            <th class="px-6 py-4 text-center w-16">Icono</th>
+                            <th class="px-6 py-4 text-center w-24">Icono</th>
                             <th class="px-6 py-4 text-left">Divisa</th>
                             <th class="px-6 py-4 text-center w-32 md:w-40 text-white">Compra</th>
                             <th class="px-6 py-4 text-center w-32 md:w-40 text-white">Venta</th>
@@ -163,40 +166,7 @@
 
     <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
     <script type="module" src="https://cambiosorion.cl/orionapp/public/scripts/header.js" crossorigin="anonymous"></script>
-    <script type="module" src="https://pizarras.cambiosorion.cl/scripts/index.js"></script>
+    <script type="module" src="https://pizarras.cambiosorion.cl/scripts/editor.js"></script>
 
-    <script>
-        // Menu toggle móvil
-        const navBtn = document.getElementById('nav-menu-button');
-        const mobileMenu = document.getElementById('nav-mobile-menu');
-        if(navBtn && mobileMenu) {
-            navBtn.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
-            });
-        }
-        // El resto de la lógica de perfil la maneja header.js
-
-        // Observador para cuando se cargue la tabla dinámica, estilizar los inputs
-        const targetNode = document.getElementById('currency-list');
-        const config = { childList: true };
-
-        const callback = function(mutationsList, observer) {
-            for(const mutation of mutationsList) {
-                if (mutation.type === 'childList') {
-                    const inputs = document.querySelectorAll('#currency-list input');
-                    inputs.forEach(input => {
-                        // Aplicar clase glass-input a los inputs generados por index.js
-                        input.classList.add('glass-input');
-                        // Remover clases viejas si existen
-                        input.classList.remove('edit-input'); 
-                        input.classList.add('edit-input'); // Mantener para JS logic
-                    });
-                }
-            }
-        };
-
-        const observer = new MutationObserver(callback);
-        if(targetNode) observer.observe(targetNode, config);
-    </script>
 </body>
 </html>
