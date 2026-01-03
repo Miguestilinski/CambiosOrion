@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editor de Pizarras | Orion</title>
+    <title>Editor de Pizarras</title>
 
     <link rel="stylesheet" href="https://pizarras.cambiosorion.cl/styles/index.css">
     <link href="https://cambiosorion.cl/orionapp/public/styles/output.css" rel="stylesheet">
@@ -149,11 +149,33 @@
 
     </main>
 
+    <footer class="bg-black  mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-3">
+                    <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Orion" class="h-12 grayscale hover:grayscale-0 transition">
+                    <span class="text-slate-400 text-sm">| Sistema Corporativo</span>
+                </div>
+                <p class="text-slate-400 text-xs">© 2025 Orion Financial Group. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
     <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
     <script type="module" src="https://cambiosorion.cl/orionapp/public/scripts/header.js" crossorigin="anonymous"></script>
     <script type="module" src="https://pizarras.cambiosorion.cl/scripts/index.js"></script>
 
     <script>
+        // Menu toggle móvil
+        const navBtn = document.getElementById('nav-menu-button');
+        const mobileMenu = document.getElementById('nav-mobile-menu');
+        if(navBtn && mobileMenu) {
+            navBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+        // El resto de la lógica de perfil la maneja header.js
+
         // Observador para cuando se cargue la tabla dinámica, estilizar los inputs
         const targetNode = document.getElementById('currency-list');
         const config = { childList: true };
