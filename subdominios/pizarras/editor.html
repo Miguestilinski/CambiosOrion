@@ -152,6 +152,21 @@
 
     </main>
 
+    <div id="status-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 transition-opacity">
+        <div class="bg-slate-900 border border-white/10 rounded-2xl p-6 max-w-sm w-full shadow-2xl transform scale-100 transition-transform">
+            <div class="text-center">
+                <div id="modal-icon-bg" class="mx-auto flex items-center justify-center h-16 w-16 rounded-full mb-4 bg-slate-800">
+                    <svg id="modal-icon" class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"></svg>
+                </div>
+                <h3 id="modal-title" class="text-xl font-bold text-white mb-2"></h3>
+                <p id="modal-message" class="text-sm text-slate-400 mb-6"></p>
+                <button id="modal-close-btn" class="w-full inline-flex justify-center rounded-xl shadow-lg px-4 py-3 text-base font-bold text-white focus:outline-none transition-transform hover:scale-105">
+                    Entendido
+                </button>
+            </div>
+        </div>
+    </div>
+
     <footer class="bg-black  mt-auto">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div class="flex flex-col md:flex-row justify-between items-center gap-4">

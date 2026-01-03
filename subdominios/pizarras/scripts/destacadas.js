@@ -1,32 +1,58 @@
 let preciosAnteriores = {};
 let eventSource;
+let offlineTimer = null; // Timer para el debounce de desconexión
 
 document.addEventListener('DOMContentLoaded', () => {
     initSSE();
 });
 
 function initSSE() {
+    if (eventSource) {
+        eventSource.close();
+    }
+
     eventSource = new EventSource('https://cambiosorion.cl/data/stream_divisas.php');
 
-    eventSource.onopen = () => console.log('🟢 SSE Conectado');
+    eventSource.onopen = () => {
+        console.log('🟢 SSE Conectado');
+        handleConnectionSuccess();
+    };
 
     eventSource.onmessage = (event) => {
+        handleConnectionSuccess();
         try {
             const responseData = JSON.parse(event.data);
             processData(responseData);
-            hideOfflinePopup();
         } catch (error) {
             console.error('Error procesando datos:', error);
         }
     };  
 
     eventSource.onerror = (error) => {
-        console.error('🔴 Error SSE:', error);
-        showOfflinePopup();
+        console.warn('🟡 SSE inestable, esperando recuperación...', error);
+        handleConnectionError();
+        
         if (eventSource.readyState === EventSource.CLOSED) {
             setTimeout(initSSE, 5000);
         }
     };
+}
+
+function handleConnectionSuccess() {
+    if (offlineTimer) {
+        clearTimeout(offlineTimer);
+        offlineTimer = null;
+    }
+    hideOfflinePopup();
+}
+
+function handleConnectionError() {
+    // Solo programamos la alerta si no está ya programada
+    if (!offlineTimer) {
+        offlineTimer = setTimeout(() => {
+            showOfflinePopup();
+        }, 5000); // 5 segundos de gracia
+    }
 }
 
 function processData(data) {
@@ -41,7 +67,7 @@ function processData(data) {
     let cambiosDetectados = false;
   
     // Filtro estricto de divisas a mostrar
-    const divisasFiltradas = ["USD", "EUR", "BRL", "ARS", "PEN", "MXN", "ORO 100"]; // Puedes añadir CLP o lo que necesites
+    const divisasFiltradas = ["USD", "EUR", "BRL", "ARS", "PEN", "MXN", "ORO 100"]; 
   
     divisasFiltradas.forEach((key) => {
         const divisa = data.find(d => d.nombre === key);

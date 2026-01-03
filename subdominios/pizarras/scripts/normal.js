@@ -1,32 +1,62 @@
 let preciosAnteriores = {};
 let eventSource;
+let offlineTimer = null; // Variable para controlar el tiempo de espera de la alerta
 
 document.addEventListener('DOMContentLoaded', () => {
     initSSE();
 });
 
 function initSSE() {
+    // Si ya existe una conexión, ciérrala antes de crear una nueva (para evitar duplicados en reconexiones)
+    if (eventSource) {
+        eventSource.close();
+    }
+
     eventSource = new EventSource('https://cambiosorion.cl/data/stream_divisas.php');
 
-    eventSource.onopen = () => console.log('🟢 Conectado al servidor SSE');
+    eventSource.onopen = () => {
+        console.log('🟢 Conectado al servidor SSE');
+        handleConnectionSuccess();
+    };
     
     eventSource.onmessage = (event) => {
+        // Cada vez que llega un mensaje, confirmamos que hay conexión
+        handleConnectionSuccess();
         try {
             const responseData = JSON.parse(event.data);
             processData(responseData);
-            hideOfflinePopup();
         } catch (error) {
             console.error('Error procesando datos:', error);
         }
     };
 
     eventSource.onerror = (error) => {
-        console.error('🔴 Error SSE:', error);
-        showOfflinePopup();
+        console.warn('🟡 Conexión inestable o perdida, reintentando...', error);
+        handleConnectionError();
+        
+        // Si el navegador cerró la conexión, intentamos reconectar manualmente
         if (eventSource.readyState === EventSource.CLOSED) {
             setTimeout(initSSE, 5000);
         }
     };
+}
+
+// Lógica para manejar el éxito: Cancela la alerta si estaba pendiente
+function handleConnectionSuccess() {
+    if (offlineTimer) {
+        clearTimeout(offlineTimer);
+        offlineTimer = null;
+    }
+    hideOfflinePopup();
+}
+
+// Lógica para manejar el error: Espera 5 segundos antes de asustar al usuario
+function handleConnectionError() {
+    if (!offlineTimer) {
+        offlineTimer = setTimeout(() => {
+            showOfflinePopup(); // Solo muestra el popup si pasaron 5 segs sin éxito
+        }, 5000);
+    }
 }
 
 function processData(data) {
@@ -41,8 +71,6 @@ function processData(data) {
         "USD", "EUR", "ARS", "BRL", "PEN", "COP",
         "UYU", "BOB", "CAD", "GBP", "JPY", "CNY",
         "SEK", "AUD", "MXN", "CHF" 
-        // He quitado algunas (NZD, DKK, ORO) para asegurar espacio si la pantalla es pequeña, 
-        // agrégalas de nuevo al array si las necesitas estrictamente.
     ];
 
     divisasOrdenadas.forEach((key) => {
@@ -68,7 +96,6 @@ function processData(data) {
             // Clases Tailwind para la fila
             row.className = `group transition-colors duration-500 hover:bg-white/5 ${highlightClass}`;
 
-            // Estructura de columnas con tipografía GRANDE
             row.innerHTML = `
                 <td class="py-2 px-2 text-center">
                     <div class="relative flex justify-center">

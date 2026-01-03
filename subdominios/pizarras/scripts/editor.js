@@ -11,7 +11,13 @@ document.addEventListener('DOMContentLoaded', () => {
         saveButton.addEventListener('click', saveEditedCurrencies);
     }
 
-    // 3. Configurar menú móvil (reutilizable)
+    // 3. Configurar botón del modal
+    const modalBtn = document.getElementById('modal-close-btn');
+    if (modalBtn) {
+        modalBtn.addEventListener('click', hideStatusModal);
+    }
+
+    // 4. Configurar menú móvil
     const navBtn = document.getElementById('nav-menu-button');
     const mobileMenu = document.getElementById('nav-mobile-menu');
     if(navBtn && mobileMenu) {
@@ -31,7 +37,6 @@ function loadCurrenciesForEdit() {
     if (isFetchingCurrencies) return;
     isFetchingCurrencies = true;
 
-    // Cache buster para evitar datos viejos
     const targetUrl = 'https://cambiosorion.cl/data/divisas_api.php?_=' + new Date().getTime();
     
     fetch(targetUrl)
@@ -56,19 +61,17 @@ function fillEditCurrencyTable(divisas) {
     const tableBody = document.querySelector('#currency-list');
     if (!tableBody) return;
 
-    tableBody.innerHTML = ''; // Limpiar tabla
-    editableCurrencies = {};  // Reiniciar objeto local
+    tableBody.innerHTML = ''; 
+    editableCurrencies = {};  
 
     divisas.forEach(divisa => {
         if (divisa.nombre === 'CLP') return; 
 
-        // Formatear valores para quitar ceros innecesarios (ej: 950.00 -> 950)
         const formattedCompra = removeTrailingZeros(divisa.compra);
         const formattedVenta = removeTrailingZeros(divisa.venta);
 
         const row = document.createElement('tr');
         
-        // AQUÍ: Se agregan las clases de tamaño a la imagen y glass-input a los inputs
         row.innerHTML = `
             <td class="py-4">
                 <img src="${divisa.icono_circular}" alt="${divisa.nombre}" class="w-10 h-10 object-contain mx-auto drop-shadow-md hover:scale-110 transition-transform">
@@ -93,7 +96,6 @@ function fillEditCurrencyTable(divisas) {
         `;
         tableBody.appendChild(row);
 
-        // Guardar referencia en memoria
         editableCurrencies[divisa.nombre] = {
             nombre: divisa.nombre,
             compra: parseFloat(formattedCompra) || 0,
@@ -128,14 +130,13 @@ function saveEditedCurrencies() {
     const changesToSave = Object.values(editableCurrencies);
     
     if (!changesToSave.length) {
-        alert("No hay datos para guardar.");
+        showStatusModal('error', 'Sin datos', 'No hay información cargada para guardar.');
         return;
     }
 
     const saveBtn = document.getElementById('save-button');
     const originalBtnText = saveBtn ? saveBtn.innerHTML : '';
     
-    // Feedback visual de carga
     if(saveBtn) {
         saveBtn.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Guardando...`;
         saveBtn.disabled = true;
@@ -150,7 +151,6 @@ function saveEditedCurrencies() {
         fecha_actualizacion: currentTimestamp,
     }));
 
-    // Promise.all para esperar a que todas las peticiones terminen
     Promise.all(validChanges.map(divisa => {
         return fetch('https://cambiosorion.cl/data/divisas_api.php', {
             method: 'PUT',
@@ -163,11 +163,13 @@ function saveEditedCurrencies() {
         });
     }))
     .then(() => {
-        alert("✅ Precios actualizados correctamente.");
+        // REEMPLAZO DE ALERT POR MODAL DE ÉXITO
+        showStatusModal('success', '¡Guardado!', 'Los precios han sido actualizados correctamente en todas las pizarras.');
     })
     .catch(error => {
         console.error("Error guardando:", error);
-        alert("⚠️ Hubo un error al guardar algunas divisas.");
+        // REEMPLAZO DE ALERT POR MODAL DE ERROR
+        showStatusModal('error', 'Error al guardar', 'Hubo un problema al conectar con el servidor. Inténtalo de nuevo.');
     })
     .finally(() => {
         if(saveBtn) {
@@ -175,4 +177,45 @@ function saveEditedCurrencies() {
             saveBtn.disabled = false;
         }
     });
+}
+
+// === LÓGICA DEL MODAL ===
+function showStatusModal(type, title, message) {
+    const modal = document.getElementById('status-modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalMessage = document.getElementById('modal-message');
+    const modalIconBg = document.getElementById('modal-icon-bg');
+    const modalIcon = document.getElementById('modal-icon');
+    const modalBtn = document.getElementById('modal-close-btn');
+
+    if(!modal) return;
+
+    modalTitle.textContent = title;
+    modalMessage.textContent = message;
+
+    // Configuración visual según tipo
+    if (type === 'success') {
+        // Icono Check Verde
+        modalIconBg.className = "mx-auto flex items-center justify-center h-16 w-16 rounded-full mb-4 bg-green-900/30 border border-green-500/30";
+        modalIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>';
+        modalIcon.classList.remove('text-red-500');
+        modalIcon.classList.add('text-green-500');
+        
+        modalBtn.className = "w-full inline-flex justify-center rounded-xl shadow-lg px-4 py-3 text-base font-bold text-white bg-green-600 hover:bg-green-700 focus:outline-none transition-transform hover:scale-105";
+    } else {
+        // Icono X Rojo
+        modalIconBg.className = "mx-auto flex items-center justify-center h-16 w-16 rounded-full mb-4 bg-red-900/30 border border-red-500/30";
+        modalIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>';
+        modalIcon.classList.remove('text-green-500');
+        modalIcon.classList.add('text-red-500');
+
+        modalBtn.className = "w-full inline-flex justify-center rounded-xl shadow-lg px-4 py-3 text-base font-bold text-white bg-red-600 hover:bg-red-700 focus:outline-none transition-transform hover:scale-105";
+    }
+
+    modal.classList.remove('hidden');
+}
+
+function hideStatusModal() {
+    const modal = document.getElementById('status-modal');
+    if(modal) modal.classList.add('hidden');
 }
