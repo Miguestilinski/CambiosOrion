@@ -75,20 +75,22 @@ function processData(data) {
             preciosAnteriores[key] = { compra, venta };
 
             if (key === "USD" || key === "EUR") {
-                // === HERO (Gigantes) ===
+                // === HERO (Gigantes Flexibles) ===
                 const card = document.createElement("div");
-                card.className = `grid grid-cols-12 items-center bg-white/5 rounded-2xl border border-white/10 shadow-lg px-4 h-[16vh] ${flashClass}`; // Altura fija 16vh
+                // Usamos h-full para que se expanda en su mitad del contenedor
+                // flex-1 asegura que ambas tarjetas (USD/EUR) ocupen el mismo espacio
+                card.className = `flex-1 grid grid-cols-12 items-center bg-white/5 rounded-2xl border border-white/10 shadow-lg px-4 ${flashClass}`; 
                 
                 card.innerHTML = `
-                    <div class="col-span-4 flex items-center gap-6">
-                        <img src="${icono_circular}" class="h-[10vh] w-[10vh] rounded-full shadow-lg">
-                        <span class="text-[6vh] font-black tracking-tighter">${key}</span>
+                    <div class="col-span-4 flex items-center gap-4 lg:gap-6">
+                        <img src="${icono_circular}" class="h-[8vh] w-[8vh] lg:h-[10vh] lg:w-[10vh] rounded-full shadow-lg object-contain">
+                        <span class="text-[5vh] lg:text-[6vh] font-black tracking-tighter">${key}</span>
                     </div>
                     <div class="col-span-4 text-center">
-                        <span class="text-[7vh] font-black text-white tracking-widest font-mono text-shadow-glow">${compraFmt}</span>
+                        <span class="text-[6vh] lg:text-[7vh] font-black text-white tracking-widest font-mono text-shadow-glow">${compraFmt}</span>
                     </div>
                     <div class="col-span-4 text-center">
-                        <span class="text-[7vh] font-black text-white tracking-widest font-mono text-shadow-glow">${ventaFmt}</span>
+                        <span class="text-[6vh] lg:text-[7vh] font-black text-white tracking-widest font-mono text-shadow-glow">${ventaFmt}</span>
                     </div>
                 `;
                 heroList.appendChild(card);

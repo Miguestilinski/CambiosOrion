@@ -7,11 +7,8 @@
     
     <link rel="stylesheet" href="https://pizarras.cambiosorion.cl/styles/index.css">
     <link href="https://cambiosorion.cl/orionapp/public/styles/output.css" rel="stylesheet">
-    <link rel="icon" href="https://cambiosorion.cl/orionapp/icons/IsotipoOrion-blue.svg" type="image/png">
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
         body { 
@@ -21,35 +18,29 @@
             overflow: hidden;
         }
         .text-shadow-glow { text-shadow: 0 0 15px rgba(255,255,255,0.3); }
-        
-        /* Alturas fijas para estructura rígida */
-        .h-header { height: 12vh; }
-        .h-hero { height: 38vh; } /* Zona USD/EUR */
-        .h-list { height: 40vh; } /* Zona otras divisas */
-        .h-footer { height: 10vh; }
     </style>
 </head>
-<body class="h-screen w-screen flex flex-col text-white bg-black/50">
+<body class="h-screen w-screen flex flex-col text-white bg-black/50 overflow-hidden">
     <div class="fixed inset-0 bg-black/40 -z-10"></div>
 
-    <header class="h-header flex items-center justify-center border-b border-white/10 bg-black/20 backdrop-blur-sm">
-        <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Orion" class="h-[8vh]">
+    <header class="h-[10vh] flex items-center justify-center border-b border-white/10 bg-black/20 backdrop-blur-sm shrink-0">
+        <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Orion" class="h-[70%] object-contain">
     </header>
 
-    <main class="flex-grow flex flex-col w-full max-w-5xl mx-auto px-4">
+    <main class="flex-grow flex flex-col w-full max-w-6xl mx-auto px-6 py-2 overflow-hidden">
         
-        <div class="grid grid-cols-12 text-blue-200 uppercase tracking-[0.2em] font-bold text-[2vh] py-2 border-b border-white/20 mb-2 text-center opacity-80">
+        <div class="grid grid-cols-12 text-blue-200 uppercase tracking-[0.2em] font-bold text-[2vh] py-2 border-b border-white/20 mb-2 text-center opacity-80 shrink-0">
             <div class="col-span-4 text-left pl-8">Divisa</div>
             <div class="col-span-4">Compra</div>
             <div class="col-span-4">Venta</div>
         </div>
 
-        <div id="hero-list" class="h-hero flex flex-col justify-around py-2">
+        <div id="hero-list" class="flex-none h-[40vh] flex flex-col justify-center gap-4 py-2">
             </div>
 
-        <div class="border-t border-white/20 my-2"></div>
+        <div class="border-t border-white/20 my-2 shrink-0"></div>
 
-        <div class="h-list flex flex-col justify-between">
+        <div class="flex-1 flex flex-col justify-between min-h-0">
             <table class="w-full h-full table-fixed">
                 <tbody id="normal-list">
                     </tbody>
@@ -58,21 +49,20 @@
 
     </main>
 
-    <footer class="h-footer flex flex-col justify-center items-center bg-black/60 backdrop-blur-md border-t border-white/20">
+    <footer class="h-[8vh] flex flex-col justify-center items-center bg-black/60 backdrop-blur-md border-t border-white/20 shrink-0">
         <div class="flex items-center gap-6">
-            <span class="bg-blue-600/90 px-6 py-2 rounded-full text-[2.5vh] font-bold shadow-xl shadow-blue-500/40 tracking-wider">
+            <span class="bg-blue-600/90 px-6 py-1 rounded-full text-[2.2vh] font-bold shadow-xl shadow-blue-500/40 tracking-wider">
                 TRANSFERENCIAS AL EXTRANJERO
             </span>
         </div>
-        <p class="text-[1.5vh] text-slate-400 mt-2">Lunes a Viernes 09:00 - 17:00 hrs</p>
+        <p class="text-[1.4vh] text-slate-400 mt-1">Lunes a Viernes 09:00 - 17:00 hrs</p>
     </footer>
 
-    <div id="offline-popup" class="hidden fixed bottom-0 left-0 w-full bg-red-600 text-white py-3 text-center text-[2.2vh] font-bold z-50">
-        ⚠ SIN CONEXIÓN - REVISAR INTERNET
+    <div id="offline-popup" class="hidden fixed bottom-0 left-0 w-full bg-red-600 text-white py-2 text-center text-[2vh] font-bold z-50">
+        ⚠ SIN CONEXIÓN
     </div>
 
     <audio id="priceAlert" src="https://cambiosorion.cl/orionapp/sounds/alert.mp3"></audio>
-    <script src="https://cdn.tailwindcss.com"></script>
     <script type="module" src="./scripts/destacadas.js"></script>
 </body>
 </html>
