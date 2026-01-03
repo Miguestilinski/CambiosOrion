@@ -1,10 +1,9 @@
-/* Estilos globales */
 /* Estilos globales y Fondo */
 body {
     @apply font-sans bg-white;
     margin: 0;
     padding: 0;
-    /* Tu imagen de fondo original */
+    /* Imagen de fondo original */
     background: rgba(0, 0, 0, 0.45) url('https://cambiosorion.cl/orionapp/assets/FondoOrion.jpg') no-repeat center top;
     background-size: cover;
     background-attachment: fixed;
@@ -12,7 +11,7 @@ body {
     z-index: 1;
 }
 
-/* Degradado negro superpuesto */
+/* Degradado negro superpuesto para mejorar contraste general */
 body::before {
     content: "";
     position: fixed;
@@ -29,7 +28,7 @@ html {
     scroll-behavior: smooth;
 }
 
-/* Header Divider específico si se usa en otras páginas */
+/* Header Divider */
 .header-divider {
     background-color: white;
     width: 60%;
@@ -51,17 +50,17 @@ tr.compra, .compra {
     width: 50px;
 }
 
-/* Scrollbar personalizado para el contenido principal */
-.main-content::-webkit-scrollbar {
+/* Scrollbar personalizado para el dashboard */
+.overflow-y-auto::-webkit-scrollbar {
     width: 8px;
 }
-.main-content::-webkit-scrollbar-track {
-    background: #f1f1f1; 
+.overflow-y-auto::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.05); 
 }
-.main-content::-webkit-scrollbar-thumb {
+.overflow-y-auto::-webkit-scrollbar-thumb {
     background: #cbd5e1; 
     border-radius: 4px;
 }
-.main-content::-webkit-scrollbar-thumb:hover {
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
     background: #94a3b8; 
 }
