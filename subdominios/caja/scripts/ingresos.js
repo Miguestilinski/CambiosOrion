@@ -4,8 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
     cargarSidebar();
     initDatePickers();
 
-    const nuevaTransaccionBtn = document.getElementById('nueva-tr');
-    const tablaTransacciones = document.getElementById('tabla-transacciones');
+    const nuevoIngresoBtn = document.getElementById('nuevo-ingreso');
+    const tablaIngresos = document.getElementById('tabla-ingresos');
     const borrarFiltrosBtn = document.getElementById('borrar-filtros');
     const contadorRegistros = document.getElementById('contador-registros');
     
@@ -20,41 +20,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const filtros = {
         fechaInicio: document.getElementById("fecha-inicio"),
         fechaFin: document.getElementById("fecha-fin"),
-        emitidas: document.getElementById("emitidas"),
-        noEmitidas: document.getElementById("no-emitidas"),
-        numero: document.getElementById("numero"),
+        id: document.getElementById("id-ingreso"),
         cliente: document.getElementById("cliente"),
-        tipoDoc: document.getElementById("tipo-doc"),
-        nDoc: document.getElementById("n-doc"),
-        nNota: document.getElementById("n-nota"),
-        tipoTransaccion: document.getElementById("tipo-transaccion"),
+        tipoIngreso: document.getElementById("tipo-ingreso"),
+        observacion: document.getElementById("observacion"),
         divisa: document.getElementById("divisa"),
         estado: document.getElementById("estado"),
         mostrar: document.getElementById("mostrar-registros")
     };
 
-    if (nuevaTransaccionBtn) {
-        nuevaTransaccionBtn.addEventListener('click', () => {
-            window.location.href = 'https://caja.cambiosorion.cl/nueva-tr';
-        });
-    }
-
-    // Lógica de exclusión mutua para checkboxes
-    if (filtros.emitidas && filtros.noEmitidas) {
-        filtros.emitidas.addEventListener('change', () => {
-            if (filtros.emitidas.checked) filtros.noEmitidas.checked = false;
-        });
-        filtros.noEmitidas.addEventListener('change', () => {
-            if (filtros.noEmitidas.checked) filtros.emitidas.checked = false;
+    if (nuevoIngresoBtn) {
+        nuevoIngresoBtn.addEventListener('click', () => {
+            window.location.href = 'https://caja.cambiosorion.cl/nuevo-ing';
         });
     }
 
     function initDatePickers() {
         const config = {
             locale: "es",
-            dateFormat: "Y-m-d", // Formato real (valor oculto para la lógica)
-            altInput: true,      // Activar máscara visual
-            altFormat: "d/m/Y",  // Formato visual (dd/mm/aaaa)
+            dateFormat: "Y-m-d",
+            altInput: true,
+            altFormat: "d/m/Y",
             allowInput: true,
             disableMobile: "true"
         };
@@ -68,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const container = document.getElementById('sidebar-container');
                 if (container) {
                     container.innerHTML = html;
-                    activarLinkSidebar('transacciones');
+                    activarLinkSidebar('ingresos');
                 }
             });
     }
@@ -113,26 +99,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- LÓGICA DE DATOS ---
-    function obtenerTransacciones() {
+    // --- DATOS ---
+    function obtenerIngresos() {
         const params = new URLSearchParams();
 
-        // Agregar filtros
         for (const [clave, input] of Object.entries(filtros)) {
-            if (!input) continue;
-            if (input.type === "checkbox") {
-                if (input.checked) params.set(clave, '1');
-            } else if (input.value) {
+            if (input && input.value) {
                 params.set(clave, input.value.trim());
             }
         }
-
-        // Agregar paginación
         params.set('pagina', paginaActual);
 
-        tablaTransacciones.innerHTML = `<tr><td colspan="13" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-cyan-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
+        tablaIngresos.innerHTML = `<tr><td colspan="9" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-cyan-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
 
-        fetch(`https://cambiosorion.cl/data/transacciones.php?${params.toString()}`)
+        fetch(`https://cambiosorion.cl/data/ingresos-caja.php?${params.toString()}`, { credentials: "include" })
             .then(response => response.json())
             .then(data => {
                 mostrarResultados(data);
@@ -140,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .catch(error => {
                 console.error('Error:', error);
-                tablaTransacciones.innerHTML = `<tr><td colspan="13" class="text-center py-4 text-red-500">Error al cargar datos.</td></tr>`;
+                tablaIngresos.innerHTML = `<tr><td colspan="9" class="text-center py-4 text-red-500">Error al cargar datos.</td></tr>`;
             });
     }
 
@@ -148,63 +128,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (pageIndicator) pageIndicator.textContent = `Página ${paginaActual}`;
         if (contadorRegistros) contadorRegistros.textContent = `${cantidadResultados} registros`;
 
-        // Lógica simple de botones (si no hay resultados, deshabilitar Siguiente)
-        // Nota: Idealmente el backend debería devolver el total de páginas.
-        // Aquí asumimos que si devuelve menos del límite, es la última página.
         const limite = parseInt(filtros.mostrar.value) || 25;
-        
         if (btnPrev) btnPrev.disabled = (paginaActual <= 1);
-        
-        // Si llegaron menos registros que el límite, no hay más páginas
         if (btnNext) btnNext.disabled = (cantidadResultados < limite);
     }
 
-    // --- EVENTOS PAGINACIÓN ---
-    if (btnPrev) {
-        btnPrev.addEventListener('click', () => {
-            if (paginaActual > 1) {
-                paginaActual--;
-                obtenerTransacciones();
-            }
-        });
-    }
-
-    if (btnNext) {
-        btnNext.addEventListener('click', () => {
-            paginaActual++;
-            obtenerTransacciones();
-        });
-    }
-
-    // --- EVENTOS FILTROS ---
-    if (borrarFiltrosBtn) {
-        borrarFiltrosBtn.addEventListener('click', () => {
-            Object.values(filtros).forEach(input => {
-                if(!input) return;
-                if(input.type === 'checkbox') input.checked = false;
-                else {
-                    input.value = '';
-                    if(input._flatpickr) input._flatpickr.clear();
-                }
-            });
-            if(filtros.mostrar) filtros.mostrar.value = '25';
-            
-            paginaActual = 1; // Reiniciar a pag 1
-            obtenerTransacciones();
-        });
-    }
-
-    Object.values(filtros).forEach(input => {
-        if(input) {
-            // Al cambiar un filtro, volver a la página 1
-            const resetAndFetch = () => {
-                paginaActual = 1;
-                obtenerTransacciones();
-            };
-            input.addEventListener('input', resetAndFetch);
-            input.addEventListener('change', resetAndFetch);
-        }
-    });
+    if (btnPrev) btnPrev.addEventListener('click', () => { if (paginaActual > 1) { paginaActual--; obtenerIngresos(); } });
+    if (btnNext) btnNext.addEventListener('click', () => { paginaActual++; obtenerIngresos(); });
 
     // --- UTILIDADES ---
     function limpiarTexto(valor) { return valor === null || valor === undefined ? '' : valor; }
@@ -220,72 +150,76 @@ document.addEventListener('DOMContentLoaded', () => {
             const [datePart, timePart] = fechaString.split(' ');
             const [y, m, d] = datePart.split('-');
             const [h, min] = timePart.split(':');
-            return `<div class="flex flex-col"><span class="font-mono font-bold text-gray-600">${h}:${min}</span><span class="text-gray-600 text-xs">${d}/${m}/${y}</span></div>`;
+            return `<div class="flex flex-col"><span class="font-mono font-bold text-gray-600">${h}:${min}</span><span class="text-gray-400 text-[10px]">${d}/${m}/${y}</span></div>`;
         } catch (e) {
             return fechaString;
         }
     }
 
-    function mostrarResultados(transacciones) {
-        tablaTransacciones.innerHTML = '';
+    function mostrarResultados(registros) {
+        tablaIngresos.innerHTML = '';
 
-        if (!transacciones || transacciones.length === 0) {
-            tablaTransacciones.innerHTML = `<tr><td colspan="13" class="text-center py-10 text-gray-500 italic">No se encontraron resultados.</td></tr>`;
+        if (!registros || registros.length === 0) {
+            tablaIngresos.innerHTML = `<tr><td colspan="9" class="text-center py-10 text-gray-500 italic">No se encontraron ingresos.</td></tr>`;
             return;
         }
 
-        transacciones.forEach(trx => {
+        registros.forEach(row => {
             const tr = document.createElement('tr');
-            tr.className = 'hover:brightness-95 transition-all text-gray-800 font-medium border-b border-gray-100 last:border-0';
+            tr.className = 'hover:brightness-95 transition-all text-gray-800 font-medium border-b border-gray-100 last:border-0 bg-white';
 
-            if (trx.tipo_transaccion === 'Compra') {
-                tr.style.backgroundColor = '#c3e8f1'; 
-            } else if (trx.tipo_transaccion === 'Venta') {
-                tr.style.backgroundColor = '#dbf599'; 
-            } else {
-                tr.style.backgroundColor = '#ffffff';
-            }
+            // Colores suaves para estado
+            let estadoClass = "bg-gray-100 text-gray-600";
+            if(String(row.estado) === 'Vigente') estadoClass = "bg-green-100 text-green-700 border border-green-200";
+            if(String(row.estado) === 'Anulado') estadoClass = "bg-red-100 text-red-700 border border-red-200";
 
             const btnMostrar = document.createElement('button');
-            btnMostrar.innerHTML = `
-                <svg class="w-5 h-5 text-gray-600 hover:text-cyan-700 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                </svg>
-            `;
+            btnMostrar.innerHTML = `<svg class="w-5 h-5 text-gray-600 hover:text-cyan-700 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
             btnMostrar.className = 'flex items-center justify-center p-1.5 bg-white/50 rounded-full hover:bg-white shadow-sm border border-transparent hover:border-cyan-300 mx-auto';
-            btnMostrar.title = "Ver detalle";
             btnMostrar.addEventListener('click', (e) => {
                 e.stopPropagation();
-                window.location.href = `detalle-tr?id=${trx.id}`;
+                window.location.href = `detalle-ingreso?id=${row.id}`;
             });
 
-            let estadoClass = "bg-gray-100 text-gray-600";
-            if(String(trx.estado).toLowerCase() === 'vigente') estadoClass = "bg-green-100 text-green-700 border border-green-200";
-            if(String(trx.estado).toLowerCase() === 'anulado') estadoClass = "bg-red-100 text-red-700 border border-red-200";
-
             tr.innerHTML = `
-                <td class="px-4 py-3 whitespace-nowrap text-xs">${formatearFechaHora(trx.fecha)}</td>
-                <td class="px-4 py-3 font-mono text-xs font-bold text-gray-600">${limpiarTexto(trx.id)}</td>
-                <td class="px-4 py-3 font-semibold text-xs truncate max-w-[140px]" title="${limpiarTexto(trx.cliente)}">${limpiarTexto(trx.cliente)}</td>
-                <td class="px-4 py-3 text-xs uppercase font-bold text-gray-500 tracking-wide">${limpiarTexto(trx.tipo_doc)}</td>
-                <td class="px-4 py-3 font-mono text-xs">${limpiarTexto(trx.n_doc)}</td>
-                <td class="px-4 py-3 text-xs text-gray-500 max-w-[100px] truncate" title="${limpiarTexto(trx.n_nota)}">${limpiarTexto(trx.n_nota)}</td>
-                <td class="px-4 py-3 text-center font-bold uppercase text-xs tracking-wider">${limpiarTexto(trx.tipo_transaccion)}</td>
-                <td class="px-4 py-3 text-center font-black text-slate-700 text-xs">${limpiarTexto(trx.divisa)}</td>
-                <td class="px-4 py-3 text-right font-mono text-sm">${formatearNumero(trx.monto)}</td>
-                <td class="px-4 py-3 text-right font-mono text-xs text-gray-600">${formatearNumero(trx.tasa_cambio)}</td>
-                <td class="px-4 py-3 text-right font-bold font-mono text-slate-800 text-sm">${formatearNumero(trx.total)}</td>
+                <td class="px-4 py-3 whitespace-nowrap text-xs">${formatearFechaHora(row.fecha)}</td>
+                <td class="px-4 py-3 font-mono text-xs font-bold text-gray-600">${limpiarTexto(row.id)}</td>
+                <td class="px-4 py-3 font-semibold text-xs truncate max-w-[140px]" title="${limpiarTexto(row.cliente_id)}">${limpiarTexto(row.cliente_id)}</td>
+                <td class="px-4 py-3 text-xs uppercase font-bold text-gray-500 tracking-wide">${limpiarTexto(row.tipo_ingreso)}</td>
+                <td class="px-4 py-3 text-xs text-gray-500 max-w-[150px] truncate" title="${limpiarTexto(row.observaciones)}">${limpiarTexto(row.observaciones)}</td>
+                <td class="px-4 py-3 text-center font-black text-slate-700 text-xs">${limpiarTexto(row.divisa_id)}</td>
+                <td class="px-4 py-3 text-right font-bold font-mono text-slate-800 text-sm">${formatearNumero(row.monto)}</td>
                 <td class="px-4 py-3 text-center">
-                    <span class="px-2 py-0.5 rounded text-[10px] uppercase font-bold ${estadoClass}">${limpiarTexto(trx.estado)}</span>
+                    <span class="px-2 py-0.5 rounded text-[10px] uppercase font-bold ${estadoClass}">${limpiarTexto(row.estado)}</span>
                 </td>
                 <td class="px-4 py-3 text-center mostrar-btn-cell"></td>
             `;
 
             tr.querySelector('.mostrar-btn-cell').appendChild(btnMostrar);
-            tablaTransacciones.appendChild(tr);
+            tablaIngresos.appendChild(tr);
         });
     }
 
-    obtenerTransacciones();
+    if (borrarFiltrosBtn) {
+        borrarFiltrosBtn.addEventListener('click', () => {
+            Object.values(filtros).forEach(input => {
+                if(!input) return;
+                input.value = '';
+                if(input._flatpickr) input._flatpickr.clear();
+            });
+            if(filtros.mostrar) filtros.mostrar.value = '25';
+            paginaActual = 1;
+            obtenerIngresos();
+        });
+    }
+
+    Object.values(filtros).forEach(input => {
+        if(input) {
+            const resetAndFetch = () => { paginaActual = 1; obtenerIngresos(); };
+            input.addEventListener('input', resetAndFetch);
+            input.addEventListener('change', resetAndFetch);
+        }
+    });
+
+    obtenerIngresos();
 });
