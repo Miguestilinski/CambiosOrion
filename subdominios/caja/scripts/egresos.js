@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const pageIndicator = document.getElementById('page-indicator');
     
     let paginaActual = 1;
+    let currentCajaId = null;
 
     const filtros = {
         fechaInicio: document.getElementById("fecha-inicio"),
@@ -66,24 +67,42 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!res.ok) throw new Error("Error sesión");
             const data = await res.json();
             if (!data.isAuthenticated || !data.equipo_id) { window.location.href = 'https://admin.cambiosorion.cl/login'; return; }
+            
+            // GUARDAR ID
+            currentCajaId = data.caja_id;
+
             const headerName = document.getElementById('header-user-name');
             const headerEmail = document.getElementById('dropdown-user-email');
             if (headerName) headerName.textContent = data.nombre ? data.nombre.split(' ')[0] : 'Admin';
             if (headerEmail) headerEmail.textContent = data.correo;
+
+            // CARGAR DATOS
+            obtenerEgresos();
+
         } catch (error) { console.error("Error sesión:", error); }
     }
 
     function obtenerEgresos() {
+        const cajaIdParam = currentCajaId ? currentCajaId : 0;
         const params = new URLSearchParams();
+        params.set('caja_id', cajaIdParam);
+
         for (const [clave, input] of Object.entries(filtros)) { if (input && input.value) params.set(clave, input.value.trim()); }
         params.set('pagina', paginaActual);
 
         tablaEgresos.innerHTML = `<tr><td colspan="9" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-cyan-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
 
-        fetch(`https://cambiosorion.cl/data/egresos-caja.php?${params.toString()}`, { credentials: "include" })
+        fetch(`https://cambiosorion.cl/data/egresos-caja.php?${params.toString()}`)
             .then(response => response.json())
-            .then(data => { mostrarResultados(data); actualizarPaginacion(data.length); })
-            .catch(error => { console.error('Error:', error); tablaEgresos.innerHTML = `<tr><td colspan="9" class="text-center py-4 text-red-500">Error al cargar datos.</td></tr>`; });
+            .then(data => {
+                if (Array.isArray(data)) {
+                    mostrarResultados(data);
+                    actualizarPaginacion(data.length);
+                } else {
+                    tablaEgresos.innerHTML = `<tr><td colspan="9" class="text-center py-4 text-red-500">Error en datos.</td></tr>`;
+                }
+            })
+            .catch(error => { console.error('Error:', error); tablaEgresos.innerHTML = `<tr><td colspan="9" class="text-center py-4 text-red-500">Error de conexión.</td></tr>`; });
     }
 
     function actualizarPaginacion(cantidadResultados) {
@@ -124,7 +143,6 @@ document.addEventListener('DOMContentLoaded', () => {
             btnMostrar.className = 'flex items-center justify-center p-1.5 bg-white/50 rounded-full hover:bg-white shadow-sm border border-transparent hover:border-cyan-300 mx-auto';
             btnMostrar.addEventListener('click', (e) => { e.stopPropagation(); window.location.href = `detalle-egreso?id=${row.id}`; });
 
-            // Mostrar Item Utilidad si existe, sino observaciones
             const descripcion = row.item_utilidad ? `<span class="text-xs text-indigo-600 font-bold">Util: ${row.item_utilidad}</span>` : row.observaciones;
 
             tr.innerHTML = `
@@ -155,6 +173,4 @@ document.addEventListener('DOMContentLoaded', () => {
     Object.values(filtros).forEach(input => {
         if(input) { const reset = () => { paginaActual = 1; obtenerEgresos(); }; input.addEventListener('input', reset); input.addEventListener('change', reset); }
     });
-
-    obtenerEgresos();
 });

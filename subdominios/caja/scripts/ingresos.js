@@ -1,22 +1,23 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Iniciar Sesión, Sidebar y Fechas
-    getSession();
+    // 1. Cargar Sidebar
     cargarSidebar();
     initDatePickers();
+    
+    // 2. Iniciar sesión y LUEGO cargar datos (orden crítico)
+    getSession();
 
     const nuevoIngresoBtn = document.getElementById('nuevo-ingreso');
     const tablaIngresos = document.getElementById('tabla-ingresos');
     const borrarFiltrosBtn = document.getElementById('borrar-filtros');
     const contadorRegistros = document.getElementById('contador-registros');
     
-    // Controles de Paginación
     const btnPrev = document.getElementById('btn-prev');
     const btnNext = document.getElementById('btn-next');
     const pageIndicator = document.getElementById('page-indicator');
     
     let paginaActual = 1;
+    let currentCajaId = null; // Variable para guardar el ID de la caja
 
-    // Mapeo de Filtros
     const filtros = {
         fechaInicio: document.getElementById("fecha-inicio"),
         fechaFin: document.getElementById("fecha-fin"),
@@ -77,6 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 100);
     }
 
+    // OBTENER SESIÓN Y LUEGO DATOS
     async function getSession() {
         try {
             const res = await fetch("https://cambiosorion.cl/data/session_status_admin.php", { credentials: "include" });
@@ -88,20 +90,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            // GUARDAR EL ID DE LA CAJA
+            currentCajaId = data.caja_id;
+
             const headerName = document.getElementById('header-user-name');
             const headerEmail = document.getElementById('dropdown-user-email');
             
             if (headerName) headerName.textContent = data.nombre ? data.nombre.split(' ')[0] : 'Admin';
             if (headerEmail) headerEmail.textContent = data.correo;
 
+            // Una vez tenemos la caja, cargamos los datos
+            obtenerIngresos();
+
         } catch (error) {
             console.error("Error sesión:", error);
         }
     }
 
-    // --- DATOS ---
     function obtenerIngresos() {
+        // Si no tenemos caja ID aún (o es null como en tu ejemplo de Socio), manejamos el caso
+        // En tu caso 'caja_id' es null, enviaremos 0 o vacío, la SQL retornará vacio (correcto si no tiene caja)
+        const cajaIdParam = currentCajaId ? currentCajaId : 0; 
+
         const params = new URLSearchParams();
+        params.set('caja_id', cajaIdParam); // ENVIAMOS EL ID POR GET
 
         for (const [clave, input] of Object.entries(filtros)) {
             if (input && input.value) {
@@ -112,15 +124,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         tablaIngresos.innerHTML = `<tr><td colspan="9" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-cyan-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
 
-        fetch(`https://cambiosorion.cl/data/ingresos-caja.php?${params.toString()}`, { credentials: "include" })
+        // NOTA: credentials: "include" ya no es estrictamente necesario para el PHP nuevo, pero no hace daño dejarlo si el PHP acepta CORS.
+        fetch(`https://cambiosorion.cl/data/ingresos-caja.php?${params.toString()}`)
             .then(response => response.json())
             .then(data => {
-                mostrarResultados(data);
-                actualizarPaginacion(data.length);
+                if (Array.isArray(data)) {
+                    mostrarResultados(data);
+                    actualizarPaginacion(data.length);
+                } else {
+                    console.error("Respuesta inválida:", data);
+                    tablaIngresos.innerHTML = `<tr><td colspan="9" class="text-center py-4 text-red-500">Error en formato de datos.</td></tr>`;
+                }
             })
             .catch(error => {
-                console.error('Error:', error);
-                tablaIngresos.innerHTML = `<tr><td colspan="9" class="text-center py-4 text-red-500">Error al cargar datos.</td></tr>`;
+                console.error('Error fetch:', error);
+                tablaIngresos.innerHTML = `<tr><td colspan="9" class="text-center py-4 text-red-500">Error de conexión.</td></tr>`;
             });
     }
 
@@ -136,7 +154,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnPrev) btnPrev.addEventListener('click', () => { if (paginaActual > 1) { paginaActual--; obtenerIngresos(); } });
     if (btnNext) btnNext.addEventListener('click', () => { paginaActual++; obtenerIngresos(); });
 
-    // --- UTILIDADES ---
     function limpiarTexto(valor) { return valor === null || valor === undefined ? '' : valor; }
 
     function formatearNumero(numero) {
@@ -168,7 +185,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const tr = document.createElement('tr');
             tr.className = 'hover:brightness-95 transition-all text-gray-800 font-medium border-b border-gray-100 last:border-0 bg-white';
 
-            // Colores suaves para estado
             let estadoClass = "bg-gray-100 text-gray-600";
             if(String(row.estado) === 'Vigente') estadoClass = "bg-green-100 text-green-700 border border-green-200";
             if(String(row.estado) === 'Anulado') estadoClass = "bg-red-100 text-red-700 border border-red-200";
@@ -220,6 +236,4 @@ document.addEventListener('DOMContentLoaded', () => {
             input.addEventListener('change', resetAndFetch);
         }
     });
-
-    obtenerIngresos();
 });
