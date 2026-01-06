@@ -1,4 +1,95 @@
-// --- FUNCIONES DE LÓGICA DE NEGOCIO (FALTANTES) ---
+let caja_id = null;
+let equipo_id = null;
+let usuarioSesion = null;
+let divisasBase = [];
+
+document.addEventListener("DOMContentLoaded", function() {
+    // 1. Cargar estructura
+    getSession();
+    cargarSidebar();
+    
+    // Configurar otros botones aquí si es necesario
+});
+
+// --- SIDEBAR & HEADER ---
+function cargarSidebar() {
+    fetch('sidebar.html')
+        .then(response => response.text())
+        .then(html => {
+            const container = document.getElementById('sidebar-container');
+            if (container) {
+                container.innerHTML = html;
+                activarLinkSidebar('arqueo-caja');
+            }
+        });
+}
+
+function activarLinkSidebar(pagina) {
+    setTimeout(() => {
+        const links = document.querySelectorAll('#sidebar-nav a');
+        links.forEach(link => {
+            link.classList.remove('bg-cyan-50', 'text-cyan-800', 'border-l-4', 'border-cyan-600', 'shadow-sm', 'font-bold');
+            link.classList.add('text-gray-600', 'border-transparent');
+            
+            const icon = link.querySelector('svg');
+            if(icon) { icon.classList.remove('text-cyan-600'); icon.classList.add('text-gray-400'); }
+
+            if (link.dataset.page === pagina) {
+                link.classList.remove('text-gray-600', 'border-transparent');
+                link.classList.add('bg-cyan-50', 'text-cyan-800', 'border-l-4', 'border-cyan-600', 'shadow-sm', 'font-bold');
+                if(icon) { icon.classList.remove('text-gray-400'); icon.classList.add('text-cyan-600'); }
+            }
+        });
+    }, 100);
+}
+
+async function getSession() {
+    try {
+        const res = await fetch("https://cambiosorion.cl/data/session_status_admin.php", {
+            credentials: "include",
+        });
+        if (!res.ok) throw new Error("No se pudo obtener la sesión.");
+
+        const data = await res.json();
+        
+        if (!data.isAuthenticated || !data.equipo_id) {
+            window.location.href = 'https://admin.cambiosorion.cl/login';
+            return;
+        }
+
+        usuarioSesion = data;
+        caja_id = usuarioSesion.caja_id;
+        equipo_id = usuarioSesion.equipo_id;
+
+        // Poblar Header
+        const headerName = document.getElementById('header-user-name');
+        const headerEmail = document.getElementById('dropdown-user-email');
+        if (headerName) headerName.textContent = data.nombre ? data.nombre.split(' ')[0] : 'Admin';
+        if (headerEmail) headerEmail.textContent = data.correo;
+
+        console.log("Caja ID desde sesión:", caja_id);
+
+        // Lógica de restauración parcial
+        const claveParcial = `arqueo_parcial_caja_${caja_id}`;
+        const parcialGuardado = localStorage.getItem(claveParcial);
+        if (parcialGuardado) {
+            const dataStorage = JSON.parse(parcialGuardado);
+            const hoy = new Date().toISOString().split("T")[0];
+            if (dataStorage.fecha === hoy && Array.isArray(dataStorage.divisas)) {
+                console.log("Restaurando arqueo parcial guardado:", dataStorage);
+                // Asegúrate que esta función exista en tu código base o global scope
+                if(typeof restaurarParcial === 'function') restaurarParcial(dataStorage.divisas);
+            } else {
+                localStorage.removeItem(claveParcial); // Expirado
+            }
+        }
+
+        await cargarDivisas(caja_id);
+
+    } catch (error) {
+        console.error("Error al obtener la sesión:", error);
+    }
+}
 
 async function cargarDivisas(cajaId) {
     const tablaCuerpo = document.getElementById("tabla-arqueo-body"); // Asegúrate de tener este ID en tu HTML
@@ -232,4 +323,46 @@ async function guardarArqueo() {
 const btnGuardarDom = document.getElementById("guardar-arqueo-btn");
 if (btnGuardarDom) {
     btnGuardarDom.addEventListener("click", guardarArqueo);
+}
+// (Por ejemplo: cargarDivisas, mostrarModalError, mostrarModalExitoso, etc.)
+
+function mostrarModalError({ titulo, mensaje, textoConfirmar = "Aceptar", textoCancelar = null, onConfirmar, onCancelar }) {
+  const modal = document.getElementById("modal-error");
+  const tituloElem = document.getElementById("modal-error-titulo");
+  const mensajeElem = document.getElementById("modal-error-mensaje");
+  const btnConfirmar = document.getElementById("modal-error-confirmar");
+  const btnCancelar = document.getElementById("modal-error-cancelar");
+
+  tituloElem.textContent = titulo;
+  mensajeElem.textContent = mensaje;
+  btnConfirmar.textContent = textoConfirmar;
+
+  if (textoCancelar) {
+    btnCancelar.classList.remove("hidden");
+    btnCancelar.textContent = textoCancelar;
+  } else {
+    btnCancelar.classList.add("hidden");
+  }
+
+  modal.classList.remove("hidden");
+
+  btnConfirmar.onclick = () => {
+    modal.classList.add("hidden");
+    if (onConfirmar) onConfirmar();
+  };
+
+  btnCancelar.onclick = () => {
+    modal.classList.add("hidden");
+    if (onCancelar) onCancelar();
+  };
+}
+
+function mostrarModalExitoso() {
+  const modal = document.getElementById("modal-exitoso");
+  modal.classList.remove("hidden");
+
+  document.getElementById("volver").onclick = () => {
+    modal.classList.add("hidden");
+    location.reload();
+  };
 }
