@@ -1,564 +1,235 @@
-let caja_id = null;
-let equipo_id = null;
-let usuarioSesion = null;
-let divisasBase = [];
-
-document.addEventListener("DOMContentLoaded", function() {
-    obtenerSesion();
-});
-
-async function obtenerSesion() {
-    try {
-        const res = await fetch("https://cambiosorion.cl/data/session_status.php", {
-            credentials: "include",
-        });
-        if (!res.ok) throw new Error("No se pudo obtener la sesión.");
-
-        const data = await res.json();
-        usuarioSesion = data;
-        caja_id = usuarioSesion.caja_id;
-        equipo_id = usuarioSesion.equipo_id;
-
-        console.log("Caja ID desde sesión:", caja_id);
-
-        const claveParcial = `arqueo_parcial_caja_${caja_id}`;
-        const parcialGuardado = localStorage.getItem(claveParcial);
-        if (parcialGuardado) {
-            const data = JSON.parse(parcialGuardado);
-            const hoy = new Date().toISOString().split("T")[0];
-            if (data.fecha === hoy && Array.isArray(data.divisas)) {
-                console.log("Restaurando arqueo parcial guardado:", data);
-                restaurarParcial(data.divisas);
-            } else {
-                localStorage.removeItem(claveParcial); // Expirado
-            }
-        }
-
-        await cargarDivisas(caja_id);
-    } catch (error) {
-        console.error("Error al obtener la sesión:", error);
-    }
-}
+// --- FUNCIONES DE LÓGICA DE NEGOCIO (FALTANTES) ---
 
 async function cargarDivisas(cajaId) {
+    const tablaCuerpo = document.getElementById("tabla-arqueo-body"); // Asegúrate de tener este ID en tu HTML
+    if (tablaCuerpo) {
+        tablaCuerpo.innerHTML = '<tr><td colspan="5" class="text-center py-8"><div class="animate-spin h-8 w-8 border-4 border-cyan-500 rounded-full border-t-transparent mx-auto"></div></td></tr>';
+    }
+
     try {
-        let response = await fetch(`https://cambiosorion.cl/data/arqueo-caja.php?caja_id=${cajaId}`);
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        // Obtenemos el inventario actual de la caja para comparar (Sistema vs Físico)
+        const res = await fetch(`https://cambiosorion.cl/data/inventario_caja.php?caja_id=${cajaId}&limit=100`, {
+            credentials: "include"
+        });
         
-        let data = await response.json();
-        let divisas = data.divisas;
+        if (!res.ok) throw new Error("Error al cargar inventario");
         
-        // Filtrar divisas duplicadas (basado en código)
-        divisas = divisas.filter((value, index, self) =>
-            index === self.findIndex((t) => (
-                t.codigo === value.codigo
-            ))
-        );
+        const data = await res.json();
+        
+        // Guardamos en variable global para cálculos
+        divisasBase = Array.isArray(data) ? data : []; 
+        
+        renderizarTablaArqueo(divisasBase);
 
-        // Filtrar divisas según su tipo
-        divisas = divisas.filter(divisa => {
-            return divisa.tipo_divisa !== 'otra'; // Excluimos divisas tipo 'otra'
-        });
-
-        // Ordenar las divisas según la lista proporcionada
-        const ordenPreferido = [
-            "CLP", "USD", "EUR", "ARS", "BRL", "PEN", "COP", "UYU", "BOB", "CAD", "GBP", "JPY", "CNY", 
-            "SEK", "AUD", "MXN", "NZD", "CHF", "DKK", "NOK", "WON", "DOP", "DKH", "PYG", "CRC", "BSD", 
-        ];
-
-        // Ordenar divisas basándonos en el orden preferido
-        divisas.sort((a, b) => {
-            const indexA = ordenPreferido.indexOf(a.codigo);
-            const indexB = ordenPreferido.indexOf(b.codigo);
-
-            if (indexA !== -1 && indexB !== -1) {
-                return indexA - indexB;
+        // Si hay datos guardados en localStorage, los aplicamos ahora
+        const claveParcial = `arqueo_parcial_caja_${cajaId}`;
+        const parcialGuardado = localStorage.getItem(claveParcial);
+        if (parcialGuardado) {
+            const datos = JSON.parse(parcialGuardado);
+            if (datos.fecha === new Date().toISOString().split("T")[0]) {
+                restaurarParcial(datos.divisas);
             }
-
-            if (indexA !== -1) return -1;
-            if (indexB !== -1) return 1;
-
-            return 0;
-        });
-
-        // Crear lista deslizable
-        const lista = document.getElementById("divisas-lista");
-        lista.innerHTML = ""; // Limpiar la lista
-
-        divisas.forEach(divisa => {
-            const div = document.createElement("div");
-            div.classList.add("p-3", "bg-gray-600", "rounded-lg", "cursor-pointer", "flex", "justify-between", "items-center");
-            div.setAttribute("data-codigo", divisa.codigo);
-            div.onclick = () => seleccionarDivisa(divisa);
-
-            let displayText = "";
-            if (divisa.tipo_divisa === "divisa") {
-                displayText = `${divisa.codigo}`; // Mostrar código para divisas normales
-            } else if (divisa.tipo_divisa === "moneda") {
-                displayText = divisa.nombre; // Mostrar nombre para monedas de oro o plata
-            } else {
-                // No mostrar nada para el tipo "otra" ya que no debe aparecer
-                return; 
-            }
-
-            div.innerHTML = `
-                <div class="flex items-center">
-                    <img class="w-6 h-6 mr-2" src="${divisa.icono}" alt="${divisa.pais}">
-                    <span class="m">${displayText}</span>
-                </div>
-                <div class="resumen flex flex-col items-end text-sm">
-                    <span class="text-xs text-gray-200">Arqueo:</span>
-                    <span class="text-md" id="arqueo-${divisa.codigo}">${divisa.simbolo} ${formatoNumero(divisa.arqueo || 0)}</span>
-                </div>
-                <div class="resumen flex flex-col items-end text-sm">
-                    <span class="text-xs text-gray-200">Diferencia:</span>
-                    <span class="text-md" id="diferencia-${divisa.codigo}">${divisa.simbolo} ${formatoNumero(divisa.diferencia || 0)}</span>
-                </div>
-            `;
-
-            lista.appendChild(div);
-
-            let cantidadesGuardadas = localStorage.getItem(divisa.codigo);
-            if (cantidadesGuardadas) {
-                cantidadesGuardadas = JSON.parse(cantidadesGuardadas);
-                
-                // Calcular totalArqueo con los datos guardados
-                let totalArqueo = 0;
-                for (let denom in cantidadesGuardadas) {
-                    const cantidad = cantidadesGuardadas[denom];
-                    totalArqueo += parseFloat(denom) * cantidad;
-                }
-
-                const totalSistema = divisa.total_sistema || 0;
-                let diferencia = totalArqueo - totalSistema;
-                if (totalArqueo === 0 && totalSistema !== 0) {
-                    diferencia = -totalSistema;
-                }
-
-                actualizarListaDivisas(divisa.codigo, totalArqueo, diferencia, divisa.simbolo);
-            }
-        });
-
-        divisasBase = divisas;
-        console.log("divisasBase:", divisasBase);
-
-        // Agregar barra de desplazamiento
-        lista.style.maxHeight = '31rem';
-        lista.style.overflowY = 'auto';
+        }
 
     } catch (error) {
-        console.error("Error al cargar divisas:", error);
-    }
-}
-
-function seleccionarDivisa(divisa) {
-    const divisaActual = document.querySelector('#titulo-divisa').textContent.match(/\((\w+)\)/);
-    if (divisaActual && divisaActual[1]) {
-        const codigoActual = divisaActual[1];
-        const simboloActual = document.getElementById('total-arqueo')?.textContent?.trim()?.substring(0, 1) || "$";
-        calcularTotal(codigoActual, simboloActual);
-    }
-
-    document.getElementById('titulo-divisa').textContent = `Detalles de ${divisa.nombre} (${divisa.codigo})`;
-    document.getElementById('tabla-arqueo').classList.remove('hidden');
-    document.getElementById('detalle').classList.remove('hidden');
-
-    // Restaurar todas las divisas a su color original
-    document.querySelectorAll('#divisas-lista > div').forEach(el => {
-        el.classList.remove('bg-gray-800'); // Quitar selección previa
-        el.classList.add('bg-gray-600'); // Restaurar color original
-    });
-
-    // Aplicar fondo oscuro solo a la divisa seleccionada
-    const divSeleccionado = document.querySelector(`#divisas-lista > div[data-codigo="${divisa.codigo}"]`);
-    if (divSeleccionado) {
-        divSeleccionado.classList.remove('bg-gray-600'); // Quitar el color original
-        divSeleccionado.classList.add('bg-gray-800'); // Aplicar color de selección
-    }
-
-    // Generar tabla de arqueo con los datos de la divisa seleccionada
-    generarTablaArqueo(divisa);
-}
-
-function generarTablaArqueo(divisa) {
-    const tbody = document.getElementById('tbody-arqueo');
-    tbody.innerHTML = ""; // Limpiar la tabla antes de generarla
-
-    // Simulación de un total sistema (debe configurarse dinámicamente)
-    const sistemaTotal = divisa.total_sistema || 0;
-    document.getElementById('tabla-arqueo').classList.remove('hidden'); // Mostrar tabla
-    document.getElementById('titulo-divisa').textContent = `Arqueo de ${divisa.nombre}`;
-
-    // Asegurar que divisa.denominacion existe y es una cadena válida
-    let denominaciones = [];
-    if (divisa.denominacion && typeof divisa.denominacion === "string") {
-        denominaciones = divisa.denominacion.split(",").map(num => parseFloat(num.trim()));
-        denominaciones.sort((a, b) => b - a); // Ordenar de mayor a menor
-    }
-
-    const cantidadesGuardadas = JSON.parse(localStorage.getItem(divisa.codigo)) || {};
-
-    if (divisa.fraccionable && denominaciones.length > 0) {
-        denominaciones.forEach((denominacion, index) => {
-            let filaTotal = document.createElement("tr");
-            filaTotal.classList.add("bg-white", "text-gray-700");
-
-            let claveDenominacion = denominacion.toFixed(2); // Asegurar formato consistente
-            let cantidadGuardada = cantidadesGuardadas[claveDenominacion] || 0;
-            
-            filaTotal.innerHTML = `
-                <td class="p-3 text-center" ${index === 0 ? 'id="total-sistema"' : ''}>
-                    ${index === 0 ? `${divisa.simbolo} ${formatoNumero(sistemaTotal)}` : ''}
-                </td>
-                <td class="p-3 text-center">${formatoNumero(denominacion)}</td>
-                <td class="p-3 text-center">
-                    <input type="number" class="w-16 p-1 bg-white border border-gray-600 text-gray-700 text-center"
-                        oninput="calcularTotal('${divisa.codigo}', '${divisa.simbolo}')"
-                        value="${cantidadGuardada}" min="0">
-                </td>
-            `;
-            
-            tbody.appendChild(filaTotal);
-        });
-
-    } else {
-        // Si la divisa NO es fraccionable, solo mostrar una fila con denominación 1
-        let fila = document.createElement("tr");
-        fila.classList.add("bg-white", "text-gray-700");
-
-        let cantidadGuardada = cantidadesGuardadas[1] || 0;
-
-        fila.innerHTML = `
-            <td class="p-3 text-center" id="total-sistema">${divisa.simbolo} ${formatoNumero(sistemaTotal)}</td>
-            <td class="p-3 text-center">1</td>
-            <td class="p-3 text-center">
-                <input type="number" class="w-16 p-1 bg-white border border-gray-600 text-gray-700 text-center"
-                       oninput="calcularTotal('${divisa.codigo}', '${divisa.simbolo}')"
-                       value="${cantidadGuardada}" min="0">
-            </td>
-        `;
-        tbody.appendChild(fila);
-    }
-
-    calcularTotal(divisa.codigo, divisa.simbolo);
-}
-
-function formatoNumero(valor) {
-    return Number(valor).toLocaleString("es-CL");
-}
-
-function calcularTotal(codigoDivisa, simboloDivisa) {
-    let totalArqueo = 0;
-    const inputs = document.querySelectorAll('#tbody-arqueo input');
-    const filas = document.querySelectorAll('#tbody-arqueo tr');
-
-    let cantidades = {};
-
-    // Calcular el total de arqueo
-    filas.forEach((fila, index) => {
-        let denominacion = parseFloat(fila.cells[1].textContent.trim().replace(/\./g, "")) || 1;
-        let claveDenominacion = denominacion.toFixed(2); // Consistencia en localStorage
-        let cantidad = parseInt(inputs[index].value) || 0;
-
-        totalArqueo += cantidad * denominacion;
-        cantidades[claveDenominacion] = cantidad; // Guardar con clave estandarizada
-    });
-
-    // Mostrar el total del arqueo
-    document.getElementById('total-arqueo').textContent = `${simboloDivisa} ${formatoNumero(totalArqueo)}`;
-
-    // Obtener el total del sistema
-    const totalSistemaElem = document.getElementById('total-sistema');
-    if (!totalSistemaElem) return; // Evita el error si el elemento no existe
-    const totalSistema = Number(
-        totalSistemaElem.textContent
-            .replace(simboloDivisa, "")  // quita el símbolo
-            .replace(/\./g, "")          // elimina puntos de miles
-            .replace(",", ".")           // si tuvieras decimal con coma
-            .trim()
-    ) || 0;
-
-    
-    // Calcular la diferencia
-    let diferencia = totalArqueo - totalSistema;
-    if (totalArqueo === 0 && totalSistema !== 0) {
-        diferencia = -totalSistema; // La diferencia será el valor negativo de Total Sistema
-    }
-
-    const diferenciaCajaElem = document.getElementById('diferencia-caja');
-    diferenciaCajaElem.classList.remove("text-gray-700", "text-green-600", "text-red-600");
-
-    let diferenciaFormateada = "";
-
-    if (diferencia === 0) {
-        diferenciaFormateada = `${simboloDivisa} ${formatoNumero(0)}`;
-        diferenciaCajaElem.classList.add("text-green-600");
-    } else {
-        const signo = diferencia > 0 ? "+" : "-";
-        diferenciaFormateada = `${simboloDivisa} ${signo}${formatoNumero(Math.abs(diferencia))}`;
-        diferenciaCajaElem.classList.add("text-red-600");
-    }
-
-    diferenciaCajaElem.textContent = diferenciaFormateada;
-
-    localStorage.setItem(codigoDivisa, JSON.stringify(cantidades));
-    actualizarListaDivisas(codigoDivisa, totalArqueo, diferencia, simboloDivisa);
-}
-
-function actualizarListaDivisas(codigoDivisa, totalArqueo, diferencia, simboloDivisa) {
-    const div = document.querySelector(`#divisas-lista > div[data-codigo="${codigoDivisa}"]`);
-    if (div) {
-        const arqueoElement = div.querySelector(`#arqueo-${codigoDivisa}`);
-        const diferenciaElement = div.querySelector(`#diferencia-${codigoDivisa}`);
-
-        if (arqueoElement && diferenciaElement) {
-            arqueoElement.textContent = `${simboloDivisa} ${formatoNumero(totalArqueo)}`;
-            diferenciaElement.textContent = `${simboloDivisa} ${formatoNumero(diferencia)}`;
+        console.error(error);
+        if (tablaCuerpo) {
+            tablaCuerpo.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-red-500">Error al cargar divisas.</td></tr>';
         }
     }
 }
 
-function reconstruirDivisasConDatos(divisasBase) {
-    return divisasBase.map(divisa => {
-        const codigo = divisa.codigo;
-        const fraccionable = divisa.fraccionable ?? 1;
+function renderizarTablaArqueo(divisas) {
+    const tablaCuerpo = document.getElementById("tabla-arqueo-body");
+    const totalSistemaElem = document.getElementById("total-sistema-clp"); // Span para total
+    const totalFisicoElem = document.getElementById("total-fisico-clp");   // Span para total
+    const totalDifElem = document.getElementById("total-diferencia-clp");  // Span para total
 
-        let denominacionesObj;
-        try {
-            denominacionesObj = JSON.parse(localStorage.getItem(codigo) || "{}");
-        } catch {
-            denominacionesObj = {};
-        }
+    if (!tablaCuerpo) return;
+    tablaCuerpo.innerHTML = "";
 
-        for (let denom in denominacionesObj) {
-            const cantidad = denominacionesObj[denom];
-            if (isNaN(cantidad) || cantidad < 0) {
-                denominacionesObj[denom] = 0;
-            }
-        }
-
-        // Calcular total arqueo desde las denominaciones
-        let total_arqueo = 0;
-        for (let denom in denominacionesObj) {
-            total_arqueo += parseFloat(denom) * denominacionesObj[denom];
-        }
-
-        const total_sistema = divisa.total_sistema || 0;
-        const diferencia = total_arqueo - total_sistema;
-
-        return {
-            divisa_id: divisa.id,
-            codigo: codigo,
-            fraccionable: fraccionable,
-            total_arqueo: total_arqueo,
-            total_sistema: total_sistema,
-            diferencia: diferencia,
-            denominaciones_json: JSON.stringify(denominacionesObj) 
-        };
-    }).filter(divisa =>
-        !(divisa.total_arqueo === 0 && divisa.total_sistema === 0)
-    );
-}
-
-function limpiarArqueoLocalStorage() {
-    Object.keys(localStorage).forEach(key => {
-        if (/^[A-Z]{2,4}$/.test(key)) {
-            localStorage.removeItem(key);
-        }
-    });
-}
-
-function restaurarParcial(divisasParciales) {
-    divisasParciales.forEach(divisa => {
-        const codigo = divisa.codigo;
-        let denomObj;
-        try {
-            denomObj = JSON.parse(divisa.denominaciones_json || "{}");
-        } catch {
-            denomObj = {};
-        }
-        localStorage.setItem(codigo, JSON.stringify(denomObj));
-    });
-}
-
-document.getElementById("guardar-parcial").addEventListener("click", function () {
-    const divisas = reconstruirDivisasConDatos(divisasBase);
-    const hoy = new Date().toISOString().split("T")[0]; // formato YYYY-MM-DD
-    const clave = `arqueo_parcial_caja_${caja_id}`;
-
-    const snapshot = {
-        fecha: hoy,
-        divisas: divisas
-    };
-
-    localStorage.setItem(clave, JSON.stringify(snapshot));
-    mostrarModalError({
-        titulo: "✅ Cuadratura Parcial registrada",
-        mensaje: "La cuadratura parcial guardada correctamente."
-    });
-});
-
-document.getElementById("guardar-arqueo").addEventListener("click", function() {
-    const divisas = reconstruirDivisasConDatos(divisasBase); // <- usa una variable global con las divisas cargadas al inicio
-    let todasCero = divisas.every(divisa => {
-        const diferenciaTexto = document.getElementById(`diferencia-${divisa.codigo}`)?.textContent || "";
-        const diferenciaNumerica = parseFloat(diferenciaTexto.replace(/[^0-9,-]/g, "").replace(",", "."));
-        return diferenciaNumerica === 0;
-    });
-
-    if (!todasCero) {
-        mostrarModalAdvertencia({
-            mensaje: "Aún hay diferencias en las divisas. ¿Deseas guardar igualmente la cuadratura?",
-            textoConfirmar: "Guardar",
-            textoCancelar: "Cancelar",
-            requiereObservacion: true,
-            onConfirmar: function(observacion) {
-                const divisasConDatos = reconstruirDivisasConDatos(divisasBase);
-                guardarCuadratura(divisasConDatos, observacion);
-            }
-        });
-    } else {
-        const divisasConDatos = reconstruirDivisasConDatos(divisasBase);
-        console.table(divisas.map(d => ({
-            codigo: d.codigo,
-            total_arqueo: d.total_arqueo,
-            total_sistema: d.total_sistema,
-            diferencia: d.total_arqueo - d.total_sistema
-        })));
-        guardarCuadratura(divisasConDatos, null);
-    }
-});
-
-function guardarCuadratura(divisas, observacion) {
-  const payload = {
-    divisas: divisas,
-    observacion: observacion,
-    equipo_id: usuarioSesion.equipo_id,
-    caja_id: usuarioSesion.caja_id
-  };
-  console.log("Payload:", JSON.stringify(payload, null, 2));
-
-  fetch("https://cambiosorion.cl/data/arqueo-caja.php", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  })
-  .then(async response => {
-    const text = await response.text();
-    if (!response.ok) {
-      console.error("Respuesta del servidor:", text);
-      throw new Error("Error en la respuesta del servidor");
-    }
-
-    console.log("Payload enviado:", JSON.stringify(payload, null, 2));
-    console.log("Respuesta del servidor:", text);
-    mostrarModalExitoso();
-
-    localStorage.removeItem(`arqueo_parcial_caja_${caja_id}`);
-    limpiarArqueoLocalStorage();
-    
-    const inputs = document.querySelectorAll('#tbody-arqueo input[type="number"]');
-    inputs.forEach(input => input.value = 0);
-
-    divisas.forEach(divisa => {
-        actualizarListaDivisas(divisa.codigo, 0, -divisa.total_sistema, divisa.simbolo || "$");
-    });
-  })
-  .catch(error => {
-    console.error("Error al guardar la cuadratura:", error);
-    mostrarModalError({
-      titulo: "❌ Error",
-      mensaje: "Ocurrió un problema al guardar la cuadratura."
-    });
-  });
-}
-
-function mostrarModalAdvertencia({mensaje, textoConfirmar = "Aceptar", textoCancelar = null, requiereObservacion = false, onConfirmar, onCancelar }) {
-  const modal = document.getElementById("modal-advertencia");
-  const mensajeElem = document.getElementById("modal-advertencia-mensaje");
-  const observacionContainer = document.getElementById("observacion-container");
-  const observacionInput = document.getElementById("observacion");
-  const btnConfirmar = document.getElementById("modal-advertencia-confirmar");
-  const btnCancelar = document.getElementById("modal-advertencia-cancelar");
-
-  mensajeElem.textContent = mensaje;
-  btnConfirmar.textContent = textoConfirmar;
-
-  observacionInput.value = "";
-  observacionContainer.classList.toggle("hidden", !requiereObservacion);
-
-  if (textoCancelar) {
-    btnCancelar.classList.remove("hidden");
-    btnCancelar.textContent = textoCancelar;
-  } else {
-    btnCancelar.classList.add("hidden");
-  }
-
-  modal.classList.remove("hidden");
-
-  // Remover handlers anteriores
-  btnConfirmar.onclick = () => {
-    if (requiereObservacion && observacionInput.value.trim() === "") {
-        mostrarModalError({
-        titulo: "❌ Error",
-        mensaje: "Por favor, escribe una observación antes de continuar."
-        });
+    if (divisas.length === 0) {
+        tablaCuerpo.innerHTML = '<tr><td colspan="5" class="text-center text-gray-500 py-4">No hay divisas asignadas a esta caja.</td></tr>';
         return;
     }
-    modal.classList.add("hidden");
-    if (onConfirmar) onConfirmar(observacionInput.value.trim());
-  };
 
-  btnCancelar.onclick = () => {
-    modal.classList.add("hidden");
-    if (onCancelar) onCancelar();
-  };
+    divisas.forEach((divisa, index) => {
+        const saldoSistema = parseFloat(divisa.cantidad) || 0;
+        
+        const tr = document.createElement("tr");
+        tr.className = "hover:bg-gray-50 border-b border-gray-100 transition group";
+
+        tr.innerHTML = `
+            <td class="px-4 py-3 flex items-center gap-3">
+                <img src="${divisa.icono || 'https://cambiosorion.cl/orionapp/icons/default.png'}" class="w-6 h-6 rounded-full border border-gray-200">
+                <span class="font-bold text-gray-700">${divisa.divisa}</span>
+            </td>
+            <td class="px-4 py-3 text-right">
+                <span class="font-mono text-gray-600 bg-gray-100 px-2 py-1 rounded border border-gray-200 block w-full">
+                    ${saldoSistema.toLocaleString('es-CL', { minimumFractionDigits: 2 })}
+                </span>
+                <input type="hidden" class="saldo-sistema" value="${saldoSistema}">
+            </td>
+            <td class="px-4 py-3">
+                <input type="number" step="0.01" 
+                    class="input-fisico w-full text-right font-mono font-bold text-gray-800 border-gray-300 rounded focus:ring-cyan-500 focus:border-cyan-500 transition px-3 py-1 bg-white"
+                    data-index="${index}" 
+                    data-divisa="${divisa.divisa}"
+                    placeholder="0.00">
+            </td>
+            <td class="px-4 py-3 text-right">
+                <span class="diferencia font-mono font-bold text-gray-400">0.00</span>
+            </td>
+            <td class="px-4 py-3 text-center">
+                <span class="estado-icon text-gray-300">-</span>
+            </td>
+        `;
+
+        tablaCuerpo.appendChild(tr);
+    });
+
+    // Agregar Listeners a los inputs generados
+    const inputs = document.querySelectorAll(".input-fisico");
+    inputs.forEach(input => {
+        input.addEventListener("input", () => {
+            calcularFila(input);
+            guardarParcialLocal();
+        });
+        // Calcular inicial (por si es restauración)
+        // calcularFila(input); 
+    });
 }
 
-function mostrarModalError({ titulo, mensaje, textoConfirmar = "Aceptar", textoCancelar = null, onConfirmar, onCancelar }) {
-  const modal = document.getElementById("modal-error");
-  const tituloElem = document.getElementById("modal-error-titulo");
-  const mensajeElem = document.getElementById("modal-error-mensaje");
-  const btnConfirmar = document.getElementById("modal-error-confirmar");
-  const btnCancelar = document.getElementById("modal-error-cancelar");
+function calcularFila(input) {
+    const row = input.closest("tr");
+    const saldoSistema = parseFloat(row.querySelector(".saldo-sistema").value) || 0;
+    const saldoFisico = parseFloat(input.value) || 0;
+    const diferencia = saldoFisico - saldoSistema;
+    
+    const diffElem = row.querySelector(".diferencia");
+    const iconElem = row.querySelector(".estado-icon");
 
-  tituloElem.textContent = titulo;
-  mensajeElem.textContent = mensaje;
-  btnConfirmar.textContent = textoConfirmar;
+    // Formatear diferencia
+    diffElem.textContent = diferencia.toLocaleString('es-CL', { minimumFractionDigits: 2 });
 
-  if (textoCancelar) {
-    btnCancelar.classList.remove("hidden");
-    btnCancelar.textContent = textoCancelar;
-  } else {
-    btnCancelar.classList.add("hidden");
-  }
-
-  modal.classList.remove("hidden");
-
-  // Remover handlers anteriores
-  btnConfirmar.onclick = () => {
-    modal.classList.add("hidden");
-    if (onConfirmar) onConfirmar();
-  };
-
-  btnCancelar.onclick = () => {
-    modal.classList.add("hidden");
-    if (onCancelar) onCancelar();
-  };
+    // Estilos visuales
+    if (diferencia === 0) {
+        diffElem.className = "diferencia font-mono font-bold text-green-600";
+        iconElem.innerHTML = `<svg class="w-5 h-5 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
+        input.classList.remove("border-red-500", "bg-red-50");
+        input.classList.add("border-green-500", "bg-green-50");
+    } else {
+        diffElem.className = "diferencia font-mono font-bold text-red-600";
+        iconElem.innerHTML = `<svg class="w-5 h-5 text-red-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>`;
+        input.classList.add("border-red-500", "bg-red-50");
+        input.classList.remove("border-green-500", "bg-green-50");
+    }
 }
 
-function mostrarModalExitoso() {
-  const modal = document.getElementById("modal-exitoso");
-  modal.classList.remove("hidden");
+function restaurarParcial(datosGuardados) {
+    const inputs = document.querySelectorAll(".input-fisico");
+    inputs.forEach(input => {
+        const divisaNombre = input.dataset.divisa;
+        const dato = datosGuardados.find(d => d.divisa === divisaNombre);
+        if (dato) {
+            input.value = dato.cantidad;
+            calcularFila(input); // Recalcular visuales
+        }
+    });
+}
 
-  //document.getElementById("nueva-cuadratura").onclick = () => {
-    //modal.classList.add("hidden");
-    //document.getElementById("form-nueva-tr").reset();
-    // Resetear totales e imputs adicional si es necesario
-  //};
+function guardarParcialLocal() {
+    if (!caja_id) return;
+    
+    const datos = [];
+    document.querySelectorAll(".input-fisico").forEach(input => {
+        if (input.value !== "") {
+            datos.push({
+                divisa: input.dataset.divisa,
+                cantidad: input.value
+            });
+        }
+    });
 
-  document.getElementById("volver").onclick = () => {
-    modal.classList.add("hidden");
-    //window.location.href = "https://caja.cambiosorion.cl/arqueo-caja";
-  };
+    const payload = {
+        fecha: new Date().toISOString().split("T")[0],
+        divisas: datos
+    };
+
+    localStorage.setItem(`arqueo_parcial_caja_${caja_id}`, JSON.stringify(payload));
+}
+
+// Función principal para ENVIAR el arqueo al servidor
+async function guardarArqueo() {
+    if (!caja_id || !usuarioSesion) {
+        mostrarModalError({ titulo: "Error", mensaje: "Sesión no válida." });
+        return;
+    }
+
+    const btnGuardar = document.getElementById("guardar-arqueo-btn"); // Asegúrate de tener este botón
+    const textoOriginal = btnGuardar ? btnGuardar.innerHTML : "Guardar";
+    
+    if (btnGuardar) {
+        btnGuardar.disabled = true;
+        btnGuardar.innerHTML = '<svg class="animate-spin h-5 w-5 mr-2 inline" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Guardando...';
+    }
+
+    // Recopilar datos
+    const detalles = [];
+    let hayDiferencias = false;
+
+    document.querySelectorAll("tr.group").forEach(row => {
+        const input = row.querySelector(".input-fisico");
+        const saldoSistema = parseFloat(row.querySelector(".saldo-sistema").value) || 0;
+        const saldoFisico = parseFloat(input.value) || 0; // Si está vacío cuenta como 0 en arqueo final
+        
+        if (Math.abs(saldoFisico - saldoSistema) > 0.001) {
+            hayDiferencias = true;
+        }
+
+        detalles.push({
+            divisa: input.dataset.divisa,
+            sistema: saldoSistema,
+            fisico: saldoFisico,
+            diferencia: saldoFisico - saldoSistema
+        });
+    });
+
+    const payload = {
+        caja_id: caja_id,
+        usuario_id: usuarioSesion.equipo_id,
+        detalles: detalles,
+        observaciones: document.getElementById("observaciones-arqueo")?.value || ""
+    };
+
+    try {
+        const res = await fetch("https://cambiosorion.cl/data/guardar_arqueo.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+
+        const respuesta = await res.json();
+
+        if (respuesta.exito) {
+            localStorage.removeItem(`arqueo_parcial_caja_${caja_id}`); // Limpiar parcial
+            mostrarModalExitoso();
+        } else {
+            throw new Error(respuesta.mensaje || "Error al guardar en base de datos.");
+        }
+
+    } catch (error) {
+        mostrarModalError({ titulo: "Error al guardar", mensaje: error.message });
+    } finally {
+        if (btnGuardar) {
+            btnGuardar.disabled = false;
+            btnGuardar.innerHTML = textoOriginal;
+        }
+    }
+}
+
+// Vincular botón guardar si existe en el DOM
+const btnGuardarDom = document.getElementById("guardar-arqueo-btn");
+if (btnGuardarDom) {
+    btnGuardarDom.addEventListener("click", guardarArqueo);
 }

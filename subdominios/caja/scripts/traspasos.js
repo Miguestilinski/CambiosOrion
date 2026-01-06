@@ -4,12 +4,21 @@ let modoCompletarPendientes = false;
 let totalesPorDivisa = {};
 
 document.addEventListener('DOMContentLoaded', async () => {
+    // 1. Inicialización Estructural
+    getSession();
+    cargarSidebar();
+
+    // 2. Referencias del DOM
     const nuevoTraspasoBtn = document.getElementById('nuevo-tp');
     const completarPendientesBtn = document.getElementById('activar-completado');
+    const confirmarCompletadoBtn = document.getElementById('confirmar-completado');
     const tabla = document.getElementById('tabla-transacciones');
-    const resumenTotales = document.getElementById('resumen-totales');
-    const contenedorAcciones = document.getElementById('resumen-completado');
+    const resumenTotales = document.getElementById('resumen-totales'); // Contenedor general de resumen
+    const listaResumenGlobal = document.getElementById('lista-resumen-global'); // UL para totales generales
+    const contenedorAcciones = document.getElementById('resumen-completado'); // Panel inferior de acciones
+    const listaResumenSeleccion = document.getElementById('lista-resumen'); // UL para selección actual
 
+    // 3. Filtros
     const filtros = {
         numero: document.getElementById("numero"),
         fecha: document.getElementById("fecha"),
@@ -21,382 +30,343 @@ document.addEventListener('DOMContentLoaded', async () => {
         estado: document.getElementById("estado"),
         mostrar: document.getElementById("mostrar-registros"),
         buscar: document.getElementById("buscar"),
-        caja_id: { value: "" }
+        caja_id: { value: "" } // Se llena dinámicamente con la sesión
     };
 
-    try {
-        const res = await fetch("https://cambiosorion.cl/data/session_status.php", {
-            credentials: "include"
-        });
-        if (!res.ok) throw new Error("No se pudo obtener la sesión.");
-        const data = await res.json();
-        usuarioSesion = data;
-        console.log("Usuario autenticado:", usuarioSesion);
-
-        if (usuarioSesion && usuarioSesion.caja_id !== undefined) {
-            caja_id = usuarioSesion.caja_id;
-            filtros.caja_id.value = usuarioSesion.caja_id;
-            obtenerTraspasos();
-        }
-    } catch (error) {
-        console.error("Error obteniendo la sesión:", error);
+    // --- FUNCIONES DE ESTRUCTURA (Sidebar y Header) ---
+    function cargarSidebar() {
+        fetch('sidebar.html')
+            .then(response => response.text())
+            .then(html => {
+                const container = document.getElementById('sidebar-container');
+                if (container) {
+                    container.innerHTML = html;
+                    activarLinkSidebar('traspasos-caja');
+                }
+            })
+            .catch(error => console.error("Error cargando sidebar:", error));
     }
+
+    function activarLinkSidebar(pagina) {
+        setTimeout(() => {
+            const links = document.querySelectorAll('#sidebar-nav a');
+            links.forEach(link => {
+                // Resetear estilos
+                link.classList.remove('bg-cyan-50', 'text-cyan-800', 'border-l-4', 'border-cyan-600', 'shadow-sm', 'font-bold');
+                link.classList.add('text-gray-600', 'border-transparent');
+                
+                const icon = link.querySelector('svg');
+                if(icon) { icon.classList.remove('text-cyan-600'); icon.classList.add('text-gray-400'); }
+
+                // Activar actual
+                if (link.dataset.page === pagina) {
+                    link.classList.remove('text-gray-600', 'border-transparent');
+                    link.classList.add('bg-cyan-50', 'text-cyan-800', 'border-l-4', 'border-cyan-600', 'shadow-sm', 'font-bold');
+                    if(icon) { icon.classList.remove('text-gray-400'); icon.classList.add('text-cyan-600'); }
+                }
+            });
+        }, 100);
+    }
+
+    async function getSession() {
+        try {
+            const res = await fetch("https://cambiosorion.cl/data/session_status_admin.php", { credentials: "include" });
+            if (!res.ok) throw new Error("No se pudo obtener la sesión.");
+            
+            const data = await res.json();
+            
+            if (!data.isAuthenticated || !data.equipo_id) {
+                window.location.href = 'https://admin.cambiosorion.cl/login';
+                return;
+            }
+
+            usuarioSesion = data;
+            
+            // Poblar Header
+            const headerName = document.getElementById('header-user-name');
+            const headerEmail = document.getElementById('dropdown-user-email');
+            
+            if (headerName) headerName.textContent = data.nombre ? data.nombre.split(' ')[0] : 'Admin';
+            if (headerEmail) headerEmail.textContent = data.correo;
+
+            // Lógica específica: Asignar ID de caja y cargar datos
+            if (usuarioSesion && usuarioSesion.caja_id) {
+                filtros.caja_id.value = usuarioSesion.caja_id;
+                
+                // Si es tesorería (ej: 99) o Admin, mostramos herramientas extra
+                if (usuarioSesion.caja_id == 99 || usuarioSesion.rol === 'Admin') { 
+                    const accionCompletar = document.getElementById('accion-completar');
+                    if(accionCompletar) accionCompletar.classList.remove('hidden');
+                }
+                
+                obtenerTraspasos();
+            }
+
+        } catch (error) {
+            console.error("Error sesión:", error);
+        }
+    }
+
+    // --- LÓGICA DE NEGOCIO ---
 
     if (nuevoTraspasoBtn) {
         nuevoTraspasoBtn.addEventListener('click', () => {
-            window.location.href = 'https://caja.cambiosorion.cl/nuevo-tp';
+            window.location.href = 'nuevo-traspaso'; 
         });
     }
+
+    // Alternar modo "Completar Pendientes"
     if (completarPendientesBtn) {
         completarPendientesBtn.addEventListener('click', () => {
             modoCompletarPendientes = !modoCompletarPendientes;
-            actualizarModoCompletar();
+            
+            if (modoCompletarPendientes) {
+                // Activar Modo
+                completarPendientesBtn.textContent = "Cancelar Completado";
+                completarPendientesBtn.classList.replace("bg-indigo-600", "bg-red-600");
+                completarPendientesBtn.classList.replace("hover:bg-indigo-700", "hover:bg-red-700");
+                
+                filtros.estado.value = "pendiente"; 
+                filtros.estado.disabled = true; // Bloquear filtro estado
+                
+                if(resumenTotales) resumenTotales.classList.remove('hidden');
+                if(contenedorAcciones) contenedorAcciones.classList.remove('hidden');
+            } else {
+                // Desactivar Modo
+                completarPendientesBtn.textContent = "Completar Pendientes";
+                completarPendientesBtn.classList.replace("bg-red-600", "bg-indigo-600");
+                completarPendientesBtn.classList.replace("hover:bg-red-700", "hover:bg-indigo-700");
+                
+                filtros.estado.value = "";
+                filtros.estado.disabled = false;
+                
+                if(resumenTotales) resumenTotales.classList.add('hidden');
+                if(contenedorAcciones) contenedorAcciones.classList.add('hidden');
+            }
+            obtenerTraspasos();
         });
-    }
-
-    function actualizarModoCompletar() {
-        const thead = tabla.closest('table').querySelector('thead');
-        const checkboxes = tabla.querySelectorAll('.checkbox-completar');
-        const botonesIndividuales = tabla.querySelectorAll('.btn-completar-individual');
-        const selectAllRow = document.getElementById('fila-select-todos');
-
-        if (modoCompletarPendientes) {
-            completarPendientesBtn.textContent = 'Cancelar';
-
-            completarPendientesBtn.classList.remove(
-                'bg-yellow-600', 'hover:bg-yellow-700', 'focus:ring-yellow-300'
-            );
-            completarPendientesBtn.classList.add(
-                'bg-red-600', 'hover:bg-red-700', 'focus:ring-red-300'
-            );
-
-            contenedorAcciones.classList.remove('hidden');
-            checkboxes.forEach(cb => cb.classList.remove('hidden'));
-            botonesIndividuales.forEach(btn => btn.classList.remove('hidden'));
-
-            const filaEncabezado = thead.querySelector('tr');
-            if (filaEncabezado && filaEncabezado.children.length === 9) {
-                const nuevaColumna = document.createElement('th');
-                nuevaColumna.className = 'px-4 py-2';
-                nuevaColumna.textContent = '';
-                filaEncabezado.insertBefore(nuevaColumna, filaEncabezado.firstElementChild);
-            }
-            if (selectAllRow) selectAllRow.classList.remove('hidden');
-        } else {
-            completarPendientesBtn.textContent = 'Completar Traspasos Pendientes';
-
-            completarPendientesBtn.classList.remove(
-                'bg-red-600', 'hover:bg-red-700', 'focus:ring-red-300'
-            );
-            completarPendientesBtn.classList.add(
-                'bg-yellow-600', 'hover:bg-yellow-700', 'focus:ring-yellow-300'
-            );
-
-            contenedorAcciones.classList.add('hidden');
-            checkboxes.forEach(cb => cb.classList.add('hidden'));
-            botonesIndividuales.forEach(btn => btn.classList.add('hidden'));
-
-            const filaEncabezado = thead.querySelector('tr');
-            const ths = filaEncabezado ? filaEncabezado.querySelectorAll('th') : [];
-            if (ths.length > 0 && ths[0].textContent.trim() === '') {
-                filaEncabezado.removeChild(ths[0]);
-            }
-            if (selectAllRow) selectAllRow.classList.add('hidden');
-        }
-
-        tabla.querySelectorAll('.checkbox-completar').forEach(cb => cb.checked = false);
-        totalesPorDivisa = {};
-        actualizarTotales();
-        obtenerTraspasos();
-    }
-
-    function actualizarTotales() {
-        const totalHtml = Object.entries(totalesPorDivisa).map(([divisa, monto]) => {
-            return `<span class="block">${divisa}: ${formatearNumero(monto)}</span>`;
-        }).join('');
-        resumenTotales.innerHTML = totalHtml;
     }
 
     function obtenerTraspasos() {
         const params = new URLSearchParams();
-
+        
         for (const [clave, input] of Object.entries(filtros)) {
-            let valor = input.value;
-            if (typeof valor === 'string') {
-                valor = valor.trim();
-            } else if (valor === null || valor === undefined) {
-                valor = '';
-            } else {
-                valor = String(valor);
+            if(input && input.value) {
+                params.set(clave, input.value);
             }
-            params.set(clave, valor);
         }
 
-        fetch(`https://cambiosorion.cl/data/traspasos.php?${params.toString()}`)
-            .then(response => response.text()) // cambia a .text() en lugar de .json()
-            .then(rawText => {
-                //console.log("Respuesta cruda del servidor:");
-                //console.log(rawText);
-
-                try {
-                    const data = JSON.parse(rawText);
-                    //console.log('Traspasos recibidos:', data);
-                    mostrarResultados(data);
-                } catch (e) {
-                    console.error("Error al parsear JSON:", e);
+        fetch(`https://cambiosorion.cl/data/traspasos_caja.php?${params.toString()}`)
+            .then(response => response.json())
+            .then(data => {
+                mostrarResultados(data);
+                if (modoCompletarPendientes) {
+                    calcularTotales(data);
                 }
             })
             .catch(error => console.error('Error al obtener traspasos:', error));
-
-    }
-
-    function limpiarTexto(valor) {
-        return valor === null || valor === undefined ? '' : valor;
-    }
-
-    function formatearNumero(numero) {
-        if (!numero) return '';
-        return Number(numero).toLocaleString('es-CL');
     }
 
     function mostrarResultados(traspasos) {
         tabla.innerHTML = '';
 
-        if (traspasos.length === 0) {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `<td colspan="9" class="text-center text-white py-4 bg-gray-800">No se encontraron traspasos</td>`;
-            tabla.appendChild(tr);
+        if (!traspasos || traspasos.length === 0) {
+            tabla.innerHTML = `<tr><td colspan="9" class="text-center py-4 text-gray-500">No se encontraron traspasos.</td></tr>`;
             return;
         }
 
-        // Eliminar fila previa si existe
-        const filaSelectTodosExistente = document.getElementById('fila-select-todos');
-        if (filaSelectTodosExistente) filaSelectTodosExistente.remove();
+        traspasos.forEach(trx => {
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-gray-50 border-b border-gray-100 transition';
 
-        // Solo crear si el modo está activo
-        if (modoCompletarPendientes) {
-            const filaSelectTodos = document.createElement('tr');
-            filaSelectTodos.id = 'fila-select-todos';
-            filaSelectTodos.className = 'bg-gray-700';
-            filaSelectTodos.innerHTML = `
-                <td colspan="7" class="px-4 py-2 text-white">
-                    <label class="flex items-center">
-                        <input type="checkbox" id="checkbox-select-todos" class="rounded mr-2">
-                        Seleccionar todos los traspasos pendientes
-                    </label>
-                </td>
-                <td colspan="3" class="px-4 py-2 text-right">
-                    <button id="btn-completar-masivo" class="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-1.5 rounded">
-                        Completar Traspasos Seleccionados
-                    </button>
+            // Checkbox condicional
+            let checkboxCell = '';
+            if (modoCompletarPendientes) {
+                checkboxCell = `
+                    <td class="px-4 py-3 text-center">
+                        <input type="checkbox" class="traspaso-check w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500 cursor-pointer" 
+                               value="${trx.id}" data-monto="${trx.monto}" data-divisa="${trx.divisa}">
+                    </td>`;
+            } else {
+                checkboxCell = `<td class="px-4 py-3"></td>`;
+            }
+
+            // Badges de estado
+            let estadoClass = "bg-gray-100 text-gray-600";
+            if (trx.estado === 'completado') estadoClass = "bg-green-100 text-green-700";
+            if (trx.estado === 'pendiente') estadoClass = "bg-yellow-100 text-yellow-700";
+            if (trx.estado === 'anulado') estadoClass = "bg-red-100 text-red-700";
+
+            tr.innerHTML = `
+                ${checkboxCell}
+                <td class="px-4 py-3 whitespace-nowrap text-xs text-gray-500">${trx.fecha}</td>
+                <td class="px-4 py-3 font-mono text-xs font-bold text-gray-700">#${trx.id}</td>
+                <td class="px-4 py-3 font-semibold text-gray-700">${trx.tipo_transaccion}</td>
+                <td class="px-4 py-3 text-gray-600 text-xs uppercase">${trx.caja_origen}</td>
+                <td class="px-4 py-3 text-gray-600 text-xs uppercase">${trx.caja_destino}</td>
+                <td class="px-4 py-3 text-center font-bold text-gray-800">${trx.divisa}</td>
+                <td class="px-4 py-3 text-right font-mono font-bold text-gray-900">${parseFloat(trx.monto).toLocaleString('es-CL')}</td>
+                <td class="px-4 py-3 text-center">
+                    <span class="px-2 py-1 rounded text-xs font-bold uppercase ${estadoClass}">${trx.estado}</span>
                 </td>
             `;
-            tabla.appendChild(filaSelectTodos);
-
-            // Agrega evento después de insertar en el DOM
-            setTimeout(() => {
-                const selectAllCheckbox = document.getElementById('checkbox-select-todos');
-                if (selectAllCheckbox) {
-                    selectAllCheckbox.addEventListener('change', (e) => {
-                        const checked = e.target.checked;
-                        tabla.querySelectorAll('.checkbox-completar').forEach(cb => {
-                            cb.checked = checked;
-                            cb.dispatchEvent(new Event('change'));
-                        });
-                    });
-                }
-
-                const btnCompletarMasivo = document.getElementById('btn-completar-masivo');
-                if (btnCompletarMasivo) {
-                    btnCompletarMasivo.addEventListener('click', () => {
-                        const seleccionados = Array.from(tabla.querySelectorAll('.checkbox-completar:checked'));
-                        const ids = seleccionados.map(cb => cb.dataset.id);
-                        if (ids.length === 0) {
-                            mostrarModalError({
-                                titulo: "❌ Error",
-                                mensaje: `No hay traspasos seleccionados para completar.`,
-                                textoConfirmar: "Entendido"
-                            });
-                            return;
-                        }
-                        completarTraspasos(ids);
-                    });
-                }
-            }, 0);
-        }
-
-        traspasos.forEach(tp => {
-            const tr = document.createElement('tr');
-            tr.className = 'bg-white border-b border-gray-700 text-gray-700';
-
-            const esPendiente = (tp.estado || '').toLowerCase() === 'pendiente';
-
-            // Crear celda del checkbox (solo visible si modoCompletarPendientes está activo)
-            if (modoCompletarPendientes && esPendiente) {
-                const tdCheckbox = document.createElement('td');
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.className = 'checkbox-completar ml-4 rounded';
-                checkbox.setAttribute('data-id', tp.id);
-                checkbox.setAttribute('data-monto', tp.monto);
-                checkbox.setAttribute('data-divisa', tp.divisa);
-                tdCheckbox.appendChild(checkbox);
-
-                checkbox.addEventListener('change', () => {
-                    const monto = parseFloat(tp.monto);
-                    const divisa = tp.divisa;
-                    if (checkbox.checked) {
-                        totalesPorDivisa[divisa] = (totalesPorDivisa[divisa] || 0) + monto;
-                    } else {
-                        totalesPorDivisa[divisa] = (totalesPorDivisa[divisa] || 0) - monto;
-                        if (totalesPorDivisa[divisa] <= 0) delete totalesPorDivisa[divisa];
-                    }
-                    actualizarTotales();
-                });
-
-                tr.appendChild(tdCheckbox);
-            } else if (modoCompletarPendientes && !esPendiente) {
-                // Mantener alineación con celda vacía si modo está activo pero no es pendiente
-                const tdVacio = document.createElement('td');
-                tr.appendChild(tdVacio);
-            }
-
-            // Celdas de datos
-            const celdas = [
-                limpiarTexto(tp.id),
-                limpiarTexto(tp.fecha),
-                limpiarTexto(tp.transaccion_id),
-                limpiarTexto(tp.origen),
-                limpiarTexto(tp.destino),
-                limpiarTexto(tp.divisa),
-                formatearNumero(tp.monto),
-                limpiarTexto(tp.estado)
-            ];
-
-            celdas.forEach(texto => {
-                const td = document.createElement('td');
-                td.className = 'px-4 py-2';
-                td.textContent = texto;
-                tr.appendChild(td);
-            });
-
-            // Última celda (acciones)
-            const tdAcciones = document.createElement('td');
-            tdAcciones.className = 'px-4 py-2 acciones-cell';
-            tr.appendChild(tdAcciones);
-
-            // Botón de acción según estado
-            const accionesCell = tr.querySelector('.acciones-cell');
-
-            if (esPendiente) {
-                if (modoCompletarPendientes) {
-                    const btnCompletar = document.createElement('button');
-                    btnCompletar.textContent = 'Completar';
-                    btnCompletar.className = 'btn-completar-individual bg-green-600 text-white px-3 py-1 rounded';
-                    btnCompletar.addEventListener('click', () => {
-                        completarTraspasos([tp.id]);
-                    });
-                    accionesCell.appendChild(btnCompletar);
-                } else {
-                    const btnCompletar = document.createElement('button');
-                    btnCompletar.textContent = 'Completar';
-                    btnCompletar.className = 'bg-green-600 text-white px-3 py-1 rounded';
-                    btnCompletar.addEventListener('click', () => {
-                        completarTraspasos([tp.id]);
-                    });
-                    accionesCell.appendChild(btnCompletar);
-                }
-            } else {
-                const btnMostrar = document.createElement('button');
-                btnMostrar.textContent = 'Mostrar';
-                btnMostrar.className = 'text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1';
-                btnMostrar.addEventListener('click', () => {
-                    window.location.href = `detalle-tp?id=${tp.id}`;
-                });
-                accionesCell.appendChild(btnMostrar);
-            }
-
             tabla.appendChild(tr);
         });
+
+        // Re-asignar listeners a los nuevos checkboxes
+        if (modoCompletarPendientes) {
+            document.querySelectorAll('.traspaso-check').forEach(chk => {
+                chk.addEventListener('change', actualizarResumenSeleccion);
+            });
+        }
     }
 
-    function completarTraspasos(ids) {
-        fetch('https://cambiosorion.cl/data/traspasos.php?caja_id=' + caja_id, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ ids })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.exito) {
-                mostrarModalExitoso()
-            } else {
-                mostrarModalError({
-                    titulo: "❌ Error",
-                    mensaje: `Hubo un error del servidor: ${data.mensaje}`,
-                    textoConfirmar: "Entendido"
-                });
+    // Calcula totales de todos los datos visibles (Pendientes)
+    function calcularTotales(data) {
+        totalesPorDivisa = {};
+        
+        data.forEach(trx => {
+            if (!totalesPorDivisa[trx.divisa]) {
+                totalesPorDivisa[trx.divisa] = 0;
             }
-        })
-        .catch(err => {
-            mostrarModalError({
-                titulo: "❌ Error",
-                mensaje: `Hubo un error del servidor: ${err}`,
-                textoConfirmar: "Entendido"
+            totalesPorDivisa[trx.divisa] += parseFloat(trx.monto);
+        });
+        
+        renderizarResumen();
+    }
+
+    // Muestra los totales disponibles en el panel superior
+    function renderizarResumen() {
+        if (!listaResumenGlobal) return;
+        listaResumenGlobal.innerHTML = '';
+
+        for (const [divisa, total] of Object.entries(totalesPorDivisa)) {
+            const li = document.createElement('li');
+            li.className = "flex justify-between items-center text-sm border-b border-gray-100 last:border-0 py-1";
+            li.innerHTML = `<span class="font-bold text-gray-600">${divisa}:</span> <span class="font-mono text-gray-800">${total.toLocaleString('es-CL')}</span>`;
+            listaResumenGlobal.appendChild(li);
+        }
+    }
+
+    // Calcula y muestra lo que el usuario ha seleccionado manualmente
+    function actualizarResumenSeleccion() {
+        const seleccionados = document.querySelectorAll('.traspaso-check:checked');
+        let totalSeleccionado = {};
+
+        seleccionados.forEach(chk => {
+            const divisa = chk.dataset.divisa;
+            const monto = parseFloat(chk.dataset.monto);
+            if (!totalSeleccionado[divisa]) totalSeleccionado[divisa] = 0;
+            totalSeleccionado[divisa] += monto;
+        });
+
+        if (listaResumenSeleccion) {
+            listaResumenSeleccion.innerHTML = '';
+            
+            if (Object.keys(totalSeleccionado).length === 0) {
+                listaResumenSeleccion.innerHTML = '<li class="text-gray-400 text-xs italic text-center py-2">Ninguno seleccionado</li>';
+                return;
+            }
+
+            for (const [divisa, total] of Object.entries(totalSeleccionado)) {
+                const li = document.createElement('li');
+                li.className = "flex justify-between text-sm py-1";
+                li.innerHTML = `<span class="font-bold text-indigo-700">${divisa}:</span> <span class="font-bold">${total.toLocaleString('es-CL')}</span>`;
+                listaResumenSeleccion.appendChild(li);
+            }
+        }
+    }
+
+    // Acción del botón "Confirmar"
+    if (confirmarCompletadoBtn) {
+        confirmarCompletadoBtn.addEventListener('click', () => {
+            const ids = Array.from(document.querySelectorAll('.traspaso-check:checked')).map(cb => cb.value);
+            
+            if (ids.length === 0) {
+                mostrarModalError({ titulo: "Sin selección", mensaje: "Selecciona al menos un traspaso para completar." });
+                return;
+            }
+
+            // Llamada al backend para actualizar estados
+            fetch('https://cambiosorion.cl/data/completar_traspasos.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ids: ids })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.exito) {
+                    mostrarModalExitoso();
+                } else {
+                    mostrarModalError({ titulo: "Error", mensaje: data.mensaje || "No se pudieron actualizar los traspasos." });
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                mostrarModalError({ titulo: "Error de red", mensaje: "No se pudo conectar con el servidor." });
             });
         });
     }
 
-    // Event listeners para filtros visibles
+    // Listeners de filtros
     Object.entries(filtros).forEach(([clave, input]) => {
-        if (clave !== "caja_id") {
+        if (clave !== "caja_id" && input) {
             input.addEventListener('input', obtenerTraspasos);
             input.addEventListener('change', obtenerTraspasos);
         }
     });
 });
 
+// --- MODALES ---
+
 function mostrarModalError({ titulo, mensaje, textoConfirmar = "Aceptar", textoCancelar = null, onConfirmar, onCancelar }) {
   const modal = document.getElementById("modal-error");
+  if(!modal) return;
+  
   const tituloElem = document.getElementById("modal-error-titulo");
   const mensajeElem = document.getElementById("modal-error-mensaje");
   const btnConfirmar = document.getElementById("modal-error-confirmar");
   const btnCancelar = document.getElementById("modal-error-cancelar");
 
-  tituloElem.textContent = titulo;
-  mensajeElem.textContent = mensaje;
-  btnConfirmar.textContent = textoConfirmar;
+  if(tituloElem) tituloElem.textContent = titulo;
+  if(mensajeElem) mensajeElem.textContent = mensaje;
+  if(btnConfirmar) btnConfirmar.textContent = textoConfirmar;
 
-  if (textoCancelar) {
+  if (textoCancelar && btnCancelar) {
     btnCancelar.classList.remove("hidden");
     btnCancelar.textContent = textoCancelar;
-  } else {
+  } else if(btnCancelar) {
     btnCancelar.classList.add("hidden");
   }
 
   modal.classList.remove("hidden");
 
-  // Remover handlers anteriores
-  btnConfirmar.onclick = () => {
-    modal.classList.add("hidden");
-    if (onConfirmar) onConfirmar();
-  };
+  if(btnConfirmar) {
+      btnConfirmar.onclick = () => {
+        modal.classList.add("hidden");
+        if (onConfirmar) onConfirmar();
+      };
+  }
 
-  btnCancelar.onclick = () => {
-    modal.classList.add("hidden");
-    if (onCancelar) onCancelar();
-  };
+  if(btnCancelar) {
+      btnCancelar.onclick = () => {
+        modal.classList.add("hidden");
+        if (onCancelar) onCancelar();
+      };
+  }
 }
 
 function mostrarModalExitoso() {
   const modal = document.getElementById("modal-exitoso");
+  if(!modal) return;
+  
   modal.classList.remove("hidden");
 
-  document.getElementById("volver").onclick = () => {
-    modal.classList.add("hidden");
-    obtenerTraspasos();
-  };
-
+  const btnVolver = document.getElementById("volver");
+  if(btnVolver) {
+      btnVolver.onclick = () => {
+        modal.classList.add("hidden");
+        location.reload();
+      };
+  }
 }
