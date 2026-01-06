@@ -28,6 +28,36 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(error => console.error('Error al obtener las divisas:', error));
     }
 
+    function cargarSidebar() {
+        fetch('sidebar.html')
+            .then(response => response.text())
+            .then(html => {
+                const container = document.getElementById('sidebar-container');
+                if (container) {
+                    container.innerHTML = html;
+                    activarLinkSidebar('ingresos');
+                }
+            });
+    }
+
+    function activarLinkSidebar(pagina) {
+        setTimeout(() => {
+            const links = document.querySelectorAll('#sidebar-nav a');
+            links.forEach(link => {
+                link.classList.remove('bg-cyan-50', 'text-cyan-800', 'border-l-4', 'border-cyan-600', 'shadow-sm', 'font-bold');
+                link.classList.add('text-gray-600', 'border-transparent');
+                const icon = link.querySelector('svg');
+                if(icon) { icon.classList.remove('text-cyan-600'); icon.classList.add('text-gray-400'); }
+
+                if (link.dataset.page === pagina) {
+                    link.classList.remove('text-gray-600', 'border-transparent');
+                    link.classList.add('bg-cyan-50', 'text-cyan-800', 'border-l-4', 'border-cyan-600', 'shadow-sm', 'font-bold');
+                    if(icon) { icon.classList.remove('text-gray-400'); icon.classList.add('text-cyan-600'); }
+                }
+            });
+        }, 100);
+    }
+
     function mostrarResultados(divisas) {
         tablaDivisas.innerHTML = '';
 

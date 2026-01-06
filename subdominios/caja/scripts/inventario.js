@@ -1,4 +1,7 @@
 document.addEventListener("DOMContentLoaded", async () => {
+    getSession();
+    cargarSidebar();
+
     const mostrarRegistros = document.getElementById("mostrar-registros");
     const buscarInput = document.getElementById("buscar");
     const cajaInput = document.getElementById("caja");
@@ -9,40 +12,57 @@ document.addEventListener("DOMContentLoaded", async () => {
     const exportarBtn = document.getElementById("exportar");
 
     let divisas = [];
-    let cajaIdSesion = null;
 
-    // Obtener la caja activa desde la sesión
-    try {
-        const res = await fetch("https://cambiosorion.cl/data/session_status.php", {
-            credentials: "include",
-        });
-        if (!res.ok) throw new Error("No se pudo obtener la sesión.");
-        const data = await res.json();
-        if (data && data.caja_id) {
-            cajaIdSesion = data.caja_id;
-            if (cajaInput) {
-                cajaInput.innerHTML = "";
-
-                const option = document.createElement("option");
-                option.value = cajaIdSesion;
-                option.textContent = data.caja_nombre || `Caja ${cajaIdSesion}`;
-                cajaInput.appendChild(option);
-
-                cajaInput.disabled = true;
-            }
-
-            // Una vez obtenida la caja, cargar divisas e inventarios
-            cargarDivisas();
-            cargarInventarios();
-        }
-    } catch (error) {
-        console.error("Error al obtener la sesión:", error);
+    function cargarSidebar() {
+        fetch('sidebar.html')
+            .then(response => response.text())
+            .then(html => {
+                const container = document.getElementById('sidebar-container');
+                if (container) {
+                    container.innerHTML = html;
+                    activarLinkSidebar('transacciones');
+                }
+            });
     }
 
-    if (exportarBtn) {
-        exportarBtn.addEventListener("click", () => {
-            window.location.href = "https://cambiosorion.cl/data/exportar_inventarios_excel.php";
-        });
+    function activarLinkSidebar(pagina) {
+        setTimeout(() => {
+            const links = document.querySelectorAll('#sidebar-nav a');
+            links.forEach(link => {
+                link.classList.remove('bg-cyan-50', 'text-cyan-800', 'border-l-4', 'border-cyan-600', 'shadow-sm', 'font-bold');
+                link.classList.add('text-gray-600', 'border-transparent');
+                const icon = link.querySelector('svg');
+                if(icon) { icon.classList.remove('text-cyan-600'); icon.classList.add('text-gray-400'); }
+
+                if (link.dataset.page === pagina) {
+                    link.classList.remove('text-gray-600', 'border-transparent');
+                    link.classList.add('bg-cyan-50', 'text-cyan-800', 'border-l-4', 'border-cyan-600', 'shadow-sm', 'font-bold');
+                    if(icon) { icon.classList.remove('text-gray-400'); icon.classList.add('text-cyan-600'); }
+                }
+            });
+        }, 100);
+    }
+
+    async function getSession() {
+        try {
+            const res = await fetch("https://cambiosorion.cl/data/session_status_admin.php", { credentials: "include" });
+            if (!res.ok) throw new Error("Error sesión");
+            const data = await res.json();
+            
+            if (!data.isAuthenticated || !data.equipo_id) {
+                window.location.href = 'https://admin.cambiosorion.cl/login';
+                return;
+            }
+
+            const headerName = document.getElementById('header-user-name');
+            const headerEmail = document.getElementById('dropdown-user-email');
+            
+            if (headerName) headerName.textContent = data.nombre ? data.nombre.split(' ')[0] : 'Admin';
+            if (headerEmail) headerEmail.textContent = data.correo;
+
+        } catch (error) {
+            console.error("Error sesión:", error);
+        }
     }
 
     // Cargar divisas según la caja de sesión
@@ -169,4 +189,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     divisaInput.addEventListener("input", cargarInventarios);
     buscarInput.addEventListener("input", cargarInventarios);
     mostrarRegistros.addEventListener("input", cargarInventarios);
+
+    cargarDivisas();
 });
