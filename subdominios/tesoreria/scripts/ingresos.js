@@ -1,233 +1,197 @@
-document.addEventListener('DOMContentLoaded', () => {
-    let currentPage = 1;
+import { 
+    initSystem, 
+    limpiarTexto, 
+    formatearNumero, 
+    formatearFechaHora, 
+    mostrarModalError 
+} from './index.js';
 
-    // Referencias inputs
-    const inputsFiltro = {
-        numero: document.getElementById('numero'),
-        fecha: document.getElementById('fecha'),
-        tipo: document.getElementById('tipo-ingreso'),
-        cliente: document.getElementById('cliente'),
-        caja: document.getElementById('caja'),
-        cuenta: document.getElementById('cuenta'),
-        divisa: document.getElementById('divisa'),
-        estado: document.getElementById('estado'),
-        buscar: document.getElementById('buscar'),
-        mostrar: document.getElementById('mostrar-registros')
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Inicializar sistema
+    initSystem('ingresos');
+
+    // Referencias DOM
+    const tablaIngresos = document.getElementById('tabla-ingresos');
+    const conteoResultados = document.getElementById('conteo-resultados');
+    const paginationControls = document.getElementById('pagination-controls');
+    
+    const nuevoIngresoBtn = document.getElementById('nuevo-ingreso');
+    const borrarFiltrosBtn = document.getElementById('borrar-filtros');
+    const exportarBtn = document.getElementById('exportar');
+
+    let paginaActual = 1;
+
+    // Filtros
+    const filtros = {
+        fechaInicio: document.getElementById("fecha-inicio"),
+        fechaFin: document.getElementById("fecha-fin"),
+        id: document.getElementById("id-ingreso"),
+        cliente: document.getElementById("cliente"),
+        caja: document.getElementById("caja"),
+        tipoIngreso: document.getElementById("tipo-ingreso"),
+        divisa: document.getElementById("divisa"),
+        estado: document.getElementById("estado"),
+        mostrar: document.getElementById("mostrar-registros")
     };
 
-    const btnBorrarFiltros = document.getElementById('borrar-filtros');
-    const btnNuevoIngreso = document.getElementById('nuevo-ingreso');
-
-    // Función genérica para configurar un buscador
-    function setupAutocomplete(inputId, listId, paramName, displayField) {
-        const input = document.getElementById(inputId);
-        const list = document.getElementById(listId);
-
-        input.addEventListener('input', async (e) => {
-            const query = e.target.value.trim();
-            if (query.length < 1) { // Solo buscar si hay al menos 1 caracter
-                list.classList.add('hidden');
-                list.innerHTML = '';
-                obtenerIngresos(1); // Refrescar tabla al borrar
-                return;
-            }
-
-            try {
-                const res = await fetch(`https://cambiosorion.cl/data/ingresos.php?${paramName}=${encodeURIComponent(query)}`);
-                const items = await res.json();
-
-                list.innerHTML = '';
-                if (items.length > 0) {
-                    list.classList.remove('hidden');
-                    items.forEach(item => {
-                        const li = document.createElement('li');
-                        li.className = "px-4 py-2 hover:bg-gray-100 cursor-pointer text-gray-700 text-sm border-b border-gray-100 last:border-0";
-                        li.textContent = item[displayField]; // Ej: razon_social o nombre
-                        
-                        li.addEventListener('click', () => {
-                            input.value = item[displayField]; // Poner valor en input
-                            list.classList.add('hidden');
-                            obtenerIngresos(1); // Filtrar tabla inmediatamente
-                        });
-                        list.appendChild(li);
-                    });
-                } else {
-                    list.classList.add('hidden');
-                }
-            } catch (err) {
-                console.error("Error buscando:", err);
-            }
-        });
-
-        // Cerrar lista al hacer clic fuera
-        document.addEventListener('click', (e) => {
-            if (!input.contains(e.target) && !list.contains(e.target)) {
-                list.classList.add('hidden');
-            }
+    if (nuevoIngresoBtn) {
+        nuevoIngresoBtn.addEventListener('click', () => {
+            window.location.href = 'https://tesoreria.cambiosorion.cl/nuevo-ing';
         });
     }
 
-    // Configurar los 3 buscadores
-    setupAutocomplete('cliente', 'sugerencias-cliente', 'buscar_cliente', 'razon_social');
-    setupAutocomplete('cuenta', 'sugerencias-cuenta', 'buscar_cuenta', 'nombre');
-    setupAutocomplete('divisa', 'sugerencias-divisa', 'buscar_divisa', 'nombre');
-
-    // 2. Función Principal de Obtención
-    function obtenerIngresos(page = 1) {
-        currentPage = page;
+    // --- FETCH DATOS ---
+    function obtenerIngresos() {
         const params = new URLSearchParams();
-        params.set('page', page);
+
+        if (filtros.fechaInicio.value) params.set('fecha_inicio', filtros.fechaInicio.value);
+        if (filtros.fechaFin.value) params.set('fecha_fin', filtros.fechaFin.value);
+        if (filtros.id.value) params.set('numero', filtros.id.value.trim()); // PHP usa 'numero'
+        if (filtros.cliente.value) params.set('cliente', filtros.cliente.value.trim());
+        if (filtros.caja.value) params.set('caja', filtros.caja.value);
+        if (filtros.tipoIngreso.value) params.set('tipo', filtros.tipoIngreso.value);
+        if (filtros.divisa.value) params.set('divisa', filtros.divisa.value.trim());
+        if (filtros.estado.value) params.set('estado', filtros.estado.value);
         
-        // Mapeo exacto de IDs HTML a parámetros PHP
-        params.set('mostrar', inputsFiltro.mostrar ? inputsFiltro.mostrar.value : 25);
-        params.set('buscar', inputsFiltro.buscar ? inputsFiltro.buscar.value : '');
-        params.set('numero', inputsFiltro.numero ? inputsFiltro.numero.value : '');
-        params.set('fecha', inputsFiltro.fecha ? inputsFiltro.fecha.value : '');
-        params.set('tipo_ingreso', inputsFiltro.tipo ? inputsFiltro.tipo.value : '');
-        params.set('cliente', inputsFiltro.cliente ? inputsFiltro.cliente.value : '');
-        params.set('caja', inputsFiltro.caja ? inputsFiltro.caja.value : '');
-        params.set('cuenta', inputsFiltro.cuenta ? inputsFiltro.cuenta.value : '');
-        params.set('divisa', inputsFiltro.divisa ? inputsFiltro.divisa.value : '');
-        params.set('estado', inputsFiltro.estado ? inputsFiltro.estado.value : '');
+        const limit = parseInt(filtros.mostrar.value) || 25;
+        const offset = (paginaActual - 1) * limit;
+        params.set('limit', limit);
+        params.set('offset', offset);
+
+        // Spinner Ámbar
+        tablaIngresos.innerHTML = `<tr><td colspan="9" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-amber-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
 
         fetch(`https://cambiosorion.cl/data/ingresos.php?${params.toString()}`)
-            .then(async res => {
-                const text = await res.text();
-                try {
-                    return JSON.parse(text);
-                } catch (e) {
-                    console.error("Error de respuesta:", text);
-                    throw new Error("Respuesta no válida del servidor");
+            .then(res => res.json())
+            .then(data => {
+                // Manejo de respuesta JSON (data.data o array directo)
+                let lista = [];
+                let total = 0;
+
+                if (Array.isArray(data)) {
+                    lista = data;
+                    total = data.length;
+                } else if (data.data) {
+                    lista = data.data;
+                    total = parseInt(data.total) || lista.length;
                 }
+
+                renderizarTabla(lista);
+                renderizarPaginacion(total, limit, paginaActual);
             })
-            .then(res => {
-                if (res.error) {
-                    console.error("Error PHP:", res.error);
-                    const tbody = document.querySelector('#ingresos table tbody');
-                    tbody.innerHTML = `<tr><td colspan="10" class="text-center text-red-400 py-4">Error: ${res.error}</td></tr>`;
-                    return;
-                }
-                mostrarResultados(res.data);
-                actualizarContador(res.total, res.limit, res.page);
-                renderPaginacion(res.totalPages, res.page);
-            })
-            .catch(err => console.error('Error Fetch:', err));
+            .catch(error => {
+                console.error('Error:', error);
+                tablaIngresos.innerHTML = `<tr><td colspan="9" class="text-center text-red-400 py-4">Error de conexión.</td></tr>`;
+            });
     }
 
-    // 3. Renderizado Tabla
-    function mostrarResultados(lista) {
-        const tbody = document.querySelector('#ingresos table tbody');
-        tbody.innerHTML = '';
-        
-        if (!lista || lista.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="10" class="text-center text-gray-400 py-4">No se encontraron registros.</td></tr>';
+    // --- RENDERIZADO ---
+    function renderizarTabla(ingresos) {
+        tablaIngresos.innerHTML = '';
+
+        if (ingresos.length === 0) {
+            tablaIngresos.innerHTML = `<tr><td colspan="9" class="text-center text-slate-500 py-10 italic">No se encontraron ingresos.</td></tr>`;
             return;
         }
 
-        lista.forEach(item => {
+        ingresos.forEach(row => {
             const tr = document.createElement('tr');
-            tr.className = 'border-b bg-white border-gray-700 text-gray-700 hover:bg-gray-50';
-            
-            const fechaFmt = formatDate(item.fecha);
-            const montoFmt = '$' + Number(item.monto).toLocaleString('es-CL');
-            const estadoClass = getEstadoClass(item.estado);
+            tr.className = 'hover:bg-white/5 transition-all border-b border-white/5 last:border-0 text-slate-300';
 
-            // AQUÍ ESTÁ EL FIX DEL UNDEFINED: Usamos || ''
-            const cuentaTexto = item.cuenta || ''; 
+            // Estados
+            let estadoClass = "bg-slate-800 text-slate-400 border border-slate-700";
+            const est = String(row.estado).toLowerCase();
+            if(est === 'vigente') estadoClass = "bg-green-900/40 text-green-300 border border-green-500/30";
+            if(est === 'anulado') estadoClass = "bg-red-900/40 text-red-300 border border-red-500/30";
+
+            // Botón Acción
+            const btnVer = document.createElement('button');
+            btnVer.innerHTML = `<svg class="w-5 h-5 text-slate-400 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
+            btnVer.className = 'flex items-center justify-center p-1.5 bg-white/5 rounded-full hover:bg-amber-600 shadow-sm border border-transparent transition-all mx-auto';
+            btnVer.onclick = (e) => {
+                e.stopPropagation();
+                window.location.href = `detalle-ingreso?id=${row.id}`;
+            };
+
+            // Lógica para mostrar Cliente o Cuenta (dependiendo del tipo)
+            let origen = row.cliente || '';
+            if(!origen && row.cuenta) origen = row.cuenta; // Si es cuenta contable
 
             tr.innerHTML = `
-                <td class="px-4 py-2 font-medium">${item.id}</td>
-                <td class="px-4 py-2">${fechaFmt}</td>
-                <td class="px-4 py-2">${item.tipo_ingreso}</td>
-                <td class="px-4 py-2 truncate max-w-[150px]" title="${item.cliente}">${item.cliente || '—'}</td>
-                <td class="px-4 py-2">${item.caja || '—'}</td>
-                <td class="px-4 py-2 truncate max-w-[150px]" title="${cuentaTexto}">${cuentaTexto}</td>
-                <td class="px-4 py-2">${item.divisa || '—'}</td>
-                <td class="px-4 py-2 font-bold text-gray-900">${montoFmt}</td>
-                <td class="px-4 py-2"><span class="px-2 py-1 rounded text-xs font-bold uppercase ${estadoClass}">${item.estado}</span></td>
-                <td class="px-4 py-2 text-center">
-                    <button onclick="window.location.href='detalle-ing?id=${item.id}'" class="text-white bg-blue-700 hover:bg-blue-800 rounded-lg text-sm px-3 py-1">Mostrar</button>
+                <td class="px-4 py-3 whitespace-nowrap text-xs">${formatearFechaHora(row.fecha)}</td>
+                <td class="px-4 py-3 font-mono text-xs font-bold text-slate-500">${limpiarTexto(row.id)}</td>
+                <td class="px-4 py-3 text-xs uppercase font-bold text-slate-400 tracking-wide">${limpiarTexto(row.caja)}</td>
+                <td class="px-4 py-3 font-semibold text-sm text-white truncate max-w-[140px]" title="${limpiarTexto(origen)}">${limpiarTexto(origen)}</td>
+                <td class="px-4 py-3 text-xs uppercase text-slate-400 tracking-wide">${limpiarTexto(row.tipo_ingreso)}</td>
+                <td class="px-4 py-3 text-center font-bold text-amber-400 text-xs">${limpiarTexto(row.divisa)}</td>
+                <td class="px-4 py-3 text-right font-bold font-mono text-emerald-400 text-sm">${formatearNumero(row.monto)}</td>
+                <td class="px-4 py-3 text-center">
+                    <span class="px-2 py-0.5 rounded text-[10px] uppercase font-bold ${estadoClass}">${limpiarTexto(row.estado)}</span>
                 </td>
+                <td class="px-4 py-3 text-center cell-action"></td>
             `;
-            tbody.appendChild(tr);
+
+            tr.querySelector('.cell-action').appendChild(btnVer);
+            tablaIngresos.appendChild(tr);
         });
     }
 
-    // Helpers
-    function formatDate(dateString) {
-        if (!dateString) return '';
-        const date = new Date(dateString.replace(/-/g, "/")); 
-        if (isNaN(date)) return dateString;
-        const d = String(date.getDate()).padStart(2, '0');
-        const m = String(date.getMonth() + 1).padStart(2, '0');
-        const y = date.getFullYear();
-        const h = String(date.getHours()).padStart(2, '0');
-        const min = String(date.getMinutes()).padStart(2, '0');
-        return `${h}:${min} ${d}/${m}/${y}`;
-    }
+    // --- PAGINACIÓN ---
+    function renderizarPaginacion(totalRegistros, porPagina, pagina) {
+        conteoResultados.textContent = `Total: ${totalRegistros}`;
+        paginationControls.innerHTML = '';
 
-    function getEstadoClass(est) {
-        const e = (est || '').toLowerCase();
-        if(e === 'vigente') return 'bg-blue-100 text-blue-800';
-        if(e === 'pagado' || e === 'cerrado') return 'bg-green-100 text-green-800';
-        if(e === 'anulado') return 'bg-red-100 text-red-800';
-        return 'bg-gray-100 text-gray-800';
-    }
+        const totalPaginas = Math.ceil(totalRegistros / porPagina);
+        if (totalPaginas <= 1) return;
 
-    // Paginación y Contador
-    function actualizarContador(total, limit, page) {
-        const start = total === 0 ? 0 : (page - 1) * limit + 1;
-        const end = Math.min(page * limit, total);
-        document.getElementById('inicio-registro').textContent = start;
-        document.getElementById('fin-registro').textContent = end;
-        document.getElementById('total-registros').textContent = total;
-    }
-
-    function renderPaginacion(totalP, currentP) {
-        const container = document.getElementById('pagination-controls');
-        container.innerHTML = '';
-        if (totalP <= 1) return;
-
-        const createBtn = (text, page, disabled, active) => {
-            const li = document.createElement('li');
-            const cls = active 
-                ? 'text-blue-600 bg-blue-50 border-blue-300 hover:bg-blue-100' 
-                : 'text-gray-500 bg-white border-gray-300 hover:bg-gray-100';
-            
-            li.innerHTML = `<button class="px-3 py-2 leading-tight border ${cls} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}" ${disabled ? 'disabled' : ''}>${text}</button>`;
-            if(!disabled) li.onclick = () => obtenerIngresos(page);
-            return li;
+        const crearBtn = (txt, disabled, fn) => {
+            const b = document.createElement('button');
+            b.textContent = txt;
+            b.className = `px-3 py-1 bg-slate-800 border border-slate-600 rounded hover:bg-slate-700 text-white text-xs transition ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`;
+            b.disabled = disabled;
+            b.onclick = fn;
+            return b;
         };
 
-        container.appendChild(createBtn('Anterior', currentP - 1, currentP === 1, false));
-        
-        let start = Math.max(1, currentP - 2);
-        let end = Math.min(totalP, start + 4);
-        if(end - start < 4) start = Math.max(1, end - 4);
-
-        for(let i = start; i <= end; i++) {
-            container.appendChild(createBtn(i, i, false, i === currentP));
-        }
-
-        container.appendChild(createBtn('Siguiente', currentP + 1, currentP === totalP, false));
+        paginationControls.appendChild(crearBtn('Anterior', pagina === 1, () => cambioPagina(pagina - 1)));
+        const span = document.createElement('span');
+        span.className = "text-xs font-bold text-slate-400 px-2";
+        span.textContent = `${pagina} / ${totalPaginas}`;
+        paginationControls.appendChild(span);
+        paginationControls.appendChild(crearBtn('Siguiente', pagina === totalPaginas, () => cambioPagina(pagina + 1)));
     }
 
-    // Listeners
-    Object.values(inputsFiltro).forEach(el => {
-        if(el) el.addEventListener('input', () => obtenerIngresos(1));
+    function cambioPagina(nuevaPagina) {
+        paginaActual = nuevaPagina;
+        obtenerIngresos();
+    }
+
+    // --- EVENTOS ---
+    const resetAndFetch = () => { paginaActual = 1; obtenerIngresos(); };
+
+    borrarFiltrosBtn.addEventListener('click', () => {
+        Object.values(filtros).forEach(input => {
+            if(!input) return;
+            input.value = '';
+            if(input._flatpickr) input._flatpickr.clear();
+        });
+        if(filtros.mostrar) filtros.mostrar.value = '25';
+        resetAndFetch();
     });
 
-    if(btnBorrarFiltros) {
-        btnBorrarFiltros.addEventListener('click', () => {
-            Object.values(inputsFiltro).forEach(el => {
-                if(el.id !== 'mostrar-registros') el.value = ''; 
-            });
-            obtenerIngresos(1);
+    if (exportarBtn) {
+        exportarBtn.addEventListener('click', () => {
+            // Lógica para abrir exportar con los filtros actuales
+            alert("Funcionalidad de exportación pendiente de backend.");
         });
     }
 
-    if(btnNuevoIngreso) btnNuevoIngreso.addEventListener('click', () => window.location.href = 'https://tesoreria.cambiosorion.cl/nuevo-ing');
+    Object.values(filtros).forEach(input => {
+        if(input) {
+            input.addEventListener('input', resetAndFetch);
+            input.addEventListener('change', resetAndFetch);
+        }
+    });
 
-    // Inicialización
-    obtenerIngresos(1);
+    obtenerIngresos();
 });
