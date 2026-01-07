@@ -83,11 +83,19 @@ document.addEventListener('DOMContentLoaded', () => {
             const tr = document.createElement('tr');
             tr.className = 'hover:bg-white/5 transition-all border-b border-white/5 last:border-0 text-slate-300';
 
+            // --- MAPEO DE DATOS (CORRECCIÓN CRÍTICA) ---
+            // Usamos || para dar soporte a ambos nombres por si acaso cambia el PHP
+            const nombreMostrar = cliente.razon_social || cliente.nombre || 'Sin Nombre';
+            const fechaRegistro = cliente.fecha_ingreso || cliente.created_at;
+            const tipoCliente = cliente.tipo || cliente.tipo_cliente;
+            // 'activo' suele ser "1" o "0" en la BD
+            const esActivo = (cliente.activo == 1 || cliente.activo === '1' || cliente.habilitado == 1);
+
             // Badges
-            let estadoClass = cliente.habilitado == 1 
+            let estadoClass = esActivo 
                 ? 'bg-green-900/40 text-green-300 border border-green-500/30' 
                 : 'bg-red-900/40 text-red-300 border border-red-500/30';
-            let estadoTexto = cliente.habilitado == 1 ? 'Habilitado' : 'Deshabilitado';
+            let estadoTexto = esActivo ? 'Habilitado' : 'Deshabilitado';
 
             let docClass = cliente.estado_documentacion === 'Completa' 
                 ? 'text-green-400 font-bold' 
@@ -103,15 +111,15 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             tr.innerHTML = `
-                <td class="px-4 py-3 whitespace-nowrap text-xs">${formatearFechaHora(cliente.created_at)}</td>
+                <td class="px-4 py-3 whitespace-nowrap text-xs">${formatearFechaHora(fechaRegistro)}</td>
                 <td class="px-4 py-3 font-mono text-xs font-bold text-slate-500">${cliente.id}</td>
-                <td class="px-4 py-3 font-semibold text-sm text-white truncate max-w-[200px]" title="${limpiarTexto(cliente.nombre)}">${limpiarTexto(cliente.nombre)}</td>
+                <td class="px-4 py-3 font-semibold text-sm text-white truncate max-w-[200px]" title="${limpiarTexto(nombreMostrar)}">${limpiarTexto(nombreMostrar)}</td>
                 <td class="px-4 py-3 font-mono text-xs text-amber-100">${limpiarTexto(cliente.rut)}</td>
                 <td class="px-4 py-3 text-xs text-slate-400">
                     <div class="truncate max-w-[150px]">${limpiarTexto(cliente.email)}</div>
                     <div class="text-[10px] text-slate-500">${limpiarTexto(cliente.fono)}</div>
                 </td>
-                <td class="px-4 py-3 text-center text-xs font-bold uppercase tracking-wide text-slate-400">${limpiarTexto(cliente.tipo_cliente)}</td>
+                <td class="px-4 py-3 text-center text-xs font-bold uppercase tracking-wide text-slate-400">${limpiarTexto(tipoCliente)}</td>
                 <td class="px-4 py-3 text-center text-xs ${docClass}">${limpiarTexto(cliente.estado_documentacion)}</td>
                 <td class="px-4 py-3 text-center">
                     <span class="px-2 py-0.5 rounded text-[10px] uppercase font-bold ${estadoClass}">${estadoTexto}</span>
