@@ -63,10 +63,10 @@
         </div>
     </header>
 
-    <div class="header-divider"></div>
-    <div class="main-content">
-        <div id="sidebar-container"></div>
-        <main id="dashboard-content" class="dashboard-content">
+    <div class="flex flex-1 overflow-hidden relative">
+        <div id="sidebar-container" class="hidden lg:block h-full z-10"></div>
+        
+        <main class="flex-1 overflow-y-auto p-4 md:p-8 relative" id="dashboard-content">
             <section id="clientes" class="content-section active">
                 <!-- Título y botón Nueva Operación -->
                 <div class="flex items-center mb-6">
