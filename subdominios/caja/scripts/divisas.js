@@ -92,7 +92,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Spinner
         tablaDivisas.innerHTML = `<tr><td colspan="9" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-cyan-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
 
-        fetch(`https://cambiosorion.cl/data/divisas-int.php?${params.toString()}`, { credentials: "include" })
+        // CAMBIO: Ahora apunta a divisas-caja.php
+        fetch(`https://cambiosorion.cl/data/divisas-caja.php?${params.toString()}`, { credentials: "include" })
             .then(response => {
                 if (response.status === 401) {
                     window.location.href = 'https://admin.cambiosorion.cl/login';
@@ -101,6 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return response.json();
             })
             .then(data => {
+                // Ahora data ES un array, así que esto funcionará
                 if (Array.isArray(data)) {
                     mostrarResultados(data);
                     actualizarPaginacion(data.length);
@@ -139,13 +141,21 @@ document.addEventListener('DOMContentLoaded', () => {
             const tr = document.createElement('tr');
             tr.className = 'hover:brightness-95 transition-all text-gray-800 font-medium border-b border-gray-100 last:border-0 bg-white';
 
-            // Badge de estado
+            // Lógica de estado para 1/0 o Activa/Inactiva
             let estadoClass = "bg-gray-100 text-gray-600";
-            if (String(divisa.estado) === 'Activa' || String(divisa.estado) === '1') estadoClass = "bg-green-100 text-green-700 border border-green-200";
-            if (String(divisa.estado) === 'Inactiva' || String(divisa.estado) === '0') estadoClass = "bg-red-100 text-red-700 border border-red-200";
+            let textoEstado = "Inactiva";
             
-            // Texto estado
-            const textoEstado = (String(divisa.estado) === '1' || String(divisa.estado) === 'Activa') ? 'Activa' : 'Inactiva';
+            // Verificación flexible (string o int)
+            if (String(divisa.estado) === '1' || String(divisa.estado).toLowerCase() === 'activa') {
+                estadoClass = "bg-green-100 text-green-700 border border-green-200";
+                textoEstado = "Activa";
+            } else if (String(divisa.estado) === '0' || String(divisa.estado).toLowerCase() === 'inactiva') {
+                estadoClass = "bg-red-100 text-red-700 border border-red-200";
+                textoEstado = "Inactiva";
+            }
+
+            // Lógica Fraccionable
+            const textoFracc = (String(divisa.fraccionable) === '1') ? 'SÍ' : 'NO';
 
             const btnMostrar = document.createElement('button');
             btnMostrar.innerHTML = `<svg class="w-5 h-5 text-gray-600 hover:text-cyan-700 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
@@ -165,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="px-4 py-3 font-mono font-bold text-slate-800">${divisa.codigo}</td>
                 <td class="px-4 py-3 text-center font-serif text-lg">${divisa.simbolo}</td>
                 <td class="px-4 py-3 text-center text-xs uppercase font-semibold text-gray-500">${divisa.tipo_divisa ?? '-'}</td>
-                <td class="px-4 py-3 text-center text-xs font-mono">${divisa.fraccionable == 1 ? 'SI' : 'NO'}</td>
+                <td class="px-4 py-3 text-center text-xs font-mono">${textoFracc}</td>
                 <td class="px-4 py-3 text-center">
                     <span class="px-2 py-0.5 rounded text-[10px] uppercase font-bold ${estadoClass}">${textoEstado}</span>
                 </td>
