@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         tabla.innerHTML = `<tr><td colspan="9" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-cyan-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
 
-        fetch(`https://cambiosorion.cl/data/traspasos_caja.php?${params.toString()}`)
+        fetch(`https://cambiosorion.cl/data/traspasos-caja.php?${params.toString()}`)
             .then(response => response.json())
             .then(data => {
                 if(Array.isArray(data)) {
@@ -284,7 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            fetch('https://cambiosorion.cl/data/completar_traspasos.php', {
+            fetch('https://cambiosorion.cl/data/traspasos-caja.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ids: ids })
