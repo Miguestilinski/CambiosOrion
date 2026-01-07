@@ -1,11 +1,31 @@
-document.addEventListener('DOMContentLoaded', () => {
-    let currentPage = 1;
+import { 
+    initSystem, 
+    limpiarTexto, 
+    formatearNumero, 
+    formatearFechaHora, 
+    mostrarModalError 
+} from './index.js';
 
-    const inputsFiltro = {
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Inicializar sistema
+    initSystem('egresos-util');
+
+    // Referencias DOM
+    const tablaEgresos = document.getElementById('tabla-egresos');
+    const conteoResultados = document.getElementById('conteo-resultados');
+    const paginationControls = document.getElementById('pagination-controls');
+    
+    const nuevoEgresoBtn = document.getElementById('nuevo-egreso-util');
+    const borrarFiltrosBtn = document.getElementById('borrar-filtros');
+    const exportarBtn = document.getElementById('exportar');
+
+    let paginaActual = 1;
+
+    // Filtros
+    const filtros = {
         numero: document.getElementById('numero'),
         fecha: document.getElementById('fecha'),
         tipo: document.getElementById('tipo-egreso'),
-        // 'cliente' eliminado, usamos 'buscar' para el concepto
         caja: document.getElementById('caja'),
         divisa: document.getElementById('divisa'),
         estado: document.getElementById('estado'),
@@ -13,117 +33,168 @@ document.addEventListener('DOMContentLoaded', () => {
         mostrar: document.getElementById('mostrar-registros')
     };
 
-    const btnNuevo = document.getElementById('nuevo-egreso-util');
-
-    // 1. Función Principal
-    function obtenerEgresos(page = 1) {
-        currentPage = page;
-        const params = new URLSearchParams();
-        params.set('page', page);
-        params.set('mostrar', inputsFiltro.mostrar ? inputsFiltro.mostrar.value : 25);
-        params.set('buscar', inputsFiltro.buscar.value);
-        params.set('numero', inputsFiltro.numero.value);
-        params.set('fecha', inputsFiltro.fecha.value);
-        params.set('tipo_egreso', inputsFiltro.tipo.value);
-        params.set('caja', inputsFiltro.caja.value);
-        params.set('divisa', inputsFiltro.divisa.value);
-        params.set('estado', inputsFiltro.estado.value);
-
-        fetch(`https://cambiosorion.cl/data/egresos-util.php?${params.toString()}`)
-            .then(async res => {
-                const text = await res.text();
-                try { return JSON.parse(text); } catch (e) { console.error(text); throw new Error("Error JSON"); }
-            })
-            .then(res => {
-                mostrarResultados(res.data);
-                actualizarContador(res.total, res.limit, res.page);
-                renderPaginacion(res.totalPages, res.page);
-            })
-            .catch(err => console.error(err));
-    }
-
-    // 2. Renderizado
-    function mostrarResultados(lista) {
-        const tbody = document.querySelector('#egresos-util table tbody');
-        tbody.innerHTML = '';
-        
-        if (!lista || lista.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="9" class="text-center bg-white text-gray-600 py-4">No se encontraron registros.</td></tr>';
-            return;
-        }
-
-        lista.forEach(item => {
-            const tr = document.createElement('tr');
-            tr.className = 'border-b bg-white border-gray-700 text-gray-700 hover:bg-gray-50';
-            
-            const fechaFmt = formatDate(item.fecha);
-            const montoFmt = '$' + Number(item.monto).toLocaleString('es-CL');
-            const estadoClass = getEstadoClass(item.estado);
-
-            tr.innerHTML = `
-                <td class="px-4 py-2 font-medium">${item.id}</td>
-                <td class="px-4 py-2">${fechaFmt}</td>
-                <td class="px-4 py-2">${item.tipo_egreso}</td>
-                <td class="px-4 py-2 font-bold text-gray-800 uppercase">${item.item_utilidad || 'Sin detalle'}</td> <!-- AQUÍ EL CAMBIO -->
-                <td class="px-4 py-2">${item.caja || '—'}</td>
-                <td class="px-4 py-2">${item.divisa || '—'}</td>
-                <td class="px-4 py-2 font-bold text-red-600">-${montoFmt}</td>
-                <td class="px-4 py-2"><span class="px-2 py-1 rounded text-xs font-bold uppercase ${estadoClass}">${item.estado}</span></td>
-                <td class="px-4 py-2 text-center">
-                    <button onclick="window.location.href='detalle-egr-util?id=${item.id}'" class="text-white bg-yellow-600 hover:bg-yellow-700 rounded-lg text-sm px-3 py-1">Ver</button>
-                </td>
-            `;
-            tbody.appendChild(tr);
+    if (nuevoEgresoBtn) {
+        nuevoEgresoBtn.addEventListener('click', () => {
+            // Asumiendo que reutilizas el form de egresos con un flag o una url distinta
+            window.location.href = 'https://tesoreria.cambiosorion.cl/nuevo-egr-util';
         });
     }
 
-    // Helpers
-    function formatDate(dateString) {
-        if (!dateString) return '';
-        const date = new Date(dateString.replace(/-/g, "/")); 
-        if (isNaN(date)) return dateString;
-        const d = String(date.getDate()).padStart(2, '0');
-        const m = String(date.getMonth() + 1).padStart(2, '0');
-        const y = date.getFullYear();
-        return `${d}/${m}/${y}`;
+    // --- FETCH DATOS ---
+    function obtenerEgresos() {
+        const params = new URLSearchParams();
+
+        // Mapeo exacto para egresos-util.php
+        params.set('page', paginaActual);
+        params.set('mostrar', filtros.mostrar ? filtros.mostrar.value : 25);
+        
+        if (filtros.buscar.value) params.set('buscar', filtros.buscar.value.trim());
+        if (filtros.numero.value) params.set('numero', filtros.numero.value.trim());
+        if (filtros.fecha.value) params.set('fecha', filtros.fecha.value);
+        if (filtros.tipo.value) params.set('tipo_egreso', filtros.tipo.value); // PHP usa 'tipo_egreso'
+        if (filtros.caja.value) params.set('caja', filtros.caja.value);
+        if (filtros.divisa.value) params.set('divisa', filtros.divisa.value.trim());
+        if (filtros.estado.value) params.set('estado', filtros.estado.value);
+
+        // Spinner Ámbar
+        tablaEgresos.innerHTML = `<tr><td colspan="9" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-amber-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
+
+        fetch(`https://cambiosorion.cl/data/egresos-util.php?${params.toString()}`)
+            .then(res => res.json())
+            .then(data => {
+                // Manejo de respuesta flexible
+                let lista = [];
+                let total = 0;
+
+                if (data.data) {
+                    lista = data.data;
+                    total = parseInt(data.total) || lista.length;
+                } else if (Array.isArray(data)) {
+                    lista = data;
+                    total = data.length;
+                }
+
+                renderizarTabla(lista);
+                renderizarPaginacion(total, parseInt(filtros.mostrar.value), paginaActual);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                tablaEgresos.innerHTML = `<tr><td colspan="9" class="text-center text-red-400 py-4">Error de conexión.</td></tr>`;
+            });
     }
 
-    function getEstadoClass(est) {
-        const e = (est || '').toLowerCase();
-        if(e === 'vigente') return 'bg-green-100 text-green-800';
-        if(e === 'anulado') return 'bg-red-100 text-red-800';
-        return 'bg-gray-100 text-gray-800';
+    // --- RENDERIZADO ---
+    function renderizarTabla(egresos) {
+        tablaEgresos.innerHTML = '';
+
+        if (egresos.length === 0) {
+            tablaEgresos.innerHTML = `<tr><td colspan="9" class="text-center text-slate-500 py-10 italic">No se encontraron registros.</td></tr>`;
+            return;
+        }
+
+        egresos.forEach(row => {
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-white/5 transition-all border-b border-white/5 last:border-0 text-slate-300';
+
+            // Estados
+            let estadoClass = "bg-slate-800 text-slate-400 border border-slate-700";
+            const est = String(row.estado).toLowerCase();
+            if(est === 'vigente') estadoClass = "bg-green-900/40 text-green-300 border border-green-500/30";
+            if(est === 'anulado') estadoClass = "bg-red-900/40 text-red-300 border border-red-500/30";
+
+            // Tipo (Colores distintivos)
+            let tipoClass = "text-slate-400";
+            const tipo = String(row.tipo_egreso || '').toLowerCase();
+            if (tipo === 'utilidad') tipoClass = "text-amber-400 font-bold";
+            if (tipo === 'gasto') tipoClass = "text-rose-400 font-bold";
+            if (tipo === 'retiro') tipoClass = "text-blue-400 font-bold";
+
+            // Botón Acción
+            const btnVer = document.createElement('button');
+            btnVer.innerHTML = `<svg class="w-5 h-5 text-slate-400 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
+            btnVer.className = 'flex items-center justify-center p-1.5 bg-white/5 rounded-full hover:bg-amber-600 shadow-sm border border-transparent transition-all mx-auto';
+            btnVer.onclick = (e) => {
+                e.stopPropagation();
+                window.location.href = `detalle-egreso?id=${row.id}`;
+            };
+
+            // Concepto
+            let concepto = row.item_utilidad || row.cliente || 'Sin concepto';
+
+            tr.innerHTML = `
+                <td class="px-4 py-3 whitespace-nowrap text-xs">${formatearFechaHora(row.fecha)}</td>
+                <td class="px-4 py-3 font-mono text-xs font-bold text-slate-500">${limpiarTexto(row.id)}</td>
+                <td class="px-4 py-3 text-xs uppercase font-bold text-slate-400 tracking-wide">${limpiarTexto(row.caja)}</td>
+                <td class="px-4 py-3 font-semibold text-sm text-white truncate max-w-[180px]" title="${limpiarTexto(concepto)}">${limpiarTexto(concepto)}</td>
+                <td class="px-4 py-3 text-xs uppercase tracking-wide ${tipoClass}">${limpiarTexto(row.tipo_egreso)}</td>
+                <td class="px-4 py-3 text-center font-bold text-slate-200 text-xs">${limpiarTexto(row.divisa)}</td>
+                <td class="px-4 py-3 text-right font-bold font-mono text-white text-sm">${formatearNumero(row.monto)}</td>
+                <td class="px-4 py-3 text-center">
+                    <span class="px-2 py-0.5 rounded text-[10px] uppercase font-bold ${estadoClass}">${limpiarTexto(row.estado)}</span>
+                </td>
+                <td class="px-4 py-3 text-center cell-action"></td>
+            `;
+
+            tr.querySelector('.cell-action').appendChild(btnVer);
+            tablaEgresos.appendChild(tr);
+        });
     }
 
-    function actualizarContador(total, limit, page) {
-        const start = total === 0 ? 0 : (page - 1) * limit + 1;
-        const end = Math.min(page * limit, total);
-        document.getElementById('inicio-registro').textContent = start;
-        document.getElementById('fin-registro').textContent = end;
-        document.getElementById('total-registros').textContent = total;
-    }
+    // --- PAGINACIÓN ---
+    function renderizarPaginacion(totalRegistros, porPagina, pagina) {
+        conteoResultados.textContent = `Total: ${totalRegistros}`;
+        paginationControls.innerHTML = '';
 
-    function renderPaginacion(totalP, currentP) {
-        const container = document.getElementById('pagination-controls');
-        container.innerHTML = '';
-        if (totalP <= 1) return;
+        const totalPaginas = Math.ceil(totalRegistros / porPagina);
+        if (totalPaginas <= 1) return;
 
-        const createBtn = (text, page, disabled, active) => {
-            const li = document.createElement('li');
-            const cls = active ? 'text-blue-600 bg-blue-50 border-blue-300' : 'text-gray-500 bg-white border-gray-300 hover:bg-gray-100';
-            li.innerHTML = `<button class="px-3 py-2 leading-tight border ${cls}" ${disabled ? 'disabled' : ''}>${text}</button>`;
-            if(!disabled) li.onclick = () => obtenerEgresos(page);
-            return li;
+        const crearBtn = (txt, disabled, fn) => {
+            const b = document.createElement('button');
+            b.textContent = txt;
+            b.className = `px-3 py-1 bg-slate-800 border border-slate-600 rounded hover:bg-slate-700 text-white text-xs transition ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`;
+            b.disabled = disabled;
+            b.onclick = fn;
+            return b;
         };
 
-        container.appendChild(createBtn('Ant', currentP - 1, currentP === 1, false));
-        for(let i = 1; i <= totalP; i++) container.appendChild(createBtn(i, i, false, i === currentP));
-        container.appendChild(createBtn('Sig', currentP + 1, currentP === totalP, false));
+        paginationControls.appendChild(crearBtn('Anterior', pagina === 1, () => cambioPagina(pagina - 1)));
+        const span = document.createElement('span');
+        span.className = "text-xs font-bold text-slate-400 px-2";
+        span.textContent = `${pagina} / ${totalPaginas}`;
+        paginationControls.appendChild(span);
+        paginationControls.appendChild(crearBtn('Siguiente', pagina === totalPaginas, () => cambioPagina(pagina + 1)));
     }
 
-    // Listeners
-    Object.values(inputsFiltro).forEach(el => { if(el) el.addEventListener('input', () => obtenerEgresos(1)); });
-    if(btnNuevo) btnNuevo.addEventListener('click', () => window.location.href = 'nuevo-egr-util');
+    function cambioPagina(nuevaPagina) {
+        paginaActual = nuevaPagina;
+        obtenerEgresos();
+    }
 
-    obtenerEgresos(1);
+    // --- EVENTOS ---
+    const resetAndFetch = () => { paginaActual = 1; obtenerEgresos(); };
+
+    borrarFiltrosBtn.addEventListener('click', () => {
+        Object.values(filtros).forEach(input => {
+            if(!input) return;
+            input.value = '';
+            if(input._flatpickr) input._flatpickr.clear();
+        });
+        if(filtros.mostrar) filtros.mostrar.value = '25';
+        resetAndFetch();
+    });
+
+    if (exportarBtn) {
+        exportarBtn.addEventListener('click', () => {
+            alert("Exportar pendiente de implementación backend.");
+        });
+    }
+
+    Object.values(filtros).forEach(input => {
+        if(input) {
+            input.addEventListener('input', resetAndFetch);
+            input.addEventListener('change', resetAndFetch);
+        }
+    });
+
+    obtenerEgresos();
 });
