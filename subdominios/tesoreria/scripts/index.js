@@ -1,9 +1,9 @@
-// index.js - Lógica común para Sistema de Tesorería (Tema Ámbar)
+// index.js - Sistema Tesorería (Modo Oscuro)
 
 export const SystemConfig = {
     apiBase: 'https://cambiosorion.cl/data',
     loginUrl: 'https://admin.cambiosorion.cl/login',
-    sidebarFile: 'sidebar.html'
+    sidebarFile: 'sidebar-tesoreria.html'
 };
 
 export async function initSystem(currentPageId) {
@@ -29,22 +29,22 @@ export function activarLinkSidebar(pagina) {
     setTimeout(() => {
         const links = document.querySelectorAll('aside a');
         links.forEach(link => {
-            // Reset styles base (Gris neutro)
-            link.className = 'flex items-center px-4 py-2.5 text-gray-600 hover:bg-amber-50 hover:text-amber-700 rounded-lg transition-colors group mb-1 border border-transparent';
+            // Reset styles (Gris oscuro/neutro)
+            link.className = 'flex items-center px-4 py-2.5 text-slate-400 hover:bg-white/5 hover:text-amber-400 rounded-lg transition-colors group mb-1 border border-transparent';
             
             const icon = link.querySelector('svg');
             if(icon) { 
-                icon.classList.remove('text-amber-600'); 
-                icon.classList.add('text-gray-400', 'group-hover:text-amber-500'); 
+                icon.classList.remove('text-amber-500'); 
+                icon.classList.add('text-slate-500', 'group-hover:text-amber-500'); 
             }
 
-            // Activar link actual (Estilo Ámbar)
+            // Activo (Fondo ámbar sutil, texto ámbar brillante)
             if (link.dataset.page === pagina) {
-                link.classList.remove('text-gray-600', 'border-transparent');
-                link.classList.add('bg-amber-50', 'text-amber-800', 'border-l-4', 'border-amber-500', 'shadow-sm', 'font-bold');
+                link.classList.remove('text-slate-400', 'border-transparent', 'hover:bg-white/5');
+                link.classList.add('bg-amber-500/10', 'text-amber-400', 'border-l-4', 'border-amber-500', 'font-bold');
                 if(icon) { 
-                    icon.classList.remove('text-gray-400', 'group-hover:text-amber-500'); 
-                    icon.classList.add('text-amber-600'); 
+                    icon.classList.remove('text-slate-500'); 
+                    icon.classList.add('text-amber-500'); 
                 }
             }
         });
@@ -104,7 +104,7 @@ export function formatearFechaHora(fechaString) {
         const [datePart, timePart] = fechaString.split(' ');
         const [y, m, d] = datePart.split('-');
         const [h, min] = timePart.split(':');
-        return `<div class="flex flex-col"><span class="font-mono font-bold text-gray-600">${h}:${min}</span><span class="text-gray-400 text-[10px]">${d}/${m}/${y}</span></div>`;
+        return `<div class="flex flex-col"><span class="font-mono font-bold text-slate-300">${h}:${min}</span><span class="text-slate-500 text-[10px]">${d}/${m}/${y}</span></div>`;
     } catch (e) {
         return fechaString;
     }

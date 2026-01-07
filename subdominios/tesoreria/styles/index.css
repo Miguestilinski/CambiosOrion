@@ -3,14 +3,16 @@ body {
     font-family: 'Inter', sans-serif;
     margin: 0;
     padding: 0;
-    background: rgba(0, 0, 0, 0.45) url('https://cambiosorion.cl/orionapp/assets/FondoOrion.jpg') no-repeat center top;
+    /* Fondo oscuro con imagen */
+    background: #0f172a url('https://cambiosorion.cl/orionapp/assets/FondoOrion.jpg') no-repeat center top;
     background-size: cover;
     background-attachment: fixed;
+    color: #e2e8f0; /* Text Slate-200 por defecto */
     position: relative;
     z-index: 1;
 }
 
-/* Degradado negro superpuesto para legibilidad */
+/* Capa oscura superpuesta para legibilidad (Dark Overlay) */
 body::before {
     content: "";
     position: fixed;
@@ -18,33 +20,37 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7) 60%, black 100%);
+    background: rgba(15, 23, 42, 0.92); /* Slate-900 con alta opacidad */
     pointer-events: none;
     z-index: -1;
 }
 
-/* Scrollbar personalizado */
+/* Scrollbar oscuro */
 .scroller::-webkit-scrollbar { width: 6px; }
-.scroller::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 4px; }
+.scroller::-webkit-scrollbar-thumb { background-color: #475569; border-radius: 4px; } /* Slate-600 */
 .scroller::-webkit-scrollbar-track { background-color: transparent; }
 
-/* --- COLORES DE OPERACIONES (CRÍTICO) --- */
-/* Usamos !important para asegurar que sobreescriba a Tailwind */
+/* --- COLORES DE OPERACIONES (MODO OSCURO) --- */
 
-/* VENTA: Verde claro */
+/* VENTA: Verde oscuro intenso con texto claro */
 tr.venta, .venta {
-    background-color: #dbf599 !important; 
-    color: #1a2e05;
+    background-color: rgba(20, 83, 45, 0.6) !important; /* Green-900/60 */
+    color: #dcfce7 !important; /* Green-100 */
 }
 
-/* COMPRA: Celeste claro (Cambiado ligeramente para contraste) */
+/* COMPRA: Azul/Celeste oscuro intenso con texto claro */
 tr.compra, .compra {
-    background-color: #cbebf3 !important; 
-    color: #0c4a6e;
+    background-color: rgba(12, 74, 110, 0.6) !important; /* Sky-900/60 */
+    color: #e0f2fe !important; /* Sky-100 */
 }
 
-/* Ajuste para cuando se pasa el mouse por encima (Hover) */
+/* Hover effects */
 tr.venta:hover, tr.compra:hover {
-    filter: brightness(0.95);
+    background-color: rgba(20, 83, 45, 0.8) !important;
     cursor: pointer;
+}
+
+/* Filas normales hover */
+tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.05);
 }

@@ -7,10 +7,8 @@ import {
 } from './index.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Inicializar sistema general
     initSystem('operaciones');
 
-    // Referencias DOM
     const tablaOperaciones = document.getElementById('tabla-operaciones');
     const conteoResultados = document.getElementById('conteo-resultados');
     const paginationControls = document.getElementById('pagination-controls');
@@ -20,7 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let paginaActual = 1;
 
-    // Filtros
     const filtros = {
         fechaInicio: document.getElementById("fecha-inicio"),
         fechaFin: document.getElementById("fecha-fin"),
@@ -82,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .catch(error => {
                 console.error('Error:', error);
-                tablaOperaciones.innerHTML = `<tr><td colspan="12" class="text-center text-red-500 py-4">Error de conexión.</td></tr>`;
+                tablaOperaciones.innerHTML = `<tr><td colspan="12" class="text-center text-red-400 py-4">Error de conexión.</td></tr>`;
             });
     }
 
@@ -90,34 +87,33 @@ document.addEventListener('DOMContentLoaded', () => {
         tablaOperaciones.innerHTML = '';
 
         if (operaciones.length === 0) {
-            tablaOperaciones.innerHTML = `<tr><td colspan="12" class="text-center text-gray-500 py-10 italic">No se encontraron operaciones.</td></tr>`;
+            tablaOperaciones.innerHTML = `<tr><td colspan="12" class="text-center text-slate-500 py-10 italic">No se encontraron operaciones.</td></tr>`;
             return;
         }
 
         operaciones.forEach(op => {
             const tr = document.createElement('tr');
-            tr.className = 'hover:brightness-95 transition-all text-gray-800 font-medium border-b border-gray-100 last:border-0';
+            // En modo oscuro, eliminamos el bg-white. Por defecto es transparente.
+            tr.className = 'transition-all border-b border-white/5 last:border-0 text-slate-300';
 
             const tipo = String(op.tipo_transaccion).toLowerCase();
             
-            // Lógica de colores (El !important en CSS asegura que se vean)
+            // CSS se encarga de los colores !important
             if (tipo === 'compra') {
                 tr.classList.add('compra');
             } else if (tipo === 'venta') {
                 tr.classList.add('venta');
-            } else {
-                tr.classList.add('bg-white'); // Solo blanco si no es C/V
-            }
+            } 
 
-            if (op.estado === 'Anulado') tr.classList.add('opacity-60', 'line-through');
+            if (op.estado === 'Anulado') tr.classList.add('opacity-50', 'line-through');
 
             const divHTML = (op.divisas || '').split(', ').map(d => `<div>${d}</div>`).join('');
             const montoHTML = (op.montos_por_divisa || '').split('|').map(m => `<div>${formatearNumero(m)}</div>`).join('');
             const tasaHTML = (op.tasas_cambio || '').split('|').map(t => `<div>${formatearNumero(t)}</div>`).join('');
 
             const btnVer = document.createElement('button');
-            btnVer.innerHTML = `<svg class="w-5 h-5 text-gray-600 hover:text-amber-700 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
-            btnVer.className = 'flex items-center justify-center p-1.5 bg-white/50 rounded-full hover:bg-white shadow-sm border border-transparent hover:border-amber-300 mx-auto';
+            btnVer.innerHTML = `<svg class="w-5 h-5 text-slate-400 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
+            btnVer.className = 'flex items-center justify-center p-1.5 bg-white/5 rounded-full hover:bg-amber-600 shadow-sm border border-transparent transition-all mx-auto';
             btnVer.onclick = (e) => {
                 e.stopPropagation();
                 window.location.href = `detalle-op?id=${op.id}`;
@@ -125,15 +121,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
             tr.innerHTML = `
                 <td class="px-4 py-3 whitespace-nowrap text-xs">${formatearFechaHora(op.fecha)}</td>
-                <td class="px-4 py-3 font-mono text-xs font-bold opacity-80">${op.id}</td>
-                <td class="px-4 py-3 font-semibold text-xs truncate max-w-[140px]" title="${limpiarTexto(op.nombre_cliente)}">${limpiarTexto(op.nombre_cliente)}</td>
-                <td class="px-4 py-3 text-xs uppercase font-bold opacity-70 tracking-wide">${limpiarTexto(op.tipo_documento)}</td>
-                <td class="px-4 py-3 font-mono text-xs">${limpiarTexto(op.numero_documento)}</td>
-                <td class="px-4 py-3 text-center text-xs font-extrabold uppercase tracking-wider">${limpiarTexto(op.tipo_transaccion)}</td>
-                <td class="px-4 py-3 text-xs font-bold">${divHTML}</td>
-                <td class="px-4 py-3 text-right font-mono text-xs">${montoHTML}</td>
-                <td class="px-4 py-3 text-right font-mono text-xs opacity-70">${tasaHTML}</td>
-                <td class="px-4 py-3 text-right font-bold font-mono text-sm">${formatearNumero(op.total)}</td>
+                <td class="px-4 py-3 font-mono text-xs font-bold text-slate-400 opacity-80">${op.id}</td>
+                <td class="px-4 py-3 font-semibold text-xs text-white truncate max-w-[140px]" title="${limpiarTexto(op.nombre_cliente)}">${limpiarTexto(op.nombre_cliente)}</td>
+                <td class="px-4 py-3 text-xs uppercase font-bold text-slate-500 tracking-wide">${limpiarTexto(op.tipo_documento)}</td>
+                <td class="px-4 py-3 font-mono text-xs text-slate-400">${limpiarTexto(op.numero_documento)}</td>
+                <td class="px-4 py-3 text-center text-xs font-extrabold uppercase tracking-wider text-slate-300">${limpiarTexto(op.tipo_transaccion)}</td>
+                <td class="px-4 py-3 text-xs font-bold text-amber-400">${divHTML}</td>
+                <td class="px-4 py-3 text-right font-mono text-xs text-white">${montoHTML}</td>
+                <td class="px-4 py-3 text-right font-mono text-xs text-slate-500">${tasaHTML}</td>
+                <td class="px-4 py-3 text-right font-bold font-mono text-sm text-emerald-400">${formatearNumero(op.total)}</td>
                 <td class="px-4 py-3 text-center">
                     <span class="px-2 py-0.5 rounded text-[10px] uppercase font-bold ${getEstadoClass(op.estado)}">${op.estado}</span>
                 </td>
@@ -147,14 +143,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function getEstadoClass(estado) {
         const est = String(estado).toLowerCase();
-        if(est === 'vigente') return 'bg-green-100 text-green-700 border border-green-200';
-        if(est === 'anulado') return 'bg-red-100 text-red-700 border border-red-200';
-        if(est === 'pagado') return 'bg-blue-100 text-blue-700 border border-blue-200';
-        return 'bg-gray-100 text-gray-600';
+        if(est === 'vigente') return 'bg-green-900/40 text-green-300 border border-green-500/30';
+        if(est === 'anulado') return 'bg-red-900/40 text-red-300 border border-red-500/30';
+        if(est === 'pagado') return 'bg-blue-900/40 text-blue-300 border border-blue-500/30';
+        return 'bg-slate-700 text-slate-400';
     }
 
     function renderizarPaginacion(totalRegistros, porPagina, pagina) {
-        conteoResultados.textContent = `Total: ${totalRegistros} registros`;
+        conteoResultados.textContent = `Total: ${totalRegistros}`;
         paginationControls.innerHTML = '';
 
         const totalPaginas = Math.ceil(totalRegistros / porPagina);
@@ -164,8 +160,8 @@ document.addEventListener('DOMContentLoaded', () => {
         paginationControls.appendChild(btnPrev);
 
         const span = document.createElement('span');
-        span.className = "text-xs font-bold text-gray-600 px-2";
-        span.textContent = `Página ${pagina} de ${totalPaginas}`;
+        span.className = "text-xs font-bold text-slate-400 px-2";
+        span.textContent = `${pagina} / ${totalPaginas}`;
         paginationControls.appendChild(span);
 
         const btnNext = crearBotonPag('Siguiente', pagina < totalPaginas, () => cambioPagina(pagina + 1));
@@ -175,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function crearBotonPag(texto, habilitado, onClick) {
         const btn = document.createElement('button');
         btn.textContent = texto;
-        btn.className = `px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100 text-xs transition ${!habilitado ? 'opacity-50 cursor-not-allowed' : ''}`;
+        btn.className = `px-3 py-1 bg-slate-800 border border-slate-600 rounded hover:bg-slate-700 text-white text-xs transition ${!habilitado ? 'opacity-50 cursor-not-allowed' : ''}`;
         btn.disabled = !habilitado;
         btn.onclick = onClick;
         return btn;
