@@ -1,13 +1,13 @@
 /* Estilos globales y Fondo */
 body {
+    @apply font-sans bg-white;
     font-family: 'Inter', sans-serif;
     margin: 0;
     padding: 0;
-    /* Fondo oscuro con imagen */
-    background: #0f172a url('https://cambiosorion.cl/orionapp/assets/FondoOrion.jpg') no-repeat center top;
+    /* Tu imagen de fondo original */
+    background: rgba(0, 0, 0, 0.45) url('https://cambiosorion.cl/orionapp/assets/FondoOrion.jpg') no-repeat center top;
     background-size: cover;
     background-attachment: fixed;
-    color: #e2e8f0; /* Text Slate-200 por defecto */
     position: relative;
     z-index: 1;
 }
