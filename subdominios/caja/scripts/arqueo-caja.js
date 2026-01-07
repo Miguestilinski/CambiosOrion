@@ -99,10 +99,10 @@ async function cargarDatosIniciales(cajaId) {
         
         // Seleccionar la primera por defecto si existe
         if(divisasBase.length > 0) {
-            seleccionarDivisa(divisasBase[0].id); // CORREGIDO: Ahora coincide con la función de abajo
+            seleccionarDivisa(divisasBase[0].id);
         } else {
             const listaDivisas = document.getElementById('lista-divisas');
-            if(listaDivisas) listaDivisas.innerHTML = '<p class="text-center p-4 text-gray-400">Sin divisas asignadas</p>';
+            if(listaDivisas) listaDivisas.innerHTML = '<div class="text-center py-10"><p class="text-sm text-gray-400">Sin divisas asignadas</p></div>';
         }
 
     } catch (error) {
@@ -141,25 +141,26 @@ function renderListaLateral(filtro = "") {
         const item = document.createElement('div');
         const isSelected = divisaSeleccionadaId === divisa.id;
         
-        item.className = `cursor-pointer p-3 border-b border-slate-50 hover:bg-slate-50 transition flex items-center justify-between ${isSelected ? 'active-currency' : ''}`;
-        item.onclick = () => seleccionarDivisa(divisa.id); // CORREGIDO
+        // Diseño compacto de lista
+        item.className = `cursor-pointer p-2.5 border-b border-slate-50 hover:bg-slate-50 transition flex items-center justify-between ${isSelected ? 'active-currency' : ''}`;
+        item.onclick = () => seleccionarDivisa(divisa.id);
 
-        // Icono estado (Verde check o Rojo exclamación)
+        // Icono estado (SVG)
         let statusIcon = esCuadrada 
-            ? `<div class="w-2 h-2 rounded-full bg-green-500 shadow-sm shadow-green-200"></div>`
-            : `<div class="w-2 h-2 rounded-full bg-red-500 shadow-sm shadow-red-200"></div>`;
+            ? `<svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`
+            : `<svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
         
         item.innerHTML = `
             <div class="flex items-center gap-3">
-                <img src="${divisa.icono || 'https://cambiosorion.cl/orionapp/icons/default.png'}" class="w-8 h-8 rounded-full border border-gray-200 object-contain bg-white p-0.5">
+                <img src="${divisa.icono || 'https://cambiosorion.cl/orionapp/icons/default.png'}" class="w-7 h-7 rounded-full border border-gray-200 object-contain bg-white p-0.5">
                 <div>
-                    <p class="text-xs font-bold text-slate-700">${divisa.codigo}</p>
-                    <p class="text-[10px] text-slate-400 truncate max-w-[100px]">${divisa.nombre}</p>
+                    <p class="text-xs font-bold text-slate-700 leading-tight">${divisa.codigo}</p>
+                    <p class="text-[10px] text-slate-400 truncate max-w-[90px] leading-tight">${divisa.nombre}</p>
                 </div>
             </div>
             <div class="flex flex-col items-end">
                 ${statusIcon}
-                ${!esCuadrada ? `<span class="text-[9px] font-mono text-red-400 mt-1">${diferencia > 0 ? '+' : ''}${diferencia.toLocaleString('es-CL', {maximumFractionDigits: 0})}</span>` : ''}
+                ${!esCuadrada ? `<span class="text-[9px] font-mono text-red-400 mt-0.5 font-bold">${diferencia > 0 ? '+' : ''}${diferencia.toLocaleString('es-CL', {maximumFractionDigits: 0})}</span>` : ''}
             </div>
         `;
         contenedor.appendChild(item);
@@ -171,7 +172,7 @@ function renderListaLateral(filtro = "") {
     if(elCuadradas) elCuadradas.textContent = cuadradas;
 }
 
-function seleccionarDivisa(id) { // CORREGIDO: Nombre unificado
+function seleccionarDivisa(id) {
     divisaSeleccionadaId = id;
     const inputBusqueda = document.getElementById('buscar-divisa');
     renderListaLateral(inputBusqueda ? inputBusqueda.value : ""); 
@@ -216,10 +217,10 @@ function renderDetalle(id) {
         elDiferencia.textContent = (diferencia > 0 ? "+" : "") + diferencia.toLocaleString('es-CL', { minimumFractionDigits: 2 });
         
         if(Math.abs(diferencia) < 0.01) {
-            elDiferencia.className = "text-lg font-mono font-black text-green-500 relative z-10";
+            elDiferencia.className = "text-base font-mono font-black text-green-500 relative z-10";
             if(elDiffBg) elDiffBg.className = "absolute inset-0 bg-green-50 opacity-50";
         } else {
-            elDiferencia.className = "text-lg font-mono font-black text-red-500 relative z-10";
+            elDiferencia.className = "text-base font-mono font-black text-red-500 relative z-10";
             if(elDiffBg) elDiffBg.className = "absolute inset-0 bg-red-50 opacity-50";
         }
     }
@@ -251,12 +252,12 @@ function renderDetalle(id) {
             const subtotal = (parseFloat(cantidadGuardada) || 0) * parseFloat(denomVal);
 
             row.innerHTML = `
-                <td class="px-6 py-3 font-mono font-bold text-slate-600">${parseFloat(denomVal).toLocaleString('es-CL')}</td>
-                <td class="px-6 py-3">
-                    <input type="number" min="0" class="input-denom w-full text-center bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2" 
+                <td class="px-5 py-2.5 font-mono font-bold text-slate-600 text-xs">${parseFloat(denomVal).toLocaleString('es-CL')}</td>
+                <td class="px-5 py-2.5">
+                    <input type="number" min="0" class="input-denom w-full text-center bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded focus:ring-cyan-500 focus:border-cyan-500 block p-1.5" 
                            placeholder="0" value="${cantidadGuardada}" data-valor="${denomVal}">
                 </td>
-                <td class="px-6 py-3 text-right font-mono font-bold text-slate-800 cell-subtotal">
+                <td class="px-5 py-2.5 text-right font-mono font-bold text-slate-800 text-xs cell-subtotal">
                     ${subtotal.toLocaleString('es-CL', { minimumFractionDigits: 0 })}
                 </td>
             `;
@@ -286,12 +287,12 @@ function renderDetalle(id) {
         // Caso 2: Sin denominaciones (Input Total Directo)
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td class="px-6 py-3 text-slate-500 italic">Monto Total (Sin desglose)</td>
-            <td class="px-6 py-3">
-                <input type="number" step="0.01" class="input-total-directo w-full text-center bg-indigo-50 border border-indigo-300 text-indigo-900 font-bold text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block p-2" 
+            <td class="px-5 py-3 text-slate-500 italic text-xs">Monto Total</td>
+            <td class="px-5 py-3">
+                <input type="number" step="0.01" class="input-total-directo w-full text-center bg-indigo-50 border border-indigo-300 text-indigo-900 font-bold text-xs rounded focus:ring-indigo-500 focus:border-indigo-500 block p-1.5" 
                        placeholder="0.00" value="${fisico > 0 ? fisico : ''}">
             </td>
-            <td class="px-6 py-3 text-right">-</td>
+            <td class="px-5 py-3 text-right text-xs">-</td>
         `;
         tbody.appendChild(row);
 
@@ -347,10 +348,10 @@ function actualizarVistaDespuesDeCalculo(id) {
         elDiferencia.textContent = (diferencia > 0 ? "+" : "") + diferencia.toLocaleString('es-CL', { minimumFractionDigits: 2 });
         
         if(Math.abs(diferencia) < 0.01) {
-            elDiferencia.className = "text-lg font-mono font-black text-green-500 relative z-10";
+            elDiferencia.className = "text-base font-mono font-black text-green-500 relative z-10";
             if(elDiffBg) elDiffBg.className = "absolute inset-0 bg-green-50 opacity-50";
         } else {
-            elDiferencia.className = "text-lg font-mono font-black text-red-500 relative z-10";
+            elDiferencia.className = "text-base font-mono font-black text-red-500 relative z-10";
             if(elDiffBg) elDiffBg.className = "absolute inset-0 bg-red-50 opacity-50";
         }
     }
@@ -488,7 +489,7 @@ function activarLinkSidebar(pagina) {
 
 function mostrarErrorSinCaja() {
     const lista = document.getElementById('lista-divisas');
-    if(lista) lista.innerHTML = '<p class="text-red-500 p-4">Usuario sin caja asignada</p>';
+    if(lista) lista.innerHTML = '<div class="text-center py-10"><p class="text-xs text-red-500 font-bold bg-red-50 p-2 rounded">Usuario sin caja asignada</p></div>';
 }
 
 function mostrarModalError({titulo, mensaje}) {
