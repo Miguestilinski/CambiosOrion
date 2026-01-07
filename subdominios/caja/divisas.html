@@ -64,113 +64,123 @@
         </div>
     </header>
 
-    <div class="flex flex-1 overflow-hidden relative">
+    <div class="flex flex-1 overflow-hidden relative layout-container">
         
         <div id="sidebar-container" class="hidden lg:block h-full z-10"></div>
         
         <main class="flex-1 overflow-y-auto p-4 md:p-8 relative" id="dashboard-content">
-            <section id="divisas-int" class="content-section active">
-                <!-- Título y botón Nueva Operación -->
-                <div class="flex items-center mb-6">
-                    <h1 class="text-2xl font-medium mr-4 leading-none text-white">Divisas</h1>
+            <section id="divisas-int" class="max-w-7xl mx-auto fade-in h-full flex flex-col">
+                
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-2xl font-bold text-white drop-shadow-md">Divisas</h1>
+                    </div>
+                
+                <div class="bg-white/95 backdrop-blur-md rounded-xl shadow-lg border border-white/20 p-5 mb-6">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-4 pb-2">
+                        <div class="md:col-span-12 lg:col-span-8 flex gap-4">
+                             <div class="flex-1">
+                                <label class="block mb-1 text-[10px] font-bold text-gray-400 uppercase">Búsqueda General</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                    </div>
+                                    <input type="text" id="buscar" class="w-full pl-9 text-xs border-gray-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 h-9 bg-gray-50" placeholder="Buscar por nombre, código...">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="md:col-span-12 lg:col-span-4 flex items-end justify-end">
+                            <button type="button" id="borrar-filtros" class="text-gray-500 hover:text-cyan-600 hover:bg-cyan-50 bg-white border border-gray-300 hover:border-cyan-200 font-medium rounded-lg text-xs px-4 py-2.5 transition flex items-center justify-center h-[38px] w-full md:w-auto">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                                Limpiar Filtros
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-gray-100 my-4"></div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                        <div>
+                            <label class="block mb-1 text-[10px] font-bold text-gray-400 uppercase">Nombre</label>
+                            <input type="text" id="nombre" class="w-full text-xs border-gray-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 h-9 bg-gray-50" placeholder="Dolar...">
+                        </div> 
+                        <div>
+                            <label class="block mb-1 text-[10px] font-bold text-gray-400 uppercase">País</label>
+                            <input type="text" id="pais" class="w-full text-xs border-gray-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 h-9 bg-gray-50" placeholder="USA...">
+                        </div>
+                        <div>
+                            <label class="block mb-1 text-[10px] font-bold text-gray-400 uppercase">Código</label>
+                            <input type="text" id="codigo" class="w-full text-xs border-gray-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 h-9 bg-gray-50" placeholder="USD">
+                        </div>
+                        <div>
+                            <label class="block mb-1 text-[10px] font-bold text-gray-400 uppercase">Símbolo</label>
+                            <input type="text" id="simbolo" class="w-full text-xs border-gray-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 h-9 bg-gray-50" placeholder="$">
+                        </div>
+                        <div>
+                            <label class="block mb-1 text-[10px] font-bold text-gray-400 uppercase">Tipo</label>
+                            <select id="tipo" class="w-full text-xs rounded-md border-gray-300 focus:border-cyan-500 focus:ring-cyan-500 bg-gray-50 px-2 py-2">
+                                <option value="">Todos</option>
+                                <option value="Divisa">Divisa</option>
+                                <option value="Moneda">Moneda</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block mb-1 text-[10px] font-bold text-gray-400 uppercase">Fraccionable</label>
+                            <select id="fraccionable" class="w-full text-xs rounded-md border-gray-300 focus:border-cyan-500 focus:ring-cyan-500 bg-gray-50 px-2 py-2">
+                                <option value="">Todos</option>
+                                <option value="1">Sí</option>
+                                <option value="0">No</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 
-                <!-- Filtros avanzados -->
-                <div class="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-6">
-                    <div>
-                        <label for="nombre" class="block mb-1 text-sm text-white">Nombre</label>
-                        <input type="text" id="nombre" 
-                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    </div> 
-                    <div>
-                        <label for="pais" class="block mb-1 text-sm text-white">Pais</label>
-                        <input type="text" id="pais" 
-                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                <div class="bg-white/95 backdrop-blur-md rounded-xl shadow-xl border border-white/20 overflow-hidden flex flex-col w-full">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left border-collapse">
+                            <thead class="text-xs uppercase bg-gray-100 text-gray-600 font-extrabold tracking-wide sticky top-0 z-20 shadow-sm border-b border-gray-200">
+                                <tr>
+                                    <th class="px-4 py-3 text-center w-16">Icono</th>
+                                    <th class="px-4 py-3">Nombre</th>
+                                    <th class="px-4 py-3">País</th>
+                                    <th class="px-4 py-3">Código</th>
+                                    <th class="px-4 py-3 text-center">Símbolo</th>
+                                    <th class="px-4 py-3 text-center">Tipo</th>
+                                    <th class="px-4 py-3 text-center">Fraccionable</th>
+                                    <th class="px-4 py-3 text-center">Estado</th>
+                                    <th class="px-4 py-3 text-center w-16">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-divisas" class="divide-y divide-gray-100 text-gray-700">
+                                </tbody>
+                        </table>
                     </div>
-                    <div>
-                        <label for="codigo" class="block mb-1 text-sm text-white">Codigo</label>
-                        <input type="text" id="codigo" 
-                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label for="simbolo" class="block mb-1 text-sm text-white">Simbolo</label>
-                        <input type="text" id="simbolo" 
-                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label for="tipo" class="block mb-1 text-sm text-white">Tipo de Divisa</label>
-                        <select id="tipo"
-                            class="select-list block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Seleccionar</option>
-                            <option value="">Divisa</option>
-                            <option value="">Moneda</option>
-                            <option value="">Otro</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="fraccionable" class="block mb-1 text-sm text-white">Fraccionable</label>
-                        <select id="fraccionable"
-                            class="select-list block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Seleccionar</option>
-                            <option value="">Si</option>
-                            <option value="">No</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <!-- Mostrar registros y buscar -->
-                <div class="flex items-center justify-between mb-6">
-                    <div class="flex items-center space-x-2">
-                        <label for="mostrar-registros" class="text-sm text-white">Mostrar</label>
-                        <select id="mostrar-registros"
-                            class="block px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="25">25</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                        </select>
-                        <span class="text-sm text-white">registros</span>
-                    </div>
-                    <div>
-                        <input type="text" id="buscar" placeholder="Buscar" 
-                            class="block w-64 px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                    
+                    <div class="bg-gray-50 px-4 py-3 border-t border-gray-200 flex justify-between items-center text-xs text-gray-500">
+                        <div class="flex items-center gap-3">
+                            <span class="text-sm text-gray-500 font-medium">Mostrar</span>
+                            <select id="mostrar-registros" class="text-xs border-gray-300 rounded-md focus:ring-cyan-500 focus:border-cyan-500 bg-gray-50 px-3 py-1">
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                            <span id="contador-registros" class="font-medium">Cargando...</span>
+                        </div>
+
+                        <div class="flex items-center gap-2" id="pagination-controls">
+                            <button id="btn-prev" class="px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition">
+                                Anterior
+                            </button>
+                            <span id="page-indicator" class="font-bold text-slate-700 px-2">Página 1</span>
+                            <button id="btn-next" class="px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition">
+                                Siguiente
+                            </button>
+                        </div>
                     </div>
                 </div>
                 
-                <!-- Tabla de operaciones -->
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left text-white bg-gray-800">
-                        <thead class="text-xs uppercase bg-gray-800 text-white">
-                            <tr>
-                                <th class="px-4 py-2">Icono</th>
-                                <th class="px-4 py-2">Nombre</th>
-                                <th class="px-4 py-2">Pais</th>
-                                <th class="px-4 py-2">Codigo</th>
-                                <th class="px-4 py-2">Simbolo</th>
-                                <th class="px-4 py-2">Tipo de Divisa</th>
-                                <th class="px-4 py-2">Fraccionable</th>
-                                <th class="px-4 py-2">Estado</th>
-                                <th class="px-4 py-2"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="border-b bg-white border-gray-700 text-gray-700">
-                                <td class="px-4 py-2"></td>
-                                <td class="px-4 py-2">Dolar USA</td>
-                                <td class="px-4 py-2">USA</td>
-                                <td class="px-4 py-2">USD</td>
-                                <td class="px-4 py-2">US$</td>
-                                <td class="px-4 py-2">Divisa</td>
-                                <td class="px-4 py-2">Si</td>
-                                <td class="px-4 py-2">
-                                    <button class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1">
-                                        Mostrar
-                                    </button>
-                                </td>
-                            </tr>
-                            <!-- Más filas -->
-                        </tbody>
-                    </table>
-                </div>
+                <div class="h-8"></div> 
             </section>        
         </main>
     </div>
