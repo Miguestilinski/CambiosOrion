@@ -11,72 +11,104 @@ let estadoArqueo = {};
 let divisaSeleccionadaId = null;
 
 document.addEventListener("DOMContentLoaded", async function() {
-    // 1. Inicialización Sistema General
-    const sessionData = await initSystem('arqueo'); // Activa sidebar 'arqueo'
-    
-    if (sessionData) {
-        usuarioSesion = sessionData;
-        // En tesorería, generalmente el ID de caja es fijo (99) o viene en la sesión
-        caja_id = usuarioSesion.caja_id || 99; 
+    console.log("🚀 Iniciando arqueo.js...");
+
+    try {
+        // 1. Inicialización Sistema General
+        console.log("🔄 Llamando a initSystem...");
+        const sessionData = await initSystem('arqueo'); 
+        console.log("✅ initSystem completado. Datos:", sessionData);
         
-        await cargarDatosIniciales();
-    }
-
-    // Filtros
-    const inputBuscar = document.getElementById('buscar-divisa');
-    if(inputBuscar) {
-        inputBuscar.addEventListener('input', (e) => {
-            renderListaLateral(e.target.value);
-        });
-    }
-
-    // Botones
-    const btnParcial = document.getElementById("guardar-parcial");
-    if(btnParcial) {
-        btnParcial.addEventListener("click", () => {
-            guardarLocalStorage();
-            // Feedback visual sutil
-            const original = btnParcial.innerHTML;
-            btnParcial.innerHTML = `<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Guardado`;
-            btnParcial.classList.add("text-green-400", "border-green-500/50");
-            btnParcial.classList.remove("text-amber-400", "border-amber-500/50");
+        if (sessionData) {
+            usuarioSesion = sessionData;
+            // Forzamos 99 si es tesorería, o usamos el de la sesión si existe
+            caja_id = (usuarioSesion.caja_id && usuarioSesion.caja_id != 0) ? usuarioSesion.caja_id : 99;
+            console.log("ℹ️ ID Caja determinado:", caja_id);
             
-            setTimeout(() => {
-                btnParcial.innerHTML = original;
-                btnParcial.classList.remove("text-green-400", "border-green-500/50");
-                btnParcial.classList.add("text-amber-400", "border-amber-500/50");
-            }, 1500);
-        });
-    }
-
-    const btnFinal = document.getElementById("guardar-arqueo-btn");
-    if(btnFinal) {
-        btnFinal.addEventListener("click", guardarArqueoFinal);
-    }
-    
-    const btnLimpiar = document.getElementById("btn-limpiar-detalle");
-    if(btnLimpiar) {
-        btnLimpiar.addEventListener("click", () => {
-            if(divisaSeleccionadaId) {
-                estadoArqueo[divisaSeleccionadaId] = { fisico_total: 0, desglose: {} };
-                renderDetalle(divisaSeleccionadaId);
-                renderListaLateral();
-                guardarLocalStorage();
+            if (!caja_id) {
+                console.warn("⚠️ No se pudo determinar el ID de caja.");
+                mostrarErrorSinCaja();
+            } else {
+                console.log("🔄 Iniciando carga de datos de tesorería...");
+                await cargarDatosIniciales();
             }
-        });
+        } else {
+            console.error("❌ No se recibieron datos de sesión.");
+        }
+
+        // Filtros
+        const inputBuscar = document.getElementById('buscar-divisa');
+        if(inputBuscar) {
+            inputBuscar.addEventListener('input', (e) => {
+                renderListaLateral(e.target.value);
+            });
+        }
+
+        // Botones
+        const btnParcial = document.getElementById("guardar-parcial");
+        if(btnParcial) {
+            btnParcial.addEventListener("click", () => {
+                guardarLocalStorage();
+                // Feedback visual sutil
+                const original = btnParcial.innerHTML;
+                btnParcial.innerHTML = `<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Guardado`;
+                btnParcial.classList.add("text-green-400", "border-green-500/50");
+                btnParcial.classList.remove("text-amber-400", "border-amber-500/50");
+                
+                setTimeout(() => {
+                    btnParcial.innerHTML = original;
+                    btnParcial.classList.remove("text-green-400", "border-green-500/50");
+                    btnParcial.classList.add("text-amber-400", "border-amber-500/50");
+                }, 1500);
+            });
+        }
+
+        const btnFinal = document.getElementById("guardar-arqueo-btn");
+        if(btnFinal) {
+            btnFinal.addEventListener("click", guardarArqueoFinal);
+        }
+        
+        const btnLimpiar = document.getElementById("btn-limpiar-detalle");
+        if(btnLimpiar) {
+            btnLimpiar.addEventListener("click", () => {
+                if(divisaSeleccionadaId) {
+                    estadoArqueo[divisaSeleccionadaId] = { fisico_total: 0, desglose: {} };
+                    renderDetalle(divisaSeleccionadaId);
+                    renderListaLateral();
+                    guardarLocalStorage();
+                }
+            });
+        }
+
+    } catch (errorGlobal) {
+        console.error("🔥 Error CRÍTICO en arqueo.js:", errorGlobal);
+        mostrarModalError({ titulo: "Error de Sistema", mensaje: "Ocurrió un error inesperado al iniciar la página. Revisa la consola." });
     }
 });
 
 // --- CARGA DE DATOS ---
 async function cargarDatosIniciales() {
     try {
-        // CAMBIO: Apunta a arqueo-tesoreria.php
+        console.log("📡 Fetching arqueo-tesoreria.php...");
         const res = await fetch(`https://cambiosorion.cl/data/arqueo-tesoreria.php`, { credentials: "include" });
-        const data = await res.json();
+        
+        console.log("📡 Respuesta Status:", res.status);
+        if (!res.ok) throw new Error(`Error de red: ${res.status}`);
+
+        const text = await res.text(); // Obtenemos texto primero para debug
+        console.log("📦 Respuesta Raw:", text.substring(0, 100) + "..."); // Solo los primeros 100 chars
+
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch (e) {
+            throw new Error("La respuesta del servidor no es un JSON válido.");
+        }
         
         if(data.error) throw new Error(data.error);
 
         divisasBase = Array.isArray(data.divisas) ? data.divisas : [];
+        console.log(`✅ Datos cargados: ${divisasBase.length} divisas.`);
         
         // Inicializar estado vacío si no existe
         divisasBase.forEach(d => {
@@ -96,8 +128,8 @@ async function cargarDatosIniciales() {
         }
 
     } catch (error) {
-        console.error(error);
-        mostrarModalError({ titulo: "Error de Datos", mensaje: "No se pudieron cargar los datos de tesorería." });
+        console.error("❌ Error en cargarDatosIniciales:", error);
+        mostrarModalError({ titulo: "Error de Datos", mensaje: "No se pudieron cargar los datos de tesorería: " + error.message });
     }
 }
 
@@ -329,7 +361,7 @@ function actualizarVistaDespuesDeCalculo(id) {
 
 // --- LOCAL STORAGE ---
 function guardarLocalStorage() {
-    // Usamos una clave única para tesorería (caja 99)
+    // Usamos una clave única para tesorería
     const key = `arqueo_tesoreria_${caja_id}`;
     const payload = {
         fecha: new Date().toISOString().split("T")[0],
@@ -360,6 +392,8 @@ function restaurarLocalStorage() {
 
 // --- GUARDAR ---
 async function guardarArqueoFinal() {
+    if(!caja_id) return;
+
     let hayDiferencias = false;
     divisasBase.forEach(d => {
         const sis = parseFloat(d.total_sistema) || 0;
@@ -387,14 +421,13 @@ async function guardarArqueoFinal() {
     });
 
     const payload = {
-        caja_id: caja_id, // Enviamos el ID (será 99)
+        caja_id: caja_id, // 99
         equipo_id: usuarioSesion.equipo_id || usuarioSesion.id,
         divisas: detalles,
         observacion: document.getElementById('observaciones-arqueo').value
     };
 
     try {
-        // CAMBIO: Endpoint tesorería
         const res = await fetch("https://cambiosorion.cl/data/arqueo-tesoreria.php", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -415,4 +448,9 @@ async function guardarArqueoFinal() {
         btn.disabled = false;
         btn.innerHTML = originalText;
     }
+}
+
+function mostrarErrorSinCaja() {
+    const lista = document.getElementById('lista-divisas');
+    if(lista) lista.innerHTML = '<div class="text-center py-10"><p class="text-xs text-red-400 font-bold bg-red-900/30 p-2 rounded">Usuario sin caja asignada</p></div>';
 }
