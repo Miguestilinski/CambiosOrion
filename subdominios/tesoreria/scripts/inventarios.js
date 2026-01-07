@@ -1,317 +1,259 @@
-document.addEventListener("DOMContentLoaded", () => {
-    // --- 1. Obtener todos los elementos ---
-    const mostrarRegistros = document.getElementById("mostrar-registros");
-    const buscarInput = document.getElementById("buscar");
-    const cajaInput = document.getElementById("caja");
-    const tablaInventarios = document.querySelector("table tbody");
-    const exportarBtn = document.getElementById("exportar");
-    
-    // Filtros
-    const divisaInput = document.getElementById("divisa-input");
-    const divisaList = document.getElementById("divisa-list");
-    const divisaHidden = document.getElementById("divisa");
-    const cantidadInput = document.getElementById("cantidad");
-    const pmpInput = document.getElementById("pmp");
-    const borrarFiltrosBtn = document.getElementById("borrar-filtros");
+import { 
+    initSystem, 
+    limpiarTexto, 
+    formatearNumero, 
+    mostrarModalError 
+} from './index.js';
 
-    // Paginación (de clientes.js)
+let usuarioSesion = null;
+
+document.addEventListener('DOMContentLoaded', async () => {
+    // 1. Inicializar sistema
+    const sessionData = await initSystem('inventarios');
+    
+    if (sessionData) {
+        usuarioSesion = sessionData;
+        
+        // Lógica de permisos: Si es Admin/Tesorero, puede ver el select de cajas.
+        // Si no, forzamos su caja asignada.
+        const selectCaja = document.getElementById('caja');
+        if (selectCaja) {
+            if (!usuarioSesion.caja_id) {
+                // Es Admin/Tesorero sin caja fija (o caja 99) -> Dejar elegir, por defecto 99
+                if(!selectCaja.value) selectCaja.value = '99';
+            } else if (usuarioSesion.caja_id != 99) {
+                // Es Cajero -> Forzar su caja y deshabilitar select
+                selectCaja.value = usuarioSesion.caja_id;
+                // Opcional: selectCaja.disabled = true; 
+            }
+        }
+
+        cargarDivisas();
+        obtenerInventarios();
+    }
+
+    // Referencias DOM
+    const tablaInventario = document.getElementById('tabla-inventario');
     const conteoResultados = document.getElementById('conteo-resultados');
-    const paginacionContainer = document.getElementById('paginacion-container');
+    const paginationControls = document.getElementById('pagination-controls');
+    const borrarFiltrosBtn = document.getElementById('borrar-filtros');
+    const exportarBtn = document.getElementById('exportar');
+
     let paginaActual = 1;
 
-    let divisas = [];
+    // Filtros
+    const filtros = {
+        caja: document.getElementById('caja'),
+        divisaInput: document.getElementById('divisa-input'),
+        buscar: document.getElementById('buscar'),
+        mostrar: document.getElementById('mostrar-registros')
+    };
 
-    if (exportarBtn) {
-        exportarBtn.addEventListener("click", () => {
-            // Actualizar para que el export también use los filtros
-            const params = new URLSearchParams();
-            if (cajaInput.value !== "") params.set("caja", cajaInput.value);
-            if (divisaHidden.value) params.set("divisa", divisaHidden.value);
-            if (buscarInput.value) params.set("buscar", buscarInput.value);
-            if (cantidadInput.value) params.set("cantidad", cantidadInput.value);
-            if (pmpInput.value) params.set("pmp", pmpInput.value);
-
-            window.location.href = `https://cambiosorion.cl/data/exportar_inventarios_excel.php?${params.toString()}`;
-        });
-    }
-
-    const verHistorialBtn = document.getElementById("ver-historial");
-    if (verHistorialBtn) {
-        verHistorialBtn.addEventListener("click", () => {
-            // Asumimos que la nueva página se llamará 'historial-inventarios'
-            window.location.href = 'https://tesoreria.cambiosorion.cl/historial-inv';
-        });
-    }
-
-    // Función para cargar divisas desde API
+    // --- CARGAR DATALIST DIVISAS ---
     function cargarDivisas() {
-        fetch(`https://cambiosorion.cl/data/inventarios.php?action=divisas&caja=${cajaInput.value}`)
-            .then(res => res.text())
-            .then(text => {
-                try {
-                    const data = JSON.parse(text);
-                    if (Array.isArray(data)) {
-                        divisas = data;
-                        mostrarOpciones("");
-                    } else {
-                        console.warn("Respuesta no válida:", data);
-                    }
-                } catch (e) {
-                    console.error("Respuesta no es JSON válido:", text);
-                }
-            })
-            .catch(error => console.error("Error al cargar divisas:", error));
-    }
-
-    // Mostrar opciones filtradas en el dropdown
-    function mostrarOpciones(filtro) {
-        const filtroMinusculas = filtro.toLowerCase().trim();
-
-        // Si no hay texto, ocultar y salir
-        if (filtroMinusculas.length === 0) {
-            divisaList.classList.add("hidden");
-            divisaList.innerHTML = "";
-            return;
-        }
-
-        const filtradas = divisas
-            .filter(d => d.nombre && d.nombre.toLowerCase().includes(filtroMinusculas));
-
-        divisaList.innerHTML = "";
-
-        if (filtradas.length === 0) {
-            divisaList.classList.add("hidden");
-            return;
-        }
-
-        // Mostrar máximo 4 opciones
-        filtradas.slice(0, 4).forEach(d => {
-            const li = document.createElement("li");
-            li.textContent = d.nombre;
-            li.dataset.id = d.id;
-            li.className = "px-2 py-1 hover:bg-blue-600 hover:text-white cursor-pointer";
-
-            li.addEventListener("click", () => {
-                divisaInput.value = d.nombre;
-                divisaHidden.value = d.id;
-                divisaList.classList.add("hidden");
-                paginaActual = 1;
-                obtenerInventarios()
-            });
-
-            divisaList.appendChild(li);
-        });
-
-        divisaList.classList.remove("hidden");
-    }
-
-    // Eventos input para filtrar opciones
-    divisaInput.addEventListener("input", () => {
-        mostrarOpciones(divisaInput.value);
-        if (divisaInput.value.trim() === '') {
-             divisaHidden.value = "";
-             paginaActual = 1;
-             obtenerInventarios();
-        }
-    });
-
-    // Cerrar dropdown si clic afuera
-    document.addEventListener("click", (e) => {
-        if (!divisaInput.contains(e.target) && !divisaList.contains(e.target)) {
-            divisaList.classList.add("hidden");
-        }
-    });
-
-    function cargarCajas() {
-        fetch("https://cambiosorion.cl/data/inventarios.php?action=cajas")
+        fetch('https://cambiosorion.cl/data/divisas_api.php')
             .then(res => res.json())
-            .then(cajas => {
-                const cajaSelect = document.getElementById("caja");
-                cajaSelect.innerHTML = "";
-
-                cajas.forEach(caja => {
-                    const option = document.createElement("option");
-                    option.value = caja.id;
-                    option.textContent = caja.nombre;
-                    cajaSelect.appendChild(option);
-                });
-
-                const tesoreria = cajas.find(c => c.nombre.toLowerCase() === "tesoreria");
-                if (tesoreria) {
-                    cajaSelect.value = tesoreria.id;
+            .then(data => {
+                const dataList = document.getElementById('divisa-list');
+                if (dataList && Array.isArray(data)) {
+                    dataList.innerHTML = '';
+                    data.forEach(divisa => {
+                        const option = document.createElement('option');
+                        option.value = divisa.nombre;
+                        dataList.appendChild(option);
+                    });
                 }
-
-                // Cargar divisas e inventarios para la caja seleccionada (Tesorería o la que sea)
-                cargarDivisas();
-                obtenerInventarios();
             })
-            .catch(error => console.error("Error al cargar cajas:", error));
+            .catch(err => console.error("Error loading currencies:", err));
     }
 
+    // --- FETCH DATOS ---
     function obtenerInventarios() {
         const params = new URLSearchParams();
-        if (cajaInput.value !== "") params.set("caja", cajaInput.value);
-        if (divisaHidden.value) params.set("divisa", divisaHidden.value);
-        if (cantidadInput.value) params.set("cantidad", cantidadInput.value);
-        if (pmpInput.value) params.set("pmp", pmpInput.value);
-        if (buscarInput.value) params.set("buscar", buscarInput.value);
-        if (mostrarRegistros.value) params.set("limite", mostrarRegistros.value);
-        params.set("pagina", paginaActual); // Enviar página
+        const limit = parseInt(filtros.mostrar.value) || 25;
+        const offset = (paginaActual - 1) * limit;
 
-        fetch(`https://cambiosorion.cl/data/inventarios.php?${params.toString()}`)
-            .then(res => res.text())
-            .then(text => {
-                console.log("Respuesta cruda inventarios:", text);
-                try {
-                    const data = JSON.parse(text); // Esperar { inventarios: [], totalFiltrado: N }
+        // Mapeo exacto para inventarios.php
+        if (filtros.caja.value) params.set('caja', filtros.caja.value); // PHP usa $_GET['caja']
+        if (filtros.divisaInput.value) params.set('divisa', filtros.divisaInput.value.trim());
+        if (filtros.buscar.value) params.set('buscar', filtros.buscar.value.trim());
+        
+        // Paginación para PHP
+        params.set('limit', limit);
+        params.set('offset', offset); 
 
-                    if (data.inventarios) {
-                        renderizarTabla(data.inventarios);
-                        // Renderizar conteo y paginación
-                        const porPagina = parseInt(mostrarRegistros.value, 10);
-                        renderizarConteo(data.inventarios.length, data.totalFiltrado, porPagina, paginaActual);
-                        renderizarPaginacion(data.totalFiltrado, porPagina, paginaActual);
-                    } else {
-                         throw new Error(data.error || "Formato de datos incorrecto");
+        // Spinner Visual
+        tablaInventario.innerHTML = `<tr><td colspan="7" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-amber-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
+
+        fetch(`https://cambiosorion.cl/data/inventarios.php?${params.toString()}`, { credentials: "include" })
+            .then(res => res.json())
+            .then(data => {
+                // Manejo flexible de la respuesta del PHP
+                let lista = [];
+                let totalRegistros = 0;
+
+                if (Array.isArray(data)) {
+                    // Si el PHP devuelve solo el array (sin paginación en backend)
+                    lista = data;
+                    totalRegistros = data.length; 
+                } else if (data.data || data.inventarios) {
+                    // Si el PHP devuelve objeto con metadata
+                    lista = data.data || data.inventarios || [];
+                    // Si el PHP devuelve el total filtrado, úsalo. Si no, usa el largo de la lista (fallback)
+                    totalRegistros = parseInt(data.total || data.totalFiltrado) || lista.length;
+                    
+                    // Si el total es igual al limit, probablemente hay más páginas (fallback simple)
+                    if (lista.length === limit && totalRegistros === limit) {
+                        totalRegistros = 9999; // Forzar paginación si no tenemos total real
                     }
-                } catch(e) {
-                    console.error("Error parseando JSON inventarios:", e, text);
-                    tablaInventarios.innerHTML = '<tr><td colspan="6" class="text-center text-red-500 py-4">Error al procesar datos.</td></tr>';
-                    conteoResultados.textContent = 'Error.';
-                    paginacionContainer.innerHTML = '';
                 }
+
+                renderizarTabla(lista);
+                renderizarPaginacion(totalRegistros, limit, paginaActual);
             })
-            .catch(error => console.error("Error al cargar inventarios:", error));
+            .catch(error => {
+                console.error('Error:', error);
+                tablaInventario.innerHTML = `<tr><td colspan="7" class="text-center text-red-400 py-4">Error de conexión con inventarios.php</td></tr>`;
+            });
     }
 
+    // --- RENDERIZADO ---
     function renderizarTabla(inventarios) {
-        tablaInventarios.innerHTML = "";
-        
+        tablaInventario.innerHTML = '';
+
         if (!inventarios || inventarios.length === 0) {
-            tablaInventarios.innerHTML = '<tr><td colspan="6" class="text-center text-gray-700 py-4 bg-white">No se encontraron registros.</td></tr>';
+            tablaInventario.innerHTML = `<tr><td colspan="7" class="text-center text-slate-500 py-10 italic">No hay registros en el inventario.</td></tr>`;
             return;
         }
 
         inventarios.forEach(inv => {
-            const tr = document.createElement("tr");
-            tr.classList.add("border-b", "bg-white", "border-gray-700", "text-gray-700");
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-white/5 transition-all border-b border-white/5 last:border-0 text-slate-300';
 
-            const btnMostrar = document.createElement("button");
-            btnMostrar.textContent = "Mostrar";
-            btnMostrar.className = "text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1";
-            btnMostrar.addEventListener("click", () => {
-                // Asumiendo que el detalle usa el ID de inventario
-                window.location.href = `detalle-inv?id=${inv.id}`;
-            });
+            // Convertir valores numéricos
+            const cantidad = parseFloat(inv.cantidad) || 0;
+            const pmp = parseFloat(inv.pmp) || 0;
+            const totalCLP = cantidad * pmp;
+            const icono = inv.icono || 'https://cambiosorion.cl/orionapp/icons/default.png';
+            
+            // Lógica de Estado Visual
+            let estadoHtml = '';
+            if (cantidad > 0.001) {
+                estadoHtml = `<span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-green-900/40 text-green-300 border border-green-500/30">Disponible</span>`;
+            } else if (cantidad < -0.001) {
+                estadoHtml = `<span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-red-900/40 text-red-300 border border-red-500/30">Negativo</span>`;
+            } else {
+                estadoHtml = `<span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-slate-800 text-slate-500 border border-slate-700">Sin Stock</span>`;
+            }
+
+            // Nombre de caja: viene del JOIN en PHP (c.nombre) o fallback al select
+            const nombreCaja = inv.nombre_caja || (filtros.caja.options[filtros.caja.selectedIndex]?.text || 'Desconocida');
 
             tr.innerHTML = `
-                <td class="px-4 py-2">${inv.nombre_caja}</td>
-                <td class="px-4 py-2">
-                    ${inv.icono ? `<img src="${inv.icono}" alt="Icono" class="w-6 h-6 rounded-full border border-gray-400" />` : ''}
+                <td class="px-4 py-3 text-xs font-bold text-slate-400 uppercase tracking-wide">${limpiarTexto(nombreCaja)}</td>
+                <td class="px-4 py-3 flex items-center gap-3">
+                    <img src="${icono}" class="w-7 h-7 rounded-full border border-slate-600 object-contain bg-slate-800 p-0.5" onerror="this.src='https://cambiosorion.cl/orionapp/icons/default.png'">
+                    <span class="font-bold text-white text-sm">${limpiarTexto(inv.divisa)}</span>
                 </td>
-                <td class="px-4 py-2">${inv.divisa}</td>
-                <td class="px-4 py-2">${Number(inv.cantidad).toLocaleString("es-CL")}</td>
-                <td class="px-4 py-2">${inv.pmp ? Number(inv.pmp).toLocaleString("es-CL") : 'N/A'}</td>
-                <td class="px-4 py-2 mostrar-btn-cell"></td>
+                <td class="px-4 py-3 text-right font-mono text-sm ${cantidad < 0 ? 'text-red-400 font-bold' : 'text-slate-200'}">
+                    ${formatearNumero(cantidad)}
+                </td>
+                <td class="px-4 py-3 text-right font-mono text-xs text-slate-500">
+                    $${formatearNumero(pmp)}
+                </td>
+                <td class="px-4 py-3 text-right font-bold font-mono text-amber-400 text-sm">
+                    $${formatearNumero(totalCLP)}
+                </td>
+                <td class="px-4 py-3 text-center">${estadoHtml}</td>
+                <td class="px-4 py-3 text-center">
+                    <button class="flex items-center justify-center p-1.5 bg-white/5 rounded-full hover:bg-amber-600 shadow-sm border border-transparent transition-all mx-auto text-slate-400 hover:text-white" 
+                            onclick="window.location.href='kardex?divisa=${inv.divisa_id || inv.divisa}&caja=${filtros.caja.value}'" 
+                            title="Ver Kardex">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                    </button>
+                </td>
             `;
-
-            tr.querySelector('.mostrar-btn-cell').appendChild(btnMostrar);
-            tablaInventarios.appendChild(tr);
+            tablaInventario.appendChild(tr);
         });
     }
 
-    function renderizarConteo(mostrados, total, porPagina, pagina) {
-        if (!conteoResultados) return;
-        if (total === 0) {
-            conteoResultados.textContent = 'No se encontraron resultados.';
-            return;
-        }
-        const inicio = ((pagina - 1) * porPagina) + 1;
-        const fin = inicio + mostrados - 1;
-        conteoResultados.textContent = `Mostrando ${inicio}-${fin} de ${total} resultados`;
-    }
+    // --- PAGINACIÓN ---
+    function renderizarPaginacion(totalRegistros, porPagina, pagina) {
+        conteoResultados.textContent = `Total: ${totalRegistros}`;
+        paginationControls.innerHTML = '';
 
-    function renderizarPaginacion(total, porPagina, pagina) {
-        if (!paginacionContainer) return;
-        paginacionContainer.innerHTML = '';
-        const totalPaginas = Math.ceil(total / porPagina);
-        if (totalPaginas <= 1) return;
+        const totalPaginas = Math.ceil(totalRegistros / porPagina);
+        // Si no sabemos el total exacto (PHP devuelve array simple), asumimos lógica simple
+        const hayMasPaginas = (totalRegistros >= porPagina); 
 
-        if (pagina > 1) paginacionContainer.appendChild(crearBotonPaginacion('Anterior', pagina - 1));
+        // Botón Anterior
+        const btnPrev = crearBotonPag('Anterior', pagina > 1, () => cambioPagina(pagina - 1));
+        paginationControls.appendChild(btnPrev);
 
-        const maxBotones = 5;
-        let inicio = Math.max(1, pagina - Math.floor(maxBotones / 2));
-        let fin = Math.min(totalPaginas, inicio + maxBotones - 1);
-        inicio = Math.max(1, fin - maxBotones + 1);
-
-        if (inicio > 1) {
-            paginacionContainer.appendChild(crearBotonPaginacion(1, 1));
-            if (inicio > 2) paginacionContainer.appendChild(crearSpanPaginacion('...'));
-        }
-        for (let i = inicio; i <= fin; i++) {
-            paginacionContainer.appendChild(crearBotonPaginacion(i, i, i === pagina));
-        }
-        if (fin < totalPaginas) {
-            if (fin < totalPaginas - 1) paginacionContainer.appendChild(crearSpanPaginacion('...'));
-            paginacionContainer.appendChild(crearBotonPaginacion(totalPaginas, totalPaginas));
-        }
-        if (pagina < totalPaginas) paginacionContainer.appendChild(crearBotonPaginacion('Siguiente', pagina + 1));
-    }
-
-    function crearBotonPaginacion(texto, pagina, esActual = false) {
-        const boton = document.createElement('button');
-        boton.textContent = texto;
-        boton.className = `px-3 py-1 mx-1 rounded-lg focus:outline-none ${
-            esActual ? 'bg-blue-700 text-white' : 'bg-white text-gray-700 hover:bg-gray-200'
-        }`;
-        boton.addEventListener('click', (e) => {
-            e.preventDefault();
-            paginaActual = pagina;
-            obtenerInventarios();
-        });
-        return boton;
-    }
-
-    function crearSpanPaginacion(texto) {
+        // Indicador
         const span = document.createElement('span');
-        span.textContent = texto;
-        span.className = 'px-3 py-1 mx-1 text-white select-none';
-        return span;
+        span.className = "text-xs font-bold text-slate-400 px-2";
+        // Si totalRegistros es un número "dummy" (ej. 9999), mostramos solo la página actual
+        span.textContent = (totalRegistros === 9999) ? `Página ${pagina}` : `${pagina} / ${totalPaginas}`;
+        paginationControls.appendChild(span);
+
+        // Botón Siguiente
+        // Si tenemos total exacto, usamos totalPaginas. Si no, usamos detección simple.
+        const habilitarSiguiente = (totalRegistros === 9999) ? true : (pagina < totalPaginas);
+        const btnNext = crearBotonPag('Siguiente', habilitarSiguiente, () => cambioPagina(pagina + 1));
+        paginationControls.appendChild(btnNext);
     }
 
-    // Cuando cambie la caja, recargar inventarios (y quizás divisas)
-    cajaInput.addEventListener("change", () => { // 'change' es mejor para <select>
-        paginaActual = 1;
-        divisaInput.value = ""; // Limpiar filtro de divisa
-        divisaHidden.value = "";
-        cargarDivisas();
+    function crearBotonPag(texto, habilitado, onClick) {
+        const btn = document.createElement('button');
+        btn.textContent = texto;
+        btn.className = `px-3 py-1 bg-slate-800 border border-slate-600 rounded hover:bg-slate-700 text-white text-xs transition ${!habilitado ? 'opacity-50 cursor-not-allowed' : ''}`;
+        btn.disabled = !habilitado;
+        btn.onclick = onClick;
+        return btn;
+    }
+
+    function cambioPagina(nuevaPagina) {
+        paginaActual = nuevaPagina;
         obtenerInventarios();
-    });
+    }
 
-    const filtrosSimples = [cantidadInput, pmpInput, buscarInput, mostrarRegistros];
-    
-    filtrosSimples.forEach(el => {
-        const evento = (el.tagName === 'SELECT') ? 'change' : 'input';
-        el.addEventListener(evento, () => {
-            paginaActual = 1;
-            obtenerInventarios();
-        });
-    });
+    // --- EVENTOS ---
+    const resetAndFetch = () => { paginaActual = 1; obtenerInventarios(); };
 
-    // Borrar filtros
     if (borrarFiltrosBtn) {
         borrarFiltrosBtn.addEventListener('click', () => {
-            // No reseteamos la caja, la dejamos en la seleccionada
-            divisaInput.value = '';
-            divisaHidden.value = '';
-            cantidadInput.value = '';
-            pmpInput.value = '';
-            buscarInput.value = '';
-            mostrarRegistros.value = '25';
-            paginaActual = 1;
-            obtenerInventarios();
+            if(filtros.divisaInput) filtros.divisaInput.value = '';
+            if(filtros.buscar) filtros.buscar.value = '';
+            if(filtros.mostrar) filtros.mostrar.value = '25';
+            // Nota: No reseteamos la caja para no perder el contexto de trabajo
+            resetAndFetch();
         });
     }
-    
-    cargarCajas();
+
+    if (exportarBtn) {
+        exportarBtn.addEventListener("click", () => {
+            const params = new URLSearchParams();
+            if (filtros.caja.value) params.set("caja", filtros.caja.value);
+            if (filtros.divisaInput.value) params.set("divisa", filtros.divisaInput.value);
+            if (filtros.buscar.value) params.set("buscar", filtros.buscar.value);
+            
+            window.open(`https://cambiosorion.cl/data/exportar_inventario.php?${params.toString()}`, '_blank');
+        });
+    }
+
+    Object.values(filtros).forEach(input => {
+        if(input) {
+            // Si cambia la caja, reiniciamos paginación y filtro de divisa
+            if (input === filtros.caja) {
+                input.addEventListener('change', () => {
+                    if(filtros.divisaInput) filtros.divisaInput.value = '';
+                    resetAndFetch();
+                });
+            } else {
+                input.addEventListener('input', resetAndFetch);
+                input.addEventListener('change', resetAndFetch);
+            }
+        }
+    });
 });
