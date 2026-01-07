@@ -1,9 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Cargar Sidebar
     cargarSidebar();
     initDatePickers();
-    
-    // 2. Iniciar sesión y LUEGO cargar datos (orden crítico)
     getSession();
 
     const nuevoIngresoBtn = document.getElementById('nuevo-ingreso');
@@ -16,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const pageIndicator = document.getElementById('page-indicator');
     
     let paginaActual = 1;
-    let currentCajaId = null; // Variable para guardar el ID de la caja
+    let currentCajaId = null;
 
     const filtros = {
         fechaInicio: document.getElementById("fecha-inicio"),
@@ -78,7 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 100);
     }
 
-    // OBTENER SESIÓN Y LUEGO DATOS
     async function getSession() {
         try {
             const res = await fetch("https://cambiosorion.cl/data/session_status_admin.php", { credentials: "include" });
@@ -89,8 +85,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.location.href = 'https://admin.cambiosorion.cl/login';
                 return;
             }
-
-            // GUARDAR EL ID DE LA CAJA
             currentCajaId = data.caja_id;
 
             const headerName = document.getElementById('header-user-name');
@@ -99,7 +93,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (headerName) headerName.textContent = data.nombre ? data.nombre.split(' ')[0] : 'Admin';
             if (headerEmail) headerEmail.textContent = data.correo;
 
-            // Una vez tenemos la caja, cargamos los datos
             obtenerIngresos();
 
         } catch (error) {
@@ -108,12 +101,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function obtenerIngresos() {
-        // Si no tenemos caja ID aún (o es null como en tu ejemplo de Socio), manejamos el caso
-        // En tu caso 'caja_id' es null, enviaremos 0 o vacío, la SQL retornará vacio (correcto si no tiene caja)
         const cajaIdParam = currentCajaId ? currentCajaId : 0; 
-
         const params = new URLSearchParams();
-        params.set('caja_id', cajaIdParam); // ENVIAMOS EL ID POR GET
+        params.set('caja_id', cajaIdParam);
 
         for (const [clave, input] of Object.entries(filtros)) {
             if (input && input.value) {
@@ -124,7 +114,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         tablaIngresos.innerHTML = `<tr><td colspan="9" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-cyan-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
 
-        // NOTA: credentials: "include" ya no es estrictamente necesario para el PHP nuevo, pero no hace daño dejarlo si el PHP acepta CORS.
         fetch(`https://cambiosorion.cl/data/ingresos-caja.php?${params.toString()}`)
             .then(response => response.json())
             .then(data => {
@@ -221,6 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
             Object.values(filtros).forEach(input => {
                 if(!input) return;
                 input.value = '';
+                // Aseguramos limpiar flatpickr si existe
                 if(input._flatpickr) input._flatpickr.clear();
             });
             if(filtros.mostrar) filtros.mostrar.value = '25';

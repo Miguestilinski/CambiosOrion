@@ -68,7 +68,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await res.json();
             if (!data.isAuthenticated || !data.equipo_id) { window.location.href = 'https://admin.cambiosorion.cl/login'; return; }
             
-            // GUARDAR ID
             currentCajaId = data.caja_id;
 
             const headerName = document.getElementById('header-user-name');
@@ -76,7 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (headerName) headerName.textContent = data.nombre ? data.nombre.split(' ')[0] : 'Admin';
             if (headerEmail) headerEmail.textContent = data.correo;
 
-            // CARGAR DATOS
             obtenerEgresos();
 
         } catch (error) { console.error("Error sesión:", error); }
@@ -163,7 +161,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (borrarFiltrosBtn) {
         borrarFiltrosBtn.addEventListener('click', () => {
-            Object.values(filtros).forEach(input => { if(input) { input.value = ''; if(input._flatpickr) input._flatpickr.clear(); } });
+            Object.values(filtros).forEach(input => { 
+                if(input) { 
+                    input.value = ''; 
+                    if(input._flatpickr) input._flatpickr.clear(); 
+                } 
+            });
             if(filtros.mostrar) filtros.mostrar.value = '25';
             paginaActual = 1;
             obtenerEgresos();
