@@ -1,293 +1,182 @@
+import { 
+    initSystem, 
+    limpiarTexto, 
+    formatearFechaHora, 
+    mostrarModalError 
+} from './index.js';
+
 document.addEventListener('DOMContentLoaded', () => {
-    const mostrarRegistros = document.getElementById('mostrar-registros');
-    const buscarInput = document.getElementById('buscar');
-    const fechaInicio = document.getElementById('fecha-inicio');
-    const fechaFin = document.getElementById('fecha-fin');
-    const tipoCliente = document.getElementById('tipo-cliente');
-    const nombreRSocial = document.getElementById('nombre-r-social');
-    const rut = document.getElementById('rut');
-    const direccion = document.getElementById('direccion');
-    const fono = document.getElementById('fono');
-    const habilitados = document.getElementById('habilitados');
-    const estadoDocumentacion = document.getElementById('estado-documentacion');
-    const borrarFiltrosBtn = document.getElementById('borrar-filtros');
-    const tablaClientes = document.querySelector('#clientes table tbody');
-    const nuevoClienteBtn = document.getElementById('nuevo-cliente');
+    // 1. Inicializar sistema
+    initSystem('clientes');
+
+    // Referencias DOM
+    const tablaClientes = document.getElementById('tabla-clientes');
     const conteoResultados = document.getElementById('conteo-resultados');
-    const paginacionContainer = document.getElementById('paginacion-container');
+    const paginationControls = document.getElementById('pagination-controls');
+    
+    const nuevoClienteBtn = document.getElementById('nuevo-cliente');
+    const borrarFiltrosBtn = document.getElementById('borrar-filtros');
+
     let paginaActual = 1;
 
-    // Redirigir al hacer clic en "Nuevo Cliente"
+    // Filtros
+    const filtros = {
+        fechaInicio: document.getElementById("fecha-inicio"),
+        fechaFin: document.getElementById("fecha-fin"),
+        nombre: document.getElementById("nombre-cliente"),
+        rut: document.getElementById("rut-cliente"),
+        tipo: document.getElementById("tipo-cliente"),
+        estadoDoc: document.getElementById("estado-doc"),
+        estado: document.getElementById("estado-cliente"),
+        mostrar: document.getElementById("mostrar-registros")
+    };
+
+    // Botón Nuevo
     if (nuevoClienteBtn) {
         nuevoClienteBtn.addEventListener('click', () => {
             window.location.href = 'https://tesoreria.cambiosorion.cl/nuevo-cliente';
         });
     }
 
-    // Función para obtener los clientes con filtros
+    // --- FETCH DATOS ---
     function obtenerClientes() {
         const params = new URLSearchParams();
-        params.set('fecha_inicio', fechaInicio.value);
-        params.set('fecha_fin', fechaFin.value);
-        params.set('tipo_cliente', tipoCliente.value);
-        params.set('nombre_r_social', nombreRSocial.value);
-        params.set('rut', rut.value);
-        params.set('direccion', direccion.value);
-        params.set('fono', fono.value);
-        params.set('habilitados', habilitados.value);
-        params.set('estado_documentacion', estadoDocumentacion.value);
-        params.set('mostrar_registros', mostrarRegistros.value);
-        params.set('buscar', buscarInput.value);
+
+        if (filtros.fechaInicio.value) params.set('fecha_inicio', filtros.fechaInicio.value);
+        if (filtros.fechaFin.value) params.set('fecha_fin', filtros.fechaFin.value);
+        if (filtros.nombre.value) params.set('nombre', filtros.nombre.value.trim());
+        if (filtros.rut.value) params.set('rut', filtros.rut.value.trim());
+        if (filtros.tipo.value) params.set('tipo', filtros.tipo.value);
+        if (filtros.estadoDoc.value) params.set('estado_doc', filtros.estadoDoc.value);
+        if (filtros.estado.value) params.set('estado', filtros.estado.value);
+        
+        if (filtros.mostrar.value) params.set('mostrar_registros', filtros.mostrar.value);
         params.set('pagina', paginaActual);
 
+        // Spinner Ámbar
+        tablaClientes.innerHTML = `<tr><td colspan="9" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-amber-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
+
         fetch(`https://cambiosorion.cl/data/clientes.php?${params.toString()}`)
-            .then(res => {
-                // Verifica si la respuesta es OK, si no, también loguea el status
-                if (!res.ok) {
-                    console.error("Error en la respuesta del servidor:", res.status, res.statusText);
-                }
-                return res.text(); // Pide la respuesta como texto en lugar de JSON
+            .then(res => res.json())
+            .then(data => {
+                const lista = data.clientes || [];
+                const total = parseInt(data.totalFiltrado) || 0;
+                renderizarTabla(lista);
+                renderizarPaginacion(total, parseInt(filtros.mostrar.value), paginaActual);
             })
-            .then(text => {
-                console.log("Respuesta cruda del servidor:", text);
-
-                try {
-                    // Si el texto está vacío, trátalo como un array vacío
-                    if (text.trim() === "") {
-                        console.warn("La respuesta del servidor está vacía.");
-                        renderizarTabla([]); // Renderiza una tabla vacía
-                        return;
-                    }
-                    
-                    const data = JSON.parse(text); // Parseamos el texto
-                    renderizarTabla(data.clientes);
-
-                    const porPagina = parseInt(mostrarRegistros.value, 10);
-                    renderizarConteo(data.clientes.length, data.totalFiltrado, porPagina, paginaActual);
-                    renderizarPaginacion(data.totalFiltrado, porPagina, paginaActual);
-                
-                } catch (jsonError) {
-                    // Si falla el parseo, el error de sintaxis de JSON se mostrará aquí
-                    console.error("Error al parsear JSON:", jsonError);
-                    tablaClientes.innerHTML = '<tr><td colspan="8" class="px-4 py-2 text-center text-red-500">Error al procesar la respuesta del servidor. Revise la consola.</td></tr>';
-                }
-            })
-            .catch(err => console.error('Error de red al obtener los datos:', err)); // Esto captura errores de red
+            .catch(error => {
+                console.error('Error:', error);
+                tablaClientes.innerHTML = `<tr><td colspan="9" class="text-center text-red-400 py-4">Error de conexión.</td></tr>`;
+            });
     }
 
-    function formatearFecha(timestamp) {
-        // Si la fecha es nula o inválida, devuelve un string vacío
-        if (!timestamp) return ''; 
-        
-        const fecha = new Date(timestamp);
-
-        // Comprobar si la fecha es válida
-        if (isNaN(fecha.getTime())) {
-            return timestamp; // Devuelve el original si no se pudo convertir
-        }
-        
-        const hh = String(fecha.getHours()).padStart(2, '0');
-        const min = String(fecha.getMinutes()).padStart(2, '0');
-        const dd = String(fecha.getDate()).padStart(2, '0');
-        const mm = String(fecha.getMonth() + 1).padStart(2, '0'); // getMonth() es 0-indexado, por eso +1
-        const yyyy = fecha.getFullYear();
-        
-        return `${hh}:${min} ${dd}/${mm}/${yyyy}`;
-    }
-
-    function formatearRut(rut) {
-        if (!rut || rut === 'null') return '';
-        const parts = rut.split('-');
-        if (parts.length !== 2) return rut;
-        const cuerpo = parts[0];
-        const dv = parts[1];
-        if (isNaN(cuerpo)) return rut;
-        const cuerpoFormateado = new Intl.NumberFormat('es-CL').format(cuerpo);
-        return `${cuerpoFormateado}-${dv}`;
-    }
-
+    // --- RENDERIZADO ---
     function renderizarTabla(clientes) {
         tablaClientes.innerHTML = '';
+
+        if (clientes.length === 0) {
+            tablaClientes.innerHTML = `<tr><td colspan="9" class="text-center text-slate-500 py-10 italic">No se encontraron clientes.</td></tr>`;
+            return;
+        }
+
         clientes.forEach(cliente => {
-
             const tr = document.createElement('tr');
-            tr.classList.add('bg-white', 'border-b', 'border-gray-700', 'text-gray-700');
-    
-            // Crear botón Mostrar
-            const btnMostrar = document.createElement('button');
-            btnMostrar.textContent = 'Mostrar';
-            btnMostrar.className = 'text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1';
-            btnMostrar.addEventListener('click', () => {
-                window.location.href = `detalle-cl?id=${cliente.id}`; // Ajusta URL según corresponda
-            });
-    
-            // Crear botón Deshabilitar (opcionalmente puedes también hacer funcionalidad aquí)
-            const btnToggleActivo = document.createElement('button');
-            const esActivo = cliente.activo == 1; // 'activo' es el nuevo campo de la BD
+            tr.className = 'hover:bg-white/5 transition-all border-b border-white/5 last:border-0 text-slate-300';
 
-            btnToggleActivo.textContent = esActivo ? 'Deshabilitar' : 'Habilitar';
-            btnToggleActivo.className = `font-medium rounded-lg text-sm px-3 py-1 text-white ${esActivo ? 'bg-red-700 hover:bg-red-800' : 'bg-green-700 hover:bg-green-800'}`;
-            
-            // 2. Añadir evento click para el toggle
-            btnToggleActivo.addEventListener('click', () => {
-                // Llama a la nueva función (que crearemos abajo)
-                toggleEstadoCliente(cliente.id, !esActivo); 
-            });
+            // Badges
+            let estadoClass = cliente.habilitado == 1 
+                ? 'bg-green-900/40 text-green-300 border border-green-500/30' 
+                : 'bg-red-900/40 text-red-300 border border-red-500/30';
+            let estadoTexto = cliente.habilitado == 1 ? 'Habilitado' : 'Deshabilitado';
 
-            const fechaFormateada = formatearFecha(cliente.fecha_ingreso);
+            let docClass = cliente.estado_documentacion === 'Completa' 
+                ? 'text-green-400 font-bold' 
+                : 'text-amber-400 italic';
+
+            // Botón Acción
+            const btnVer = document.createElement('button');
+            btnVer.innerHTML = `<svg class="w-5 h-5 text-slate-400 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
+            btnVer.className = 'flex items-center justify-center p-1.5 bg-white/5 rounded-full hover:bg-amber-600 shadow-sm border border-transparent transition-all mx-auto';
+            btnVer.onclick = (e) => {
+                e.stopPropagation();
+                window.location.href = `detalle-cliente?id=${cliente.id}`;
+            };
 
             tr.innerHTML = `
-                <td class="px-4 py-2">${fechaFormateada}</td>
-                <td class="px-4 py-2">${cliente.tipo}</td>
-                <td class="px-4 py-2">${cliente.razon_social}</td>
-                <td class="px-4 py-2">${formatearRut(cliente.rut)}</td>
-                <td class="px-4 py-2">${cliente.direccion}</td>
-                <td class="px-4 py-2">${cliente.fono}</td>
-                <td class="px-4 py-2">${cliente.estado_documentacion || 'No Documentado'}</td>
-                <td class="px-4 py-2 mostrar-btn-cell"></td>
-                <td class="px-4 py-2 deshabilitar-btn-cell"></td>
+                <td class="px-4 py-3 whitespace-nowrap text-xs">${formatearFechaHora(cliente.created_at)}</td>
+                <td class="px-4 py-3 font-mono text-xs font-bold text-slate-500">${cliente.id}</td>
+                <td class="px-4 py-3 font-semibold text-sm text-white truncate max-w-[200px]" title="${limpiarTexto(cliente.nombre)}">${limpiarTexto(cliente.nombre)}</td>
+                <td class="px-4 py-3 font-mono text-xs text-amber-100">${limpiarTexto(cliente.rut)}</td>
+                <td class="px-4 py-3 text-xs text-slate-400">
+                    <div class="truncate max-w-[150px]">${limpiarTexto(cliente.email)}</div>
+                    <div class="text-[10px] text-slate-500">${limpiarTexto(cliente.fono)}</div>
+                </td>
+                <td class="px-4 py-3 text-center text-xs font-bold uppercase tracking-wide text-slate-400">${limpiarTexto(cliente.tipo_cliente)}</td>
+                <td class="px-4 py-3 text-center text-xs ${docClass}">${limpiarTexto(cliente.estado_documentacion)}</td>
+                <td class="px-4 py-3 text-center">
+                    <span class="px-2 py-0.5 rounded text-[10px] uppercase font-bold ${estadoClass}">${estadoTexto}</span>
+                </td>
+                <td class="px-4 py-3 text-center cell-action"></td>
             `;
-
-            tr.querySelector('.mostrar-btn-cell').appendChild(btnMostrar);
-            tr.querySelector('.deshabilitar-btn-cell').appendChild(btnToggleActivo);
-
+            
+            tr.querySelector('.cell-action').appendChild(btnVer);
             tablaClientes.appendChild(tr);
         });
     }
 
-    function toggleEstadoCliente(clienteId, nuevoEstadoBooleano) {
-        // nuevoEstadoBooleano es (true = Habilitar, false = Deshabilitar)
-        const nuevoValorFetch = nuevoEstadoBooleano ? 1 : 0;
+    // --- PAGINACIÓN ---
+    function renderizarPaginacion(totalRegistros, porPagina, pagina) {
+        conteoResultados.textContent = `Total: ${totalRegistros}`;
+        paginationControls.innerHTML = '';
 
-        fetch(`https://cambiosorion.cl/data/clientes.php`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                id: clienteId,
-                activo: nuevoValorFetch
-            })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                obtenerClientes(); // Recarga la tabla para reflejar el cambio
-            } else {
-                console.error('Error al actualizar el cliente:', data.error);
-                alert('Error al actualizar el cliente.');
-            }
-        })
-        .catch(err => {
-            console.error('Error de red al actualizar:', err);
-            alert('Error de red al actualizar el cliente.');
-        });
-    }
+        const totalPaginas = Math.ceil(totalRegistros / porPagina);
+        if (totalPaginas <= 1) return;
 
-    function renderizarConteo(mostrados, total, porPagina, pagina) {
-        if (!conteoResultados) return;
-        
-        if (total === 0) {
-            conteoResultados.textContent = 'No se encontraron resultados.';
-            return;
-        }
-        
-        const inicio = ((pagina - 1) * porPagina) + 1;
-        const fin = inicio + mostrados - 1;
-        conteoResultados.textContent = `Mostrando ${inicio}-${fin} de ${total} resultados`;
-    }
+        const btnPrev = crearBotonPag('Anterior', pagina > 1, () => cambioPagina(pagina - 1));
+        paginationControls.appendChild(btnPrev);
 
-    function renderizarPaginacion(total, porPagina, pagina) {
-        if (!paginacionContainer) return;
-        paginacionContainer.innerHTML = '';
-        const totalPaginas = Math.ceil(total / porPagina);
-
-        if (totalPaginas <= 1) return; // No mostrar si solo hay 1 página
-
-        // Botón "Anterior"
-        if (pagina > 1) {
-            paginacionContainer.appendChild(crearBotonPaginacion('Anterior', pagina - 1));
-        }
-
-        // Lógica de botones de página con '...'
-        const maxBotones = 5;
-        let inicio = Math.max(1, pagina - Math.floor(maxBotones / 2));
-        let fin = Math.min(totalPaginas, inicio + maxBotones - 1);
-        
-        // Ajustar 'inicio' si 'fin' llega al final
-        inicio = Math.max(1, fin - maxBotones + 1);
-
-        if (inicio > 1) {
-            paginacionContainer.appendChild(crearBotonPaginacion(1, 1));
-            if (inicio > 2) {
-                paginacionContainer.appendChild(crearSpanPaginacion('...'));
-            }
-        }
-
-        for (let i = inicio; i <= fin; i++) {
-            paginacionContainer.appendChild(crearBotonPaginacion(i, i, i === pagina));
-        }
-
-        if (fin < totalPaginas) {
-            if (fin < totalPaginas - 1) {
-                paginacionContainer.appendChild(crearSpanPaginacion('...'));
-            }
-            paginacionContainer.appendChild(crearBotonPaginacion(totalPaginas, totalPaginas));
-        }
-
-        // Botón "Siguiente"
-        if (pagina < totalPaginas) {
-            paginacionContainer.appendChild(crearBotonPaginacion('Siguiente', pagina + 1));
-        }
-    }
-
-    function crearBotonPaginacion(texto, pagina, esActual = false) {
-        const boton = document.createElement('button');
-        boton.textContent = texto;
-        boton.className = `px-3 py-1 mx-1 rounded-lg focus:outline-none ${
-            esActual 
-            ? 'bg-blue-700 text-white' // Página actual
-            : 'bg-white text-gray-700 hover:bg-gray-200' // Otras páginas
-        }`;
-        boton.addEventListener('click', (e) => {
-            e.preventDefault();
-            paginaActual = pagina; // Actualiza la página global
-            obtenerClientes();      // Vuelve a cargar los datos
-        });
-        return boton;
-    }
-
-    function crearSpanPaginacion(texto) {
         const span = document.createElement('span');
-        span.textContent = texto;
-        span.className = 'px-3 py-1 mx-1 text-white select-none';
-        return span;
+        span.className = "text-xs font-bold text-slate-400 px-2";
+        span.textContent = `${pagina} / ${totalPaginas}`;
+        paginationControls.appendChild(span);
+
+        const btnNext = crearBotonPag('Siguiente', pagina < totalPaginas, () => cambioPagina(pagina + 1));
+        paginationControls.appendChild(btnNext);
     }
 
-    // Listeners para filtros
-    [
-        fechaInicio, fechaFin, tipoCliente, nombreRSocial,
-        rut, direccion, fono, habilitados, estadoDocumentacion, mostrarRegistros, buscarInput
-    ].forEach(el => el.addEventListener('input', () => {
-        paginaActual = 1;
+    function crearBotonPag(texto, habilitado, onClick) {
+        const btn = document.createElement('button');
+        btn.textContent = texto;
+        btn.className = `px-3 py-1 bg-slate-800 border border-slate-600 rounded hover:bg-slate-700 text-white text-xs transition ${!habilitado ? 'opacity-50 cursor-not-allowed' : ''}`;
+        btn.disabled = !habilitado;
+        btn.onclick = onClick;
+        return btn;
+    }
+
+    function cambioPagina(nuevaPagina) {
+        paginaActual = nuevaPagina;
         obtenerClientes();
-    }));
+    }
+
+    // --- EVENTOS ---
+    const resetAndFetch = () => { paginaActual = 1; obtenerClientes(); };
 
     borrarFiltrosBtn.addEventListener('click', () => {
-        fechaInicio.value = '';
-        fechaFin.value = '';
-        tipoCliente.value = '';
-        nombreRSocial.value = '';
-        rut.value = '';
-        direccion.value = '';
-        fono.value = '';
-        habilitados.value = '';
-        estadoDocumentacion.value = '';
-        buscarInput.value = '';
-        paginaActual = 1;
-        obtenerClientes();
+        Object.values(filtros).forEach(input => {
+            if(!input) return;
+            input.value = '';
+            if(input._flatpickr) input._flatpickr.clear();
+        });
+        if(filtros.mostrar) filtros.mostrar.value = '25';
+        resetAndFetch();
     });
 
-    // Cargar al inicio
+    Object.values(filtros).forEach(input => {
+        if(input) {
+            input.addEventListener('input', resetAndFetch);
+            input.addEventListener('change', resetAndFetch);
+        }
+    });
+
     obtenerClientes();
 });
