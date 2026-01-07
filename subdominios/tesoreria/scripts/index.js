@@ -1,15 +1,21 @@
-// index.js - Sistema Tesorería (Modo Oscuro)
+// index.js - Lógica común para Sistema de Tesorería (Tema Ámbar)
 
 export const SystemConfig = {
     apiBase: 'https://cambiosorion.cl/data',
     loginUrl: 'https://admin.cambiosorion.cl/login',
-    sidebarFile: 'sidebar.html'
+    sidebarFile: 'sidebar-tesoreria.html'
 };
 
 export async function initSystem(currentPageId) {
-    await getSession();
+    // 1. Capturamos los datos de la sesión
+    const sessionData = await getSession();
+    
+    // 2. Cargamos sidebar y herramientas visuales
     await cargarSidebar(currentPageId);
     initDatePickers();
+    
+    // 3. RETORNAMOS los datos para que los scripts (como arqueo.js) los usen
+    return sessionData;
 }
 
 // --- SIDEBAR & HEADER ---
@@ -29,7 +35,7 @@ export function activarLinkSidebar(pagina) {
     setTimeout(() => {
         const links = document.querySelectorAll('aside a');
         links.forEach(link => {
-            // Reset styles (Gris oscuro/neutro)
+            // Reset styles base (Gris oscuro/neutro)
             link.className = 'flex items-center px-4 py-2.5 text-slate-400 hover:bg-white/5 hover:text-amber-400 rounded-lg transition-colors group mb-1 border border-transparent';
             
             const icon = link.querySelector('svg');
@@ -69,6 +75,7 @@ export async function getSession() {
         if (headerName) headerName.textContent = data.nombre ? data.nombre.split(' ')[0] : 'Admin';
         if (headerEmail) headerEmail.textContent = data.correo;
 
+        // IMPORTANTE: Retornar el objeto data
         return data;
 
     } catch (error) {
