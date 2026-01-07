@@ -9,14 +9,9 @@ import {
 let usuarioSesion = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // 1. Inicializar sistema
-    const sessionData = await initSystem('traspasos');
-    if (sessionData) {
-        usuarioSesion = sessionData;
-        obtenerTraspasos();
-    }
-
-    // Referencias DOM
+    
+    // --- 1. REFERENCIAS DOM Y FILTROS (PRIMERO) ---
+    
     const tablaTraspasos = document.getElementById('tabla-traspasos');
     const conteoResultados = document.getElementById('conteo-resultados');
     const paginationControls = document.getElementById('pagination-controls');
@@ -43,7 +38,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // --- FETCH DATOS ---
+    // --- 2. FUNCIONES ---
+
     function obtenerTraspasos() {
         const params = new URLSearchParams();
 
@@ -58,28 +54,28 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (usuarioSesion) params.set('caja_id', usuarioSesion.caja_id);
 
         // Spinner Ámbar
-        tablaTraspasos.innerHTML = `<tr><td colspan="9" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-amber-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
+        if(tablaTraspasos) {
+            tablaTraspasos.innerHTML = `<tr><td colspan="9" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-amber-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
+        }
 
         fetch(`https://cambiosorion.cl/data/traspasos.php?${params.toString()}`)
             .then(res => res.json())
             .then(response => {
                 // traspasos.php devuelve { exito: true, data: [...] }
                 const lista = response.data || [];
-                // La paginación en este endpoint parece ser frontend o limitada, asumiremos lista completa por ahora
-                // Si el PHP implementa paginación real, ajustaríamos aquí.
                 
                 renderizarTabla(lista);
-                conteoResultados.textContent = `Total: ${lista.length} registros`;
-                paginationControls.innerHTML = ''; // Limpiar paginación si no la trae el backend
+                if(conteoResultados) conteoResultados.textContent = `Total: ${lista.length} registros`;
+                if(paginationControls) paginationControls.innerHTML = ''; 
             })
             .catch(error => {
                 console.error('Error:', error);
-                tablaTraspasos.innerHTML = `<tr><td colspan="9" class="text-center text-red-400 py-4">Error de conexión.</td></tr>`;
+                if(tablaTraspasos) tablaTraspasos.innerHTML = `<tr><td colspan="9" class="text-center text-red-400 py-4">Error de conexión.</td></tr>`;
             });
     }
 
-    // --- RENDERIZADO ---
     function renderizarTabla(traspasos) {
+        if(!tablaTraspasos) return;
         tablaTraspasos.innerHTML = '';
 
         if (traspasos.length === 0) {
@@ -104,8 +100,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             btnVer.className = 'flex items-center justify-center p-1.5 bg-white/5 rounded-full hover:bg-amber-600 shadow-sm border border-transparent transition-all mx-auto';
             btnVer.onclick = (e) => {
                 e.stopPropagation();
-                // Si tienes detalle, redirigir. Si no, quizas solo un alert o modal simple.
-                // window.location.href = `detalle-traspaso?id=${row.id}`; 
                 alert(`Detalle Traspaso #${row.id} pendiente de implementación.`);
             };
 
@@ -130,17 +124,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // --- EVENTOS ---
+    // --- 3. EVENTOS ---
+    
     const resetAndFetch = () => { obtenerTraspasos(); };
 
-    borrarFiltrosBtn.addEventListener('click', () => {
-        Object.values(filtros).forEach(input => {
-            if(!input) return;
-            input.value = '';
-            if(input._flatpickr) input._flatpickr.clear();
+    if(borrarFiltrosBtn) {
+        borrarFiltrosBtn.addEventListener('click', () => {
+            Object.values(filtros).forEach(input => {
+                if(!input) return;
+                input.value = '';
+                if(input._flatpickr) input._flatpickr.clear();
+            });
+            resetAndFetch();
         });
-        resetAndFetch();
-    });
+    }
 
     Object.values(filtros).forEach(input => {
         if(input) {
@@ -148,4 +145,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             input.addEventListener('change', resetAndFetch);
         }
     });
+
+    // --- 4. INICIALIZACIÓN (AL FINAL) ---
+    
+    const sessionData = await initSystem('traspasos');
+    if (sessionData) {
+        usuarioSesion = sessionData;
+        obtenerTraspasos(); // Ahora filtros y funciones ya existen
+    }
 });
