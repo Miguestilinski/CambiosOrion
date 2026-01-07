@@ -1,9 +1,9 @@
-// index.js - Lógica común para Sistema de Tesorería
+// index.js - Lógica común para Sistema de Tesorería (Tema Ámbar)
 
 export const SystemConfig = {
     apiBase: 'https://cambiosorion.cl/data',
     loginUrl: 'https://admin.cambiosorion.cl/login',
-    sidebarFile: 'sidebar.html'
+    sidebarFile: 'sidebar-tesoreria.html'
 };
 
 export async function initSystem(currentPageId) {
@@ -29,21 +29,22 @@ export function activarLinkSidebar(pagina) {
     setTimeout(() => {
         const links = document.querySelectorAll('aside a');
         links.forEach(link => {
-            // Reset styles base
-            link.className = 'flex items-center px-4 py-2.5 text-gray-600 hover:bg-blue-50 hover:text-blue-700 rounded-lg transition-colors group mb-1 border border-transparent';
+            // Reset styles base (Gris neutro)
+            link.className = 'flex items-center px-4 py-2.5 text-gray-600 hover:bg-amber-50 hover:text-amber-700 rounded-lg transition-colors group mb-1 border border-transparent';
             
             const icon = link.querySelector('svg');
             if(icon) { 
-                icon.classList.remove('text-blue-600'); 
-                icon.classList.add('text-gray-400', 'group-hover:text-blue-500'); 
+                icon.classList.remove('text-amber-600'); 
+                icon.classList.add('text-gray-400', 'group-hover:text-amber-500'); 
             }
 
+            // Activar link actual (Estilo Ámbar)
             if (link.dataset.page === pagina) {
                 link.classList.remove('text-gray-600', 'border-transparent');
-                link.classList.add('bg-blue-50', 'text-blue-700', 'border-l-4', 'border-blue-600', 'shadow-sm', 'font-bold');
+                link.classList.add('bg-amber-50', 'text-amber-800', 'border-l-4', 'border-amber-500', 'shadow-sm', 'font-bold');
                 if(icon) { 
-                    icon.classList.remove('text-gray-400', 'group-hover:text-blue-500'); 
-                    icon.classList.add('text-blue-600'); 
+                    icon.classList.remove('text-gray-400', 'group-hover:text-amber-500'); 
+                    icon.classList.add('text-amber-600'); 
                 }
             }
         });
@@ -136,6 +137,5 @@ export function mostrarModalExitoso({ titulo = "Éxito", mensaje = "Operación r
     const btnVolver = document.getElementById("volver");
     if(btnVolver) btnVolver.onclick = () => {
         modal.classList.add("hidden");
-        // Opcional: reload o callback
     };
 }

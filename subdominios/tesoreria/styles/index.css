@@ -29,18 +29,22 @@ body::before {
 .scroller::-webkit-scrollbar-track { background-color: transparent; }
 
 /* --- COLORES DE OPERACIONES (CRÍTICO) --- */
-/* Se aplicarán a las filas <tr> de la tabla */
+/* Usamos !important para asegurar que sobreescriba a Tailwind */
 
+/* VENTA: Verde claro */
 tr.venta, .venta {
-    background-color: #dbf599 !important; /* Verde claro */
+    background-color: #dbf599 !important; 
     color: #1a2e05;
 }
 
+/* COMPRA: Celeste claro (Cambiado ligeramente para contraste) */
 tr.compra, .compra {
-    background-color: #c3e8f1 !important; /* Celeste claro */
+    background-color: #cbebf3 !important; 
     color: #0c4a6e;
 }
 
-/* Efecto hover suave manteniendo el tono */
-tr.venta:hover { filter: brightness(0.95); }
-tr.compra:hover { filter: brightness(0.95); }
+/* Ajuste para cuando se pasa el mouse por encima (Hover) */
+tr.venta:hover, tr.compra:hover {
+    filter: brightness(0.95);
+    cursor: pointer;
+}
