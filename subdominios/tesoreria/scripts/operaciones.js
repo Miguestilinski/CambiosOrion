@@ -1,320 +1,220 @@
-document.addEventListener('DOMContentLoaded', () => {   
-    const nuevaOperacionBtn = document.getElementById('nueva-op');
-    const numeroInput = document.getElementById('numero');
-    const clienteInput = document.getElementById('cliente');
-    const tipoDocSelect = document.getElementById('tipo-doc');
-    const nDocInput = document.getElementById('n-doc');
-    const nNotaInput = document.getElementById('n-nota');
-    const tipoTransaccionSelect = document.getElementById('tipo-transaccion');
-    const divisaInput = document.getElementById('divisa');
-    const estadoSelect = document.getElementById('estado');
-    const fechaInicioInput = document.getElementById('fecha-inicio');
-    const fechaFinInput = document.getElementById('fecha-fin');
-    const emitidasCheckbox = document.getElementById('emitidas');
-    const noEmitidasCheckbox = document.getElementById('no-emitidas');
-    const borrarFiltrosBtn = document.getElementById('borrar-filtros');
-    const mostrarRegistros = document.getElementById('mostrar-registros');
-    const buscarInput = document.getElementById('buscar');
+import { 
+    initSystem, 
+    limpiarTexto, 
+    formatearNumero, 
+    formatearFechaHora, 
+    mostrarModalError 
+} from './index.js';
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Inicializar sistema general (Sesión, Sidebar, Flatpickr)
+    initSystem('operaciones');
+
+    // Referencias DOM
     const tablaOperaciones = document.getElementById('tabla-operaciones');
     const conteoResultados = document.getElementById('conteo-resultados');
-    const paginacionContainer = document.getElementById('paginacion-container');
+    const paginationControls = document.getElementById('pagination-controls');
+    
+    const nuevaOpBtn = document.getElementById('nueva-op');
+    const borrarFiltrosBtn = document.getElementById('borrar-filtros');
 
     let paginaActual = 1;
 
-   // Redirigir al hacer clic en "Nueva Operacion"
-    if (nuevaOperacionBtn) {
-        nuevaOperacionBtn.addEventListener('click', () => {
+    // Filtros
+    const filtros = {
+        fechaInicio: document.getElementById("fecha-inicio"),
+        fechaFin: document.getElementById("fecha-fin"),
+        emitidas: document.getElementById("emitidas"),
+        noEmitidas: document.getElementById("no-emitidas"),
+        numero: document.getElementById("numero"),
+        cliente: document.getElementById("cliente"),
+        tipoDoc: document.getElementById("tipo-doc"),
+        nDoc: document.getElementById("n-doc"),
+        tipoTransaccion: document.getElementById("tipo-transaccion"),
+        divisa: document.getElementById("divisa"),
+        estado: document.getElementById("estado"),
+        mostrar: document.getElementById("mostrar-registros")
+    };
+
+    // Eventos Botones Principales
+    if (nuevaOpBtn) {
+        nuevaOpBtn.addEventListener('click', () => {
             window.location.href = 'https://tesoreria.cambiosorion.cl/nueva-op';
         });
     }
 
-    // Función para obtener las operaciones con los filtros aplicados
+    // Exclusión mutua de checkboxes
+    if (filtros.emitidas && filtros.noEmitidas) {
+        filtros.emitidas.addEventListener('change', () => {
+            if (filtros.emitidas.checked) filtros.noEmitidas.checked = false;
+            resetAndFetch();
+        });
+        filtros.noEmitidas.addEventListener('change', () => {
+            if (filtros.noEmitidas.checked) filtros.emitidas.checked = false;
+            resetAndFetch();
+        });
+    }
+
+    // --- LÓGICA DE DATOS ---
     function obtenerOperaciones() {
         const params = new URLSearchParams();
 
-        params.set('fecha_inicio', fechaInicioInput.value);
-        params.set('fecha_fin', fechaFinInput.value);
-        if (emitidasCheckbox.checked) params.set('emitidas', '1');
-        if (noEmitidasCheckbox.checked) params.set('no_emitidas', '1');
+        // Mapeo específico para el backend de operaciones.php
+        if (filtros.fechaInicio.value) params.set('fecha_inicio', filtros.fechaInicio.value);
+        if (filtros.fechaFin.value) params.set('fecha_fin', filtros.fechaFin.value);
         
-        params.set('numero', numeroInput.value);
-        params.set('cliente', clienteInput.value);
-        params.set('tipo_doc', tipoDocSelect.value);
-        params.set('n_doc', nDocInput.value);
-        params.set('n_nota', nNotaInput.value);
-        params.set('tipo_transaccion', tipoTransaccionSelect.value);
-        params.set('divisa', divisaInput.value);
-        params.set('estado', estadoSelect.value);
+        if (filtros.emitidas.checked) params.set('emitidas', '1');
+        if (filtros.noEmitidas.checked) params.set('no_emitidas', '1');
+        
+        if (filtros.numero.value) params.set('numero', filtros.numero.value.trim());
+        if (filtros.cliente.value) params.set('cliente', filtros.cliente.value.trim());
+        if (filtros.tipoDoc.value) params.set('tipo_doc', filtros.tipoDoc.value);
+        if (filtros.nDoc.value) params.set('n_doc', filtros.nDoc.value.trim());
+        if (filtros.tipoTransaccion.value) params.set('tipo_transaccion', filtros.tipoTransaccion.value);
+        if (filtros.divisa.value) params.set('divisa', filtros.divisa.value.trim());
+        if (filtros.estado.value) params.set('estado', filtros.estado.value);
+        
+        if (filtros.mostrar.value) params.set('mostrar_registros', filtros.mostrar.value);
+        
+        params.set('pagina', paginaActual);
 
-        params.set('buscar', buscarInput.value);
-        params.set('mostrar_registros', mostrarRegistros.value);
-        params.set('pagina', paginaActual); // Enviar página actual
-
-        console.log('Parámetros enviados:', params.toString());
+        // Loading
+        tablaOperaciones.innerHTML = `<tr><td colspan="12" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-blue-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
 
         fetch(`https://cambiosorion.cl/data/operaciones.php?${params.toString()}`)
-            .then(res => res.text()) // Pedir como texto primero
-            .then(text => {
-                console.log("Respuesta cruda del servidor:", text);
-                try {
-                    const data = JSON.parse(text); // 'data' ahora es {operaciones: [], totalFiltrado: N}
-
-                    // Renderizar la tabla con los datos de esta página
-                    renderizarTabla(data.operaciones);
-                    
-                    // Renderizar el conteo
-                    const porPagina = parseInt(mostrarRegistros.value, 10);
-                    renderizarConteo(data.operaciones.length, data.totalFiltrado, porPagina, paginaActual);
-                    
-                    // Renderizar los botones de paginación
-                    renderizarPaginacion(data.totalFiltrado, porPagina, paginaActual);
-
-                } catch (jsonError) {
-                    console.error("Error al parsear JSON:", jsonError, text);
-                    tablaOperaciones.innerHTML = `<tr><td colspan="13" class="text-center text-red-500 py-4 bg-white">Error al cargar datos. Revise la consola.</td></tr>`;
-                    conteoResultados.textContent = 'Error al cargar.';
-                    paginacionContainer.innerHTML = '';
-                }
+            .then(res => res.json())
+            .then(data => {
+                // data estructura esperada: { operaciones: [...], totalFiltrado: N }
+                const lista = data.operaciones || [];
+                const total = parseInt(data.totalFiltrado) || 0;
+                
+                renderizarTabla(lista);
+                renderizarPaginacion(total, parseInt(filtros.mostrar.value), paginaActual);
             })
             .catch(error => {
-                console.error('Error de red al obtener operaciones:', error)
-                tablaOperaciones.innerHTML = `<tr><td colspan="13" class="text-center text-red-500 py-4 bg-white">Error de red. No se pudo conectar.</td></tr>`;
-                conteoResultados.textContent = 'Error de red.';
-                paginacionContainer.innerHTML = '';
+                console.error('Error:', error);
+                tablaOperaciones.innerHTML = `<tr><td colspan="12" class="text-center text-red-500 py-4">Error de conexión.</td></tr>`;
             });
     }
 
-    function formatearFecha(timestamp) {
-        if (!timestamp) return ''; 
-        const fecha = new Date(timestamp);
-        if (isNaN(fecha.getTime())) return timestamp;
-        
-        const hh = String(fecha.getHours()).padStart(2, '0');
-        const min = String(fecha.getMinutes()).padStart(2, '0');
-        const dd = String(fecha.getDate()).padStart(2, '0');
-        const mm = String(fecha.getMonth() + 1).padStart(2, '0');
-        const yyyy = fecha.getFullYear();
-        
-        return `${hh}:${min} ${dd}/${mm}/${yyyy}`;
-    }
-
-    function formatearNumero(numero) {
-        if (numero === null || numero === undefined || numero === '') return '';
-
-        const num = parseFloat(numero);
-        if (isNaN(num)) return '';
-
-        // Redondear a máximo 3 decimales, sin ceros innecesarios
-        const redondeado = Math.round(num * 1000) / 1000;
-
-        return redondeado
-            .toLocaleString('es-CL', {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 3
-            })
-            .replace(/\u00A0/g, '');
-    }
-
-    function limpiarTexto(valor) {
-        return valor === null || valor === undefined ? '' : valor;
-    }
-
-    // Función para mostrar los resultados en la tabla
     function renderizarTabla(operaciones) {
         tablaOperaciones.innerHTML = '';
 
-        if (!operaciones || operaciones.length === 0) {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `<td colspan="13" class="text-center text-gray-700 py-4 bg-white">No se encontraron operaciones</td>`;
-            tablaOperaciones.appendChild(tr);
+        if (operaciones.length === 0) {
+            tablaOperaciones.innerHTML = `<tr><td colspan="12" class="text-center text-gray-500 py-10 italic">No se encontraron operaciones.</td></tr>`;
             return;
         }
 
-        operaciones.forEach(operacion => {
+        operaciones.forEach(op => {
             const tr = document.createElement('tr');
-            tr.classList.add('border-b', 'bg-white', 'border-gray-700', 'text-gray-700');
+            tr.className = 'hover:bg-gray-50 transition border-b border-gray-100 last:border-0 bg-white text-gray-700';
 
-            // Colores según tipo de transacción
-            if (operacion.estado === 'Anulado') {
-                tr.style.backgroundColor = '#f9b8a3'; // rojo
-            } else if (operacion.tipo_transaccion === 'Compra') {
-                tr.style.backgroundColor = '#c3e8f1'; // celeste
-            } else if (operacion.tipo_transaccion === 'Venta') {
-                tr.style.backgroundColor = '#dbf599'; // verde claro
-            }
+            // Colores fondo sutiles
+            if (op.tipo_transaccion === 'Compra') tr.classList.add('bg-blue-50/30');
+            if (op.tipo_transaccion === 'Venta') tr.classList.add('bg-green-50/30');
+            if (op.estado === 'Anulado') tr.classList.add('bg-red-50/50');
 
-            // Crear botón Mostrar
-            const btnMostrar = document.createElement('button');
-            btnMostrar.textContent = 'Mostrar';
-            btnMostrar.className = 'text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1';
-            btnMostrar.addEventListener('click', () => {
-                window.location.href = `detalle-op?id=${operacion.id}`;
-            });
-    
-            // Crear botón Editar
-            const btnEditar = document.createElement('button');
-            btnEditar.textContent = 'Editar';
-            btnEditar.className = 'text-white bg-black hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1';
-    
-            // Crear botón Desactivar
-            const btnDesactivar = document.createElement('button');
-            btnDesactivar.textContent = 'Desactivar';
-            btnDesactivar.className = 'text-white bg-red-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1';
-            
-            // Procesar divisas y tasas como listas tabuladas
-            const divisas = operacion.divisas ? operacion.divisas.split(', ') : [];
-            const tasas = operacion.tasas_cambio ? operacion.tasas_cambio.split('|') : [];
-            const montos = operacion.montos_por_divisa ? operacion.montos_por_divisa.split('|') : [];
+            // Formateo de listas (divisas, montos)
+            const divHTML = (op.divisas || '').split(', ').map(d => `<div>${d}</div>`).join('');
+            const montoHTML = (op.montos_por_divisa || '').split('|').map(m => `<div>${formatearNumero(m)}</div>`).join('');
+            const tasaHTML = (op.tasas_cambio || '').split('|').map(t => `<div>${formatearNumero(t)}</div>`).join('');
 
-            let divisaHTML = divisas.map(d => `<div>${limpiarTexto(d)}</div>`).join('');
-            let montoHTML = montos.map(m => `<div>${formatearNumero(m)}</div>`).join('');
-            let tasaHTML = tasas.map(t => `<div>${formatearNumero(t)}</div>`).join('');
+            // Botón acción
+            const btnVer = document.createElement('button');
+            btnVer.innerHTML = `<svg class="w-5 h-5 text-gray-500 hover:text-blue-600 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
+            btnVer.onclick = () => window.location.href = `detalle-op?id=${op.id}`;
 
             tr.innerHTML = `
-                <td class="px-4 py-2">${formatearFecha(operacion.fecha)}</td>
-                <td class="px-4 py-2">${limpiarTexto(operacion.id)}</td>
-                <td class="px-4 py-2">${limpiarTexto(operacion.nombre_cliente)}</td>
-                <td class="px-4 py-2">${limpiarTexto(operacion.tipo_documento)}</td>
-                <td class="px-4 py-2">${limpiarTexto(operacion.numero_documento)}</td>
-                <td class="px-4 py-2">${limpiarTexto(operacion.numero_nota)}</td>
-                <td class="px-4 py-2">${limpiarTexto(operacion.tipo_transaccion)}</td>
-                <td class="px-4 py-2">${divisaHTML}</td>
-                <td class="px-4 py-2">${montoHTML}</td>
-                <td class="px-4 py-2">${tasaHTML}</td>
-                <td class="px-4 py-2">${formatearNumero(operacion.total)}</td>
-                <td class="px-4 py-2">${limpiarTexto(operacion.estado)}</td>
-                <td class="px-4 py-2 mostrar-btn-cell"></td>
+                <td class="px-4 py-3 whitespace-nowrap text-xs">${formatearFechaHora(op.fecha)}</td>
+                <td class="px-4 py-3 font-mono text-xs font-bold text-gray-600">${op.id}</td>
+                <td class="px-4 py-3 font-semibold text-xs truncate max-w-[140px]">${limpiarTexto(op.nombre_cliente)}</td>
+                <td class="px-4 py-3 text-xs uppercase text-gray-500">${limpiarTexto(op.tipo_documento)}</td>
+                <td class="px-4 py-3 font-mono text-xs">${limpiarTexto(op.numero_documento)}</td>
+                <td class="px-4 py-3 text-center text-xs font-bold uppercase">${limpiarTexto(op.tipo_transaccion)}</td>
+                <td class="px-4 py-3 text-xs font-bold text-slate-700">${divHTML}</td>
+                <td class="px-4 py-3 text-right font-mono text-xs">${montoHTML}</td>
+                <td class="px-4 py-3 text-right font-mono text-xs text-gray-500">${tasaHTML}</td>
+                <td class="px-4 py-3 text-right font-bold font-mono text-slate-800 text-sm">${formatearNumero(op.total)}</td>
+                <td class="px-4 py-3 text-center">
+                    <span class="px-2 py-0.5 rounded text-[10px] uppercase font-bold ${getEstadoClass(op.estado)}">${op.estado}</span>
+                </td>
+                <td class="px-4 py-3 text-center cell-action"></td>
             `;
-    
-            tr.querySelector('.mostrar-btn-cell').appendChild(btnMostrar);
-    
+            
+            tr.querySelector('.cell-action').appendChild(btnVer);
             tablaOperaciones.appendChild(tr);
         });
     }
 
-    function renderizarConteo(mostrados, total, porPagina, pagina) {
-        if (!conteoResultados) return;
-        if (total === 0) {
-            conteoResultados.textContent = 'No se encontraron resultados.';
-            return;
-        }
-        const inicio = ((pagina - 1) * porPagina) + 1;
-        const fin = inicio + mostrados - 1;
-        conteoResultados.textContent = `Mostrando ${inicio}-${fin} de ${total} resultados`;
+    function getEstadoClass(estado) {
+        const est = String(estado).toLowerCase();
+        if(est === 'vigente') return 'bg-green-100 text-green-700 border border-green-200';
+        if(est === 'anulado') return 'bg-red-100 text-red-700 border border-red-200';
+        if(est === 'pagado') return 'bg-blue-100 text-blue-700 border border-blue-200';
+        return 'bg-gray-100 text-gray-600';
     }
 
-    function renderizarPaginacion(total, porPagina, pagina) {
-        if (!paginacionContainer) return;
-        paginacionContainer.innerHTML = '';
-        const totalPaginas = Math.ceil(total / porPagina);
+    // --- PAGINACIÓN ---
+    function renderizarPaginacion(totalRegistros, porPagina, pagina) {
+        conteoResultados.textContent = `Total: ${totalRegistros} registros`;
+        paginationControls.innerHTML = '';
 
+        const totalPaginas = Math.ceil(totalRegistros / porPagina);
         if (totalPaginas <= 1) return;
 
-        if (pagina > 1) {
-            paginacionContainer.appendChild(crearBotonPaginacion('Anterior', pagina - 1));
-        }
+        // Botón Anterior
+        const btnPrev = crearBotonPag('Anterior', pagina > 1, () => cambioPagina(pagina - 1));
+        paginationControls.appendChild(btnPrev);
 
-        const maxBotones = 5;
-        let inicio = Math.max(1, pagina - Math.floor(maxBotones / 2));
-        let fin = Math.min(totalPaginas, inicio + maxBotones - 1);
-        inicio = Math.max(1, fin - maxBotones + 1);
-
-        if (inicio > 1) {
-            paginacionContainer.appendChild(crearBotonPaginacion(1, 1));
-            if (inicio > 2) paginacionContainer.appendChild(crearSpanPaginacion('...'));
-        }
-
-        for (let i = inicio; i <= fin; i++) {
-            paginacionContainer.appendChild(crearBotonPaginacion(i, i, i === pagina));
-        }
-
-        if (fin < totalPaginas) {
-            if (fin < totalPaginas - 1) paginacionContainer.appendChild(crearSpanPaginacion('...'));
-            paginacionContainer.appendChild(crearBotonPaginacion(totalPaginas, totalPaginas));
-        }
-
-        if (pagina < totalPaginas) {
-            paginacionContainer.appendChild(crearBotonPaginacion('Siguiente', pagina + 1));
-        }
-    }
-
-    function crearBotonPaginacion(texto, pagina, esActual = false) {
-        const boton = document.createElement('button');
-        boton.textContent = texto;
-        boton.className = `px-3 py-1 mx-1 rounded-lg focus:outline-none ${
-            esActual 
-            ? 'bg-blue-700 text-white' 
-            : 'bg-white text-gray-700 hover:bg-gray-200'
-        }`;
-        boton.addEventListener('click', (e) => {
-            e.preventDefault();
-            paginaActual = pagina;
-            obtenerOperaciones();
-        });
-        return boton;
-    }
-
-    function crearSpanPaginacion(texto) {
+        // Indicador texto (Estilo simple)
         const span = document.createElement('span');
-        span.textContent = texto;
-        span.className = 'px-3 py-1 mx-1 text-white select-none';
-        return span;
+        span.className = "text-xs font-bold text-gray-600 px-2";
+        span.textContent = `Página ${pagina} de ${totalPaginas}`;
+        paginationControls.appendChild(span);
+
+        // Botón Siguiente
+        const btnNext = crearBotonPag('Siguiente', pagina < totalPaginas, () => cambioPagina(pagina + 1));
+        paginationControls.appendChild(btnNext);
     }
 
-    emitidasCheckbox.addEventListener('change', () => {
-        if (emitidasCheckbox.checked) {
-            noEmitidasCheckbox.checked = false; // Deselecciona el otro
-        }
-        paginaActual = 1; // Resetea la página
-        obtenerOperaciones(); // Vuelve a cargar los datos
-    });
+    function crearBotonPag(texto, habilitado, onClick) {
+        const btn = document.createElement('button');
+        btn.textContent = texto;
+        btn.className = `px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100 text-xs transition ${!habilitado ? 'opacity-50 cursor-not-allowed' : ''}`;
+        btn.disabled = !habilitado;
+        btn.onclick = onClick;
+        return btn;
+    }
 
-    noEmitidasCheckbox.addEventListener('change', () => {
-        if (noEmitidasCheckbox.checked) {
-            emitidasCheckbox.checked = false; // Deselecciona el otro
-        }
-        paginaActual = 1; // Resetea la página
-        obtenerOperaciones(); // Vuelve a cargar los datos
-    });
+    function cambioPagina(nuevaPagina) {
+        paginaActual = nuevaPagina;
+        obtenerOperaciones();
+    }
 
-    const todosLosFiltros = [
-        fechaInicioInput, fechaFinInput,
-        numeroInput, clienteInput, tipoDocSelect, nDocInput, nNotaInput,
-        tipoTransaccionSelect, divisaInput, estadoSelect,
-        mostrarRegistros, buscarInput
-    ];
-
-    todosLosFiltros.forEach(element => {
-        // 'input' para texto/número, 'change' para select/checkbox/date
-        const evento = (element.type === 'checkbox' || element.tagName === 'SELECT' || element.type === 'date') ? 'change' : 'input';
-        
-        element.addEventListener(evento, () => {
-            paginaActual = 1; // Resetear a página 1 en cualquier filtro
-            obtenerOperaciones();
-        });
-    });
+    // --- EVENTOS GENERALES ---
+    const resetAndFetch = () => { paginaActual = 1; obtenerOperaciones(); };
 
     borrarFiltrosBtn.addEventListener('click', () => {
-        fechaInicioInput.value = '';
-        fechaFinInput.value = '';
-        emitidasCheckbox.checked = false;
-        noEmitidasCheckbox.checked = false;
-        numeroInput.value = '';
-        clienteInput.value = '';
-        tipoDocSelect.value = '';
-        nDocInput.value = '';
-        nNotaInput.value = '';
-        tipoTransaccionSelect.value = '';
-        divisaInput.value = '';
-        estadoSelect.value = '';
-        
-        mostrarRegistros.value = '25';
-        buscarInput.value = '';
-        
-        paginaActual = 1;
-        obtenerOperaciones();
+        // Limpiar inputs
+        Object.values(filtros).forEach(input => {
+            if(!input) return;
+            if(input.type === 'checkbox') input.checked = false;
+            else {
+                input.value = '';
+                if(input._flatpickr) input._flatpickr.clear();
+            }
+        });
+        if(filtros.mostrar) filtros.mostrar.value = '25';
+        resetAndFetch();
     });
 
-    // Carga inicial
+    Object.values(filtros).forEach(input => {
+        if(input && input !== filtros.emitidas && input !== filtros.noEmitidas) {
+            input.addEventListener('input', resetAndFetch); // O 'change' para selects
+            input.addEventListener('change', resetAndFetch);
+        }
+    });
+
+    // Iniciar carga
     obtenerOperaciones();
 });
