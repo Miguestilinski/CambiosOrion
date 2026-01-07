@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 // Header
                 const master = data.master;
                 lblIdArqueo.textContent = `#${id}`;
-                lblFecha.textContent = formatearFechaHora(master.fecha);
+                lblFecha.innerHTML = formatearFechaHora(master.fecha);
                 lblCaja.textContent = master.nombre_caja || "Desconocida";
                 lblUsuario.textContent = master.nombre_usuario || "Desconocido";
                 lblObs.textContent = master.observacion || "Sin observaciones.";
