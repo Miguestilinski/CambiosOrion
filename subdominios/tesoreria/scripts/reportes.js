@@ -1,244 +1,223 @@
-document.addEventListener("DOMContentLoaded", () => {
-    let graficoUtilidad = null;
-    let graficoCompras = null;
-    let graficoVentas = null;
+import { 
+    initSystem, 
+    formatearNumero, 
+    mostrarModalError 
+} from './index.js';
 
-    const periodoRadios = Array.from(document.querySelectorAll('input[name="filtro-periodo"]'));
-    const diaWrapper = document.getElementById("dia").closest("div");
-    const mesWrapper = document.getElementById("mes").closest("div");
-    const añoWrapper = document.getElementById("año").closest("div");
-    const trimestreWrapper = document.getElementById("trimestre-wrapper");
-    const nPeriodosInput = document.getElementById("n-periodos");
+document.addEventListener('DOMContentLoaded', () => {
+    initSystem('reportes');
 
-    const inputsPorPeriodo = {
-        dia: [diaWrapper, mesWrapper, añoWrapper],
-        mes: [mesWrapper, añoWrapper],
-        trimestre: [trimestreWrapper, añoWrapper],
-        año: [añoWrapper]
+    // Referencias
+    const tipoReporteSelect = document.getElementById('tipo-reporte');
+    const radiosPeriodo = document.querySelectorAll('input[name="filtro-periodo"]');
+    
+    // Contenedores inputs
+    const wrappers = {
+        dia: document.getElementById('wrapper-dia'),
+        mes: document.getElementById('wrapper-mes'),
+        trimestre: document.getElementById('wrapper-trimestre'),
+        año: document.getElementById('wrapper-año')
     };
 
-    function getPeriodoSeleccionado() {
-        const seleccionado = periodoRadios.find(radio => radio.checked);
-        return seleccionado ? seleccionado.value : "dia";
+    // Inputs valores
+    const inputs = {
+        dia: document.getElementById('dia'),
+        mes: document.getElementById('mes'),
+        anioMes: document.getElementById('año-mes'),
+        trimestre: document.getElementById('trimestre'),
+        anioTrim: document.getElementById('año-trim'),
+        anio: document.getElementById('año')
+    };
+
+    const tablaReporte = document.getElementById('tabla-reporte');
+    const labelPeriodo = document.getElementById('label-periodo');
+
+    // Instancias Chart.js
+    let chartCompras = null;
+    let chartVentas = null;
+
+    // --- 1. CONFIGURACIÓN INICIAL ---
+    
+    // Setear valores por defecto (Hoy)
+    const hoy = new Date();
+    inputs.dia.valueAsDate = hoy;
+    inputs.mes.value = String(hoy.getMonth() + 1).padStart(2, '0');
+    inputs.anioMes.value = hoy.getFullYear();
+    inputs.trimestre.value = Math.floor(hoy.getMonth() / 3) + 1;
+    inputs.anioTrim.value = hoy.getFullYear();
+    inputs.anio.value = hoy.getFullYear();
+
+    // --- 2. LÓGICA VISUAL ---
+
+    function actualizarInputsPeriodo() {
+        const seleccionado = document.querySelector('input[name="filtro-periodo"]:checked').value;
+        
+        // Ocultar todos
+        Object.values(wrappers).forEach(w => w.classList.add('hidden'));
+        
+        // Mostrar seleccionado
+        if (wrappers[seleccionado]) {
+            wrappers[seleccionado].classList.remove('hidden');
+            wrappers[seleccionado].classList.add('flex'); // Asegurar display flex si es necesario
+        }
+
+        cargarDatos();
     }
 
-    function actualizarVisibilidadInputs() {
-        const seleccionado = getPeriodoSeleccionado();
-        const activos = inputsPorPeriodo[seleccionado];
+    radiosPeriodo.forEach(radio => {
+        radio.addEventListener('change', actualizarInputsPeriodo);
+    });
 
-        [diaWrapper, mesWrapper, añoWrapper, trimestreWrapper].forEach(w => w.classList.add("hidden"));
-        activos.forEach(w => w.classList.remove("hidden"));
+    // Listeners para recarga automática
+    [tipoReporteSelect, ...Object.values(inputs)].forEach(el => {
+        el.addEventListener('change', cargarDatos);
+        if(el.type === 'number') el.addEventListener('input', cargarDatos);
+    });
+
+    // --- 3. CARGA DE DATOS ---
+
+    function cargarDatos() {
+        const tipo = tipoReporteSelect.value; // Operaciones, Ingresos, etc.
+        const periodo = document.querySelector('input[name="filtro-periodo"]:checked').value;
+        
+        const params = new URLSearchParams();
+        params.set('tipo', tipo);
+        params.set('periodo', periodo);
+
+        // Agregar params específicos según periodo
+        if (periodo === 'dia') params.set('dia', inputs.dia.value);
+        if (periodo === 'mes') {
+            params.set('mes', inputs.mes.value);
+            params.set('año', inputs.anioMes.value);
+        }
+        if (periodo === 'trimestre') {
+            params.set('trimestre', inputs.trimestre.value);
+            params.set('año', inputs.anioTrim.value);
+        }
+        if (periodo === 'año') params.set('año', inputs.anio.value);
+
+        // Actualizar label
+        labelPeriodo.textContent = `${periodo.toUpperCase()} - ${tipo}`;
+
+        // Loading
+        tablaReporte.innerHTML = `<tr><td colspan="4" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-amber-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
+
+        fetch(`https://cambiosorion.cl/data/reportes.php?${params.toString()}`)
+            .then(res => res.json())
+            .then(data => {
+                // data estructura esperada: { posiciones_divisas: [], compras_divisas: [], ventas_divisas: [] }
+                renderizarTabla(data.posiciones_divisas || []);
+                renderizarGraficos(data.compras_divisas || [], data.ventas_divisas || []);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                tablaReporte.innerHTML = `<tr><td colspan="4" class="text-center text-red-400 py-4">Error al cargar reporte.</td></tr>`;
+            });
     }
 
-    async function cargarReportes() {
-        const tipo = document.getElementById("tipo-reporte").value;
-        const periodo = getPeriodoSeleccionado();
-        const dia = document.getElementById("dia").value;
-        const mes = document.getElementById("mes").value;
-        const trimestre = document.getElementById("trimestre")?.value || "";
-        const año = document.getElementById("año").value;
-        const nPeriodos = nPeriodosInput.value;
+    // --- 4. RENDERIZADO TABLA ---
 
-        console.log(`Pidiendo reporte: tipo=${tipo}, periodo=${periodo}, dia=${dia}, mes=${mes}, trimestre=${trimestre}, año=${año}, n_periodos=${nPeriodos}`);
+    function renderizarTabla(datos) {
+        tablaReporte.innerHTML = '';
 
-        const params = new URLSearchParams({ tipo, periodo, dia, mes, trimestre, año, n_periodos: nPeriodos });
-        const res = await fetch(`https://cambiosorion.cl/data/reportes.php?${params.toString()}`);
-        const data = await res.json();
+        if (datos.length === 0) {
+            tablaReporte.innerHTML = `<tr><td colspan="4" class="text-center text-slate-500 py-10 italic">Sin movimientos en este periodo.</td></tr>`;
+            return;
+        }
 
-        console.log("Data recibida:", data);
+        datos.forEach(row => {
+            const tr = document.createElement('tr');
+            tr.className = "hover:bg-white/5 border-b border-white/5 transition";
 
-        renderGraficoUtilidad(data.utilidad_por_periodo);
-        renderTablaPosiciones(data.posiciones_divisas);
-        renderGraficoYTabla("compras", data.compras_divisas);
-        renderGraficoYTabla("ventas", data.ventas_divisas);
+            const nombreDivisa = row.nombre || row.divisa_id;
+            const icono = row.icono || 'https://cambiosorion.cl/orionapp/icons/default.png';
+            
+            tr.innerHTML = `
+                <td class="px-4 py-3 flex items-center gap-3">
+                    <img src="${icono}" class="w-6 h-6 rounded-full border border-slate-600 bg-slate-800 p-0.5" onerror="this.src='https://cambiosorion.cl/orionapp/icons/default.png'">
+                    <span class="font-bold text-white text-xs">${nombreDivisa}</span>
+                </td>
+                <td class="px-4 py-3 text-right font-mono text-slate-300 text-xs">${formatearNumero(row.cantidad)}</td>
+                <td class="px-4 py-3 text-right font-mono text-slate-500 text-xs">$${formatearNumero(row.promedio)}</td>
+                <td class="px-4 py-3 text-right font-bold font-mono text-amber-400 text-sm">$${formatearNumero(row.monto_total)}</td>
+            `;
+            tablaReporte.appendChild(tr);
+        });
     }
 
-    function renderGraficoUtilidad(datos) {
-        const canvas = document.getElementById("grafico-utilidad");
-        const container = canvas.parentElement;
-        const dpr = window.devicePixelRatio || 1;
-        canvas.style.width = container.clientWidth + "px";
-        canvas.style.height = container.clientHeight + "px";
-        canvas.width = container.clientWidth * dpr;
-        canvas.height = container.clientHeight * dpr;
+    // --- 5. RENDERIZADO GRÁFICOS (Chart.js) ---
 
-        const ctx = canvas.getContext("2d");
+    function renderizarGraficos(compras, ventas) {
+        // Destruir anteriores si existen
+        if (chartCompras) chartCompras.destroy();
+        if (chartVentas) chartVentas.destroy();
 
-        if (graficoUtilidad !== null) graficoUtilidad.destroy();
+        // Configuración Común Dark Mode
+        Chart.defaults.color = '#94a3b8'; // Slate-400
+        Chart.defaults.borderColor = '#334155'; // Slate-700 (grid lines)
 
-        graficoUtilidad = new Chart(ctx, {
-            type: 'line',  // Cambiado a gráfico de líneas
+        // Crear Gráfico Compras
+        chartCompras = createChart('grafico-compras', compras, 'Compras', ['#0ea5e9', '#38bdf8', '#7dd3fc', '#bae6fd']); // Sky Blue Palette
+        
+        // Crear Gráfico Ventas
+        chartVentas = createChart('grafico-ventas', ventas, 'Ventas', ['#10b981', '#34d399', '#6ee7b7', '#a7f3d0']); // Emerald Palette
+    }
+
+    function createChart(canvasId, data, label, colors) {
+        const ctx = document.getElementById(canvasId).getContext('2d');
+        
+        const labels = data.map(d => d.nombre || d.divisa_id);
+        const values = data.map(d => parseFloat(d.monto_total) || 0);
+
+        return new Chart(ctx, {
+            type: 'doughnut', // Gráfico de Dona se ve moderno
             data: {
-                labels: datos.map(d => d.label),
+                labels: labels,
                 datasets: [{
-                    label: 'Utilidad (CLP)',
-                    data: datos.map(d => d.utilidad),
-                    fill: false, // sin relleno debajo de la línea
-                    borderColor: 'rgba(59, 130, 246, 1)',
-                    backgroundColor: 'rgba(59, 130, 246, 0.7)', // color para puntos
-                    tension: 0.3, // suaviza las curvas, puedes ajustar o quitar
-                    pointRadius: 5,
-                    pointHoverRadius: 7,
-                    borderWidth: 2
+                    label: `${label} (CLP)`,
+                    data: values,
+                    backgroundColor: colors,
+                    borderColor: '#0f172a', // Slate-900 (border matches bg)
+                    borderWidth: 2,
+                    hoverOffset: 10
                 }]
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                return value.toLocaleString('es-CL');
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            color: '#e2e8f0', // White text
+                            font: { size: 10 }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                        titleColor: '#f59e0b', // Amber title
+                        bodyColor: '#fff',
+                        borderColor: '#334155',
+                        borderWidth: 1,
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) { label += ': '; }
+                                if (context.parsed !== null) {
+                                    label += '$' + formatearNumero(context.parsed);
+                                }
+                                return label;
                             }
                         }
                     }
                 },
-                plugins: {
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return context.dataset.label + ': ' + context.parsed.y.toLocaleString('es-CL') + ' CLP';
-                            }
-                        }
-                    }
+                layout: {
+                    padding: 10
                 }
             }
         });
     }
 
-    function renderTablaPosiciones(posiciones) {
-        const contenedor = document.getElementById("tabla-posiciones");
-
-        if (!posiciones.length) {
-            contenedor.innerHTML = `<tr><td colspan="8" class="text-center py-4">Sin datos disponibles</td></tr>`;
-            return;
-        }
-
-        contenedor.innerHTML = ""; // Limpiar contenido anterior
-
-        posiciones.forEach(p => {
-            const tr = document.createElement("tr");
-            tr.className = "border-b bg-white border-gray-700 text-gray-700";
-
-            const iconoHTML = p.icono
-                ? `<img src="${p.icono}" alt="${p.nombre}" class="w-6 h-6 rounded-full border border-gray-400" />`
-                : "";
-
-            // Calculamos los valores CLP inicial y final por si no vienen ya precalculados
-            const valorCLPInicial = (p.saldo_inicial ?? 0) * (p.promedio_inicial ?? 0);
-            const valorCLPFinal = (p.cantidad ?? 0) * (p.pmp ?? 0);
-            const utilidad = p.utilidad ?? 0;
-
-            tr.innerHTML = `
-                <td class="px-4 py-2 flex items-center gap-2">${iconoHTML}<span>${p.nombre}</span></td>
-                <td class="px-4 py-2">${Number(p.saldo_inicial ?? 0).toLocaleString("es-CL")}</td>
-                <td class="px-4 py-2">${Number(p.promedio_inicial ?? 0).toLocaleString("es-CL")}</td>
-                <td class="px-4 py-2">${Number(valorCLPInicial).toLocaleString("es-CL")}</td>
-                <td class="px-4 py-2">${Number(p.cantidad ?? 0).toLocaleString("es-CL")}</td>
-                <td class="px-4 py-2">${Number(p.pmp ?? 0).toLocaleString("es-CL")}</td>
-                <td class="px-4 py-2">${Number(valorCLPFinal).toLocaleString("es-CL")}</td>
-                <td class="px-4 py-2">${Number(utilidad).toLocaleString("es-CL")}</td>
-            `;
-
-            contenedor.appendChild(tr);
-        });
-    }
-
-    function renderGraficoYTabla(tipo, datos) {
-        const tabla = document.getElementById(`tabla-${tipo}`);
-
-        if (datos.length === 0) {
-            tabla.innerHTML = `<tr><td colspan="6" class="text-center py-4">Sin datos disponibles</td></tr>`;
-            return;
-        }
-
-        tabla.innerHTML = ""; // Limpiar contenido previo
-
-        datos.forEach(d => {
-            const iconoHTML = d.icono
-                ? `<img src="${d.icono}" alt="${d.nombre}" class="w-6 h-6 rounded-full border border-gray-400" />`
-                : "";
-
-            const tr = document.createElement("tr");
-            tr.className = "border-b bg-white border-gray-700 text-gray-700";
-
-            tr.innerHTML = `
-                <td class="px-4 py-2 flex items-center gap-2">${iconoHTML}<span>${d.nombre}</span></td>
-                <td class="px-4 py-2">${Number(d.cantidad).toLocaleString("es-CL")}</td>
-                <td class="px-4 py-2">${Number(d.promedio).toLocaleString("es-CL")}</td>
-                <td class="px-4 py-2">${Number(d.cantidad * d.promedio).toLocaleString("es-CL")}</td>
-                <td class="px-4 py-2">-</td>
-                <td class="px-4 py-2">-</td>
-            `;
-
-            tabla.appendChild(tr);
-        });
-
-        const canvas = document.getElementById(`grafico-${tipo}`);
-        const ctx = canvas.getContext("2d");
-
-        const chart = tipo === "compras" ? graficoCompras : graficoVentas;
-        if (chart) chart.destroy();
-
-        const nuevoChart = new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: datos.map(d => d.nombre), // Mostrar nombre en la leyenda
-                datasets: [{
-                    label: `${tipo === 'compras' ? 'Compras' : 'Ventas'} (CLP)`,
-                    data: datos.map(d => d.cantidad * d.promedio),
-                    backgroundColor: datos.map((_, i) =>
-                        `hsl(${(i * 50) % 360}, 70%, 60%)`
-                    ),
-                    borderColor: 'white',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: {
-                    legend: {
-                        position: 'right', // Opcional, para mejorar estética
-                        labels: {
-                            boxWidth: 12,
-                            padding: 10,
-                            color: 'white'
-                        }
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function (context) {
-                                const label = context.label || '';
-                                const value = context.raw;
-                                const total = context.dataset.data.reduce((sum, val) => sum + val, 0);
-                                const percentage = ((value / total) * 100).toFixed(1);
-                                return `${label}: ${value.toLocaleString()} CLP (${percentage}%)`;
-                            }
-                        }
-                    }
-                }
-            }
-        });
-
-        if (tipo === "compras") graficoCompras = nuevoChart;
-        if (tipo === "ventas") graficoVentas = nuevoChart;
-    }
-
-    periodoRadios.forEach(radio => {
-        radio.addEventListener("change", () => {
-            actualizarVisibilidadInputs();
-            cargarReportes();
-        });
-    });
-
-    ["dia", "mes", "trimestre", "año", "n-periodos", "tipo-reporte"].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.addEventListener("change", cargarReportes);
-    });
-
-    actualizarVisibilidadInputs();
-    cargarReportes();
+    // Inicializar
+    actualizarInputsPeriodo();
 });
