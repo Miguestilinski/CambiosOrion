@@ -3,7 +3,7 @@
 export const SystemConfig = {
     apiBase: 'https://cambiosorion.cl/data',
     loginUrl: 'https://admin.cambiosorion.cl/login',
-    sidebarFile: 'sidebar-tesoreria.html'
+    sidebarFile: 'sidebar.html'
 };
 
 export async function initSystem(currentPageId) {
