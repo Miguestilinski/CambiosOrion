@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 // --- CARGA DE DATOS ---
 async function cargarDatosIniciales(cajaId) {
     try {
-        const res = await fetch(`https://cambiosorion.cl/data/arqueo-caja.php?caja_id=${cajaId}`, { credentials: "include" });
+        const res = await fetch(`https://cambiosorion.cl/data/arqueo-tesoreria.php?caja_id=${cajaId}`, { credentials: "include" });
         const data = await res.json();
         
         if(data.error) throw new Error(data.error);
