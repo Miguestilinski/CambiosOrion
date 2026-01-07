@@ -1,385 +1,151 @@
+import { 
+    initSystem, 
+    limpiarTexto, 
+    formatearNumero, 
+    formatearFechaHora, 
+    mostrarModalError 
+} from './index.js';
+
 let usuarioSesion = null;
-let caja_id = null;
-let modoCompletarPendientes = false;
-let totalesPorDivisa = {};
 
 document.addEventListener('DOMContentLoaded', async () => {
-    const nuevoTraspasoBtn = document.getElementById('nuevo-tp');
-    const completarPendientesBtn = document.getElementById('activar-completado');
-    const tabla = document.getElementById('tabla-transacciones');
-    const resumenTotales = document.getElementById('resumen-totales');
-    const contenedorAcciones = document.getElementById('resumen-completado');
-
-    const filtros = {
-        numero: document.getElementById("numero"),
-        fecha: document.getElementById("fecha"),
-        transaccion: document.getElementById("transaccion"),
-        origen: document.getElementById("origen"),
-        destino: document.getElementById("destino"),
-        divisa: document.getElementById("divisa"),
-        monto: document.getElementById("monto"),
-        estado: document.getElementById("estado"),
-        mostrar: document.getElementById("mostrar-registros"),
-        buscar: document.getElementById("buscar"),
-        caja_id: { value: "" }
-    };
-
-    // 1. Obtener Sesión
-    try {
-        const res = await fetch("https://cambiosorion.cl/data/session_status.php", {
-            credentials: "include"
-        });
-        if (!res.ok) throw new Error("No se pudo obtener la sesión.");
-        const data = await res.json();
-        usuarioSesion = data;
-        console.log("Usuario autenticado:", usuarioSesion);
-
-        if (usuarioSesion && usuarioSesion.caja_id !== undefined) {
-            caja_id = usuarioSesion.caja_id;
-            filtros.caja_id.value = usuarioSesion.caja_id;
-            obtenerTraspasos();
-        } else {
-            console.warn("Usuario sin caja asignada o sesión inválida");
-            // Intentamos cargar igual por si es admin visualizando todo
-            obtenerTraspasos();
-        }
-    } catch (error) {
-        console.error("Error obteniendo la sesión:", error);
-    }
-
-    if (nuevoTraspasoBtn) {
-        nuevoTraspasoBtn.addEventListener('click', () => {
-            // Ajusta esta URL si tu archivo de nuevo traspaso se llama diferente
-            window.location.href = 'nuevo-tp'; 
-        });
-    }
-    if (completarPendientesBtn) {
-        completarPendientesBtn.addEventListener('click', () => {
-            modoCompletarPendientes = !modoCompletarPendientes;
-            actualizarModoCompletar();
-        });
-    }
-
-    function actualizarModoCompletar() {
-        // Buscar el thead correctamente
-        const tableElem = tabla.closest('table');
-        const thead = tableElem ? tableElem.querySelector('thead') : null;
-        
-        const checkboxes = tabla.querySelectorAll('.checkbox-completar');
-        const botonesIndividuales = tabla.querySelectorAll('.btn-completar-individual');
-        const selectAllRow = document.getElementById('fila-select-todos');
-
-        if (modoCompletarPendientes) {
-            // Activar Modo
-            completarPendientesBtn.textContent = 'Cancelar';
-            completarPendientesBtn.classList.remove('bg-yellow-600', 'hover:bg-yellow-700', 'focus:ring-yellow-300');
-            completarPendientesBtn.classList.add('bg-red-600', 'hover:bg-red-700', 'focus:ring-red-300');
-
-            contenedorAcciones.classList.remove('hidden');
-            
-            // Agregar columna de checkbox al header si no existe
-            if (thead) {
-                const filaEncabezado = thead.querySelector('tr');
-                // Asumimos que la tabla normal tiene 9 columnas. Si tiene 9, agregamos la 10ma (checkbox)
-                if (filaEncabezado && filaEncabezado.children.length === 9) {
-                    const nuevaColumna = document.createElement('th');
-                    nuevaColumna.className = 'px-4 py-2';
-                    nuevaColumna.textContent = ''; // Columna vacía para el checkbox
-                    filaEncabezado.insertBefore(nuevaColumna, filaEncabezado.firstElementChild);
-                }
-            }
-            if (selectAllRow) selectAllRow.classList.remove('hidden');
-
-        } else {
-            // Desactivar Modo
-            completarPendientesBtn.textContent = 'Completar Traspasos Pendientes';
-            completarPendientesBtn.classList.remove('bg-red-600', 'hover:bg-red-700', 'focus:ring-red-300');
-            completarPendientesBtn.classList.add('bg-yellow-600', 'hover:bg-yellow-700', 'focus:ring-yellow-300');
-
-            contenedorAcciones.classList.add('hidden');
-
-            // Remover columna del header
-            if (thead) {
-                const filaEncabezado = thead.querySelector('tr');
-                if (filaEncabezado && filaEncabezado.children.length > 9) {
-                    filaEncabezado.removeChild(filaEncabezado.firstElementChild);
-                }
-            }
-            if (selectAllRow) selectAllRow.classList.add('hidden');
-        }
-        
-        // Recargar tabla para renderizar checkboxes correctamente
+    // 1. Inicializar sistema
+    const sessionData = await initSystem('traspasos');
+    if (sessionData) {
+        usuarioSesion = sessionData;
         obtenerTraspasos();
     }
 
-    function actualizarTotales() {
-        const totalHtml = Object.entries(totalesPorDivisa).map(([divisa, monto]) => {
-            return `<span class="block bg-gray-900 px-2 py-1 rounded text-xs mr-2 mb-1">${divisa}: ${formatearNumero(monto)}</span>`;
-        }).join('');
-        resumenTotales.innerHTML = totalHtml || '<span class="text-xs text-gray-400">Seleccione traspasos...</span>';
+    // Referencias DOM
+    const tablaTraspasos = document.getElementById('tabla-traspasos');
+    const conteoResultados = document.getElementById('conteo-resultados');
+    const paginationControls = document.getElementById('pagination-controls');
+    
+    const nuevoTpBtn = document.getElementById('nuevo-tp');
+    const borrarFiltrosBtn = document.getElementById('borrar-filtros');
+
+    let paginaActual = 1;
+
+    // Filtros
+    const filtros = {
+        numero: document.getElementById('numero'),
+        fecha: document.getElementById('fecha'),
+        origen: document.getElementById('origen'),
+        destino: document.getElementById('destino'),
+        divisa: document.getElementById('divisa'),
+        estado: document.getElementById('estado'),
+        mostrar: document.getElementById('mostrar-registros')
+    };
+
+    if (nuevoTpBtn) {
+        nuevoTpBtn.addEventListener('click', () => {
+            window.location.href = 'https://tesoreria.cambiosorion.cl/nuevo-tp';
+        });
     }
 
+    // --- FETCH DATOS ---
     function obtenerTraspasos() {
         const params = new URLSearchParams();
 
-        for (const [clave, input] of Object.entries(filtros)) {
-            let valor = input.value;
-            if (typeof valor === 'string') valor = valor.trim();
-            else if (valor === null || valor === undefined) valor = '';
-            else valor = String(valor);
-            params.set(clave, valor);
-        }
+        if (filtros.numero.value) params.set('numero', filtros.numero.value.trim());
+        if (filtros.fecha.value) params.set('fecha', filtros.fecha.value);
+        if (filtros.origen.value) params.set('origen', filtros.origen.value.trim());
+        if (filtros.destino.value) params.set('destino', filtros.destino.value.trim());
+        if (filtros.divisa.value) params.set('divisa', filtros.divisa.value.trim());
+        if (filtros.estado.value) params.set('estado', filtros.estado.value);
+        
+        // El PHP de traspasos recibe 'caja_id' para filtrar permisos, si es 99 (Tesorero) ve todo
+        if (usuarioSesion) params.set('caja_id', usuarioSesion.caja_id);
 
-        // IMPORTANTE: credentials: 'include' para asegurar que el backend reciba la cookie si la necesita
-        fetch(`https://cambiosorion.cl/data/traspasos.php?${params.toString()}`, {
-            credentials: 'include'
-        })
-            .then(response => response.text())
-            .then(rawText => {
-                try {
-                    const data = JSON.parse(rawText);
-                    mostrarResultados(data);
-                } catch (e) {
-                    console.error("Error al parsear JSON:", e);
-                    tabla.innerHTML = `<tr><td colspan="9" class="text-center py-4 text-red-500">Error en datos recibidos</td></tr>`;
-                }
+        // Spinner Ámbar
+        tablaTraspasos.innerHTML = `<tr><td colspan="9" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-amber-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
+
+        fetch(`https://cambiosorion.cl/data/traspasos.php?${params.toString()}`)
+            .then(res => res.json())
+            .then(response => {
+                // traspasos.php devuelve { exito: true, data: [...] }
+                const lista = response.data || [];
+                // La paginación en este endpoint parece ser frontend o limitada, asumiremos lista completa por ahora
+                // Si el PHP implementa paginación real, ajustaríamos aquí.
+                
+                renderizarTabla(lista);
+                conteoResultados.textContent = `Total: ${lista.length} registros`;
+                paginationControls.innerHTML = ''; // Limpiar paginación si no la trae el backend
             })
-            .catch(error => console.error('Error al obtener traspasos:', error));
+            .catch(error => {
+                console.error('Error:', error);
+                tablaTraspasos.innerHTML = `<tr><td colspan="9" class="text-center text-red-400 py-4">Error de conexión.</td></tr>`;
+            });
     }
 
-    function limpiarTexto(valor) {
-        return valor === null || valor === undefined ? '' : valor;
-    }
+    // --- RENDERIZADO ---
+    function renderizarTabla(traspasos) {
+        tablaTraspasos.innerHTML = '';
 
-    function formatearNumero(numero) {
-        if (!numero) return '0';
-        return Number(numero).toLocaleString('es-CL');
-    }
-
-    function mostrarResultados(traspasos) {
-        tabla.innerHTML = '';
-        totalesPorDivisa = {}; // Resetear totales al recargar
-        actualizarTotales();
-
-        if (!traspasos || traspasos.length === 0) {
-            const cols = modoCompletarPendientes ? 10 : 9;
-            tabla.innerHTML = `<tr><td colspan="${cols}" class="text-center text-white py-8 bg-gray-800">No se encontraron traspasos</td></tr>`;
+        if (traspasos.length === 0) {
+            tablaTraspasos.innerHTML = `<tr><td colspan="9" class="text-center text-slate-500 py-10 italic">No se encontraron traspasos.</td></tr>`;
             return;
         }
 
-        // Fila "Seleccionar Todos" (Solo si modo activo)
-        if (modoCompletarPendientes) {
-            const filaSelectTodos = document.createElement('tr');
-            filaSelectTodos.id = 'fila-select-todos';
-            filaSelectTodos.className = 'bg-gray-700 border-b border-gray-600';
-            filaSelectTodos.innerHTML = `
-                <td colspan="8" class="px-4 py-2 text-white">
-                    <label class="flex items-center cursor-pointer font-bold text-yellow-500">
-                        <input type="checkbox" id="checkbox-select-todos" class="rounded mr-2 bg-gray-600 border-gray-500">
-                        Seleccionar todos los visibles
-                    </label>
-                </td>
-                <td colspan="2" class="px-4 py-2 text-right">
-                    <button id="btn-completar-masivo" class="bg-green-600 hover:bg-green-700 text-white font-bold text-xs px-4 py-2 rounded shadow">
-                        CONFIRMAR SELECCIONADOS
-                    </button>
-                </td>
-            `;
-            tabla.appendChild(filaSelectTodos);
-
-            setTimeout(() => {
-                const selectAllCheckbox = document.getElementById('checkbox-select-todos');
-                if (selectAllCheckbox) {
-                    selectAllCheckbox.addEventListener('change', (e) => {
-                        const checked = e.target.checked;
-                        tabla.querySelectorAll('.checkbox-completar').forEach(cb => {
-                            cb.checked = checked;
-                            cb.dispatchEvent(new Event('change'));
-                        });
-                    });
-                }
-
-                const btnCompletarMasivo = document.getElementById('btn-completar-masivo');
-                if (btnCompletarMasivo) {
-                    btnCompletarMasivo.addEventListener('click', () => {
-                        const seleccionados = Array.from(tabla.querySelectorAll('.checkbox-completar:checked'));
-                        const ids = seleccionados.map(cb => cb.dataset.id);
-                        if (ids.length === 0) {
-                            mostrarModalError({ titulo: "⚠️ Atención", mensaje: "No has seleccionado ningún traspaso." });
-                            return;
-                        }
-                        completarTraspasos(ids);
-                    });
-                }
-            }, 0);
-        }
-
-        traspasos.forEach(tp => {
+        traspasos.forEach(row => {
             const tr = document.createElement('tr');
-            tr.className = 'bg-white border-b border-gray-700 text-gray-700 hover:bg-gray-50 transition';
+            tr.className = 'hover:bg-white/5 transition-all border-b border-white/5 last:border-0 text-slate-300';
 
-            const esPendiente = (tp.estado || '').toLowerCase() === 'pendiente';
+            // Estados
+            let estadoClass = "bg-slate-800 text-slate-400 border border-slate-700";
+            const est = String(row.estado).toLowerCase();
+            if(est === 'completado') estadoClass = "bg-green-900/40 text-green-300 border border-green-500/30";
+            if(est === 'pendiente') estadoClass = "bg-amber-900/40 text-amber-300 border border-amber-500/30";
+            if(est === 'anulado' || est === 'rechazado') estadoClass = "bg-red-900/40 text-red-300 border border-red-500/30";
 
-            // 1. Columna Checkbox (Solo si modo activo)
-            if (modoCompletarPendientes) {
-                const tdCheckbox = document.createElement('td');
-                tdCheckbox.className = 'px-4 py-2 text-center';
-                
-                if (esPendiente) {
-                    const checkbox = document.createElement('input');
-                    checkbox.type = 'checkbox';
-                    checkbox.className = 'checkbox-completar rounded bg-gray-200 border-gray-400 cursor-pointer w-5 h-5';
-                    checkbox.setAttribute('data-id', tp.id);
-                    checkbox.setAttribute('data-monto', tp.monto);
-                    checkbox.setAttribute('data-divisa', tp.divisa);
-                    
-                    checkbox.addEventListener('change', () => {
-                        const monto = parseFloat(tp.monto);
-                        const divisa = tp.divisa;
-                        if (checkbox.checked) {
-                            totalesPorDivisa[divisa] = (totalesPorDivisa[divisa] || 0) + monto;
-                        } else {
-                            totalesPorDivisa[divisa] = (totalesPorDivisa[divisa] || 0) - monto;
-                            if (totalesPorDivisa[divisa] <= 0) delete totalesPorDivisa[divisa];
-                        }
-                        actualizarTotales();
-                    });
-                    tdCheckbox.appendChild(checkbox);
-                }
-                tr.appendChild(tdCheckbox);
-            }
+            // Botón Acción
+            const btnVer = document.createElement('button');
+            btnVer.innerHTML = `<svg class="w-5 h-5 text-slate-400 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
+            btnVer.className = 'flex items-center justify-center p-1.5 bg-white/5 rounded-full hover:bg-amber-600 shadow-sm border border-transparent transition-all mx-auto';
+            btnVer.onclick = (e) => {
+                e.stopPropagation();
+                // Si tienes detalle, redirigir. Si no, quizas solo un alert o modal simple.
+                // window.location.href = `detalle-traspaso?id=${row.id}`; 
+                alert(`Detalle Traspaso #${row.id} pendiente de implementación.`);
+            };
 
-            // 2. Columnas de Datos
-            const campos = [
-                tp.id,
-                tp.fecha,
-                tp.transaccion_id || '-',
-                tp.origen,
-                tp.destino,
-                tp.divisa,
-                formatearNumero(tp.monto),
-                tp.estado
-            ];
+            tr.innerHTML = `
+                <td class="px-4 py-3 whitespace-nowrap text-xs">${formatearFechaHora(row.fecha)}</td>
+                <td class="px-4 py-3 font-mono text-xs font-bold text-slate-500">${limpiarTexto(row.id)}</td>
+                <td class="px-4 py-3 font-semibold text-sm text-slate-300 truncate max-w-[150px]">${limpiarTexto(row.origen)}</td>
+                <td class="px-4 py-3 text-center">
+                    <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                </td>
+                <td class="px-4 py-3 font-semibold text-sm text-white truncate max-w-[150px]">${limpiarTexto(row.destino)}</td>
+                <td class="px-4 py-3 text-center font-bold text-amber-400 text-xs">${limpiarTexto(row.divisa)}</td>
+                <td class="px-4 py-3 text-right font-bold font-mono text-white text-sm">${formatearNumero(row.monto)}</td>
+                <td class="px-4 py-3 text-center">
+                    <span class="px-2 py-0.5 rounded text-[10px] uppercase font-bold ${estadoClass}">${limpiarTexto(row.estado)}</span>
+                </td>
+                <td class="px-4 py-3 text-center cell-action"></td>
+            `;
 
-            campos.forEach((texto, index) => {
-                const td = document.createElement('td');
-                td.className = 'px-4 py-2 whitespace-nowrap';
-                if(index === 0) td.className += ' font-bold'; // ID en negrita
-                if(index === 6) td.className += ' text-right font-mono'; // Monto alineado
-                td.textContent = limpiarTexto(texto);
-                tr.appendChild(td);
-            });
-
-            // 3. Acciones (BOTÓN MODIFICADO)
-            const tdAcciones = document.createElement('td');
-            tdAcciones.className = 'px-4 py-2 text-center';
-
-            if (esPendiente) {
-                const btnCompletar = document.createElement('button');
-                btnCompletar.textContent = 'Completar';
-                btnCompletar.className = 'bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-xs font-bold shadow';
-                btnCompletar.addEventListener('click', () => completarTraspasos([tp.id]));
-                tdAcciones.appendChild(btnCompletar);
-            } else {
-                // AQUÍ ESTÁ EL CAMBIO: Botón mostrar con redirección activa
-                const btnVer = document.createElement('button');
-                btnVer.textContent = 'Mostrar'; 
-                btnVer.className = 'text-white bg-blue-700 hover:bg-blue-800 font-medium rounded text-xs px-3 py-1';
-                btnVer.addEventListener('click', () => {
-                    window.location.href = `detalle-tp?id=${tp.id}`; 
-                });
-                tdAcciones.appendChild(btnVer);
-            }
-            tr.appendChild(tdAcciones);
-            tabla.appendChild(tr);
+            tr.querySelector('.cell-action').appendChild(btnVer);
+            tablaTraspasos.appendChild(tr);
         });
     }
 
-    function completarTraspasos(ids) {
-        if(!confirm(`¿Estás seguro de completar ${ids.length} traspaso(s)?`)) return;
+    // --- EVENTOS ---
+    const resetAndFetch = () => { obtenerTraspasos(); };
 
-        fetch('https://cambiosorion.cl/data/traspasos.php?caja_id=' + caja_id, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include', // <--- IMPORTANTE
-            body: JSON.stringify({ ids: ids })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.exito) {
-                mostrarModalExitoso();
-            } else {
-                mostrarModalError({ titulo: "❌ Error", mensaje: data.mensaje });
-            }
-        })
-        .catch(err => {
-            mostrarModalError({ titulo: "❌ Error de Conexión", mensaje: err.message });
+    borrarFiltrosBtn.addEventListener('click', () => {
+        Object.values(filtros).forEach(input => {
+            if(!input) return;
+            input.value = '';
+            if(input._flatpickr) input._flatpickr.clear();
         });
-    }
+        resetAndFetch();
+    });
 
-    // Listeners filtros
-    Object.entries(filtros).forEach(([clave, input]) => {
-        if (clave !== "caja_id") {
-            input.addEventListener('input', () => {
-                clearTimeout(window.searchTimeout);
-                window.searchTimeout = setTimeout(obtenerTraspasos, 400); // Debounce
-            });
-            input.addEventListener('change', obtenerTraspasos);
+    Object.values(filtros).forEach(input => {
+        if(input) {
+            input.addEventListener('input', resetAndFetch);
+            input.addEventListener('change', resetAndFetch);
         }
     });
 });
-
-// Funciones Auxiliares para los Modales (sin cambiar tu HTML)
-function mostrarModalError({ titulo, mensaje, textoConfirmar = "Aceptar", textoCancelar = null, onConfirmar, onCancelar }) {
-  const modal = document.getElementById("modal-error");
-  if(!modal) { alert(mensaje); return; }
-
-  const tituloElem = document.getElementById("modal-error-titulo");
-  const mensajeElem = document.getElementById("modal-error-mensaje");
-  const btnConfirmar = document.getElementById("modal-error-confirmar");
-  const btnCancelar = document.getElementById("modal-error-cancelar");
-
-  tituloElem.textContent = titulo;
-  mensajeElem.textContent = mensaje;
-  btnConfirmar.textContent = textoConfirmar;
-
-  if (textoCancelar) {
-    btnCancelar.classList.remove("hidden");
-    btnCancelar.textContent = textoCancelar;
-  } else {
-    btnCancelar.classList.add("hidden");
-  }
-
-  modal.classList.remove("hidden");
-
-  // Clonar botones para limpiar eventos previos
-  const newConfirm = btnConfirmar.cloneNode(true);
-  const newCancel = btnCancelar.cloneNode(true);
-  btnConfirmar.parentNode.replaceChild(newConfirm, btnConfirmar);
-  btnCancelar.parentNode.replaceChild(newCancel, btnCancelar);
-
-  newConfirm.onclick = () => { modal.classList.add("hidden"); if (onConfirmar) onConfirmar(); };
-  newCancel.onclick = () => { modal.classList.add("hidden"); if (onCancelar) onCancelar(); };
-}
-
-function mostrarModalExitoso() {
-  const modal = document.getElementById("modal-exitoso");
-  if(!modal) { alert("Operación Exitosa"); window.location.reload(); return; }
-  
-  modal.classList.remove("hidden");
-  const btnVolver = document.getElementById("volver");
-  
-  // Limpiar eventos previos
-  const newVolver = btnVolver.cloneNode(true);
-  btnVolver.parentNode.replaceChild(newVolver, btnVolver);
-  
-  newVolver.onclick = () => {
-    modal.classList.add("hidden");
-    // Recargar la tabla para ver cambios
-    // Podríamos recargar la página completa también: window.location.reload();
-    // Pero mejor solo recargar datos:
-    const btnRefresh = document.getElementById('nuevo-tp'); // Hack para disparar recarga o llamar funcion si fuera global
-    // Como obtenerTraspasos está en scope local, simulamos click en filtro o recargamos:
-    window.location.reload(); 
-  };
-}

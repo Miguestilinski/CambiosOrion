@@ -63,173 +63,126 @@
         </div>
     </header>
 
-    <div class="flex flex-1 overflow-hidden relative">
+    <div class="flex flex-1 overflow-hidden relative layout-container">
         <div id="sidebar-container" class="hidden lg:block h-full z-10"></div>
         
         <main class="flex-1 overflow-y-auto p-4 md:p-8 relative" id="dashboard-content">
-            <section id="traspasos" class="content-section active">
-                <!-- Título y botón Nuevo Traspaso -->
-                <div class="flex items-center mb-6">
-                    <h1 class="text-2xl font-medium mr-4 leading-none text-white">Traspasos</h1>
-                    <button type="button" id="nuevo-tp"
-                        class="text-white bg-blue-700 mr-4 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
-                        Nuevo Traspaso
-                    </button>
-                    <button type="button" id="activar-completado"
-                        class="text-white bg-yellow-600 hover:bg-yellow-700 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5">
-                        Completar Traspasos Pendientes
-                    </button>
-
-                    <!-- Sección resumen seleccionados -->
-                    <div id="resumen-completado" class="hidden ml-4 text-white">
-                        <p id="resumen-totales" class="text-sm"></p>
-                        <button id="btn-completar-seleccionados" class="mt-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded hidden">
-                            Completar Seleccionados
-                        </button>
-                        <button id="cancelar-completado" class="mt-2 ml-2 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded hidden">
-                            Cancelar
+            <section id="traspasos" class="max-w-7xl mx-auto fade-in h-full flex flex-col">
+                
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-2xl font-bold text-white drop-shadow-md tracking-tight">Traspasos de Caja</h1>
+                    <div class="flex gap-3">
+                        <button type="button" id="nuevo-tp" class="text-white bg-amber-600 hover:bg-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.3)] font-bold rounded-lg text-sm px-5 py-2.5 transition flex items-center border border-amber-500">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+                            Nuevo Traspaso
                         </button>
                     </div>
                 </div>
-                
-                <!-- Filtros -->
-                <div class="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-6">
-                    <div>
-                        <label for="numero" class="block mb-1 text-sm text-white">Nº</label>
-                        <input type="text" id="numero" 
-                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label for="fecha" class="block mb-1 text-sm text-white">Fecha</label>
-                        <input type="text" id="fecha" 
-                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label for="transaccion" class="block mb-1 text-sm text-white">Transacción</label>
-                        <input type="text" id="transaccion" 
-                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label for="origen" class="block mb-1 text-sm text-white">Origen</label>
-                        <select id="origen" 
-                            class="select-list block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Seleccionar</option>
-                            <option value="tesoreria">Tesoreria</option>
-                            <option value="caja 1">Caja 1</option>
-                            <option value="caja 2">Caja 2</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="destino" class="block mb-1 text-sm text-white">Destino</label>
-                        <select id="destino" 
-                            class="select-list block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Seleccionar</option>
-                            <option value="tesoreria">Tesoreria</option>
-                            <option value="caja 1">Caja 1</option>
-                            <option value="caja 2">Caja 2</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="divisa" class="block mb-1 text-sm text-white">Divisa</label>
-                        <input type="text" id="divisa" 
-                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label for="monto" class="block mb-1 text-sm text-white">Monto</label>
-                        <input type="text" id="monto" 
-                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label for="estado" class="block mb-1 text-sm text-white">Estado</label>
-                        <select id="estado" 
-                            class="select-list block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Seleccionar</option>
-                            <option value="vigente">Vigente</option>
-                            <option value="pagado">Pagado</option>
-                            <option value="anulado">Anulado</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <!-- Mostrar registros y buscar -->
-                <div class="flex items-center justify-between mb-6">
-                    <div class="flex items-center space-x-2">
-                        <label for="mostrar-registros" class="text-sm text-white">Mostrar</label>
-                        <select id="mostrar-registros" 
-                            class="block px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="25">25</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                        </select>
-                        <span class="text-sm text-white">registros</span>
-                    </div>
-                    <div>
-                        <input type="text" id="buscar" placeholder="Buscar" 
-                            class="block w-64 px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                </div>
-                
-                <!-- Tabla de operaciones -->
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left text-white bg-gray-800">
-                        <thead class="text-xs uppercase bg-gray-800 text-white">
-                            <tr>
-                                <th class="px-4 py-2">Número</th>
-                                <th class="px-4 py-2">Fecha</th>
-                                <th class="px-4 py-2">Transacción</th>
-                                <th class="px-4 py-2">Origen</th>
-                                <th class="px-4 py-2">Destino</th>
-                                <th class="px-4 py-2">Divisa</th>
-                                <th class="px-4 py-2">Monto</th>
-                                <th class="px-4 py-2">Estado</th>
-                                <th class="px-4 py-2"></th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabla-transacciones">
-                            <tr class="bg-white border-b border-gray-700 text-gray-700">
-                                <td class="px-4 py-2">12345</td>
-                                <td class="px-4 py-2">2025-01-28</td>
-                                <td class="px-4 py-2">54321</td>
-                                <td class="px-4 py-2">Tesoreria</td>
-                                <td class="px-4 py-2">Caja 1</td>
-                                <td class="px-4 py-2">Peso Chileno</td>
-                                <td class="px-4 py-2">1.000.000</td>
-                                <td class="px-4 py-2">Pagado</td>
-                                <td class="px-4 py-2">
-                                    <button class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1">
-                                        Mostrar
-                                    </button>
-                                </td>
-                            </tr>
-                            <!-- Más filas -->
-                        </tbody>
-                    </table>
-                </div>
 
-                <!-- Modal Error -->
-                <div id="modal-error" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-                <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
-                    <h2 id="modal-error-titulo" class="text-lg font-semibold mb-4">Título</h2>
-                    <p id="modal-error-mensaje" class="mb-4">Mensaje</p>
-                    <div class="flex justify-end space-x-4">
-                    <button id="modal-error-cancelar" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hidden">Cancelar</button>
-                    <button id="modal-error-confirmar" class="bg-blue-600 text-white px-4 py-2 rounded">Aceptar</button>
-                    </div>
-                </div>
-                </div>
+                <div class="bg-slate-900/90 backdrop-blur-md rounded-xl shadow-2xl border border-white/10 p-5 mb-6">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-4 mb-5 pb-5 border-b border-white/10">
+                        <div class="md:col-span-6 flex gap-4">
+                            <div class="flex-1 relative date-input-wrapper">
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Fecha</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    </div>
+                                    <input type="text" id="fecha" class="flatpickr block w-full pl-10 pr-3 py-2 text-sm rounded-lg bg-slate-800 border border-slate-700 text-white placeholder-slate-500 focus:ring-amber-500 focus:border-amber-500 transition-colors" placeholder="Seleccionar fecha...">
+                                </div>
+                            </div>
+                        </div>
 
-                <!-- Modal de transaccion exitosa -->
-                <div id="modal-exitoso" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-                <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
-                    <h2 class="text-lg font-semibold mb-4">✅ Traspasos completados</h2>
-                    <p class="mb-4">Los traspasos se han completado correctamente.</p>
-                    <div class="flex justify-end space-x-4">
-                    <button id="volver" class="bg-gray-300 text-gray-700 px-4 py-2 rounded">Volver</button>
+                        <div class="md:col-span-6 flex items-end justify-end">
+                            <button type="button" id="borrar-filtros" class="text-slate-400 hover:text-amber-400 hover:bg-white/5 bg-transparent border border-slate-600 hover:border-amber-500/50 font-medium rounded-lg text-xs px-4 py-2.5 transition flex items-center justify-center h-[38px]">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                                Limpiar Filtros
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-3">
+                        <div>
+                            <label class="block mb-1 text-[10px] font-bold text-slate-400 uppercase">ID</label>
+                            <input type="text" id="numero" class="w-full text-xs border-slate-700 bg-slate-800 text-white rounded-lg focus:ring-amber-500 focus:border-amber-500 h-9 placeholder-slate-600" placeholder="#">
+                        </div>
+                        <div>
+                            <label class="block mb-1 text-[10px] font-bold text-slate-400 uppercase">Origen</label>
+                            <input type="text" id="origen" class="w-full text-xs border-slate-700 bg-slate-800 text-white rounded-lg focus:ring-amber-500 focus:border-amber-500 h-9 placeholder-slate-600" placeholder="Caja origen...">
+                        </div>
+                        <div>
+                            <label class="block mb-1 text-[10px] font-bold text-slate-400 uppercase">Destino</label>
+                            <input type="text" id="destino" class="w-full text-xs border-slate-700 bg-slate-800 text-white rounded-lg focus:ring-amber-500 focus:border-amber-500 h-9 placeholder-slate-600" placeholder="Caja destino...">
+                        </div>
+                        <div>
+                            <label class="block mb-1 text-[10px] font-bold text-slate-400 uppercase">Divisa</label>
+                            <input type="text" id="divisa" class="w-full text-xs border-slate-700 bg-slate-800 text-white rounded-lg focus:ring-amber-500 focus:border-amber-500 h-9 placeholder-slate-600" placeholder="Ej: USD">
+                        </div>
+                        <div>
+                            <label class="block mb-1 text-[10px] font-bold text-slate-400 uppercase">Estado</label>
+                            <select id="estado" class="w-full text-xs rounded-md border-slate-700 bg-slate-800 text-white focus:border-amber-500 focus:ring-amber-500 px-2 py-2">
+                                <option value="">Todos</option>
+                                <option value="pendiente">Pendiente</option>
+                                <option value="completado">Completado</option>
+                                <option value="anulado">Anulado</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block mb-1 text-[10px] font-bold text-slate-400 uppercase">Mostrar</label>
+                            <select id="mostrar-registros" class="w-full text-xs rounded-md border-slate-700 bg-slate-800 text-white focus:border-amber-500 focus:ring-amber-500 px-2 py-2">
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
+                
+                <div class="bg-slate-900/80 backdrop-blur-md rounded-xl shadow-xl border border-white/10 overflow-hidden flex flex-col w-full">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left border-collapse">
+                            <thead class="text-xs uppercase bg-slate-950/80 text-slate-400 font-extrabold tracking-wide sticky top-0 z-20 shadow-sm border-b border-white/10">
+                                <tr>
+                                    <th class="px-4 py-4 w-[140px]">Fecha</th>
+                                    <th class="px-4 py-4 w-20">ID</th>
+                                    <th class="px-4 py-4 w-1/4">Origen</th>
+                                    <th class="px-4 py-4 w-8 text-center"></th> <th class="px-4 py-4 w-1/4">Destino</th>
+                                    <th class="px-4 py-4 w-24 text-center">Divisa</th>
+                                    <th class="px-4 py-4 w-32 text-right">Monto</th>
+                                    <th class="px-4 py-4 w-28 text-center">Estado</th>
+                                    <th class="px-4 py-4 w-16 text-center">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-traspasos" class="divide-y divide-white/5 text-slate-300">
+                                </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="bg-slate-900 px-4 py-3 border-t border-white/10 flex justify-between items-center text-xs text-slate-400">
+                        <div id="conteo-resultados">Cargando resultados...</div>
+                        <div class="flex items-center gap-2" id="pagination-controls"></div>
+                    </div>
                 </div>
-            </section> 
+                
+                <div class="h-8"></div> 
+            </section>        
         </main>
+    </div>
+
+    <div id="modal-error" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+        <div class="bg-slate-800 rounded-xl shadow-2xl p-6 max-w-sm w-full mx-4 border border-white/10">
+            <div class="flex flex-col items-center text-center">
+                <div class="bg-red-900/50 p-3 rounded-full mb-3">
+                    <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                </div>
+                <h2 id="modal-error-titulo" class="text-lg font-bold text-white mb-2">Error</h2>
+                <p id="modal-error-mensaje" class="text-sm text-slate-400 mb-6">...</p>
+                <div class="flex justify-end gap-2 w-full">
+                    <button id="modal-error-confirmar" class="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 font-bold text-sm transition shadow-lg shadow-red-900/20">Aceptar</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <footer class="bg-black  mt-auto">
