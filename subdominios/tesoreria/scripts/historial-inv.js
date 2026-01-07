@@ -1,209 +1,200 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // --- 1. Obtener elementos ---
-    const mostrarRegistros = document.getElementById('mostrar-registros');
-    const buscarInput = document.getElementById('buscar');
-    const fechaInicioInput = document.getElementById('fecha-inicio');
-    const fechaFinInput = document.getElementById('fecha-fin');
-    const cajaSelect = document.getElementById('caja');
-    const borrarFiltrosBtn = document.getElementById('borrar-filtros');
-    const tablaHistorial = document.getElementById('tabla-historial');
-    const volverBtn = document.getElementById('volver-inventarios');
+import { 
+    initSystem, 
+    limpiarTexto, 
+    formatearFechaHora,
+    mostrarModalError 
+} from './index.js';
 
+document.addEventListener('DOMContentLoaded', async () => {
+    // 1. Inicializar sistema
+    await initSystem('arqueo'); // Usamos 'arqueo' para que se ilumine esa sección en sidebar
+
+    // --- Referencias ---
+    const tablaHistorial = document.getElementById('tabla-historial');
     const conteoResultados = document.getElementById('conteo-resultados');
-    const paginacionContainer = document.getElementById('paginacion-container');
+    const paginationControls = document.getElementById('pagination-controls');
+    
+    const borrarFiltrosBtn = document.getElementById('borrar-filtros');
+    const volverBtn = document.getElementById('volver-cuadratura');
+    const selectCaja = document.getElementById('caja');
+
     let paginaActual = 1;
+
+    // Filtros
+    const filtros = {
+        fechaInicio: document.getElementById("fecha-inicio"),
+        fechaFin: document.getElementById("fecha-fin"),
+        caja: selectCaja,
+        buscar: document.getElementById("buscar"),
+        mostrar: document.getElementById("mostrar-registros")
+    };
 
     if (volverBtn) {
         volverBtn.addEventListener('click', () => {
-            window.location.href = 'https://tesoreria.cambiosorion.cl/inventarios';
+            window.location.href = 'https://tesoreria.cambiosorion.cl/arqueo';
         });
     }
 
-    // --- 2. Cargar Cajas (para el filtro) ---
-    function cargarCajas() {
-        fetch("https://cambiosorion.cl/data/historial-inv.php?action=cajas")
-            .then(res => res.json())
-            .then(cajas => {
-                cajaSelect.innerHTML = '<option value="">Todas</option>'; // Opción por defecto
-                cajas.forEach(caja => {
-                    const option = document.createElement("option");
-                    option.value = caja.id;
-                    option.textContent = caja.nombre;
-                    cajaSelect.appendChild(option);
+    // --- CARGAR CAJAS ---
+    async function cargarCajas() {
+        try {
+            const res = await fetch("https://cambiosorion.cl/data/historial-inv.php?action=cajas");
+            const cajas = await res.json();
+            
+            if (Array.isArray(cajas)) {
+                selectCaja.innerHTML = '<option value="">Todas</option>';
+                cajas.forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = c.id;
+                    opt.textContent = c.nombre;
+                    selectCaja.appendChild(opt);
                 });
-                // Carga inicial de datos después de cargar cajas
-                obtenerHistorial();
-            })
-            .catch(error => console.error("Error al cargar cajas:", error));
+            }
+        } catch (e) {
+            console.error("Error cargando cajas", e);
+        }
     }
 
-    // --- 3. Función principal de Fetch ---
+    // --- FETCH DATOS ---
     function obtenerHistorial() {
         const params = new URLSearchParams();
-        params.set('fecha_inicio', fechaInicioInput.value);
-        params.set('fecha_fin', fechaFinInput.value);
-        params.set('caja', cajaSelect.value);
-        params.set('buscar', buscarInput.value);
-        params.set('mostrar_registros', mostrarRegistros.value);
-        params.set('pagina', paginaActual);
+
+        if (filtros.fechaInicio.value) params.set('fecha_inicio', filtros.fechaInicio.value);
+        if (filtros.fechaFin.value) params.set('fecha_fin', filtros.fechaFin.value);
+        if (filtros.caja.value) params.set('caja_id', filtros.caja.value);
+        if (filtros.buscar.value) params.set('buscar', filtros.buscar.value.trim());
+        
+        const limit = parseInt(filtros.mostrar.value) || 25;
+        const offset = (paginaActual - 1) * limit;
+        params.set('limit', limit);
+        params.set('offset', offset);
+
+        // Spinner
+        if(tablaHistorial) {
+            tablaHistorial.innerHTML = `<tr><td colspan="7" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-amber-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
+        }
 
         fetch(`https://cambiosorion.cl/data/historial-inv.php?${params.toString()}`)
-            .then(res => res.text())
-            .then(text => {
-                console.log("Respuesta cruda:", text);
-                try {
-                    const data = JSON.parse(text); 
-                    
-                    if (data.historial) {
-                        renderizarTabla(data.historial);
-                        const porPagina = parseInt(mostrarRegistros.value, 10);
-                        renderizarConteo(data.historial.length, data.totalFiltrado, porPagina, paginaActual);
-                        renderizarPaginacion(data.totalFiltrado, porPagina, paginaActual);
-                    } else {
-                        throw new Error(data.error || "Formato de datos incorrecto");
-                    }
-                } catch (e) {
-                    console.error("Error al parsear JSON:", e, text);
-                    tablaHistorial.innerHTML = '<tr><td colspan="6" class="text-center text-red-500 py-4">Error al procesar datos.</td></tr>';
-                }
+            .then(res => res.json())
+            .then(data => {
+                const lista = data.data || []; // Ajustar según lo que devuelva tu PHP (usualmente data o historial)
+                const total = parseInt(data.total) || lista.length;
+
+                renderizarTabla(lista);
+                renderizarPaginacion(total, limit, paginaActual);
             })
-            .catch(error => console.error('Error al obtener historial:', error));
+            .catch(error => {
+                console.error('Error:', error);
+                if(tablaHistorial) tablaHistorial.innerHTML = `<tr><td colspan="7" class="text-center text-red-400 py-4">Error de conexión.</td></tr>`;
+            });
     }
 
-    // --- 4. Función de Renderizado de Tabla ---
-    function formatearFecha(timestamp) {
-        if (!timestamp) return ''; 
-        const fecha = new Date(timestamp);
-        if (isNaN(fecha.getTime())) return timestamp;
-        const hh = String(fecha.getHours()).padStart(2, '0');
-        const min = String(fecha.getMinutes()).padStart(2, '0');
-        const dd = String(fecha.getDate()).padStart(2, '0');
-        const mm = String(fecha.getMonth() + 1).padStart(2, '0');
-        const yyyy = fecha.getFullYear();
-        return `${hh}:${min} ${dd}/${mm}/${yyyy}`;
-    }
-
-    function renderizarTabla(historial) {
+    // --- RENDERIZADO ---
+    function renderizarTabla(lista) {
+        if(!tablaHistorial) return;
         tablaHistorial.innerHTML = '';
-        if (!historial || historial.length === 0) {
-            tablaHistorial.innerHTML = '<tr><td colspan="6" class="text-center text-gray-700 py-4 bg-white">No se encontraron arqueos.</td></tr>';
+
+        if (lista.length === 0) {
+            tablaHistorial.innerHTML = `<tr><td colspan="7" class="text-center text-slate-500 py-10 italic">No se encontraron arqueos.</td></tr>`;
             return;
         }
 
-        historial.forEach(item => {
+        lista.forEach(row => {
             const tr = document.createElement('tr');
-            tr.classList.add('border-b', 'bg-white', 'border-gray-700', 'text-gray-700');
+            tr.className = 'hover:bg-white/5 transition-all border-b border-white/5 last:border-0 text-slate-300';
 
-            const btnMostrar = document.createElement('button');
-            btnMostrar.textContent = 'Mostrar';
-            btnMostrar.className = 'text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1';
-            btnMostrar.addEventListener('click', () => {
-                window.location.href = `detalle-arqueo?id=${item.id}`;
-            });
-
-            // Lógica de Diferencia
-            const dif = parseFloat(item.total_diferencia);
-            let estadoHTML;
-            if (dif === 0 || isNaN(dif)) {
-                estadoHTML = `<span class="text-green-600 font-medium">Cuadrado</span>`;
+            // Cálculo visual de diferencia total (si viene en el query, sino 0)
+            const diff = parseFloat(row.total_diferencia) || 0;
+            let diffHtml = '';
+            if (Math.abs(diff) < 1) {
+                diffHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-900/40 text-green-400 border border-green-500/30">
+                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> 
+                                Cuadrado
+                            </span>`;
             } else {
-                estadoHTML = `<span class="text-red-600 font-bold">Con Diferencia</span>`;
+                diffHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-900/40 text-red-400 border border-red-500/30">
+                                ${diff > 0 ? '+' : ''}${diff.toLocaleString('es-CL')}
+                            </span>`;
             }
 
+            // Botón Acción
+            const btnVer = document.createElement('button');
+            btnVer.innerHTML = `<svg class="w-5 h-5 text-slate-400 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
+            btnVer.className = 'flex items-center justify-center p-1.5 bg-white/5 rounded-full hover:bg-amber-600 shadow-sm border border-transparent transition-all mx-auto';
+            btnVer.onclick = (e) => {
+                e.stopPropagation();
+                // Redirigir a detalle de arqueo
+                window.location.href = `detalle-arqueo?id=${row.id}`; 
+            };
+
             tr.innerHTML = `
-                <td class="px-4 py-2">${formatearFecha(item.fecha)}</td>
-                <td class="px-4 py-2">${item.nombre_caja || 'N/A'}</td>
-                <td class="px-4 py-2">${item.nombre_usuario || 'N/A'}</td>
-                <td class="px-4 py-2">${item.observacion || ''}</td>
-                <td class="px-4 py-2">${estadoHTML}</td>
-                <td class="px-4 py-2 mostrar-btn-cell"></td>
+                <td class="px-4 py-3 whitespace-nowrap text-xs">${formatearFechaHora(row.fecha)}</td>
+                <td class="px-4 py-3 font-mono text-xs font-bold text-slate-500">${limpiarTexto(row.id)}</td>
+                <td class="px-4 py-3 text-sm text-white font-semibold">${limpiarTexto(row.nombre_caja)}</td>
+                <td class="px-4 py-3 text-xs text-slate-400">${limpiarTexto(row.nombre_usuario)}</td>
+                <td class="px-4 py-3 text-xs text-slate-500 italic max-w-[200px] truncate">${limpiarTexto(row.observacion)}</td>
+                <td class="px-4 py-3 text-center">${diffHtml}</td>
+                <td class="px-4 py-3 text-center cell-action"></td>
             `;
 
-            tr.querySelector('.mostrar-btn-cell').appendChild(btnMostrar);
+            tr.querySelector('.cell-action').appendChild(btnVer);
             tablaHistorial.appendChild(tr);
         });
     }
 
-    // --- 5. Funciones de Paginación (Copiadas de clientes.js) ---
-    function renderizarConteo(mostrados, total, porPagina, pagina) {
-        if (!conteoResultados) return;
-        if (total === 0) {
-            conteoResultados.textContent = 'No se encontraron resultados.';
-            return;
-        }
-        const inicio = ((pagina - 1) * porPagina) + 1;
-        const fin = inicio + mostrados - 1;
-        conteoResultados.textContent = `Mostrando ${inicio}-${fin} de ${total} resultados`;
-    }
-    function renderizarPaginacion(total, porPagina, pagina) {
-        if (!paginacionContainer) return;
-        paginacionContainer.innerHTML = '';
-        const totalPaginas = Math.ceil(total / porPagina);
+    // --- PAGINACIÓN ---
+    function renderizarPaginacion(totalRegistros, porPagina, pagina) {
+        if(!conteoResultados || !paginationControls) return;
+        conteoResultados.textContent = `Total: ${totalRegistros}`;
+        paginationControls.innerHTML = '';
+
+        const totalPaginas = Math.ceil(totalRegistros / porPagina);
         if (totalPaginas <= 1) return;
-        if (pagina > 1) paginacionContainer.appendChild(crearBotonPaginacion('Anterior', pagina - 1));
-        const maxBotones = 5;
-        let inicio = Math.max(1, pagina - Math.floor(maxBotones / 2));
-        let fin = Math.min(totalPaginas, inicio + maxBotones - 1);
-        inicio = Math.max(1, fin - maxBotones + 1);
-        if (inicio > 1) {
-            paginacionContainer.appendChild(crearBotonPaginacion(1, 1));
-            if (inicio > 2) paginacionContainer.appendChild(crearSpanPaginacion('...'));
-        }
-        for (let i = inicio; i <= fin; i++) {
-            paginacionContainer.appendChild(crearBotonPaginacion(i, i, i === pagina));
-        }
-        if (fin < totalPaginas) {
-            if (fin < totalPaginas - 1) paginacionContainer.appendChild(crearSpanPaginacion('...'));
-            paginacionContainer.appendChild(crearBotonPaginacion(totalPaginas, totalPaginas));
-        }
-        if (pagina < totalPaginas) paginacionContainer.appendChild(crearBotonPaginacion('Siguiente', pagina + 1));
-    }
-    function crearBotonPaginacion(texto, pagina, esActual = false) {
-        const boton = document.createElement('button');
-        boton.textContent = texto;
-        boton.className = `px-3 py-1 mx-1 rounded-lg focus:outline-none ${
-            esActual ? 'bg-blue-700 text-white' : 'bg-white text-gray-700 hover:bg-gray-200'
-        }`;
-        boton.addEventListener('click', (e) => {
-            e.preventDefault();
-            paginaActual = pagina;
-            obtenerHistorial();
-        });
-        return boton;
-    }
-    function crearSpanPaginacion(texto) {
+
+        const crearBtn = (txt, disabled, fn) => {
+            const b = document.createElement('button');
+            b.textContent = txt;
+            b.className = `px-3 py-1 bg-slate-800 border border-slate-600 rounded hover:bg-slate-700 text-white text-xs ${disabled?'opacity-50 cursor-not-allowed':''}`;
+            b.disabled = disabled;
+            b.onclick = fn;
+            return b;
+        };
+
+        paginationControls.appendChild(crearBtn('Anterior', pagina === 1, () => cambioPagina(pagina - 1)));
         const span = document.createElement('span');
-        span.textContent = texto;
-        span.className = 'px-3 py-1 mx-1 text-white select-none';
-        return span;
+        span.className = "text-xs font-bold text-slate-400 px-2";
+        span.textContent = `${pagina} / ${totalPaginas}`;
+        paginationControls.appendChild(span);
+        paginationControls.appendChild(crearBtn('Siguiente', pagina === totalPaginas, () => cambioPagina(pagina + 1)));
     }
 
-    // --- 6. Listeners para Filtros ---
-    const todosLosFiltros = [
-        fechaInicioInput, fechaFinInput, cajaSelect, 
-        mostrarRegistros, buscarInput
-    ];
+    function cambioPagina(nuevaPagina) {
+        paginaActual = nuevaPagina;
+        obtenerHistorial();
+    }
 
-    todosLosFiltros.forEach(el => {
-        const evento = (el.tagName === 'SELECT') ? 'change' : 'input';
-        el.addEventListener(evento, () => {
-            paginaActual = 1;
-            obtenerHistorial();
+    // --- EVENTOS ---
+    const resetAndFetch = () => { paginaActual = 1; obtenerHistorial(); };
+
+    if(borrarFiltrosBtn) {
+        borrarFiltrosBtn.addEventListener('click', () => {
+            filtros.fechaInicio.value = '';
+            filtros.fechaFin.value = '';
+            filtros.caja.value = '';
+            filtros.buscar.value = '';
+            filtros.mostrar.value = '25';
+            resetAndFetch();
         });
+    }
+
+    Object.values(filtros).forEach(input => {
+        if(input) {
+            input.addEventListener('input', resetAndFetch);
+            input.addEventListener('change', resetAndFetch);
+        }
     });
 
-    if (borrarFiltrosBtn) {
-        borrarFiltrosBtn.addEventListener('click', () => {
-            fechaInicioInput.value = '';
-            fechaFinInput.value = '';
-            cajaSelect.value = '';
-            buscarInput.value = '';
-            mostrarRegistros.value = '25';
-            paginaActual = 1;
-            obtenerHistorial();
-        });
-    }
-
-    // --- 7. Carga inicial ---
-    cargarCajas();
+    // Carga inicial
+    await cargarCajas();
+    obtenerHistorial();
 });

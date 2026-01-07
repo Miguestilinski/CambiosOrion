@@ -45,6 +45,13 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
 
         // Botones
+        const btnHistorial = document.getElementById("ver-historial");
+        if (btnHistorial) {
+            btnHistorial.addEventListener("click", () => {
+                window.location.href = "https://tesoreria.cambiosorion.cl/historial-inv";
+            });
+        }
+
         const btnParcial = document.getElementById("guardar-parcial");
         if(btnParcial) {
             btnParcial.addEventListener("click", () => {
