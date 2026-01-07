@@ -6,35 +6,46 @@ let divisaSeleccionadaId = null;
 
 document.addEventListener("DOMContentLoaded", function() {
     getSession();
-    cargarSidebar(); // Tu función estándar
+    cargarSidebar(); 
     
     // Filtro lista lateral
-    document.getElementById('buscar-divisa').addEventListener('input', (e) => {
-        renderListaLateral(e.target.value);
-    });
+    const inputBuscar = document.getElementById('buscar-divisa');
+    if(inputBuscar) {
+        inputBuscar.addEventListener('input', (e) => {
+            renderListaLateral(e.target.value);
+        });
+    }
 
     // Guardar parcial
-    document.getElementById("guardar-parcial").addEventListener("click", () => {
-        if(!caja_id) return;
-        guardarLocalStorage();
-        const btn = document.getElementById("guardar-parcial");
-        const original = btn.innerHTML;
-        btn.innerHTML = `Guardado!`;
-        setTimeout(() => btn.innerHTML = original, 1500);
-    });
+    const btnParcial = document.getElementById("guardar-parcial");
+    if(btnParcial) {
+        btnParcial.addEventListener("click", () => {
+            if(!caja_id) return;
+            guardarLocalStorage();
+            const original = btnParcial.innerHTML;
+            btnParcial.innerHTML = `<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Guardado!`;
+            setTimeout(() => btnParcial.innerHTML = original, 1500);
+        });
+    }
 
     // Guardar final
-    document.getElementById("guardar-arqueo-btn").addEventListener("click", guardarArqueoFinal);
+    const btnFinal = document.getElementById("guardar-arqueo-btn");
+    if(btnFinal) {
+        btnFinal.addEventListener("click", guardarArqueoFinal);
+    }
     
     // Botón limpiar conteo de divisa actual
-    document.getElementById("btn-limpiar-detalle").addEventListener("click", () => {
-        if(divisaSeleccionadaId) {
-            estadoArqueo[divisaSeleccionadaId] = { fisico_total: 0, desglose: {} };
-            renderDetalle(divisaSeleccionadaId);
-            renderListaLateral();
-            guardarLocalStorage();
-        }
-    });
+    const btnLimpiar = document.getElementById("btn-limpiar-detalle");
+    if(btnLimpiar) {
+        btnLimpiar.addEventListener("click", () => {
+            if(divisaSeleccionadaId) {
+                estadoArqueo[divisaSeleccionadaId] = { fisico_total: 0, desglose: {} };
+                renderDetalle(divisaSeleccionadaId);
+                renderListaLateral();
+                guardarLocalStorage();
+            }
+        });
+    }
 });
 
 // --- FUNCIONES CORE ---
@@ -50,7 +61,7 @@ async function getSession() {
         caja_id = usuarioSesion.caja_id;
         
         const headerName = document.getElementById('header-user-name');
-        if(headerName) headerName.textContent = data.nombre;
+        if(headerName) headerName.textContent = data.nombre ? data.nombre.split(' ')[0] : 'Usuario';
 
         if (!caja_id) {
             mostrarErrorSinCaja();
@@ -88,9 +99,10 @@ async function cargarDatosIniciales(cajaId) {
         
         // Seleccionar la primera por defecto si existe
         if(divisasBase.length > 0) {
-            seleccionarDivisa(divisasBase[0].id);
+            seleccionarDivisa(divisasBase[0].id); // CORREGIDO: Ahora coincide con la función de abajo
         } else {
-            document.getElementById('lista-divisas').innerHTML = '<p class="text-center p-4 text-gray-400">Sin divisas asignadas</p>';
+            const listaDivisas = document.getElementById('lista-divisas');
+            if(listaDivisas) listaDivisas.innerHTML = '<p class="text-center p-4 text-gray-400">Sin divisas asignadas</p>';
         }
 
     } catch (error) {
@@ -103,14 +115,19 @@ async function cargarDatosIniciales(cajaId) {
 
 function renderListaLateral(filtro = "") {
     const contenedor = document.getElementById('lista-divisas');
+    if(!contenedor) return;
     contenedor.innerHTML = "";
     
     let pendientes = 0;
     let cuadradas = 0;
 
     divisasBase.forEach(divisa => {
-        // Filtrado
-        if(filtro && !divisa.nombre.toLowerCase().includes(filtro.toLowerCase()) && !divisa.codigo.toLowerCase().includes(filtro.toLowerCase())) return;
+        // Filtrado seguro
+        const nombre = divisa.nombre ? divisa.nombre.toLowerCase() : "";
+        const codigo = divisa.codigo ? divisa.codigo.toLowerCase() : "";
+        const filtroSafe = filtro.toLowerCase();
+
+        if(filtro && !nombre.includes(filtroSafe) && !codigo.includes(filtroSafe)) return;
 
         // Cálculos estado
         const sistema = parseFloat(divisa.total_sistema) || 0;
@@ -125,16 +142,13 @@ function renderListaLateral(filtro = "") {
         const isSelected = divisaSeleccionadaId === divisa.id;
         
         item.className = `cursor-pointer p-3 border-b border-slate-50 hover:bg-slate-50 transition flex items-center justify-between ${isSelected ? 'active-currency' : ''}`;
-        item.onclick = () => selectingDivisa(divisa.id);
+        item.onclick = () => seleccionarDivisa(divisa.id); // CORREGIDO
 
         // Icono estado (Verde check o Rojo exclamación)
         let statusIcon = esCuadrada 
             ? `<div class="w-2 h-2 rounded-full bg-green-500 shadow-sm shadow-green-200"></div>`
             : `<div class="w-2 h-2 rounded-full bg-red-500 shadow-sm shadow-red-200"></div>`;
         
-        // Si no se ha tocado (fisico es 0 y sistema > 0), quizás mostrar gris? 
-        // Mantengamos rojo si hay diferencia, pero visualmente limpio.
-
         item.innerHTML = `
             <div class="flex items-center gap-3">
                 <img src="${divisa.icono || 'https://cambiosorion.cl/orionapp/icons/default.png'}" class="w-8 h-8 rounded-full border border-gray-200 object-contain bg-white p-0.5">
@@ -151,13 +165,16 @@ function renderListaLateral(filtro = "") {
         contenedor.appendChild(item);
     });
 
-    document.getElementById('contador-pendientes').textContent = pendientes;
-    document.getElementById('contador-cuadradas').textContent = cuadradas;
+    const elPendientes = document.getElementById('contador-pendientes');
+    const elCuadradas = document.getElementById('contador-cuadradas');
+    if(elPendientes) elPendientes.textContent = pendientes;
+    if(elCuadradas) elCuadradas.textContent = cuadradas;
 }
 
-function selectingDivisa(id) {
+function seleccionarDivisa(id) { // CORREGIDO: Nombre unificado
     divisaSeleccionadaId = id;
-    renderListaLateral(document.getElementById('buscar-divisa').value); // Re-render para highlight active
+    const inputBusqueda = document.getElementById('buscar-divisa');
+    renderListaLateral(inputBusqueda ? inputBusqueda.value : ""); 
     renderDetalle(id);
 }
 
@@ -166,13 +183,19 @@ function renderDetalle(id) {
     if(!divisa) return;
 
     // Mostrar panel
-    document.getElementById('panel-vacio').classList.add('hidden');
-    document.getElementById('panel-detalle').classList.remove('hidden');
+    const panelVacio = document.getElementById('panel-vacio');
+    const panelDetalle = document.getElementById('panel-detalle');
+    if(panelVacio) panelVacio.classList.add('hidden');
+    if(panelDetalle) panelDetalle.classList.remove('hidden');
 
     // Header info
-    document.getElementById('detalle-nombre').textContent = divisa.nombre;
-    document.getElementById('detalle-codigo').textContent = divisa.codigo;
-    document.getElementById('detalle-icono').src = divisa.icono || 'https://cambiosorion.cl/orionapp/icons/default.png';
+    const elNombre = document.getElementById('detalle-nombre');
+    const elCodigo = document.getElementById('detalle-codigo');
+    const elIcono = document.getElementById('detalle-icono');
+    
+    if(elNombre) elNombre.textContent = divisa.nombre;
+    if(elCodigo) elCodigo.textContent = divisa.codigo;
+    if(elIcono) elIcono.src = divisa.icono || 'https://cambiosorion.cl/orionapp/icons/default.png';
 
     // Cargar datos actuales
     const sistema = parseFloat(divisa.total_sistema) || 0;
@@ -181,30 +204,34 @@ function renderDetalle(id) {
     const diferencia = fisico - sistema;
 
     // Actualizar tarjetas superiores
-    document.getElementById('detalle-sistema').textContent = sistema.toLocaleString('es-CL', { minimumFractionDigits: 2 });
-    document.getElementById('detalle-fisico').textContent = fisico.toLocaleString('es-CL', { minimumFractionDigits: 2 });
+    const elSistema = document.getElementById('detalle-sistema');
+    const elFisico = document.getElementById('detalle-fisico');
+    const elDiferencia = document.getElementById('detalle-diferencia');
+    const elDiffBg = document.getElementById('indicador-diferencia-bg');
+
+    if(elSistema) elSistema.textContent = sistema.toLocaleString('es-CL', { minimumFractionDigits: 2 });
+    if(elFisico) elFisico.textContent = fisico.toLocaleString('es-CL', { minimumFractionDigits: 2 });
     
-    const diffElem = document.getElementById('detalle-diferencia');
-    diffElem.textContent = (diferencia > 0 ? "+" : "") + diferencia.toLocaleString('es-CL', { minimumFractionDigits: 2 });
-    
-    // Colores Diferencia
-    const diffBg = document.getElementById('indicador-diferencia-bg');
-    if(Math.abs(diferencia) < 0.01) {
-        diffElem.className = "text-lg font-mono font-black text-green-500 relative z-10";
-        diffBg.className = "absolute inset-0 bg-green-50 opacity-50";
-    } else {
-        diffElem.className = "text-lg font-mono font-black text-red-500 relative z-10";
-        diffBg.className = "absolute inset-0 bg-red-50 opacity-50";
+    if(elDiferencia) {
+        elDiferencia.textContent = (diferencia > 0 ? "+" : "") + diferencia.toLocaleString('es-CL', { minimumFractionDigits: 2 });
+        
+        if(Math.abs(diferencia) < 0.01) {
+            elDiferencia.className = "text-lg font-mono font-black text-green-500 relative z-10";
+            if(elDiffBg) elDiffBg.className = "absolute inset-0 bg-green-50 opacity-50";
+        } else {
+            elDiferencia.className = "text-lg font-mono font-black text-red-500 relative z-10";
+            if(elDiffBg) elDiffBg.className = "absolute inset-0 bg-red-50 opacity-50";
+        }
     }
 
     // TABLA DENOMINACIONES
     const tbody = document.getElementById('tabla-denominaciones');
+    if(!tbody) return;
     tbody.innerHTML = "";
 
-    // Parsear denominaciones (asumiendo string "20000,10000" o JSON)
+    // Parsear denominaciones
     let denoms = [];
     if(divisa.denominacion) {
-        // Intentar parsear si es JSON string o CSV
         if(divisa.denominacion.includes('[') || divisa.denominacion.includes('{')) {
             try { denoms = JSON.parse(divisa.denominacion); } catch(e) { denoms = []; }
         } else {
@@ -212,9 +239,8 @@ function renderDetalle(id) {
         }
     }
 
-    // Caso 1: Divisa con Billetes/Monedas definidos
+    // Caso 1: Divisa con Billetes/Monedas
     if (denoms.length > 0) {
-        // Ordenar mayor a menor numéricamente
         denoms.sort((a,b) => parseFloat(b) - parseFloat(a));
 
         denoms.forEach(denomVal => {
@@ -237,17 +263,15 @@ function renderDetalle(id) {
             tbody.appendChild(row);
         });
 
-        // Listeners para inputs de billetes
+        // Listeners
         tbody.querySelectorAll('.input-denom').forEach(input => {
             input.addEventListener('input', (e) => {
                 recalcularFisicoDesdeDesglose(id);
-                // Actualizar subtotal visual inmediatamente
                 const val = parseFloat(e.target.dataset.valor);
                 const cant = parseFloat(e.target.value) || 0;
                 const row = e.target.closest('tr');
-                row.querySelector('.cell-subtotal').textContent = (val * cant).toLocaleString('es-CL');
+                if(row) row.querySelector('.cell-subtotal').textContent = (val * cant).toLocaleString('es-CL');
             });
-            // Navegación con Enter
             input.addEventListener("keydown", (e) => {
                 if (e.key === "Enter") {
                     e.preventDefault();
@@ -259,7 +283,7 @@ function renderDetalle(id) {
         });
 
     } else {
-        // Caso 2: Sin denominaciones (ej: Saldo en cuenta o moneda simple) -> Solo input total
+        // Caso 2: Sin denominaciones (Input Total Directo)
         const row = document.createElement('tr');
         row.innerHTML = `
             <td class="px-6 py-3 text-slate-500 italic">Monto Total (Sin desglose)</td>
@@ -272,12 +296,14 @@ function renderDetalle(id) {
         tbody.appendChild(row);
 
         const inputTotal = row.querySelector('.input-total-directo');
-        inputTotal.addEventListener('input', (e) => {
-            const val = parseFloat(e.target.value) || 0;
-            estadoArqueo[id].fisico_total = val;
-            estadoArqueo[id].desglose = {}; // Reset desglose
-            actualizarVistaDespuesDeCalculo(id);
-        });
+        if(inputTotal) {
+            inputTotal.addEventListener('input', (e) => {
+                const val = parseFloat(e.target.value) || 0;
+                estadoArqueo[id].fisico_total = val;
+                estadoArqueo[id].desglose = {}; 
+                actualizarVistaDespuesDeCalculo(id);
+            });
+        }
     }
 }
 
@@ -288,7 +314,7 @@ function recalcularFisicoDesdeDesglose(id) {
 
     inputs.forEach(input => {
         const valor = parseFloat(input.dataset.valor);
-        const cantidad = parseFloat(input.value); // Puede ser NaN si está vacío
+        const cantidad = parseFloat(input.value); 
         
         if (!isNaN(cantidad) && cantidad > 0) {
             total += (valor * cantidad);
@@ -305,28 +331,35 @@ function recalcularFisicoDesdeDesglose(id) {
 function actualizarVistaDespuesDeCalculo(id) {
     // 1. Actualizar Header Detalle
     const divisa = divisasBase.find(d => d.id == id);
+    if(!divisa) return;
+
     const sistema = parseFloat(divisa.total_sistema) || 0;
     const fisico = estadoArqueo[id].fisico_total;
     const diferencia = fisico - sistema;
 
-    document.getElementById('detalle-fisico').textContent = fisico.toLocaleString('es-CL', { minimumFractionDigits: 2 });
+    const elFisico = document.getElementById('detalle-fisico');
+    if(elFisico) elFisico.textContent = fisico.toLocaleString('es-CL', { minimumFractionDigits: 2 });
     
-    const diffElem = document.getElementById('detalle-diferencia');
-    diffElem.textContent = (diferencia > 0 ? "+" : "") + diferencia.toLocaleString('es-CL', { minimumFractionDigits: 2 });
-    
-    const diffBg = document.getElementById('indicador-diferencia-bg');
-    if(Math.abs(diferencia) < 0.01) {
-        diffElem.className = "text-lg font-mono font-black text-green-500 relative z-10";
-        diffBg.className = "absolute inset-0 bg-green-50 opacity-50";
-    } else {
-        diffElem.className = "text-lg font-mono font-black text-red-500 relative z-10";
-        diffBg.className = "absolute inset-0 bg-red-50 opacity-50";
+    const elDiferencia = document.getElementById('detalle-diferencia');
+    const elDiffBg = document.getElementById('indicador-diferencia-bg');
+
+    if(elDiferencia) {
+        elDiferencia.textContent = (diferencia > 0 ? "+" : "") + diferencia.toLocaleString('es-CL', { minimumFractionDigits: 2 });
+        
+        if(Math.abs(diferencia) < 0.01) {
+            elDiferencia.className = "text-lg font-mono font-black text-green-500 relative z-10";
+            if(elDiffBg) elDiffBg.className = "absolute inset-0 bg-green-50 opacity-50";
+        } else {
+            elDiferencia.className = "text-lg font-mono font-black text-red-500 relative z-10";
+            if(elDiffBg) elDiffBg.className = "absolute inset-0 bg-red-50 opacity-50";
+        }
     }
 
-    // 2. Actualizar indicador en lista lateral
-    renderListaLateral(document.getElementById('buscar-divisa').value);
+    // 2. Actualizar lista
+    const busqueda = document.getElementById('buscar-divisa');
+    renderListaLateral(busqueda ? busqueda.value : "");
 
-    // 3. Guardar temp
+    // 3. Guardar
     guardarLocalStorage();
 }
 
@@ -349,9 +382,9 @@ function restaurarLocalStorage() {
             const data = JSON.parse(raw);
             const hoy = new Date().toISOString().split("T")[0];
             if(data.fecha === hoy && data.estado) {
-                // Mezclar con estado actual (por si agregaron divisas nuevas en BD)
                 Object.keys(data.estado).forEach(k => {
-                    if(estadoArqueo[k]) {
+                    // Validar si la divisa sigue existiendo en el array base
+                    if(divisasBase.some(d => d.id == k)) {
                         estadoArqueo[k] = data.estado[k];
                     }
                 });
@@ -367,7 +400,6 @@ function restaurarLocalStorage() {
 async function guardarArqueoFinal() {
     if(!caja_id) return;
 
-    // Verificar diferencias graves (opcional)
     let hayDiferencias = false;
     divisasBase.forEach(d => {
         const sis = parseFloat(d.total_sistema) || 0;
@@ -384,7 +416,6 @@ async function guardarArqueoFinal() {
     btn.disabled = true;
     btn.innerHTML = "Guardando...";
 
-    // Preparar Payload
     const detalles = divisasBase.map(d => {
         const est = estadoArqueo[d.id] || { fisico_total: 0, desglose: {} };
         return {
@@ -395,11 +426,12 @@ async function guardarArqueoFinal() {
         };
     });
 
+    const obs = document.getElementById('observaciones-arqueo');
     const payload = {
         caja_id: caja_id,
         equipo_id: usuarioSesion.equipo_id || usuarioSesion.id,
         divisas: detalles,
-        observacion: document.getElementById('observaciones-arqueo').value
+        observacion: obs ? obs.value : ""
     };
 
     try {
@@ -412,8 +444,7 @@ async function guardarArqueoFinal() {
 
         if(data.mensaje || data.arqueo_id) {
             localStorage.removeItem(`arqueo_v2_${caja_id}`);
-            document.getElementById('modal-exitoso').classList.remove('hidden');
-            document.getElementById('volver').onclick = () => window.location.reload();
+            mostrarModalExitoso();
         } else {
             throw new Error(data.error || "Error desconocido");
         }
@@ -429,19 +460,54 @@ async function guardarArqueoFinal() {
 // --- UTILS ---
 function cargarSidebar() {
     fetch('sidebar.html').then(r=>r.text()).then(h=>{
-        document.getElementById('sidebar-container').innerHTML = h;
-        // Logic activar link...
+        const container = document.getElementById('sidebar-container');
+        if(container) {
+            container.innerHTML = h;
+            activarLinkSidebar('arqueo-caja');
+        }
     });
 }
 
+function activarLinkSidebar(pagina) {
+    setTimeout(() => {
+        const links = document.querySelectorAll('#sidebar-nav a');
+        links.forEach(link => {
+            link.classList.remove('bg-cyan-50', 'text-cyan-800', 'border-l-4', 'border-cyan-600', 'shadow-sm', 'font-bold');
+            link.classList.add('text-gray-600', 'border-transparent');
+            const icon = link.querySelector('svg');
+            if(icon) { icon.classList.remove('text-cyan-600'); icon.classList.add('text-gray-400'); }
+
+            if (link.dataset.page === pagina) {
+                link.classList.remove('text-gray-600', 'border-transparent');
+                link.classList.add('bg-cyan-50', 'text-cyan-800', 'border-l-4', 'border-cyan-600', 'shadow-sm', 'font-bold');
+                if(icon) { icon.classList.remove('text-gray-400'); icon.classList.add('text-cyan-600'); }
+            }
+        });
+    }, 100);
+}
+
 function mostrarErrorSinCaja() {
-    document.getElementById('lista-divisas').innerHTML = '<p class="text-red-500 p-4">Usuario sin caja asignada</p>';
+    const lista = document.getElementById('lista-divisas');
+    if(lista) lista.innerHTML = '<p class="text-red-500 p-4">Usuario sin caja asignada</p>';
 }
 
 function mostrarModalError({titulo, mensaje}) {
     const m = document.getElementById('modal-error');
+    if(!m) { alert(mensaje); return; }
+    
     document.getElementById('modal-error-titulo').textContent = titulo;
     document.getElementById('modal-error-mensaje').textContent = mensaje;
     m.classList.remove('hidden');
     document.getElementById('modal-error-confirmar').onclick = () => m.classList.add('hidden');
+}
+
+function mostrarModalExitoso() {
+    const m = document.getElementById('modal-exitoso');
+    if(m) {
+        m.classList.remove('hidden');
+        document.getElementById('volver').onclick = () => window.location.reload();
+    } else {
+        alert("Guardado exitoso");
+        window.location.reload();
+    }
 }
