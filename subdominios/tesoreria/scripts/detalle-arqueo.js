@@ -1,165 +1,162 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const params = new URLSearchParams(window.location.search);
-    const arqueoId = params.get("id");
+import { 
+    initSystem, 
+    limpiarTexto, 
+    formatearNumero, 
+    formatearFechaHora, 
+    mostrarModalError 
+} from './index.js';
 
-    const infoContenedor = document.getElementById("info-arqueo");
-    const detalleContenedor = document.getElementById("detalle-divisas-arqueo");
-    const volverBtn = document.getElementById("volver-historial");
-    const prevBtn = document.getElementById("btn-dia-anterior");
-    const nextBtn = document.getElementById("btn-dia-siguiente");
+document.addEventListener('DOMContentLoaded', async () => {
+    // 1. Inicializar sistema
+    await initSystem('arqueo'); // Para iluminar el sidebar correcto
+
+    // Referencias DOM
+    const lblIdArqueo = document.getElementById('id-arqueo');
+    const lblFecha = document.getElementById('fecha-arqueo');
+    const lblCaja = document.getElementById('nombre-caja');
+    const lblUsuario = document.getElementById('nombre-usuario');
+    const lblObs = document.getElementById('observacion-arqueo');
+    
+    const tablaDetalle = document.getElementById('tabla-detalle');
+    
+    const btnPrev = document.getElementById('btn-dia-anterior');
+    const btnNext = document.getElementById('btn-dia-siguiente');
+    const btnVolver = document.getElementById('volver-historial');
+
+    // Obtener ID de la URL
+    const params = new URLSearchParams(window.location.search);
+    let arqueoId = params.get('id');
 
     if (!arqueoId) {
-        infoContenedor.innerHTML = "<p>ID de arqueo no proporcionado.</p>";
+        mostrarModalError({ titulo: "Error", mensaje: "ID de arqueo no especificado." });
         return;
     }
 
-    if (volverBtn) {
-        volverBtn.addEventListener('click', () => {
+    if (btnVolver) {
+        btnVolver.addEventListener('click', () => {
             window.location.href = 'https://tesoreria.cambiosorion.cl/historial-inv';
         });
     }
 
-    // --- Helpers de formato ---
-    const formatearFecha = (timestamp) => {
-        if (!timestamp) return ''; 
-        const fecha = new Date(timestamp);
-        if (isNaN(fecha.getTime())) return timestamp;
-        const hh = String(fecha.getHours()).padStart(2, '0');
-        const min = String(fecha.getMinutes()).padStart(2, '0');
-        const dd = String(fecha.getDate()).padStart(2, '0');
-        const mm = String(fecha.getMonth() + 1).padStart(2, '0');
-        const yyyy = fecha.getFullYear();
-        return `${hh}:${min} ${dd}/${mm}/${yyyy}`;
-    };
-
-    const formatNumber = (num, simbolo = '') => {
-        const n = parseFloat(num);
-        if (isNaN(n)) return num;
-        
-        const formatOptions = {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 2
-        };
-        
-        let formatted = n.toLocaleString('es-CL', formatOptions);
-        
-        if (n > 0) formatted = `+${formatted}`;
-        if (n === 0) formatted = "0";
-
-        return `${simbolo} ${formatted}`;
-    };
-
-    const formatPMP = (num) => {
-        const n = parseFloat(num);
-        if (isNaN(n) || n === 0) return 'N/A';
-        return n.toLocaleString('es-CL', {
-            style: 'currency', 
-            currency: 'CLP',
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 2
-        });
-    };
-
-    // --- Función de Carga ---
+    // --- CARGAR DATOS ---
     function cargarDetalle(id) {
-        infoContenedor.innerHTML = "Cargando...";
-        detalleContenedor.innerHTML = "";
-        prevBtn.disabled = true;
-        nextBtn.disabled = true;
-
+        // UI Loading
+        tablaDetalle.innerHTML = `<tr><td colspan="5" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-amber-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
+        
         fetch(`https://cambiosorion.cl/data/detalle-arqueo.php?id=${id}`)
-            .then(res => res.text())
-            .then(text => {
-                console.log("Respuesta cruda detalle:", text);
-                const data = JSON.parse(text);
+            .then(res => res.json())
+            .then(data => {
+                if(data.error) throw new Error(data.error);
 
-                if (data.error) {
-                    infoContenedor.innerHTML = `<p>${data.error}</p>`;
-                    return;
-                }
+                // 1. Llenar Cabecera
+                const master = data.master;
+                lblIdArqueo.textContent = `#${id}`;
+                lblFecha.textContent = formatearFechaHora(master.fecha);
+                lblCaja.textContent = master.nombre_caja || "Desconocida";
+                lblUsuario.textContent = master.nombre_usuario || "Desconocido";
+                lblObs.textContent = master.observacion || "Sin observaciones.";
 
-                // 1. Poblar Info Maestra
-                const arq = data.arqueo;
-                const infoHTML = `
-                    <div><span class="font-semibold text-gray-300">Fecha:</span> ${formatearFecha(arq.fecha)}</div>
-                    <div><span class="font-semibold text-gray-300">Caja:</span> ${arq.nombre_caja}</div>
-                    <div><span class="font-semibold text-gray-300">Usuario:</span> ${arq.nombre_usuario}</div>
-                    <div><span class="font-semibold text-gray-300">Observación:</span> ${arq.observacion || 'Ninguna'}</div>
-                `;
-                infoContenedor.innerHTML = infoHTML;
-
-                // 2. Poblar Tabla de Detalle
-                const detalles = data.detalles || [];
-                if (detalles.length === 0) {
-                    detalleContenedor.innerHTML = '<p class="text-white p-4 bg-gray-800 rounded">No se guardaron detalles para este arqueo.</p>';
-                } else {
-                    const tablaHTML = `
-                        <table class="w-full text-sm text-left text-white bg-gray-800">
-                            <thead class="text-xs uppercase bg-gray-800 text-white">
-                                <tr>
-                                    <th class="px-4 py-2">Icono</th>
-                                    <th class="px-4 py-2">Divisa</th>
-                                    <th class="px-4 py-2">Total Sistema</th>
-                                    <th class="px-4 py-2">Total Arqueo</th>
-                                    <th class="px-4 py-2">Diferencia</th>
-                                    <th class="px-4 py-2">PMP Histórico</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            ${detalles.map(d => {
-                                const dif = parseFloat(d.diferencia);
-                                let difClase = 'text-green-600';
-                                if (dif !== 0) difClase = 'text-red-600 font-bold';
-
-                                return `
-                                <tr class="border-b bg-white border-gray-700 text-gray-700">
-                                    <td class="px-4 py-2">
-                                        ${d.icono ? `<img src="${d.icono}" alt="${d.nombre_divisa}" class="w-6 h-6 rounded-full border border-gray-400">` : ''}
-                                    </td>
-                                    <td class="px-4 py-2">${d.nombre_divisa}</td>
-                                    <td class="px-4 py-2">${formatNumber(d.total_sistema, d.simbolo)}</td>
-                                    <td class="px-4 py-2">${formatNumber(d.total_arqueo, d.simbolo)}</td>
-                                    <td class="px-4 py-2 ${difClase}">${formatNumber(dif, d.simbolo)}</td>
-                                    <td class="px-4 py-2">${formatPMP(d.pmp_historico)}</td>
-                                </tr>
-                                `;
-                            }).join("")}
-                            </tbody>
-                        </table>
-                    `;
-                    detalleContenedor.innerHTML = tablaHTML;
-                }
+                // 2. Llenar Detalles
+                renderizarTabla(data.detalles || []);
 
                 // 3. Configurar Navegación
-                const nav = data.navegacion;
-                if (nav.prev_id) {
-                    prevBtn.disabled = false;
-                    prevBtn.onclick = () => {
-                        // Actualizar URL y recargar datos
-                        window.history.pushState({}, '', `?id=${nav.prev_id}`);
-                        cargarDetalle(nav.prev_id);
-                    };
-                } else {
-                    prevBtn.disabled = true;
-                }
-
-                if (nav.next_id) {
-                    nextBtn.disabled = false;
-                    nextBtn.onclick = () => {
-                        window.history.pushState({}, '', `?id=${nav.next_id}`);
-                        cargarDetalle(nav.next_id);
-                    };
-                } else {
-                    nextBtn.disabled = true;
-                }
-
+                configurarNavegacion(data.navegacion);
             })
             .catch(err => {
                 console.error(err);
-                infoContenedor.innerHTML = "<p>Error al cargar el detalle del arqueo.</p>";
+                mostrarModalError({ titulo: "Error", mensaje: "No se pudo cargar el detalle del arqueo." });
+                tablaDetalle.innerHTML = `<tr><td colspan="5" class="text-center text-red-400 py-4">Error al cargar datos.</td></tr>`;
             });
     }
 
-    // Carga inicial
+    function renderizarTabla(detalles) {
+        tablaDetalle.innerHTML = '';
+
+        if (detalles.length === 0) {
+            tablaDetalle.innerHTML = `<tr><td colspan="5" class="text-center text-slate-500 py-10 italic">Sin registros de divisas en este arqueo.</td></tr>`;
+            return;
+        }
+
+        detalles.forEach(d => {
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-white/5 transition-all border-b border-white/5 last:border-0 text-slate-300';
+
+            // Usar nombres correctos de la BD: total_sistema, total_arqueo
+            const sist = parseFloat(d.total_sistema) || 0;
+            const fis = parseFloat(d.total_arqueo) || 0;
+            const dif = fis - sist; // Calculado al vuelo para precisión visual
+
+            // Estilos Diferencia
+            let difHtml = `<span class="text-slate-500 font-mono">-</span>`;
+            if (dif > 0.001) {
+                difHtml = `<span class="text-green-400 font-bold font-mono">+${formatearNumero(dif)}</span>`;
+            } else if (dif < -0.001) {
+                difHtml = `<span class="text-red-400 font-bold font-mono">${formatearNumero(dif)}</span>`;
+            }
+
+            // Desglose (Tooltip o expandible simple)
+            let desgloseHtml = '';
+            try {
+                if(d.denominaciones) { // Ahora viene como 'denominaciones' en la BD
+                    const json = JSON.parse(d.denominaciones);
+                    // Solo mostramos icono si hay desglose real
+                    if(Object.keys(json).length > 0) {
+                        desgloseHtml = `<div class="group relative inline-block">
+                            <svg class="w-4 h-4 text-amber-500 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <div class="hidden group-hover:block absolute right-0 z-50 w-48 p-2 mt-1 text-xs text-white bg-slate-800 rounded-lg shadow-xl border border-slate-700">
+                                <div class="font-bold border-b border-slate-600 pb-1 mb-1 text-amber-400">Desglose</div>
+                                ${Object.entries(json).map(([k, v]) => `<div class="flex justify-between"><span>${k}:</span><span>${v}</span></div>`).join('')}
+                            </div>
+                        </div>`;
+                    }
+                }
+            } catch(e) {}
+
+            const iconoDivisa = d.icono || 'https://cambiosorion.cl/orionapp/icons/default.png';
+
+            tr.innerHTML = `
+                <td class="px-6 py-4 flex items-center gap-3">
+                    <img src="${iconoDivisa}" class="w-6 h-6 rounded-full border border-slate-600 object-contain bg-slate-800 p-0.5" onerror="this.src='https://cambiosorion.cl/orionapp/icons/default.png'">
+                    <span class="font-bold text-white text-sm">${limpiarTexto(d.nombre_divisa)}</span>
+                </td>
+                <td class="px-6 py-4 text-right font-mono text-slate-400 text-sm bg-slate-800/10">${formatearNumero(sist)}</td>
+                <td class="px-6 py-4 text-right font-mono text-white font-bold text-sm bg-slate-800/30 border-l border-r border-slate-800/50">${formatearNumero(fis)}</td>
+                <td class="px-6 py-4 text-right text-sm">${difHtml}</td>
+                <td class="px-6 py-4 text-center">${desgloseHtml}</td>
+            `;
+            tablaDetalle.appendChild(tr);
+        });
+    }
+
+    function configurarNavegacion(nav) {
+        if (!nav) return;
+
+        if (nav.prev_id) {
+            btnPrev.disabled = false;
+            btnPrev.onclick = () => {
+                const newId = nav.prev_id;
+                // Actualizar URL sin recargar
+                window.history.pushState({id: newId}, '', `?id=${newId}`);
+                cargarDetalle(newId);
+            };
+        } else {
+            btnPrev.disabled = true;
+            btnPrev.onclick = null;
+        }
+
+        if (nav.next_id) {
+            btnNext.disabled = false;
+            btnNext.onclick = () => {
+                const newId = nav.next_id;
+                window.history.pushState({id: newId}, '', `?id=${newId}`);
+                cargarDetalle(newId);
+            };
+        } else {
+            btnNext.disabled = true;
+            btnNext.onclick = null;
+        }
+    }
+
+    // Inicializar
     cargarDetalle(arqueoId);
 });
