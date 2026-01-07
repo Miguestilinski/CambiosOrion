@@ -28,7 +28,7 @@ function cargarSidebar() {
             const container = document.getElementById('sidebar-container');
             if (container) {
                 container.innerHTML = html;
-                activarLinkSidebar('arqueo-caja'); // Asegúrate que en sidebar.html el link tenga data-page="arqueo-caja"
+                activarLinkSidebar('arqueo-caja');
             }
         });
 }
@@ -51,50 +51,57 @@ function activarLinkSidebar(pagina) {
     }, 100);
 }
 
+// --- 1. OBTENER SESIÓN (Corregido a session_status_caja.php) ---
 async function getSession() {
     try {
-        const res = await fetch("https://cambiosorion.cl/data/session_status_admin.php", { credentials: "include" });
+        // CAMBIO: Usamos el endpoint correcto para caja
+        const res = await fetch("https://cambiosorion.cl/data/session_status_caja.php", { credentials: "include" });
         if (!res.ok) throw new Error("No se pudo obtener la sesión.");
 
         const data = await res.json();
         
-        if (!data.isAuthenticated || !data.equipo_id) {
+        // Validación básica de sesión
+        if (!data.isAuthenticated || !data.caja_id) {
             window.location.href = 'https://admin.cambiosorion.cl/login';
             return;
         }
 
         usuarioSesion = data;
         caja_id = usuarioSesion.caja_id;
-        equipo_id = usuarioSesion.equipo_id;
+        equipo_id = usuarioSesion.equipo_id || usuarioSesion.usuario_id; // Ajustar según lo que devuelva tu PHP
 
         const headerName = document.getElementById('header-user-name');
         const headerEmail = document.getElementById('dropdown-user-email');
-        if (headerName) headerName.textContent = data.nombre ? data.nombre.split(' ')[0] : 'Admin';
-        if (headerEmail) headerEmail.textContent = data.correo;
+        if (headerName) headerName.textContent = data.nombre ? data.nombre.split(' ')[0] : 'Cajero';
+        if (headerEmail) headerEmail.textContent = data.correo || '';
 
-        await cargarInventarioCaja(caja_id);
+        // Una vez tenemos el ID, cargamos los datos
+        await cargarDatosArqueo(caja_id);
 
     } catch (error) {
         console.error("Error al obtener la sesión:", error);
     }
 }
 
-async function cargarInventarioCaja(cajaId) {
+// --- 2. CARGAR DATOS (Desde arqueo-caja.php) ---
+async function cargarDatosArqueo(cajaId) {
     const tablaCuerpo = document.getElementById("tabla-arqueo-body");
     if (tablaCuerpo) {
         tablaCuerpo.innerHTML = '<tr><td colspan="5" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-cyan-500 rounded-full border-t-transparent mx-auto"></div></td></tr>';
     }
 
     try {
-        // Usamos el mismo endpoint que en Inventario para consistencia
-        const res = await fetch(`https://cambiosorion.cl/data/inventario_caja.php?caja_id=${cajaId}&limit=100`, {
+        // CAMBIO: Llamamos a arqueo-caja.php en lugar de inventario_caja.php
+        const res = await fetch(`https://cambiosorion.cl/data/arqueo-caja.php?caja_id=${cajaId}`, {
             credentials: "include"
         });
         
-        if (!res.ok) throw new Error("Error al cargar inventario");
+        if (!res.ok) throw new Error("Error al cargar datos de arqueo");
         
         const data = await res.json();
-        divisasBase = Array.isArray(data) ? data : []; 
+        
+        // arqueo-caja.php devuelve un objeto { caja_id: ..., divisas: [...] }
+        divisasBase = Array.isArray(data.divisas) ? data.divisas : []; 
         
         renderizarTablaArqueo(divisasBase);
 
@@ -129,10 +136,14 @@ function renderizarTablaArqueo(divisas) {
         return;
     }
 
-    divisas.forEach((divisa, index) => {
-        // Saldo Sistema
-        const saldoSistema = parseFloat(divisa.cantidad) || 0;
+    divisas.forEach((divisa) => {
+        // Mapeo de campos según arqueo-caja.php
+        const saldoSistema = parseFloat(divisa.total_sistema) || 0;
+        const nombreDivisa = divisa.nombre; // arqueo-caja.php devuelve 'nombre'
+        const codigoDivisa = divisa.codigo;
         const icono = divisa.icono || 'https://cambiosorion.cl/orionapp/icons/default.png';
+        // Identificador único para el input (usamos nombre o codigo)
+        const idDivisa = divisa.id; 
 
         const tr = document.createElement("tr");
         tr.className = "hover:bg-gray-50 border-b border-gray-100 transition group bg-white";
@@ -141,8 +152,8 @@ function renderizarTablaArqueo(divisas) {
             <td class="px-6 py-4 flex items-center gap-3">
                 <img src="${icono}" class="w-8 h-8 rounded-full border border-gray-200 p-0.5 bg-white shadow-sm object-contain">
                 <div class="flex flex-col">
-                    <span class="font-bold text-gray-700 text-sm">${divisa.divisa}</span>
-                    <span class="text-[10px] text-gray-400 uppercase font-bold">Moneda</span>
+                    <span class="font-bold text-gray-700 text-sm">${nombreDivisa}</span>
+                    <span class="text-[10px] text-gray-400 uppercase font-bold">${codigoDivisa}</span>
                 </div>
             </td>
             <td class="px-6 py-4 text-right bg-gray-50/50 border-l border-gray-100">
@@ -155,7 +166,8 @@ function renderizarTablaArqueo(divisas) {
                 <div class="relative">
                     <input type="number" step="0.01" 
                         class="input-fisico block w-full text-right font-mono font-bold text-gray-800 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition px-3 py-2 bg-white shadow-sm"
-                        data-divisa="${divisa.divisa}"
+                        data-id="${idDivisa}"
+                        data-divisa="${nombreDivisa}"
                         placeholder="0.00">
                 </div>
             </td>
@@ -181,7 +193,6 @@ function renderizarTablaArqueo(divisas) {
             verificarAlertasGlobales();
         });
         
-        // Manejar Enter para pasar al siguiente input
         input.addEventListener("keydown", (e) => {
             if (e.key === "Enter") {
                 e.preventDefault();
@@ -199,7 +210,6 @@ function calcularFila(input) {
     const row = input.closest("tr");
     const saldoSistema = parseFloat(row.querySelector(".saldo-sistema").value) || 0;
     
-    // Si el input está vacío, tratamos como incompleto visualmente, pero 0 para calculo
     const valorInput = input.value;
     const saldoFisico = valorInput === "" ? 0 : parseFloat(valorInput);
     
@@ -207,7 +217,6 @@ function calcularFila(input) {
     const diffElem = row.querySelector(".diferencia");
     const iconElem = row.querySelector(".estado-icon");
 
-    // Si el usuario no ha escrito nada, mantenemos estado neutro
     if (valorInput === "") {
         diffElem.textContent = "-";
         diffElem.className = "diferencia font-mono font-bold text-gray-400 text-sm";
@@ -218,22 +227,18 @@ function calcularFila(input) {
         return;
     }
 
-    // Formatear
     const diffText = (diferencia > 0 ? "+" : "") + diferencia.toLocaleString('es-CL', { minimumFractionDigits: 2 });
     diffElem.textContent = diffText;
 
-    // Tolerancia mínima para punto flotante
     const esCuadrado = Math.abs(diferencia) < 0.001;
 
     if (esCuadrado) {
-        // MATCH (Verde)
         diffElem.className = "diferencia font-mono font-bold text-green-600 text-sm";
         iconElem.innerHTML = `<svg class="w-6 h-6 text-green-500 bg-green-100 rounded-full p-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
         
         input.classList.remove("border-gray-300", "border-red-500", "bg-red-50", "text-red-900", "focus:ring-red-500", "focus:border-red-500");
         input.classList.add("border-green-500", "bg-green-50", "text-green-900", "focus:ring-green-500", "focus:border-green-500");
     } else {
-        // MISMATCH (Rojo)
         diffElem.className = "diferencia font-mono font-bold text-red-600 text-sm";
         iconElem.innerHTML = `<svg class="w-6 h-6 text-red-500 bg-red-100 rounded-full p-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>`;
         
@@ -257,20 +262,29 @@ function verificarAlertasGlobales() {
         }
     });
 
-    if (hayDiferencias) {
-        alertaDiv.classList.remove('hidden');
-    } else {
-        alertaDiv.classList.add('hidden');
+    if (alertaDiv) {
+        if (hayDiferencias) {
+            alertaDiv.classList.remove('hidden');
+        } else {
+            alertaDiv.classList.add('hidden');
+        }
     }
 }
 
 function restaurarParcial(datosGuardados) {
     const inputs = document.querySelectorAll(".input-fisico");
     inputs.forEach(input => {
-        const divisaNombre = input.dataset.divisa;
-        const dato = datosGuardados.find(d => d.divisa === divisaNombre);
+        // Buscamos por ID de divisa si está disponible, o por nombre como fallback
+        const idDivisa = input.dataset.id;
+        const nombreDivisa = input.dataset.divisa;
+        
+        const dato = datosGuardados.find(d => 
+            (d.divisa_id && d.divisa_id == idDivisa) || 
+            (d.divisa && d.divisa === nombreDivisa)
+        );
+
         if (dato) {
-            input.value = dato.cantidad;
+            input.value = dato.cantidad || dato.total_arqueo; // Compatibilidad con lo que guardamos en LocalStorage
             calcularFila(input);
         }
     });
@@ -284,6 +298,7 @@ function guardarParcialLocal() {
     document.querySelectorAll(".input-fisico").forEach(input => {
         if (input.value !== "") {
             datos.push({
+                divisa_id: input.dataset.id,
                 divisa: input.dataset.divisa,
                 cantidad: input.value
             });
@@ -311,30 +326,32 @@ if (btnGuardarDom) {
         btnGuardarDom.disabled = true;
         btnGuardarDom.innerHTML = '<div class="animate-spin h-4 w-4 border-2 border-white rounded-full border-t-transparent mr-2"></div> Guardando...';
 
-        // Recopilar datos
         const detalles = [];
         document.querySelectorAll("#tabla-arqueo-body tr").forEach(row => {
             const input = row.querySelector(".input-fisico");
             const saldoSistema = parseFloat(row.querySelector(".saldo-sistema").value) || 0;
-            const saldoFisico = input.value === "" ? 0 : parseFloat(input.value); // Vacío cuenta como 0 al guardar
+            const saldoFisico = input.value === "" ? 0 : parseFloat(input.value);
             
             detalles.push({
-                divisa: input.dataset.divisa,
-                sistema: saldoSistema,
-                fisico: saldoFisico,
-                diferencia: saldoFisico - saldoSistema
+                divisa_id: input.dataset.id,
+                divisa: input.dataset.divisa, // Opcional, para debug
+                total_sistema: saldoSistema,
+                total_arqueo: saldoFisico,
+                // Nota: Tu PHP espera 'denominaciones_json' y 'es_fraccionable', 
+                // si no los mandamos usa defaults. Podríamos agregar info si la tuviéramos.
             });
         });
 
         const payload = {
             caja_id: caja_id,
-            usuario_id: usuarioSesion.equipo_id,
-            detalles: detalles,
-            observaciones: document.getElementById("observaciones-arqueo")?.value || ""
+            equipo_id: usuarioSesion.equipo_id || usuarioSesion.usuario_id,
+            divisas: detalles,
+            observacion: document.getElementById("observaciones-arqueo")?.value || ""
         };
 
         try {
-            const res = await fetch("https://cambiosorion.cl/data/guardar_arqueo.php", {
+            // Se envía al endpoint que procesa el guardado
+            const res = await fetch("https://cambiosorion.cl/data/arqueo-caja.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
@@ -342,11 +359,13 @@ if (btnGuardarDom) {
 
             const respuesta = await res.json();
 
-            if (respuesta.exito) {
+            if (respuesta.mensaje || respuesta.arqueo_id) { // Tu PHP devuelve 'mensaje' y 'arqueo_id' en éxito
                 localStorage.removeItem(`arqueo_parcial_caja_${caja_id}`);
                 mostrarModalExitoso();
+            } else if (respuesta.error) {
+                throw new Error(respuesta.error);
             } else {
-                throw new Error(respuesta.mensaje || "Error al guardar en base de datos.");
+                throw new Error("Error desconocido al guardar.");
             }
 
         } catch (error) {
@@ -365,36 +384,44 @@ function mostrarModalError({ titulo, mensaje, textoConfirmar = "Aceptar", textoC
   const btnConfirmar = document.getElementById("modal-error-confirmar");
   const btnCancelar = document.getElementById("modal-error-cancelar");
 
-  tituloElem.textContent = titulo;
-  mensajeElem.textContent = mensaje;
-  btnConfirmar.textContent = textoConfirmar;
+  if(tituloElem) tituloElem.textContent = titulo;
+  if(mensajeElem) mensajeElem.textContent = mensaje;
+  if(btnConfirmar) btnConfirmar.textContent = textoConfirmar;
 
-  if (textoCancelar) {
+  if (textoCancelar && btnCancelar) {
     btnCancelar.classList.remove("hidden");
     btnCancelar.textContent = textoCancelar;
-  } else {
+  } else if(btnCancelar) {
     btnCancelar.classList.add("hidden");
   }
 
   modal.classList.remove("hidden");
 
-  btnConfirmar.onclick = () => {
-    modal.classList.add("hidden");
-    if (onConfirmar) onConfirmar();
-  };
+  if(btnConfirmar) {
+      btnConfirmar.onclick = () => {
+        modal.classList.add("hidden");
+        if (onConfirmar) onConfirmar();
+      };
+  }
 
-  btnCancelar.onclick = () => {
-    modal.classList.add("hidden");
-    if (onCancelar) onCancelar();
-  };
+  if(btnCancelar) {
+      btnCancelar.onclick = () => {
+        modal.classList.add("hidden");
+        if (onCancelar) onCancelar();
+      };
+  }
 }
 
 function mostrarModalExitoso() {
   const modal = document.getElementById("modal-exitoso");
-  modal.classList.remove("hidden");
-
-  document.getElementById("volver").onclick = () => {
-    modal.classList.add("hidden");
-    location.reload();
-  };
+  if(modal) {
+      modal.classList.remove("hidden");
+      const btnVolver = document.getElementById("volver");
+      if(btnVolver) {
+          btnVolver.onclick = () => {
+            modal.classList.add("hidden");
+            location.reload();
+          };
+      }
+  }
 }
