@@ -16,13 +16,10 @@ document.addEventListener("DOMContentLoaded", async function() {
     
     if (sessionData) {
         usuarioSesion = sessionData;
-        caja_id = usuarioSesion.caja_id;
+        // En tesorería, generalmente el ID de caja es fijo (99) o viene en la sesión
+        caja_id = usuarioSesion.caja_id || 99; 
         
-        if (!caja_id) {
-            mostrarErrorSinCaja();
-        } else {
-            await cargarDatosIniciales(caja_id);
-        }
+        await cargarDatosIniciales();
     }
 
     // Filtros
@@ -37,7 +34,6 @@ document.addEventListener("DOMContentLoaded", async function() {
     const btnParcial = document.getElementById("guardar-parcial");
     if(btnParcial) {
         btnParcial.addEventListener("click", () => {
-            if(!caja_id) return;
             guardarLocalStorage();
             // Feedback visual sutil
             const original = btnParcial.innerHTML;
@@ -72,15 +68,17 @@ document.addEventListener("DOMContentLoaded", async function() {
 });
 
 // --- CARGA DE DATOS ---
-async function cargarDatosIniciales(cajaId) {
+async function cargarDatosIniciales() {
     try {
-        const res = await fetch(`https://cambiosorion.cl/data/arqueo-tesoreria.php?caja_id=${cajaId}`, { credentials: "include" });
+        // CAMBIO: Apunta a arqueo-tesoreria.php
+        const res = await fetch(`https://cambiosorion.cl/data/arqueo-tesoreria.php`, { credentials: "include" });
         const data = await res.json();
         
         if(data.error) throw new Error(data.error);
 
         divisasBase = Array.isArray(data.divisas) ? data.divisas : [];
         
+        // Inicializar estado vacío si no existe
         divisasBase.forEach(d => {
             if(!estadoArqueo[d.id]) {
                 estadoArqueo[d.id] = { fisico_total: 0, desglose: {} };
@@ -129,6 +127,7 @@ function renderListaLateral(filtro = "") {
         const item = document.createElement('div');
         const isSelected = divisaSeleccionadaId === divisa.id;
         
+        // Estilo Dark + Amber
         item.className = `cursor-pointer p-2.5 border-b border-white/5 hover:bg-white/5 transition flex items-center justify-between ${isSelected ? 'active-currency' : ''}`;
         item.onclick = () => seleccionarDivisa(divisa.id);
 
@@ -174,7 +173,7 @@ function renderDetalle(id) {
     if(panelVacio) panelVacio.classList.add('hidden');
     if(panelDetalle) panelDetalle.classList.remove('hidden');
 
-    // Datos
+    // Datos Header
     document.getElementById('detalle-nombre').textContent = divisa.nombre;
     document.getElementById('detalle-codigo').textContent = divisa.codigo;
     document.getElementById('detalle-icono').src = divisa.icono || 'https://cambiosorion.cl/orionapp/icons/default.png';
@@ -201,7 +200,7 @@ function renderDetalle(id) {
         if(elDiffBg) { elDiffBg.className = "absolute inset-0 bg-red-500 opacity-10"; }
     }
 
-    // Tabla
+    // Tabla Denominaciones
     const tbody = document.getElementById('tabla-denominaciones');
     if(!tbody) return;
     tbody.innerHTML = "";
@@ -258,7 +257,7 @@ function renderDetalle(id) {
         });
 
     } else {
-        // Sin denominaciones
+        // Sin denominaciones (Input directo)
         const row = document.createElement('tr');
         row.innerHTML = `
             <td class="px-5 py-3 text-slate-500 italic text-xs">Monto Total</td>
@@ -330,17 +329,18 @@ function actualizarVistaDespuesDeCalculo(id) {
 
 // --- LOCAL STORAGE ---
 function guardarLocalStorage() {
-    if(!caja_id) return;
+    // Usamos una clave única para tesorería (caja 99)
+    const key = `arqueo_tesoreria_${caja_id}`;
     const payload = {
         fecha: new Date().toISOString().split("T")[0],
         estado: estadoArqueo
     };
-    localStorage.setItem(`arqueo_tesoreria_${caja_id}`, JSON.stringify(payload));
+    localStorage.setItem(key, JSON.stringify(payload));
 }
 
 function restaurarLocalStorage() {
-    if(!caja_id) return;
-    const raw = localStorage.getItem(`arqueo_tesoreria_${caja_id}`);
+    const key = `arqueo_tesoreria_${caja_id}`;
+    const raw = localStorage.getItem(key);
     if(raw) {
         try {
             const data = JSON.parse(raw);
@@ -352,7 +352,7 @@ function restaurarLocalStorage() {
                     }
                 });
             } else {
-                localStorage.removeItem(`arqueo_tesoreria_${caja_id}`);
+                localStorage.removeItem(key);
             }
         } catch(e) { console.error("Error LS", e); }
     }
@@ -360,8 +360,6 @@ function restaurarLocalStorage() {
 
 // --- GUARDAR ---
 async function guardarArqueoFinal() {
-    if(!caja_id) return;
-
     let hayDiferencias = false;
     divisasBase.forEach(d => {
         const sis = parseFloat(d.total_sistema) || 0;
@@ -389,14 +387,15 @@ async function guardarArqueoFinal() {
     });
 
     const payload = {
-        caja_id: caja_id,
+        caja_id: caja_id, // Enviamos el ID (será 99)
         equipo_id: usuarioSesion.equipo_id || usuarioSesion.id,
         divisas: detalles,
         observacion: document.getElementById('observaciones-arqueo').value
     };
 
     try {
-        const res = await fetch("https://cambiosorion.cl/data/arqueo-caja.php", {
+        // CAMBIO: Endpoint tesorería
+        const res = await fetch("https://cambiosorion.cl/data/arqueo-tesoreria.php", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
@@ -416,9 +415,4 @@ async function guardarArqueoFinal() {
         btn.disabled = false;
         btn.innerHTML = originalText;
     }
-}
-
-function mostrarErrorSinCaja() {
-    const lista = document.getElementById('lista-divisas');
-    if(lista) lista.innerHTML = '<div class="text-center py-10"><p class="text-xs text-red-400 font-bold bg-red-900/30 p-2 rounded">Usuario sin caja asignada</p></div>';
 }
