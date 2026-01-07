@@ -1,278 +1,193 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const mostrarRegistros = document.getElementById('mostrar-registros');
-    const buscarInput = document.getElementById('buscar');
-    const idInput = document.getElementById('id');
-    const nombreInput = document.getElementById('nombre');
-    const divisaInput = document.getElementById('divisa');
-    const porCobrarSelect = document.getElementById('por-cobrar');
-    const porPagarSelect = document.getElementById('por-pagar');
-    const activaSelect = document.getElementById('activa');
-    const borrarFiltrosBtn = document.getElementById('borrar-filtros');
-    const tablaCuentas = document.querySelector('table tbody');
-    const nuevaCuentaBtn = document.getElementById('nueva-cta');
-    const divisaSugerencias = document.getElementById('divisa-sugerencias');
-    let divisaSeleccionada = null;
+import { 
+    initSystem, 
+    limpiarTexto, 
+    formatearNumero,
+    mostrarModalError 
+} from './index.js';
 
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Inicializar sistema
+    initSystem('cuentas');
+
+    // Referencias DOM
+    const tablaCuentas = document.getElementById('tabla-cuentas');
     const conteoResultados = document.getElementById('conteo-resultados');
-    const paginacionContainer = document.getElementById('paginacion-container');
+    const paginationControls = document.getElementById('pagination-controls');
+    
+    const nuevaCuentaBtn = document.getElementById('nuevo-cuenta');
+    const borrarFiltrosBtn = document.getElementById('borrar-filtros');
+
     let paginaActual = 1;
 
-    // Redirigir al hacer clic en "Nueva Cuenta"
+    // Filtros
+    const filtros = {
+        buscar: document.getElementById("buscar"),
+        nombre: document.getElementById("nombre"),
+        divisa: document.getElementById("divisa"),
+        tipo: document.getElementById("tipo"),
+        porCobrar: document.getElementById("por-cobrar"),
+        porPagar: document.getElementById("por-pagar"),
+        activa: document.getElementById("activa"),
+        mostrar: document.getElementById("mostrar-registros")
+    };
+
     if (nuevaCuentaBtn) {
         nuevaCuentaBtn.addEventListener('click', () => {
             window.location.href = 'https://tesoreria.cambiosorion.cl/nueva-cta';
         });
     }
 
-    function limpiarTexto(valor) {
-        return valor === null || valor === undefined ? '' : valor;
-    }
-
-    // Función para obtener las cuentas con los filtros aplicados
+    // --- FETCH DATOS ---
     function obtenerCuentas() {
         const params = new URLSearchParams();
-        params.set('id', idInput.value);
-        if (nombreInput.value.trim() !== '') {
-            params.set('nombre', nombreInput.value);
-        }
-        if (divisaSeleccionada) {
-            params.set('divisa_id', divisaSeleccionada.id);
-        }
-        params.set('por_cobrar', porCobrarSelect.value);
-        params.set('por_pagar', porPagarSelect.value);
-        params.set('activa', activaSelect.value);
-        params.set('mostrar_registros', mostrarRegistros.value);
-        params.set('buscar', buscarInput.value);
+
+        if (filtros.buscar.value) params.set('buscar', filtros.buscar.value.trim());
+        if (filtros.nombre.value) params.set('nombre', filtros.nombre.value.trim());
+        if (filtros.divisa.value) params.set('divisa', filtros.divisa.value.trim());
+        if (filtros.tipo.value) params.set('tipo', filtros.tipo.value.trim());
+        
+        if (filtros.porCobrar.value) params.set('por_cobrar', filtros.porCobrar.value);
+        if (filtros.porPagar.value) params.set('por_pagar', filtros.porPagar.value);
+        if (filtros.activa.value) params.set('activa', filtros.activa.value);
+        
+        if (filtros.mostrar.value) params.set('mostrar_registros', filtros.mostrar.value);
         params.set('pagina', paginaActual);
 
+        // Spinner Ámbar
+        tablaCuentas.innerHTML = `<tr><td colspan="10" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-amber-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
+
         fetch(`https://cambiosorion.cl/data/cuentas.php?${params.toString()}`)
-            .then(res => {
-                if (!res.ok) console.error("Error en respuesta:", res.status, res.statusText);
-                return res.text(); 
+            .then(res => res.json())
+            .then(data => {
+                const lista = data.cuentas || [];
+                const total = parseInt(data.totalFiltrado) || 0;
+                renderizarTabla(lista);
+                renderizarPaginacion(total, parseInt(filtros.mostrar.value), paginaActual);
             })
-            .then(text => {
-                console.log("Respuesta cruda:", text);
-                try {
-                    const data = JSON.parse(text); // data = { cuentas: [...], totalFiltrado: N }
-
-                    // Renderizar tabla
-                    mostrarResultados(data.cuentas); // Usar data.cuentas
-
-                    // Renderizar conteo y paginación
-                    const porPagina = parseInt(mostrarRegistros.value, 10);
-                    renderizarConteo(data.cuentas.length, data.totalFiltrado, porPagina, paginaActual);
-                    renderizarPaginacion(data.totalFiltrado, porPagina, paginaActual);
-
-                } catch (jsonError) {
-                    console.error("Error al parsear JSON:", jsonError, text);
-                    tablaCuentas.innerHTML = '<tr><td colspan="10" class="text-center text-red-500 py-4">Error al procesar datos. Revise consola.</td></tr>';
-                    if (conteoResultados) conteoResultados.textContent = 'Error.';
-                    if (paginacionContainer) paginacionContainer.innerHTML = '';
-                }
-            })
-            // --- FIN CAMBIO ---
-            .catch(error => { // Captura errores de red
-                 console.error('Error al obtener las cuentas:', error);
-                 tablaCuentas.innerHTML = '<tr><td colspan="10" class="text-center text-red-500 py-4">Error de red.</td></tr>';
-                 if (conteoResultados) conteoResultados.textContent = 'Error de red.';
-                 if (paginacionContainer) paginacionContainer.innerHTML = '';
+            .catch(error => {
+                console.error('Error:', error);
+                tablaCuentas.innerHTML = `<tr><td colspan="10" class="text-center text-red-400 py-4">Error de conexión.</td></tr>`;
             });
     }
 
-    // Función para mostrar los resultados en la tabla
-    function mostrarResultados(cuentas) {
+    // --- RENDERIZADO ---
+    function renderizarTabla(cuentas) {
         tablaCuentas.innerHTML = '';
 
-        cuentas.forEach(cuenta => {
-            const tr = document.createElement('tr');
-            tr.classList.add('border-b', 'bg-white', 'border-gray-700', 'text-gray-700');
+        if (cuentas.length === 0) {
+            tablaCuentas.innerHTML = `<tr><td colspan="10" class="text-center text-slate-500 py-10 italic">No se encontraron cuentas.</td></tr>`;
+            return;
+        }
 
-            const btnMostrar = document.createElement('button');
-            btnMostrar.textContent = 'Mostrar';
-            btnMostrar.className = 'text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1';
-            
-            btnMostrar.addEventListener('click', () => {
-                window.location.href = `detalle-cta?id=${cuenta.id}`;
-            });
+        cuentas.forEach(cta => {
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-white/5 transition-all border-b border-white/5 last:border-0 text-slate-300';
+
+            // Estados Lógicos
+            const esActiva = (cta.activa == 1 || cta.activa === '1');
+            const porCobrar = (cta.por_cobrar == 1);
+            const porPagar = (cta.por_pagar == 1);
+
+            // Badges
+            const estadoClass = esActiva 
+                ? 'bg-green-900/40 text-green-300 border border-green-500/30' 
+                : 'bg-red-900/40 text-red-300 border border-red-500/30';
+            const estadoTexto = esActiva ? 'Activa' : 'Inactiva';
+
+            const checkIcon = `<svg class="w-4 h-4 text-green-400 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
+            const dashIcon = `<span class="text-slate-600">-</span>`;
+
+            // Botón Acción
+            const btnVer = document.createElement('button');
+            btnVer.innerHTML = `<svg class="w-5 h-5 text-slate-400 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
+            btnVer.className = 'flex items-center justify-center p-1.5 bg-white/5 rounded-full hover:bg-amber-600 shadow-sm border border-transparent transition-all mx-auto';
+            btnVer.onclick = (e) => {
+                e.stopPropagation();
+                window.location.href = `detalle-cta?id=${cta.id}`;
+            };
+
+            const iconoDivisa = cta.divisa_icono || 'https://cambiosorion.cl/orionapp/icons/default.png';
 
             tr.innerHTML = `
-                <td class="px-4 py-2 text-center">${cuenta.id}</td>
-                <td class="px-4 py-2">${limpiarTexto(cuenta.nombre)}</td>
-                <td class="px-4 py-2">${limpiarTexto(cuenta.divisa)}</td>
-                <td class="px-4 py-2 text-right">${cuenta.me_deben}</td>
-                <td class="px-4 py-2 text-right">${cuenta.debo}</td>
-                <td class="px-4 py-2 text-center">${limpiarTexto(cuenta.por_cobrar_texto)}</td>
-                <td class="px-4 py-2 text-center">${limpiarTexto(cuenta.por_pagar_texto)}</td>
-                <td class="px-4 py-2">${limpiarTexto(cuenta.activa_texto)}</td>
-                <td class="px-4 py-2 mostrar-btn-cell"></td>
-                <td class="px-4 py-2">
-                    <button class="text-white bg-red-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1">
-                        Desactivar
-                    </button>
+                <td class="px-4 py-3 font-mono text-xs font-bold text-slate-500 text-center">${cta.id}</td>
+                <td class="px-4 py-3">
+                    <div class="font-bold text-white text-sm">${limpiarTexto(cta.nombre)}</div>
+                    <div class="text-xs text-amber-500/80">${limpiarTexto(cta.banco)}</div>
                 </td>
+                <td class="px-4 py-3 font-mono text-xs text-slate-400">${limpiarTexto(cta.numero)}</td>
+                <td class="px-4 py-3">
+                    <div class="flex items-center justify-center gap-2">
+                        <img src="${iconoDivisa}" class="w-5 h-5 object-contain" onerror="this.src='https://cambiosorion.cl/orionapp/icons/default.png'">
+                        <span class="font-bold text-xs text-slate-300">${limpiarTexto(cta.divisa)}</span>
+                    </div>
+                </td>
+                <td class="px-4 py-3 text-xs text-slate-400">${limpiarTexto(cta.tipo)}</td>
+                <td class="px-4 py-3 text-right font-mono font-bold text-sm text-white">${formatearNumero(cta.saldo)}</td>
+                <td class="px-4 py-3 text-center">${porCobrar ? checkIcon : dashIcon}</td>
+                <td class="px-4 py-3 text-center">${porPagar ? checkIcon : dashIcon}</td>
+                <td class="px-4 py-3 text-center">
+                    <span class="px-2 py-0.5 rounded text-[10px] uppercase font-bold ${estadoClass}">${estadoTexto}</span>
+                </td>
+                <td class="px-4 py-3 text-center cell-action"></td>
             `;
-
-            tr.querySelector('.mostrar-btn-cell').appendChild(btnMostrar);
             
+            tr.querySelector('.cell-action').appendChild(btnVer);
             tablaCuentas.appendChild(tr);
         });
     }
 
-    function renderizarConteo(mostrados, total, porPagina, pagina) {
-        if (!conteoResultados) return;
-        if (total === 0) {
-            conteoResultados.textContent = 'No se encontraron resultados.';
-            return;
-        }
-        const inicio = ((pagina - 1) * porPagina) + 1;
-        const fin = inicio + mostrados - 1;
-        conteoResultados.textContent = `Mostrando ${inicio}-${fin} de ${total} resultados`;
-    }
+    // --- PAGINACIÓN ---
+    function renderizarPaginacion(totalRegistros, porPagina, pagina) {
+        conteoResultados.textContent = `Total: ${totalRegistros}`;
+        paginationControls.innerHTML = '';
 
-    function renderizarPaginacion(total, porPagina, pagina) {
-        if (!paginacionContainer) return;
-        paginacionContainer.innerHTML = '';
-        const totalPaginas = Math.ceil(total / porPagina);
+        const totalPaginas = Math.ceil(totalRegistros / porPagina);
+        if (totalPaginas <= 1) return;
 
-        if (totalPaginas <= 1) return; 
+        const btnPrev = crearBotonPag('Anterior', pagina > 1, () => cambioPagina(pagina - 1));
+        paginationControls.appendChild(btnPrev);
 
-        if (pagina > 1) {
-            paginacionContainer.appendChild(crearBotonPaginacion('Anterior', pagina - 1));
-        }
-
-        const maxBotones = 5;
-        let inicio = Math.max(1, pagina - Math.floor(maxBotones / 2));
-        let fin = Math.min(totalPaginas, inicio + maxBotones - 1);
-        inicio = Math.max(1, fin - maxBotones + 1);
-
-        if (inicio > 1) {
-            paginacionContainer.appendChild(crearBotonPaginacion(1, 1));
-            if (inicio > 2) paginacionContainer.appendChild(crearSpanPaginacion('...'));
-        }
-
-        for (let i = inicio; i <= fin; i++) {
-            paginacionContainer.appendChild(crearBotonPaginacion(i, i, i === pagina));
-        }
-
-        if (fin < totalPaginas) {
-            if (fin < totalPaginas - 1) paginacionContainer.appendChild(crearSpanPaginacion('...'));
-            paginacionContainer.appendChild(crearBotonPaginacion(totalPaginas, totalPaginas));
-        }
-
-        if (pagina < totalPaginas) {
-            paginacionContainer.appendChild(crearBotonPaginacion('Siguiente', pagina + 1));
-        }
-    }
-
-    function crearBotonPaginacion(texto, pagina, esActual = false) {
-        const boton = document.createElement('button');
-        boton.textContent = texto;
-        boton.className = `px-3 py-1 mx-1 rounded-lg focus:outline-none ${
-            esActual 
-            ? 'bg-blue-700 text-white' 
-            : 'bg-white text-gray-700 hover:bg-gray-200'
-        }`;
-        boton.addEventListener('click', (e) => {
-            e.preventDefault();
-            paginaActual = pagina; 
-            obtenerCuentas();      
-        });
-        return boton;
-    }
-
-    function crearSpanPaginacion(texto) {
         const span = document.createElement('span');
-        span.textContent = texto;
-        span.className = 'px-3 py-1 mx-1 text-white select-none';
-        return span;
+        span.className = "text-xs font-bold text-slate-400 px-2";
+        span.textContent = `${pagina} / ${totalPaginas}`;
+        paginationControls.appendChild(span);
+
+        const btnNext = crearBotonPag('Siguiente', pagina < totalPaginas, () => cambioPagina(pagina + 1));
+        paginationControls.appendChild(btnNext);
     }
 
-    // Buscar divisa
-    divisaInput.addEventListener("input", async (e) => {
-        const query = e.target.value.trim();
-        if (query.length < 1) {
-            divisaSugerencias.classList.add("hidden");
-            divisaSeleccionada = null;
-            obtenerCuentas();
-            return;
-        }
-    
-        const res = await fetch(
-        `https://cambiosorion.cl/data/cuentas.php?buscar_divisa=${encodeURIComponent(query)}`
-        );
-    
-        // Verificar si la respuesta es exitosa
-        if (!res.ok) {
-            console.error('Error al buscar divisa', res.statusText);
-            return;
-        }
+    function crearBotonPag(texto, habilitado, onClick) {
+        const btn = document.createElement('button');
+        btn.textContent = texto;
+        btn.className = `px-3 py-1 bg-slate-800 border border-slate-600 rounded hover:bg-slate-700 text-white text-xs transition ${!habilitado ? 'opacity-50 cursor-not-allowed' : ''}`;
+        btn.disabled = !habilitado;
+        btn.onclick = onClick;
+        return btn;
+    }
 
-        const text = await res.text();
-    
-        try {
-            // Si el texto está vacío, no intentar parsear
-            if (text.trim() === "") {
-                console.warn("Respuesta de divisas vacía.");
-                divisaSugerencias.classList.add("hidden");
-                return;
-            }
-
-            const divisas = JSON.parse(text);
-            divisaSugerencias.innerHTML = "";
-            
-            divisas.forEach((divisa) => {
-                const li = document.createElement("li");
-                li.textContent = divisa.nombre;
-                li.classList.add("px-2", "py-1", "hover:bg-gray-200", "cursor-pointer");
-                li.addEventListener("click", () => {
-                    divisaInput.value = divisa.nombre;
-                    divisaSeleccionada = divisa;
-                    console.log(`ID de divisas_interna seleccionado: ${divisa.id}`);
-                    console.log(`Valor asignado a divisa_id: ${divisa.id}`);
-                    divisaSugerencias.classList.add("hidden");
-                    
-                    obtenerCuentas(); 
-                });      
-                divisaSugerencias.appendChild(li);
-            });
-            divisaSugerencias.classList.remove("hidden");
-        } catch (error) {
-            console.error("Error al procesar la respuesta de las divisas (no es JSON):", error);
-            console.error("Respuesta del servidor:", text);
-        }
-    });
-  
-    // Cerrar dropdown al clickear fuera
-    document.addEventListener("click", (e) => {
-        if (!divisaInput.contains(e.target) && !divisaSugerencias.contains(e.target)) {
-            divisaSugerencias.classList.add("hidden");
-        }
-    });
-
-    // Buscar cuando el valor de búsqueda cambie
-    [
-        buscarInput, mostrarRegistros, idInput, nombreInput, 
-        divisaInput, porCobrarSelect, porPagarSelect, activaSelect
-    ].forEach(el => {
-        const eventType = (el.tagName === 'SELECT' || el.id === 'divisa') ? 'change' : 'input';
-        el.addEventListener(eventType, () => {
-            paginaActual = 1; // Resetear
-            obtenerCuentas();
-        });
-    });
-
-    // Borrar filtros
-    borrarFiltrosBtn.addEventListener('click', () => {
-        // ... (todos los .value = '') ...
-        divisaSeleccionada = null;
-        // ... (resto de .value = '') ...
-        buscarInput.value = '';
-
-        paginaActual = 1; // Resetear
-        
+    function cambioPagina(nuevaPagina) {
+        paginaActual = nuevaPagina;
         obtenerCuentas();
+    }
+
+    // --- EVENTOS ---
+    const resetAndFetch = () => { paginaActual = 1; obtenerCuentas(); };
+
+    borrarFiltrosBtn.addEventListener('click', () => {
+        Object.values(filtros).forEach(input => {
+            if(!input) return;
+            input.value = '';
+        });
+        if(filtros.mostrar) filtros.mostrar.value = '25';
+        resetAndFetch();
     });
 
-    // Cargar cuentas inicialmente
+    Object.values(filtros).forEach(input => {
+        if(input) {
+            input.addEventListener('input', resetAndFetch);
+            input.addEventListener('change', resetAndFetch);
+        }
+    });
+
     obtenerCuentas();
 });
