@@ -1,333 +1,232 @@
-document.addEventListener("DOMContentLoaded", () => {
+import { 
+    initSystem, 
+    limpiarTexto, 
+    formatearNumero, 
+    formatearFechaHora, 
+    mostrarModalError,
+    mostrarModalExitoso
+} from './index.js';
+
+document.addEventListener('DOMContentLoaded', async () => {
+    await initSystem('cuentas');
+
+    // Referencias Inputs
+    const inputs = {
+        nombre: document.getElementById('nombre'),
+        banco: document.getElementById('banco'),
+        tipo: document.getElementById('tipo'),
+        numero: document.getElementById('numero'),
+        rut: document.getElementById('rut'),
+        email: document.getElementById('email'),
+        activa: document.getElementById('activa'),
+        porCobrar: document.getElementById('por-cobrar'),
+        porPagar: document.getElementById('por-pagar'),
+        divisaInput: document.getElementById('divisa-input'),
+        divisaId: document.getElementById('divisa-id'),
+        divisaLista: document.getElementById('divisa-lista')
+    };
+
+    // Referencias Info
+    const lblSaldo = document.getElementById('saldo-actual');
+    const lblDivisaBadge = document.getElementById('divisa-badge');
+    
+    // Referencias Tabla
+    const tablaOps = document.getElementById('tabla-operaciones');
+    const inputFiltroOps = document.getElementById('filtrar-ops');
+
+    // Botones
+    const btnGuardar = document.getElementById('guardar-cambios');
+    const btnVolver = document.getElementById('volver-lista');
+
+    // Estado local
+    let operacionesData = [];
+
+    // Obtener ID
     const params = new URLSearchParams(window.location.search);
-    const id = params.get("id");
-  
-    const infoContenedor = document.getElementById("info-cuenta");
-    const accionesEdicion = document.getElementById("acciones-edicion");
-    const btnEditar = document.getElementById("btn-editar");
-    const btnGuardar = document.getElementById("btn-guardar");
-    const btnCancelar = document.getElementById("btn-cancelar");
-    const btnOperaciones = document.getElementById("btn-operaciones");
-    const opsContenedor = document.getElementById("detalle-operaciones-cuenta");
+    const cuentaId = params.get('id');
 
-    if (!id) {
-      infoContenedor.innerHTML = "<p>ID de cuenta no proporcionado.</p>";
-      return;
+    if (!cuentaId) {
+        mostrarModalError({ titulo: "Error", mensaje: "ID de cuenta no especificado." });
+        return;
     }
-  
-    let cuentaOriginal = {}; // Para guardar el estado original al editar
 
-    // Función para formatear la fecha (copiada de tu script)
-    const formatearFecha = (timestamp) => {
-        if (!timestamp) return ''; 
-        const fecha = new Date(timestamp);
-        if (isNaN(fecha.getTime())) return timestamp;
-        
-        const hh = String(fecha.getHours()).padStart(2, '0');
-        const min = String(fecha.getMinutes()).padStart(2, '0');
-        const dd = String(fecha.getDate()).padStart(2, '0');
-        const mm = String(fecha.getMonth() + 1).padStart(2, '0'); // +1
-        const yyyy = fecha.getFullYear();
-        
-        return `${hh}:${min} ${dd}/${mm}/${yyyy}`;
-    };
+    if (btnVolver) {
+        btnVolver.addEventListener('click', () => {
+            window.location.href = 'https://tesoreria.cambiosorion.cl/cuentas';
+        });
+    }
 
-    // Función para formatear números (copiada de tu script)
-    const formatNumber = (num) => {
-      const n = parseFloat(num);
-      if (isNaN(n)) return num;
-      return n.toLocaleString('es-CL', {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 3
-      });
-    };
+    // --- CARGAR DATOS ---
+    function cargarCuenta() {
+        fetch(`https://cambiosorion.cl/data/detalle-cta.php?id=${cuentaId}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) throw new Error(data.error);
 
-    // Función para renderizar la vista de solo lectura
-    const renderizarVista = (cuenta) => {
-        const iconoHTML = cuenta.divisa_icono 
-            ? `<img src="${cuenta.divisa_icono}" alt="${cuenta.divisa_nombre}" class="w-4 h-4 inline-block ml-1" style="margin-top: -2px;">` 
-            : '';
-        const infoHTML = `
-          <div><span class="font-semibold text-gray-300">Nombre:</span> ${cuenta.nombre || ''}</div>
-          <div><span class="font-semibold text-gray-300">Tipo:</span> ${cuenta.tipo_cuenta || ''}</div>
-          <div>
-            <span class="font-semibold text-gray-300">Divisa:</span> 
-            ${cuenta.divisa_nombre || (cuenta.divisa_id || '')}
-            ${iconoHTML}
-          </div>
-          <div><span class="font-semibold text-gray-300">Me Deben (+):</span> ${formatNumber(cuenta.me_deben)}</div>
-          <div><span class="font-semibold text-gray-300">Debo (-):</span> ${formatNumber(cuenta.debo)}</div>
-          <div><span class="font-semibold text-gray-300">Por Cobrar:</span> ${cuenta.por_cobrar == 1 ? 'Sí' : 'No'}</div>
-          <div><span class="font-semibold text-gray-300">Por Pagar:</span> ${cuenta.por_pagar == 1 ? 'Sí' : 'No'}</div>
-          <div><span class="font-semibold text-gray-300">Activa:</span> ${cuenta.activa == 1 ? 'Sí' : 'No'}</div>
-        `;
-        infoContenedor.innerHTML = infoHTML;
-        accionesEdicion.classList.add("hidden");
-        btnEditar.classList.remove("hidden");
-    };
+                const cta = data.cuenta;
+                
+                // Llenar inputs
+                inputs.nombre.value = limpiarTexto(cta.nombre);
+                inputs.banco.value = limpiarTexto(cta.banco);
+                inputs.tipo.value = limpiarTexto(cta.tipo_cuenta);
+                inputs.numero.value = limpiarTexto(cta.numero_cuenta);
+                inputs.rut.value = limpiarTexto(cta.rut_titular);
+                inputs.email.value = limpiarTexto(cta.email_titular);
+                
+                inputs.activa.value = cta.activa == 1 ? "1" : "0";
+                inputs.porCobrar.checked = cta.por_cobrar == 1;
+                inputs.porPagar.checked = cta.por_pagar == 1;
 
-    // Función para renderizar el formulario de edición
-    const renderizarEdicion = (cuenta) => {
+                // Divisa
+                inputs.divisaId.value = cta.divisa_id || '';
+                inputs.divisaInput.value = cta.nombre_divisa || '';
+                lblDivisaBadge.textContent = cta.nombre_divisa || 'Sin divisa';
 
-        const tipos = ['general', 'cliente', 'funcionario', 'administrativa'];
-        const opcionesTipo = tipos.map(tipo => 
-            `<option value="${tipo}" ${cuenta.tipo_cuenta === tipo ? 'selected' : ''}>${tipo.charAt(0).toUpperCase() + tipo.slice(1)}</option>`
-        ).join('');
+                // Saldo
+                lblSaldo.textContent = '$' + formatearNumero(cta.saldo);
 
-        const iconoHTML = cuenta.divisa_icono 
-            ? `<img src="${cuenta.divisa_icono}" alt="${cuenta.divisa_nombre}" class="w-4 h-4 inline-block mr-2" style="margin-top: -2px;">` 
-            : '';
+                // Operaciones
+                operacionesData = data.operaciones || [];
+                renderizarOperaciones(operacionesData);
+            })
+            .catch(err => {
+                console.error(err);
+                mostrarModalError({ titulo: "Error", mensaje: "No se pudo cargar la cuenta." });
+            });
+    }
 
-        const formHTML = `
-            <div class="mb-3">
-              <label for="input-nombre" class="text-gray-300">Nombre:</label>
-              <input type="text" id="input-nombre" value="${cuenta.nombre || ''}" class="w-full p-2 rounded bg-white text-black" />
-            </div>
-            
-            <div class="mb-3">
-              <label for="input-tipo-cuenta" class="text-gray-300">Tipo:</label>
-              <select id="input-tipo-cuenta" class="w-full p-2 rounded bg-white text-black">
-                ${opcionesTipo}
-              </select>
-            </div>
-
-            <div class="mb-3 relative">
-              <label for="input-divisa-search" class="text-gray-300">Divisa</label>
-              
-              <input type="text" 
-                     id="input-divisa-search" 
-                     placeholder="Buscar por nombre..." 
-                     value="${cuenta.divisa_nombre || ''}" 
-                     class="w-full p-2 rounded bg-white text-black" />
-              <input type="hidden" id="input-divisa-id-hidden" value="${cuenta.divisa_id || ''}" />
-              <ul id="divisa-sugerencias" class="absolute z-10 w-full bg-white border border-gray-600 text-gray-700 rounded-lg mt-1 hidden max-h-48 overflow-y-auto"></ul>
-            </div>
-            
-            <p class="text-xs text-gray-400">Los saldos y estados no son editables desde esta vista.</p>
-        `;        
-        infoContenedor.innerHTML = formHTML;
-        accionesEdicion.classList.remove("hidden");
-        btnEditar.classList.add("hidden");
-
-        const divisaSearchInput = document.getElementById("input-divisa-search");
-        const divisaHiddenInput = document.getElementById("input-divisa-id-hidden");
-
-        divisaSearchInput.addEventListener("input", async () => {
-            const divisaSugerencias = document.getElementById("divisa-sugerencias");
-            if (!divisaSugerencias) return;
-            
-            const query = divisaSearchInput.value.trim();
-            if (query.length < 1) {
-                divisaSugerencias.classList.add("hidden");
+    // --- BUSCADOR DIVISAS ---
+    if (inputs.divisaInput) {
+        inputs.divisaInput.addEventListener('input', async (e) => {
+            const term = e.target.value.trim();
+            if (term.length < 1) {
+                inputs.divisaLista.classList.add('hidden');
                 return;
             }
 
-            // Llamar al PHP para buscar divisas
-            const res = await fetch(`https://cambiosorion.cl/data/detalle-cta.php?buscar_divisa=${encodeURIComponent(query)}`);
-            const text = await res.text(); // Leer como texto primero
-
             try {
-                const divisas = JSON.parse(text);
-                divisaSugerencias.innerHTML = "";
+                const res = await fetch(`https://cambiosorion.cl/data/detalle-cta.php?buscar_divisa=${encodeURIComponent(term)}`);
+                const divisas = await res.json();
                 
-                divisas.forEach(divisa => {
-                    const li = document.createElement("li");
-                    li.className = "px-3 py-2 hover:bg-gray-200 cursor-pointer flex items-center";
-                    
-                    // Añadir ícono y nombre
-                    const icono = divisa.icono ? `<img src="${divisa.icono}" class="w-4 h-4 mr-2">` : '<div class="w-4 h-4 mr-2"></div>'; // Placeholder
-                    li.innerHTML = `${icono} ${divisa.nombre}`;
-                    
-                    li.addEventListener("click", () => {
-                        divisaSearchInput.value = divisa.nombre; // Mostrar nombre en el input
-                        divisaHiddenInput.value = divisa.id; // Guardar ID en el input oculto
-                        divisaSugerencias.classList.add("hidden");
+                inputs.divisaLista.innerHTML = '';
+                if (divisas.length > 0) {
+                    divisas.forEach(d => {
+                        const li = document.createElement('li');
+                        li.className = "px-4 py-2 hover:bg-slate-700 cursor-pointer text-sm text-slate-300 transition flex items-center gap-2";
+                        
+                        // Icono si existe
+                        const img = d.icono ? `<img src="${d.icono}" class="w-4 h-4 rounded-full">` : '';
+                        li.innerHTML = `${img} <span>${d.nombre}</span>`;
+                        
+                        li.onclick = () => {
+                            inputs.divisaInput.value = d.nombre;
+                            inputs.divisaId.value = d.id;
+                            inputs.divisaLista.classList.add('hidden');
+                            lblDivisaBadge.textContent = d.nombre;
+                        };
+                        inputs.divisaLista.appendChild(li);
                     });
-                    divisaSugerencias.appendChild(li);
-                });
-
-                divisaSugerencias.classList.remove("hidden");
-
-            } catch(e) {
-                console.error("Error al parsear JSON de divisas:", e, text);
+                    inputs.divisaLista.classList.remove('hidden');
+                } else {
+                    inputs.divisaLista.classList.add('hidden');
+                }
+            } catch (err) {
+                console.error("Error buscando divisas", err);
             }
         });
 
-        // Ocultar sugerencias si se hace clic fuera
-        document.addEventListener("click", (e) => {
-            const currentSugerencias = document.getElementById("divisa-sugerencias"); 
-            if (currentSugerencias && !infoContenedor.contains(e.target)) {
-                currentSugerencias.classList.add("hidden"); 
+        // Cerrar lista al hacer click fuera
+        document.addEventListener('click', (e) => {
+            if (!inputs.divisaInput.contains(e.target) && !inputs.divisaLista.contains(e.target)) {
+                inputs.divisaLista.classList.add('hidden');
             }
-        }, { once: true }); // El listener se ejecuta una vez y se remueve
-    };
-
-    function mostrarModal({ titulo, mensaje, onConfirmar }) {
-        const modal = document.getElementById("modal-error");
-        const tituloElem = document.getElementById("modal-error-titulo");
-        const mensajeElem = document.getElementById("modal-error-mensaje");
-        const btnConfirmar = document.getElementById("modal-error-confirmar");
-        
-        // Ocultar el botón de cancelar por si acaso
-        document.getElementById("modal-error-cancelar").classList.add("hidden");
-        
-        tituloElem.textContent = titulo;
-        mensajeElem.textContent = mensaje;
-        
-        // Asignar el evento click
-        btnConfirmar.onclick = () => {
-            modal.classList.add("hidden");
-            if (onConfirmar) {
-                onConfirmar();
-            }
-        };
-        
-        modal.classList.remove("hidden");
+        });
     }
 
-    // --- Carga inicial de datos ---
-    fetch(`https://cambiosorion.cl/data/detalle-cta.php?id=${id}`)
-      .then(async res => {
-        const text = await res.text();
-        console.log("Respuesta cruda cuenta:", text);
+    // --- GUARDAR CAMBIOS ---
+    if (btnGuardar) {
+        btnGuardar.addEventListener('click', () => {
+            const payload = {
+                id: cuentaId,
+                nombre: inputs.nombre.value,
+                banco: inputs.banco.value,
+                tipo_cuenta: inputs.tipo.value,
+                numero_cuenta: inputs.numero.value,
+                rut_titular: inputs.rut.value,
+                email_titular: inputs.email.value,
+                divisa_id: inputs.divisaId.value,
+                activa: inputs.activa.value === "1",
+                por_cobrar: inputs.porCobrar.checked,
+                por_pagar: inputs.porPagar.checked
+            };
 
-        let data;
-        try {
-            data = JSON.parse(text);
-        } catch (e) {
-            console.error("Error al parsear JSON:", e, text);
-            infoContenedor.innerHTML = `<p>Error al procesar la respuesta del servidor. La respuesta no es JSON. Revise la consola.</p>`;
-            return; // Detener la ejecución
+            fetch("https://cambiosorion.cl/data/detalle-cta.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    mostrarModalExitoso({ titulo: "Guardado", mensaje: "Cuenta actualizada correctamente." });
+                } else {
+                    throw new Error(data.error || "Error al guardar.");
+                }
+            })
+            .catch(err => {
+                mostrarModalError({ titulo: "Error", mensaje: err.message });
+            });
+        });
+    }
+
+    // --- RENDERIZAR OPERACIONES ---
+    function renderizarOperaciones(lista) {
+        tablaOps.innerHTML = '';
+
+        if (lista.length === 0) {
+            tablaOps.innerHTML = `<tr><td colspan="5" class="text-center text-slate-500 py-10 italic">Sin movimientos recientes.</td></tr>`;
+            return;
         }
 
-        if (data.error) {
-          infoContenedor.innerHTML = `<p>${data.error}</p>`;
-          return;
-        }
-  
-        cuentaOriginal = { ...data.cuenta }; // Guardar estado original
-        renderizarVista(cuentaOriginal); // Renderizar vista inicial
-  
-        // --- Listener para el botón de Operaciones ---
-        btnOperaciones.addEventListener("click", () => {
-          if (opsContenedor.classList.contains("hidden")) {
-            const tablaHTML = `
-              <table class="w-full text-sm text-left text-white bg-gray-800">
-                <thead class="text-xs uppercase bg-gray-800 text-white">
-                  <tr>
-                    <th class="px-4 py-2">Fecha</th>
-                    <th class="px-4 py-2">Número</th>
-                    <th class="px-4 py-2">Cliente</th> 
-                    <th class="px-4 py-2">Tipo Doc</th>
-                    <th class="px-4 py-2">Nº Doc</th>
-                    <th class="px-4 py-2">Nº Nota</th>
-                    <th class="px-4 py-2">Tipo Trans.</th>
-                    <th class="px-4 py-2">Divisa</th>
-                    <th class="px-4 py-2">Monto</th>
-                    <th class="px-4 py-2">Tasa</th>
-                    <th class="px-4 py-2">Total</th>
-                    <th class="px-4 py-2">Estado</th>
-                    <th class="px-4 py-2"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                ${data.operaciones.map(op => {
-                    const colorFondo = op.tipo_transaccion === 'Compra'
-                    ? 'style="background-color: #c3e8f1;"' // Celeste
-                    : op.tipo_transaccion === 'Venta'
-                    ? 'style="background-color: #dbf599;"' // Verde
-                    : '';
-                    const colorAnulado = op.estado === 'Anulado'
-                    ? 'style="background-color: #f9b8a3;"' // Rojo
-                    : colorFondo;
+        lista.forEach(op => {
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-white/5 transition-all border-b border-white/5 last:border-0 text-slate-300';
 
-                    return `
-                    <tr class="border-b bg-white border-gray-700 text-gray-700" ${colorAnulado}>
-                        <td class="px-4 py-2">${formatearFecha(op.fecha)}</td>
-                        <td class="px-4 py-2">${op.id}</td>
-                        <td class="px-4 py-2">${op.nombre_cliente || 'N/A'}</td>
-                        <td class="px-4 py-2">${op.tipo_documento || ''}</td>
-                        <td class="px-4 py-2">${op.numero_documento || ''}</td>
-                        <td class="px-4 py-2">${op.numero_nota || ''}</td>
-                        <td class="px-4 py-2">${op.tipo_transaccion || ''}</td>
-                        <td class="px-4 py-2">${op.divisa || ''}</td>
-                        <td class="px-4 py-2">${formatNumber(op.monto)}</td>
-                        <td class="px-4 py-2">${formatNumber(op.tasa_cambio)}</td>
-                        <td class="px-4 py-2">${formatNumber(op.total)}</td>
-                        <td class="px-4 py-2">${op.estado || ''}</td>
-                        <td class="px-4 py-2 gap-2">
-                        <a href="/detalle-op?id=${op.id}" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1">Mostrar</a>
-                        </td>
-                    </tr>
-                    `;
-                }).join("")}
-                </tbody>
-              </table>
+            // Estilos
+            let montoClass = "text-white";
+            // Si es Ingreso (+) o Egreso (-)
+            // Esto depende de tu lógica de negocio, por ahora neutro
+
+            tr.innerHTML = `
+                <td class="px-6 py-3 whitespace-nowrap text-xs">${formatearFechaHora(op.fecha)}</td>
+                <td class="px-6 py-3 font-mono text-xs font-bold text-slate-500">#${op.id}</td>
+                <td class="px-6 py-3 text-sm text-white truncate max-w-[200px]" title="${limpiarTexto(op.nombre_cliente)}">
+                    ${limpiarTexto(op.nombre_cliente || 'Operación general')}
+                </td>
+                <td class="px-6 py-3 text-center text-xs font-bold text-amber-400 uppercase tracking-wide">${limpiarTexto(op.tipo_transaccion)}</td>
+                <td class="px-6 py-3 text-right font-mono font-bold ${montoClass} text-sm">${formatearNumero(op.monto)}</td>
             `;
-            opsContenedor.innerHTML = tablaHTML;
-            opsContenedor.classList.remove("hidden");
-            btnOperaciones.innerText = "Ocultar Operaciones";
-          } else {
-            opsContenedor.classList.add("hidden");
-            btnOperaciones.innerText = "Ver Operaciones";
-          }
+            tablaOps.appendChild(tr);
         });
+    }
 
-        // --- Listeners para Edición ---
-        btnEditar.addEventListener("click", () => renderizarEdicion(cuentaOriginal));
-        
-        btnCancelar.addEventListener("click", () => renderizarVista(cuentaOriginal));
+    // --- FILTRO LOCAL ---
+    if (inputFiltroOps) {
+        inputFiltroOps.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase().trim();
+            if (!term) {
+                renderizarOperaciones(operacionesData);
+                return;
+            }
 
-        btnGuardar.addEventListener("click", () => {
-          const datosActualizados = {
-              id: cuentaOriginal.id,
-              nombre: document.getElementById("input-nombre").value,
-              tipo_cuenta: document.getElementById("input-tipo-cuenta").value, // Leer del Select
-              divisa_id: document.getElementById("input-divisa-id-hidden").value, // Leer del Input Oculto
-          };
-
-          fetch("https://cambiosorion.cl/data/detalle-cta.php", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(datosActualizados),
-          })
-          .then(res => res.text())
-          .then(text => {
-              try {
-                  const response = JSON.parse(text);
-                  if (response.success) {
-                      mostrarModal({
-                          titulo: "✅ Éxito",
-                          mensaje: "Cuenta actualizada correctamente.",
-                          onConfirmar: () => {
-                              window.location.reload();
-                          }
-                      });
-                  } else {
-                      mostrarModal({
-                          titulo: "❌ Error",
-                          mensaje: "Error: " + (response.error || "Desconocido")
-                      });
-                  }
-              } catch (error) {
-                  console.error("Error al parsear JSON:", error, text);
-                  mostrarModal({
-                      titulo: "❌ Error de Servidor",
-                      mensaje: "Hubo un error al procesar la respuesta. Revise la consola."
-                  });
-              }
-          })        
-          .catch(error => {
-              console.error("Error de red:", error);
-              mostrarModal({
-                  titulo: "❌ Error de Red",
-                  mensaje: "Error al intentar guardar los datos."
-              });
-          });
+            const filtrados = operacionesData.filter(op => 
+                String(op.id).includes(term) ||
+                (op.nombre_cliente && op.nombre_cliente.toLowerCase().includes(term)) ||
+                (op.tipo_transaccion && op.tipo_transaccion.toLowerCase().includes(term))
+            );
+            renderizarOperaciones(filtrados);
         });
-      })
-      .catch(err => {
-        console.error(err);
-        infoContenedor.innerHTML = "<p>Error al cargar la cuenta.</p>";
-      });
-  });
+    }
+
+    cargarCuenta();
+});
