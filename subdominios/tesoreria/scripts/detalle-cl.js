@@ -1,198 +1,177 @@
-document.addEventListener("DOMContentLoaded", () => {
+import { 
+    initSystem, 
+    limpiarTexto, 
+    formatearNumero, 
+    formatearFechaHora, 
+    mostrarModalError,
+    mostrarModalExitoso
+} from './index.js';
+
+document.addEventListener('DOMContentLoaded', async () => {
+    await initSystem('clientes');
+
+    // Referencias DOM Inputs
+    const inputs = {
+        razonSocial: document.getElementById('razon-social'),
+        rut: document.getElementById('rut'),
+        fono: document.getElementById('fono'),
+        correo: document.getElementById('correo'),
+        activo: document.getElementById('activo'),
+        direccion: document.getElementById('direccion')
+    };
+
+    // Referencias Info
+    const lblFechaIngreso = document.getElementById('fecha-ingreso');
+    const badgeDoc = document.getElementById('badge-doc');
+    const lblTotalOps = document.getElementById('total-ops');
+    
+    // Referencias Tabla
+    const tablaOps = document.getElementById('tabla-operaciones');
+    const inputFiltroOps = document.getElementById('filtrar-ops');
+
+    // Botones
+    const btnGuardar = document.getElementById('guardar-cambios');
+    const btnVolver = document.getElementById('volver-lista');
+
+    // Estado local
+    let operacionesData = []; // Para filtrar localmente
+
+    // Obtener ID
     const params = new URLSearchParams(window.location.search);
-    const id = params.get("id");
-  
-    if (!id) {
-      document.getElementById("info-cliente").innerHTML = "<p>ID de cliente no proporcionado.</p>";
-      return;
+    const clienteId = params.get('id');
+
+    if (!clienteId) {
+        mostrarModalError({ titulo: "Error", mensaje: "ID de cliente no especificado." });
+        return;
     }
-  
-    fetch(`https://cambiosorion.cl/data/detalle-cl.php?id=${id}`)
-      .then(async res => {
-        const text = await res.text();
-        console.log("Respuesta cruda cliente:", text);
-        return JSON.parse(text);
-      })
-      .then(data => {
-        if (data.error) {
-          document.getElementById("info-cliente").innerHTML = `<p>${data.error}</p>`;
-          return;
-        }
-  
-        const cliente = data.cliente;
 
-        const estadoActivoTexto = cliente.activo == 1 ? 'Activo' : 'Inactivo';
-        const estadoActivoClase = cliente.activo == 1 ? 'text-green-500' : 'text-red-500';
-        const docEstado = cliente.estado_documentacion || 'No Documentado';
-  
-        const infoHTML = `
-          <div><span class="font-semibold text-gray-300">Razón social:</span> ${cliente.razon_social}</div>
-          <div><span class="font-semibold text-gray-300">RUT:</span> ${cliente.rut}</div>
-          <div><span class="font-semibold text-gray-300">Email:</span> ${cliente.correo}</div>
-          <div><span class="font-semibold text-gray-300">Teléfono:</span> ${cliente.fono}</div>
-          <div><span class="font-semibold text-gray-300">Dirección:</span> ${cliente.direccion}</div>
-          <div><span class="font-semibold text-gray-300">Estado:</span> <span class="${estadoActivoClase}">${estadoActivoTexto}</span></div>
-          <div><span class="font-semibold text-gray-300">Documentación:</span> ${docEstado}</div>
-        `;
-        document.getElementById("info-cliente").innerHTML = infoHTML;
-  
-        const formatNumber = (num) => {
-          const n = parseFloat(num);
-          if (isNaN(n)) return num;
-          return n.toLocaleString('es-CL', {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 3
-          });
-        };
-  
-        document.getElementById("btn-operaciones").addEventListener("click", () => {
-          const contenedor = document.getElementById("detalle-operaciones-cliente");
-          if (contenedor.classList.contains("hidden")) {
-            const tablaHTML = `
-              <table class="w-full text-sm text-left text-white bg-gray-800">
-                <thead class="text-xs uppercase bg-gray-800 text-white">
-                  <tr>
-                    <th class="px-4 py-2">Fecha</th>
-                    <th class="px-4 py-2">Número</th>
-                    <th class="px-4 py-2">Cliente</th>
-                    <th class="px-4 py-2">Tipo de Documento</th>
-                    <th class="px-4 py-2">Nº Doc</th>
-                    <th class="px-4 py-2">Nº Nota</th>
-                    <th class="px-4 py-2">Tipo de Transacción</th>
-                    <th class="px-4 py-2">Divisa</th>
-                    <th class="px-4 py-2">Monto</th>
-                    <th class="px-4 py-2">Tasa de Cambio</th>
-                    <th class="px-4 py-2">Total</th>
-                    <th class="px-4 py-2">Estado</th>
-                    <th class="px-4 py-2"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                ${data.operaciones.map(op => {
-                    const colorFondo = op.tipo_transaccion === 'Compra'
-                    ? 'style="background-color: #c3e8f1;"'
-                    : op.tipo_transaccion === 'Venta'
-                    ? 'style="background-color: #dbf599;"'
-                    : '';
-
-                    return `
-                    <tr class="border-b bg-white border-gray-700 text-gray-700" ${colorFondo}>
-                        <td class="px-4 py-2">${op.fecha}</td>
-                        <td class="px-4 py-2">${op.id}</td>
-                        <td class="px-4 py-2">${cliente.razon_social}</td>
-                        <td class="px-4 py-2">${op.tipo_documento || ''}</td>
-                        <td class="px-4 py-2">${op.numero_documento || ''}</td>
-                        <td class="px-4 py-2">${op.numero_nota || ''}</td>
-                        <td class="px-4 py-2">${op.tipo_transaccion || ''}</td>
-                        <td class="px-4 py-2">${op.divisa || ''}</td>
-                        <td class="px-4 py-2">${formatNumber(op.monto)}</td>
-                        <td class="px-4 py-2">${formatNumber(op.tasa_cambio)}</td>
-                        <td class="px-4 py-2">${formatNumber(op.total)}</td>
-                        <td class="px-4 py-2">${op.estado || ''}</td>
-                        <td class="px-4 py-2 gap-2">
-                        <a href="/detalle-op?id=${op.id}" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-3 py-1">Mostrar</a>
-                        </td>
-                    </tr>
-                    `;
-                }).join("")}
-                </tbody>
-              </table>
-            `;
-  
-            contenedor.innerHTML = tablaHTML;
-            contenedor.classList.remove("hidden");
-            document.getElementById("btn-operaciones").innerText = "Ocultar Operaciones";
-          } else {
-            contenedor.classList.add("hidden");
-            document.getElementById("btn-operaciones").innerText = "Ver Operaciones";
-          }
+    if (btnVolver) {
+        btnVolver.addEventListener('click', () => {
+            window.location.href = 'https://tesoreria.cambiosorion.cl/clientes';
         });
+    }
 
-        let clienteOriginal = { ...cliente };
+    // --- CARGAR DATOS ---
+    function cargarCliente() {
+        fetch(`https://cambiosorion.cl/data/detalle-cl.php?id=${clienteId}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) throw new Error(data.error);
 
-        document.getElementById("btn-editar").addEventListener("click", () => {
-            const formHTML = `
-            <div class="mb-3">
-              <label for="input-razon" class="text-gray-300">Razón social:</label>
-              <input type="text" id="input-razon" value="${cliente.razon_social}" class="w-full p-2 rounded bg-white text-black" />
-            </div>
-            <div class="mb-3">
-              <label for="input-rut" class="text-gray-300">RUT:</label>
-              <input type="text" id="input-rut" value="${cliente.rut}" class="w-full p-2 rounded bg-white text-black" />
-            </div>
-            <div class="mb-3">
-              <label for="input-correo" class="text-gray-300">Email:</label>
-              <input type="email" id="input-correo" value="${cliente.correo}" class="w-full p-2 rounded bg-white text-black" />
-            </div>
-            <div class="mb-3">
-              <label for="input-fono" class="text-gray-300">Teléfono:</label>
-              <input type="text" id="input-fono" value="${cliente.fono}" class="w-full p-2 rounded bg-white text-black" />
-            </div>
-            <div class="mb-3">
-              <label for="input-direccion" class="text-gray-300">Dirección:</label>
-              <input type="text" id="input-direccion" value="${cliente.direccion}" class="w-full p-2 rounded bg-white text-black" />
-            </div>
-        `;        
-        document.getElementById("info-cliente").innerHTML = formHTML;
-        document.getElementById("acciones-edicion").classList.remove("hidden");
-        });
+                const cl = data.cliente;
+                
+                // Llenar formulario
+                inputs.razonSocial.value = limpiarTexto(cl.razon_social);
+                inputs.rut.value = limpiarTexto(cl.rut);
+                inputs.fono.value = limpiarTexto(cl.fono);
+                inputs.correo.value = limpiarTexto(cl.correo);
+                inputs.direccion.value = limpiarTexto(cl.direccion);
+                inputs.activo.value = cl.activo == 1 ? "1" : "0";
 
-        // Cancelar edición
-        document.getElementById("btn-cancelar").addEventListener("click", () => {
-        const infoHTML = `
-            <div><span class="font-semibold text-gray-300">Razón social:</span> ${clienteOriginal.razon_social}</div>
-            <div><span class="font-semibold text-gray-300">RUT:</span> ${clienteOriginal.rut}</div>
-            <div><span class="font-semibold text-gray-300">Email:</span> ${clienteOriginal.correo}</div>
-            <div><span class="font-semibold text-gray-300">Teléfono:</span> ${clienteOriginal.fono}</div>
-            <div><span class="font-semibold text-gray-300">Dirección:</span> ${clienteOriginal.direccion}</div>
-        `;
-        document.getElementById("info-cliente").innerHTML = infoHTML;
-        document.getElementById("acciones-edicion").classList.add("hidden");
-        });
+                // Llenar Info Lateral
+                lblFechaIngreso.textContent = formatearFechaHora(cl.fecha_ingreso);
+                
+                // Badge Documentación
+                const doc = cl.estado_documentacion || 'Pendiente';
+                badgeDoc.textContent = doc;
+                badgeDoc.className = doc === 'Completa' 
+                    ? 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-900/40 text-green-400 border border-green-500/30'
+                    : 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-900/40 text-amber-400 border border-amber-500/30';
 
-        // Guardar cambios
-        document.getElementById("btn-guardar").addEventListener("click", () => {
-        const datosActualizados = {
-            id: clienteOriginal.id,
-            razon_social: document.getElementById("input-razon").value,
-            rut: document.getElementById("input-rut").value,
-            correo: document.getElementById("input-correo").value,
-            fono: document.getElementById("input-fono").value,
-            direccion: document.getElementById("input-direccion").value,
-        };
+                // Operaciones
+                operacionesData = data.operaciones || [];
+                lblTotalOps.textContent = operacionesData.length;
+                renderizarOperaciones(operacionesData);
+            })
+            .catch(err => {
+                console.error(err);
+                mostrarModalError({ titulo: "Error", mensaje: "No se pudo cargar la información del cliente." });
+            });
+    }
 
-        fetch("https://cambiosorion.cl/data/detalle-cl.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(datosActualizados),
-        })
-        .then(res => res.text())  // Lee la respuesta como texto
-        .then(text => {
-            try {
-                const response = JSON.parse(text);  // Intenta parsear la respuesta
-                // Aquí ya puedes trabajar con el JSON
-                if (response.success) {
-                    alert("Cliente actualizado correctamente");
+    // --- GUARDAR CAMBIOS ---
+    if (btnGuardar) {
+        btnGuardar.addEventListener('click', () => {
+            const payload = {
+                id: clienteId,
+                razon_social: inputs.razonSocial.value,
+                rut: inputs.rut.value,
+                correo: inputs.correo.value,
+                fono: inputs.fono.value,
+                direccion: inputs.direccion.value,
+                activo: inputs.activo.value === "1"
+            };
+
+            fetch("https://cambiosorion.cl/data/detalle-cl.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    mostrarModalExitoso({ titulo: "Guardado", mensaje: "Datos del cliente actualizados correctamente." });
                 } else {
-                    alert("Error: " + response.error);
+                    throw new Error(data.error || "Error al guardar.");
                 }
-            } catch (error) {
-                console.error("Error al parsear la respuesta JSON", error);
-                alert("Hubo un error al procesar la respuesta del servidor");
-                console.log("Respuesta cruda del servidor:", text);  // Imprimir la respuesta para depurar
-            }
-        })        
-        .catch(error => {
-            console.error("Error de red o servidor", error);
-            alert("Error al intentar guardar los datos");
+            })
+            .catch(err => {
+                mostrarModalError({ titulo: "Error", mensaje: err.message });
+            });
         });
-        
-        });
+    }
 
-      })
-      .catch(err => {
-        console.error(err);
-        document.getElementById("info-cliente").innerHTML = "<p>Error al cargar el cliente.</p>";
-      });
-  });
-  
+    // --- RENDERIZAR TABLA OPERACIONES ---
+    function renderizarOperaciones(lista) {
+        tablaOps.innerHTML = '';
+
+        if (lista.length === 0) {
+            tablaOps.innerHTML = `<tr><td colspan="8" class="text-center text-slate-500 py-10 italic">No hay operaciones registradas.</td></tr>`;
+            return;
+        }
+
+        lista.forEach(op => {
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-white/5 transition-all border-b border-white/5 last:border-0 text-slate-300';
+
+            // Estilos Tipo
+            let tipoClass = "text-slate-400";
+            if (op.tipo_transaccion === 'Compra') tipoClass = "text-emerald-400 font-bold";
+            if (op.tipo_transaccion === 'Venta') tipoClass = "text-amber-400 font-bold";
+
+            tr.innerHTML = `
+                <td class="px-6 py-3 whitespace-nowrap text-xs">${formatearFechaHora(op.fecha)}</td>
+                <td class="px-6 py-3 font-mono text-xs font-bold text-slate-500">#${op.id}</td>
+                <td class="px-6 py-3 text-xs uppercase ${tipoClass}">${limpiarTexto(op.tipo_transaccion)}</td>
+                <td class="px-6 py-3 text-center font-bold text-white text-xs">${limpiarTexto(op.divisa)}</td>
+                <td class="px-6 py-3 text-right font-mono text-slate-300 text-sm">${formatearNumero(op.monto)}</td>
+                <td class="px-6 py-3 text-right font-mono text-slate-500 text-xs">${formatearNumero(op.tasa_cambio)}</td>
+                <td class="px-6 py-3 text-right font-bold font-mono text-white text-sm">$${formatearNumero(op.total)}</td>
+                <td class="px-6 py-3 text-center text-xs uppercase text-slate-500">${limpiarTexto(op.estado)}</td>
+            `;
+            tablaOps.appendChild(tr);
+        });
+    }
+
+    // --- FILTRO LOCAL ---
+    if (inputFiltroOps) {
+        inputFiltroOps.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase().trim();
+            if (!term) {
+                renderizarOperaciones(operacionesData);
+                return;
+            }
+
+            const filtrados = operacionesData.filter(op => 
+                String(op.id).includes(term) ||
+                (op.divisa && op.divisa.toLowerCase().includes(term)) ||
+                (op.tipo_transaccion && op.tipo_transaccion.toLowerCase().includes(term)) ||
+                (op.estado && op.estado.toLowerCase().includes(term))
+            );
+            renderizarOperaciones(filtrados);
+        });
+    }
+
+    // Inicializar
+    cargarCliente();
+});
