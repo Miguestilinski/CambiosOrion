@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 inputs.activo.value = cl.activo == 1 ? "1" : "0";
 
                 // Llenar Info Lateral
-                lblFechaIngreso.textContent = formatearFechaHora(cl.fecha_ingreso);
+                lblFechaIngreso.innerHTML = formatearFechaHora(cl.fecha_ingreso);
                 
                 // Badge Documentación
                 const doc = cl.estado_documentacion || 'Pendiente';
