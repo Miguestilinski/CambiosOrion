@@ -13,11 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Referencias Inputs
     const inputs = {
         nombre: document.getElementById('nombre'),
-        banco: document.getElementById('banco'),
         tipo: document.getElementById('tipo'),
-        numero: document.getElementById('numero'),
-        rut: document.getElementById('rut'),
-        email: document.getElementById('email'),
         activa: document.getElementById('activa'),
         porCobrar: document.getElementById('por-cobrar'),
         porPagar: document.getElementById('por-pagar'),
@@ -26,9 +22,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         divisaLista: document.getElementById('divisa-lista')
     };
 
-    // Referencias Info
+    // Referencias Info Saldos
     const lblSaldo = document.getElementById('saldo-actual');
-    const lblDivisaBadge = document.getElementById('divisa-badge');
+    const lblMeDeben = document.getElementById('me-deben');
+    const lblDebo = document.getElementById('debo');
     
     // Referencias Tabla
     const tablaOps = document.getElementById('tabla-operaciones');
@@ -38,10 +35,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const btnGuardar = document.getElementById('guardar-cambios');
     const btnVolver = document.getElementById('volver-lista');
 
-    // Estado local
     let operacionesData = [];
 
-    // Obtener ID
     const params = new URLSearchParams(window.location.search);
     const cuentaId = params.get('id');
 
@@ -67,11 +62,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 
                 // Llenar inputs
                 inputs.nombre.value = limpiarTexto(cta.nombre);
-                inputs.banco.value = limpiarTexto(cta.banco);
                 inputs.tipo.value = limpiarTexto(cta.tipo_cuenta);
-                inputs.numero.value = limpiarTexto(cta.numero_cuenta);
-                inputs.rut.value = limpiarTexto(cta.rut_titular);
-                inputs.email.value = limpiarTexto(cta.email_titular);
                 
                 inputs.activa.value = cta.activa == 1 ? "1" : "0";
                 inputs.porCobrar.checked = cta.por_cobrar == 1;
@@ -80,10 +71,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                 // Divisa
                 inputs.divisaId.value = cta.divisa_id || '';
                 inputs.divisaInput.value = cta.nombre_divisa || '';
-                lblDivisaBadge.textContent = cta.nombre_divisa || 'Sin divisa';
 
-                // Saldo
-                lblSaldo.textContent = '$' + formatearNumero(cta.saldo);
+                // Saldos
+                const meDeben = parseFloat(cta.me_deben) || 0;
+                const debo = parseFloat(cta.debo) || 0;
+                const saldoNeto = meDeben - debo;
+
+                lblSaldo.textContent = '$' + formatearNumero(saldoNeto);
+                lblMeDeben.textContent = '$' + formatearNumero(meDeben);
+                lblDebo.textContent = '$' + formatearNumero(debo);
+
+                // Colores para el saldo neto
+                lblSaldo.className = `text-3xl font-mono font-bold ${saldoNeto >= 0 ? 'text-green-400' : 'text-red-400'}`;
 
                 // Operaciones
                 operacionesData = data.operaciones || [];
@@ -113,8 +112,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     divisas.forEach(d => {
                         const li = document.createElement('li');
                         li.className = "px-4 py-2 hover:bg-slate-700 cursor-pointer text-sm text-slate-300 transition flex items-center gap-2";
-                        
-                        // Icono si existe
                         const img = d.icono ? `<img src="${d.icono}" class="w-4 h-4 rounded-full">` : '';
                         li.innerHTML = `${img} <span>${d.nombre}</span>`;
                         
@@ -122,7 +119,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                             inputs.divisaInput.value = d.nombre;
                             inputs.divisaId.value = d.id;
                             inputs.divisaLista.classList.add('hidden');
-                            lblDivisaBadge.textContent = d.nombre;
                         };
                         inputs.divisaLista.appendChild(li);
                     });
@@ -135,7 +131,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         });
 
-        // Cerrar lista al hacer click fuera
         document.addEventListener('click', (e) => {
             if (!inputs.divisaInput.contains(e.target) && !inputs.divisaLista.contains(e.target)) {
                 inputs.divisaLista.classList.add('hidden');
@@ -149,11 +144,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const payload = {
                 id: cuentaId,
                 nombre: inputs.nombre.value,
-                banco: inputs.banco.value,
                 tipo_cuenta: inputs.tipo.value,
-                numero_cuenta: inputs.numero.value,
-                rut_titular: inputs.rut.value,
-                email_titular: inputs.email.value,
                 divisa_id: inputs.divisaId.value,
                 activa: inputs.activa.value === "1",
                 por_cobrar: inputs.porCobrar.checked,
@@ -192,10 +183,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             const tr = document.createElement('tr');
             tr.className = 'hover:bg-white/5 transition-all border-b border-white/5 last:border-0 text-slate-300';
 
-            // Estilos
+            // Colorear monto según si es Ingreso (me_deben aumenta o debo disminuye) o Gasto
             let montoClass = "text-white";
-            // Si es Ingreso (+) o Egreso (-)
-            // Esto depende de tu lógica de negocio, por ahora neutro
+            if(op.tipo_transaccion === 'Ingreso') montoClass = "text-green-400";
+            if(op.tipo_transaccion === 'Egreso') montoClass = "text-red-400";
 
             tr.innerHTML = `
                 <td class="px-6 py-3 whitespace-nowrap text-xs">${formatearFechaHora(op.fecha)}</td>
