@@ -301,10 +301,42 @@ document.addEventListener("DOMContentLoaded", async () => {
         modal.classList.remove("hidden");
     }
 
-    // Eventos extra: Actualizar tasas si cambia el tipo de operación
+    // Eventos extra: Actualizar tasas si cambia el tipo de operación (Compra/Venta)
     document.querySelectorAll('input[name="tipo_op"]').forEach(r => {
         r.addEventListener('change', () => {
-            // Se podría implementar lógica para recalcular sugeridos aquí
+            const nuevoTipo = document.querySelector('input[name="tipo_op"]:checked').value;
+            
+            // Recorrer todas las filas existentes
+            document.querySelectorAll(".fila-divisa").forEach(fila => {
+                const inpDivisa = fila.querySelector(".input-divisa");
+                const inpTasa = fila.querySelector(".input-tasa");
+                const nombreDivisa = inpDivisa.value.trim();
+
+                // Solo actualizar si hay una divisa seleccionada
+                if (nombreDivisa) {
+                    // Feedback visual (opacidad) mientras carga
+                    inpTasa.classList.add("opacity-50", "cursor-wait");
+                    
+                    fetch(`https://cambiosorion.cl/data/nueva-op.php?precio_divisa=${encodeURIComponent(nombreDivisa)}&tipo=${nuevoTipo}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.precio) {
+                                inpTasa.value = data.precio;
+                                // IMPORTANTE: Disparar el evento 'input' manualmente para que 
+                                // se ejecute la función calcularFila() y se actualice el subtotal
+                                inpTasa.dispatchEvent(new Event('input'));
+                                
+                                // Efecto visual flash para indicar cambio
+                                inpTasa.classList.add("bg-amber-900/30", "text-amber-300");
+                                setTimeout(() => inpTasa.classList.remove("bg-amber-900/30", "text-amber-300"), 500);
+                            }
+                        })
+                        .catch(err => console.error("Error al actualizar tasa automática", err))
+                        .finally(() => {
+                            inpTasa.classList.remove("opacity-50", "cursor-wait");
+                        });
+                }
+            });
         });
     });
 });
