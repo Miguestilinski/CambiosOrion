@@ -103,7 +103,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <td class="px-6 py-4 text-slate-400 capitalize">${divisa.tipo_divisa}</td>
                 <td class="px-6 py-4 text-center">${estadoBadge}</td>
                 <td class="px-6 py-4 text-center">
-                    <button class="text-slate-400 hover:text-white transition" onclick="alert('Funcionalidad de edición pendiente')">
+                    <button class="text-slate-400 hover:text-white transition p-2 rounded-full hover:bg-white/10" 
+                            onclick="window.location.href='detalle-div?id=${divisa.id}'"
+                            title="Ver Detalles / Editar">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                     </button>
                 </td>
