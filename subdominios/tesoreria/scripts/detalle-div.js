@@ -8,8 +8,7 @@ import {
 } from './index.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // Si tienes un menú de divisas, usa ese ID, sino 'config' o 'reportes' como fallback
-    await initSystem('reportes');
+    await initSystem('inventarios');
 
     // Referencias Inputs
     const inputs = {
