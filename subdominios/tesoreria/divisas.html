@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Divisas Internas</title>
+        
+    <link href="https://cambiosorion.cl/orionapp/public/styles/output.css" rel="stylesheet">
+    <link href="https://tesoreria.cambiosorion.cl/styles/index.css" rel="stylesheet">
+    <link rel="icon" href="https://cambiosorion.cl/orionapp/icons/IsotipoOrion-blue.svg" type="image/png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/airbnb.css">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .layout-container { min-height: calc(100vh - 64px); }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #0f172a; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #334155; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js" crossorigin="anonymous"></script>
+    <header class="flex-shrink-0 z-50 bg-slate-900/80 backdrop-blur-md shadow-lg border-b border-white/10">
+        <div class="w-full px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16"> 
+                <div class="flex items-center gap-4">
+                    <a href="https://cambiosorion.cl/" class="flex-shrink-0 group">
+                        <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Logo" class="h-10 w-auto opacity-90 group-hover:opacity-100 transition">
+                    </a>
+                    <span class="hidden md:inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-amber-500 text-white border border-amber-400/30 tracking-wider uppercase shadow-lg shadow-amber-500/20">
+                        Tesorería
+                    </span>
+                </div>
+                <nav class="hidden lg:flex space-x-1 bg-white/5 p-1 rounded-lg border border-white/10">
+                    <a href="https://admin.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-indigo-600/20 hover:text-indigo-300 transition">Inicio</a>
+                    <a href="https://pizarras.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-green-600/20 hover:text-green-300 transition">Pizarras</a>
+                    <a href="https://caja.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-cyan-600/20 hover:text-cyan-300 transition">Caja</a>
+                    <a href="#" class="px-4 py-2 text-sm font-medium rounded-md text-white bg-amber-600 shadow-lg shadow-amber-500/20 transition">Tesorería</a>
+                </nav>
+                <div class="flex items-center gap-4 lg:gap-6 mr-1"> 
+                    <div id="user-actions" class="relative ml-2 block">
+                        <button id="profile-menu-button" class="flex items-center gap-3 text-sm rounded-full focus:outline-none ring-2 ring-slate-700 hover:ring-amber-500 transition pl-1 pr-3 py-1 bg-slate-800 hover:bg-slate-700 text-white">
+                            <img class="h-8 w-8 rounded-full object-cover border border-slate-600" src="https://cambiosorion.cl/orionapp/icons/profile-white.png" alt="Profile">
+                            <div class="hidden md:flex flex-col items-start">
+                                <span class="text-slate-200 font-medium leading-tight" id="header-user-name">...</span>
+                            </div>
+                            <svg class="w-4 h-4 text-slate-400 hidden md:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div id="dropdownInformation" class="hidden absolute right-0 mt-3 w-60 bg-white rounded-xl shadow-2xl py-2 z-50 border border-slate-200 transform origin-top-right transition-all text-gray-800">
+                            <div class="px-4 py-3 border-b border-gray-100 bg-gray-50/50"><p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Conectado como</p><p class="text-sm font-bold text-gray-900 truncate" id="dropdown-user-email">...</p></div>
+                            <a href="https://cambiosorion.cl/webmail" class="block px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-700 transition flex items-center">Webmail</a>
+                            <div class="border-t border-gray-100 my-1"></div>
+                            <a href="#" id="logout-button" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-medium flex items-center">Cerrar sesión</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden relative layout-container">
+        <div id="sidebar-container" class="hidden lg:block h-full z-10"></div>
+        
+        <main class="flex-1 overflow-y-auto p-4 md:p-8 relative" id="dashboard-content">
+            <section class="max-w-7xl mx-auto fade-in h-full flex flex-col">
+                
+                <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                    <div>
+                        <h1 class="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
+                            Gestión de Divisas
+                            <span class="px-2 py-0.5 rounded-full bg-slate-800 text-xs text-amber-500 border border-slate-700 font-mono" id="total-badge">0</span>
+                        </h1>
+                        <p class="text-slate-400 text-sm mt-1">Administre las monedas disponibles en el sistema.</p>
+                    </div>
+                    <button id="nueva-divisa" class="bg-amber-600 hover:bg-amber-500 text-white font-bold py-2.5 px-5 rounded-lg shadow-lg shadow-amber-900/20 transition flex items-center gap-2 border border-amber-500 group">
+                        <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        Nueva Divisa
+                    </button>
+                </div>
+
+                <div class="bg-slate-800/60 backdrop-blur-md p-4 rounded-xl border border-white/10 mb-6 shadow-xl">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Buscar General</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                </div>
+                                <input type="text" id="buscar" class="bg-slate-900 border border-slate-600 text-white text-sm rounded-lg focus:ring-amber-500 focus:border-amber-500 block w-full pl-10 p-2.5" placeholder="Nombre, código...">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase mb-1">País</label>
+                            <input type="text" id="pais" class="bg-slate-900 border border-slate-600 text-white text-sm rounded-lg focus:ring-amber-500 focus:border-amber-500 block w-full p-2.5" placeholder="Filtrar por país...">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Tipo</label>
+                            <select id="tipo" class="bg-slate-900 border border-slate-600 text-white text-sm rounded-lg focus:ring-amber-500 focus:border-amber-500 block w-full p-2.5">
+                                <option value="">Todos</option>
+                                <option value="divisa">Divisa (Billete)</option>
+                                <option value="moneda">Moneda (Metálico)</option>
+                                <option value="otra">Otra</option>
+                            </select>
+                        </div>
+                        <div class="flex gap-2">
+                             <button id="borrar-filtros" class="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2.5 rounded-lg border border-slate-600 transition w-full text-sm font-medium flex items-center justify-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                                Limpiar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/80 backdrop-blur-md rounded-xl border border-white/10 shadow-2xl overflow-hidden flex flex-col flex-1">
+                    <div class="overflow-x-auto custom-scrollbar flex-1">
+                        <table class="w-full text-sm text-left text-slate-300">
+                            <thead class="text-xs text-slate-400 uppercase bg-slate-900/80 border-b border-slate-700 sticky top-0 z-10">
+                                <tr>
+                                    <th scope="col" class="px-6 py-4">Bandera</th>
+                                    <th scope="col" class="px-6 py-4">Código / Símbolo</th>
+                                    <th scope="col" class="px-6 py-4">Nombre</th>
+                                    <th scope="col" class="px-6 py-4">País</th>
+                                    <th scope="col" class="px-6 py-4">Tipo</th>
+                                    <th scope="col" class="px-6 py-4 text-center">Estado</th>
+                                    <th scope="col" class="px-6 py-4 text-center">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-body" class="divide-y divide-slate-800">
+                                <tr class="bg-slate-800/50 animate-pulse">
+                                    <td colspan="7" class="px-6 py-8 text-center text-slate-500">Cargando divisas...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="bg-slate-900/90 border-t border-slate-700 px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <span class="text-sm text-slate-400" id="conteo-texto">Mostrando 0 resultados</span>
+                        
+                        <div class="flex items-center gap-4">
+                            <select id="mostrar-registros" class="bg-slate-800 border border-slate-600 text-white text-xs rounded-lg focus:ring-amber-500 focus:border-amber-500 block p-2">
+                                <option value="10">10 por pág</option>
+                                <option value="25" selected>25 por pág</option>
+                                <option value="50">50 por pág</option>
+                                <option value="100">100 por pág</option>
+                            </select>
+                            <nav id="paginacion-container" class="flex items-center gap-1"></nav>
+                        </div>
+                    </div>
+                </div>
+
+            </section>        
+        </main>
+    </div>
+
+    <div id="modal-generico" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+        <div class="bg-slate-800 rounded-xl shadow-2xl p-6 max-w-sm w-full mx-4 border border-white/10 relative">
+            <div id="modal-generico-icono" class="flex justify-center mb-4"></div>
+            <h2 id="modal-generico-titulo" class="text-lg font-bold text-white mb-2 text-center">Título</h2>
+            <p id="modal-generico-mensaje" class="text-sm text-slate-300 mb-6 text-center">Mensaje</p>
+            <div class="flex justify-end gap-2 w-full">
+                <button id="modal-generico-cancelar" class="w-full bg-slate-700 text-white py-2 rounded-lg hover:bg-slate-600 font-bold text-sm transition hidden">Cancelar</button>
+                <button id="modal-generico-confirmar" class="w-full bg-amber-600 text-white py-2 rounded-lg hover:bg-amber-500 font-bold text-sm transition shadow-lg">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-black  mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-3">
+                    <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Orion" class="h-12 grayscale hover:grayscale-0 transition">
+                    <span class="text-slate-400 text-sm">| Sistema Corporativo</span>
+                </div>
+                <p class="text-slate-400 text-xs">© 2025 Orion Financial Group. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
+    <script type="module" src="https://cambiosorion.cl/orionapp/public/scripts/header.js" crossorigin="anonymous"></script>
+    <script type="module" src="./scripts/index.js"></script>
+    <script type="module" src="./scripts/divisas.js"></script>
+</body>
+</html>
