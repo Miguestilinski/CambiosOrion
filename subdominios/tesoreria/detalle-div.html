@@ -70,119 +70,177 @@
         </div>
     </header>
 
-    <div class="flex flex-1 overflow-hidden relative layout-container">
+    <div class="flex flex-1 overflow-hidden relative">
         <div id="sidebar-container" class="hidden lg:block h-full z-10"></div>
         
         <main class="flex-1 overflow-y-auto p-4 md:p-8 relative" id="dashboard-content">
-            <section class="max-w-6xl mx-auto fade-in h-full flex flex-col gap-6">
+            <section id="detalle-divisa" class="max-w-6xl mx-auto fade-in h-full flex flex-col">
                 
-                <div class="flex justify-between items-center">
+                <div class="flex justify-between items-center mb-6">
                     <button type="button" id="volver-lista" class="text-slate-400 hover:text-white transition flex items-center text-sm font-medium group">
                         <div class="bg-slate-800 group-hover:bg-amber-600 p-1.5 rounded-lg mr-2 transition border border-slate-700 group-hover:border-amber-500">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                         </div>
-                        Volver
+                        Volver a Divisas
                     </button>
-                    <button id="guardar-cambios" class="text-white bg-amber-600 hover:bg-amber-500 font-bold rounded-lg text-sm px-5 py-2.5 transition flex items-center gap-2 border border-amber-500 shadow-lg">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                        Guardar Cambios
-                    </button>
+                    <div class="flex gap-3">
+                        <button type="button" id="eliminar-divisa" class="text-red-400 hover:text-white border border-red-900/50 hover:bg-red-600 font-bold rounded-lg text-sm px-5 py-2.5 transition flex items-center shadow-lg">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            Eliminar
+                        </button>
+                        <button type="button" id="guardar-cambios" class="text-white bg-amber-600 hover:bg-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.3)] font-bold rounded-lg text-sm px-5 py-2.5 transition flex items-center border border-amber-500">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                            Guardar Cambios
+                        </button>
+                    </div>
                 </div>
 
-                <div class="bg-slate-800/80 backdrop-blur-md rounded-xl p-6 shadow-xl border border-white/10 relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-1 h-full bg-amber-500"></div>
-                    <h2 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
-                        Ficha Maestra
-                        <span class="text-xs text-slate-500 font-normal ml-2 font-mono uppercase bg-slate-900 px-2 py-0.5 rounded" id="id-display">...</span>
-                    </h2>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    <div class="lg:col-span-2 bg-slate-900/90 backdrop-blur-md rounded-xl shadow-2xl border border-white/10 p-6">
+                        <h2 class="text-lg font-bold text-white mb-4 border-b border-white/10 pb-2 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            Configuración de Divisa
+                        </h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div class="md:col-span-2">
+                                <label class="block mb-1 text-[10px] font-bold text-slate-400 uppercase">Nombre Divisa</label>
+                                <input type="text" id="nombre" class="w-full text-sm rounded-lg border-slate-700 bg-slate-800 text-white focus:border-amber-500 focus:ring-amber-500 px-3 py-2.5 shadow-sm" placeholder="Ej: Dólar Americano">
+                            </div>
+                            
+                            <div>
+                                <label class="block mb-1 text-[10px] font-bold text-slate-400 uppercase">Código (ISO)</label>
+                                <input type="text" id="codigo" class="w-full text-sm rounded-lg border-slate-700 bg-slate-800 text-white focus:border-amber-500 focus:ring-amber-500 px-3 py-2.5 shadow-sm" placeholder="Ej: USD">
+                            </div>
 
-                    <form id="form-detalle-divisa" class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div class="space-y-5">
                             <div>
-                                <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Nombre</label>
-                                <input type="text" id="nombre" class="w-full bg-slate-900 border border-slate-600 text-white text-sm rounded-lg p-2.5 focus:ring-amber-500 focus:border-amber-500">
+                                <label class="block mb-1 text-[10px] font-bold text-slate-400 uppercase">Símbolo</label>
+                                <input type="text" id="simbolo" class="w-full text-sm rounded-lg border-slate-700 bg-slate-800 text-white focus:border-amber-500 focus:ring-amber-500 px-3 py-2.5 shadow-sm" placeholder="Ej: $">
                             </div>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Código ISO</label>
-                                    <input type="text" id="codigo" readonly class="w-full bg-slate-900/50 border border-slate-700 text-slate-400 text-sm rounded-lg p-2.5 cursor-not-allowed font-mono">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Símbolo</label>
-                                    <input type="text" id="simbolo" class="w-full bg-slate-900 border border-slate-600 text-white text-sm rounded-lg p-2.5 focus:ring-amber-500 focus:border-amber-500 text-center">
+
+                            <div class="md:col-span-2">
+                                <label class="block mb-1 text-[10px] font-bold text-slate-400 uppercase">País / Bandera</label>
+                                <div class="relative">
+                                    <button type="button" id="btn-selector-icono" class="w-full text-left flex items-center justify-between text-sm rounded-lg border border-slate-700 bg-slate-800 text-white px-3 py-2.5 hover:border-amber-500 transition">
+                                        <div class="flex items-center gap-3">
+                                            <img id="icono-preview" src="https://cambiosorion.cl/orionapp/icons/default.png" class="w-6 h-6 rounded-full object-contain bg-slate-700">
+                                            <span id="icono-texto" class="text-slate-300">Seleccionar bandera...</span>
+                                        </div>
+                                        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    </button>
+                                    
+                                    <div id="dropdown-iconos" class="absolute z-50 w-full mt-1 bg-slate-800 border border-slate-600 rounded-lg shadow-xl hidden p-2">
+                                        <input type="text" id="buscar-icono" class="w-full text-xs rounded bg-slate-900 border-slate-700 text-white mb-2" placeholder="Filtrar países...">
+                                        <div class="flags-grid" id="grid-iconos">
+                                            </div>
+                                    </div>
+                                    <input type="hidden" id="icono-url">
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800/50 backdrop-blur-md rounded-xl shadow-xl border border-white/5 p-6 flex flex-col">
+                        <h3 class="text-sm font-bold text-slate-400 uppercase mb-4 tracking-wider">Estado</h3>
+                        
+                        <div class="space-y-6 flex-1">
                             <div>
-                                <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Estado</label>
-                                <select id="estado" class="w-full bg-slate-900 border border-slate-600 text-white text-sm rounded-lg p-2.5 focus:ring-amber-500 focus:border-amber-500">
+                                <label class="block mb-1 text-[10px] font-bold text-slate-400 uppercase">Habilitada</label>
+                                <select id="estado" class="w-full text-sm rounded-lg border-slate-700 bg-slate-900 text-white focus:border-amber-500 focus:ring-amber-500 px-3 py-2">
                                     <option value="1">Activa</option>
                                     <option value="0">Inactiva</option>
                                 </select>
                             </div>
-                        </div>
 
-                        <div class="flex flex-col items-center justify-center p-6 bg-slate-900/50 rounded-xl border border-slate-700/50">
-                            <label class="text-xs font-bold text-slate-400 uppercase mb-4">Icono / Bandera</label>
-                            <div class="w-24 h-24 rounded-full bg-slate-800 border-4 border-slate-700 flex items-center justify-center overflow-hidden mb-4 relative group">
-                                <img id="icono-preview" class="w-full h-full object-cover hidden" alt="Icono">
-                                <span id="icono-texto" class="text-4xl text-slate-600 select-none">?</span>
+                            <div class="bg-slate-900 rounded-lg p-4 border border-slate-700 mt-4">
+                                <span class="block text-xs text-slate-500 mb-2 font-bold uppercase text-center">Operaciones Totales</span>
+                                <span class="block text-3xl font-mono font-bold text-white text-center" id="total-ops">0</span>
                             </div>
-                            <button type="button" id="btn-cambiar-icono" class="text-xs text-amber-500 hover:text-amber-400 font-bold underline">Cambiar Icono (No implementado)</button>
-                            <input type="hidden" id="icono-url">
                         </div>
-                    </form>
+                    </div>
                 </div>
 
-                <div class="bg-slate-800/80 backdrop-blur-md rounded-xl p-6 shadow-xl border border-white/10 flex flex-col min-h-[400px]">
+                <div class="bg-slate-800/80 backdrop-blur-md rounded-xl p-6 shadow-xl border border-white/10 flex flex-col h-full">
                     <div class="flex justify-between items-center mb-4 border-b border-white/5 pb-2">
                         <div>
                             <h3 class="text-slate-400 text-xs font-bold uppercase flex items-center gap-2">
                                 Historial de Operaciones
-                                <span id="badge-filtro-caja" class="hidden px-2 py-0.5 rounded bg-amber-900/30 text-amber-500 border border-amber-500/30 text-[10px] flex items-center gap-1">
-                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
-                                    Filtrado por Caja
-                                </span>
+                                <span id="badge-filtro-caja" class="hidden px-2 py-0.5 rounded bg-amber-900/30 text-amber-500 border border-amber-500/30 text-[10px]">Filtrado por Caja</span>
                             </h3>
                         </div>
                         <div class="text-xs text-slate-500">
-                            Últimos 50 movimientos
+                            <span id="total-ops" class="text-white font-bold">0</span> registros
                         </div>
                     </div>
                     
                     <div class="mb-3">
-                        <input type="text" id="filtrar-ops" placeholder="Buscar en historial (Cliente, ID)..." class="w-full bg-slate-900 border border-slate-700 text-white text-xs rounded-lg p-2.5 focus:ring-1 focus:ring-amber-500">
+                        <input type="text" id="filtrar-ops" placeholder="Buscar en historial..." class="w-full bg-slate-900 border border-slate-700 text-white text-xs rounded-lg p-2 focus:ring-1 focus:ring-amber-500">
                     </div>
 
-                    <div class="flex-1 overflow-y-auto custom-scrollbar relative">
-                        <table class="w-full text-sm text-left text-slate-300">
-                            <thead class="text-xs text-slate-500 uppercase bg-slate-900 sticky top-0 z-10">
+                    <div class="overflow-x-auto flex-1">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs uppercase bg-slate-950/80 text-slate-400 font-extrabold tracking-wide sticky top-0 z-20">
                                 <tr>
-                                    <th class="px-4 py-3">Fecha/ID</th>
-                                    <th class="px-4 py-3">Caja</th>
-                                    <th class="px-4 py-3">Cliente</th>
-                                    <th class="px-4 py-3 text-center">Tipo</th>
-                                    <th class="px-4 py-3 text-right">Monto</th>
-                                    <th class="px-4 py-3 text-right">Tasa</th>
-                                    <th class="px-4 py-3 text-right">Total (CLP)</th>
+                                    <th class="px-6 py-3 w-32">Fecha</th>
+                                    <th class="px-6 py-3 w-24">ID Op.</th>
+                                    <th class="px-6 py-3">Cliente / Origen</th>
+                                    <th class="px-6 py-3 w-32 text-center">Tipo</th>
+                                    <th class="px-6 py-3 w-40 text-right">Monto Divisa</th>
+                                    <th class="px-6 py-3 w-32 text-right">Tasa</th>
+                                    <th class="px-6 py-3 w-40 text-right">Total CLP</th>
                                 </tr>
                             </thead>
-                            <tbody id="tabla-operaciones" class="divide-y divide-slate-800">
+                            <tbody id="tabla-operaciones" class="divide-y divide-white/5 text-slate-300">
                                 </tbody>
                         </table>
                     </div>
                 </div>
-
+                
+                <div class="h-8"></div> 
             </section>        
         </main>
     </div>
 
-    <div id="modal-generico" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
-        <div class="bg-slate-800 p-6 rounded-xl shadow-2xl max-w-sm w-full border border-white/10">
-            <div id="modal-generico-icono" class="flex justify-center mb-4"></div>
-            <h3 id="modal-generico-titulo" class="text-lg font-bold text-center text-white mb-2"></h3>
-            <p id="modal-generico-mensaje" class="text-center text-slate-400 text-sm mb-6"></p>
-            <div class="flex justify-center">
-                <button id="modal-generico-confirmar" class="bg-amber-600 text-white px-4 py-2 rounded hover:bg-amber-500 transition">Aceptar</button>
+    <div id="modal-exitoso" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+        <div class="bg-slate-800 rounded-xl shadow-2xl p-6 max-w-sm w-full mx-4 border border-white/10">
+            <div class="flex flex-col items-center text-center">
+                <div class="bg-green-900/50 p-3 rounded-full mb-3">
+                    <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+                <h2 class="text-lg font-bold text-white mb-2">Éxito</h2>
+                <p class="text-sm text-slate-400 mb-6">Operación realizada correctamente.</p>
+                <button id="volver" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 font-bold text-sm transition">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-confirmar" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+        <div class="bg-slate-800 rounded-xl shadow-2xl p-6 max-w-sm w-full mx-4 border border-white/10">
+            <div class="flex flex-col items-center text-center">
+                <div class="bg-amber-900/50 p-3 rounded-full mb-3">
+                    <svg class="w-8 h-8 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                </div>
+                <h2 class="text-lg font-bold text-white mb-2">¿Eliminar Divisa?</h2>
+                <p class="text-sm text-slate-400 mb-6">Esta acción no se puede deshacer. Si hay operaciones asociadas, podría causar errores.</p>
+                <div class="flex justify-end gap-2 w-full">
+                    <button id="cancelar-confirmar" class="w-full bg-slate-700 text-white py-2 rounded-lg hover:bg-slate-600 font-bold text-sm transition">Cancelar</button>
+                    <button id="aceptar-confirmar" class="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 font-bold text-sm transition shadow-lg shadow-red-900/20">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-error" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+        <div class="bg-slate-800 rounded-xl shadow-2xl p-6 max-w-sm w-full mx-4 border border-white/10">
+            <div class="flex flex-col items-center text-center">
+                <div class="bg-red-900/50 p-3 rounded-full mb-3">
+                    <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                </div>
+                <h2 id="modal-error-titulo" class="text-lg font-bold text-white mb-2">Error</h2>
+                <p id="modal-error-mensaje" class="text-sm text-slate-400 mb-6">...</p>
+                <div class="flex justify-end gap-2 w-full">
+                    <button id="modal-error-confirmar" class="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 font-bold text-sm transition shadow-lg shadow-red-900/20">Aceptar</button>
+                </div>
             </div>
         </div>
     </div>
