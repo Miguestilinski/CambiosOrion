@@ -1,514 +1,310 @@
-const clienteInput = document.getElementById("cliente");
-const resultadoClientes = document.getElementById("resultado-clientes");
-const divisaInput = document.getElementById("divisa");
-const divisaSugerencias = document.getElementById("divisa-sugerencias");
-const cancelarBtn = document.getElementById('cancelar');
-const nombreCuentaInput = document.getElementById("nombre-cuenta");
-const esAdministrativaCheckbox = document.getElementById("es-administrativa");
-const mensajeFuncionario = document.getElementById("mensaje-funcionario");
+import { initSystem } from './index.js';
 
-let clienteSeleccionado = null;
-let divisaSeleccionada = null;
-let esFuncionarioSeleccionado = false;
-let ultimaVerificacionId = 0;
+document.addEventListener("DOMContentLoaded", async () => {
+    // 1. Inicializar sistema (Sidebar y Header)
+    // Usamos 'cuentas' para iluminar el link correcto en el sidebar
+    await initSystem('cuentas');
 
-// Redirigir al hacer clic en "Nueva Operacion"
-if (cancelarBtn) {
-  cancelarBtn.addEventListener('click', () => {
-      window.location.href = 'https://tesoreria.cambiosorion.cl/cuentas';
-  });
-}
+    const clienteInput = document.getElementById("cliente");
+    const resultadoClientes = document.getElementById("resultado-clientes");
+    const divisaInput = document.getElementById("divisa");
+    const divisaSugerencias = document.getElementById("divisa-sugerencias");
+    const cancelarBtn = document.getElementById('cancelar');
+    const nombreCuentaInput = document.getElementById("nombre-cuenta");
+    const esAdministrativaCheckbox = document.getElementById("es-administrativa");
+    const mensajeFuncionario = document.getElementById("mensaje-funcionario");
+    const form = document.getElementById("form-nueva-cta");
 
-function determinarTipoCuenta() {
-  const tieneCliente = clienteSeleccionado !== null;
-  const esAdminChecked = esAdministrativaCheckbox.checked;
+    let clienteSeleccionado = null;
+    let divisaSeleccionada = null;
+    let esFuncionarioSeleccionado = false;
+    let ultimaVerificacionId = 0;
 
-  if (esAdminChecked) {
-      return "administrativa"; // Prioridad si el checkbox está marcado
-  }
-  
-  if (tieneCliente && esFuncionarioSeleccionado) {
-      return "funcionario"; // Si hay cliente Y es funcionario
-  }
-  
-  if (tieneCliente && !esFuncionarioSeleccionado) {
-      return "cliente"; // Si hay cliente pero NO es funcionario
-  }
+    // --- NAVEGACIÓN ---
+    if (cancelarBtn) {
+        cancelarBtn.addEventListener('click', () => {
+            window.location.href = 'https://tesoreria.cambiosorion.cl/cuentas';
+        });
+    }
 
-  // Si no hay cliente seleccionado Y el checkbox no está marcado,
-  // podría ser 'general' o 'administrativa' dependiendo de tu lógica por defecto.
-  // Asumiremos 'administrativa' si no hay cliente.
-  if (!tieneCliente) {
-      return "administrativa"; 
-  }
+    // --- LÓGICA DE NEGOCIO ---
+    function determinarTipoCuenta() {
+        const tieneCliente = clienteSeleccionado !== null;
+        const esAdminChecked = esAdministrativaCheckbox.checked;
 
-  return "general"; // Caso fallback, aunque debería cubrirse arriba
-}
+        if (esAdminChecked) return "administrativa"; 
+        if (tieneCliente && esFuncionarioSeleccionado) return "funcionario"; 
+        if (tieneCliente && !esFuncionarioSeleccionado) return "cliente"; 
+        
+        // Si no hay cliente y no es admin explícito, por defecto admin interno
+        if (!tieneCliente) return "administrativa"; 
 
-// Buscar cliente
-clienteInput.addEventListener("input", async (e) => {
-  const query = e.target.value.trim();
-  clienteSeleccionado = null;
-  actualizarNombreCuenta();
+        return "general"; 
+    }
 
-  if (query.length < 2) {
-    resultadoClientes.classList.add("hidden");
-    // Ocultar mensaje funcionario y resetear estado
-    mensajeFuncionario.classList.add("hidden");
-    esFuncionarioSeleccionado = false;
-    clienteSeleccionado = null;
-    return;
-  }
+    function actualizarNombreCuenta() {
+        if (clienteSeleccionado && divisaSeleccionada) {
+            // Sugerencia automática: "NombreCliente CODIGO"
+            nombreCuentaInput.value = `${clienteSeleccionado.nombre} ${divisaSeleccionada.codigo}`;
+        }
+    }
 
-  const res = await fetch(
-    `https://cambiosorion.cl/data/nueva-cta.php?buscar_cliente=${encodeURIComponent(query)}`
-  );
-
-  // Verificar si la respuesta es exitosa
-  if (!res.ok) {
-    console.error('Error al buscar cliente', res.statusText);
-    mostrarModalError({
-      titulo: "❌ Error de conexión",
-      mensaje: `No se pudo obtener la lista de clientes: ${res.statusText}`,
-      textoConfirmar: "Entendido"
-    });
-    return;
-  }
-
-  try {
-    const clientes = await res.json();
-    resultadoClientes.innerHTML = "";
-    clientes.forEach((cliente) => {
-      const li = document.createElement("li");
-      li.textContent = cliente.nombre;
-      li.classList.add("px-2", "py-1", "hover:bg-gray-200", "cursor-pointer");
-      li.addEventListener("click", async () => {
-        seleccionarCliente(cliente);
-        esAdministrativaCheckbox.disabled = false;
-        actualizarNombreCuenta();
-
-        // Ocultar inmediatamente el mensaje, sin condiciones
-        mensajeFuncionario.classList.add("hidden");
-        esFuncionarioSeleccionado = false;
-
-        const verificacionIdActual = ++ultimaVerificacionId;
-
-        try {
-          const resultadoFuncionario = await verificarFuncionario(cliente.rut);
-          console.log(`Resultado verificación (ID ${verificacionIdActual}):`, resultadoFuncionario);
-
-          // Ignorar si esta no es la verificación más reciente
-          if (verificacionIdActual !== ultimaVerificacionId) {
-              console.log(`Ignorando resultado antiguo (ID ${verificacionIdActual})`);
-              return; 
-          }
-
-          // Guardar el estado solo si es la verificación más reciente
-          esFuncionarioSeleccionado = resultadoFuncionario.esFuncionario;
-
-          // Actualizar UI si es funcionario
-          if (esFuncionarioSeleccionado) {
-            mensajeFuncionario.textContent = "Este cliente es miembro del equipo."; // Asegurar texto correcto
-            mensajeFuncionario.classList.remove("hidden");
-          }
-          
-          // Actualizar tipo de cuenta visualmente (si tienes esa lógica)
-          actualizarTipoCuentaVisualmente();
-          
-        } catch (error) {
-          // El error ya se maneja dentro de verificarFuncionario, aquí solo aseguramos ocultar
-          console.error("Error en el proceso de verificación post-fetch:", error);
-          mensajeFuncionario.classList.add("hidden"); 
-          esFuncionarioSeleccionado = false;
-          actualizarTipoCuentaVisualmente();
+    function actualizarTipoCuentaVisualmente() {
+        const tipo = determinarTipoCuenta();
+        
+        // Sincronizar checkbox si el sistema detecta que debe ser administrativa
+        if(tipo === 'administrativa' && !esAdministrativaCheckbox.checked && !clienteSeleccionado) {
+             // Solo forzamos visualmente si no hay conflicto lógico
         }
 
-        actualizarTipoCuentaVisualmente();
-      });
-      resultadoClientes.appendChild(li);
-    });
-    resultadoClientes.classList.remove("hidden");
-  } catch (error) {
-    console.error("Error al procesar la respuesta de los clientes", error);
-    const text = await res.text();
-    console.error("Respuesta del servidor:", text);
-    mostrarModalError({
-      titulo: "❌ Error inesperado",
-      mensaje: `Ocurrió un error al procesar los datos del servidor.`,
-      textoConfirmar: "Entendido"
-    });
-  }
-});
-
-mensajeFuncionario.classList.add("hidden");
-async function verificarFuncionario(rut) {
-  // No verificar si el RUT está vacío o es nulo
-  if (!rut || rut.trim() === '') {
-      return { esFuncionario: false };
-  }
-  try {
-    console.log(`Verificando RUT: ${rut}`); // Debug
-    const res = await fetch(`https://cambiosorion.cl/data/nueva-cta.php?rut=${encodeURIComponent(rut)}`);
-    
-    if (!res.ok) {
-        console.error(`Error ${res.status} al verificar funcionario: ${res.statusText}`);
-        return { esFuncionario: false };
+        if (mensajeFuncionario) {
+            mensajeFuncionario.classList.toggle("hidden", tipo !== "funcionario");
+        }
     }
+
+    // --- BUSCADORES ---
     
-    const data = await res.json();
-    console.log("Respuesta del servidor verificarFuncionario:", data);
-    
-    // --- CAMBIO: Usar la propiedad correcta 'es_funcionario' ---
-    return { esFuncionario: !!data.es_funcionario }; // Convertir a booleano explícitamente
-    // --- FIN CAMBIO ---
-    
-  } catch (error) {
-    console.error("Error en fetch al verificar funcionario:", error);
-    return { esFuncionario: false}; // Asumir no funcionario si hay error
-  }
-}
+    // 1. Cliente
+    let clienteTimeout;
+    clienteInput.addEventListener("input", (e) => {
+        clearTimeout(clienteTimeout);
+        const query = e.target.value.trim();
+        
+        // Reset al escribir
+        clienteSeleccionado = null;
+        esFuncionarioSeleccionado = false;
+        mensajeFuncionario.classList.add("hidden");
+        
+        if (query.length < 2) {
+            resultadoClientes.classList.add("hidden");
+            return;
+        }
 
-// Buscar divisa
-divisaInput.addEventListener("input", async (e) => {
-  const query = e.target.value.trim();
-  divisaSeleccionada = null;
-  actualizarNombreCuenta();
-  if (query.length < 1) {
-    divisaSugerencias.classList.add("hidden");
-    return;
-  }
-
-  const res = await fetch(
-    `https://cambiosorion.cl/data/nueva-cta.php?buscar_divisa=${encodeURIComponent(query)}`
-  );
-
-  // Verificar si la respuesta es exitosa
-  if (!res.ok) {
-    console.error('Error al buscar divisa', res.statusText);
-    mostrarModalError({
-      titulo: "❌ Error de conexión",
-      mensaje: `No se pudo obtener la lista de divisas: ${res.statusText}`,
-      textoConfirmar: "Ok"
-    });
-    return;
-  }
-
-  try {
-    const divisas = await res.json();
-    divisaSugerencias.innerHTML = "";
-    divisas.forEach((divisa) => {
-      const li = document.createElement("li");
-      li.textContent = divisa.nombre;
-      li.classList.add("px-2", "py-1", "hover:bg-gray-200", "cursor-pointer");
-      li.addEventListener("click", () => {
-        divisaInput.value = divisa.nombre;
-        divisaSeleccionada = divisa;
-        console.log(`ID de divisas_interna seleccionado: ${divisa.id}`);
-        console.log(`Valor asignado a divisa_id: ${divisa.id}`);
-        divisaSugerencias.classList.add("hidden");
-        actualizarNombreCuenta();
-      });      
-      divisaSugerencias.appendChild(li);
-    });
-    divisaSugerencias.classList.remove("hidden");
-  } catch (error) {
-    console.error("Error al procesar la respuesta de las divisas", error);
-    const text = await res.text();
-    console.error("Respuesta del servidor:", text);
-    mostrarModalError({
-      titulo: "❌ Error inesperado",
-      mensaje: "Ocurrió un problema al procesar la información del servidor.",
-      textoConfirmar: "Cerrar"
-    });
-  }
-});
-
-// Cerrar dropdown al clickear fuera
-document.addEventListener("click", (e) => {
-  if (!clienteInput.contains(e.target) && !resultadoClientes.contains(e.target)) {
-    resultadoClientes.classList.add("hidden");
-  }
-  if (!divisaInput.contains(e.target) && !divisaSugerencias.contains(e.target)) {
-    divisaSugerencias.classList.add("hidden");
-  }
-});
-
-// Enviar formulario
-document.getElementById("form-nueva-cta").addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-    // Validar divisa siempre
-  if (!divisaSeleccionada) {
-    mostrarModalError({
-      titulo: "❌ Error",
-      mensaje: "Debes seleccionar una divisa.",
-      textoConfirmar: "Cerrar"
-    });
-    return;
-  }
-
-  // Validar nombre cuenta
-  const nombreCuenta = nombreCuentaInput.value.trim();
-  if (nombreCuenta.length === 0) {
-    mostrarModalError({
-      titulo: "❌ Error",
-      mensaje: "Debes ingresar un nombre para la cuenta.",
-      textoConfirmar: "Cerrar"
-    });
-    return;
-  }
-
-  // Si hay cliente seleccionado, enviamos también el cliente_id
-  if (clienteSeleccionado) {
-    body.cliente_id = clienteSeleccionado.id;
-  }
-
-  const tipoCuenta = determinarTipoCuenta();
-
-  // Preparamos el cuerpo del request
-  const body = {
-    cliente_id: clienteSeleccionado ? clienteSeleccionado.id : null,
-    divisa_id: divisaSeleccionada ? divisaSeleccionada.id : null,
-    nombre_cuenta: nombreCuentaInput.value.trim(),
-    tipo_cuenta: tipoCuenta,
-  };
-
-  try {
-    console.log("Datos enviados:", body);
-    const res = await fetch("https://cambiosorion.cl/data/nueva-cta.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-
-    const textResponse = await res.text();
-    console.log("Respuesta cruda del servidor:", textResponse);   
-
-    // Verificar si la respuesta es exitosa
-    if (!res.ok) {
-      const errorText = await res.text();
-      console.error('Error de respuesta del servidor:', errorText);
-      mostrarModalError({
-        titulo: "❌ Error inesperado",
-        mensaje: "Hubo un problema con la conexión al servidor.",
-        textoConfirmar: "Cerrar"
-      });
-      return;
-    } 
-
-    const data = JSON.parse(textResponse);
-
-    if (data.success) {
-      mostrarModalExitoso();
-    } else if (data.warning && data.continue_possible) {
-        mostrarModalAdvertencia({
-          mensaje: data.warning,
-          textoConfirmar: "Crear",
-          textoCancelar: "Cancelar",
-          onConfirmar: async () => {
-            // Hacer segundo request con fuerza para crear la cuenta igual
+        clienteTimeout = setTimeout(async () => {
             try {
-              const res2 = await fetch("https://cambiosorion.cl/data/nueva-cta.php?forzar=1", {
+                const res = await fetch(`https://cambiosorion.cl/data/nueva-cta.php?buscar_cliente=${encodeURIComponent(query)}`);
+                if (!res.ok) throw new Error("Error en búsqueda");
+                
+                const clientes = await res.json();
+                resultadoClientes.innerHTML = "";
+                
+                if(clientes.length === 0) {
+                    resultadoClientes.innerHTML = `<li class="p-3 text-xs text-slate-500 italic text-center">No se encontraron clientes</li>`;
+                }
+
+                clientes.forEach((cliente) => {
+                    const li = document.createElement("li");
+                    li.textContent = cliente.nombre;
+                    li.className = "px-4 py-2 hover:bg-slate-100 cursor-pointer text-sm text-slate-800 border-b border-slate-100 last:border-0 transition";
+                    
+                    li.addEventListener("click", async () => {
+                        seleccionarCliente(cliente);
+                    });
+                    resultadoClientes.appendChild(li);
+                });
+                resultadoClientes.classList.remove("hidden");
+            } catch (error) {
+                console.error(error);
+            }
+        }, 300);
+    });
+
+    async function seleccionarCliente(cliente) {
+        clienteInput.value = cliente.nombre;
+        clienteSeleccionado = cliente;
+        resultadoClientes.classList.add("hidden");
+        
+        // Al seleccionar cliente, desactivamos "Administrativa" si estaba activa
+        esAdministrativaCheckbox.checked = false;
+        clienteInput.disabled = false;
+
+        // Verificar si es funcionario
+        const verificacionIdActual = ++ultimaVerificacionId;
+        try {
+            const resultado = await verificarFuncionario(cliente.rut);
+            if (verificacionIdActual === ultimaVerificacionId) {
+                esFuncionarioSeleccionado = resultado.esFuncionario;
+                actualizarTipoCuentaVisualmente();
+            }
+        } catch (e) { console.error(e); }
+
+        actualizarNombreCuenta();
+    }
+
+    async function verificarFuncionario(rut) {
+        if (!rut || rut.trim() === '') return { esFuncionario: false };
+        try {
+            const res = await fetch(`https://cambiosorion.cl/data/nueva-cta.php?rut=${encodeURIComponent(rut)}`);
+            if (!res.ok) return { esFuncionario: false };
+            const data = await res.json();
+            return { esFuncionario: !!data.es_funcionario };
+        } catch (error) { return { esFuncionario: false }; }
+    }
+
+    // 2. Divisa
+    let divisaTimeout;
+    divisaInput.addEventListener("input", (e) => {
+        clearTimeout(divisaTimeout);
+        const query = e.target.value.trim();
+        divisaSeleccionada = null;
+        
+        if (query.length < 1) {
+            divisaSugerencias.classList.add("hidden");
+            return;
+        }
+
+        divisaTimeout = setTimeout(async () => {
+            try {
+                const res = await fetch(`https://cambiosorion.cl/data/nueva-cta.php?buscar_divisa=${encodeURIComponent(query)}`);
+                const divisas = await res.json();
+                divisaSugerencias.innerHTML = "";
+                
+                divisas.forEach((divisa) => {
+                    const li = document.createElement("li");
+                    li.innerHTML = `<span class="font-bold text-amber-600">${divisa.codigo}</span> - ${divisa.nombre}`;
+                    li.className = "px-4 py-2 hover:bg-slate-100 cursor-pointer text-sm text-slate-800 border-b border-slate-100 last:border-0 transition";
+                    
+                    li.addEventListener("click", () => {
+                        divisaInput.value = divisa.nombre;
+                        divisaSeleccionada = divisa;
+                        divisaSugerencias.classList.add("hidden");
+                        actualizarNombreCuenta();
+                    });      
+                    divisaSugerencias.appendChild(li);
+                });
+                divisaSugerencias.classList.remove("hidden");
+            } catch (error) { console.error(error); }
+        }, 300);
+    });
+
+    // Cerrar dropdowns al clickear fuera
+    document.addEventListener("click", (e) => {
+        if (!clienteInput.contains(e.target) && !resultadoClientes.contains(e.target)) resultadoClientes.classList.add("hidden");
+        if (!divisaInput.contains(e.target) && !divisaSugerencias.contains(e.target)) divisaSugerencias.classList.add("hidden");
+    });
+
+    // Checkbox Administrativa
+    esAdministrativaCheckbox.addEventListener("change", () => {
+        if (esAdministrativaCheckbox.checked) {
+            // Modo Administrativa: Limpiar cliente
+            clienteInput.value = "";
+            clienteInput.disabled = true;
+            clienteInput.classList.add("opacity-50", "cursor-not-allowed");
+            clienteSeleccionado = null;
+            esFuncionarioSeleccionado = false;
+            mensajeFuncionario.classList.add("hidden");
+        } else {
+            // Modo Normal
+            clienteInput.disabled = false;
+            clienteInput.classList.remove("opacity-50", "cursor-not-allowed");
+        }
+        actualizarNombreCuenta();
+    });
+
+    // --- SUBMIT ---
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        if (!divisaSeleccionada) return mostrarModal({ tipo: 'error', titulo: "Falta Divisa", mensaje: "Debes seleccionar una divisa válida de la lista." });
+        
+        const nombreCuenta = nombreCuentaInput.value.trim();
+        if (nombreCuenta.length === 0) return mostrarModal({ tipo: 'error', titulo: "Falta Nombre", mensaje: "Debes asignar un nombre a la cuenta." });
+
+        const tipoCuenta = determinarTipoCuenta();
+
+        const payload = {
+            cliente_id: clienteSeleccionado ? clienteSeleccionado.id : null,
+            divisa_id: divisaSeleccionada.id,
+            nombre_cuenta: nombreCuenta,
+            tipo_cuenta: tipoCuenta,
+        };
+
+        enviarDatos(payload);
+    });
+
+    async function enviarDatos(payload, forzar = false) {
+        try {
+            const url = forzar ? `https://cambiosorion.cl/data/nueva-cta.php?forzar=1` : `https://cambiosorion.cl/data/nueva-cta.php`;
+            
+            const res = await fetch(url, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data.body),
-              });
-              const text2 = await res2.text();
-              console.log("Respuesta cruda del segundo intento:", text2);
-              const response2 = JSON.parse(text2);
-              if (response2.success) {
-                mostrarModalExitoso();
-              } else {
-                mostrarModalError({
-                  titulo: "❌ Error",
-                  mensaje: response2.error || "No se pudo crear la cuenta.",
-                  textoConfirmar: "Cerrar"
+                body: JSON.stringify(payload),
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                mostrarModal({ 
+                    tipo: 'exito', 
+                    titulo: "Cuenta Creada", 
+                    mensaje: "La cuenta ha sido generada correctamente.",
+                    onConfirmar: () => {
+                        form.reset();
+                        clienteSeleccionado = null;
+                        divisaSeleccionada = null;
+                        esAdministrativaCheckbox.checked = false;
+                        clienteInput.disabled = false;
+                        clienteInput.classList.remove("opacity-50");
+                    }
                 });
-              }
-            } catch (err) {
-              mostrarModalError({
-                titulo: "❌ Error",
-                mensaje: "No se pudo completar la creación forzada.",
-                textoConfirmar: "Cerrar"
-              });
+            } else if (data.warning && data.continue_possible) {
+                // Advertencia (ej: Cuenta duplicada para cliente)
+                mostrarModal({
+                    tipo: 'advertencia',
+                    titulo: "Atención",
+                    mensaje: data.warning,
+                    textoConfirmar: "Crear de todas formas",
+                    textoCancelar: "Cancelar",
+                    onConfirmar: () => enviarDatos(payload, true) // Reintentar forzando
+                });
+            } else {
+                mostrarModal({ tipo: 'error', titulo: "Error", mensaje: data.error || "No se pudo crear la cuenta." });
             }
-          }
-        });
-      } else {
-      mostrarModalError({
-        titulo: "❌ Error",
-        mensaje: `Error al crear la cuenta: ${data.error || data.message || 'desconocido'}`,
-        textoConfirmar: "Cerrar"
-      });
+
+        } catch (error) {
+            console.error("Error submit:", error);
+            mostrarModal({ tipo: 'error', titulo: "Error de Conexión", mensaje: "No se pudo conectar con el servidor." });
+        }
     }
 
-  } catch (error) {
-    console.error("Error de conexión:", error);
-  
-    let errorMessage = "Error de conexión con el servidor.";
-    
-    if (error.response) { 
-      try {
-        const text = await error.response.text();
-        console.error("Respuesta del servidor:", text);
-        errorMessage += `\nDetalle: ${text}`;
-      } catch (textError) {
-        console.error("No se pudo leer la respuesta del servidor.");
-      }
-    }
+    // --- SISTEMA MODALES UNIFICADO (SVG) ---
+    function mostrarModal({ tipo = 'info', titulo, mensaje, textoConfirmar = "Aceptar", textoCancelar = null, onConfirmar, onCancelar }) {
+        const modal = document.getElementById("modal-generico");
+        const iconoDiv = document.getElementById("modal-generico-icono");
+        const btnConfirmar = document.getElementById("modal-generico-confirmar");
+        const btnCancelar = document.getElementById("modal-generico-cancelar");
 
-    mostrarModalError({
-      titulo: "❌ Error",
-      mensaje: `Error al crear la cuenta: ${errorMessage}`,
-      textoConfirmar: "Cerrar"
-    });
-  }  
+        // Iconos SVG
+        const iconos = {
+            'exito': `<div class="p-3 rounded-full bg-green-900/30 border border-green-500/30"><svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></div>`,
+            'error': `<div class="p-3 rounded-full bg-red-900/30 border border-red-500/30"><svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></div>`,
+            'advertencia': `<div class="p-3 rounded-full bg-amber-900/30 border border-amber-500/30"><svg class="w-8 h-8 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg></div>`,
+            'info': ''
+        };
+
+        if(iconoDiv) iconoDiv.innerHTML = iconos[tipo] || '';
+
+        document.getElementById("modal-generico-titulo").textContent = titulo;
+        document.getElementById("modal-generico-mensaje").textContent = mensaje;
+        
+        btnConfirmar.textContent = textoConfirmar;
+        
+        if (textoCancelar) {
+            btnCancelar.classList.remove("hidden");
+            btnCancelar.textContent = textoCancelar;
+        } else {
+            btnCancelar.classList.add("hidden");
+        }
+
+        modal.classList.remove("hidden");
+
+        const newConfirm = btnConfirmar.cloneNode(true);
+        const newCancel = btnCancelar.cloneNode(true);
+        btnConfirmar.parentNode.replaceChild(newConfirm, btnConfirmar);
+        btnCancelar.parentNode.replaceChild(newCancel, btnCancelar);
+
+        newConfirm.onclick = () => { modal.classList.add("hidden"); if (onConfirmar) onConfirmar(); };
+        newCancel.onclick = () => { modal.classList.add("hidden"); if (onCancelar) onCancelar(); };
+    }
 });
-
-// Función para actualizar el nombre de cuenta según cliente y divisa
-function actualizarNombreCuenta() {
-  if (clienteSeleccionado && divisaSeleccionada) {
-    // Usa código de divisa, no nombre
-    nombreCuentaInput.value = `${clienteSeleccionado.nombre} ${divisaSeleccionada.codigo}`;
-    // nombreCuentaInput.disabled = true;  // Comentar o eliminar para que siempre se pueda editar
-  } else {
-    nombreCuentaInput.disabled = false; // Siempre habilitado
-    // Si quieres que mantenga lo que usuario escribió cuando no hay cliente, no limpiar aquí
-    // nombreCuentaInput.value = "";
-  }
-}
-
-function actualizarTipoCuentaVisualmente() {
-  const tipo = determinarTipoCuenta();
-  esAdministrativaCheckbox.checked = tipo === "administrativa";
-  if (mensajeFuncionario) {
-    mensajeFuncionario.classList.toggle("hidden", tipo !== "funcionario");
-  }
-}
-
-// Sincronizar comportamiento entre cliente y checkbox "es-administrativa"
-function actualizarInteraccionClienteYAdministrativa() {
-  if (clienteSeleccionado) {
-    esAdministrativaCheckbox.checked = false;
-    esAdministrativaCheckbox.disabled = true;
-  } else {
-    esAdministrativaCheckbox.disabled = false;
-  }
-
-  if (esAdministrativaCheckbox.checked) {
-    clienteInput.value = "";
-    clienteSeleccionado = null;
-    resultadoClientes.classList.add("hidden");
-    mensajeFuncionario.classList.add("hidden");
-  }
-  actualizarNombreCuenta();
-}
-
-// Relación entre checkbox y cliente seleccionado
-esAdministrativaCheckbox.addEventListener("change", () => {
-  if (esAdministrativaCheckbox.checked) {
-    clienteInput.value = "";
-    clienteInput.disabled = true;
-    clienteSeleccionado = null;
-    actualizarTipoCuentaVisualmente();
-    actualizarNombreCuenta();
-  } else {
-    clienteInput.disabled = false;
-  }
-});
-
-// Al seleccionar cliente
-function seleccionarCliente(cliente) {
-  clienteSeleccionado = cliente;
-  clienteInput.value = cliente.nombre;
-  resultadoClientes.classList.add("hidden");
-
-  // Activar checkbox si corresponde
-  esAdministrativaCheckbox.disabled = false;
-
-  // Verificar si el cliente es funcionario
-  verificarFuncionario(cliente.rut).then((esFunc) => {
-    if (esFunc) {
-      mensajeFuncionario.classList.remove("hidden");
-    } else {
-      mensajeFuncionario.classList.add("hidden");
-    }
-  });
-}
-
-function mostrarModalAdvertencia({mensaje, textoConfirmar = "Aceptar", textoCancelar = null, onConfirmar, onCancelar }) {
-  const modal = document.getElementById("modal-advertencia");
-  const mensajeElem = document.getElementById("modal-advertencia-mensaje");
-  const btnConfirmar = document.getElementById("advertencia-confirmar");
-  const btnCancelar = document.getElementById("advertencia-cancelar");
-
-  mensajeElem.textContent = mensaje;
-  btnConfirmar.textContent = textoConfirmar;
-
-  if (textoCancelar) {
-    btnCancelar.classList.remove("hidden");
-    btnCancelar.textContent = textoCancelar;
-  } else {
-    btnCancelar.classList.add("hidden");
-  }
-
-  modal.classList.remove("hidden");
-
-  // Remover handlers anteriores
-  btnConfirmar.onclick = () => {
-    modal.classList.add("hidden");
-    if (onConfirmar) onConfirmar();
-  };
-
-  btnCancelar.onclick = () => {
-    modal.classList.add("hidden");
-    if (onCancelar) onCancelar();
-  };
-}
-
-function mostrarModalError({ titulo, mensaje, textoConfirmar = "Aceptar", textoCancelar = null, onConfirmar, onCancelar }) {
-  const modal = document.getElementById("modal-error");
-  const tituloElem = document.getElementById("modal-error-titulo");
-  const mensajeElem = document.getElementById("modal-error-mensaje");
-  const btnConfirmar = document.getElementById("modal-error-confirmar");
-  const btnCancelar = document.getElementById("modal-error-cancelar");
-
-  tituloElem.textContent = titulo;
-  mensajeElem.textContent = mensaje;
-  btnConfirmar.textContent = textoConfirmar;
-
-  if (textoCancelar) {
-    btnCancelar.classList.remove("hidden");
-    btnCancelar.textContent = textoCancelar;
-  } else {
-    btnCancelar.classList.add("hidden");
-  }
-
-  modal.classList.remove("hidden");
-
-  // Remover handlers anteriores
-  btnConfirmar.onclick = () => {
-    modal.classList.add("hidden");
-    if (onConfirmar) onConfirmar();
-  };
-
-  btnCancelar.onclick = () => {
-    modal.classList.add("hidden");
-    if (onCancelar) onCancelar();
-  };
-}
-
-function mostrarModalExitoso() {
-  const modal = document.getElementById("modal-exitoso");
-  modal.classList.remove("hidden");
-
-  document.getElementById("nueva-cta").onclick = () => {
-    modal.classList.add("hidden");
-    document.getElementById("form-nueva-cta").reset();
-    // Resetear también estado adicional si es necesario
-  };
-
-  document.getElementById("volver").onclick = () => {
-    window.location.href = "https://tesoreia.cambiosorion.cl/cuentas";
-  };
-}

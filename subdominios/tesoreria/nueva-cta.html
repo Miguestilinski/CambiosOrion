@@ -63,131 +63,95 @@
         </div>
     </header>
 
-    <div class="flex flex-1 overflow-hidden relative">
+    <div class="flex flex-1 overflow-hidden relative layout-container">
         <div id="sidebar-container" class="hidden lg:block h-full z-10"></div>
         
         <main class="flex-1 overflow-y-auto p-4 md:p-8 relative" id="dashboard-content">
-          <section id="nueva-cta" class="content-section active">
-            <div class="flex items-center mb-6">
-              <h1 class="text-2xl font-medium mr-4 leading-none text-white">Crear Nueva Cuenta</h1>
+          <section id="nueva-cta" class="max-w-4xl mx-auto fade-in h-full flex flex-col justify-center">
+            
+            <div class="flex flex-col items-center mb-8 text-center">
+                <h1 class="text-3xl font-bold text-white tracking-tight mb-2">Crear Nueva Cuenta</h1>
+                <p class="text-slate-400 text-sm max-w-lg">Registre nuevas cuentas corrientes para clientes, funcionarios o uso administrativo interno.</p>
             </div>
       
-            <!-- Formulario Nueva Cuenta -->
-            <form id="form-nueva-cta">
-                <!-- Cliente -->
-                <div class="w-1/2 mb-4 relative">
-                    <label for="cliente" class="block mb-1 text-sm text-white">Cliente (Opcional)</label>
-                    <input
-                        type="text"
-                        id="cliente"
-                        placeholder="Buscar cliente por nombre"
-                        autocomplete="off"
-                        class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                    />
-                    <ul
-                        id="resultado-clientes"
-                        class="absolute z-50 w-full bg-white border border-gray-600 text-gray-700 rounded-lg mt-1 max-h-52 overflow-auto hidden"
-                    ></ul>
-                </div>
+            <div class="bg-slate-800/80 backdrop-blur-md rounded-2xl shadow-2xl border border-white/10 overflow-hidden relative">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-600 to-amber-400"></div>
 
-                <!-- Divisa -->
-                <div class="w-1/2 mb-4 relative">
-                    <label for="divisa" class="block mb-1 text-sm text-white">Divisa</label>
-                    <input
-                        type="text"
-                        id="divisa"
-                        placeholder="Buscar divisa por nombre"
-                        autocomplete="off"
-                        class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                    />
-                    <ul
-                        id="divisa-sugerencias"
-                        class="absolute z-50 w-full bg-white border border-gray-600 text-gray-700 rounded-lg mt-1 max-h-52 overflow-auto hidden"
-                    ></ul>
-                </div>
+                <form id="form-nueva-cta" class="p-8 space-y-6">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="relative group">
+                            <label for="cliente" class="block mb-2 text-xs font-bold text-slate-400 uppercase tracking-wider">Titular / Cliente</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-500">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                </div>
+                                <input type="text" id="cliente" placeholder="Buscar cliente..." autocomplete="off" class="block w-full pl-10 px-4 py-3 text-sm rounded-xl bg-slate-900 border border-slate-600 text-white focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition placeholder-slate-500">
+                            </div>
+                            <ul id="resultado-clientes" class="absolute z-50 w-full bg-white border border-slate-200 text-slate-800 rounded-xl mt-1 shadow-2xl max-h-52 overflow-auto hidden custom-scrollbar"></ul>
+                            <p class="mt-1 text-xs text-slate-500">Deje vacío si es una cuenta interna.</p>
+                        </div>
 
-                <!-- Nombre Cuenta -->
-                <div class="w-1/2 mb-6">
-                    <label for="nombre-cuenta" class="block mb-1 text-sm text-white">Nombre Cuenta</label>
-                    <input
-                        type="text"
-                        id="nombre-cuenta"
-                        placeholder="Ingresar nombre de la cuenta"
-                        autocomplete="off"
-                        class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                    />
-                </div>
+                        <div class="relative group">
+                            <label for="divisa" class="block mb-2 text-xs font-bold text-slate-400 uppercase tracking-wider">Divisa <span class="text-amber-500">*</span></label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-500">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                </div>
+                                <input type="text" id="divisa" placeholder="Ej: USD, CLP..." autocomplete="off" class="block w-full pl-10 px-4 py-3 text-sm rounded-xl bg-slate-900 border border-slate-600 text-white focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition placeholder-slate-500">
+                            </div>
+                            <ul id="divisa-sugerencias" class="absolute z-50 w-full bg-white border border-slate-200 text-slate-800 rounded-xl mt-1 shadow-2xl max-h-52 overflow-auto hidden custom-scrollbar"></ul>
+                        </div>
+                    </div>
 
-                <!-- Cuenta Administrativa -->
-                <div class="w-1/2 mb-6 flex items-center">
-                <input
-                    type="checkbox"
-                    id="es-administrativa"
-                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-                />
-                <label for="es-administrativa" class="ml-2 text-sm text-white">
-                    ¿Es cuenta administrativa?
-                </label>
-                </div>
+                    <div>
+                        <label for="nombre-cuenta" class="block mb-2 text-xs font-bold text-slate-400 uppercase tracking-wider">Nombre de la Cuenta <span class="text-amber-500">*</span></label>
+                        <input type="text" id="nombre-cuenta" placeholder="Nombre identificador" autocomplete="off" class="block w-full px-4 py-3 text-sm rounded-xl bg-slate-900 border border-slate-600 text-white focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition font-medium">
+                    </div>
 
-                <!-- Cliente Funcionario -->
-                <div id="mensaje-funcionario" class="w-full mb-6 text-sm text-green-400 hidden">
-                ✅ Cliente identificado como funcionario del equipo.
-                </div>
+                    <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-700/50 flex flex-col md:flex-row justify-between items-center gap-4">
+                        
+                        <label class="flex items-center space-x-3 cursor-pointer group">
+                            <div class="relative">
+                                <input type="checkbox" id="es-administrativa" class="peer sr-only">
+                                <div class="w-10 h-6 bg-slate-700 rounded-full peer-checked:bg-amber-600 peer-focus:ring-2 peer-focus:ring-amber-500 transition-all"></div>
+                                <div class="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-all peer-checked:translate-x-4"></div>
+                            </div>
+                            <span class="text-sm font-medium text-slate-300 group-hover:text-white transition">Cuenta Administrativa</span>
+                        </label>
 
-                <!-- Botones -->
-                <div class="md:col-span-2 flex space-x-4">
-                    <button
-                    type="submit"
-                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
-                    >
-                    Crear Cuenta
-                    </button>
-                    <button
-                    type="button"
-                    id="cancelar"
-                    class="text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5"
-                    >
-                    Cancelar
-                    </button>
-                </div>
-            </form>
+                        <div id="mensaje-funcionario" class="hidden flex items-center text-emerald-400 text-xs font-bold bg-emerald-900/20 px-3 py-1.5 rounded-lg border border-emerald-500/20">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            Funcionario Identificado
+                        </div>
+                    </div>
 
-            <!-- Modal de advertencia -->
-            <div id="modal-advertencia" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-              <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
-                <h2 class="text-lg font-semibold mb-4">⚠️ Advertencia</h2>
-                <p id="modal-advertencia-mensaje" class="mb-4">Mensaje</p>
-                <div class="flex justify-end space-x-4">
-                  <button id="advertencia-cancelar" class="bg-gray-300 text-gray-700 px-4 py-2 rounded">Cancelar</button>
-                  <button id="advertencia-confirmar" class="bg-blue-600 text-white px-4 py-2 rounded">Continuar</button>
-                </div>
-              </div>
+                    <div class="flex items-center justify-end gap-3 pt-4 border-t border-white/5">
+                        <button type="button" id="cancelar" class="text-slate-400 bg-transparent border border-slate-600 hover:bg-slate-700 hover:text-white font-medium rounded-lg text-sm px-5 py-2.5 transition">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="text-white bg-amber-600 hover:bg-amber-500 font-bold rounded-lg text-sm px-6 py-2.5 shadow-lg shadow-amber-900/20 transition transform hover:-translate-y-0.5 border border-amber-500 flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                            Crear Cuenta
+                        </button>
+                    </div>
+                </form>
             </div>
 
-            <!-- Modal de error -->
-            <div id="modal-error" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-              <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
-                <h2 id="modal-error-titulo" class="text-lg font-semibold mb-4">Título</h2>
-                <p id="modal-error-mensaje" class="mb-4">Mensaje</p>
-                <div class="flex justify-end space-x-4">
-                  <button id="modal-error-cancelar" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hidden">Cancelar</button>
-                  <button id="modal-error-confirmar" class="bg-blue-600 text-white px-4 py-2 rounded">Aceptar</button>
+            <div id="modal-generico" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+                <div class="bg-slate-800 rounded-xl shadow-2xl p-6 max-w-sm w-full mx-4 border border-white/10 relative">
+                    <div id="modal-generico-icono" class="flex justify-center mb-4"></div>
+                    
+                    <h2 id="modal-generico-titulo" class="text-lg font-bold text-white mb-2 text-center">Título</h2>
+                    <p id="modal-generico-mensaje" class="text-sm text-slate-300 mb-6 text-center">Mensaje</p>
+                    
+                    <div class="flex justify-end gap-2 w-full">
+                        <button id="modal-generico-cancelar" class="w-full bg-slate-700 text-white py-2 rounded-lg hover:bg-slate-600 font-bold text-sm transition hidden">Cancelar</button>
+                        <button id="modal-generico-confirmar" class="w-full bg-amber-600 text-white py-2 rounded-lg hover:bg-amber-500 font-bold text-sm transition shadow-lg">Aceptar</button>
+                    </div>
                 </div>
-              </div>
             </div>
 
-            <!-- Modal exitoso -->
-            <div id="modal-exitoso" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-              <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
-                <h2 class="text-lg font-semibold mb-4">✅ Cuenta generada</h2>
-                <p class="mb-4">La cuenta se ha generado correctamente.</p>
-                <div class="flex justify-end space-x-4">
-                  <button id="nueva-cta" class="bg-green-600 text-white px-4 py-2 rounded">Nueva Cuenta</button>
-                  <button id="volver" class="bg-gray-300 text-gray-700 px-4 py-2 rounded">Volver</button>
-                </div>
-              </div>
-            </div>
           </section>
         </main>
     </div>
