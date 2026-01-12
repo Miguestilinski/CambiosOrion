@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             // Estado
-            const estadoActivo = divisa.estado == 1;
+            const estadoActivo = divisa.estado == 1 || divisa.estado === 'Habilitada';
             const estadoBadge = estadoActivo 
                 ? `<span class="bg-green-900/40 text-green-300 text-xs font-bold px-2.5 py-0.5 rounded border border-green-500/30">Activa</span>` 
                 : `<span class="bg-red-900/40 text-red-300 text-xs font-bold px-2.5 py-0.5 rounded border border-red-500/30">Inactiva</span>`;
@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const crearBtn = (texto, disabled, onClick) => {
             const btn = document.createElement('button');
-            btn.innerHTML = texto; // Permitir HTML para flechas
+            btn.innerHTML = texto;
             btn.disabled = disabled;
             btn.className = `px-3 py-1.5 text-xs font-medium rounded-lg border transition ${disabled ? 'bg-slate-800 text-slate-600 border-slate-700 cursor-not-allowed' : 'bg-slate-800 text-slate-300 border-slate-600 hover:bg-slate-700 hover:text-white hover:border-amber-500'}`;
             if(!disabled) btn.addEventListener('click', onClick);

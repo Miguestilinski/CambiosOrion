@@ -92,56 +92,49 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
     }
 
-    function renderizarTabla(inventarios) {
-        if (!tablaInventario) return;
+    function renderTabla(datos) {
         tablaInventario.innerHTML = '';
-
-        if (!inventarios || inventarios.length === 0) {
-            tablaInventario.innerHTML = `<tr><td colspan="7" class="text-center text-slate-500 py-10 italic">No hay registros en el inventario.</td></tr>`;
+        
+        if (datos.length === 0) {
+            tablaInventario.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-slate-500 italic">No hay existencias registradas.</td></tr>`;
             return;
         }
 
-        inventarios.forEach(inv => {
-            const tr = document.createElement('tr');
-            tr.className = 'hover:bg-white/5 transition-all border-b border-white/5 last:border-0 text-slate-300';
+        const cajaActualId = selectCaja.value; // Capturamos la caja que se está viendo
 
-            const cantidad = parseFloat(inv.cantidad) || 0;
-            const pmp = parseFloat(inv.pmp) || 0;
-            const totalCLP = cantidad * pmp;
-            const icono = inv.icono || 'https://cambiosorion.cl/orionapp/icons/default.png';
-            
-            let estadoHtml = '';
-            if (cantidad > 0.001) {
-                estadoHtml = `<span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-green-900/40 text-green-300 border border-green-500/30">Disponible</span>`;
-            } else if (cantidad < -0.001) {
-                estadoHtml = `<span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-red-900/40 text-red-300 border border-red-500/30">Negativo</span>`;
-            } else {
-                estadoHtml = `<span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-slate-800 text-slate-500 border border-slate-700">Sin Stock</span>`;
+        datos.forEach(item => {
+            const tr = document.createElement('tr');
+            tr.className = "bg-slate-900 border-b border-slate-800 hover:bg-slate-800 transition group";
+
+            // Icono
+            let iconoHtml = `<div class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-500 text-xs font-bold">${item.divisa_codigo ? item.divisa_codigo.substring(0,2) : '??'}</div>`;
+            if(item.divisa_icono) {
+                iconoHtml = `<img src="${item.divisa_icono}" class="w-8 h-8 rounded-full border border-slate-600 object-cover bg-slate-800">`;
             }
 
-            const nombreCaja = inv.nombre_caja || (filtros.caja.options[filtros.caja.selectedIndex]?.text || 'Desconocida');
-
             tr.innerHTML = `
-                <td class="px-4 py-3 text-xs font-bold text-slate-400 uppercase tracking-wide">${limpiarTexto(nombreCaja)}</td>
-                <td class="px-4 py-3 flex items-center gap-3">
-                    <img src="${icono}" class="w-7 h-7 rounded-full border border-slate-600 object-contain bg-slate-800 p-0.5" onerror="this.src='https://cambiosorion.cl/orionapp/icons/default.png'">
-                    <span class="font-bold text-white text-sm">${limpiarTexto(inv.divisa)}</span>
+                <td class="px-6 py-4">
+                    <div class="flex items-center gap-3">
+                        ${iconoHtml}
+                        <div>
+                            <div class="font-bold text-white text-sm">${item.divisa_nombre}</div>
+                            <div class="text-xs text-slate-500 font-mono">${item.divisa_codigo}</div>
+                        </div>
+                    </div>
                 </td>
-                <td class="px-4 py-3 text-right font-mono text-sm ${cantidad < 0 ? 'text-red-400 font-bold' : 'text-slate-200'}">
-                    ${formatearNumero(cantidad)}
+                <td class="px-6 py-4 text-right font-mono text-white font-bold">${formatearNumero(item.cantidad)}</td>
+                <td class="px-6 py-4 text-right font-mono text-slate-400 text-xs">$${formatearNumero(item.pmp)}</td>
+                <td class="px-6 py-4 text-right font-mono text-amber-500 font-bold">$${formatearNumero(item.total_clp)}</td>
+                <td class="px-6 py-4 text-center">
+                    <span class="px-2 py-1 rounded text-[10px] font-bold uppercase bg-slate-800 border border-slate-700 text-slate-400">
+                        ${item.caja_nombre || 'Caja'}
+                    </span>
                 </td>
-                <td class="px-4 py-3 text-right font-mono text-xs text-slate-500">
-                    $${formatearNumero(pmp)}
-                </td>
-                <td class="px-4 py-3 text-right font-bold font-mono text-amber-400 text-sm">
-                    $${formatearNumero(totalCLP)}
-                </td>
-                <td class="px-4 py-3 text-center">${estadoHtml}</td>
-                <td class="px-4 py-3 text-center">
-                    <button class="flex items-center justify-center p-1.5 bg-white/5 rounded-full hover:bg-amber-600 shadow-sm border border-transparent transition-all mx-auto text-slate-400 hover:text-white" 
-                            onclick="window.location.href='detalle-div?id=${inv.divisa_id}'" 
-                            title="Ver">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                <td class="px-6 py-4 text-center">
+                    <button class="text-slate-400 hover:text-amber-400 transition p-2 rounded-full hover:bg-white/5"
+                            onclick="window.location.href='detalle-div?id=${item.divisa_id}&caja_id=${cajaActualId}'"
+                            title="Ver Movimientos / Kardex">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
                     </button>
                 </td>
             `;

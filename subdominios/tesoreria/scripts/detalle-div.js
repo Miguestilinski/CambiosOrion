@@ -8,7 +8,12 @@ import {
 } from './index.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
-    await initSystem('inventarios');
+    await initSystem('divisas');
+
+    // Params URL
+    const params = new URLSearchParams(window.location.search);
+    const divisaId = params.get('id');
+    const cajaId = params.get('caja_id');
 
     // Referencias Inputs
     const inputs = {
@@ -45,9 +50,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     let operacionesData = [];
     let iconosCargados = [];
 
-    const params = new URLSearchParams(window.location.search);
-    const divisaId = params.get('id');
-
     if (!divisaId) {
         mostrarModalError({ titulo: "Error", mensaje: "ID de divisa no especificado." });
         return;
@@ -57,6 +59,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         btnVolver.addEventListener('click', () => {
             window.location.href = 'https://tesoreria.cambiosorion.cl/divisas-int'; // Ajusta la URL de lista
         });
+    }
+
+    // --- MODO LECTURA (Si viene de inventario) ---
+    // Si queremos proteger la edición cuando vienes a ver movimientos:
+    if (cajaId) {
+        // Opcional: Deshabilitar inputs principales para enfocar en la tabla
+        // Object.values(inputs).forEach(inp => inp.disabled = true);
+        // document.getElementById('guardar-cambios').classList.add('hidden');
     }
 
     // --- CARGAR DATOS ---
@@ -83,6 +93,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 operacionesData = data.operaciones || [];
                 lblTotalOps.textContent = operacionesData.length;
                 renderizarOperaciones(operacionesData);
+
+                // Mostrar badge si hay filtro
+                if (data.filtro_caja_aplicado) {
+                    if(badgeFiltroCaja) {
+                        badgeFiltroCaja.classList.remove('hidden');
+                        badgeFiltroCaja.textContent = `Filtro: Caja ID ${cajaId}`; // O nombre si lo trae la API
+                    }
+                }
             })
             .catch(err => {
                 console.error(err);
@@ -201,14 +219,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     function renderizarOperaciones(lista) {
         tablaOps.innerHTML = '';
 
-        if (lista.length === 0) {
-            tablaOps.innerHTML = `<tr><td colspan="7" class="text-center text-slate-500 py-10 italic">Sin movimientos registrados.</td></tr>`;
+        if(lista.length === 0) {
+            tablaOps.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500 text-xs italic">Sin movimientos registrados en este contexto.</td></tr>`;
             return;
         }
 
         lista.forEach(op => {
+            // Lógica colores Compra/Venta
+            const esCompra = op.tipo_transaccion === 'Compra';
+            const colorTipo = esCompra ? 'text-emerald-400 bg-emerald-900/20' : 'text-blue-400 bg-blue-900/20';
+
             const tr = document.createElement('tr');
             tr.className = 'hover:bg-white/5 transition-all border-b border-white/5 last:border-0 text-slate-300';
+            tr.onclick = () => window.location.href = `detalle-op?id=${op.id}`;
 
             // Estilos Tipo
             let tipoClass = "text-slate-400";
@@ -216,15 +239,22 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (op.tipo_transaccion === 'Venta') tipoClass = "text-amber-400 font-bold";
 
             tr.innerHTML = `
-                <td class="px-6 py-3 whitespace-nowrap text-xs">${formatearFechaHora(op.fecha)}</td>
-                <td class="px-6 py-3 font-mono text-xs font-bold text-slate-500">#${op.id}</td>
-                <td class="px-6 py-3 text-sm text-white truncate max-w-[200px]" title="${limpiarTexto(op.nombre_cliente)}">
-                    ${limpiarTexto(op.nombre_cliente || 'Cliente General')}
+                <td class="px-4 py-2">
+                    <div class="text-white font-bold text-xs">${op.fecha.split(' ')[0]}</div>
+                    <div class="text-[10px] text-slate-500">#${op.id}</div>
                 </td>
-                <td class="px-6 py-3 text-center text-xs uppercase ${tipoClass}">${limpiarTexto(op.tipo_transaccion)}</td>
-                <td class="px-6 py-3 text-right font-mono font-bold text-white text-sm">${formatearNumero(op.monto)}</td>
-                <td class="px-6 py-3 text-right font-mono text-slate-500 text-xs">${formatearNumero(op.tasa_cambio)}</td>
-                <td class="px-6 py-3 text-right font-bold font-mono text-slate-300 text-sm">$${formatearNumero(op.total)}</td>
+                <td class="px-4 py-2 text-xs text-slate-300 truncate max-w-[120px]" title="${op.nombre_cliente}">
+                    ${op.nombre_cliente || 'General'}
+                </td>
+                <td class="px-4 py-2 text-center">
+                    <span class="px-1.5 py-0.5 rounded text-[10px] font-bold uppercase ${colorTipo}">${op.tipo_transaccion}</span>
+                </td>
+                <td class="px-4 py-2 text-right font-mono text-white text-xs font-bold">
+                    ${formatearNumero(op.monto)}
+                </td>
+                <td class="px-4 py-2 text-right font-mono text-slate-500 text-[10px]">
+                    ${formatearNumero(op.tasa_cambio)}
+                </td>
             `;
             tablaOps.appendChild(tr);
         });
