@@ -525,11 +525,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             const cuentaInput = document.getElementById('select-cuenta-real');
             const cuentaId = cuentaInput ? cuentaInput.value : null;
 
-            if (!origen) return mostrarModal({ titulo: "❌ Error", mensaje: "Seleccione quién paga." });
-            if (!divisa) return mostrarModal({ titulo: "❌ Error", mensaje: "Seleccione una divisa." });
-            if (!tipo) return mostrarModal({ titulo: "❌ Error", mensaje: "Seleccione un método." });
-            if (!monto || monto <= 0) return mostrarModal({ titulo: "❌ Error", mensaje: "Monto inválido." });
-            if ((tipo === 'cuenta' || tipo === 'transferencia') && !cuentaId) return mostrarModal({ titulo: "❌ Error", mensaje: "Seleccione una cuenta válida." });
+            if (!origen) return mostrarModal({ tipo: 'error', titulo: "Falta Información", mensaje: "Seleccione quién paga." });
+            if (!divisa) return mostrarModal({ tipo: 'error', titulo: "Falta Información", mensaje: "Seleccione una divisa." });
+            if (!tipo) return mostrarModal({ tipo: 'error', titulo: "Falta Información", mensaje: "Seleccione un método." });
+            if (!monto || monto <= 0) return mostrarModal({ tipo: 'error', titulo: "Monto Inválido", mensaje: "Ingrese un monto mayor a 0." });
+            if ((tipo === 'cuenta' || tipo === 'transferencia') && !cuentaId) return mostrarModal({ tipo: 'error', titulo: "Cuenta Requerida", mensaje: "Seleccione una cuenta válida." });
 
             let nuevoEstado = "Abonado";
             if (Math.abs(monto - restante) < 10) nuevoEstado = "Pagado"; 
@@ -542,8 +542,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload)
             }).then(res => res.json()).then(res => {
                 if (res.success) mostrarModalPagoExitoso();
-                else mostrarModal({ titulo: "❌ Error", mensaje: res.message });
-            }).catch(e => mostrarModal({ titulo: "❌ Error", mensaje: "Error de conexión." }));
+                else mostrarModal({ tipo: 'error', titulo: "Error", mensaje: res.message });
+            }).catch(e => mostrarModal({ tipo: 'error', titulo: "Error", mensaje: "Error de conexión." }));
         });
 
         const btnPdf = document.getElementById('btn-pdf');
@@ -553,7 +553,18 @@ document.addEventListener("DOMContentLoaded", async () => {
         if(btnImprimir) btnImprimir.addEventListener('click', () => window.print());
         
         const btnAnular = document.getElementById('btn-anular');
-        if(btnAnular) btnAnular.addEventListener('click', () => mostrarModal({ titulo: "⚠️ Anular Operación", mensaje: "¿Estás seguro? Se revertirán todos los movimientos.", textoConfirmar: "Sí, Anular", textoCancelar: "Cancelar", onConfirmar: () => fetch(`https://cambiosorion.cl/data/detalle-op.php`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: op.id }) }).then(r => r.json()).then(r => r.success ? location.reload() : mostrarModal({ titulo: "❌ Error", mensaje: r.message })) }));
+        if(btnAnular) btnAnular.addEventListener('click', () => mostrarModal({ 
+            tipo: 'advertencia',
+            titulo: "Anular Operación", 
+            mensaje: "¿Estás seguro? Se revertirán todos los movimientos y se devolverá el dinero al inventario.", 
+            textoConfirmar: "Sí, Anular", 
+            textoCancelar: "Cancelar", 
+            onConfirmar: () => {
+                fetch(`https://cambiosorion.cl/data/detalle-op.php`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: op.id }) })
+                .then(r => r.json())
+                .then(r => r.success ? location.reload() : mostrarModal({ tipo: 'error', titulo: "No se pudo anular", mensaje: r.message }));
+            }
+        }));
     }
 
     async function cargarDivisas(operacionId, tipoOperacion, quienPaga) {
@@ -627,19 +638,45 @@ document.addEventListener("DOMContentLoaded", async () => {
         </div>`;
     }
 
-    window.mostrarModal = ({ titulo, mensaje, textoConfirmar = "Aceptar", textoCancelar = null, onConfirmar, onCancelar }) => {
-      const modal = document.getElementById("modal-generico");
-      document.getElementById("modal-generico-titulo").textContent = titulo;
-      document.getElementById("modal-generico-mensaje").textContent = mensaje;
-      const btnConfirmar = document.getElementById("modal-generico-confirmar");
-      const btnCancelar = document.getElementById("modal-generico-cancelar");
-      btnConfirmar.textContent = textoConfirmar;
-      if (textoCancelar) { btnCancelar.classList.remove("hidden"); btnCancelar.textContent = textoCancelar; } else { btnCancelar.classList.add("hidden"); }
-      modal.classList.remove("hidden");
-      const newConfirm = btnConfirmar.cloneNode(true); const newCancel = btnCancelar.cloneNode(true);
-      btnConfirmar.parentNode.replaceChild(newConfirm, btnConfirmar); btnCancelar.parentNode.replaceChild(newCancel, btnCancelar);
-      newConfirm.onclick = () => { modal.classList.add("hidden"); if (onConfirmar) onConfirmar(); };
-      newCancel.onclick = () => { modal.classList.add("hidden"); if (onCancelar) onCancelar(); };
+    window.mostrarModal = ({ titulo, mensaje, tipo = 'info', textoConfirmar = "Aceptar", textoCancelar = null, onConfirmar, onCancelar }) => {
+        const modal = document.getElementById("modal-generico");
+        const iconoDiv = document.getElementById("modal-generico-icono");
+        
+        // Definición de Iconos SVG
+        const iconos = {
+            'exito': `<div class="p-3 rounded-full bg-green-900/30 border border-green-500/30"><svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></div>`,
+            'error': `<div class="p-3 rounded-full bg-red-900/30 border border-red-500/30"><svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></div>`,
+            'advertencia': `<div class="p-3 rounded-full bg-amber-900/30 border border-amber-500/30"><svg class="w-8 h-8 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg></div>`,
+            'info': ''
+        };
+
+        if(iconoDiv) iconoDiv.innerHTML = iconos[tipo] || '';
+
+        document.getElementById("modal-generico-titulo").textContent = titulo;
+        document.getElementById("modal-generico-mensaje").textContent = mensaje;
+        
+        const btnConfirmar = document.getElementById("modal-generico-confirmar");
+        const btnCancelar = document.getElementById("modal-generico-cancelar");
+
+        btnConfirmar.textContent = textoConfirmar;
+        
+        if (textoCancelar) { 
+            btnCancelar.classList.remove("hidden"); 
+            btnCancelar.textContent = textoCancelar; 
+        } else { 
+            btnCancelar.classList.add("hidden"); 
+        }
+
+        modal.classList.remove("hidden");
+
+        // Limpiar eventos anteriores clonando botones
+        const newConfirm = btnConfirmar.cloneNode(true); 
+        const newCancel = btnCancelar.cloneNode(true);
+        btnConfirmar.parentNode.replaceChild(newConfirm, btnConfirmar); 
+        btnCancelar.parentNode.replaceChild(newCancel, btnCancelar);
+
+        newConfirm.onclick = () => { modal.classList.add("hidden"); if (onConfirmar) onConfirmar(); };
+        newCancel.onclick = () => { modal.classList.add("hidden"); if (onCancelar) onCancelar(); };
     }
 
     window.mostrarModalPagoExitoso = () => {
@@ -651,10 +688,18 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     window.eliminarPago = (id, origen) => {
         mostrarModal({
-            titulo: "⚠️ Eliminar Pago", mensaje: "¿Estás seguro que deseas eliminar este pago? Se ajustará el inventario.", textoConfirmar: "Eliminar", textoCancelar: "Cancelar",
+            tipo: 'advertencia',
+            titulo: "Eliminar Pago", 
+            mensaje: "¿Estás seguro que deseas eliminar este pago? El monto será devuelto al inventario correspondiente.", 
+            textoConfirmar: "Sí, Eliminar", 
+            textoCancelar: "Cancelar",
             onConfirmar: () => {
                 fetch(`https://cambiosorion.cl/data/detalle-op.php`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: id, origen: origen }) })
-                .then(res => res.json()).then(res => { if(res.success) mostrarModal({ titulo: "✅ Eliminado", mensaje: "Pago eliminado correctamente", onConfirmar: () => location.reload() }); else mostrarModal({ titulo: "❌ Error", mensaje: res.message }); });
+                .then(res => res.json())
+                .then(res => { 
+                    if(res.success) mostrarModal({ tipo: 'exito', titulo: "Eliminado", mensaje: "El pago ha sido eliminado correctamente.", onConfirmar: () => location.reload() }); 
+                    else mostrarModal({ tipo: 'error', titulo: "Error", mensaje: res.message }); 
+                });
             }
         });
     };
