@@ -63,20 +63,19 @@
         </div>
     </header>
 
-    <div class="flex flex-1 overflow-hidden relative">
+    <div class="flex flex-1 overflow-hidden relative layout-container">
         <div id="sidebar-container" class="hidden lg:block h-full z-10"></div>
         
         <main class="flex-1 overflow-y-auto p-4 md:p-8 relative" id="dashboard-content">
-          <section id="nueva-operacion" class="max-w-8xl mx-auto animate-fade-in-up">
+          <section id="nueva-operacion" class="max-w-8xl mx-auto fade-in h-full flex flex-col">
             
-            <!-- Header -->
-            <div class="flex items-center justify-between mb-8 border-b border-gray-700 pb-4">
+            <div class="flex items-center justify-between mb-8 border-b border-white/10 pb-4">
               <div>
                   <h1 class="text-3xl font-bold text-white tracking-tight">Nueva Operación</h1>
-                  <p class="text-gray-400 text-sm mt-1">Registro de Compra o Venta de Divisas.</p>
+                  <p class="text-slate-400 text-sm mt-1">Registro de Compra o Venta de Divisas.</p>
               </div>
-              <div class="bg-blue-900/30 border border-blue-800 rounded-lg px-4 py-2">
-                  <span class="text-blue-300 text-xs font-bold uppercase">Total Estimado</span>
+              <div class="bg-amber-900/20 border border-amber-500/50 rounded-lg px-4 py-2 shadow-[0_0_15px_rgba(245,158,11,0.15)]">
+                  <span class="text-amber-500 text-xs font-bold uppercase tracking-wider">Total Estimado</span>
                   <p class="text-white font-mono font-bold text-xl" id="total-display">$0</p>
               </div>
             </div>
@@ -84,155 +83,141 @@
             <form id="form-nueva-operacion" class="w-full">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
                     
-                    <!-- PANEL 1: CONFIGURACIÓN (Izquierda) -->
-                    <div class="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700 h-fit">
-                        <h3 class="text-gray-400 text-xs font-bold uppercase mb-4 border-b border-gray-700 pb-2">Configuración</h3>
+                    <div class="bg-slate-800/80 backdrop-blur-md rounded-xl p-6 shadow-xl border border-white/10 h-fit">
+                        <h3 class="text-slate-400 text-xs font-bold uppercase mb-4 border-b border-white/5 pb-2">Configuración</h3>
                         
                         <div class="space-y-5">
-                            <!-- Caja -->
                             <div>
-                                <label class="block mb-1 text-sm font-medium text-gray-300">Caja</label>
-                                <select id="caja" name="caja" required class="w-full bg-gray-900 border border-gray-600 text-white text-sm rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 transition"></select>
+                                <label class="block mb-1 text-sm font-medium text-slate-300">Caja</label>
+                                <select id="caja" name="caja" required class="w-full bg-slate-900 border border-slate-600 text-white text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition"></select>
                             </div>
 
-                            <!-- Tipo Transacción -->
                             <div>
-                                <label class="block mb-1 text-sm font-medium text-gray-300">Tipo de Transacción</label>
+                                <label class="block mb-1 text-sm font-medium text-slate-300">Tipo de Transacción</label>
                                 <div class="grid grid-cols-2 gap-2">
                                     <label class="cursor-pointer relative">
                                         <input type="radio" name="tipo_op" value="Compra" class="peer sr-only" checked>
-                                        <div class="text-center p-2 rounded-lg border border-gray-600 bg-gray-900 text-gray-400 hover:bg-gray-700 transition peer-checked:bg-green-600 peer-checked:border-green-500 peer-checked:text-white">
+                                        <div class="text-center p-2 rounded-lg border border-slate-600 bg-slate-900 text-slate-400 hover:bg-slate-700 transition peer-checked:bg-emerald-600 peer-checked:border-emerald-500 peer-checked:text-white peer-checked:shadow-lg">
                                             Compra
                                         </div>
                                     </label>
                                     <label class="cursor-pointer relative">
                                         <input type="radio" name="tipo_op" value="Venta" class="peer sr-only">
-                                        <div class="text-center p-2 rounded-lg border border-gray-600 bg-gray-900 text-gray-400 hover:bg-gray-700 transition peer-checked:bg-blue-600 peer-checked:border-blue-500 peer-checked:text-white">
+                                        <div class="text-center p-2 rounded-lg border border-slate-600 bg-slate-900 text-slate-400 hover:bg-slate-700 transition peer-checked:bg-blue-600 peer-checked:border-blue-500 peer-checked:text-white peer-checked:shadow-lg">
                                             Venta
                                         </div>
                                     </label>
                                 </div>
                             </div>
 
-                            <!-- Cliente -->
                             <div class="relative">
-                                <label class="block mb-1 text-sm font-medium text-gray-300">Cliente</label>
-                                <input type="text" id="cliente" placeholder="Buscar cliente..." autocomplete="off" class="w-full bg-gray-900 border border-gray-600 text-white text-sm rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 transition">
-                                <ul id="resultado-clientes" class="absolute z-50 w-full bg-white text-gray-900 rounded-lg mt-1 shadow-xl max-h-48 overflow-y-auto hidden"></ul>
+                                <label class="block mb-1 text-sm font-medium text-slate-300">Cliente</label>
+                                <input type="text" id="cliente" placeholder="Buscar cliente..." autocomplete="off" class="w-full bg-slate-900 border border-slate-600 text-white text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition">
+                                <ul id="resultado-clientes" class="absolute z-50 w-full bg-white text-gray-900 rounded-lg mt-1 shadow-2xl max-h-48 overflow-y-auto hidden border border-slate-200"></ul>
                             </div>
 
-                            <!-- Tipo Doc -->
                             <div>
-                                <label class="block mb-1 text-sm font-medium text-gray-300">Documento</label>
-                                <select id="tipo-documento" class="w-full bg-gray-900 border border-gray-600 text-white text-sm rounded-lg p-2.5">
+                                <label class="block mb-1 text-sm font-medium text-slate-300">Documento</label>
+                                <select id="tipo-documento" class="w-full bg-slate-900 border border-slate-600 text-white text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-amber-500 focus:border-amber-500">
                                     <option value="Boleta">Boleta</option>
                                     <option value="Factura">Factura</option>
                                     <option value="Otro">Otro</option>
                                 </select>
                             </div>
 
-                            <!-- Observaciones -->
                             <div>
-                                <label class="block mb-1 text-sm font-medium text-gray-300">Observaciones</label>
-                                <textarea id="observaciones" rows="3" class="w-full bg-gray-900 border border-gray-600 text-white text-sm rounded-lg p-2.5"></textarea>
+                                <label class="block mb-1 text-sm font-medium text-slate-300">Observaciones</label>
+                                <textarea id="observaciones" rows="3" class="w-full bg-slate-900 border border-slate-600 text-white text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-amber-500 focus:border-amber-500"></textarea>
                             </div>
                         </div>
                     </div>
 
-                    <!-- PANEL 2: DETALLE DIVISAS (Derecha) -->
-                    <div class="lg:col-span-2 bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700 relative">
-                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-t-xl"></div>
+                    <div class="lg:col-span-2 bg-slate-800/80 backdrop-blur-md rounded-xl p-6 shadow-xl border border-white/10 relative flex flex-col h-full">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-600 to-amber-400 rounded-t-xl"></div>
                         
-                        <div class="flex justify-between items-center mb-4 border-b border-gray-700 pb-2">
-                            <h3 class="text-gray-400 text-xs font-bold uppercase">Detalle Financiero</h3>
-                            <button type="button" id="btn-agregar-fila" class="text-xs bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded border border-gray-500 transition">
-                                + Agregar Divisa
+                        <div class="flex justify-between items-center mb-4 border-b border-white/5 pb-2">
+                            <h3 class="text-slate-400 text-xs font-bold uppercase">Detalle Financiero</h3>
+                            <button type="button" id="btn-agregar-fila" class="text-xs bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded border border-slate-600 transition flex items-center gap-1 group">
+                                <svg class="w-3 h-3 text-slate-300 group-hover:text-amber-400 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                                Agregar Divisa
                             </button>
                         </div>
 
-                        <!-- Contenedor de Filas -->
-                        <div id="contenedor-divisas" class="space-y-4">
-                            <!-- Las filas se inyectan con JS -->
-                        </div>
+                        <div id="contenedor-divisas" class="space-y-4 flex-1">
+                            </div>
 
-                        <!-- Total Footer -->
-                        <div class="mt-6 pt-4 border-t border-gray-700 flex justify-end items-center gap-4">
-                            <span class="text-gray-400 text-sm uppercase font-bold">Total a Pagar (CLP)</span>
-                            <span class="text-3xl font-bold text-white" id="total-final">$0</span>
+                        <div class="mt-6 pt-4 border-t border-white/10 flex justify-end items-center gap-4">
+                            <span class="text-slate-400 text-sm uppercase font-bold tracking-wider">Total a Pagar (CLP)</span>
+                            <span class="text-3xl font-bold text-amber-500 font-mono" id="total-final">$0</span>
                         </div>
                     </div>
                 </div>
       
-                <!-- Botones Acción -->
-                <div class="flex justify-end gap-4 pt-4 border-t border-gray-800">
-                    <button type="button" onclick="location.reload()" class="text-gray-300 bg-transparent border border-gray-600 hover:bg-gray-700 px-6 py-2.5 rounded-lg transition">Limpiar</button>
-                    <button type="submit" class="text-white bg-blue-600 hover:bg-blue-700 font-bold rounded-lg text-sm px-8 py-2.5 shadow-lg transition transform hover:-translate-y-0.5">
+                <div class="flex justify-end gap-4 pt-4 border-t border-white/10">
+                    <button type="button" onclick="location.reload()" class="text-slate-300 bg-transparent border border-slate-600 hover:bg-slate-700 px-6 py-2.5 rounded-lg transition text-sm font-medium">Limpiar Formulario</button>
+                    <button type="submit" class="text-white bg-amber-600 hover:bg-amber-500 font-bold rounded-lg text-sm px-8 py-2.5 shadow-lg shadow-amber-900/30 transition transform hover:-translate-y-0.5 border border-amber-500 flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                         Crear Operación
                     </button>
                 </div>
             </form>
 
-            <!-- Template Fila Oculta (Para clonar en JS) -->
             <template id="template-fila">
-                <div class="fila-divisa grid grid-cols-1 md:grid-cols-12 gap-3 p-3 bg-gray-900/50 rounded-lg border border-gray-700 items-end relative group hover:border-blue-500/50 transition">
-                    <!-- Divisa -->
+                <div class="fila-divisa grid grid-cols-1 md:grid-cols-12 gap-3 p-3 bg-slate-900/50 rounded-lg border border-slate-700 items-end relative group hover:border-amber-500/30 transition shadow-sm">
                     <div class="md:col-span-4 relative">
-                        <label class="block text-xs text-gray-500 mb-1">Divisa</label>
+                        <label class="block text-[10px] uppercase font-bold text-slate-500 mb-1">Divisa</label>
                         <div class="relative">
-                            <div class="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none icon-container">💱</div>
-                            <input type="text" class="input-divisa w-full bg-gray-800 border border-gray-600 text-white text-sm rounded p-2 pl-8 focus:ring-1 focus:ring-blue-500" placeholder="Buscar..." autocomplete="off">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none icon-container text-slate-500">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
+                            <input type="text" class="input-divisa w-full bg-slate-800 border border-slate-600 text-white text-sm rounded p-2 pl-8 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 placeholder-slate-600" placeholder="Buscar divisa..." autocomplete="off">
                         </div>
-                        <ul class="lista-sugerencias absolute z-20 w-full bg-white text-gray-900 rounded mt-1 shadow-xl max-h-40 overflow-y-auto hidden"></ul>
+                        <ul class="lista-sugerencias absolute z-20 w-full bg-white text-gray-900 rounded mt-1 shadow-xl max-h-40 overflow-y-auto hidden border border-slate-200"></ul>
                     </div>
 
-                    <!-- Monto -->
                     <div class="md:col-span-3">
-                        <label class="block text-xs text-gray-500 mb-1">Monto</label>
-                        <input type="text" class="input-monto w-full bg-gray-800 border border-gray-600 text-white text-sm rounded p-2 font-mono text-right focus:ring-1 focus:ring-blue-500" placeholder="0">
+                        <label class="block text-[10px] uppercase font-bold text-slate-500 mb-1">Monto</label>
+                        <input type="text" class="input-monto w-full bg-slate-800 border border-slate-600 text-white text-sm rounded p-2 font-mono text-right focus:ring-1 focus:ring-amber-500 focus:border-amber-500 placeholder-slate-600" placeholder="0">
                     </div>
 
-                    <!-- Tasa -->
                     <div class="md:col-span-2">
-                        <label class="block text-xs text-gray-500 mb-1">Tasa</label>
-                        <input type="number" class="input-tasa w-full bg-gray-800 border border-gray-600 text-white text-sm rounded p-2 font-mono text-right focus:ring-1 focus:ring-blue-500" placeholder="0">
+                        <label class="block text-[10px] uppercase font-bold text-slate-500 mb-1">Tasa</label>
+                        <input type="number" class="input-tasa w-full bg-slate-800 border border-slate-600 text-white text-sm rounded p-2 font-mono text-right focus:ring-1 focus:ring-amber-500 focus:border-amber-500 placeholder-slate-600" placeholder="0">
                     </div>
 
-                    <!-- Subtotal -->
                     <div class="md:col-span-3 text-right">
-                        <label class="block text-xs text-gray-500 mb-1">Subtotal</label>
-                        <div class="text-white font-bold font-mono text-lg input-subtotal">$0</div>
+                        <label class="block text-[10px] uppercase font-bold text-slate-500 mb-1">Subtotal</label>
+                        <div class="text-amber-400 font-bold font-mono text-lg input-subtotal tracking-tight">$0</div>
                     </div>
 
-                    <!-- Eliminar -->
-                    <button type="button" class="btn-eliminar absolute -top-2 -right-2 bg-red-600 hover:bg-red-700 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs shadow opacity-0 group-hover:opacity-100 transition">✕</button>
+                    <button type="button" class="btn-eliminar absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs shadow opacity-0 group-hover:opacity-100 transition transform hover:scale-110">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
                 </div>
             </template>
 
-            <!-- Modales -->
-            <div id="modal-alerta" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden backdrop-blur-sm">
-                <div class="bg-gray-800 border border-red-500/50 rounded-lg shadow-2xl p-6 max-w-sm w-full text-center">
-                    <div class="text-5xl mb-4">⚠️</div>
-                    <h2 class="text-xl font-bold text-white mb-2" id="modal-titulo">Atención</h2>
-                    <p class="mb-6 text-gray-300 text-sm" id="modal-mensaje"></p>
-                    <button id="cerrar-modal" class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg w-full">Entendido</button>
-                </div>
-            </div>
+            <div id="modal-generico" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+                <div class="bg-slate-800 rounded-xl shadow-2xl p-6 max-w-sm w-full mx-4 border border-white/10 relative">
+                    <div id="modal-generico-icono" class="flex justify-center mb-4"></div>
+                    
+                    <h2 id="modal-generico-titulo" class="text-lg font-bold text-white mb-2 text-center">Título</h2>
+                    <p id="modal-generico-mensaje" class="text-sm text-slate-300 mb-6 text-center">Mensaje</p>
+                    
+                    <div id="modal-botones-default" class="flex justify-end gap-2 w-full">
+                        <button id="modal-generico-cancelar" class="w-full bg-slate-700 text-white py-2 rounded-lg hover:bg-slate-600 font-bold text-sm transition hidden">Cancelar</button>
+                        <button id="modal-generico-confirmar" class="w-full bg-amber-600 text-white py-2 rounded-lg hover:bg-amber-500 font-bold text-sm transition shadow-lg">Aceptar</button>
+                    </div>
 
-            <div id="modal-exitoso" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden backdrop-blur-sm">
-                <div class="bg-gray-800 border border-green-500/50 rounded-lg shadow-2xl p-6 max-w-md w-full text-center">
-                    <div class="text-5xl mb-4">✅</div>
-                    <h2 class="text-xl font-bold text-white mb-2">Operación Creada</h2>
-                    <p class="mb-4 text-gray-300">Código: <span id="codigo-op-exito" class="font-mono font-bold text-white">---</span></p>
-                    <div class="flex justify-center gap-3">
-                        <button onclick="location.reload()" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded shadow">Nueva</button>
-                        <button id="btn-ir-detalle" class="bg-gray-700 hover:bg-gray-600 text-white px-6 py-2 rounded border border-gray-500">Ver Detalle</button>
+                    <div id="modal-botones-exito" class="flex justify-center gap-3 w-full hidden">
+                        <button onclick="location.reload()" class="bg-amber-600 hover:bg-amber-500 text-white px-6 py-2 rounded-lg shadow font-bold text-sm border border-amber-500">Nueva Operación</button>
+                        <button id="btn-ir-detalle" class="bg-slate-700 hover:bg-slate-600 text-white px-6 py-2 rounded-lg border border-slate-500 text-sm font-medium">Ver Detalle</button>
                     </div>
                 </div>
             </div>
 
           </section>
         </main>
-    </div>     
+    </div>   
 
     <footer class="bg-black  mt-auto">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

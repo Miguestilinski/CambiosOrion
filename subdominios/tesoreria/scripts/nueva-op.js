@@ -1,4 +1,10 @@
-document.addEventListener("DOMContentLoaded", () => {
+import { initSystem } from './index.js';
+
+document.addEventListener("DOMContentLoaded", async () => {
+    // 1. Inicializar sistema (Sidebar y Header)
+    // Usamos 'nueva-operacion' para iluminar el sidebar si corresponde
+    await initSystem('nueva-operacion');
+
     const form = document.getElementById("form-nueva-operacion");
     const cajaSelect = document.getElementById("caja");
     const clienteInput = document.getElementById("cliente");
@@ -8,23 +14,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const totalDisplay = document.getElementById("total-display");
     const totalFinal = document.getElementById("total-final");
     
-    let usuarioSesionId = null;
+    // El usuarioSesionId ahora se gestiona principalmente en PHP via sesión,
+    // pero mantenemos la lógica de verificación frontend por seguridad UX.
     const btnSubmit = document.querySelector("button[type='submit']");
 
-    // 1. Sesión
-    if(btnSubmit) { btnSubmit.disabled = true; btnSubmit.classList.add("opacity-50"); }
-    
-    async function initSesion() {
-        try {
-            const res = await fetch("https://cambiosorion.cl/data/session_status.php", { credentials: 'include' });
-            const data = await res.json();
-            if (data.isAuthenticated && data.equipo_id) {
-                usuarioSesionId = data.equipo_id;
-                if(btnSubmit) { btnSubmit.disabled = false; btnSubmit.classList.remove("opacity-50"); }
-            } else { mostrarAlerta("Sesión no válida."); }
-        } catch (e) { console.error(e); }
-    }
-    initSesion();
+    // Validar Sesión Activa
+    fetch("https://cambiosorion.cl/data/session_status.php", { credentials: 'include' })
+        .then(r => r.json())
+        .then(data => {
+            if (!data.isAuthenticated) {
+                mostrarModal({ tipo: 'error', titulo: "Sesión Expirada", mensaje: "Por favor inicie sesión nuevamente.", onConfirmar: () => window.location.href = 'https://admin.cambiosorion.cl/login' });
+            }
+        });
 
     // 2. Cargar Cajas
     async function cargarCajas() {
@@ -49,22 +50,31 @@ document.addEventListener("DOMContentLoaded", () => {
         if (q.length < 2) { resultadoClientes.classList.add("hidden"); return; }
         
         clienteTimeout = setTimeout(async () => {
-            const res = await fetch(`https://cambiosorion.cl/data/nueva-op.php?buscar_cliente=${encodeURIComponent(q)}`);
-            const clientes = await res.json();
-            resultadoClientes.innerHTML = "";
-            clientes.forEach(c => {
-                const li = document.createElement("li");
-                li.textContent = c.nombre;
-                li.className = "p-2 hover:bg-gray-100 cursor-pointer text-sm text-gray-800 border-b border-gray-100";
-                li.addEventListener("click", () => {
-                    clienteInput.value = c.nombre;
-                    clienteInput.dataset.id = c.id;
-                    resultadoClientes.classList.add("hidden");
+            try {
+                const res = await fetch(`https://cambiosorion.cl/data/nueva-op.php?buscar_cliente=${encodeURIComponent(q)}`);
+                const clientes = await res.json();
+                resultadoClientes.innerHTML = "";
+                clientes.forEach(c => {
+                    const li = document.createElement("li");
+                    li.textContent = c.nombre;
+                    li.className = "p-2 hover:bg-slate-100 cursor-pointer text-sm text-slate-800 border-b border-slate-100 last:border-0 transition";
+                    li.addEventListener("click", () => {
+                        clienteInput.value = c.nombre;
+                        clienteInput.dataset.id = c.id;
+                        resultadoClientes.classList.add("hidden");
+                    });
+                    resultadoClientes.appendChild(li);
                 });
-                resultadoClientes.appendChild(li);
-            });
-            resultadoClientes.classList.remove("hidden");
+                resultadoClientes.classList.remove("hidden");
+            } catch(e) { console.error("Error buscando cliente", e); }
         }, 300);
+    });
+
+    // Cerrar lista clientes al hacer click fuera
+    document.addEventListener("click", (e) => {
+        if(!clienteInput.contains(e.target) && !resultadoClientes.contains(e.target)) {
+            resultadoClientes.classList.add("hidden");
+        }
     });
 
     // 4. Lógica Filas Divisas
@@ -91,14 +101,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 ulDivisa.innerHTML = "";
                 divisas.forEach(d => {
                     const li = document.createElement("li");
-                    li.className = "p-2 hover:bg-gray-100 cursor-pointer text-sm text-gray-800 flex items-center gap-2";
-                    const img = d.icono ? `<img src="${d.icono}" class="w-5 h-5 object-contain">` : '';
-                    li.innerHTML = `${img} ${d.nombre}`;
+                    li.className = "p-2 hover:bg-slate-100 cursor-pointer text-sm text-slate-800 flex items-center gap-2 border-b border-slate-100 last:border-0";
+                    
+                    // Icono SVG o Imagen
+                    let iconHtml = `<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
+                    if(d.icono) iconHtml = `<img src="${d.icono}" class="w-5 h-5 object-contain">`;
+                    
+                    li.innerHTML = `${iconHtml} ${d.nombre}`;
                     
                     li.addEventListener("click", () => {
                         inpDivisa.value = d.nombre;
                         inpDivisa.dataset.id = d.id;
-                        if(d.icono) iconContainer.innerHTML = `<img src="${d.icono}" class="w-5 h-5 object-contain">`;
+                        iconContainer.innerHTML = iconHtml;
                         ulDivisa.classList.add("hidden");
                         
                         // Buscar Precio Sugerido
@@ -160,16 +174,16 @@ document.addEventListener("DOMContentLoaded", () => {
         totalFinal.textContent = fmt;
     }
 
-    document.getElementById("btn-agregar-fila").addEventListener("click", agregarFila);
+    const btnAgregar = document.getElementById("btn-agregar-fila");
+    if(btnAgregar) btnAgregar.addEventListener("click", agregarFila);
     
-    // Iniciar con una fila
+    // Iniciar con una fila vacía
     agregarFila();
 
-    // 5. Submit
+    // 5. Submit Formulario
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
-        if(!usuarioSesionId) return mostrarAlerta("Sin sesión activa.");
-
+        
         const tipoOp = document.querySelector('input[name="tipo_op"]:checked').value;
         const clienteId = clienteInput.dataset.id;
         
@@ -189,61 +203,108 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        if(detalles.length === 0) return mostrarAlerta("Agregue al menos una divisa con monto y tasa.");
+        if(detalles.length === 0) return mostrarModal({ tipo: 'error', titulo: "Faltan Datos", mensaje: "Agregue al menos una divisa con monto y tasa." });
 
         const payload = {
             caja: cajaSelect.value,
             tipo_transaccion: tipoOp,
-            cliente_id: clienteId || null, // Puede ser anónimo
+            cliente_id: clienteId || null, 
             tipo_documento: document.getElementById("tipo-documento").value,
             observaciones: document.getElementById("observaciones").value,
             total: totalCalc,
-            detalles: detalles,
-            // El vendedor ID se saca de la sesión en PHP, pero podemos enviarlo como respaldo si tu lógica lo requiere
-            // pero la validación de seguridad está en PHP usando usuario_id
+            detalles: detalles
         };
 
         try {
             const res = await fetch("https://cambiosorion.cl/data/nueva-op.php", {
                 method: "POST", credentials: 'include', headers: {"Content-Type":"application/json"}, body: JSON.stringify(payload)
             });
-            const textoCrudo = await res.text();
-            console.log("Respuesta CRUDA del PHP:", textoCrudo);
-
-            let data;
-            try {
-                data = JSON.parse(textoCrudo);
-            } catch (errJson) {
-                console.error("El PHP no devolvió un JSON válido. Error:", errJson);
-                mostrarAlerta("Error crítico en servidor. Ver consola.");
-                return;
-            }
+            const data = await res.json();
             
             if(data.success) {
-                document.getElementById("codigo-op-exito").textContent = data.codigo_operacion || "---";
-                document.getElementById("btn-ir-detalle").onclick = () => window.location.href = `detalle-op?id=${data.operacion_id}`;
-                document.getElementById("modal-exitoso").classList.remove("hidden");
+                // Mostrar Modal de Éxito Especial
+                mostrarModal({ 
+                    tipo: 'exito-operacion', 
+                    titulo: "Operación Creada", 
+                    mensaje: `Código: #${data.codigo_operacion || "---"}`, 
+                    dataAdicional: data 
+                });
+                
+                // Resetear form en background
                 form.reset();
-                containerDivisas.innerHTML = ''; // Limpiar filas
-                agregarFila(); // Una nueva vacía
+                containerDivisas.innerHTML = ''; 
+                agregarFila(); 
                 clienteInput.dataset.id = "";
                 calcularTotalGeneral();
             } else {
-                mostrarAlerta(data.error || "Error desconocido");
+                mostrarModal({ tipo: 'error', titulo: "Error al Guardar", mensaje: data.error || "Error desconocido" });
             }
-        } catch(e) { mostrarAlerta("Error de conexión."); }
+        } catch(e) { 
+            console.error(e);
+            mostrarModal({ tipo: 'error', titulo: "Error de Conexión", mensaje: "No se pudo conectar con el servidor." }); 
+        }
     });
 
-    function mostrarAlerta(msg) {
-        document.getElementById("modal-mensaje").textContent = msg;
-        document.getElementById("modal-alerta").classList.remove("hidden");
-        document.getElementById("cerrar-modal").onclick = () => document.getElementById("modal-alerta").classList.add("hidden");
+    // --- SISTEMA DE MODALES MEJORADO ---
+    function mostrarModal({ tipo = 'info', titulo, mensaje, dataAdicional, onConfirmar }) {
+        const modal = document.getElementById("modal-generico");
+        const iconoDiv = document.getElementById("modal-generico-icono");
+        const btnsDefault = document.getElementById("modal-botones-default");
+        const btnsExito = document.getElementById("modal-botones-exito");
+        const btnIrDetalle = document.getElementById("btn-ir-detalle");
+
+        // Iconos SVG
+        const iconos = {
+            'exito': `<div class="p-3 rounded-full bg-green-900/30 border border-green-500/30"><svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></div>`,
+            'exito-operacion': `<div class="p-3 rounded-full bg-blue-900/30 border border-blue-500/30"><svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>`,
+            'error': `<div class="p-3 rounded-full bg-red-900/30 border border-red-500/30"><svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></div>`,
+            'advertencia': `<div class="p-3 rounded-full bg-amber-900/30 border border-amber-500/30"><svg class="w-8 h-8 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg></div>`
+        };
+
+        if(iconoDiv) iconoDiv.innerHTML = iconos[tipo] || iconos['info'];
+
+        document.getElementById("modal-generico-titulo").textContent = titulo;
+        
+        // Si es exito-operacion, el mensaje puede llevar HTML (para el codigo en bold)
+        const pMensaje = document.getElementById("modal-generico-mensaje");
+        if (tipo === 'exito-operacion') {
+            pMensaje.innerHTML = mensaje.replace('#', '<span class="text-white font-mono font-bold text-lg block mt-1">#') + '</span>';
+            btnsDefault.classList.add("hidden");
+            btnsExito.classList.remove("hidden");
+            
+            if(dataAdicional && dataAdicional.operacion_id && btnIrDetalle) {
+                btnIrDetalle.onclick = () => window.location.href = `detalle-op?id=${dataAdicional.operacion_id}`;
+            }
+        } else {
+            pMensaje.textContent = mensaje;
+            btnsDefault.classList.remove("hidden");
+            btnsExito.classList.add("hidden");
+            
+            // Configurar botón aceptar default
+            const btnOk = document.getElementById("modal-generico-confirmar");
+            const newOk = btnOk.cloneNode(true);
+            btnOk.parentNode.replaceChild(newOk, btnOk);
+            
+            newOk.onclick = () => {
+                document.getElementById("modal-generico").classList.add("hidden");
+                if (onConfirmar) onConfirmar();
+            };
+            
+            // Ocultar cancelar si es error simple
+            const btnCancel = document.getElementById("modal-generico-cancelar");
+            if (tipo === 'error') btnCancel.classList.add('hidden');
+            else btnCancel.classList.remove('hidden');
+            
+            btnCancel.onclick = () => document.getElementById("modal-generico").classList.add("hidden");
+        }
+
+        modal.classList.remove("hidden");
     }
 
-    // Actualizar tasas si cambia el tipo de operación (Compra/Venta)
+    // Eventos extra: Actualizar tasas si cambia el tipo de operación
     document.querySelectorAll('input[name="tipo_op"]').forEach(r => {
         r.addEventListener('change', () => {
-            // Aquí podrías recorrer las filas y re-consultar el precio sugerido si ya hay divisa seleccionada
+            // Se podría implementar lógica para recalcular sugeridos aquí
         });
     });
 });
