@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
             btnVer.className = 'flex items-center justify-center p-1.5 bg-white/5 rounded-full hover:bg-amber-600 shadow-sm border border-transparent transition-all mx-auto';
             btnVer.onclick = (e) => {
                 e.stopPropagation();
-                window.location.href = `detalle-egreso?id=${row.id}`;
+                window.location.href = `detalle-egr?id=${row.id}`;
             };
 
             // Lógica para mostrar Cliente o Cuenta
