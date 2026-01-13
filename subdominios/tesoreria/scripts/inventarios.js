@@ -123,6 +123,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                 iconoHtml = `<img src="${item.divisa_icono}" class="w-8 h-8 rounded-full border border-slate-600 object-cover bg-slate-800">`;
             }
 
+            let estadoHtml = '';
+            if (cantidad > 0.001) {
+                estadoHtml = `<span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-green-900/40 text-green-300 border border-green-500/30">Disponible</span>`;
+            } else if (cantidad < -0.001) {
+                estadoHtml = `<span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-red-900/40 text-red-300 border border-red-500/30">Negativo</span>`;
+            } else {
+                estadoHtml = `<span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-slate-800 text-slate-500 border border-slate-700">Sin Stock</span>`;
+            }
+
             tr.innerHTML = `
                 <td class="px-6 py-4 text-center">
                     <span class="px-2 py-1 rounded text-[10px] font-bold uppercase bg-slate-800 border border-slate-700 text-slate-400">
@@ -141,6 +150,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <td class="px-6 py-4 text-right font-mono text-white font-bold text-sm">${formatearNumero(item.cantidad)}</td>
                 <td class="px-6 py-4 text-right font-mono text-slate-400 text-xs">$${formatearNumero(item.pmp)}</td>
                 <td class="px-6 py-4 text-right font-mono text-amber-500 font-bold text-sm">$${formatearNumero(item.total_clp)}</td>
+		        <td class="px-4 py-3 text-center">${estadoHtml}</td>
                 <td class="px-6 py-4 text-center">
                     <button class="text-slate-400 hover:text-amber-400 transition p-2 rounded-full hover:bg-white/5"
                             onclick="window.location.href='detalle-div?id=${item.divisa_id}&caja_id=${cajaActualId}'"
