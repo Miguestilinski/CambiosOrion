@@ -77,7 +77,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
-        const cajaActualId = selectCaja.value; // ID de la caja seleccionada (contexto)
+        // 1. CAPTURAR EL CONTEXTO (ID DE CAJA ACTUAL)
+        const cajaActualId = selectCaja.value || '99';
 
         datos.forEach(item => {
             const tr = document.createElement('tr');
