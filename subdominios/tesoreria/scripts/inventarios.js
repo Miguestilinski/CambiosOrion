@@ -31,8 +31,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     // --- 2. FUNCIONES DE LÓGICA ---
 
     function cargarDivisas() {
-        // (Tu lógica de carga de divisas existente o usar endpoint nuevo si prefieres)
-        // Por ahora lo dejamos simple o asumimos que ya funciona
+        fetch('https://cambiosorion.cl/data/divisas_api.php')
+            .then(res => res.json())
+            .then(data => {
+                const dataList = document.getElementById('divisa-list');
+                if (dataList && Array.isArray(data)) {
+                    dataList.innerHTML = '';
+                    data.forEach(divisa => {
+                        const option = document.createElement('option');
+                        option.value = divisa.nombre;
+                        dataList.appendChild(option);
+                    });
+                }
+            })
+            .catch(err => console.error("Error loading currencies:", err));
     }
 
     function obtenerInventario() {
