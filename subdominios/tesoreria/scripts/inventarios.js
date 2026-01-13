@@ -56,14 +56,19 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         fetch(`https://cambiosorion.cl/data/inventarios.php?${params.toString()}`)
             .then(res => {
-                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-                return res.json();
+                // Si el servidor devuelve 500, intentamos leer el JSON de error que generamos
+                return res.text().then(text => {
+                    try {
+                        return JSON.parse(text);
+                    } catch (e) {
+                        throw new Error(`Respuesta no válida del servidor (Status ${res.status}): ${text.substring(0, 50)}...`);
+                    }
+                });
             })
-            .then(json => {
-                if (json.error) throw new Error(json.error);
-                
-                // VALIDACIÓN: Asegurar que data sea un array
-                const lista = Array.isArray(json.data) ? json.data : [];
+            .then(data => {
+                if (data.error || data.success === false) {
+                    throw new Error(data.error || "Error desconocido en servidor");
+                }
                 
                 renderTabla(lista);
                 renderPaginacion(json.page || 1, json.totalPages || 1);
@@ -71,7 +76,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if(conteoResultados) conteoResultados.textContent = `Mostrando ${lista.length} de ${json.total || 0} registros`;
             })
             .catch(err => {
-                console.error("Error fetch:", err);
+                console.error("Error detallado:", err);
                 tablaInventario.innerHTML = `<tr><td colspan="6" class="px-6 py-4 text-center text-red-400">Error: ${err.message}</td></tr>`;
             });
     }
