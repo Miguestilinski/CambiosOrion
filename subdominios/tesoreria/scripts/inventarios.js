@@ -56,7 +56,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         fetch(`https://cambiosorion.cl/data/inventarios.php?${params.toString()}`)
             .then(res => {
-                // Si el servidor devuelve 500, intentamos leer el JSON de error que generamos
                 return res.text().then(text => {
                     try {
                         return JSON.parse(text);
@@ -66,14 +65,22 @@ document.addEventListener('DOMContentLoaded', async () => {
                 });
             })
             .then(data => {
-                if (data.error || data.success === false) {
+                if (data.error || (data.success === false && data.error)) {
                     throw new Error(data.error || "Error desconocido en servidor");
                 }
                 
-                renderTabla(lista);
-                renderPaginacion(json.page || 1, json.totalPages || 1);
+                // --- CORRECCIÓN AQUÍ ---
+                // Definimos 'lista' correctamente extrayendo los datos del objeto 'data'
+                const lista = Array.isArray(data.data) ? data.data : [];
                 
-                if(conteoResultados) conteoResultados.textContent = `Mostrando ${lista.length} de ${json.total || 0} registros`;
+                renderTabla(lista);
+                
+                // Usamos 'data' en lugar de 'json' (que no existía)
+                renderPaginacion(data.page || 1, data.totalPages || 1);
+                
+                if(conteoResultados) {
+                    conteoResultados.textContent = `Mostrando ${lista.length} de ${data.total || 0} registros`;
+                }
             })
             .catch(err => {
                 console.error("Error detallado:", err);
