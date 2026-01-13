@@ -55,16 +55,24 @@ document.addEventListener('DOMContentLoaded', async () => {
             </tr>`;
 
         fetch(`https://cambiosorion.cl/data/inventarios.php?${params.toString()}`)
-            .then(res => res.json())
-            .then(data => {
-                if (data.error) throw new Error(data.error);
-                renderTabla(data.data);
-                renderPaginacion(data.page, data.totalPages);
-                if(conteoResultados) conteoResultados.textContent = `Mostrando ${data.data.length} de ${data.total} registros`;
+            .then(res => {
+                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                return res.json();
+            })
+            .then(json => {
+                if (json.error) throw new Error(json.error);
+                
+                // VALIDACIÓN: Asegurar que data sea un array
+                const lista = Array.isArray(json.data) ? json.data : [];
+                
+                renderTabla(lista);
+                renderPaginacion(json.page || 1, json.totalPages || 1);
+                
+                if(conteoResultados) conteoResultados.textContent = `Mostrando ${lista.length} de ${json.total || 0} registros`;
             })
             .catch(err => {
-                console.error(err);
-                tablaInventario.innerHTML = `<tr><td colspan="6" class="px-6 py-4 text-center text-red-400">Error cargando inventario.</td></tr>`;
+                console.error("Error fetch:", err);
+                tablaInventario.innerHTML = `<tr><td colspan="6" class="px-6 py-4 text-center text-red-400">Error: ${err.message}</td></tr>`;
             });
     }
 
@@ -72,7 +80,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     function renderTabla(datos) {
         tablaInventario.innerHTML = '';
         
-        if (datos.length === 0) {
+        // Validación extra por seguridad
+        if (!datos || datos.length === 0) {
             tablaInventario.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-slate-500 italic">No hay existencias registradas con estos filtros.</td></tr>`;
             return;
         }
