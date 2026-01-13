@@ -124,6 +124,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             tr.innerHTML = `
+                <td class="px-6 py-4 text-center">
+                    <span class="px-2 py-1 rounded text-[10px] font-bold uppercase bg-slate-800 border border-slate-700 text-slate-400">
+                        ${item.caja_nombre || 'Caja'}
+                    </span>
+                </td>
                 <td class="px-6 py-4">
                     <div class="flex items-center gap-3">
                         ${iconoHtml}
@@ -136,11 +141,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <td class="px-6 py-4 text-right font-mono text-white font-bold text-sm">${formatearNumero(item.cantidad)}</td>
                 <td class="px-6 py-4 text-right font-mono text-slate-400 text-xs">$${formatearNumero(item.pmp)}</td>
                 <td class="px-6 py-4 text-right font-mono text-amber-500 font-bold text-sm">$${formatearNumero(item.total_clp)}</td>
-                <td class="px-6 py-4 text-center">
-                    <span class="px-2 py-1 rounded text-[10px] font-bold uppercase bg-slate-800 border border-slate-700 text-slate-400">
-                        ${item.caja_nombre || 'Caja'}
-                    </span>
-                </td>
                 <td class="px-6 py-4 text-center">
                     <button class="text-slate-400 hover:text-amber-400 transition p-2 rounded-full hover:bg-white/5"
                             onclick="window.location.href='detalle-div?id=${item.divisa_id}&caja_id=${cajaActualId}'"
