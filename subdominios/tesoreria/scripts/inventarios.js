@@ -10,7 +10,6 @@ let usuarioSesion = null;
 document.addEventListener('DOMContentLoaded', async () => {
     // --- 1. DEFINIR VARIABLES Y FILTROS PRIMERO ---
     
-    // Referencias DOM
     const tablaInventario = document.getElementById('tabla-inventario');
     const conteoResultados = document.getElementById('conteo-resultados');
     const paginationControls = document.getElementById('pagination-controls');
@@ -20,7 +19,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     let paginaActual = 1;
 
-    // Objeto Filtros
     const filtros = {
         caja: selectCaja,
         divisaInput: document.getElementById('divisa-input'),
@@ -29,23 +27,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     // --- 2. FUNCIONES DE LÓGICA ---
-
-    function cargarDivisas() {
-        fetch('https://cambiosorion.cl/data/divisas_api.php')
-            .then(res => res.json())
-            .then(data => {
-                const dataList = document.getElementById('divisa-list');
-                if (dataList && Array.isArray(data)) {
-                    dataList.innerHTML = '';
-                    data.forEach(divisa => {
-                        const option = document.createElement('option');
-                        option.value = divisa.nombre;
-                        dataList.appendChild(option);
-                    });
-                }
-            })
-            .catch(err => console.error("Error loading currencies:", err));
-    }
 
     function obtenerInventario() {
         const params = new URLSearchParams();
@@ -58,7 +39,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         tablaInventario.innerHTML = `
             <tr class="animate-pulse">
-                <td colspan="6" class="px-6 py-8 text-center text-slate-500">
+                <td colspan="7" class="px-6 py-8 text-center text-slate-500">
                     <div class="flex justify-center items-center gap-2">
                         <svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
                         Calculando saldos...
@@ -67,27 +48,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             </tr>`;
 
         fetch(`https://cambiosorion.cl/data/inventarios.php?${params.toString()}`)
-            .then(res => {
-                return res.text().then(text => {
-                    try {
-                        return JSON.parse(text);
-                    } catch (e) {
-                        throw new Error(`Respuesta no válida del servidor (Status ${res.status}): ${text.substring(0, 50)}...`);
-                    }
-                });
-            })
+            .then(res => res.text().then(text => {
+                try { return JSON.parse(text); } 
+                catch (e) { throw new Error(`Respuesta no válida del servidor: ${text.substring(0, 50)}...`); }
+            }))
             .then(data => {
                 if (data.error || (data.success === false && data.error)) {
                     throw new Error(data.error || "Error desconocido en servidor");
                 }
                 
-                // --- CORRECCIÓN AQUÍ ---
-                // Definimos 'lista' correctamente extrayendo los datos del objeto 'data'
                 const lista = Array.isArray(data.data) ? data.data : [];
-                
                 renderTabla(lista);
-                
-                // Usamos 'data' en lugar de 'json' (que no existía)
                 renderPaginacion(data.page || 1, data.totalPages || 1);
                 
                 if(conteoResultados) {
@@ -96,21 +67,19 @@ document.addEventListener('DOMContentLoaded', async () => {
             })
             .catch(err => {
                 console.error("Error detallado:", err);
-                tablaInventario.innerHTML = `<tr><td colspan="6" class="px-6 py-4 text-center text-red-400">Error: ${err.message}</td></tr>`;
+                tablaInventario.innerHTML = `<tr><td colspan="7" class="px-6 py-4 text-center text-red-400">Error: ${err.message}</td></tr>`;
             });
     }
 
-    // --- RENDERIZADO DE TABLA (AQUÍ ESTÁ EL CAMBIO) ---
+    // --- RENDERIZADO DE TABLA ---
     function renderTabla(datos) {
         tablaInventario.innerHTML = '';
         
-        // Validación extra por seguridad
         if (!datos || datos.length === 0) {
-            tablaInventario.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-slate-500 italic">No hay existencias registradas con estos filtros.</td></tr>`;
+            tablaInventario.innerHTML = `<tr><td colspan="7" class="px-6 py-8 text-center text-slate-500 italic">No hay existencias registradas con estos filtros.</td></tr>`;
             return;
         }
 
-        // 1. CAPTURAR EL CONTEXTO (ID DE CAJA ACTUAL)
         const cajaActualId = selectCaja.value || '99';
 
         datos.forEach(item => {
@@ -123,7 +92,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 iconoHtml = `<img src="${item.divisa_icono}" class="w-8 h-8 rounded-full border border-slate-600 object-cover bg-slate-800">`;
             }
 
+            // Estado (CORREGIDO: item.cantidad)
             let estadoHtml = '';
+            const cantidad = parseFloat(item.cantidad); // Aseguramos que sea número
+            
             if (cantidad > 0.001) {
                 estadoHtml = `<span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-green-900/40 text-green-300 border border-green-500/30">Disponible</span>`;
             } else if (cantidad < -0.001) {
@@ -150,7 +122,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <td class="px-6 py-4 text-right font-mono text-white font-bold text-sm">${formatearNumero(item.cantidad)}</td>
                 <td class="px-6 py-4 text-right font-mono text-slate-400 text-xs">$${formatearNumero(item.pmp)}</td>
                 <td class="px-6 py-4 text-right font-mono text-amber-500 font-bold text-sm">$${formatearNumero(item.total_clp)}</td>
-		        <td class="px-4 py-3 text-center">${estadoHtml}</td>
+                <td class="px-4 py-3 text-center">${estadoHtml}</td>
                 <td class="px-6 py-4 text-center">
                     <button class="text-slate-400 hover:text-amber-400 transition p-2 rounded-full hover:bg-white/5"
                             onclick="window.location.href='detalle-div?id=${item.divisa_id}&caja_id=${cajaActualId}'"
@@ -198,7 +170,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         filtros.divisaInput.value = '';
         filtros.buscar.value = '';
         filtros.mostrar.value = '25';
-        // Resetear caja al default (99 Tesoreria) o mantener la del usuario
         if (usuarioSesion && usuarioSesion.caja_id && usuarioSesion.caja_id != 99) {
             filtros.caja.value = usuarioSesion.caja_id;
         } else {
@@ -213,7 +184,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (filtros.caja.value) params.set("caja", filtros.caja.value);
             if (filtros.divisaInput.value) params.set("divisa", filtros.divisaInput.value);
             if (filtros.buscar.value) params.set("buscar", filtros.buscar.value);
-            
             window.open(`https://cambiosorion.cl/data/exportar_inventario.php?${params.toString()}`, '_blank');
         });
     }
@@ -230,11 +200,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (sessionData) {
         usuarioSesion = sessionData;
         if (selectCaja) {
-            // Cargar cajas disponibles (si no están hardcoded en HTML)
             try {
                 const res = await fetch('https://cambiosorion.cl/data/nueva-op.php?buscar_cajas=1');
                 const cajas = await res.json();
-                selectCaja.innerHTML = ''; // Limpiar
+                selectCaja.innerHTML = ''; 
                 cajas.forEach(c => {
                     const opt = document.createElement('option');
                     opt.value = c.id; 
@@ -242,11 +211,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                     selectCaja.appendChild(opt);
                 });
 
-                // Seleccionar caja del usuario por defecto
                 if (usuarioSesion.caja_id && usuarioSesion.caja_id != 0) {
                     selectCaja.value = usuarioSesion.caja_id;
                 } else {
-                    selectCaja.value = '99'; // Default Tesorería
+                    selectCaja.value = '99';
                 }
             } catch(e) { console.error("Error cargando cajas", e); }
         }
