@@ -97,40 +97,64 @@
                         </span>
                     </h2>
 
-                    <form id="form-detalle-divisa" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Nombre</label>
-                                <input type="text" id="nombre" class="w-full bg-slate-800 border border-slate-600 text-white text-sm rounded p-2.5 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none">
-                            </div>
+                    <form id="form-detalle-divisa" class="grid grid-cols-1 md:grid-cols-12 gap-6">
+                        
+                        <div class="md:col-span-8 space-y-4">
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Código ISO</label>
-                                    <input type="text" id="codigo" class="w-full bg-slate-800 border border-slate-600 text-white text-sm rounded p-2.5 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none">
+                                    <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Nombre</label>
+                                    <input type="text" id="nombre" class="w-full bg-slate-800 border border-slate-600 text-white text-sm rounded p-2.5 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-400 uppercase mb-1">País</label>
+                                    <input type="text" id="pais" class="w-full bg-slate-800 border border-slate-600 text-white text-sm rounded p-2.5 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Código</label>
+                                    <input type="text" id="codigo" class="w-full bg-slate-800 border border-slate-600 text-white text-sm rounded p-2.5 font-mono uppercase focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none">
                                 </div>
                                 <div>
                                     <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Símbolo</label>
-                                    <input type="text" id="simbolo" class="w-full bg-slate-800 border border-slate-600 text-white text-sm rounded p-2.5 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none text-center">
+                                    <input type="text" id="simbolo" class="w-full bg-slate-800 border border-slate-600 text-white text-sm rounded p-2.5 text-center focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Estado</label>
+                                    <select id="estado" class="w-full bg-slate-800 border border-slate-600 text-white text-sm rounded p-2.5 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none">
+                                        <option value="1">Activa</option>
+                                        <option value="0">Inactiva</option>
+                                    </select>
                                 </div>
                             </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Estado</label>
-                                <select id="estado" class="w-full bg-slate-800 border border-slate-600 text-white text-sm rounded p-2.5 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none">
-                                    <option value="1">Activa</option>
-                                    <option value="0">Inactiva</option>
-                                </select>
+
+                            <div class="bg-slate-800/50 p-3 rounded border border-slate-700/50 mt-2">
+                                <label class="flex items-center space-x-3 cursor-pointer group mb-2">
+                                    <input type="checkbox" id="fraccionable" class="form-checkbox h-4 w-4 text-amber-600 rounded border-slate-600 bg-slate-700 focus:ring-amber-500">
+                                    <span class="text-sm font-medium text-slate-300 group-hover:text-white transition">Admite Centavos/Fracciones</span>
+                                </label>
+                                <div id="seccion-denominacion" class="hidden mt-2">
+                                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Denominaciones (Separadas por coma)</label>
+                                    <input type="text" id="denominacion" placeholder="Ej: 1, 5, 10, 20" class="w-full bg-slate-800 border border-slate-600 text-slate-300 text-xs rounded p-2 focus:border-amber-500 outline-none">
+                                </div>
                             </div>
                         </div>
 
-                        <div class="flex flex-col items-center justify-center p-4 bg-slate-800/30 rounded border border-slate-700/50">
-                            <label class="text-xs font-bold text-slate-400 uppercase mb-3">Icono Actual</label>
-                            <div class="w-20 h-20 rounded-full bg-slate-800 border-2 border-slate-600 flex items-center justify-center overflow-hidden mb-4 relative">
-                                <img id="icono-preview" class="w-full h-full object-cover hidden" alt="Icono">
-                                <span id="icono-texto" class="text-2xl text-slate-600 select-none">?</span>
-                            </div>
-                            <div class="w-full">
-                                <label class="block text-[10px] text-slate-500 uppercase mb-1 text-center">URL Icono</label>
-                                <input type="text" id="icono-url" class="w-full bg-slate-800 border border-slate-600 text-slate-400 text-xs rounded p-2 truncate">
+                        <div class="md:col-span-4 flex flex-col items-center justify-start pt-2">
+                            <div class="p-6 bg-slate-800/30 rounded border border-slate-700/50 flex flex-col items-center w-full">
+                                <label class="text-xs font-bold text-slate-400 uppercase mb-4">Icono / Bandera</label>
+                                
+                                <div class="w-24 h-24 rounded-full bg-slate-800 border-4 border-slate-700 flex items-center justify-center overflow-hidden mb-4 relative shadow-lg">
+                                    <img id="icono-preview" class="w-full h-full object-cover hidden" alt="Icono">
+                                    <span id="icono-texto" class="text-3xl text-slate-600 select-none">?</span>
+                                </div>
+                                
+                                <button type="button" id="btn-cambiar-icono" class="bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold py-2 px-4 rounded border border-slate-600 transition flex items-center gap-2">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                                    Cambiar Icono
+                                </button>
+                                <input type="hidden" id="icono-url">
                             </div>
                         </div>
                     </form>
@@ -140,8 +164,7 @@
                     <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-800">
                         <h3 class="text-lg font-bold text-white flex items-center gap-2">
                             Historial de Movimientos
-                            <span id="info-filtro-caja" class="hidden text-xs font-normal text-amber-500 bg-amber-900/20 px-2 py-1 rounded border border-amber-500/20">
-                                </span>
+                            <span id="info-filtro-caja" class="hidden text-xs font-normal text-amber-500 bg-amber-900/20 px-2 py-1 rounded border border-amber-500/20"></span>
                         </h3>
                         <span class="text-xs text-slate-500" id="total-movimientos">0 registros</span>
                     </div>
@@ -151,21 +174,37 @@
                             <thead class="text-xs text-slate-500 uppercase bg-slate-800">
                                 <tr>
                                     <th class="px-4 py-3">Fecha / ID</th>
-                                    <th class="px-4 py-3">Detalle</th> <th class="px-4 py-3 text-center">Tipo</th>
+                                    <th class="px-4 py-3">Detalle</th>
+                                    <th class="px-4 py-3 text-center">Tipo</th>
                                     <th class="px-4 py-3 text-right">Monto</th>
                                     <th class="px-4 py-3 text-right">Tasa</th>
                                     <th class="px-4 py-3 text-right">Total CLP</th>
                                 </tr>
                             </thead>
-                            <tbody id="tabla-movimientos" class="divide-y divide-slate-800">
-                                <tr><td colspan="6" class="p-4 text-center text-slate-500 italic">Cargando movimientos...</td></tr>
-                            </tbody>
+                            <tbody id="tabla-movimientos" class="divide-y divide-slate-800"></tbody>
                         </table>
                     </div>
                 </div>
 
             </section>        
         </main>
+    </div>
+
+    <div id="modal-iconos" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+        <div class="bg-slate-800 rounded-xl shadow-2xl w-full max-w-2xl mx-4 border border-white/10 flex flex-col max-h-[80vh]">
+            <div class="p-4 border-b border-white/5 flex justify-between items-center">
+                <h3 class="text-white font-bold text-sm uppercase">Seleccionar Icono</h3>
+                <button id="cerrar-modal-iconos" class="text-slate-400 hover:text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            </div>
+            
+            <div class="p-4">
+                <input type="text" id="buscar-icono" placeholder="Buscar bandera..." class="w-full bg-slate-900 border border-slate-600 text-white text-sm rounded-lg p-2.5 focus:border-amber-500 focus:ring-1 focus:ring-amber-500">
+            </div>
+
+            <div id="grid-iconos" class="p-4 grid grid-cols-6 sm:grid-cols-8 gap-3 overflow-y-auto custom-scrollbar flex-1 bg-slate-900/50">
+                <p class="col-span-full text-center text-slate-500 text-xs">Cargando iconos...</p>
+            </div>
+        </div>
     </div>
 
     <div id="modal-generico" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 hidden">
