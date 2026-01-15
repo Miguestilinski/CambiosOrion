@@ -69,7 +69,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             // 4. Cuentas
             const resCuentas = await fetch("https://cambiosorion.cl/data/nuevo-egr.php?buscar_cuentas=1");
-            cuentasCache = await resCuentas.json();
+            const dataCuentas = await resCuentas.json();
+            
+            // VALIDACIÓN: Asegurarse de que sea un array antes de asignar
+            if (Array.isArray(dataCuentas)) {
+                cuentasCache = dataCuentas;
+            } else {
+                console.warn("Error cargando cuentas:", dataCuentas);
+                cuentasCache = []; // Array vacío para evitar el crash
+            }
 
         } catch (e) { console.error("Error cargando datos", e); }
     }
