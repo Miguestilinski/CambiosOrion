@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Botón Nuevo
     if (nuevoClienteBtn) {
         nuevoClienteBtn.addEventListener('click', () => {
-            window.location.href = 'https://tesoreria.cambiosorion.cl/nuevo-cliente';
+            window.location.href = 'https://tesoreria.cambiosorion.cl/nuevo-cl';
         });
     }
 
