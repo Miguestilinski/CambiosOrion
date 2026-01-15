@@ -7,12 +7,15 @@ import {
 } from './index.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
-    await initSystem('divisas');
-
-    // 1. Parametros URL
+    
+    // 1. Detección Inteligente del Contexto para el Sidebar
     const params = new URLSearchParams(window.location.search);
     const divisaId = params.get('id');
     const cajaId = params.get('caja_id');
+
+    // Si hay cajaId, venimos de Inventarios, si no, es gestión de Divisas
+    const paginaOrigen = cajaId ? 'inventarios' : 'divisas';
+    await initSystem(paginaOrigen);
 
     // 2. Referencias Inputs Ficha
     const inputs = {
@@ -55,14 +58,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (btnVolver) btnVolver.addEventListener('click', () => window.history.back());
 
-    // --- LOGICA FRACCIONABLE ---
-    inputs.fraccionable.addEventListener('change', () => {
-        if(inputs.fraccionable.checked) {
-            seccionDenominacion.classList.remove('hidden');
-        } else {
-            seccionDenominacion.classList.add('hidden');
-        }
-    });
+    // --- LOGICA FRACCIONABLE (CORREGIDO: Protección contra nulos) ---
+    if (inputs.fraccionable) {
+        inputs.fraccionable.addEventListener('change', () => {
+            if(inputs.fraccionable.checked) {
+                seccionDenominacion.classList.remove('hidden');
+            } else {
+                seccionDenominacion.classList.add('hidden');
+            }
+        });
+    }
 
     // --- LOGICA MODAL ICONOS ---
     if (btnCambiarIcono) {
@@ -152,8 +157,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 
                 // Fraccionable
                 const esFracc = (d.fraccionable == 1);
-                inputs.fraccionable.checked = esFracc;
-                if(esFracc) seccionDenominacion.classList.remove('hidden');
+                if (inputs.fraccionable) inputs.fraccionable.checked = esFracc;
+                if (esFracc && seccionDenominacion) seccionDenominacion.classList.remove('hidden');
                 inputs.denominacion.value = d.denominacion || '';
 
                 // Icono
@@ -179,6 +184,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (cajaId && infoFiltroCaja) {
             infoFiltroCaja.classList.remove('hidden');
+            // CORREGIDO: Usamos nombreCaja si existe, sino el ID
             infoFiltroCaja.textContent = nombreCaja ? `Caja: ${nombreCaja}` : `Caja ID: ${cajaId}`;
         }
 
@@ -230,7 +236,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 simbolo: inputs.simbolo.value,
                 pais: inputs.pais.value,
                 estado: inputs.estado.value,
-                fraccionable: inputs.fraccionable.checked ? 1 : 0,
+                fraccionable: inputs.fraccionable && inputs.fraccionable.checked ? 1 : 0,
                 denominacion: inputs.denominacion.value,
                 url_icono: inputs.iconoUrl.value
             };
