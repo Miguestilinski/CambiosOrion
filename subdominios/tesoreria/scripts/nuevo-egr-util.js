@@ -67,22 +67,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             const resCon = await fetch("https://cambiosorion.cl/data/nuevo-egr-util.php?buscar_conceptos=1");
             conceptosCache = await resCon.json();
 
-            // 4. Cuentas
-            try {
-                const resCuentas = await fetch("https://cambiosorion.cl/data/nuevo-egr.php?buscar_cuentas=1");
-                const dataCuentas = await resCuentas.json();
-                
-                // CORRECCIÓN: Validar que sea un array antes de asignar
-                if (Array.isArray(dataCuentas)) {
-                    cuentasCache = dataCuentas;
-                } else {
-                    console.warn("Formato de cuentas inválido:", dataCuentas);
-                    cuentasCache = []; // Mantiene el array vacío para evitar el error .filter
-                }
-            } catch (err) {
-                console.error("Error en fetch cuentas:", err);
-                cuentasCache = []; // En caso de error de red, array vacío
-            }
+            // 4. Cuentas Internas
+            const resCuentas = await fetch("https://cambiosorion.cl/data/nuevo-egr-util.php?buscar_cuentas=1");
+            cuentasCache = await resCuentas.json();
 
         } catch (e) { console.error("Error cargando datos", e); }
     }
