@@ -21,6 +21,28 @@
         .fade-in { animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .layout-container { min-height: calc(100vh - 64px); }
+        /* Estilo para listas de autocompletado */
+        .autocomplete-list {
+            position: absolute;
+            z-index: 50;
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+            background-color: #0f172a; /* slate-900 */
+            border: 1px solid #334155; /* slate-700 */
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+        }
+        .autocomplete-item {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            color: #cbd5e1; /* slate-300 */
+            font-size: 0.875rem;
+        }
+        .autocomplete-item:hover {
+            background-color: #1e293b; /* slate-800 */
+            color: #fbbf24; /* amber-400 */
+        }
     </style> 
 </head>
 <body>
@@ -63,136 +85,117 @@
         </div>
     </header>
 
-    <div class="flex flex-1 overflow-hidden relative">
+    <div class="flex flex-1 overflow-hidden relative layout-container">
         <div id="sidebar-container" class="hidden lg:block h-full z-10"></div>
         
         <main class="flex-1 overflow-y-auto p-4 md:p-8 relative" id="dashboard-content">
-          <section id="nuevo-egreso-util" class="content-section active max-w-8xl mx-auto">
+          <section class="max-w-4xl mx-auto fade-in h-full flex flex-col">
             
-            <!-- Header Dorado -->
-            <div class="flex items-center justify-between mb-8 border-b border-gray-700 pb-4">
-              <div>
-                  <h1 class="text-3xl font-bold text-white tracking-tight">Nuevo Retiro / Utilidad</h1>
-                  <p class="text-gray-400 text-sm mt-1">Registre gastos operativos, retiros de socios o pagos internos.</p>
-              </div>
-              <div class="bg-yellow-900/30 border border-yellow-700 rounded-lg px-4 py-2">
-                  <span class="text-yellow-500 text-xs font-bold uppercase">Categoría</span>
-                  <p class="text-white font-mono font-bold">Utilidad</p>
-              </div>
+            <div class="flex items-center justify-between mb-8 border-b border-white/10 pb-4">
+                <div>
+                    <h1 class="text-3xl font-bold text-white tracking-tight">Retiro de Utilidad</h1>
+                    <p class="text-slate-400 text-sm mt-1">Registre gastos o retiros operacionales.</p>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="window.location.href='egresos-util'" class="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg border border-slate-600 text-sm font-medium transition">
+                        Ver Historial
+                    </button>
+                </div>
             </div>
       
-            <!-- Formulario -->
-            <form id="form-nuevo-utilidad" class="w-full">
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <div class="bg-slate-800/80 backdrop-blur-md rounded-2xl shadow-2xl border border-white/10 overflow-hidden relative">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-600 to-amber-400"></div>
+
+                <form id="form-nuevo-utilidad" class="p-8 space-y-6">
                     
-                    <!-- PANEL 1: CONFIGURACIÓN -->
-                    <div class="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700 h-fit">
-                        <h3 class="text-gray-400 text-xs font-bold uppercase mb-4 border-b border-gray-700 pb-2">Origen del Fondo</h3>
-                        
-                        <div class="space-y-5">
-                            <!-- Caja -->
-                            <div>
-                                <label class="block mb-1 text-sm font-medium text-gray-300">Caja de Origen</label>
-                                <select id="caja" name="caja" required class="w-full bg-gray-900 border border-gray-600 text-white text-sm rounded-lg p-2.5 focus:ring-2 focus:ring-yellow-500 transition"></select>
-                            </div>
-
-                            <!-- Tipo -->
-                            <div>
-                                <label class="block mb-1 text-sm font-medium text-gray-300">Forma de Retiro</label>
-                                <div class="grid grid-cols-2 gap-2">
-                                    <label class="cursor-pointer relative">
-                                        <input type="radio" name="tipo_radio" value="efectivo" class="peer sr-only" checked>
-                                        <div class="text-center p-2 rounded-lg border border-gray-600 bg-gray-900 text-gray-400 hover:bg-gray-700 transition peer-checked:bg-yellow-600 peer-checked:border-yellow-500 peer-checked:text-white font-bold peer-checked:shadow-lg">Efectivo</div>
-                                    </label>
-                                    <label class="cursor-pointer relative">
-                                        <input type="radio" name="tipo_radio" value="cuenta" class="peer sr-only">
-                                        <div class="text-center p-2 rounded-lg border border-gray-600 bg-gray-900 text-gray-400 hover:bg-gray-700 transition peer-checked:bg-purple-600 peer-checked:border-purple-500 peer-checked:text-white peer-checked:shadow-lg">Cuenta</div>
-                                    </label>
+                    <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-700/50 flex justify-center">
+                        <div class="flex items-center space-x-8">
+                            <label class="inline-flex items-center cursor-pointer group">
+                                <input type="radio" name="tipo_transaccion" value="efectivo" class="hidden peer" checked>
+                                <div class="w-5 h-5 border-2 border-slate-500 rounded-full flex items-center justify-center peer-checked:border-amber-500 peer-checked:bg-amber-500/20 transition">
+                                    <div class="w-2.5 h-2.5 bg-amber-500 rounded-full hidden peer-checked:block shadow-lg shadow-amber-500/50"></div>
                                 </div>
-                                <input type="hidden" id="tipo-transaccion" value="efectivo">
-                            </div>
+                                <span class="ml-3 text-slate-300 font-medium group-hover:text-white peer-checked:text-white transition">Efectivo (Caja)</span>
+                            </label>
 
-                            <!-- Tipo Utilidad (Input Buscador + Agregar) -->
+                            <label class="inline-flex items-center cursor-pointer group">
+                                <input type="radio" name="tipo_transaccion" value="cuenta" class="hidden peer">
+                                <div class="w-5 h-5 border-2 border-slate-500 rounded-full flex items-center justify-center peer-checked:border-amber-500 peer-checked:bg-amber-500/20 transition">
+                                    <div class="w-2.5 h-2.5 bg-amber-500 rounded-full hidden peer-checked:block shadow-lg shadow-amber-500/50"></div>
+                                </div>
+                                <span class="ml-3 text-slate-300 font-medium group-hover:text-white peer-checked:text-white transition">Cuenta Bancaria</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="caja" class="block mb-2 text-xs font-bold text-slate-400 uppercase tracking-wider">Caja Origen</label>
+                            <select id="caja" class="block w-full px-4 py-3 text-sm rounded-xl bg-slate-900 border border-slate-600 text-white focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition">
+                                <option value="">Cargando cajas...</option>
+                            </select>
+                        </div>
+
+                        <div class="relative group">
+                            <label for="concepto" class="block mb-2 text-xs font-bold text-slate-400 uppercase tracking-wider">Concepto / Categoría <span class="text-amber-500">*</span></label>
                             <div class="relative">
-                                <label class="block mb-1 text-sm font-medium text-gray-300">Tipo Utilidad / Beneficiario</label>
-                                <div class="relative">
-                                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500">🏷️</div>
-                                    <input type="text" id="concepto" placeholder="Buscar o escribir nuevo..." autocomplete="off" class="w-full bg-gray-900 border border-gray-600 text-white text-sm rounded-lg p-2.5 pl-10 focus:ring-2 focus:ring-yellow-500 transition">
-                                </div>
-                                <ul id="resultado-conceptos" class="absolute z-50 w-full bg-white text-gray-900 rounded-lg mt-1 shadow-xl max-h-48 overflow-y-auto hidden border border-gray-300"></ul>
+                                <input type="text" id="concepto" placeholder="Ej: Pago Arriendo, Retiro Socio..." autocomplete="off" class="block w-full px-4 py-3 text-sm rounded-xl bg-slate-900 border border-slate-600 text-white focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition placeholder-slate-600">
+                                <div id="lista-conceptos" class="autocomplete-list hidden"></div>
+                            </div>
+                            <p class="text-[10px] text-slate-500 mt-1">Escriba para buscar o crear una nueva categoría.</p>
+                        </div>
+                    </div>
+
+                    <div id="contenedor-cuenta" class="hidden transition-all duration-300">
+                        <label for="cuenta" class="block mb-2 text-xs font-bold text-slate-400 uppercase tracking-wider">Cuenta de Cargo <span class="text-amber-500">*</span></label>
+                        <select id="cuenta" class="block w-full px-4 py-3 text-sm rounded-xl bg-slate-900 border border-slate-600 text-white focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition">
+                            <option value="">Seleccione Cuenta</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="relative">
+                            <label for="divisa-input" class="block mb-2 text-xs font-bold text-slate-400 uppercase tracking-wider">Divisa <span class="text-amber-500">*</span></label>
+                            <input type="text" id="divisa-input" placeholder="Buscar divisa (Ej: CLP)..." autocomplete="off" class="block w-full px-4 py-3 text-sm rounded-xl bg-slate-900 border border-slate-600 text-white focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition placeholder-slate-600 uppercase">
+                            <input type="hidden" id="divisa-id">
+                            <div id="lista-divisas" class="autocomplete-list hidden"></div>
+                        </div>
+
+                        <div>
+                            <label for="monto" class="block mb-2 text-xs font-bold text-slate-400 uppercase tracking-wider">Monto <span class="text-amber-500">*</span></label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500 font-bold">$</div>
+                                <input type="number" id="monto" step="0.01" placeholder="0.00" class="block w-full pl-8 px-4 py-3 text-sm rounded-xl bg-slate-900 border border-slate-600 text-white font-mono font-bold focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition placeholder-slate-600">
                             </div>
                         </div>
                     </div>
 
-                    <!-- PANEL 2: FINANCIERO -->
-                    <div class="lg:col-span-2 bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700 relative">
-                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-t-xl"></div>
-                        <h3 class="text-gray-400 text-xs font-bold uppercase mb-4 border-b border-gray-700 pb-2">Detalle del Monto</h3>
-
-                        <!-- Cuenta Destino (Opcional) -->
-                        <div class="mb-6 relative">
-                            <label class="block mb-1 text-sm font-medium text-gray-300">Cuenta Destino (Opcional)</label>
-                            <div class="relative">
-                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500">💳</div>
-                                <input type="text" id="cuenta" placeholder="Buscar cuenta..." autocomplete="off" class="w-full bg-gray-900 border border-gray-600 text-white text-sm rounded-lg p-2.5 pl-10 focus:ring-2 focus:ring-red-500 transition font-mono">
-                            </div>
-                            <ul id="resultado-cuentas" class="absolute z-50 w-full bg-white text-gray-900 rounded-lg mt-1 shadow-xl max-h-60 overflow-y-auto hidden border border-gray-300"></ul>
-                        </div>
-
-                        <div id="divisas-container" class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                            <!-- Divisa -->
-                            <div class="relative">
-                                <label class="block mb-1 text-sm font-medium text-gray-300">Divisa</label>
-                                <div class="relative">
-                                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500">💱</div>
-                                    <input type="text" placeholder="Buscar divisa..." class="divisa-nombre w-full bg-gray-900 border border-gray-600 text-white text-sm rounded-lg p-2.5 pl-10 focus:ring-2 focus:ring-red-500 transition font-bold" autocomplete="off">
-                                </div>
-                                <ul class="divisa-sugerencias absolute z-50 w-full bg-white text-gray-900 rounded-lg mt-1 shadow-xl max-h-48 overflow-y-auto hidden border border-gray-300"></ul>
-                            </div>
-
-                            <!-- Monto -->
-                            <div>
-                                <label class="block mb-1 text-sm font-medium text-gray-300">Monto a Retirar</label>
-                                <div class="relative">
-                                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400 text-lg">$</div>
-                                    <input id="monto-egreso" type="text" placeholder="0" class="w-full bg-gray-900 border border-yellow-600/50 text-white text-2xl font-bold rounded-lg p-3 pl-8 focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition font-mono placeholder-gray-600">
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="mt-4">
-                             <label class="block mb-1 text-sm font-medium text-gray-300">Observaciones Adicionales</label>
-                             <textarea id="observaciones" rows="2" class="w-full bg-gray-900 border border-gray-600 text-white text-sm rounded-lg p-2.5"></textarea>
-                        </div>
+                    <div>
+                        <label for="observaciones" class="block mb-2 text-xs font-bold text-slate-400 uppercase tracking-wider">Observaciones</label>
+                        <textarea id="observaciones" rows="2" class="block w-full px-4 py-3 text-sm rounded-xl bg-slate-900 border border-slate-600 text-white focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition placeholder-slate-600" placeholder="Detalles adicionales..."></textarea>
                     </div>
-                </div>
-      
-                <div class="flex justify-end gap-4 pt-4 border-t border-gray-800">
-                    <button type="button" id="cancelar" onclick="location.reload()" class="text-gray-300 bg-transparent border border-gray-600 hover:bg-gray-700 px-6 py-2.5 rounded-lg transition">Limpiar</button>
-                    <button type="submit" class="text-black bg-yellow-500 hover:bg-yellow-400 focus:ring-4 focus:outline-none focus:ring-yellow-600 font-bold rounded-lg text-sm px-8 py-2.5 shadow-lg shadow-yellow-900/50 transition transform hover:-translate-y-0.5">Confirmar Retiro</button>
-                </div>
-            </form>
 
-            <!-- Modales -->
-            <div id="modal-alerta" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden backdrop-blur-sm">
-              <div class="bg-gray-800 border border-yellow-500/50 rounded-lg shadow-2xl p-6 max-w-sm w-full text-center">
-                <div class="text-5xl mb-4">⚠️</div>
-                <h2 class="text-xl font-bold text-white mb-2" id="modal-titulo">Atención</h2>
-                <p class="mb-6 text-gray-300 text-sm" id="modal-mensaje"></p>
-                <button id="cerrar-modal" class="bg-red-600 hover:bg-red-700 text-white font-bold px-6 py-2 rounded-lg w-full">Entendido</button>
-              </div>
+                    <div class="flex items-center justify-end gap-3 pt-6 border-t border-white/5">
+                        <button type="button" id="limpiar" class="text-slate-400 bg-transparent border border-slate-600 hover:bg-slate-700 hover:text-white font-medium rounded-lg text-sm px-5 py-2.5 transition">
+                            Limpiar
+                        </button>
+                        <button type="submit" class="text-white bg-amber-600 hover:bg-amber-500 font-bold rounded-lg text-sm px-6 py-2.5 shadow-lg shadow-amber-900/20 transition transform hover:-translate-y-0.5 border border-amber-500 flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                            Registrar Retiro
+                        </button>
+                    </div>
+                </form>
             </div>
-            
-            <div id="modal-exitoso" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden backdrop-blur-sm">
-              <div class="bg-gray-800 border border-gray-600 rounded-lg shadow-2xl p-6 max-w-md w-full text-center">
-                <div class="text-5xl mb-4">✅</div>
-                <h2 class="text-xl font-bold text-white mb-2">Retiro Registrado</h2>
-                <p class="mb-6 text-gray-300">El egreso de utilidad se ha procesado.</p>
-                <div class="flex justify-center space-x-3">
-                  <button onclick="location.reload()" class="bg-yellow-600 hover:bg-yellow-500 text-black font-bold px-6 py-2 rounded shadow-lg">Nuevo</button>
-                  <button onclick="window.location.href='egresos-util'" class="bg-gray-700 hover:bg-gray-600 text-white px-6 py-2 rounded border border-gray-500">Listado</button>
+
+            <div id="modal-generico" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+                <div class="bg-slate-800 rounded-xl shadow-2xl p-6 max-w-sm w-full mx-4 border border-white/10 relative">
+                    <div id="modal-generico-icono" class="flex justify-center mb-4"></div>
+                    <h2 id="modal-generico-titulo" class="text-lg font-bold text-white mb-2 text-center"></h2>
+                    <p id="modal-generico-mensaje" class="text-sm text-slate-300 mb-6 text-center"></p>
+                    <div class="flex justify-center w-full">
+                        <button id="modal-generico-confirmar" class="w-full bg-amber-600 text-white py-2 rounded-lg hover:bg-amber-500 font-bold text-sm transition shadow-lg">Aceptar</button>
+                    </div>
                 </div>
-              </div>
             </div>
 
           </section>

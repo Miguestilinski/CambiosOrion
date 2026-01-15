@@ -1,216 +1,272 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("form-nuevo-utilidad");
-  const cajaSelect = document.getElementById("caja");
-  const conceptoInput = document.getElementById("concepto"); // Tipo Utilidad
-  const cuentaInput = document.getElementById("cuenta");
-  const divisaInput = document.querySelector(".divisa-nombre");
-  const montoInput = document.getElementById("monto-egreso");
-  const inputTipoHidden = document.getElementById("tipo-transaccion");
-  
-  const resultadoConceptos = document.getElementById("resultado-conceptos");
-  const resultadoCuentas = document.getElementById("resultado-cuentas");
-  const divisaSugerencias = document.querySelector(".divisa-sugerencias");
-  const radiosTipo = document.querySelectorAll('input[name="tipo_radio"]');
+import { initSystem } from './index.js';
 
-  let usuarioSesionId = null;
-  const btnSubmit = document.querySelector("button[type='submit']");
-
-  if(btnSubmit) {
-      btnSubmit.disabled = true;
-      btnSubmit.classList.add("opacity-50", "cursor-not-allowed");
-  }
-
-  // 1. Obtener Sesión
-  async function obtenerSesionActiva() {
-      try {
-          const res = await fetch("https://cambiosorion.cl/data/session_status.php", { credentials: 'include' });
-          const session = await res.json();
-          if (session.isAuthenticated && session.equipo_id) {
-              usuarioSesionId = session.equipo_id;
-              if(btnSubmit) { btnSubmit.disabled = false; btnSubmit.classList.remove("opacity-50", "cursor-not-allowed"); }
-          } else { mostrarAlerta("Sesión requerida."); }
-      } catch (error) { console.error(error); }
-  }
-  obtenerSesionActiva();
-
-  // 2. Cargar Cajas
-  async function cargarCajas() {
-    try {
-      const res = await fetch("https://cambiosorion.cl/data/nuevo-egr-util.php?buscar_cajas=1");
-      const cajas = await res.json();
-      cajaSelect.innerHTML = ''; 
-      cajas.forEach(c => {
-        const opt = document.createElement("option");
-        opt.value = c.id; opt.textContent = c.nombre;
-        cajaSelect.appendChild(opt);
-      });
-      if (cajas.length > 0) cajaSelect.selectedIndex = 0;
-    } catch (error) { console.error(error); }
-  }
-  cargarCajas();
-
-  radiosTipo.forEach(radio => {
-      radio.addEventListener('change', (e) => { if(e.target.checked) inputTipoHidden.value = e.target.value; });
-  });
-
-  // 3. Montos
-  montoInput.addEventListener('input', (e) => {
-      let val = e.target.value.replace(/\D/g, '');
-      if(val) e.target.value = new Intl.NumberFormat('es-CL').format(parseInt(val));
-  });
-
-  // 4. BUSCADORES
-
-  // --- Buscador Tipo Utilidad ---
-  let conceptoTimeout;
-  conceptoInput.addEventListener("input", () => {
-    clearTimeout(conceptoTimeout);
-    const query = conceptoInput.value.trim();
-    if (query.length === 0) { resultadoConceptos.classList.add("hidden"); return; }
-
-    conceptoTimeout = setTimeout(async () => {
-      try {
-        const res = await fetch(`https://cambiosorion.cl/data/nuevo-egr-util.php?buscar_concepto=${encodeURIComponent(query)}`);
-        const items = await res.json();
-        
-        resultadoConceptos.innerHTML = "";
-        
-        items.forEach(c => {
-            const li = document.createElement("li");
-            li.textContent = c.nombre;
-            li.className = "p-3 hover:bg-gray-100 cursor-pointer text-sm text-gray-800 border-b border-gray-100 font-medium";
-            li.addEventListener("click", () => {
-              conceptoInput.value = c.nombre;
-              resultadoConceptos.classList.add("hidden");
-            });
-            resultadoConceptos.appendChild(li);
-        });
-
-        const existeExacto = items.some(i => i.nombre.toLowerCase() === query.toLowerCase());
-        if (!existeExacto && query.length > 0) {
-            const liNuevo = document.createElement("li");
-            liNuevo.innerHTML = `<span class="text-yellow-600 font-bold">➕ Agregar:</span> "${query}"`;
-            liNuevo.className = "p-3 hover:bg-yellow-50 cursor-pointer text-sm text-gray-800 border-t-2 border-gray-100";
-            liNuevo.addEventListener("click", () => {
-                conceptoInput.value = query;
-                resultadoConceptos.classList.add("hidden");
-            });
-            resultadoConceptos.appendChild(liNuevo);
-        }
-        resultadoConceptos.classList.remove("hidden");
-      } catch (error) {}
-    }, 300);
-  });
-
-  // --- Buscador Cuentas ---
-  if(cuentaInput) {
-      cuentaInput.addEventListener("input", async (e) => {
-          const query = e.target.value.trim();
-          if(query.length < 2) { resultadoCuentas.classList.add("hidden"); return; }
-          
-          try {
-              const res = await fetch(`https://cambiosorion.cl/data/nuevo-egr-util.php?buscar_cuenta=${encodeURIComponent(query)}`);
-              const cuentas = await res.json();
-              resultadoCuentas.innerHTML = "";
-              
-              cuentas.forEach(c => {
-                  const li = document.createElement("li");
-                  li.className = "p-2 hover:bg-gray-100 cursor-pointer text-sm text-gray-800 border-b border-gray-100";
-                  li.innerHTML = `<strong>${c.nombre_cuenta}</strong> <span class="text-xs text-gray-500">(${c.moneda})</span>`;
-                  li.addEventListener("click", () => {
-                      cuentaInput.value = c.nombre_cuenta;
-                      cuentaInput.dataset.id = c.id; 
-                      resultadoCuentas.classList.add("hidden");
-                  });
-                  resultadoCuentas.appendChild(li);
-              });
-              resultadoCuentas.classList.remove("hidden");
-          } catch(e) {}
-      });
-  }
-
-  // Buscador Divisas
-  if(divisaInput) {
-      divisaInput.addEventListener("input", async (e) => {
-          const query = e.target.value.trim();
-          if(query.length < 1) { divisaSugerencias.classList.add("hidden"); return; }
-          try {
-              const res = await fetch(`https://cambiosorion.cl/data/nuevo-egr-util.php?buscar_divisa=${encodeURIComponent(query)}`);
-              const divisas = await res.json();
-              divisaSugerencias.innerHTML = "";
-              divisas.forEach(d => {
-                  const li = document.createElement("li");
-                  li.className = "p-2 hover:bg-gray-100 cursor-pointer text-sm text-gray-800 flex items-center gap-3";
-                  let iconHtml = d.icono ? `<img src="${d.icono}" class="w-6 h-6 object-contain rounded-full">` : '';
-                  li.innerHTML = `${iconHtml}<span>${d.nombre}</span>`;
-                  li.addEventListener("click", () => {
-                      divisaInput.value = d.nombre;
-                      divisaInput.dataset.id = d.id; 
-                      divisaSugerencias.classList.add("hidden");
-                  });
-                  divisaSugerencias.appendChild(li);
-              });
-              divisaSugerencias.classList.remove("hidden");
-          } catch(e) {}
-      });
-  }
-
-  // Cerrar listas al hacer clic fuera
-  document.addEventListener("click", (e) => {
-      if (!conceptoInput.contains(e.target) && !resultadoConceptos.contains(e.target)) resultadoConceptos.classList.add("hidden");
-      if (divisaInput && !divisaInput.contains(e.target) && !divisaSugerencias.contains(e.target)) divisaSugerencias.classList.add("hidden");
-      if (cuentaInput && !cuentaInput.contains(e.target) && !resultadoCuentas.contains(e.target)) resultadoCuentas.classList.add("hidden");
-  });
-
-  // 5. Submit
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    if (!usuarioSesionId) return mostrarAlerta("No hay sesión activa.");
+document.addEventListener("DOMContentLoaded", async () => {
+    // 1. Init System
+    const sessionData = await initSystem('egresos'); 
     
-    const montoRaw = parseFloat(montoInput.value.replace(/\./g, '').replace(/,/g, '.'));
-    const divisaId = divisaInput ? divisaInput.dataset.id : null;
-    const concepto = conceptoInput.value.trim();
+    if (!sessionData || !sessionData.isAuthenticated) return;
+    const usuarioSesionId = sessionData.equipo_id || sessionData.id;
 
-    if (!cajaSelect.value) return mostrarAlerta("Seleccione caja.");
-    if (!concepto) return mostrarAlerta("Ingrese un Tipo de Utilidad / Beneficiario.");
-    if (!divisaId) return mostrarAlerta("Seleccione divisa.");
-    if (isNaN(montoRaw) || montoRaw <= 0) return mostrarAlerta("Monto inválido.");
+    // Referencias
+    const form = document.getElementById("form-nuevo-utilidad");
+    
+    // Toggles
+    const radiosTipo = document.getElementsByName("tipo_transaccion");
+    const contenedorCuenta = document.getElementById("contenedor-cuenta");
+    const cuentaSelect = document.getElementById("cuenta");
+    
+    // Inputs Principales
+    const cajaSelect = document.getElementById("caja");
+    const conceptoInput = document.getElementById("concepto");
+    const listaConceptos = document.getElementById("lista-conceptos");
+    
+    const divisaInput = document.getElementById("divisa-input");
+    const divisaIdInput = document.getElementById("divisa-id");
+    const listaDivisas = document.getElementById("lista-divisas");
+    
+    const montoInput = document.getElementById("monto");
+    const obsInput = document.getElementById("observaciones");
+    const limpiarBtn = document.getElementById("limpiar");
 
-    const payload = {
-      tipo_egreso: inputTipoHidden.value,
-      item_utilidad: concepto,
-      caja_id: cajaSelect.value,
-      cuenta_id: cuentaInput.dataset.id || null, // Se habilita el envío del ID de cuenta
-      divisa_id: divisaId,
-      monto: montoRaw,
-      usuario_id: usuarioSesionId,
-      observaciones: document.getElementById("observaciones").value
-    };
+    let conceptosCache = [];
+    let divisasCache = [];
 
-    try {
-      const res = await fetch("https://cambiosorion.cl/data/nuevo-egr-util.php", {
-        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload)
-      });
-      
-      const data = await res.json();
-      if (data.success) {
-        document.getElementById("modal-exitoso").classList.remove("hidden");
-        form.reset();
-        divisaInput.dataset.id = "";
-        cuentaInput.dataset.id = ""; // Limpiar ID de cuenta
-      } else {
-        mostrarAlerta(data.error || data.message, "Error al Registrar");
-      }
-    } catch (error) {
-      mostrarAlerta("Error de conexión.");
+    // --- LOGICA DE INTERFAZ ---
+
+    // Toggle Efectivo / Cuenta
+    radiosTipo.forEach(radio => {
+        radio.addEventListener('change', () => {
+            if(radio.value === 'cuenta') {
+                contenedorCuenta.classList.remove('hidden');
+                // Si no hay cuentas cargadas, cargarlas
+                if(cuentaSelect.options.length <= 1) cargarCuentas();
+            } else {
+                contenedorCuenta.classList.add('hidden');
+                cuentaSelect.value = "";
+            }
+        });
+    });
+
+    // Limpiar
+    if(limpiarBtn) {
+        limpiarBtn.addEventListener('click', () => {
+            form.reset();
+            // Restaurar defaults
+            contenedorCuenta.classList.add('hidden');
+            divisaInput.value = ""; 
+            divisaIdInput.value = "";
+            seleccionarDivisaPorDefecto(); // Volver a poner CLP
+        });
     }
-  });
 
-  function mostrarAlerta(mensaje, titulo = "Atención") {
-      const modal = document.getElementById("modal-alerta");
-      document.getElementById("modal-titulo").textContent = titulo;
-      document.getElementById("modal-mensaje").textContent = mensaje;
-      modal.classList.remove("hidden");
-      document.getElementById("cerrar-modal").onclick = () => modal.classList.add("hidden");
-  }
+    // --- CARGA DE DATOS ---
+
+    async function cargarDatosIniciales() {
+        try {
+            // 1. Cajas
+            const resCajas = await fetch("https://cambiosorion.cl/data/nuevo-egr-util.php?buscar_cajas=1");
+            const cajas = await resCajas.json();
+            
+            cajaSelect.innerHTML = '<option value="">Seleccione Caja</option>';
+            if(Array.isArray(cajas)) {
+                cajas.forEach(c => {
+                    const opt = document.createElement("option");
+                    opt.value = c.id;
+                    opt.textContent = c.nombre;
+                    cajaSelect.appendChild(opt);
+                });
+                // Seleccionar caja usuario o Tesorería (que viene primera por el PHP)
+                if(sessionData.caja_id && sessionData.caja_id != 0) {
+                    cajaSelect.value = sessionData.caja_id;
+                } else if (cajas.length > 0) {
+                    cajaSelect.value = cajas[0].id; // Tesorería por defecto
+                }
+            }
+
+            // 2. Conceptos (Cache)
+            const resConceptos = await fetch("https://cambiosorion.cl/data/nuevo-egr-util.php?buscar_conceptos=1");
+            conceptosCache = await resConceptos.json();
+
+            // 3. Divisas (Cache)
+            const resDivisas = await fetch("https://cambiosorion.cl/data/nuevo-egr-util.php?buscar_divisas=1");
+            divisasCache = await resDivisas.json();
+            seleccionarDivisaPorDefecto();
+
+        } catch (error) {
+            console.error("Error cargando datos:", error);
+        }
+    }
+
+    async function cargarCuentas() {
+        try {
+            const res = await fetch("https://cambiosorion.cl/data/nuevo-egr-util.php?buscar_cuentas=1");
+            const cuentas = await res.json();
+            cuentaSelect.innerHTML = '<option value="">Seleccione Cuenta</option>';
+            if(Array.isArray(cuentas)) {
+                cuentas.forEach(cta => {
+                    const opt = document.createElement("option");
+                    opt.value = cta.id;
+                    opt.textContent = `${cta.nombre} (${cta.banco || ''})`;
+                    cuentaSelect.appendChild(opt);
+                });
+            }
+        } catch (e) { console.error(e); }
+    }
+
+    // --- AUTOCOMPLETE: CONCEPTOS ---
+    conceptoInput.addEventListener('input', () => {
+        const val = conceptoInput.value.toLowerCase();
+        listaConceptos.innerHTML = '';
+        if(!val) { listaConceptos.classList.add('hidden'); return; }
+
+        const filtrados = conceptosCache.filter(c => c.toLowerCase().includes(val));
+        
+        // Siempre mostrar opción de lo que escribe como nuevo
+        // Pero listar coincidencias
+        if (filtrados.length > 0) {
+            listaConceptos.classList.remove('hidden');
+            filtrados.forEach(c => {
+                const div = document.createElement('div');
+                div.className = 'autocomplete-item';
+                div.textContent = c;
+                div.onclick = () => {
+                    conceptoInput.value = c;
+                    listaConceptos.classList.add('hidden');
+                };
+                listaConceptos.appendChild(div);
+            });
+        } else {
+            listaConceptos.classList.add('hidden');
+        }
+    });
+
+    // --- AUTOCOMPLETE: DIVISAS (Con búsqueda real) ---
+    divisaInput.addEventListener('input', () => {
+        const val = divisaInput.value.toLowerCase();
+        listaDivisas.innerHTML = '';
+        if(!val) { listaDivisas.classList.add('hidden'); return; }
+
+        const filtrados = divisasCache.filter(d => 
+            d.nombre.toLowerCase().includes(val) || 
+            d.codigo.toLowerCase().includes(val)
+        );
+
+        if (filtrados.length > 0) {
+            listaDivisas.classList.remove('hidden');
+            filtrados.forEach(d => {
+                const div = document.createElement('div');
+                div.className = 'autocomplete-item flex justify-between';
+                div.innerHTML = `<span>${d.nombre}</span> <span class="font-mono text-amber-500">${d.codigo}</span>`;
+                div.onclick = () => {
+                    divisaInput.value = `${d.nombre} (${d.codigo})`;
+                    divisaIdInput.value = d.id;
+                    listaDivisas.classList.add('hidden');
+                };
+                listaDivisas.appendChild(div);
+            });
+        } else {
+            listaDivisas.innerHTML = '<div class="p-2 text-xs text-slate-500 italic">Sin resultados</div>';
+            listaDivisas.classList.remove('hidden');
+        }
+    });
+
+    // Ocultar listas al hacer click fuera
+    document.addEventListener('click', (e) => {
+        if (!conceptoInput.contains(e.target)) listaConceptos.classList.add('hidden');
+        if (!divisaInput.contains(e.target)) listaDivisas.classList.add('hidden');
+    });
+
+    function seleccionarDivisaPorDefecto() {
+        if(!divisasCache.length) return;
+        // Buscar CLP
+        const clp = divisasCache.find(d => d.codigo === 'CLP');
+        if(clp) {
+            divisaInput.value = `${clp.nombre} (${clp.codigo})`;
+            divisaIdInput.value = clp.id;
+        }
+    }
+
+    cargarDatosIniciales();
+
+    // --- SUBMIT ---
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        // Obtener tipo seleccionado
+        let tipoTx = 'efectivo';
+        radiosTipo.forEach(r => { if(r.checked) tipoTx = r.value; });
+
+        // Validaciones
+        if (!cajaSelect.value) return mostrarModal({ tipo: 'error', titulo: "Falta Caja", mensaje: "Seleccione una caja de origen." });
+        if (!conceptoInput.value.trim()) return mostrarModal({ tipo: 'error', titulo: "Falta Concepto", mensaje: "Indique el motivo del retiro." });
+        if (!divisaIdInput.value) return mostrarModal({ tipo: 'error', titulo: "Falta Divisa", mensaje: "Seleccione una divisa válida de la lista." });
+        
+        if (tipoTx === 'cuenta' && !cuentaSelect.value) {
+            return mostrarModal({ tipo: 'error', titulo: "Falta Cuenta", mensaje: "Seleccione la cuenta bancaria de cargo." });
+        }
+
+        const monto = parseFloat(montoInput.value);
+        if (isNaN(monto) || monto <= 0) return mostrarModal({ tipo: 'error', titulo: "Monto Inválido", mensaje: "El monto debe ser mayor a 0." });
+
+        const payload = {
+            caja_id: cajaSelect.value,
+            item_utilidad: conceptoInput.value.trim(),
+            divisa_id: divisaIdInput.value,
+            monto: monto,
+            observaciones: obsInput.value.trim(),
+            usuario_id: usuarioSesionId,
+            es_cuenta: (tipoTx === 'cuenta'),
+            cuenta_id: (tipoTx === 'cuenta' ? cuentaSelect.value : null)
+        };
+
+        try {
+            const res = await fetch("https://cambiosorion.cl/data/nuevo-egr-util.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+            
+            const data = await res.json();
+
+            if (data.success) {
+                mostrarModal({ 
+                    tipo: 'exito', 
+                    titulo: "Retiro Registrado", 
+                    mensaje: "El egreso se guardó correctamente.",
+                    onConfirmar: () => window.location.reload()
+                });
+            } else {
+                mostrarModal({ tipo: 'error', titulo: "Error", mensaje: data.error || "No se pudo guardar." });
+            }
+
+        } catch (error) {
+            mostrarModal({ tipo: 'error', titulo: "Error Conexión", mensaje: "Fallo al comunicar con el servidor." });
+        }
+    });
+
+    // --- MODAL SIMPLE ---
+    function mostrarModal({ tipo = 'info', titulo, mensaje, onConfirmar }) {
+        const modal = document.getElementById("modal-generico");
+        const iconoDiv = document.getElementById("modal-generico-icono");
+        const btnConfirmar = document.getElementById("modal-generico-confirmar");
+
+        const iconos = {
+            'exito': `<div class="p-3 rounded-full bg-green-900/30 border border-green-500/30"><svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></div>`,
+            'error': `<div class="p-3 rounded-full bg-red-900/30 border border-red-500/30"><svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></div>`
+        };
+
+        iconoDiv.innerHTML = iconos[tipo] || '';
+        document.getElementById("modal-generico-titulo").textContent = titulo;
+        document.getElementById("modal-generico-mensaje").textContent = mensaje;
+        
+        modal.classList.remove("hidden");
+
+        const newConfirm = btnConfirmar.cloneNode(true);
+        btnConfirmar.parentNode.replaceChild(newConfirm, btnConfirmar);
+
+        newConfirm.onclick = () => { 
+            modal.classList.add("hidden"); 
+            if (onConfirmar) onConfirmar(); 
+        };
+    }
 });
