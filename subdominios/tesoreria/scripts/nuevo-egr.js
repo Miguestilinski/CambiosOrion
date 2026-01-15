@@ -68,15 +68,19 @@ document.addEventListener("DOMContentLoaded", async () => {
             // En este ejemplo, usaremos búsqueda en tiempo real mejor simulada con el input.
 
             // 4. Cuentas
-            const resCuentas = await fetch("https://cambiosorion.cl/data/nuevo-egr.php?buscar_cuentas=1");
-            const dataCuentas = await resCuentas.json();
-            
-            // VALIDACIÓN: Asegurarse de que sea un array antes de asignar
-            if (Array.isArray(dataCuentas)) {
-                cuentasCache = dataCuentas;
-            } else {
-                console.warn("Error cargando cuentas:", dataCuentas);
-                cuentasCache = []; // Array vacío para evitar el crash
+            try {
+                const resCuentas = await fetch("https://cambiosorion.cl/data/nuevo-egr.php?buscar_cuentas=1");
+                const dataCuentas = await resCuentas.json();
+                
+                if (Array.isArray(dataCuentas)) {
+                    cuentasCache = dataCuentas;
+                } else {
+                    console.warn("Error o formato inválido en cuentas:", dataCuentas);
+                    cuentasCache = [];
+                }
+            } catch (err) {
+                console.error("Error fetch cuentas:", err);
+                cuentasCache = [];
             }
 
         } catch (e) { console.error("Error cargando datos", e); }
@@ -204,7 +208,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         if(!val) { listaCuentas.classList.add('hidden'); return; }
 
         const filtrados = cuentasCache.filter(c => 
-            c.nombre.toLowerCase().includes(val) || 
+            // CORREGIDO: Usamos c.nombre
+            (c.nombre && c.nombre.toLowerCase().includes(val)) || 
             (c.cliente && c.cliente.toLowerCase().includes(val))
         );
 
@@ -213,18 +218,22 @@ document.addEventListener("DOMContentLoaded", async () => {
             filtrados.forEach(c => {
                 const div = document.createElement('div');
                 div.className = 'dropdown-item flex-col items-start';
+                // CORREGIDO: Usamos c.nombre en el HTML
                 div.innerHTML = `
                     <span class="font-bold text-white text-xs">${c.nombre}</span>
-                    <span class="text-[10px] text-slate-400">${c.cliente || 'Interna'} - ${c.divisa}</span>
+                    <span class="text-[10px] text-slate-400">${c.cliente || 'Cuenta General'} - ${c.divisa || ''}</span>
                 `;
                 div.onclick = () => {
-                    buscarCuentaInput.value = c.nombre;
+                    buscarCuentaInput.value = c.nombre; // CORREGIDO
                     cuentaIdInput.value = c.id;
                     listaCuentas.classList.add('hidden');
                 };
                 listaCuentas.appendChild(div);
             });
-        } else { listaCuentas.classList.add('hidden'); }
+        } else { 
+            listaCuentas.innerHTML = '<div class="p-2 text-xs text-slate-500">Sin coincidencias</div>';
+            listaCuentas.classList.remove('hidden'); 
+        }
     });
 
     // Cierres Globales
