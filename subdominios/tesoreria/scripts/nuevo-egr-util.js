@@ -3,131 +3,168 @@ import { initSystem } from './index.js';
 document.addEventListener("DOMContentLoaded", async () => {
     // 1. Init System
     const sessionData = await initSystem('egresos'); 
-    
     if (!sessionData || !sessionData.isAuthenticated) return;
     const usuarioSesionId = sessionData.equipo_id || sessionData.id;
 
-    // Referencias
+    // --- REFERENCIAS DOM ---
     const form = document.getElementById("form-nuevo-utilidad");
     
-    // Toggles
-    const radiosTipo = document.getElementsByName("tipo_transaccion");
-    const contenedorCuenta = document.getElementById("contenedor-cuenta");
-    const cuentaSelect = document.getElementById("cuenta");
-    
-    // Inputs Principales
+    // Configuración (Izquierda)
     const cajaSelect = document.getElementById("caja");
     const conceptoInput = document.getElementById("concepto");
     const listaConceptos = document.getElementById("lista-conceptos");
     
-    const divisaInput = document.getElementById("divisa-input");
-    const divisaIdInput = document.getElementById("divisa-id");
+    // Toggle Botones
+    const btnEfectivo = document.getElementById("btn-efectivo");
+    const btnCuenta = document.getElementById("btn-cuenta");
+    const tipoTransaccionInput = document.getElementById("tipo-transaccion"); // hidden
+    const contenedorCuenta = document.getElementById("contenedor-cuenta");
+    const buscarCuentaInput = document.getElementById("buscar-cuenta");
+    const cuentaIdInput = document.getElementById("cuenta-id");
+    const listaCuentas = document.getElementById("lista-cuentas");
+
+    // Detalle (Derecha)
+    // Divisa Custom Dropdown
+    const divisaTrigger = document.getElementById("divisa-trigger");
+    const divisaIconSelected = document.getElementById("divisa-icon-selected");
+    const divisaTextSelected = document.getElementById("divisa-text-selected");
     const listaDivisas = document.getElementById("lista-divisas");
-    
+    const divisaIdInput = document.getElementById("divisa-id");
+
     const montoInput = document.getElementById("monto");
     const obsInput = document.getElementById("observaciones");
     const limpiarBtn = document.getElementById("limpiar");
 
+    // Cache de Datos
     let conceptosCache = [];
     let divisasCache = [];
+    let cuentasCache = [];
 
-    // --- LOGICA DE INTERFAZ ---
-
-    // Toggle Efectivo / Cuenta
-    radiosTipo.forEach(radio => {
-        radio.addEventListener('change', () => {
-            if(radio.value === 'cuenta') {
-                contenedorCuenta.classList.remove('hidden');
-                // Si no hay cuentas cargadas, cargarlas
-                if(cuentaSelect.options.length <= 1) cargarCuentas();
-            } else {
-                contenedorCuenta.classList.add('hidden');
-                cuentaSelect.value = "";
-            }
-        });
-    });
-
-    // Limpiar
-    if(limpiarBtn) {
-        limpiarBtn.addEventListener('click', () => {
-            form.reset();
-            // Restaurar defaults
-            contenedorCuenta.classList.add('hidden');
-            divisaInput.value = ""; 
-            divisaIdInput.value = "";
-            seleccionarDivisaPorDefecto(); // Volver a poner CLP
-        });
-    }
-
-    // --- CARGA DE DATOS ---
-
-    async function cargarDatosIniciales() {
+    // --- INICIALIZACIÓN ---
+    async function cargarDatos() {
         try {
-            // 1. Cajas
+            // 1. Cajas (Tesorería primero)
             const resCajas = await fetch("https://cambiosorion.cl/data/nuevo-egr-util.php?buscar_cajas=1");
             const cajas = await resCajas.json();
-            
             cajaSelect.innerHTML = '<option value="">Seleccione Caja</option>';
-            if(Array.isArray(cajas)) {
-                cajas.forEach(c => {
-                    const opt = document.createElement("option");
-                    opt.value = c.id;
-                    opt.textContent = c.nombre;
-                    cajaSelect.appendChild(opt);
-                });
-                // Seleccionar caja usuario o Tesorería (que viene primera por el PHP)
-                if(sessionData.caja_id && sessionData.caja_id != 0) {
-                    cajaSelect.value = sessionData.caja_id;
-                } else if (cajas.length > 0) {
-                    cajaSelect.value = cajas[0].id; // Tesorería por defecto
-                }
-            }
+            cajas.forEach(c => {
+                const opt = document.createElement("option");
+                opt.value = c.id;
+                opt.textContent = c.nombre;
+                cajaSelect.appendChild(opt);
+            });
+            // Default: Caja usuario o Tesorería
+            if(sessionData.caja_id && sessionData.caja_id != 0) cajaSelect.value = sessionData.caja_id;
+            else if(cajas.length > 0) cajaSelect.value = cajas[0].id;
 
-            // 2. Conceptos (Cache)
-            const resConceptos = await fetch("https://cambiosorion.cl/data/nuevo-egr-util.php?buscar_conceptos=1");
-            conceptosCache = await resConceptos.json();
-
-            // 3. Divisas (Cache)
-            const resDivisas = await fetch("https://cambiosorion.cl/data/nuevo-egr-util.php?buscar_divisas=1");
-            divisasCache = await resDivisas.json();
+            // 2. Divisas (Con Iconos)
+            const resDiv = await fetch("https://cambiosorion.cl/data/nuevo-egr-util.php?buscar_divisas=1");
+            divisasCache = await resDiv.json();
+            renderizarDropdownDivisas(divisasCache);
             seleccionarDivisaPorDefecto();
 
-        } catch (error) {
-            console.error("Error cargando datos:", error);
+            // 3. Conceptos (Sugerencias)
+            const resCon = await fetch("https://cambiosorion.cl/data/nuevo-egr-util.php?buscar_conceptos=1");
+            conceptosCache = await resCon.json();
+
+            // 4. Cuentas Internas
+            const resCuentas = await fetch("https://cambiosorion.cl/data/nuevo-egr-util.php?buscar_cuentas=1");
+            cuentasCache = await resCuentas.json();
+
+        } catch (e) { console.error("Error cargando datos", e); }
+    }
+    cargarDatos();
+
+    // --- LOGICA TOGGLE (BOTONES) ---
+    function setTipoTransaccion(tipo) {
+        tipoTransaccionInput.value = tipo;
+        if (tipo === 'efectivo') {
+            btnEfectivo.className = "py-2.5 px-4 rounded-lg text-sm font-bold transition-all duration-200 bg-amber-600 text-white shadow-lg";
+            btnCuenta.className = "py-2.5 px-4 rounded-lg text-sm font-medium transition-all duration-200 text-slate-400 hover:text-white hover:bg-white/5";
+            contenedorCuenta.classList.add("hidden");
+            buscarCuentaInput.value = "";
+            cuentaIdInput.value = "";
+        } else {
+            btnCuenta.className = "py-2.5 px-4 rounded-lg text-sm font-bold transition-all duration-200 bg-amber-600 text-white shadow-lg";
+            btnEfectivo.className = "py-2.5 px-4 rounded-lg text-sm font-medium transition-all duration-200 text-slate-400 hover:text-white hover:bg-white/5";
+            contenedorCuenta.classList.remove("hidden");
         }
     }
+    btnEfectivo.addEventListener('click', () => setTipoTransaccion('efectivo'));
+    btnCuenta.addEventListener('click', () => setTipoTransaccion('cuenta'));
 
-    async function cargarCuentas() {
-        try {
-            const res = await fetch("https://cambiosorion.cl/data/nuevo-egr-util.php?buscar_cuentas=1");
-            const cuentas = await res.json();
-            cuentaSelect.innerHTML = '<option value="">Seleccione Cuenta</option>';
-            if(Array.isArray(cuentas)) {
-                cuentas.forEach(cta => {
-                    const opt = document.createElement("option");
-                    opt.value = cta.id;
-                    opt.textContent = `${cta.nombre} (${cta.banco || ''})`;
-                    cuentaSelect.appendChild(opt);
-                });
-            }
-        } catch (e) { console.error(e); }
+    // --- DROPDOWN DIVISAS CUSTOM ---
+    function renderizarDropdownDivisas(lista) {
+        listaDivisas.innerHTML = '';
+        // Input buscador interno
+        const searchContainer = document.createElement('div');
+        searchContainer.className = "p-2 sticky top-0 bg-slate-900 border-b border-slate-700";
+        const searchInput = document.createElement('input');
+        searchInput.type = "text";
+        searchInput.placeholder = "Filtrar...";
+        searchInput.className = "w-full bg-slate-800 text-xs text-white rounded p-1.5 border border-slate-600 focus:border-amber-500 outline-none";
+        
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const items = listaDivisas.querySelectorAll('.divisa-item');
+            items.forEach(item => {
+                const txt = item.textContent.toLowerCase();
+                item.style.display = txt.includes(term) ? 'flex' : 'none';
+            });
+        });
+        
+        searchContainer.appendChild(searchInput);
+        listaDivisas.appendChild(searchContainer);
+
+        lista.forEach(d => {
+            const item = document.createElement('div');
+            item.className = "dropdown-item divisa-item group";
+            item.innerHTML = `
+                <img src="${d.icono || 'https://cambiosorion.cl/orionapp/icons/flag_placeholder.png'}" class="w-5 h-5 rounded-full object-cover mr-3 border border-slate-600">
+                <span class="flex-1 font-medium group-hover:text-white">${d.nombre}</span>
+                <span class="text-xs font-mono text-slate-500 group-hover:text-amber-400">${d.codigo}</span>
+            `;
+            item.onclick = () => seleccionarDivisa(d);
+            listaDivisas.appendChild(item);
+        });
     }
 
-    // --- AUTOCOMPLETE: CONCEPTOS ---
+    function seleccionarDivisa(d) {
+        divisaIdInput.value = d.id;
+        divisaTextSelected.textContent = `${d.nombre} (${d.codigo})`;
+        divisaTextSelected.className = "font-bold text-white";
+        divisaIconSelected.src = d.icono || '';
+        divisaIconSelected.classList.remove('hidden');
+        listaDivisas.classList.add('hidden');
+    }
+
+    function seleccionarDivisaPorDefecto() {
+        const clp = divisasCache.find(d => d.codigo === 'CLP');
+        if(clp) seleccionarDivisa(clp);
+    }
+
+    divisaTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        listaDivisas.classList.toggle('hidden');
+        // Focus en el input de búsqueda si se abre
+        if(!listaDivisas.classList.contains('hidden')) {
+            const input = listaDivisas.querySelector('input');
+            if(input) input.focus();
+        }
+    });
+
+    // --- AUTOCOMPLETE CONCEPTOS ---
     conceptoInput.addEventListener('input', () => {
         const val = conceptoInput.value.toLowerCase();
         listaConceptos.innerHTML = '';
         if(!val) { listaConceptos.classList.add('hidden'); return; }
 
         const filtrados = conceptosCache.filter(c => c.toLowerCase().includes(val));
-        
-        // Siempre mostrar opción de lo que escribe como nuevo
-        // Pero listar coincidencias
-        if (filtrados.length > 0) {
+        if(filtrados.length > 0) {
             listaConceptos.classList.remove('hidden');
             filtrados.forEach(c => {
                 const div = document.createElement('div');
-                div.className = 'autocomplete-item';
+                div.className = 'dropdown-item';
                 div.textContent = c;
                 div.onclick = () => {
                     conceptoInput.value = c;
@@ -135,78 +172,76 @@ document.addEventListener("DOMContentLoaded", async () => {
                 };
                 listaConceptos.appendChild(div);
             });
-        } else {
-            listaConceptos.classList.add('hidden');
-        }
+        } else { listaConceptos.classList.add('hidden'); }
     });
 
-    // --- AUTOCOMPLETE: DIVISAS (Con búsqueda real) ---
-    divisaInput.addEventListener('input', () => {
-        const val = divisaInput.value.toLowerCase();
-        listaDivisas.innerHTML = '';
-        if(!val) { listaDivisas.classList.add('hidden'); return; }
+    // --- AUTOCOMPLETE CUENTAS (Internas) ---
+    buscarCuentaInput.addEventListener('input', () => {
+        const val = buscarCuentaInput.value.toLowerCase();
+        listaCuentas.innerHTML = '';
+        if(!val) { listaCuentas.classList.add('hidden'); return; }
 
-        const filtrados = divisasCache.filter(d => 
-            d.nombre.toLowerCase().includes(val) || 
-            d.codigo.toLowerCase().includes(val)
+        const filtrados = cuentasCache.filter(c => 
+            c.nombre.toLowerCase().includes(val) || 
+            (c.cliente && c.cliente.toLowerCase().includes(val))
         );
 
-        if (filtrados.length > 0) {
-            listaDivisas.classList.remove('hidden');
-            filtrados.forEach(d => {
+        if(filtrados.length > 0) {
+            listaCuentas.classList.remove('hidden');
+            filtrados.forEach(c => {
                 const div = document.createElement('div');
-                div.className = 'autocomplete-item flex justify-between';
-                div.innerHTML = `<span>${d.nombre}</span> <span class="font-mono text-amber-500">${d.codigo}</span>`;
+                div.className = 'dropdown-item flex-col items-start';
+                div.innerHTML = `
+                    <span class="font-bold text-white text-xs">${c.nombre}</span>
+                    <span class="text-[10px] text-slate-400">${c.cliente || 'Interna'} - ${c.divisa}</span>
+                `;
                 div.onclick = () => {
-                    divisaInput.value = `${d.nombre} (${d.codigo})`;
-                    divisaIdInput.value = d.id;
-                    listaDivisas.classList.add('hidden');
+                    buscarCuentaInput.value = c.nombre;
+                    cuentaIdInput.value = c.id;
+                    listaCuentas.classList.add('hidden');
                 };
-                listaDivisas.appendChild(div);
+                listaCuentas.appendChild(div);
             });
-        } else {
-            listaDivisas.innerHTML = '<div class="p-2 text-xs text-slate-500 italic">Sin resultados</div>';
-            listaDivisas.classList.remove('hidden');
+        } else { 
+            listaCuentas.innerHTML = '<div class="p-2 text-xs text-slate-500">Sin coincidencias</div>';
+            listaCuentas.classList.remove('hidden'); 
         }
     });
 
-    // Ocultar listas al hacer click fuera
+    // Cierres Globales
     document.addEventListener('click', (e) => {
+        if (!divisaTrigger.contains(e.target) && !listaDivisas.contains(e.target)) listaDivisas.classList.add('hidden');
         if (!conceptoInput.contains(e.target)) listaConceptos.classList.add('hidden');
-        if (!divisaInput.contains(e.target)) listaDivisas.classList.add('hidden');
+        if (!buscarCuentaInput.contains(e.target)) listaCuentas.classList.add('hidden');
     });
 
-    function seleccionarDivisaPorDefecto() {
-        if(!divisasCache.length) return;
-        // Buscar CLP
-        const clp = divisasCache.find(d => d.codigo === 'CLP');
-        if(clp) {
-            divisaInput.value = `${clp.nombre} (${clp.codigo})`;
-            divisaIdInput.value = clp.id;
-        }
-    }
-
-    cargarDatosIniciales();
+    // --- LIMPIAR ---
+    limpiarBtn.addEventListener('click', () => {
+        form.reset();
+        setTipoTransaccion('efectivo');
+        divisaIconSelected.classList.add('hidden');
+        divisaTextSelected.textContent = "Seleccione Divisa...";
+        divisaTextSelected.className = "font-medium text-slate-400";
+        divisaIdInput.value = "";
+        seleccionarDivisaPorDefecto();
+    });
 
     // --- SUBMIT ---
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        // Obtener tipo seleccionado
-        let tipoTx = 'efectivo';
-        radiosTipo.forEach(r => { if(r.checked) tipoTx = r.value; });
+        const tipoTx = tipoTransaccionInput.value;
+        const monto = parseFloat(montoInput.value);
 
         // Validaciones
-        if (!cajaSelect.value) return mostrarModal({ tipo: 'error', titulo: "Falta Caja", mensaje: "Seleccione una caja de origen." });
-        if (!conceptoInput.value.trim()) return mostrarModal({ tipo: 'error', titulo: "Falta Concepto", mensaje: "Indique el motivo del retiro." });
-        if (!divisaIdInput.value) return mostrarModal({ tipo: 'error', titulo: "Falta Divisa", mensaje: "Seleccione una divisa válida de la lista." });
+        if(!cajaSelect.value) return mostrarModal({ tipo: 'error', titulo: "Falta Caja", mensaje: "Seleccione una caja de origen." });
+        if(!conceptoInput.value.trim()) return mostrarModal({ tipo: 'error', titulo: "Falta Concepto", mensaje: "Indique el motivo del retiro." });
+        if(!divisaIdInput.value) return mostrarModal({ tipo: 'error', titulo: "Falta Divisa", mensaje: "Seleccione una divisa." });
+        if(isNaN(monto) || monto <= 0) return mostrarModal({ tipo: 'error', titulo: "Monto Inválido", mensaje: "Ingrese un monto válido mayor a 0." });
         
-        if (tipoTx === 'cuenta' && !cuentaSelect.value) {
-            return mostrarModal({ tipo: 'error', titulo: "Falta Cuenta", mensaje: "Seleccione la cuenta bancaria de cargo." });
+        if(tipoTx === 'cuenta' && !cuentaIdInput.value) {
+            return mostrarModal({ tipo: 'error', titulo: "Falta Cuenta", mensaje: "Busque y seleccione una cuenta contable." });
         }
-
-        const monto = parseFloat(montoInput.value);
-        if (isNaN(monto) || monto <= 0) return mostrarModal({ tipo: 'error', titulo: "Monto Inválido", mensaje: "El monto debe ser mayor a 0." });
 
         const payload = {
             caja_id: cajaSelect.value,
@@ -216,7 +251,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             observaciones: obsInput.value.trim(),
             usuario_id: usuarioSesionId,
             es_cuenta: (tipoTx === 'cuenta'),
-            cuenta_id: (tipoTx === 'cuenta' ? cuentaSelect.value : null)
+            cuenta_id: (tipoTx === 'cuenta' ? cuentaIdInput.value : null)
         };
 
         try {
@@ -225,26 +260,24 @@ document.addEventListener("DOMContentLoaded", async () => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
             });
-            
             const data = await res.json();
 
             if (data.success) {
                 mostrarModal({ 
                     tipo: 'exito', 
                     titulo: "Retiro Registrado", 
-                    mensaje: "El egreso se guardó correctamente.",
-                    onConfirmar: () => window.location.reload()
+                    mensaje: "El egreso se ha guardado correctamente.", 
+                    onConfirmar: () => location.reload() 
                 });
             } else {
-                mostrarModal({ tipo: 'error', titulo: "Error", mensaje: data.error || "No se pudo guardar." });
+                mostrarModal({ tipo: 'error', titulo: "Error", mensaje: data.error || "No se pudo procesar." });
             }
-
-        } catch (error) {
-            mostrarModal({ tipo: 'error', titulo: "Error Conexión", mensaje: "Fallo al comunicar con el servidor." });
+        } catch(err) {
+            mostrarModal({ tipo: 'error', titulo: "Error Conexión", mensaje: "Fallo de comunicación con el servidor." });
         }
     });
 
-    // --- MODAL SIMPLE ---
+    // Modal
     function mostrarModal({ tipo = 'info', titulo, mensaje, onConfirmar }) {
         const modal = document.getElementById("modal-generico");
         const iconoDiv = document.getElementById("modal-generico-icono");
@@ -260,13 +293,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("modal-generico-mensaje").textContent = mensaje;
         
         modal.classList.remove("hidden");
-
-        const newConfirm = btnConfirmar.cloneNode(true);
-        btnConfirmar.parentNode.replaceChild(newConfirm, btnConfirmar);
-
-        newConfirm.onclick = () => { 
-            modal.classList.add("hidden"); 
-            if (onConfirmar) onConfirmar(); 
-        };
+        const newBtn = btnConfirmar.cloneNode(true);
+        btnConfirmar.parentNode.replaceChild(newBtn, btnConfirmar);
+        newBtn.onclick = () => { modal.classList.add("hidden"); if(onConfirmar) onConfirmar(); };
     }
 });

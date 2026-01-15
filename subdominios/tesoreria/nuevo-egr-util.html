@@ -43,6 +43,17 @@
             background-color: #1e293b; /* slate-800 */
             color: #fbbf24; /* amber-400 */
         }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #0f172a; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #334155; border-radius: 4px; }
+
+        /* Dropdown Custom */
+        .custom-dropdown { position: absolute; z-index: 50; width: 100%; max-height: 250px; overflow-y: auto; background-color: #0f172a; border: 1px solid #334155; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5); }
+        .dropdown-item { padding: 0.75rem 1rem; cursor: pointer; display: flex; align-items: center; transition: all 0.2s; color: #cbd5e1; }
+        .dropdown-item:hover { background-color: #1e293b; color: #fbbf24; }
+    </style>
     </style> 
 </head>
 <body>
@@ -89,100 +100,107 @@
         <div id="sidebar-container" class="hidden lg:block h-full z-10"></div>
         
         <main class="flex-1 overflow-y-auto p-4 md:p-8 relative" id="dashboard-content">
-          <section class="max-w-4xl mx-auto fade-in h-full flex flex-col">
+          <section class="max-w-6xl mx-auto fade-in h-full flex flex-col">
             
             <div class="flex items-center justify-between mb-8 border-b border-white/10 pb-4">
                 <div>
                     <h1 class="text-3xl font-bold text-white tracking-tight">Retiro de Utilidad</h1>
-                    <p class="text-slate-400 text-sm mt-1">Registre gastos o retiros operacionales.</p>
+                    <p class="text-slate-400 text-sm mt-1">Gestión de egresos operacionales y retiros.</p>
                 </div>
-                <div class="flex gap-2">
-                    <button onclick="window.location.href='egresos-util'" class="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg border border-slate-600 text-sm font-medium transition">
-                        Ver Historial
-                    </button>
-                </div>
+                <button onclick="window.location.href='egresos-util'" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-lg border border-slate-600 text-sm font-medium transition">
+                    Ver Historial
+                </button>
             </div>
       
             <div class="bg-slate-800/80 backdrop-blur-md rounded-2xl shadow-2xl border border-white/10 overflow-hidden relative">
                 <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-600 to-amber-400"></div>
 
-                <form id="form-nuevo-utilidad" class="p-8 space-y-6">
+                <form id="form-nuevo-utilidad" class="grid grid-cols-1 lg:grid-cols-2">
                     
-                    <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-700/50 flex justify-center">
-                        <div class="flex items-center space-x-8">
-                            <label class="inline-flex items-center cursor-pointer group">
-                                <input type="radio" name="tipo_transaccion" value="efectivo" class="hidden peer" checked>
-                                <div class="w-5 h-5 border-2 border-slate-500 rounded-full flex items-center justify-center peer-checked:border-amber-500 peer-checked:bg-amber-500/20 transition">
-                                    <div class="w-2.5 h-2.5 bg-amber-500 rounded-full hidden peer-checked:block shadow-lg shadow-amber-500/50"></div>
-                                </div>
-                                <span class="ml-3 text-slate-300 font-medium group-hover:text-white peer-checked:text-white transition">Efectivo (Caja)</span>
-                            </label>
-
-                            <label class="inline-flex items-center cursor-pointer group">
-                                <input type="radio" name="tipo_transaccion" value="cuenta" class="hidden peer">
-                                <div class="w-5 h-5 border-2 border-slate-500 rounded-full flex items-center justify-center peer-checked:border-amber-500 peer-checked:bg-amber-500/20 transition">
-                                    <div class="w-2.5 h-2.5 bg-amber-500 rounded-full hidden peer-checked:block shadow-lg shadow-amber-500/50"></div>
-                                </div>
-                                <span class="ml-3 text-slate-300 font-medium group-hover:text-white peer-checked:text-white transition">Cuenta Bancaria</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="p-8 border-b lg:border-b-0 lg:border-r border-white/10 space-y-6">
+                        <h3 class="text-amber-500 text-xs font-bold uppercase tracking-widest mb-2">Configuración General</h3>
+                        
                         <div>
-                            <label for="caja" class="block mb-2 text-xs font-bold text-slate-400 uppercase tracking-wider">Caja Origen</label>
+                            <label class="block mb-2 text-xs font-bold text-slate-400 uppercase tracking-wider">Caja de Origen</label>
                             <select id="caja" class="block w-full px-4 py-3 text-sm rounded-xl bg-slate-900 border border-slate-600 text-white focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition">
-                                <option value="">Cargando cajas...</option>
+                                <option value="">Cargando...</option>
                             </select>
                         </div>
 
-                        <div class="relative group">
-                            <label for="concepto" class="block mb-2 text-xs font-bold text-slate-400 uppercase tracking-wider">Concepto / Categoría <span class="text-amber-500">*</span></label>
-                            <div class="relative">
-                                <input type="text" id="concepto" placeholder="Ej: Pago Arriendo, Retiro Socio..." autocomplete="off" class="block w-full px-4 py-3 text-sm rounded-xl bg-slate-900 border border-slate-600 text-white focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition placeholder-slate-600">
-                                <div id="lista-conceptos" class="autocomplete-list hidden"></div>
-                            </div>
-                            <p class="text-[10px] text-slate-500 mt-1">Escriba para buscar o crear una nueva categoría.</p>
-                        </div>
-                    </div>
-
-                    <div id="contenedor-cuenta" class="hidden transition-all duration-300">
-                        <label for="cuenta" class="block mb-2 text-xs font-bold text-slate-400 uppercase tracking-wider">Cuenta de Cargo <span class="text-amber-500">*</span></label>
-                        <select id="cuenta" class="block w-full px-4 py-3 text-sm rounded-xl bg-slate-900 border border-slate-600 text-white focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition">
-                            <option value="">Seleccione Cuenta</option>
-                        </select>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="relative">
-                            <label for="divisa-input" class="block mb-2 text-xs font-bold text-slate-400 uppercase tracking-wider">Divisa <span class="text-amber-500">*</span></label>
-                            <input type="text" id="divisa-input" placeholder="Buscar divisa (Ej: CLP)..." autocomplete="off" class="block w-full px-4 py-3 text-sm rounded-xl bg-slate-900 border border-slate-600 text-white focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition placeholder-slate-600 uppercase">
-                            <input type="hidden" id="divisa-id">
-                            <div id="lista-divisas" class="autocomplete-list hidden"></div>
+                            <label class="block mb-2 text-xs font-bold text-slate-400 uppercase tracking-wider">Concepto / Item</label>
+                            <input type="text" id="concepto" placeholder="Ej: Pago Arriendo, Retiro Socio..." autocomplete="off" class="block w-full px-4 py-3 text-sm rounded-xl bg-slate-900 border border-slate-600 text-white focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition placeholder-slate-600">
+                            <div id="lista-conceptos" class="custom-dropdown hidden mt-1"></div>
                         </div>
 
                         <div>
-                            <label for="monto" class="block mb-2 text-xs font-bold text-slate-400 uppercase tracking-wider">Monto <span class="text-amber-500">*</span></label>
-                            <div class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500 font-bold">$</div>
-                                <input type="number" id="monto" step="0.01" placeholder="0.00" class="block w-full pl-8 px-4 py-3 text-sm rounded-xl bg-slate-900 border border-slate-600 text-white font-mono font-bold focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition placeholder-slate-600">
+                            <label class="block mb-2 text-xs font-bold text-slate-400 uppercase tracking-wider">Tipo de Salida</label>
+                            <div class="grid grid-cols-2 gap-3 bg-slate-900/50 p-1.5 rounded-xl border border-slate-700">
+                                <button type="button" id="btn-efectivo" class="py-2.5 px-4 rounded-lg text-sm font-bold transition-all duration-200 bg-amber-600 text-white shadow-lg">
+                                    Efectivo
+                                </button>
+                                <button type="button" id="btn-cuenta" class="py-2.5 px-4 rounded-lg text-sm font-medium transition-all duration-200 text-slate-400 hover:text-white hover:bg-white/5">
+                                    Cuenta (Deuda)
+                                </button>
                             </div>
+                            <input type="hidden" id="tipo-transaccion" value="efectivo">
+                        </div>
+
+                        <div id="contenedor-cuenta" class="hidden animate-fade-in-down">
+                            <label class="block mb-2 text-xs font-bold text-slate-400 uppercase tracking-wider">Cuenta de Cargo (Destino)</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                                </div>
+                                <input type="text" id="buscar-cuenta" placeholder="Buscar cuenta interna..." class="block w-full pl-10 px-4 py-3 text-sm rounded-xl bg-slate-900 border border-slate-600 text-white focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition placeholder-slate-600">
+                                <input type="hidden" id="cuenta-id">
+                                <div id="lista-cuentas" class="custom-dropdown hidden mt-1"></div>
+                            </div>
+                            <p class="text-[10px] text-slate-500 mt-1 ml-1">Seleccione la cuenta contable asociada.</p>
                         </div>
                     </div>
 
-                    <div>
-                        <label for="observaciones" class="block mb-2 text-xs font-bold text-slate-400 uppercase tracking-wider">Observaciones</label>
-                        <textarea id="observaciones" rows="2" class="block w-full px-4 py-3 text-sm rounded-xl bg-slate-900 border border-slate-600 text-white focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition placeholder-slate-600" placeholder="Detalles adicionales..."></textarea>
-                    </div>
+                    <div class="p-8 space-y-6 bg-slate-900/30">
+                        <h3 class="text-amber-500 text-xs font-bold uppercase tracking-widest mb-2">Detalle del Valor</h3>
 
-                    <div class="flex items-center justify-end gap-3 pt-6 border-t border-white/5">
-                        <button type="button" id="limpiar" class="text-slate-400 bg-transparent border border-slate-600 hover:bg-slate-700 hover:text-white font-medium rounded-lg text-sm px-5 py-2.5 transition">
-                            Limpiar
-                        </button>
-                        <button type="submit" class="text-white bg-amber-600 hover:bg-amber-500 font-bold rounded-lg text-sm px-6 py-2.5 shadow-lg shadow-amber-900/20 transition transform hover:-translate-y-0.5 border border-amber-500 flex items-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-                            Registrar Retiro
-                        </button>
+                        <div class="relative">
+                            <label class="block mb-2 text-xs font-bold text-slate-400 uppercase tracking-wider">Divisa</label>
+                            
+                            <div id="divisa-trigger" class="flex items-center w-full px-4 py-3 text-sm rounded-xl bg-slate-900 border border-slate-600 text-white cursor-pointer hover:border-amber-500 transition group">
+                                <img id="divisa-icon-selected" src="" class="w-6 h-6 rounded-full object-cover mr-3 hidden border border-slate-500">
+                                <span id="divisa-text-selected" class="font-medium text-slate-400 group-hover:text-white transition">Seleccione Divisa...</span>
+                                <svg class="w-4 h-4 ml-auto text-slate-500 group-hover:text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
+                            <input type="hidden" id="divisa-id">
+
+                            <div id="lista-divisas" class="custom-dropdown hidden mt-2">
+                                </div>
+                        </div>
+
+                        <div>
+                            <label class="block mb-2 text-xs font-bold text-slate-400 uppercase tracking-wider">Monto del Retiro</label>
+                            <div class="relative">
+                                <input type="text" id="monto" placeholder="0.00" class="block w-full px-4 py-4 text-2xl font-bold rounded-xl bg-slate-900 border border-slate-600 text-white focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition placeholder-slate-600 text-right">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <span class="text-amber-500 text-lg font-bold">$</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block mb-2 text-xs font-bold text-slate-400 uppercase tracking-wider">Observaciones</label>
+                            <textarea id="observaciones" rows="4" class="block w-full px-4 py-3 text-sm rounded-xl bg-slate-900 border border-slate-600 text-white focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition placeholder-slate-600" placeholder="Detalle adicional obligatorio..."></textarea>
+                        </div>
+
+                        <div class="flex items-center justify-end gap-3 pt-4">
+                            <button type="button" id="limpiar" class="text-slate-400 hover:text-white font-medium text-sm px-4 py-2 transition">
+                                Limpiar
+                            </button>
+                            <button type="submit" class="text-white bg-amber-600 hover:bg-amber-500 font-bold rounded-xl text-sm px-8 py-3 shadow-lg shadow-amber-900/20 transition transform hover:-translate-y-0.5 border border-amber-500 flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                                Registrar Egreso
+                            </button>
+                        </div>
                     </div>
                 </form>
             </div>
