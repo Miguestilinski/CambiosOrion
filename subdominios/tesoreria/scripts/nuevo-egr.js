@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const limpiarBtn = document.getElementById("limpiar");
 
     // Cache
-    let clientesCache = [];
+    let clientesCache = []; // Usaremos búsqueda dinámica mejor
     let divisasCache = [];
     let cuentasCache = [];
 
@@ -47,15 +47,16 @@ document.addEventListener("DOMContentLoaded", async () => {
             const resCajas = await fetch("https://cambiosorion.cl/data/nuevo-egr.php?buscar_cajas=1");
             const cajas = await resCajas.json();
             cajaSelect.innerHTML = '<option value="">Seleccione Caja</option>';
-            cajas.forEach(c => {
-                const opt = document.createElement("option");
-                opt.value = c.id;
-                opt.textContent = c.nombre;
-                cajaSelect.appendChild(opt);
-            });
-            // Default
-            if(sessionData.caja_id && sessionData.caja_id != 0) cajaSelect.value = sessionData.caja_id;
-            else if(cajas.length > 0) cajaSelect.value = cajas[0].id;
+            if(Array.isArray(cajas)) {
+                cajas.forEach(c => {
+                    const opt = document.createElement("option");
+                    opt.value = c.id;
+                    opt.textContent = c.nombre;
+                    cajaSelect.appendChild(opt);
+                });
+                if(sessionData.caja_id && sessionData.caja_id != 0) cajaSelect.value = sessionData.caja_id;
+                else if(cajas.length > 0) cajaSelect.value = cajas[0].id;
+            }
 
             // 2. Divisas
             const resDiv = await fetch("https://cambiosorion.cl/data/nuevo-egr.php?buscar_divisas=1");
@@ -63,23 +64,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             renderizarDropdownDivisas(divisasCache);
             seleccionarDivisaPorDefecto();
 
-            // 3. Clientes (Cacheamos los primeros o buscamos dinamicamente)
-            // Para clientes, mejor buscar dinámicamente si son muchos, pero cargaremos una base pequeña si existe.
-            // En este ejemplo, usaremos búsqueda en tiempo real mejor simulada con el input.
-
-            // 4. Cuentas
-            try {
-                const resCuentas = await fetch("https://cambiosorion.cl/data/nuevo-egr.php?buscar_cuentas=1");
-                const dataCuentas = await resCuentas.json();
-                
-                if (Array.isArray(dataCuentas)) {
-                    cuentasCache = dataCuentas;
-                } else {
-                    console.warn("Error o formato inválido en cuentas:", dataCuentas);
-                    cuentasCache = [];
-                }
-            } catch (err) {
-                console.error("Error fetch cuentas:", err);
+            // 3. Cuentas (Blindado)
+            const resCuentas = await fetch("https://cambiosorion.cl/data/nuevo-egr.php?buscar_cuentas=1");
+            const dataCuentas = await resCuentas.json();
+            if (Array.isArray(dataCuentas)) {
+                cuentasCache = dataCuentas;
+            } else {
                 cuentasCache = [];
             }
 
@@ -88,7 +78,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     cargarDatos();
 
     // --- LOGICA TOGGLE (Efectivo/Cuenta) ---
-    // Usamos Rojo para Efectivo (Egreso directo) y Gris/Rojo para Cuenta
     function setTipoTransaccion(tipo) {
         tipoTransaccionInput.value = tipo;
         if (tipo === 'efectivo') {
@@ -106,6 +95,31 @@ document.addEventListener("DOMContentLoaded", async () => {
     btnEfectivo.addEventListener('click', () => setTipoTransaccion('efectivo'));
     btnCuenta.addEventListener('click', () => setTipoTransaccion('cuenta'));
 
+    // --- FUNCIÓN DE POSICIONAMIENTO INTELIGENTE ---
+    // Determina si el dropdown debe abrirse hacia ARRIBA o ABAJO
+    function toggleDropdownSmart(triggerElement, dropdownElement) {
+        if (dropdownElement.classList.contains('hidden')) {
+            // Mostrar
+            dropdownElement.classList.remove('hidden');
+            
+            // Cálculos
+            const rect = triggerElement.getBoundingClientRect();
+            const spaceBelow = window.innerHeight - rect.bottom;
+            const dropdownHeight = 250; // Altura máxima aprox definida en CSS
+
+            // Si hay menos de 260px abajo, abrir hacia arriba
+            if (spaceBelow < 260) {
+                dropdownElement.classList.add('bottom-full', 'mb-2');
+                dropdownElement.classList.remove('mt-2');
+            } else {
+                dropdownElement.classList.remove('bottom-full', 'mb-2');
+                dropdownElement.classList.add('mt-2');
+            }
+        } else {
+            dropdownElement.classList.add('hidden');
+        }
+    }
+
     // --- BÚSQUEDA CLIENTES ---
     let timeoutBusqueda;
     clienteInput.addEventListener('input', () => {
@@ -121,7 +135,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                 
                 listaClientes.innerHTML = '';
                 if(clientes.length > 0) {
+                    // Usar lógica Smart para mostrar
+                    toggleDropdownSmart(clienteInput, listaClientes);
+                    // Asegurar que se muestre (toggle lo pudo haber ocultado si ya estaba visible, forzamos remove hidden)
                     listaClientes.classList.remove('hidden');
+
                     clientes.forEach(c => {
                         const div = document.createElement('div');
                         div.className = 'dropdown-item flex-col items-start';
@@ -147,7 +165,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     function renderizarDropdownDivisas(lista) {
         listaDivisas.innerHTML = '';
         const searchContainer = document.createElement('div');
-        searchContainer.className = "p-2 sticky top-0 bg-slate-900 border-b border-slate-700";
+        searchContainer.className = "p-2 sticky top-0 bg-slate-900 border-b border-slate-700 z-50";
         const searchInput = document.createElement('input');
         searchInput.type = "text";
         searchInput.placeholder = "Filtrar...";
@@ -192,12 +210,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         if(clp) seleccionarDivisa(clp);
     }
 
+    // Trigger Divisa con Smart Position
     divisaTrigger.addEventListener('click', (e) => {
         e.stopPropagation();
-        listaDivisas.classList.toggle('hidden');
+        toggleDropdownSmart(divisaTrigger, listaDivisas);
+        
         if(!listaDivisas.classList.contains('hidden')) {
             const input = listaDivisas.querySelector('input');
-            if(input) input.focus();
+            if(input) setTimeout(() => input.focus(), 50);
         }
     });
 
@@ -208,23 +228,24 @@ document.addEventListener("DOMContentLoaded", async () => {
         if(!val) { listaCuentas.classList.add('hidden'); return; }
 
         const filtrados = cuentasCache.filter(c => 
-            // CORREGIDO: Usamos c.nombre
             (c.nombre && c.nombre.toLowerCase().includes(val)) || 
             (c.cliente && c.cliente.toLowerCase().includes(val))
         );
 
         if(filtrados.length > 0) {
+            // Posicionamiento inteligente
+            toggleDropdownSmart(buscarCuentaInput, listaCuentas);
             listaCuentas.classList.remove('hidden');
+
             filtrados.forEach(c => {
                 const div = document.createElement('div');
                 div.className = 'dropdown-item flex-col items-start';
-                // CORREGIDO: Usamos c.nombre en el HTML
                 div.innerHTML = `
                     <span class="font-bold text-white text-xs">${c.nombre}</span>
-                    <span class="text-[10px] text-slate-400">${c.cliente || 'Cuenta General'} - ${c.divisa || ''}</span>
+                    <span class="text-[10px] text-slate-400">${c.cliente || 'Interna'} - ${c.divisa || ''}</span>
                 `;
                 div.onclick = () => {
-                    buscarCuentaInput.value = c.nombre; // CORREGIDO
+                    buscarCuentaInput.value = c.nombre;
                     cuentaIdInput.value = c.id;
                     listaCuentas.classList.add('hidden');
                 };
