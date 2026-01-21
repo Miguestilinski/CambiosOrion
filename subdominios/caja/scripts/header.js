@@ -2,15 +2,15 @@
 
 const SystemConfig = {
     loginUrl: 'https://admin.cambiosorion.cl/login',
-    sidebarFile: 'sidebar.html' // Asumiendo que tienes el sidebar en un archivo separado
+    sidebarFile: 'sidebar.html'
 };
 
 // currentPageId: ID opcional para marcar activo el link del sidebar
 export async function initCajaHeader(currentPageId = '') {
     console.log('Iniciando Sistema Cajas...');
     
-    // 1. Datos de Sesión
-    await getSession();
+    // 1. Datos de Sesión (CORRECCIÓN: Capturamos el resultado)
+    const sessionData = await getSession();
 
     // 2. Cargar Sidebar (si existe contenedor)
     await cargarSidebar(currentPageId);
@@ -19,6 +19,9 @@ export async function initCajaHeader(currentPageId = '') {
     setupUserDropdown();      // Perfil
     setupSystemSwitcher();    // Context Switcher
     setupMobileSidebar();     // Menú Hamburguesa
+    
+    // 4. Retornar datos (CORRECCIÓN: Devolvemos los datos a quien llamó la función)
+    return sessionData;
 }
 
 // --- SIDEBAR LOADER ---
@@ -39,7 +42,6 @@ async function cargarSidebar(activePageId) {
 }
 
 function activarLinkSidebar(pagina) {
-    // Pequeño delay para asegurar renderizado
     setTimeout(() => {
         const links = document.querySelectorAll('aside a');
         links.forEach(link => {
@@ -65,7 +67,7 @@ function setupSystemSwitcher() {
             e.preventDefault();
             e.stopPropagation();
             const isHidden = dropdown.classList.contains('hidden');
-            closeAllMenus(); // Cerrar otros
+            closeAllMenus(); 
             
             if (isHidden) {
                 dropdown.classList.remove('hidden');
@@ -91,7 +93,6 @@ function setupMobileSidebar() {
     
     if (!btnMenu || !sidebar) return;
 
-    // Crear Backdrop si no existe
     let backdrop = document.getElementById('sidebar-backdrop');
     if (!backdrop) {
         backdrop = document.createElement('div');
@@ -109,9 +110,8 @@ function setupMobileSidebar() {
     });
 
     function openSidebar() {
-        closeAllMenus(); // Cerrar dropdowns del header
+        closeAllMenus();
         sidebar.classList.remove('hidden');
-        // Clases para mostrar sidebar fijo en móvil
         sidebar.classList.add('fixed', 'inset-y-0', 'left-0', 'z-50', 'w-64', 'bg-slate-900', 'shadow-2xl', 'border-r', 'border-white/10');
         
         backdrop.classList.remove('hidden');
@@ -157,7 +157,6 @@ function closeAllMenus() {
     if(switcher) { switcher.classList.add('hidden'); switcher.classList.remove('flex'); }
     if(chevron) chevron.classList.remove('rotate-180');
     if(profile) profile.classList.add('hidden');
-    // Nota: El sidebar móvil se gestiona aparte en su función toggle
 }
 
 // --- SESIÓN ---
@@ -170,7 +169,6 @@ async function getSession() {
             const userNameEl = document.getElementById('header-user-name');
             const userEmailEl = document.getElementById('dropdown-user-email');
             
-            // Nombre corto
             const nombreCorto = data.nombre ? data.nombre.split(' ')[0] : 'Usuario';
             
             if(userNameEl) userNameEl.textContent = nombreCorto;
