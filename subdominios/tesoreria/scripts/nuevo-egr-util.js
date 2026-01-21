@@ -2,7 +2,7 @@ import { initSystem } from './index.js';
 
 document.addEventListener("DOMContentLoaded", async () => {
     // 1. Init System
-    const sessionData = await initSystem('egresos'); 
+    const sessionData = await initSystem('egresos-util'); 
     if (!sessionData || !sessionData.isAuthenticated) return;
     const usuarioSesionId = sessionData.equipo_id || sessionData.id;
 
