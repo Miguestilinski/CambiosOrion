@@ -4,13 +4,26 @@ import {
 
 document.addEventListener('DOMContentLoaded', async () => {
     
-    // 1. Inicializar Header
-    const sessionData = await initCajaHeader('inventario');
-
-    // 2. Obtener parámetros
+    // 1. Obtener parámetros y definir Origen
     const params = new URLSearchParams(window.location.search);
     const divisaId = params.get('id');
-    // Prioridad: URL > Session
+    const origin = params.get('origin') || 'inventario'; // Por defecto: inventario
+
+    // Configuración dinámica según origen
+    let sidebarActive = 'inventario';
+    let backUrl = 'inventario.html';
+    let backText = 'Volver al Inventario';
+
+    if (origin === 'divisas') {
+        sidebarActive = 'divisas';
+        backUrl = 'divisas.html';
+        backText = 'Volver a Divisas';
+    }
+
+    // 2. Inicializar Header con el contexto correcto
+    const sessionData = await initCajaHeader(sidebarActive);
+
+    // Prioridad Caja ID: URL > Session > Null
     const cajaId = params.get('caja_id') || (sessionData ? sessionData.caja_id : null);
 
     if (!divisaId) {
@@ -35,22 +48,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         btnVolver: document.getElementById('volver-lista')
     };
 
+    // 4. Configurar Botón Volver
     if (refs.btnVolver) {
-        refs.btnVolver.onclick = () => window.location.href = 'inventario.html';
+        // Mantenemos el icono SVG, actualizamos solo el texto
+        const iconSvg = `<div class="bg-white group-hover:bg-cyan-50 p-1.5 rounded-lg mr-2 transition border border-gray-300 group-hover:border-cyan-200 shadow-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                        </div>`;
+        refs.btnVolver.innerHTML = `${iconSvg} ${backText}`;
+        refs.btnVolver.onclick = () => window.location.href = backUrl;
     }
 
-    // 4. Lógica de Carga (Switch entre Tesoreria y Caja)
-    // Como estamos en el sistema de Caja, forzamos el uso del endpoint de caja
+    // 5. Cargar Datos (Solo lectura)
     cargarDetalleCaja();
 
     function cargarDetalleCaja() {
         if (!cajaId) {
-            alert("No se detectó una caja válida en la sesión.");
-            return;
+            // Si viene de divisas pero no tiene caja asignada, mostramos aviso pero cargamos info básica si es posible
+            console.warn("No hay caja activa para mostrar historial.");
         }
 
-        // Llamamos al NUEVO PHP creado
-        const url = `https://cambiosorion.cl/data/detalle-div-caja.php?id=${divisaId}&caja_id=${cajaId}`;
+        const url = `https://cambiosorion.cl/data/detalle-div-caja.php?id=${divisaId}&caja_id=${cajaId || 0}`;
 
         fetch(url)
             .then(res => res.json())
@@ -59,7 +76,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 const d = data.divisa;
                 
-                // Llenar Ficha (Solo Lectura)
+                // Llenar Ficha
                 refs.tituloNombre.textContent = d.nombre;
                 refs.tituloCodigo.textContent = d.codigo;
                 refs.infoPais.textContent = d.pais || '-';
@@ -77,13 +94,16 @@ document.addEventListener('DOMContentLoaded', async () => {
                 // Info Caja
                 if (data.caja_info && refs.infoCajaActual) {
                     refs.infoCajaActual.textContent = data.caja_info.nombre;
+                } else if (!cajaId) {
+                    refs.infoCajaActual.textContent = "Vista General (Sin Caja)";
+                    refs.infoCajaActual.className = "text-[10px] font-normal text-gray-500 bg-gray-100 px-2 py-0.5 rounded";
                 }
 
                 renderizarMovimientos(data.operaciones || []);
             })
             .catch(err => {
                 console.error(err);
-                alert("Error al cargar datos: " + err.message);
+                mostrarModalError({ titulo: "Error", mensaje: "No se pudo cargar la información." });
             });
     }
 
@@ -105,7 +125,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             const tr = document.createElement('tr');
             tr.className = "hover:bg-gray-50 border-b border-gray-100 transition last:border-0";
             
-            // Click para ir al detalle de la operación
             tr.style.cursor = "pointer";
             tr.onclick = () => window.location.href = `detalle-op?id=${op.id}`;
 
@@ -115,22 +134,46 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <div class="text-[10px] text-gray-400 font-mono">#${op.id}</div>
                 </td>
                 <td class="px-5 py-3 text-xs text-gray-600">
-                    <div class="font-medium">${op.nombre_cliente}</div>
+                    <div class="font-medium">${limpiarTexto(op.nombre_cliente)}</div>
                 </td>
                 <td class="px-5 py-3 text-center">
                     <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded border ${tipoClass}">${op.tipo_transaccion}</span>
                 </td>
                 <td class="px-5 py-3 text-right font-mono text-gray-800 text-xs font-medium">
-                    ${parseFloat(op.monto).toLocaleString('es-CL', { minimumFractionDigits: 2 })}
+                    ${formatearNumero(op.monto)}
                 </td>
                 <td class="px-5 py-3 text-right font-mono text-gray-500 text-[10px]">
-                    ${parseFloat(op.tasa_cambio).toLocaleString('es-CL', { minimumFractionDigits: 2 })}
+                    ${formatearNumero(op.tasa_cambio)}
                 </td>
                 <td class="px-5 py-3 text-right font-mono text-cyan-700 text-xs font-bold">
-                    $${parseFloat(op.total).toLocaleString('es-CL', { minimumFractionDigits: 0 })}
+                    $${formatearNumero(op.total)}
                 </td>
             `;
             refs.tablaMovimientos.appendChild(tr);
         });
+    }
+
+    function formatearNumero(num) {
+        if (num === null || num === undefined) return '0.00';
+        return parseFloat(num).toLocaleString('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function limpiarTexto(t) {
+        if(!t) return '';
+        return t.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    function mostrarModalError({ titulo, mensaje }) {
+        const modal = document.getElementById("modal-error");
+        if(modal) {
+            document.getElementById("modal-error-titulo").textContent = titulo;
+            document.getElementById("modal-error-mensaje").textContent = mensaje;
+            const btn = document.getElementById("modal-error-confirmar");
+            
+            modal.classList.remove("hidden");
+            btn.onclick = () => modal.classList.add("hidden");
+        } else {
+            alert(`${titulo}: ${mensaje}`);
+        }
     }
 });

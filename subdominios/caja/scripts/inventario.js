@@ -2,13 +2,14 @@ import { initCajaHeader } from './header.js';
 
 document.addEventListener('DOMContentLoaded', async() => {
     
+    // 1. Inicializar Header
     const sessionData = await initCajaHeader('inventario');
     
     let currentCajaId = null;
 
     if (sessionData && sessionData.caja_id) {
         currentCajaId = sessionData.caja_id;
-        console.log("Caja ID detectada:", currentCajaId);
+        console.log("Caja ID detectada para Inventario:", currentCajaId);
     } else {
         console.warn("No se detectó caja en la sesión.");
     }
@@ -26,6 +27,7 @@ document.addEventListener('DOMContentLoaded', async() => {
     cargarDivisas();
     obtenerInventarios();
 
+    // ... (Las funciones cargarDivisas y obtenerInventarios son iguales a la versión anterior) ...
     function cargarDivisas() {
         fetch('https://cambiosorion.cl/data/divisas_api.php')
             .then(res => res.json())
@@ -48,7 +50,6 @@ document.addEventListener('DOMContentLoaded', async() => {
         const params = new URLSearchParams();
         
         params.set('caja', cajaIdParam);
-        
         if (filtros.divisa.value) params.set('divisa', filtros.divisa.value.trim());
         if (filtros.buscar.value) params.set('buscar', filtros.buscar.value.trim());
         if (filtros.mostrar.value) params.set('limite', filtros.mostrar.value);
@@ -89,8 +90,6 @@ document.addEventListener('DOMContentLoaded', async() => {
             const pmp = parseFloat(inv.pmp) || 0;
             const totalCLP = cantidad * pmp;
             const icono = inv.icono || 'https://cambiosorion.cl/orionapp/icons/default.png';
-            
-            // CORRECCION VISUAL: Mostrar Nombre (ej: Dolar) y Codigo (ej: USD)
             const nombreMostrar = inv.nombre_divisa || inv.divisa_codigo;
             
             let estadoHtml = '';
@@ -101,9 +100,9 @@ document.addEventListener('DOMContentLoaded', async() => {
             const btnVer = document.createElement('button');
             btnVer.innerHTML = `<svg class="w-5 h-5 text-gray-400 hover:text-cyan-600 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
             
-            // Enlace corregido enviando el ID correcto
+            // CORRECCIÓN: Agregamos origin=inventario
             btnVer.onclick = () => {
-                window.location.href = `detalle-div.html?id=${inv.divisa_codigo}&caja_id=${currentCajaId}`;
+                window.location.href = `detalle-div.html?id=${inv.divisa_codigo}&caja_id=${currentCajaId}&origin=inventario`;
             };
 
             tr.innerHTML = `

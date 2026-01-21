@@ -1,7 +1,8 @@
 import { initCajaHeader } from './header.js';
 
 document.addEventListener('DOMContentLoaded', async() => {
-    await initCajaHeader('index');
+    // 1. Inicializar Header marcando 'divisas' en el sidebar
+    const sessionData = await initCajaHeader('divisas');
 
     const tablaDivisas = document.getElementById('tabla-divisas');
     const borrarFiltrosBtn = document.getElementById('borrar-filtros');
@@ -12,7 +13,8 @@ document.addEventListener('DOMContentLoaded', async() => {
     const pageIndicator = document.getElementById('page-indicator');
     
     let paginaActual = 1;
-    let usuarioSesion = null;
+    // Capturamos el ID de la caja de la sesión para pasarlo al detalle
+    let currentCajaId = (sessionData && sessionData.caja_id) ? sessionData.caja_id : '';
 
     const filtros = {
         buscar: document.getElementById('buscar'),
@@ -25,60 +27,7 @@ document.addEventListener('DOMContentLoaded', async() => {
         mostrar: document.getElementById('mostrar-registros')
     };
 
-    function cargarSidebar() {
-        fetch('sidebar.html')
-            .then(response => response.text())
-            .then(html => {
-                const container = document.getElementById('sidebar-container');
-                if (container) {
-                    container.innerHTML = html;
-                    activarLinkSidebar('divisas');
-                }
-            });
-    }
-
-    function activarLinkSidebar(pagina) {
-        setTimeout(() => {
-            const links = document.querySelectorAll('#sidebar-nav a');
-            links.forEach(link => {
-                link.classList.remove('bg-cyan-50', 'text-cyan-800', 'border-l-4', 'border-cyan-600', 'shadow-sm', 'font-bold');
-                link.classList.add('text-gray-600', 'border-transparent');
-                const icon = link.querySelector('svg');
-                if(icon) { icon.classList.remove('text-cyan-600'); icon.classList.add('text-gray-400'); }
-
-                if (link.dataset.page === pagina) {
-                    link.classList.remove('text-gray-600', 'border-transparent');
-                    link.classList.add('bg-cyan-50', 'text-cyan-800', 'border-l-4', 'border-cyan-600', 'shadow-sm', 'font-bold');
-                    if(icon) { icon.classList.remove('text-gray-400'); icon.classList.add('text-cyan-600'); }
-                }
-            });
-        }, 100);
-    }
-
-    async function getSession() {
-        try {
-            const res = await fetch("https://cambiosorion.cl/data/session_status_admin.php", { credentials: "include" });
-            if (!res.ok) throw new Error("Error sesión");
-            const data = await res.json();
-            
-            if (!data.isAuthenticated || !data.equipo_id) {
-                window.location.href = 'https://admin.cambiosorion.cl/login';
-                return;
-            }
-            usuarioSesion = data;
-
-            const headerName = document.getElementById('header-user-name');
-            const headerEmail = document.getElementById('dropdown-user-email');
-            
-            if (headerName) headerName.textContent = data.nombre ? data.nombre.split(' ')[0] : 'Admin';
-            if (headerEmail) headerEmail.textContent = data.correo;
-
-            obtenerDivisas();
-
-        } catch (error) {
-            console.error("Error sesión:", error);
-        }
-    }
+    // (La función cargarSidebar ya no es necesaria aquí, la maneja header.js)
 
     function obtenerDivisas() {
         const params = new URLSearchParams();
@@ -90,10 +39,8 @@ document.addEventListener('DOMContentLoaded', async() => {
         }
         params.set('pagina', paginaActual);
 
-        // Spinner
         tablaDivisas.innerHTML = `<tr><td colspan="9" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-cyan-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
 
-        // CAMBIO: Ahora apunta a divisas-caja.php
         fetch(`https://cambiosorion.cl/data/divisas-caja.php?${params.toString()}`, { credentials: "include" })
             .then(response => {
                 if (response.status === 401) {
@@ -103,7 +50,6 @@ document.addEventListener('DOMContentLoaded', async() => {
                 return response.json();
             })
             .then(data => {
-                // Ahora data ES un array, así que esto funcionará
                 if (Array.isArray(data)) {
                     mostrarResultados(data);
                     actualizarPaginacion(data.length);
@@ -142,11 +88,9 @@ document.addEventListener('DOMContentLoaded', async() => {
             const tr = document.createElement('tr');
             tr.className = 'hover:brightness-95 transition-all text-gray-800 font-medium border-b border-gray-100 last:border-0 bg-white';
 
-            // Lógica de estado para 1/0 o Activa/Inactiva
             let estadoClass = "bg-gray-100 text-gray-600";
             let textoEstado = "Inactiva";
             
-            // Verificación flexible (string o int)
             if (String(divisa.estado) === '1' || String(divisa.estado).toLowerCase() === 'activa') {
                 estadoClass = "bg-green-100 text-green-700 border border-green-200";
                 textoEstado = "Activa";
@@ -155,16 +99,18 @@ document.addEventListener('DOMContentLoaded', async() => {
                 textoEstado = "Inactiva";
             }
 
-            // Lógica Fraccionable
             const textoFracc = (String(divisa.fraccionable) === '1') ? 'SÍ' : 'NO';
 
             const btnMostrar = document.createElement('button');
             btnMostrar.innerHTML = `<svg class="w-5 h-5 text-gray-600 hover:text-cyan-700 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
             btnMostrar.className = 'flex items-center justify-center p-1.5 bg-white/50 rounded-full hover:bg-white shadow-sm border border-transparent hover:border-cyan-300 mx-auto';
             btnMostrar.title = "Ver detalle";
+            
+            // --- LOGICA DE REDIRECCIÓN ACTUALIZADA ---
             btnMostrar.addEventListener('click', (e) => {
                 e.stopPropagation();
-                window.location.href = `detalle-div?id=${divisa.id}`;
+                // Enviamos origin=divisas y el caja_id de la sesión actual
+                window.location.href = `detalle-div.html?id=${divisa.id}&caja_id=${currentCajaId}&origin=divisas`;
             });
 
             tr.innerHTML = `
@@ -210,4 +156,7 @@ document.addEventListener('DOMContentLoaded', async() => {
             input.addEventListener('change', resetAndFetch);
         }
     });
+    
+    // Llamada inicial
+    obtenerDivisas();
 });
