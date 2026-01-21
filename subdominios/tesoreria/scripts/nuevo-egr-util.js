@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // --- INICIALIZACIÓN ---
     async function cargarDatos() {
         try {
-            // 1. Cajas (Tesorería primero)
+            // 1. Cajas
             const resCajas = await fetch("https://cambiosorion.cl/data/nuevo-egr-util.php?buscar_cajas=1");
             const cajas = await resCajas.json();
             cajaSelect.innerHTML = '<option value="">Seleccione Caja</option>';
@@ -59,20 +59,28 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             // 2. Divisas
             const resDiv = await fetch("https://cambiosorion.cl/data/nuevo-egr-util.php?buscar_divisas=1");
-            divisasCache = await resDiv.json();
-            renderizarDropdownDivisas(divisasCache);
-            seleccionarDivisaPorDefecto();
+            const dataDivisas = await resDiv.json();
+            if(Array.isArray(dataDivisas)) {
+                divisasCache = dataDivisas;
+                renderizarDropdownDivisas(divisasCache);
+                seleccionarDivisaPorDefecto();
+            }
 
-            // 3. Conceptos (Cache para autocomplete)
+            // 3. Conceptos (Cache)
             const resCon = await fetch("https://cambiosorion.cl/data/nuevo-egr-util.php?buscar_conceptos=1");
             const dataConceptos = await resCon.json();
             if(Array.isArray(dataConceptos)) conceptosCache = dataConceptos;
 
-            // 4. Cuentas
+            // 4. Cuentas (Cache)
             const resCuentas = await fetch("https://cambiosorion.cl/data/nuevo-egr-util.php?buscar_cuentas=1");
             const dataCuentas = await resCuentas.json();
-            if(Array.isArray(dataCuentas)) cuentasCache = dataCuentas;
-            else cuentasCache = [];
+            // VALIDACIÓN CRÍTICA:
+            if(Array.isArray(dataCuentas)) {
+                cuentasCache = dataCuentas;
+            } else {
+                console.warn("Cuentas no es array:", dataCuentas);
+                cuentasCache = [];
+            }
 
         } catch (e) { console.error("Error cargando datos", e); }
     }
@@ -167,7 +175,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                 };
                 listaCuentas.appendChild(div);
             });
-        } else { listaCuentas.classList.add('hidden'); }
+        } else { 
+            listaCuentas.innerHTML = '<div class="p-2 text-xs text-slate-500">Sin coincidencias</div>';
+            listaCuentas.classList.remove('hidden'); 
+        }
     });
 
     // --- DROPDOWN DIVISAS ---
@@ -254,7 +265,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const tipoTx = tipoTransaccionInput.value;
         const monto = parseFloat(montoInput.value);
 
-        if(!cajaSelect.value) return mostrarModal({ tipo: 'error', titulo: "Falta Caja", mensaje: "Seleccione caja de origen." });
+        if(!cajaSelect.value) return mostrarModal({ tipo: 'error', titulo: "Falta Caja", mensaje: "Seleccione una caja de origen." });
         if(!conceptoInput.value.trim()) return mostrarModal({ tipo: 'error', titulo: "Falta Concepto", mensaje: "Indique el concepto del retiro." });
         if(!divisaIdInput.value) return mostrarModal({ tipo: 'error', titulo: "Falta Divisa", mensaje: "Seleccione una divisa." });
         if(isNaN(monto) || monto <= 0) return mostrarModal({ tipo: 'error', titulo: "Monto Inválido", mensaje: "Ingrese un monto mayor a 0." });
