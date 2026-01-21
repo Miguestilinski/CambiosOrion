@@ -55,3 +55,18 @@ tr.venta .text-slate-300, tr.venta .text-slate-400, tr.venta .text-slate-500,
 tr.compra .text-slate-300, tr.compra .text-slate-400, tr.compra .text-slate-500 {
     color: #334155 !important; /* Slate-700 */
 }
+
+/* Scrollbar personalizado para el dashboard */
+.overflow-y-auto::-webkit-scrollbar {
+    width: 8px;
+}
+.overflow-y-auto::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.05); 
+}
+.overflow-y-auto::-webkit-scrollbar-thumb {
+    background: #cbd5e1; 
+    border-radius: 4px;
+}
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8; 
+}
