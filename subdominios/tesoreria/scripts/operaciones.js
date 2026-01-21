@@ -93,24 +93,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         operaciones.forEach(op => {
             const tr = document.createElement('tr');
-            
-            // Normalizamos el tipo a minúsculas
-            const tipo = (op.tipo_transaccion || '').toLowerCase();
-            
-            // Base común
-            let rowClasses = "border-b border-slate-700 transition cursor-pointer ";
+            // En modo oscuro, eliminamos el bg-white. Por defecto es transparente.
+            tr.className = 'transition-all border-b border-white/5 last:border-0 text-slate-300';
 
-            // Lógica de asignación de clase
-            if (tipo === 'venta') {
-                rowClasses += "venta"; // Usa el CSS #dbf599
-            } else if (tipo === 'compra') {
-                rowClasses += "compra"; // Usa el CSS #c3e8f1
-            } else {
-                // Si NO es compra ni venta, usa el estilo oscuro por defecto
-                rowClasses += "bg-slate-900 hover:bg-slate-800 text-slate-300";
-            }
+            const tipo = String(op.tipo_transaccion).toLowerCase();
             
-            tr.className = rowClasses;
+            // CSS se encarga de los colores !important
+            if (tipo === 'compra') {
+                tr.classList.add('compra');
+            } else if (tipo === 'venta') {
+                tr.classList.add('venta');
+            } 
 
             if (op.estado === 'Anulado') tr.classList.add('opacity-50', 'line-through');
 
