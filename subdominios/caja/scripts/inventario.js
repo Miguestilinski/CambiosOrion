@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', async() => {
 
     if (sessionData && sessionData.caja_id) {
         currentCajaId = sessionData.caja_id;
+        console.log("Caja ID detectada:", currentCajaId);
     } else {
         console.warn("No se detectó caja en la sesión.");
     }
@@ -27,7 +28,7 @@ document.addEventListener('DOMContentLoaded', async() => {
 
     function cargarDivisas() {
         fetch('https://cambiosorion.cl/data/divisas_api.php')
-            .then(response => response.json())
+            .then(res => res.json())
             .then(data => {
                 const dataList = document.getElementById('divisa-list');
                 if (dataList && Array.isArray(data)) {
@@ -39,17 +40,18 @@ document.addEventListener('DOMContentLoaded', async() => {
                     });
                 }
             })
-            .catch(err => console.error("Error cargando lista divisas:", err));
+            .catch(err => console.error(err));
     }
 
     function obtenerInventarios() {
         const cajaIdParam = currentCajaId ? currentCajaId : 0;
         const params = new URLSearchParams();
+        
         params.set('caja', cajaIdParam);
         
-        if (filtros.divisa && filtros.divisa.value) params.set('divisa', filtros.divisa.value.trim());
-        if (filtros.buscar && filtros.buscar.value) params.set('buscar', filtros.buscar.value.trim());
-        if (filtros.mostrar && filtros.mostrar.value) params.set('limite', filtros.mostrar.value);
+        if (filtros.divisa.value) params.set('divisa', filtros.divisa.value.trim());
+        if (filtros.buscar.value) params.set('buscar', filtros.buscar.value.trim());
+        if (filtros.mostrar.value) params.set('limite', filtros.mostrar.value);
 
         if(tablaInventarios) {
             tablaInventarios.innerHTML = `<tr><td colspan="6" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-cyan-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
@@ -65,7 +67,7 @@ document.addEventListener('DOMContentLoaded', async() => {
                 }
             })
             .catch(error => {
-                console.error("Error al cargar inventarios:", error);
+                console.error(error);
                 if(tablaInventarios) tablaInventarios.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-red-500">Error de conexión.</td></tr>`;
             });
     }
@@ -75,7 +77,7 @@ document.addEventListener('DOMContentLoaded', async() => {
         tablaInventarios.innerHTML = '';
 
         if (!inventarios || inventarios.length === 0) {
-            tablaInventarios.innerHTML = `<tr><td colspan="6" class="text-center py-10 text-gray-500 italic">No hay registros en el inventario.</td></tr>`;
+            tablaInventarios.innerHTML = `<tr><td colspan="6" class="text-center py-10 text-gray-500 italic">No hay registros.</td></tr>`;
             return;
         }
 
@@ -88,30 +90,27 @@ document.addEventListener('DOMContentLoaded', async() => {
             const totalCLP = cantidad * pmp;
             const icono = inv.icono || 'https://cambiosorion.cl/orionapp/icons/default.png';
             
+            // CORRECCION VISUAL: Mostrar Nombre (ej: Dolar) y Codigo (ej: USD)
+            const nombreMostrar = inv.nombre_divisa || inv.divisa_codigo;
+            
             let estadoHtml = '';
-            if (cantidad > 0) {
-                estadoHtml = `<span class="px-2 py-1 rounded text-[10px] font-bold uppercase bg-green-100 text-green-700 border border-green-200">Disponible</span>`;
-            } else if (cantidad < 0) {
-                estadoHtml = `<span class="px-2 py-1 rounded text-[10px] font-bold uppercase bg-red-100 text-red-700 border border-red-200">Negativo</span>`;
-            } else {
-                estadoHtml = `<span class="px-2 py-1 rounded text-[10px] font-bold uppercase bg-gray-100 text-gray-500 border border-gray-200">Sin Stock</span>`;
-            }
+            if (cantidad > 0) estadoHtml = `<span class="px-2 py-1 rounded text-[10px] font-bold uppercase bg-green-100 text-green-700 border border-green-200">Disponible</span>`;
+            else if (cantidad < 0) estadoHtml = `<span class="px-2 py-1 rounded text-[10px] font-bold uppercase bg-red-100 text-red-700 border border-red-200">Negativo</span>`;
+            else estadoHtml = `<span class="px-2 py-1 rounded text-[10px] font-bold uppercase bg-gray-100 text-gray-500 border border-gray-200">Sin Stock</span>`;
 
             const btnVer = document.createElement('button');
             btnVer.innerHTML = `<svg class="w-5 h-5 text-gray-400 hover:text-cyan-600 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
             
-            // CORRECCIÓN: Enlace a detalle-div.html pasando ID, y CajaID
+            // Enlace corregido enviando el ID correcto
             btnVer.onclick = () => {
-                const url = `detalle-div.html?id=${inv.divisa_codigo}&caja_id=${currentCajaId}`;
-                window.location.href = url;
+                window.location.href = `detalle-div.html?id=${inv.divisa_codigo}&caja_id=${currentCajaId}`;
             };
-            btnVer.title = "Ver detalles y movimientos";
 
             tr.innerHTML = `
                 <td class="px-4 py-3 flex items-center gap-3">
-                    <img src="${icono}" alt="${inv.nombre_divisa}" class="w-8 h-8 rounded-full border border-gray-200 object-contain bg-white p-0.5 shadow-sm">
+                    <img src="${icono}" class="w-8 h-8 rounded-full border border-gray-200 object-contain bg-white p-0.5 shadow-sm">
                     <div class="flex flex-col">
-                        <span class="font-bold text-gray-700 text-sm">${inv.nombre_divisa}</span>
+                        <span class="font-bold text-gray-700 text-sm">${nombreMostrar}</span>
                         <span class="text-[10px] text-gray-400 font-mono">${inv.divisa_codigo}</span>
                     </div>
                 </td>
@@ -135,9 +134,9 @@ document.addEventListener('DOMContentLoaded', async() => {
 
     if (borrarFiltrosBtn) {
         borrarFiltrosBtn.addEventListener('click', () => {
-            if(filtros.divisa) filtros.divisa.value = '';
-            if(filtros.buscar) filtros.buscar.value = '';
-            if(filtros.mostrar) filtros.mostrar.value = '25';
+            filtros.divisa.value = '';
+            filtros.buscar.value = '';
+            filtros.mostrar.value = '25';
             obtenerInventarios();
         });
     }
@@ -145,12 +144,11 @@ document.addEventListener('DOMContentLoaded', async() => {
     if (exportarBtn) {
         exportarBtn.addEventListener("click", () => {
             if (!currentCajaId) {
-                alert("No se ha detectado una caja activa para exportar.");
+                alert("No se ha detectado una caja activa.");
                 return;
             }
-            const divisaVal = filtros.divisa ? filtros.divisa.value : '';
-            const buscarVal = filtros.buscar ? filtros.buscar.value : '';
-            
+            const divisaVal = filtros.divisa.value;
+            const buscarVal = filtros.buscar.value;
             const url = `https://cambiosorion.cl/data/exportar_inventario.php?caja_id=${currentCajaId}&divisa=${divisaVal}&buscar=${buscarVal}`;
             window.open(url, '_blank');
         });
