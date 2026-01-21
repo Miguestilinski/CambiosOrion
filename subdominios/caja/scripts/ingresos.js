@@ -2,7 +2,7 @@ import { initCajaHeader } from './header.js';
 
 document.addEventListener('DOMContentLoaded', async() => {
     // 1. Capturar datos de sesión del Header
-    const sessionData = await initCajaHeader('index');
+    const sessionData = await initCajaHeader('ingresos');
     
     // 2. Configurar variables globales
     let currentCajaId = null;
