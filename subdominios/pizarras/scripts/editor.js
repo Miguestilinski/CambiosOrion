@@ -1,9 +1,11 @@
+import { initPizarrasHeader } from './header.js';
+
 let editableCurrencies = {};
 let isFetchingCurrencies = false;
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Verificar Sesión ADMIN Primero
-    getSession();
+    // 1. Inicializar Header Global (Maneja la sesión y validación de usuario)
+    initPizarrasHeader();
 
     // 2. Inicializar carga de datos
     loadCurrenciesForEdit();
@@ -35,44 +37,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
-
-// Función de sesión ADMIN
-async function getSession() {
-    try {
-        const res = await fetch("https://cambiosorion.cl/data/session_status_admin.php", {
-            credentials: "include"
-        });
-        if (!res.ok) throw new Error("No se pudo obtener la sesión.");
-        
-        const data = await res.json();
-        
-        if (!data.isAuthenticated || !data.equipo_id) {
-            window.location.href = 'https://admin.cambiosorion.cl/login';
-            return;
-        }
-
-        const nombre = data.nombre || 'Usuario';
-        const primerNombre = nombre.split(' ')[0];
-
-        const headerName = document.getElementById('header-user-name');
-        const headerEmail = document.getElementById('dropdown-user-email');
-        const userActions = document.getElementById('user-actions');
-        const guestActions = document.getElementById('guest-actions');
-
-        if (headerName) headerName.textContent = primerNombre;
-        if (headerEmail) headerEmail.textContent = data.correo;
-
-        if (userActions) {
-            userActions.classList.remove('hidden');
-            userActions.style.display = 'block';
-        }
-        if (guestActions) guestActions.classList.add('hidden');
-
-    } catch (error) {
-        console.error("Error obteniendo la sesión:", error);
-        window.location.href = 'https://admin.cambiosorion.cl/login';
-    }
-}
 
 window.openPopupWindow = function(url, title, width, height) {
     const left = (screen.width - width) / 2;
