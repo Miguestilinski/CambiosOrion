@@ -1,79 +1,37 @@
 import { initCajaHeader } from './header.js';
 
 document.addEventListener('DOMContentLoaded', async() => {
-    await initCajaHeader('index');
+    // 1. Inicializar Header, Sidebar y Sesión
+    const sessionData = await initCajaHeader('inventario');
     
-    // Variables y Elementos DOM
-    let usuarioSesion = null;
+    // 2. Configurar variables globales
+    let currentCajaId = null;
+
+    if (sessionData && sessionData.caja_id) {
+        currentCajaId = sessionData.caja_id;
+        console.log("Caja ID detectada para Inventario:", currentCajaId);
+    } else {
+        console.warn("No se detectó caja en la sesión.");
+    }
+
+    // 3. Referencias DOM
     const tablaInventarios = document.getElementById("tabla-inventario");
     const borrarFiltrosBtn = document.getElementById("borrar-filtros");
     const exportarBtn = document.getElementById("exportar");
     
-    // Objeto Filtros
     const filtros = {
         divisa: document.getElementById("divisa-input"),
         buscar: document.getElementById("buscar"),
         mostrar: document.getElementById("mostrar-registros")
     };
 
-    function cargarSidebar() {
-        fetch('sidebar.html')
-            .then(response => response.text())
-            .then(html => {
-                const container = document.getElementById('sidebar-container');
-                if (container) {
-                    container.innerHTML = html;
-                    activarLinkSidebar('inventario');
-                }
-            });
-    }
+    // 4. Carga Inicial de Datos
+    cargarDivisas();
+    obtenerInventarios();
 
-    function activarLinkSidebar(pagina) {
-        setTimeout(() => {
-            const links = document.querySelectorAll('#sidebar-nav a');
-            links.forEach(link => {
-                link.classList.remove('bg-cyan-50', 'text-cyan-800', 'border-l-4', 'border-cyan-600', 'shadow-sm', 'font-bold');
-                link.classList.add('text-gray-600', 'border-transparent');
-                const icon = link.querySelector('svg');
-                if(icon) { icon.classList.remove('text-cyan-600'); icon.classList.add('text-gray-400'); }
-                if (link.dataset.page === pagina) {
-                    link.classList.remove('text-gray-600', 'border-transparent');
-                    link.classList.add('bg-cyan-50', 'text-cyan-800', 'border-l-4', 'border-cyan-600', 'shadow-sm', 'font-bold');
-                    if(icon) { icon.classList.remove('text-gray-400'); icon.classList.add('text-cyan-600'); }
-                }
-            });
-        }, 100);
-    }
+    // --- FUNCIONES DE DATOS ---
 
-    async function getSession() {
-        try {
-            const res = await fetch("https://cambiosorion.cl/data/session_status_admin.php", { credentials: "include" });
-            if (!res.ok) throw new Error("Error sesión");
-            const data = await res.json();
-            
-            if (!data.isAuthenticated || !data.equipo_id) {
-                window.location.href = 'https://admin.cambiosorion.cl/login';
-                return;
-            }
-
-            usuarioSesion = data;
-
-            const headerName = document.getElementById('header-user-name');
-            const headerEmail = document.getElementById('dropdown-user-email');
-            
-            if (headerName) headerName.textContent = data.nombre ? data.nombre.split(' ')[0] : 'Admin';
-            if (headerEmail) headerEmail.textContent = data.correo;
-
-            // Iniciar carga de datos
-            cargarDivisas();
-            obtenerInventarios();
-
-        } catch (error) {
-            console.error("Error sesión:", error);
-        }
-    }
-
-    // --- CARGAR LISTA DIVISAS (Para Datalist) ---
+    // Cargar lista para el <datalist> de divisas
     function cargarDivisas() {
         fetch('https://cambiosorion.cl/data/divisas_api.php')
             .then(response => response.json())
@@ -91,18 +49,20 @@ document.addEventListener('DOMContentLoaded', async() => {
             .catch(err => console.error("Error cargando lista divisas:", err));
     }
 
-    // --- LÓGICA PRINCIPAL DE DATOS ---
     function obtenerInventarios() {
-        if (!usuarioSesion || !usuarioSesion.caja_id) return;
+        // Usamos el ID capturado del header
+        const cajaIdParam = currentCajaId ? currentCajaId : 0;
 
         const params = new URLSearchParams();
-        params.set('caja_id', usuarioSesion.caja_id);
+        params.set('caja_id', cajaIdParam);
         
-        if (filtros.divisa.value) params.set('divisa', filtros.divisa.value.trim());
-        if (filtros.buscar.value) params.set('buscar', filtros.buscar.value.trim());
-        if (filtros.mostrar.value) params.set('limit', filtros.mostrar.value);
+        if (filtros.divisa && filtros.divisa.value) params.set('divisa', filtros.divisa.value.trim());
+        if (filtros.buscar && filtros.buscar.value) params.set('buscar', filtros.buscar.value.trim());
+        if (filtros.mostrar && filtros.mostrar.value) params.set('limit', filtros.mostrar.value);
 
-        tablaInventarios.innerHTML = `<tr><td colspan="6" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-cyan-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
+        if(tablaInventarios) {
+            tablaInventarios.innerHTML = `<tr><td colspan="6" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-cyan-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
+        }
 
         fetch(`https://cambiosorion.cl/data/inventario_caja.php?${params.toString()}`, { credentials: "include" })
             .then(response => response.json())
@@ -111,11 +71,12 @@ document.addEventListener('DOMContentLoaded', async() => {
             })
             .catch(error => {
                 console.error("Error al cargar inventarios:", error);
-                tablaInventarios.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-red-500">Error al cargar datos.</td></tr>`;
+                if(tablaInventarios) tablaInventarios.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-red-500">Error al cargar datos.</td></tr>`;
             });
     }
 
     function mostrarResultados(inventarios) {
+        if(!tablaInventarios) return;
         tablaInventarios.innerHTML = '';
 
         if (!inventarios || inventarios.length === 0) {
@@ -146,6 +107,7 @@ document.addEventListener('DOMContentLoaded', async() => {
 
             const btnVer = document.createElement('button');
             btnVer.innerHTML = `<svg class="w-5 h-5 text-gray-400 hover:text-cyan-600 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
+            // Asumiendo que existe una página 'transacciones' o similar para ver el detalle
             btnVer.onclick = () => window.location.href = `transacciones?divisa=${inv.divisa}`;
             btnVer.title = "Ver movimientos";
 
@@ -175,17 +137,23 @@ document.addEventListener('DOMContentLoaded', async() => {
     // --- EVENTOS ---
     if (borrarFiltrosBtn) {
         borrarFiltrosBtn.addEventListener('click', () => {
-            filtros.divisa.value = '';
-            filtros.buscar.value = '';
-            filtros.mostrar.value = '25';
+            if(filtros.divisa) filtros.divisa.value = '';
+            if(filtros.buscar) filtros.buscar.value = '';
+            if(filtros.mostrar) filtros.mostrar.value = '25';
             obtenerInventarios();
         });
     }
 
     if (exportarBtn) {
         exportarBtn.addEventListener("click", () => {
-            if (!usuarioSesion || !usuarioSesion.caja_id) return;
-            const url = `https://cambiosorion.cl/data/exportar_inventario.php?caja_id=${usuarioSesion.caja_id}&divisa=${filtros.divisa.value}&buscar=${filtros.buscar.value}`;
+            if (!currentCajaId) {
+                alert("No se ha detectado una caja activa para exportar.");
+                return;
+            }
+            const divisaVal = filtros.divisa ? filtros.divisa.value : '';
+            const buscarVal = filtros.buscar ? filtros.buscar.value : '';
+            
+            const url = `https://cambiosorion.cl/data/exportar_inventario.php?caja_id=${currentCajaId}&divisa=${divisaVal}&buscar=${buscarVal}`;
             window.open(url, '_blank');
         });
     }
