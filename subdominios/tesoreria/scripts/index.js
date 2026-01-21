@@ -17,6 +17,7 @@ export async function initSystem(currentPageId) {
     initDatePickers();
     setupUserDropdown(); // Menú de perfil (Usuario)
     setupMobileSidebar(); // Menú móvil (Hamburguesa)
+    setupSystemSwitcher();
     
     // 4. Retornamos datos
     return sessionData;
@@ -47,6 +48,51 @@ export function activarLinkSidebar(pagina) {
             }
         });
     }, 50);
+}
+
+// --- NUEVA FUNCIÓN: CONTEXT SWITCHER (MÓVIL) ---
+function setupSystemSwitcher() {
+    const btn = document.getElementById('system-switcher-btn');
+    const dropdown = document.getElementById('system-switcher-dropdown');
+    const chevron = document.getElementById('system-switcher-chevron');
+
+    if (btn && dropdown) {
+        btn.onclick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const isHidden = dropdown.classList.contains('hidden');
+            
+            if (isHidden) {
+                // Abrir
+                dropdown.classList.remove('hidden');
+                dropdown.classList.add('flex'); // Usar flex para la dirección columna
+                if (chevron) chevron.classList.add('rotate-180');
+                
+                // Cerrar otros menús si estuvieran abiertos (ej. perfil)
+                const profileMenu = document.getElementById('dropdownInformation');
+                if (profileMenu && !profileMenu.classList.contains('hidden')) {
+                    profileMenu.classList.add('hidden');
+                }
+            } else {
+                // Cerrar
+                dropdown.classList.add('hidden');
+                dropdown.classList.remove('flex');
+                if (chevron) chevron.classList.remove('rotate-180');
+            }
+        };
+
+        // Cerrar al hacer click fuera
+        document.addEventListener('click', (e) => {
+            if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
+                if (!dropdown.classList.contains('hidden')) {
+                    dropdown.classList.add('hidden');
+                    dropdown.classList.remove('flex');
+                    if (chevron) chevron.classList.remove('rotate-180');
+                }
+            }
+        });
+    }
 }
 
 // --- MENU MÓVIL (SIDEBAR) ---
