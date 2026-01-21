@@ -24,7 +24,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const listaCuentas = document.getElementById("lista-cuentas");
 
     // Detalle (Derecha)
-    // Divisa Custom Dropdown
     const divisaTrigger = document.getElementById("divisa-trigger");
     const divisaIconSelected = document.getElementById("divisa-icon-selected");
     const divisaTextSelected = document.getElementById("divisa-text-selected");
@@ -35,7 +34,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const obsInput = document.getElementById("observaciones");
     const limpiarBtn = document.getElementById("limpiar");
 
-    // Cache de Datos
+    // Cache
     let conceptosCache = [];
     let divisasCache = [];
     let cuentasCache = [];
@@ -47,35 +46,39 @@ document.addEventListener("DOMContentLoaded", async () => {
             const resCajas = await fetch("https://cambiosorion.cl/data/nuevo-egr-util.php?buscar_cajas=1");
             const cajas = await resCajas.json();
             cajaSelect.innerHTML = '<option value="">Seleccione Caja</option>';
-            cajas.forEach(c => {
-                const opt = document.createElement("option");
-                opt.value = c.id;
-                opt.textContent = c.nombre;
-                cajaSelect.appendChild(opt);
-            });
-            // Default: Caja usuario o Tesorería
-            if(sessionData.caja_id && sessionData.caja_id != 0) cajaSelect.value = sessionData.caja_id;
-            else if(cajas.length > 0) cajaSelect.value = cajas[0].id;
+            if(Array.isArray(cajas)) {
+                cajas.forEach(c => {
+                    const opt = document.createElement("option");
+                    opt.value = c.id;
+                    opt.textContent = c.nombre;
+                    cajaSelect.appendChild(opt);
+                });
+                if(sessionData.caja_id && sessionData.caja_id != 0) cajaSelect.value = sessionData.caja_id;
+                else if(cajas.length > 0) cajaSelect.value = cajas[0].id;
+            }
 
-            // 2. Divisas (Con Iconos)
+            // 2. Divisas
             const resDiv = await fetch("https://cambiosorion.cl/data/nuevo-egr-util.php?buscar_divisas=1");
             divisasCache = await resDiv.json();
             renderizarDropdownDivisas(divisasCache);
             seleccionarDivisaPorDefecto();
 
-            // 3. Conceptos (Sugerencias)
+            // 3. Conceptos (Cache para autocomplete)
             const resCon = await fetch("https://cambiosorion.cl/data/nuevo-egr-util.php?buscar_conceptos=1");
-            conceptosCache = await resCon.json();
+            const dataConceptos = await resCon.json();
+            if(Array.isArray(dataConceptos)) conceptosCache = dataConceptos;
 
-            // 4. Cuentas Internas
+            // 4. Cuentas
             const resCuentas = await fetch("https://cambiosorion.cl/data/nuevo-egr-util.php?buscar_cuentas=1");
-            cuentasCache = await resCuentas.json();
+            const dataCuentas = await resCuentas.json();
+            if(Array.isArray(dataCuentas)) cuentasCache = dataCuentas;
+            else cuentasCache = [];
 
         } catch (e) { console.error("Error cargando datos", e); }
     }
     cargarDatos();
 
-    // --- LOGICA TOGGLE (BOTONES) ---
+    // --- LOGICA TOGGLE ---
     function setTipoTransaccion(tipo) {
         tipoTransaccionInput.value = tipo;
         if (tipo === 'efectivo') {
@@ -93,12 +96,85 @@ document.addEventListener("DOMContentLoaded", async () => {
     btnEfectivo.addEventListener('click', () => setTipoTransaccion('efectivo'));
     btnCuenta.addEventListener('click', () => setTipoTransaccion('cuenta'));
 
-    // --- DROPDOWN DIVISAS CUSTOM ---
+    // --- SMART DROPDOWN POSITIONING ---
+    function toggleDropdownSmart(triggerElement, dropdownElement) {
+        if (dropdownElement.classList.contains('hidden')) {
+            dropdownElement.classList.remove('hidden');
+            const rect = triggerElement.getBoundingClientRect();
+            const spaceBelow = window.innerHeight - rect.bottom;
+            if (spaceBelow < 260) {
+                dropdownElement.classList.add('bottom-full', 'mb-2');
+                dropdownElement.classList.remove('mt-1', 'mt-2');
+            } else {
+                dropdownElement.classList.remove('bottom-full', 'mb-2');
+                dropdownElement.classList.add('mt-1');
+            }
+        } else {
+            dropdownElement.classList.add('hidden');
+        }
+    }
+
+    // --- AUTOCOMPLETE CONCEPTOS ---
+    conceptoInput.addEventListener('input', () => {
+        const val = conceptoInput.value.toLowerCase();
+        listaConceptos.innerHTML = '';
+        if(!val) { listaConceptos.classList.add('hidden'); return; }
+
+        const filtrados = conceptosCache.filter(c => c.toLowerCase().includes(val));
+        if(filtrados.length > 0) {
+            toggleDropdownSmart(conceptoInput, listaConceptos);
+            listaConceptos.classList.remove('hidden');
+            
+            filtrados.forEach(c => {
+                const div = document.createElement('div');
+                div.className = 'dropdown-item';
+                div.textContent = c;
+                div.onclick = () => {
+                    conceptoInput.value = c;
+                    listaConceptos.classList.add('hidden');
+                };
+                listaConceptos.appendChild(div);
+            });
+        } else { listaConceptos.classList.add('hidden'); }
+    });
+
+    // --- AUTOCOMPLETE CUENTAS ---
+    buscarCuentaInput.addEventListener('input', () => {
+        const val = buscarCuentaInput.value.toLowerCase();
+        listaCuentas.innerHTML = '';
+        if(!val) { listaCuentas.classList.add('hidden'); return; }
+
+        const filtrados = cuentasCache.filter(c => 
+            (c.nombre && c.nombre.toLowerCase().includes(val)) || 
+            (c.cliente && c.cliente.toLowerCase().includes(val))
+        );
+
+        if(filtrados.length > 0) {
+            toggleDropdownSmart(buscarCuentaInput, listaCuentas);
+            listaCuentas.classList.remove('hidden');
+
+            filtrados.forEach(c => {
+                const div = document.createElement('div');
+                div.className = 'dropdown-item flex-col items-start';
+                div.innerHTML = `
+                    <span class="font-bold text-white text-xs">${c.nombre}</span>
+                    <span class="text-[10px] text-slate-400">${c.cliente || 'Interna'} - ${c.divisa || ''}</span>
+                `;
+                div.onclick = () => {
+                    buscarCuentaInput.value = c.nombre;
+                    cuentaIdInput.value = c.id;
+                    listaCuentas.classList.add('hidden');
+                };
+                listaCuentas.appendChild(div);
+            });
+        } else { listaCuentas.classList.add('hidden'); }
+    });
+
+    // --- DROPDOWN DIVISAS ---
     function renderizarDropdownDivisas(lista) {
         listaDivisas.innerHTML = '';
-        // Input buscador interno
         const searchContainer = document.createElement('div');
-        searchContainer.className = "p-2 sticky top-0 bg-slate-900 border-b border-slate-700";
+        searchContainer.className = "p-2 sticky top-0 bg-slate-900 border-b border-slate-700 z-50";
         const searchInput = document.createElement('input');
         searchInput.type = "text";
         searchInput.placeholder = "Filtrar...";
@@ -145,66 +221,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     divisaTrigger.addEventListener('click', (e) => {
         e.stopPropagation();
-        listaDivisas.classList.toggle('hidden');
-        // Focus en el input de búsqueda si se abre
+        toggleDropdownSmart(divisaTrigger, listaDivisas);
         if(!listaDivisas.classList.contains('hidden')) {
             const input = listaDivisas.querySelector('input');
-            if(input) input.focus();
-        }
-    });
-
-    // --- AUTOCOMPLETE CONCEPTOS ---
-    conceptoInput.addEventListener('input', () => {
-        const val = conceptoInput.value.toLowerCase();
-        listaConceptos.innerHTML = '';
-        if(!val) { listaConceptos.classList.add('hidden'); return; }
-
-        const filtrados = conceptosCache.filter(c => c.toLowerCase().includes(val));
-        if(filtrados.length > 0) {
-            listaConceptos.classList.remove('hidden');
-            filtrados.forEach(c => {
-                const div = document.createElement('div');
-                div.className = 'dropdown-item';
-                div.textContent = c;
-                div.onclick = () => {
-                    conceptoInput.value = c;
-                    listaConceptos.classList.add('hidden');
-                };
-                listaConceptos.appendChild(div);
-            });
-        } else { listaConceptos.classList.add('hidden'); }
-    });
-
-    // --- AUTOCOMPLETE CUENTAS (Internas) ---
-    buscarCuentaInput.addEventListener('input', () => {
-        const val = buscarCuentaInput.value.toLowerCase();
-        listaCuentas.innerHTML = '';
-        if(!val) { listaCuentas.classList.add('hidden'); return; }
-
-        const filtrados = cuentasCache.filter(c => 
-            c.nombre.toLowerCase().includes(val) || 
-            (c.cliente && c.cliente.toLowerCase().includes(val))
-        );
-
-        if(filtrados.length > 0) {
-            listaCuentas.classList.remove('hidden');
-            filtrados.forEach(c => {
-                const div = document.createElement('div');
-                div.className = 'dropdown-item flex-col items-start';
-                div.innerHTML = `
-                    <span class="font-bold text-white text-xs">${c.nombre}</span>
-                    <span class="text-[10px] text-slate-400">${c.cliente || 'Interna'} - ${c.divisa}</span>
-                `;
-                div.onclick = () => {
-                    buscarCuentaInput.value = c.nombre;
-                    cuentaIdInput.value = c.id;
-                    listaCuentas.classList.add('hidden');
-                };
-                listaCuentas.appendChild(div);
-            });
-        } else { 
-            listaCuentas.innerHTML = '<div class="p-2 text-xs text-slate-500">Sin coincidencias</div>';
-            listaCuentas.classList.remove('hidden'); 
+            if(input) setTimeout(() => input.focus(), 50);
         }
     });
 
@@ -219,10 +239,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     limpiarBtn.addEventListener('click', () => {
         form.reset();
         setTipoTransaccion('efectivo');
+        divisaIdInput.value = "";
+        cuentaIdInput.value = "";
         divisaIconSelected.classList.add('hidden');
         divisaTextSelected.textContent = "Seleccione Divisa...";
         divisaTextSelected.className = "font-medium text-slate-400";
-        divisaIdInput.value = "";
         seleccionarDivisaPorDefecto();
     });
 
@@ -233,14 +254,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         const tipoTx = tipoTransaccionInput.value;
         const monto = parseFloat(montoInput.value);
 
-        // Validaciones
-        if(!cajaSelect.value) return mostrarModal({ tipo: 'error', titulo: "Falta Caja", mensaje: "Seleccione una caja de origen." });
-        if(!conceptoInput.value.trim()) return mostrarModal({ tipo: 'error', titulo: "Falta Concepto", mensaje: "Indique el motivo del retiro." });
+        if(!cajaSelect.value) return mostrarModal({ tipo: 'error', titulo: "Falta Caja", mensaje: "Seleccione caja de origen." });
+        if(!conceptoInput.value.trim()) return mostrarModal({ tipo: 'error', titulo: "Falta Concepto", mensaje: "Indique el concepto del retiro." });
         if(!divisaIdInput.value) return mostrarModal({ tipo: 'error', titulo: "Falta Divisa", mensaje: "Seleccione una divisa." });
-        if(isNaN(monto) || monto <= 0) return mostrarModal({ tipo: 'error', titulo: "Monto Inválido", mensaje: "Ingrese un monto válido mayor a 0." });
+        if(isNaN(monto) || monto <= 0) return mostrarModal({ tipo: 'error', titulo: "Monto Inválido", mensaje: "Ingrese un monto mayor a 0." });
         
         if(tipoTx === 'cuenta' && !cuentaIdInput.value) {
-            return mostrarModal({ tipo: 'error', titulo: "Falta Cuenta", mensaje: "Busque y seleccione una cuenta contable." });
+            return mostrarModal({ tipo: 'error', titulo: "Falta Cuenta", mensaje: "Seleccione una cuenta contable." });
         }
 
         const payload = {
@@ -266,18 +286,17 @@ document.addEventListener("DOMContentLoaded", async () => {
                 mostrarModal({ 
                     tipo: 'exito', 
                     titulo: "Retiro Registrado", 
-                    mensaje: "El egreso se ha guardado correctamente.", 
+                    mensaje: "El egreso por utilidad se guardó correctamente.", 
                     onConfirmar: () => location.reload() 
                 });
             } else {
                 mostrarModal({ tipo: 'error', titulo: "Error", mensaje: data.error || "No se pudo procesar." });
             }
         } catch(err) {
-            mostrarModal({ tipo: 'error', titulo: "Error Conexión", mensaje: "Fallo de comunicación con el servidor." });
+            mostrarModal({ tipo: 'error', titulo: "Error Conexión", mensaje: "Fallo de comunicación." });
         }
     });
 
-    // Modal
     function mostrarModal({ tipo = 'info', titulo, mensaje, onConfirmar }) {
         const modal = document.getElementById("modal-generico");
         const iconoDiv = document.getElementById("modal-generico-icono");
