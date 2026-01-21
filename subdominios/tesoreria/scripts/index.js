@@ -128,7 +128,9 @@ function setupUserDropdown() {
 // --- SESIÓN ---
 async function getSession() {
     try {
-        const res = await fetch("https://cambiosorion.cl/data/session_status.php", { credentials: 'include' });
+        // Nota: Si realmente necesitas usar session_status_admin.php, cambia la URL aquí abajo.
+        // Por ahora mantengo session_status.php que es la que mostró datos en tu log.
+        const res = await fetch("https://cambiosorion.cl/data/session_status_admin.php", { credentials: 'include' });
         const data = await res.json();
         
         if (data.isAuthenticated) {
@@ -136,18 +138,20 @@ async function getSession() {
             const userNameEl = document.getElementById('header-user-name');
             const userEmailEl = document.getElementById('dropdown-user-email');
             
-            // Nombre corto (Ej: Juan P.)
+            // Nombre corto (Ej: Jacob)
             const nombreCorto = data.nombre ? data.nombre.split(' ')[0] : 'Usuario';
             
             if(userNameEl) userNameEl.textContent = nombreCorto;
-            if(userEmailEl) userEmailEl.textContent = data.email || 'usuario@orion.cl';
+            
+            // CORRECCIÓN: Usar data.correo en lugar de data.email
+            if(userEmailEl) userEmailEl.textContent = data.correo || 'usuario@orion.cl'; 
             
             // Logout logic
             const logoutBtn = document.getElementById('logout-button');
             if(logoutBtn) {
                 logoutBtn.onclick = (e) => {
                     e.preventDefault();
-                    fetch("https://cambiosorion.cl/data/logout.php")
+                    fetch("https://cambiosorion.cl/data/cerrar_sesion.php") // Asegúrate que esta ruta sea la correcta para logout
                         .then(() => window.location.href = SystemConfig.loginUrl);
                 };
             }
