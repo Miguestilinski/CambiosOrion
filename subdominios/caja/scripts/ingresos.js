@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', async() => {
             tablaIngresos.innerHTML = `<tr><td colspan="9" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-cyan-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
         }
 
-        fetch(`https://cambiosorion.cl/data/ingresos-caja.php?${params.toString()}`)
+        fetch(`https://cambiosorion.cl/data/ing-caja.php?${params.toString()}`)
             .then(response => response.json())
             .then(data => {
                 if (Array.isArray(data)) {

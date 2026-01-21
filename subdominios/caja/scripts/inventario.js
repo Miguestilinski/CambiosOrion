@@ -1,7 +1,9 @@
 import { initCajaHeader } from './header.js';
 
 document.addEventListener('DOMContentLoaded', async() => {
+    
     // 1. Inicializar Header, Sidebar y Sesión
+    // Pasamos 'inventario' para marcar activo el enlace en el sidebar
     const sessionData = await initCajaHeader('inventario');
     
     // 2. Configurar variables globales
@@ -54,24 +56,40 @@ document.addEventListener('DOMContentLoaded', async() => {
         const cajaIdParam = currentCajaId ? currentCajaId : 0;
 
         const params = new URLSearchParams();
-        params.set('caja_id', cajaIdParam);
+        
+        // CORRECCIÓN 1: PHP espera 'caja', no 'caja_id'
+        params.set('caja', cajaIdParam);
         
         if (filtros.divisa && filtros.divisa.value) params.set('divisa', filtros.divisa.value.trim());
         if (filtros.buscar && filtros.buscar.value) params.set('buscar', filtros.buscar.value.trim());
-        if (filtros.mostrar && filtros.mostrar.value) params.set('limit', filtros.mostrar.value);
+        
+        // CORRECCIÓN 2: PHP espera 'limite', no 'limit'
+        if (filtros.mostrar && filtros.mostrar.value) params.set('limite', filtros.mostrar.value);
 
         if(tablaInventarios) {
             tablaInventarios.innerHTML = `<tr><td colspan="6" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-cyan-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
         }
 
-        fetch(`https://cambiosorion.cl/data/inventario_caja.php?${params.toString()}`, { credentials: "include" })
-            .then(response => response.json())
+        // CORRECCIÓN 3: Apuntar al archivo correcto 'inv-caja.php'
+        fetch(`https://cambiosorion.cl/data/inv-caja.php?${params.toString()}`, { credentials: "include" })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error ${response.status}: ${response.statusText}`);
+                }
+                return response.json();
+            })
             .then(data => {
-                mostrarResultados(data);
+                // Si el PHP devuelve error controlado (success: false)
+                if (data.success === false) {
+                    console.error("Error desde PHP:", data.error);
+                    if(tablaInventarios) tablaInventarios.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-red-500">${data.error}</td></tr>`;
+                } else {
+                    mostrarResultados(data);
+                }
             })
             .catch(error => {
                 console.error("Error al cargar inventarios:", error);
-                if(tablaInventarios) tablaInventarios.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-red-500">Error al cargar datos.</td></tr>`;
+                if(tablaInventarios) tablaInventarios.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-red-500">Error de conexión o archivo no encontrado.</td></tr>`;
             });
     }
 
