@@ -110,9 +110,14 @@ document.addEventListener('DOMContentLoaded', async() => {
     function obtenerTraspasos() {
         const params = new URLSearchParams();
         
-        // Recorrer filtros (incluyendo caja_id simulado)
+        // Recorrer filtros
         for (const [clave, input] of Object.entries(filtros)) {
-            if(input && input.value) params.set(clave, input.value.trim());
+            // Verificamos que 'input' exista y tenga un valor distinto de null/undefined
+            if (input && input.value !== null && input.value !== undefined && input.value !== "") {
+                // CORRECCIÓN: Convertimos a String antes de hacer trim()
+                // Esto previene el error si el valor es un número (como caja_id)
+                params.set(clave, String(input.value).trim());
+            }
         }
         params.set('pagina', paginaActual);
 
