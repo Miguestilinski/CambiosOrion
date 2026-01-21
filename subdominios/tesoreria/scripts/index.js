@@ -15,8 +15,8 @@ export async function initSystem(currentPageId) {
     
     // 3. Inicializamos componentes UI
     initDatePickers();
-    setupUserDropdown(); // Lógica del menú de usuario
-    setupMobileSidebar(); // Lógica del menú móvil (NUEVO)
+    setupUserDropdown(); // Menú de perfil (Usuario)
+    setupMobileSidebar(); // Menú móvil (Hamburguesa)
     
     // 4. Retornamos datos
     return sessionData;
@@ -39,7 +39,9 @@ export function activarLinkSidebar(pagina) {
     setTimeout(() => {
         const links = document.querySelectorAll('aside a');
         links.forEach(link => {
+            // Estilo base (Gris)
             link.className = 'flex items-center px-4 py-2.5 text-slate-400 hover:bg-white/5 hover:text-amber-400 rounded-lg transition-colors group mb-1 border border-transparent';
+            // Estilo activo (Ámbar)
             if (link.href.includes(pagina)) {
                 link.className = 'flex items-center px-4 py-2.5 bg-amber-600 text-white rounded-lg shadow-lg shadow-amber-500/20 group mb-1 border border-amber-500 font-medium';
             }
@@ -47,14 +49,14 @@ export function activarLinkSidebar(pagina) {
     }, 50);
 }
 
-// --- MENU MÓVIL (NUEVO) ---
+// --- MENU MÓVIL (SIDEBAR) ---
 function setupMobileSidebar() {
     const btnMenu = document.getElementById('mobile-menu-btn');
     const sidebar = document.getElementById('sidebar-container');
     
     if (!btnMenu || !sidebar) return;
 
-    // Crear Backdrop (Fondo oscuro)
+    // Crear Backdrop (Fondo oscuro) si no existe
     let backdrop = document.getElementById('sidebar-backdrop');
     if (!backdrop) {
         backdrop = document.createElement('div');
@@ -81,7 +83,6 @@ function setupMobileSidebar() {
         
         // Mostrar Backdrop
         backdrop.classList.remove('hidden');
-        // Pequeño delay para la transición de opacidad
         setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
     }
 
@@ -96,20 +97,26 @@ function setupMobileSidebar() {
     }
 }
 
-// --- USER DROPDOWN ---
+// --- MENU DE PERFIL (USUARIO) ---
 function setupUserDropdown() {
     const btn = document.getElementById('profile-menu-button');
     const dropdown = document.getElementById('dropdownInformation');
+    
     if(btn && dropdown) {
+        // Toggle click
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
             dropdown.classList.toggle('hidden');
         });
+
+        // Cerrar al hacer click fuera
         document.addEventListener('click', (e) => {
             if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
                 dropdown.classList.add('hidden');
             }
         });
+    } else {
+        console.warn("No se encontraron elementos del menú de perfil (Check IDs)");
     }
 }
 
@@ -188,21 +195,50 @@ export function formatearFechaHora(fechaString) {
 
 // --- MODALES ---
 export function mostrarModalError({ titulo, mensaje }) {
-    const modal = document.getElementById("modal-error"); // Asegúrate de tener este HTML en tus layouts o crearlo dinámicamente
-    if(!modal) { alert(mensaje); return; }
+    // Intenta encontrar un modal genérico o crea uno simple alert
+    const modal = document.getElementById("modal-generico") || document.getElementById("modal-error");
     
-    const t = document.getElementById("modal-error-titulo");
-    const m = document.getElementById("modal-error-mensaje");
+    if(!modal) { 
+        alert(`${titulo}: ${mensaje}`); 
+        return; 
+    }
+    
+    const t = modal.querySelector('h2') || document.getElementById("modal-generico-titulo");
+    const m = modal.querySelector('p') || document.getElementById("modal-generico-mensaje");
+    
     if(t) t.textContent = titulo;
     if(m) m.textContent = mensaje;
     
+    // Botones
+    const btnCancel = document.getElementById("modal-generico-cancelar");
+    if(btnCancel) btnCancel.classList.add('hidden'); // Solo aceptar en error simple
+
     modal.classList.remove("hidden");
     
-    const btn = document.getElementById("modal-error-confirmar");
-    if(btn) btn.onclick = () => modal.classList.add("hidden");
+    const btnOk = document.getElementById("modal-generico-confirmar") || document.getElementById("modal-error-confirmar");
+    if(btnOk) {
+        const newBtn = btnOk.cloneNode(true);
+        btnOk.parentNode.replaceChild(newBtn, btnOk);
+        newBtn.onclick = () => modal.classList.add("hidden");
+    }
 }
 
 export function mostrarModalExitoso({ titulo = "Éxito", mensaje = "Operación realizada" } = {}) {
-    // Implementación similar si tienes un modal de éxito global
-    alert(`${titulo}: ${mensaje}`);
+    const modal = document.getElementById("modal-generico");
+    if(!modal) { alert(mensaje); return; }
+    
+    document.getElementById("modal-generico-titulo").textContent = titulo;
+    document.getElementById("modal-generico-mensaje").textContent = mensaje;
+    
+    const btnCancel = document.getElementById("modal-generico-cancelar");
+    if(btnCancel) btnCancel.classList.add('hidden');
+
+    modal.classList.remove("hidden");
+    
+    const btnOk = document.getElementById("modal-generico-confirmar");
+    if(btnOk) {
+        const newBtn = btnOk.cloneNode(true);
+        btnOk.parentNode.replaceChild(newBtn, btnOk);
+        newBtn.onclick = () => modal.classList.add("hidden");
+    }
 }
