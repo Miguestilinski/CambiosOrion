@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             tr.className = "hover:bg-gray-50 border-b border-gray-100 transition last:border-0";
             
             tr.style.cursor = "pointer";
-            tr.onclick = () => window.location.href = `detalle-op?id=${op.id}`;
+            tr.onclick = () => window.location.href = `detalle-tr?id=${op.id}`;
 
             tr.innerHTML = `
                 <td class="px-5 py-3">
