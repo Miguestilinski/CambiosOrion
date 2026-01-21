@@ -7,10 +7,10 @@ import {
 } from './index.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Init System
+    // 1. Inicializar sistema
     initSystem('ingresos');
 
-    // Referencias DOM (Validación de null)
+    // Referencias DOM
     const tablaIngresos = document.getElementById('tabla-ingresos');
     const conteoResultados = document.getElementById('conteo-resultados');
     const paginationControls = document.getElementById('pagination-controls');
@@ -19,30 +19,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const borrarFiltrosBtn = document.getElementById('borrar-filtros');
     const exportarBtn = document.getElementById('exportar');
 
-    // Si no existe la tabla, detenemos para evitar errores
-    if (!tablaIngresos) {
-        console.error("Error crítico: No se encontró el elemento 'tabla-ingresos' en el HTML.");
-        return;
-    }
-
     let paginaActual = 1;
 
     // Filtros
     const filtros = {
         fechaInicio: document.getElementById("fecha-inicio"),
         fechaFin: document.getElementById("fecha-fin"),
+        id: document.getElementById("id-ingreso"),
         cliente: document.getElementById("cliente"),
         caja: document.getElementById("caja"),
+        tipoIngreso: document.getElementById("tipo-ingreso"),
+        divisa: document.getElementById("divisa"),
+        estado: document.getElementById("estado"),
         mostrar: document.getElementById("mostrar-registros")
     };
 
-    // Inicializar Datepickers
-    if (typeof flatpickr !== 'undefined') {
-        flatpickr(filtros.fechaInicio, { dateFormat: "Y-m-d", locale: "es" });
-        flatpickr(filtros.fechaFin, { dateFormat: "Y-m-d", locale: "es" });
-    }
-
-    // Navegación Nuevo
     if (nuevoIngresoBtn) {
         nuevoIngresoBtn.addEventListener('click', () => {
             window.location.href = 'https://tesoreria.cambiosorion.cl/nuevo-ing';
@@ -52,133 +43,151 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- FETCH DATOS ---
     function obtenerIngresos() {
         const params = new URLSearchParams();
-        params.set('page', paginaActual);
-        
-        if (filtros.mostrar) params.set('limit', filtros.mostrar.value);
-        if (filtros.fechaInicio && filtros.fechaInicio.value) params.set('fecha_inicio', filtros.fechaInicio.value);
-        if (filtros.fechaFin && filtros.fechaFin.value) params.set('fecha_fin', filtros.fechaFin.value);
-        if (filtros.cliente && filtros.cliente.value) params.set('buscar', filtros.cliente.value);
-        if (filtros.caja && filtros.caja.value) params.set('caja', filtros.caja.value);
 
-        // Spinner
-        tablaIngresos.innerHTML = `
-            <tr class="animate-pulse">
-                <td colspan="7" class="px-6 py-8 text-center text-slate-500">
-                    <div class="flex justify-center items-center gap-2">
-                        <svg class="w-5 h-5 animate-spin text-green-500" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                        Cargando ingresos...
-                    </div>
-                </td>
-            </tr>`;
+        if (filtros.fechaInicio.value) params.set('fecha_inicio', filtros.fechaInicio.value);
+        if (filtros.fechaFin.value) params.set('fecha_fin', filtros.fechaFin.value);
+        if (filtros.id.value) params.set('numero', filtros.id.value.trim()); // PHP usa 'numero'
+        if (filtros.cliente.value) params.set('cliente', filtros.cliente.value.trim());
+        if (filtros.caja.value) params.set('caja', filtros.caja.value);
+        if (filtros.tipoIngreso.value) params.set('tipo', filtros.tipoIngreso.value);
+        if (filtros.divisa.value) params.set('divisa', filtros.divisa.value.trim());
+        if (filtros.estado.value) params.set('estado', filtros.estado.value);
+        
+        const limit = parseInt(filtros.mostrar.value) || 25;
+        const offset = (paginaActual - 1) * limit;
+        params.set('limit', limit);
+        params.set('offset', offset);
+
+        // Spinner Ámbar
+        tablaIngresos.innerHTML = `<tr><td colspan="9" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-amber-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
 
         fetch(`https://cambiosorion.cl/data/ingresos.php?${params.toString()}`)
             .then(res => res.json())
             .then(data => {
-                const lista = data.data || [];
-                renderTabla(lista);
-                renderPaginacion(data.page || 1, data.totalPages || 1);
-                if (conteoResultados) conteoResultados.textContent = `Mostrando ${lista.length} de ${data.total || 0} registros`;
+                // Manejo de respuesta JSON (data.data o array directo)
+                let lista = [];
+                let total = 0;
+
+                if (Array.isArray(data)) {
+                    lista = data;
+                    total = data.length;
+                } else if (data.data) {
+                    lista = data.data;
+                    total = parseInt(data.total) || lista.length;
+                }
+
+                renderizarTabla(lista);
+                renderizarPaginacion(total, limit, paginaActual);
             })
-            .catch(err => {
-                console.error(err);
-                tablaIngresos.innerHTML = `<tr><td colspan="7" class="px-6 py-4 text-center text-red-400">Error al cargar datos.</td></tr>`;
+            .catch(error => {
+                console.error('Error:', error);
+                tablaIngresos.innerHTML = `<tr><td colspan="9" class="text-center text-red-400 py-4">Error de conexión.</td></tr>`;
             });
     }
 
-    // --- RENDER TABLA ---
-    function renderTabla(datos) {
+    // --- RENDERIZADO ---
+    function renderizarTabla(ingresos) {
         tablaIngresos.innerHTML = '';
-        if (datos.length === 0) {
-            tablaIngresos.innerHTML = `<tr><td colspan="7" class="px-6 py-8 text-center text-slate-500 italic">No se encontraron ingresos.</td></tr>`;
+
+        if (ingresos.length === 0) {
+            tablaIngresos.innerHTML = `<tr><td colspan="9" class="text-center text-slate-500 py-10 italic">No se encontraron ingresos.</td></tr>`;
             return;
         }
 
-        datos.forEach(item => {
+        ingresos.forEach(row => {
             const tr = document.createElement('tr');
-            tr.className = "bg-slate-900 border-b border-slate-800 hover:bg-slate-800 transition group";
+            tr.className = 'hover:bg-white/5 transition-all border-b border-white/5 last:border-0 text-slate-300';
 
-            const origenHtml = item.cliente ? 
-                `<span class="font-bold text-white">${limpiarTexto(item.cliente)}</span>` : 
-                (item.cuenta_nombre ? 
-                    `<span class="text-slate-300">Cuenta: ${limpiarTexto(item.cuenta_nombre)}</span>` : 
-                    `<span class="text-slate-500 italic">Sin Origen</span>`);
+            // Estados
+            let estadoClass = "bg-slate-800 text-slate-400 border border-slate-700";
+            const est = String(row.estado).toLowerCase();
+            if(est === 'vigente') estadoClass = "bg-green-900/40 text-green-300 border border-green-500/30";
+            if(est === 'anulado') estadoClass = "bg-red-900/40 text-red-300 border border-red-500/30";
+
+            // Botón Acción
+            const btnVer = document.createElement('button');
+            btnVer.innerHTML = `<svg class="w-5 h-5 text-slate-400 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
+            btnVer.className = 'flex items-center justify-center p-1.5 bg-white/5 rounded-full hover:bg-amber-600 shadow-sm border border-transparent transition-all mx-auto';
+            btnVer.onclick = (e) => {
+                e.stopPropagation();
+                window.location.href = `detalle-ingreso?id=${row.id}`;
+            };
+
+            // Lógica para mostrar Cliente o Cuenta (dependiendo del tipo)
+            let origen = row.cliente || '';
+            if(!origen && row.cuenta) origen = row.cuenta; // Si es cuenta contable
 
             tr.innerHTML = `
-                <td class="px-6 py-4">
-                    ${formatearFechaHora(item.fecha)}
-                    <div class="text-[10px] text-slate-600 font-mono mt-0.5">#${item.id}</div>
+                <td class="px-4 py-3 whitespace-nowrap text-xs">${formatearFechaHora(row.fecha)}</td>
+                <td class="px-4 py-3 font-mono text-xs font-bold text-slate-500">${limpiarTexto(row.id)}</td>
+                <td class="px-4 py-3 text-xs uppercase font-bold text-slate-400 tracking-wide">${limpiarTexto(row.caja)}</td>
+                <td class="px-4 py-3 font-semibold text-sm text-white truncate max-w-[140px]" title="${limpiarTexto(origen)}">${limpiarTexto(origen)}</td>
+                <td class="px-4 py-3 text-xs uppercase text-slate-400 tracking-wide">${limpiarTexto(row.tipo_ingreso)}</td>
+                <td class="px-4 py-3 text-center font-bold text-amber-400 text-xs">${limpiarTexto(row.divisa)}</td>
+                <td class="px-4 py-3 text-right font-bold font-mono text-emerald-400 text-sm">${formatearNumero(row.monto)}</td>
+                <td class="px-4 py-3 text-center">
+                    <span class="px-2 py-0.5 rounded text-[10px] uppercase font-bold ${estadoClass}">${limpiarTexto(row.estado)}</span>
                 </td>
-                <td class="px-6 py-4 text-sm">
-                    ${origenHtml}
-                </td>
-                <td class="px-6 py-4 text-center text-xs text-slate-400">
-                    ${item.caja || '---'}
-                </td>
-                <td class="px-6 py-4 text-center">
-                    <span class="px-2 py-1 rounded text-[10px] uppercase font-bold bg-slate-800 border border-slate-700 text-slate-400">
-                        ${item.tipo_ingreso}
-                    </span>
-                </td>
-                <td class="px-6 py-4 text-right">
-                    <div class="font-mono font-bold text-green-400 text-sm">
-                        ${formatearNumero(item.monto)} <span class="text-xs text-slate-500">${item.divisa}</span>
-                    </div>
-                </td>
-                <td class="px-6 py-4 text-center">
-                    <span class="px-2 py-1 rounded-full text-[10px] font-bold uppercase bg-green-900/30 text-green-400 border border-green-500/30">
-                        ${item.estado || 'Vigente'}
-                    </span>
-                </td>
-                <td class="px-6 py-4 text-center">
-                    <button class="text-slate-500 hover:text-white transition" onclick="alert('Detalle no disponible aún')">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                    </button>
-                </td>
+                <td class="px-4 py-3 text-center cell-action"></td>
             `;
+
+            tr.querySelector('.cell-action').appendChild(btnVer);
             tablaIngresos.appendChild(tr);
         });
     }
 
     // --- PAGINACIÓN ---
-    function renderPaginacion(pagina, totalPaginas) {
+    function renderizarPaginacion(totalRegistros, porPagina, pagina) {
+        conteoResultados.textContent = `Total: ${totalRegistros}`;
         paginationControls.innerHTML = '';
+
+        const totalPaginas = Math.ceil(totalRegistros / porPagina);
         if (totalPaginas <= 1) return;
 
         const crearBtn = (txt, disabled, fn) => {
             const b = document.createElement('button');
-            b.innerHTML = txt;
-            b.className = `px-3 py-1 text-xs font-medium rounded-md border transition ${disabled ? 'bg-slate-800 text-slate-600 border-slate-700 cursor-not-allowed' : 'bg-slate-800 text-slate-300 border-slate-600 hover:bg-slate-700 hover:text-white hover:border-green-500'}`;
+            b.textContent = txt;
+            b.className = `px-3 py-1 bg-slate-800 border border-slate-600 rounded hover:bg-slate-700 text-white text-xs transition ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`;
             b.disabled = disabled;
             b.onclick = fn;
             return b;
         };
 
-        paginationControls.appendChild(crearBtn('<', pagina === 1, () => { paginaActual--; obtenerIngresos(); }));
+        paginationControls.appendChild(crearBtn('Anterior', pagina === 1, () => cambioPagina(pagina - 1)));
         const span = document.createElement('span');
         span.className = "text-xs font-bold text-slate-400 px-2";
         span.textContent = `${pagina} / ${totalPaginas}`;
         paginationControls.appendChild(span);
-        paginationControls.appendChild(crearBtn('>', pagina === totalPaginas, () => { paginaActual++; obtenerIngresos(); }));
+        paginationControls.appendChild(crearBtn('Siguiente', pagina === totalPaginas, () => cambioPagina(pagina + 1)));
+    }
+
+    function cambioPagina(nuevaPagina) {
+        paginaActual = nuevaPagina;
+        obtenerIngresos();
     }
 
     // --- EVENTOS ---
     const resetAndFetch = () => { paginaActual = 1; obtenerIngresos(); };
 
-    if (borrarFiltrosBtn) {
-        borrarFiltrosBtn.addEventListener('click', () => {
-            Object.values(filtros).forEach(input => {
-                if (input) {
-                    input.value = '';
-                    if (input._flatpickr) input._flatpickr.clear();
-                }
-            });
-            if (filtros.mostrar) filtros.mostrar.value = '25';
-            resetAndFetch();
+    borrarFiltrosBtn.addEventListener('click', () => {
+        Object.values(filtros).forEach(input => {
+            if(!input) return;
+            input.value = '';
+            if(input._flatpickr) input._flatpickr.clear();
+        });
+        if(filtros.mostrar) filtros.mostrar.value = '25';
+        resetAndFetch();
+    });
+
+    if (exportarBtn) {
+        exportarBtn.addEventListener('click', () => {
+            // Lógica para abrir exportar con los filtros actuales
+            alert("Funcionalidad de exportación pendiente de backend.");
         });
     }
 
     Object.values(filtros).forEach(input => {
-        if (input) {
+        if(input) {
             input.addEventListener('input', resetAndFetch);
             input.addEventListener('change', resetAndFetch);
         }
