@@ -46,61 +46,6 @@ document.addEventListener('DOMContentLoaded', async() => {
         flatpickr(".flatpickr", config);
     }
 
-    function cargarSidebar() {
-        fetch('sidebar.html')
-            .then(response => response.text())
-            .then(html => {
-                const container = document.getElementById('sidebar-container');
-                if (container) {
-                    container.innerHTML = html;
-                    activarLinkSidebar('ingresos');
-                }
-            });
-    }
-
-    function activarLinkSidebar(pagina) {
-        setTimeout(() => {
-            const links = document.querySelectorAll('#sidebar-nav a');
-            links.forEach(link => {
-                link.classList.remove('bg-cyan-50', 'text-cyan-800', 'border-l-4', 'border-cyan-600', 'shadow-sm', 'font-bold');
-                link.classList.add('text-gray-600', 'border-transparent');
-                const icon = link.querySelector('svg');
-                if(icon) { icon.classList.remove('text-cyan-600'); icon.classList.add('text-gray-400'); }
-
-                if (link.dataset.page === pagina) {
-                    link.classList.remove('text-gray-600', 'border-transparent');
-                    link.classList.add('bg-cyan-50', 'text-cyan-800', 'border-l-4', 'border-cyan-600', 'shadow-sm', 'font-bold');
-                    if(icon) { icon.classList.remove('text-gray-400'); icon.classList.add('text-cyan-600'); }
-                }
-            });
-        }, 100);
-    }
-
-    async function getSession() {
-        try {
-            const res = await fetch("https://cambiosorion.cl/data/session_status_admin.php", { credentials: "include" });
-            if (!res.ok) throw new Error("Error sesión");
-            const data = await res.json();
-            
-            if (!data.isAuthenticated || !data.equipo_id) {
-                window.location.href = 'https://admin.cambiosorion.cl/login';
-                return;
-            }
-            currentCajaId = data.caja_id;
-
-            const headerName = document.getElementById('header-user-name');
-            const headerEmail = document.getElementById('dropdown-user-email');
-            
-            if (headerName) headerName.textContent = data.nombre ? data.nombre.split(' ')[0] : 'Admin';
-            if (headerEmail) headerEmail.textContent = data.correo;
-
-            obtenerIngresos();
-
-        } catch (error) {
-            console.error("Error sesión:", error);
-        }
-    }
-
     function obtenerIngresos() {
         const cajaIdParam = currentCajaId ? currentCajaId : 0; 
         const params = new URLSearchParams();
