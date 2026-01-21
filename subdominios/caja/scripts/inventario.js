@@ -2,21 +2,16 @@ import { initCajaHeader } from './header.js';
 
 document.addEventListener('DOMContentLoaded', async() => {
     
-    // 1. Inicializar Header, Sidebar y Sesión
-    // Pasamos 'inventario' para marcar activo el enlace en el sidebar
     const sessionData = await initCajaHeader('inventario');
     
-    // 2. Configurar variables globales
     let currentCajaId = null;
 
     if (sessionData && sessionData.caja_id) {
         currentCajaId = sessionData.caja_id;
-        console.log("Caja ID detectada para Inventario:", currentCajaId);
     } else {
         console.warn("No se detectó caja en la sesión.");
     }
 
-    // 3. Referencias DOM
     const tablaInventarios = document.getElementById("tabla-inventario");
     const borrarFiltrosBtn = document.getElementById("borrar-filtros");
     const exportarBtn = document.getElementById("exportar");
@@ -27,13 +22,9 @@ document.addEventListener('DOMContentLoaded', async() => {
         mostrar: document.getElementById("mostrar-registros")
     };
 
-    // 4. Carga Inicial de Datos
     cargarDivisas();
     obtenerInventarios();
 
-    // --- FUNCIONES DE DATOS ---
-
-    // Cargar lista para el <datalist> de divisas
     function cargarDivisas() {
         fetch('https://cambiosorion.cl/data/divisas_api.php')
             .then(response => response.json())
@@ -52,36 +43,22 @@ document.addEventListener('DOMContentLoaded', async() => {
     }
 
     function obtenerInventarios() {
-        // Usamos el ID capturado del header
         const cajaIdParam = currentCajaId ? currentCajaId : 0;
-
         const params = new URLSearchParams();
-        
-        // CORRECCIÓN 1: PHP espera 'caja', no 'caja_id'
         params.set('caja', cajaIdParam);
         
         if (filtros.divisa && filtros.divisa.value) params.set('divisa', filtros.divisa.value.trim());
         if (filtros.buscar && filtros.buscar.value) params.set('buscar', filtros.buscar.value.trim());
-        
-        // CORRECCIÓN 2: PHP espera 'limite', no 'limit'
         if (filtros.mostrar && filtros.mostrar.value) params.set('limite', filtros.mostrar.value);
 
         if(tablaInventarios) {
             tablaInventarios.innerHTML = `<tr><td colspan="6" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-cyan-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
         }
 
-        // CORRECCIÓN 3: Apuntar al archivo correcto 'inv-caja.php'
         fetch(`https://cambiosorion.cl/data/inv-caja.php?${params.toString()}`, { credentials: "include" })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Error ${response.status}: ${response.statusText}`);
-                }
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
-                // Si el PHP devuelve error controlado (success: false)
                 if (data.success === false) {
-                    console.error("Error desde PHP:", data.error);
                     if(tablaInventarios) tablaInventarios.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-red-500">${data.error}</td></tr>`;
                 } else {
                     mostrarResultados(data);
@@ -89,7 +66,7 @@ document.addEventListener('DOMContentLoaded', async() => {
             })
             .catch(error => {
                 console.error("Error al cargar inventarios:", error);
-                if(tablaInventarios) tablaInventarios.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-red-500">Error de conexión o archivo no encontrado.</td></tr>`;
+                if(tablaInventarios) tablaInventarios.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-red-500">Error de conexión.</td></tr>`;
             });
     }
 
@@ -109,11 +86,8 @@ document.addEventListener('DOMContentLoaded', async() => {
             const cantidad = parseFloat(inv.cantidad) || 0;
             const pmp = parseFloat(inv.pmp) || 0;
             const totalCLP = cantidad * pmp;
-
-            // Icono
             const icono = inv.icono || 'https://cambiosorion.cl/orionapp/icons/default.png';
             
-            // Estado visual
             let estadoHtml = '';
             if (cantidad > 0) {
                 estadoHtml = `<span class="px-2 py-1 rounded text-[10px] font-bold uppercase bg-green-100 text-green-700 border border-green-200">Disponible</span>`;
@@ -125,14 +99,21 @@ document.addEventListener('DOMContentLoaded', async() => {
 
             const btnVer = document.createElement('button');
             btnVer.innerHTML = `<svg class="w-5 h-5 text-gray-400 hover:text-cyan-600 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
-            // Asumiendo que existe una página 'transacciones' o similar para ver el detalle
-            btnVer.onclick = () => window.location.href = `transacciones?divisa=${inv.divisa}`;
-            btnVer.title = "Ver movimientos";
+            
+            // CORRECCIÓN: Enlace a detalle-div.html pasando ID, y CajaID
+            btnVer.onclick = () => {
+                const url = `detalle-div.html?id=${inv.divisa_codigo}&caja_id=${currentCajaId}`;
+                window.location.href = url;
+            };
+            btnVer.title = "Ver detalles y movimientos";
 
             tr.innerHTML = `
                 <td class="px-4 py-3 flex items-center gap-3">
-                    <img src="${icono}" alt="${inv.divisa}" class="w-8 h-8 rounded-full border border-gray-200 object-contain bg-white p-0.5 shadow-sm">
-                    <span class="font-bold text-gray-700">${inv.divisa}</span>
+                    <img src="${icono}" alt="${inv.nombre_divisa}" class="w-8 h-8 rounded-full border border-gray-200 object-contain bg-white p-0.5 shadow-sm">
+                    <div class="flex flex-col">
+                        <span class="font-bold text-gray-700 text-sm">${inv.nombre_divisa}</span>
+                        <span class="text-[10px] text-gray-400 font-mono">${inv.divisa_codigo}</span>
+                    </div>
                 </td>
                 <td class="px-4 py-3 text-right font-mono text-sm ${cantidad < 0 ? 'text-red-600 font-bold' : ''}">
                     ${cantidad.toLocaleString("es-CL", { minimumFractionDigits: 2 })}
@@ -152,7 +133,6 @@ document.addEventListener('DOMContentLoaded', async() => {
         });
     }
 
-    // --- EVENTOS ---
     if (borrarFiltrosBtn) {
         borrarFiltrosBtn.addEventListener('click', () => {
             if(filtros.divisa) filtros.divisa.value = '';
