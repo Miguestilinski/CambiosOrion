@@ -33,32 +33,30 @@ html {
 .scroller::-webkit-scrollbar-thumb { background-color: #475569; border-radius: 4px; } /* Slate-600 */
 .scroller::-webkit-scrollbar-track { background-color: transparent; }
 
-/* --- COLORES DE TRANSACCIONES (NO TOCAR) --- */
+/* --- COLORES DE OPERACIONES (NO TOCAR) --- */
 
-/* VENTA: #dbf599 (Verde Lima Claro) */
+/* VENTA (Verde Lima) */
 tr.venta, .venta {
     background-color: #dbf599 !important;
-    color: #0f172a !important; /* Texto Slate-900 (Oscuro) para contraste */
+    color: #0f172a !important; /* Texto oscuro para que se lea bien */
 }
-/* Hover Venta: Un tono ligeramente más oscuro/saturado del mismo verde */
 tr.venta:hover {
-    background-color: #cbe68b !important; 
+    background-color: #c9e876 !important; /* Un poco más oscuro al pasar el mouse */
 }
 
-/* COMPRA: #c3e8f1 (Azul Cian Claro) */
+/* COMPRA (Azul Cian) */
 tr.compra, .compra {
     background-color: #c3e8f1 !important;
-    color: #0f172a !important; /* Texto Slate-900 (Oscuro) para contraste */
+    color: #0f172a !important; /* Texto oscuro */
 }
-/* Hover Compra: Un tono ligeramente más oscuro/azulado del mismo cian */
 tr.compra:hover {
-    background-color: #b0dce7 !important;
+    background-color: #a5dbe9 !important; /* Un poco más oscuro al pasar el mouse */
 }
 
-/* Ajustes para elementos dentro de las filas de color para que se vean bien */
-tr.venta .text-slate-400, tr.compra .text-slate-400,
-tr.venta .text-slate-500, tr.compra .text-slate-500 {
-    color: #475569 !important; /* Slate-600: Oscurecer textos grises para que se lean */
+/* IMPORTANTE: Forzar color oscuro en textos grises dentro de estas filas */
+tr.venta .text-slate-300, tr.venta .text-slate-400, tr.venta .text-slate-500,
+tr.compra .text-slate-300, tr.compra .text-slate-400, tr.compra .text-slate-500 {
+    color: #334155 !important; /* Slate-700 */
 }
 
 /* Scrollbar personalizado para el dashboard */
