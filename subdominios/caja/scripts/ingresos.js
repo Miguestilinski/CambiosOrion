@@ -1,9 +1,23 @@
 import { initCajaHeader } from './header.js';
 
 document.addEventListener('DOMContentLoaded', async() => {
-    await initCajaHeader('index');
+    // 1. Capturar datos de sesión del Header
+    const sessionData = await initCajaHeader('index');
+    
+    // 2. Configurar variables globales
+    let currentCajaId = null;
+    
+    // Asignar ID de caja si viene en la sesión
+    if (sessionData && sessionData.caja_id) {
+        currentCajaId = sessionData.caja_id;
+        console.log("Caja ID detectada:", currentCajaId);
+    } else {
+        console.warn("No se detectó caja abierta en la sesión.");
+    }
+
     initDatePickers();
 
+    // Referencias del DOM
     const nuevoIngresoBtn = document.getElementById('nuevo-ingreso');
     const tablaIngresos = document.getElementById('tabla-ingresos');
     const borrarFiltrosBtn = document.getElementById('borrar-filtros');
@@ -14,7 +28,6 @@ document.addEventListener('DOMContentLoaded', async() => {
     const pageIndicator = document.getElementById('page-indicator');
     
     let paginaActual = 1;
-    let currentCajaId = null;
 
     const filtros = {
         fechaInicio: document.getElementById("fecha-inicio"),
@@ -43,11 +56,16 @@ document.addEventListener('DOMContentLoaded', async() => {
             allowInput: true,
             disableMobile: "true"
         };
-        flatpickr(".flatpickr", config);
+        // Verificar si existe flatpickr antes de llamar
+        if (typeof flatpickr !== 'undefined') {
+            flatpickr(".flatpickr", config);
+        }
     }
 
     function obtenerIngresos() {
+        // Usar el ID de caja capturado al inicio
         const cajaIdParam = currentCajaId ? currentCajaId : 0; 
+        
         const params = new URLSearchParams();
         params.set('caja_id', cajaIdParam);
 
@@ -58,7 +76,9 @@ document.addEventListener('DOMContentLoaded', async() => {
         }
         params.set('pagina', paginaActual);
 
-        tablaIngresos.innerHTML = `<tr><td colspan="9" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-cyan-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
+        if(tablaIngresos) {
+            tablaIngresos.innerHTML = `<tr><td colspan="9" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-cyan-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
+        }
 
         fetch(`https://cambiosorion.cl/data/ingresos-caja.php?${params.toString()}`)
             .then(response => response.json())
@@ -66,23 +86,28 @@ document.addEventListener('DOMContentLoaded', async() => {
                 if (Array.isArray(data)) {
                     mostrarResultados(data);
                     actualizarPaginacion(data.length);
+                } else if (data && data.ingresos) {
+                     // Por si la API devuelve { ingresos: [...], total: ... }
+                    mostrarResultados(data.ingresos);
+                    actualizarPaginacion(data.ingresos.length);
                 } else {
                     console.error("Respuesta inválida:", data);
-                    tablaIngresos.innerHTML = `<tr><td colspan="9" class="text-center py-4 text-red-500">Error en formato de datos.</td></tr>`;
+                    if(tablaIngresos) tablaIngresos.innerHTML = `<tr><td colspan="9" class="text-center py-4 text-red-500">Error en formato de datos.</td></tr>`;
                 }
             })
             .catch(error => {
                 console.error('Error fetch:', error);
-                tablaIngresos.innerHTML = `<tr><td colspan="9" class="text-center py-4 text-red-500">Error de conexión.</td></tr>`;
+                if(tablaIngresos) tablaIngresos.innerHTML = `<tr><td colspan="9" class="text-center py-4 text-red-500">Error de conexión.</td></tr>`;
             });
     }
 
     function actualizarPaginacion(cantidadResultados) {
         if (pageIndicator) pageIndicator.textContent = `Página ${paginaActual}`;
-        if (contadorRegistros) contadorRegistros.textContent = `${cantidadResultados} registros`;
+        if (contadorRegistros) contadorRegistros.textContent = `${cantidadResultados} registros visibles`;
 
         const limite = parseInt(filtros.mostrar.value) || 25;
         if (btnPrev) btnPrev.disabled = (paginaActual <= 1);
+        // Deshabilitar siguiente si trajimos menos registros que el límite (llegamos al final)
         if (btnNext) btnNext.disabled = (cantidadResultados < limite);
     }
 
@@ -109,6 +134,7 @@ document.addEventListener('DOMContentLoaded', async() => {
     }
 
     function mostrarResultados(registros) {
+        if(!tablaIngresos) return;
         tablaIngresos.innerHTML = '';
 
         if (!registros || registros.length === 0) {
@@ -123,6 +149,7 @@ document.addEventListener('DOMContentLoaded', async() => {
             let estadoClass = "bg-gray-100 text-gray-600";
             if(String(row.estado) === 'Vigente') estadoClass = "bg-green-100 text-green-700 border border-green-200";
             if(String(row.estado) === 'Anulado') estadoClass = "bg-red-100 text-red-700 border border-red-200";
+            if(String(row.estado) === 'Pagado') estadoClass = "bg-blue-100 text-blue-700 border border-blue-200";
 
             const btnMostrar = document.createElement('button');
             btnMostrar.innerHTML = `<svg class="w-5 h-5 text-gray-600 hover:text-cyan-700 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
@@ -156,7 +183,6 @@ document.addEventListener('DOMContentLoaded', async() => {
             Object.values(filtros).forEach(input => {
                 if(!input) return;
                 input.value = '';
-                // Aseguramos limpiar flatpickr si existe
                 if(input._flatpickr) input._flatpickr.clear();
             });
             if(filtros.mostrar) filtros.mostrar.value = '25';
@@ -172,4 +198,8 @@ document.addEventListener('DOMContentLoaded', async() => {
             input.addEventListener('change', resetAndFetch);
         }
     });
+
+    // --- IMPORTANTE: LLAMADA INICIAL ---
+    // Esta línea faltaba en tu código original
+    obtenerIngresos();
 });
