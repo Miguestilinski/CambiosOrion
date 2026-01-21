@@ -156,40 +156,40 @@
                     </div>
                 </div>
                 
-                <div class="bg-slate-800/80 backdrop-blur-md rounded-xl border border-white/10 shadow-2xl overflow-hidden flex flex-col flex-1">
-                    <div class="overflow-x-auto custom-scrollbar flex-1">
-                        <table class="w-full text-sm text-left text-slate-300">
-                            <thead class="text-xs text-slate-400 uppercase bg-slate-900/80 border-b border-slate-700 sticky top-0 z-10">
+                <div class="bg-slate-900/80 backdrop-blur-md rounded-xl shadow-xl border border-white/10 overflow-hidden flex flex-col w-full">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left border-collapse">
+                            <thead class="text-xs uppercase bg-slate-950/80 text-slate-400 font-extrabold tracking-wide sticky top-0 z-20 shadow-sm border-b border-white/10">
                                 <tr>
-                                    <th scope="col" class="px-6 py-4 text-center">Caja</th>
-                                    <th scope="col" class="px-6 py-4 text-left">Divisa</th>
-                                    <th scope="col" class="px-6 py-4 text-right">Cantidad</th>
-                                    <th scope="col" class="px-6 py-4 text-right">P.M.P.</th>
-                                    <th scope="col" class="px-6 py-4 text-right">Total (CLP)</th>
-                                    <th scope="col" class="px-4 py-3 text-center">Estado</th>
-                                    <th scope="col" class="px-6 py-4 text-center">Acciones</th>
+                                    <th class="px-4 py-4 w-[140px]">Fecha</th>
+                                    <th class="px-4 py-4 w-20">ID</th>
+                                    <th class="px-4 py-4 w-32">Caja</th>
+                                    <th class="px-4 py-4">Cliente / Cuenta</th>
+                                    <th class="px-4 py-4 w-32">Tipo</th>
+                                    <th class="px-4 py-4 w-24 text-center">Divisa</th>
+                                    <th class="px-4 py-4 w-32 text-right">Monto</th>
+                                    <th class="px-4 py-4 w-28 text-center">Estado</th>
+                                    <th class="px-4 py-4 w-16 text-center">Ver</th>
                                 </tr>
                             </thead>
-                            <tbody id="tabla-ingresos" class="divide-y divide-slate-800">
-                                <tr class="bg-slate-800/50 animate-pulse">
-                                    <td colspan="6" class="px-6 py-8 text-center text-slate-500">Cargando ingresos...</td>
-                                </tr>
-                            </tbody>
+                            <tbody id="tabla-ingresos" class="divide-y divide-white/5 text-slate-300">
+                                </tbody>
                         </table>
                     </div>
                     
-                    <div class="bg-slate-900/90 border-t border-slate-700 px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
-                        <span class="text-sm text-slate-400" id="conteo-resultados">Mostrando 0 registros</span>
-                        
-                        <div class="flex items-center gap-4">
-                            <select id="mostrar-registros" class="bg-slate-800 border border-slate-600 text-white text-xs rounded-lg focus:ring-amber-500 focus:border-amber-500 block p-2">
-                                <option value="10">10 por pág</option>
-                                <option value="25" selected>25 por pág</option>
-                                <option value="50">50 por pág</option>
-                                <option value="100">100 por pág</option>
+                    <div class="bg-slate-900 px-4 py-3 border-t border-white/10 flex justify-between items-center text-xs text-slate-400">
+                        <div class="flex items-center gap-3">
+                            <span class="text-sm font-medium">Mostrar</span>
+                            <select id="mostrar-registros" class="text-xs border-slate-700 rounded-md focus:ring-amber-500 focus:border-amber-500 bg-slate-800 text-white px-3 py-1">
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
                             </select>
-                            <nav id="pagination-controls" class="flex items-center gap-1"></nav>
+                            <span id="conteo-resultados" class="font-medium">Cargando...</span>
                         </div>
+
+                        <div class="flex items-center gap-2" id="pagination-controls">
+                            </div>
                     </div>
                 </div>
                 
