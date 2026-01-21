@@ -35,28 +35,22 @@ html {
 
 /* --- COLORES DE OPERACIONES (NO TOCAR) --- */
 
-/* VENTA (Verde Lima) */
+/* VENTA (Verde) */
 tr.venta, .venta {
     background-color: #dbf599 !important;
-    color: #0f172a !important; /* Texto oscuro para que se lea bien */
 }
+/* Hover ligeramente más oscuro */
 tr.venta:hover {
-    background-color: #c9e876 !important; /* Un poco más oscuro al pasar el mouse */
+    background-color: #c9e876 !important; 
 }
 
-/* COMPRA (Azul Cian) */
+/* COMPRA (Azul) */
 tr.compra, .compra {
     background-color: #c3e8f1 !important;
-    color: #0f172a !important; /* Texto oscuro */
 }
+/* Hover ligeramente más oscuro */
 tr.compra:hover {
-    background-color: #a5dbe9 !important; /* Un poco más oscuro al pasar el mouse */
-}
-
-/* IMPORTANTE: Forzar color oscuro en textos grises dentro de estas filas */
-tr.venta .text-slate-300, tr.venta .text-slate-400, tr.venta .text-slate-500,
-tr.compra .text-slate-300, tr.compra .text-slate-400, tr.compra .text-slate-500 {
-    color: #334155 !important; /* Slate-700 */
+    background-color: #a5dbe9 !important; 
 }
 
 /* Scrollbar personalizado para el dashboard */
