@@ -102,21 +102,26 @@ function setupUserDropdown() {
     const btn = document.getElementById('profile-menu-button');
     const dropdown = document.getElementById('dropdownInformation');
     
-    if(btn && dropdown) {
-        // Toggle click
-        btn.addEventListener('click', (e) => {
+    if (btn && dropdown) {
+        console.log("Sistema: Menú de perfil inicializado correctamente.");
+        
+        btn.onclick = (e) => {
+            e.preventDefault();
             e.stopPropagation();
             dropdown.classList.toggle('hidden');
-        });
+            console.log("Click en perfil -> Toggle menú");
+        };
 
         // Cerrar al hacer click fuera
         document.addEventListener('click', (e) => {
             if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
-                dropdown.classList.add('hidden');
+                if (!dropdown.classList.contains('hidden')) {
+                    dropdown.classList.add('hidden');
+                }
             }
         });
     } else {
-        console.warn("No se encontraron elementos del menú de perfil (Check IDs)");
+        console.error("Error: No se encontró el botón 'profile-menu-button' o el menú 'dropdownInformation'. Revisa los IDs en el HTML.");
     }
 }
 
