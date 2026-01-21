@@ -1,6 +1,7 @@
-document.addEventListener('DOMContentLoaded', () => {
-    getSession();
-    cargarSidebar();
+import { initCajaHeader } from './header.js';
+
+document.addEventListener('DOMContentLoaded', async() => {
+    await initCajaHeader('index');
 
     const tablaDivisas = document.getElementById('tabla-divisas');
     const borrarFiltrosBtn = document.getElementById('borrar-filtros');

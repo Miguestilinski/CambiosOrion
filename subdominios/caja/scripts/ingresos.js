@@ -1,7 +1,8 @@
-document.addEventListener('DOMContentLoaded', () => {
-    cargarSidebar();
+import { initCajaHeader } from './header.js';
+
+document.addEventListener('DOMContentLoaded', async() => {
+    await initCajaHeader('index');
     initDatePickers();
-    getSession();
 
     const nuevoIngresoBtn = document.getElementById('nuevo-ingreso');
     const tablaIngresos = document.getElementById('tabla-ingresos');

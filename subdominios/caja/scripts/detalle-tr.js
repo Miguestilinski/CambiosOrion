@@ -1,4 +1,7 @@
-document.addEventListener("DOMContentLoaded", () => {
+import { initCajaHeader } from './header.js';
+
+document.addEventListener('DOMContentLoaded', async() => {
+    await initCajaHeader('index');
     const params = new URLSearchParams(window.location.search);
     const id = params.get("id");
 

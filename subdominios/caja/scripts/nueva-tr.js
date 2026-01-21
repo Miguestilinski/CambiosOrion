@@ -1,10 +1,12 @@
+import { initCajaHeader } from './header.js';
+
 let usuarioSesion = null;
 let clienteSeleccionado = null;
 
-document.addEventListener('DOMContentLoaded', () => {
-    // 1. Inicialización General
-    getSession();
-    cargarSidebar();
+document.addEventListener('DOMContentLoaded', async() => {
+
+    await initCajaHeader('index');
+
     cargarDivisas();
 
     // 2. Referencias del DOM

@@ -1,12 +1,13 @@
+import { initCajaHeader } from './header.js';
+
 let caja_id = null;
 let usuarioSesion = null;
 let divisasBase = []; // Datos base (info divisa + saldo sistema)
 let estadoArqueo = {}; // { id_divisa: { fisico_total: 0, desglose: { '20000': 5, '10000': 2 } } }
 let divisaSeleccionadaId = null;
 
-document.addEventListener("DOMContentLoaded", function() {
-    getSession();
-    cargarSidebar(); 
+document.addEventListener('DOMContentLoaded', async() => {
+    await initCajaHeader('index');
     
     // Filtro lista lateral
     const inputBuscar = document.getElementById('buscar-divisa');

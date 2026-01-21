@@ -1,4 +1,7 @@
-document.addEventListener('DOMContentLoaded', () => {
+import { initCajaHeader } from './header.js';
+
+document.addEventListener('DOMContentLoaded', async() => {
+    await initCajaHeader('index');
     const menuItems = document.querySelectorAll('.menu-item');
     const sections = document.querySelectorAll('.content-section');
 

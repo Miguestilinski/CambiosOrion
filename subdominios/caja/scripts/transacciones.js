@@ -1,10 +1,9 @@
 import { initCajaHeader } from './header.js';
 
 document.addEventListener('DOMContentLoaded', async() => {
-    // 1. Fechas
-    initDatePickers();
-
     await initCajaHeader('index');
+
+    initDatePickers();
 
     const nuevaTransaccionBtn = document.getElementById('nueva-tr');
     const tablaTransacciones = document.getElementById('tabla-transacciones');
