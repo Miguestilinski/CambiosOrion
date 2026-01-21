@@ -1,7 +1,19 @@
 import { initCajaHeader } from './header.js';
 
 document.addEventListener('DOMContentLoaded', async() => {
-    await initCajaHeader('index');
+    // 1. Capturar datos de sesión e inicializar Header
+    const sessionData = await initCajaHeader('transacciones');
+
+    // 2. Configurar variables globales
+    let currentCajaId = null;
+    
+    // Asignar ID de caja si viene en la sesión
+    if (sessionData && sessionData.caja_id) {
+        currentCajaId = sessionData.caja_id;
+        console.log("Caja ID detectada para Egresos:", currentCajaId);
+    } else {
+        console.warn("No se detectó caja abierta en la sesión.");
+    }
 
     initDatePickers();
 
