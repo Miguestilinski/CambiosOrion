@@ -199,51 +199,74 @@ export function formatearFechaHora(fechaString) {
 }
 
 // --- MODALES ---
-export function mostrarModalError({ titulo, mensaje }) {
-    // Intenta encontrar un modal genérico o crea uno simple alert
-    const modal = document.getElementById("modal-generico") || document.getElementById("modal-error");
-    
-    if(!modal) { 
-        alert(`${titulo}: ${mensaje}`); 
-        return; 
-    }
-    
-    const t = modal.querySelector('h2') || document.getElementById("modal-generico-titulo");
-    const m = modal.querySelector('p') || document.getElementById("modal-generico-mensaje");
-    
-    if(t) t.textContent = titulo;
-    if(m) m.textContent = mensaje;
-    
-    // Botones
-    const btnCancel = document.getElementById("modal-generico-cancelar");
-    if(btnCancel) btnCancel.classList.add('hidden'); // Solo aceptar en error simple
 
-    modal.classList.remove("hidden");
+function crearModalDinamico(tipo, titulo, mensaje) {
+    // Definir colores e iconos SVG según el tipo
+    const config = tipo === 'error' 
+        ? { bgIcon: 'bg-red-900/50', textIcon: 'text-red-500', btn: 'bg-red-600 hover:bg-red-700', iconPath: 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z' }
+        : { bgIcon: 'bg-green-900/50', textIcon: 'text-green-500', btn: 'bg-green-600 hover:bg-green-700', iconPath: 'M5 13l4 4L19 7' };
+
+    const modalHTML = `
+        <div id="modal-dinamico" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[200] fade-in">
+            <div class="bg-slate-800 rounded-xl shadow-2xl p-6 max-w-sm w-full mx-4 border border-white/10 transform transition-all scale-100">
+                <div class="flex flex-col items-center text-center">
+                    <div class="${config.bgIcon} p-3 rounded-full mb-3">
+                        <svg class="w-8 h-8 ${config.textIcon}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${config.iconPath}"></path></svg>
+                    </div>
+                    <h2 class="text-lg font-bold text-white mb-2">${titulo}</h2>
+                    <p class="text-sm text-slate-400 mb-6">${mensaje}</p>
+                    <div class="flex justify-end gap-2 w-full">
+                        <button id="btn-cerrar-modal" class="w-full ${config.btn} text-white py-2 rounded-lg font-bold text-sm transition shadow-lg">Aceptar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Si ya existe uno, lo borramos
+    const existente = document.getElementById('modal-dinamico');
+    if (existente) existente.remove();
+
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+    document.getElementById('btn-cerrar-modal').onclick = () => {
+        document.getElementById('modal-dinamico').remove();
+    };
+}
+
+export function mostrarModalError({ titulo, mensaje }) {
+    // Intenta usar el modal existente en el HTML (operaciones.html), si falla, crea uno dinámico.
+    const modal = document.getElementById("modal-error");
     
-    const btnOk = document.getElementById("modal-generico-confirmar") || document.getElementById("modal-error-confirmar");
-    if(btnOk) {
-        const newBtn = btnOk.cloneNode(true);
-        btnOk.parentNode.replaceChild(newBtn, btnOk);
-        newBtn.onclick = () => modal.classList.add("hidden");
+    if (modal) {
+        const t = document.getElementById("modal-error-titulo");
+        const m = document.getElementById("modal-error-mensaje");
+        const btn = document.getElementById("modal-error-confirmar");
+        
+        if (t) t.textContent = titulo;
+        if (m) m.textContent = mensaje;
+        
+        modal.classList.remove("hidden");
+        modal.classList.add("flex"); // Asegurar display flex para centrado
+        
+        // Z-Index alto para asegurar que tape todo
+        modal.classList.add("z-[200]");
+
+        if (btn) {
+            // Clonar para limpiar eventos anteriores
+            const newBtn = btn.cloneNode(true);
+            btn.parentNode.replaceChild(newBtn, btn);
+            newBtn.onclick = () => {
+                modal.classList.add("hidden");
+                modal.classList.remove("flex");
+            };
+        }
+    } else {
+        // Fallback elegante: Crear modal con Tailwind al vuelo
+        crearModalDinamico('error', titulo, mensaje);
     }
 }
 
 export function mostrarModalExitoso({ titulo = "Éxito", mensaje = "Operación realizada" } = {}) {
-    const modal = document.getElementById("modal-generico");
-    if(!modal) { alert(mensaje); return; }
-    
-    document.getElementById("modal-generico-titulo").textContent = titulo;
-    document.getElementById("modal-generico-mensaje").textContent = mensaje;
-    
-    const btnCancel = document.getElementById("modal-generico-cancelar");
-    if(btnCancel) btnCancel.classList.add('hidden');
-
-    modal.classList.remove("hidden");
-    
-    const btnOk = document.getElementById("modal-generico-confirmar");
-    if(btnOk) {
-        const newBtn = btnOk.cloneNode(true);
-        btnOk.parentNode.replaceChild(newBtn, btnOk);
-        newBtn.onclick = () => modal.classList.add("hidden");
-    }
+    crearModalDinamico('success', titulo, mensaje);
 }
