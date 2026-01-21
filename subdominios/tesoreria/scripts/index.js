@@ -12,9 +12,13 @@ export async function initSystem(currentPageId) {
     
     // 2. Cargamos sidebar y herramientas visuales
     await cargarSidebar(currentPageId);
-    initDatePickers();
     
-    // 3. RETORNAMOS los datos para que los scripts (como arqueo.js) los usen
+    // 3. Inicializamos componentes UI
+    initDatePickers();
+    setupUserDropdown(); // Lógica del menú de usuario
+    setupMobileSidebar(); // Lógica del menú móvil (NUEVO)
+    
+    // 4. Retornamos datos
     return sessionData;
 }
 
@@ -35,74 +39,139 @@ export function activarLinkSidebar(pagina) {
     setTimeout(() => {
         const links = document.querySelectorAll('aside a');
         links.forEach(link => {
-            // Reset styles base (Gris oscuro/neutro)
             link.className = 'flex items-center px-4 py-2.5 text-slate-400 hover:bg-white/5 hover:text-amber-400 rounded-lg transition-colors group mb-1 border border-transparent';
-            
-            const icon = link.querySelector('svg');
-            if(icon) { 
-                icon.classList.remove('text-amber-500'); 
-                icon.classList.add('text-slate-500', 'group-hover:text-amber-500'); 
-            }
-
-            // Activo (Fondo ámbar sutil, texto ámbar brillante)
-            if (link.dataset.page === pagina) {
-                link.classList.remove('text-slate-400', 'border-transparent', 'hover:bg-white/5');
-                link.classList.add('bg-amber-500/10', 'text-amber-400', 'border-l-4', 'border-amber-500', 'font-bold');
-                if(icon) { 
-                    icon.classList.remove('text-slate-500'); 
-                    icon.classList.add('text-amber-500'); 
-                }
+            if (link.href.includes(pagina)) {
+                link.className = 'flex items-center px-4 py-2.5 bg-amber-600 text-white rounded-lg shadow-lg shadow-amber-500/20 group mb-1 border border-amber-500 font-medium';
             }
         });
-    }, 100);
+    }, 50);
+}
+
+// --- MENU MÓVIL (NUEVO) ---
+function setupMobileSidebar() {
+    const btnMenu = document.getElementById('mobile-menu-btn');
+    const sidebar = document.getElementById('sidebar-container');
+    
+    if (!btnMenu || !sidebar) return;
+
+    // Crear Backdrop (Fondo oscuro)
+    let backdrop = document.getElementById('sidebar-backdrop');
+    if (!backdrop) {
+        backdrop = document.createElement('div');
+        backdrop.id = 'sidebar-backdrop';
+        backdrop.className = 'fixed inset-0 bg-black/60 z-40 hidden lg:hidden backdrop-blur-sm transition-opacity opacity-0';
+        document.body.appendChild(backdrop);
+        
+        // Click en fondo cierra menú
+        backdrop.addEventListener('click', closeSidebar);
+    }
+
+    // Toggle Botón
+    btnMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isHidden = sidebar.classList.contains('hidden');
+        if (isHidden) openSidebar();
+        else closeSidebar();
+    });
+
+    function openSidebar() {
+        // Mostrar Sidebar en modo Móvil (Fixed, Z-Index alto)
+        sidebar.classList.remove('hidden');
+        sidebar.classList.add('fixed', 'inset-y-0', 'left-0', 'z-50', 'w-64', 'bg-slate-900', 'shadow-2xl', 'border-r', 'border-white/10', 'slide-in-animation');
+        
+        // Mostrar Backdrop
+        backdrop.classList.remove('hidden');
+        // Pequeño delay para la transición de opacidad
+        setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
+    }
+
+    function closeSidebar() {
+        // Ocultar y limpiar clases móviles
+        sidebar.classList.add('hidden');
+        sidebar.classList.remove('fixed', 'inset-y-0', 'left-0', 'z-50', 'w-64', 'bg-slate-900', 'shadow-2xl', 'border-r', 'border-white/10', 'slide-in-animation');
+        
+        // Ocultar Backdrop
+        backdrop.classList.add('opacity-0');
+        setTimeout(() => backdrop.classList.add('hidden'), 300);
+    }
+}
+
+// --- USER DROPDOWN ---
+function setupUserDropdown() {
+    const btn = document.getElementById('profile-menu-button');
+    const dropdown = document.getElementById('dropdownInformation');
+    if(btn && dropdown) {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdown.classList.toggle('hidden');
+        });
+        document.addEventListener('click', (e) => {
+            if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
+    }
 }
 
 // --- SESIÓN ---
-export async function getSession() {
+async function getSession() {
     try {
-        const res = await fetch(`${SystemConfig.apiBase}/session_status_admin.php`, { credentials: "include" });
-        if (!res.ok) throw new Error("Error sesión");
+        const res = await fetch("https://cambiosorion.cl/data/session_status.php", { credentials: 'include' });
         const data = await res.json();
         
-        if (!data.isAuthenticated) {
+        if (data.isAuthenticated) {
+            // Actualizar Header
+            const userNameEl = document.getElementById('header-user-name');
+            const userEmailEl = document.getElementById('dropdown-user-email');
+            
+            // Nombre corto (Ej: Juan P.)
+            const nombreCorto = data.nombre ? data.nombre.split(' ')[0] : 'Usuario';
+            
+            if(userNameEl) userNameEl.textContent = nombreCorto;
+            if(userEmailEl) userEmailEl.textContent = data.email || 'usuario@orion.cl';
+            
+            // Logout logic
+            const logoutBtn = document.getElementById('logout-button');
+            if(logoutBtn) {
+                logoutBtn.onclick = (e) => {
+                    e.preventDefault();
+                    fetch("https://cambiosorion.cl/data/logout.php")
+                        .then(() => window.location.href = SystemConfig.loginUrl);
+                };
+            }
+            return data;
+        } else {
             window.location.href = SystemConfig.loginUrl;
-            return null;
+            return { isAuthenticated: false };
         }
-
-        const headerName = document.getElementById('header-user-name');
-        const headerEmail = document.getElementById('dropdown-user-email');
-        
-        if (headerName) headerName.textContent = data.nombre ? data.nombre.split(' ')[0] : 'Admin';
-        if (headerEmail) headerEmail.textContent = data.correo;
-
-        // IMPORTANTE: Retornar el objeto data
-        return data;
-
     } catch (error) {
-        console.error("Error sesión:", error);
-        return null;
+        console.error("Error de sesión", error);
+        return { isAuthenticated: false };
     }
 }
 
-// --- UTILIDADES ---
+// --- TOOLS ---
 export function initDatePickers() {
     if (typeof flatpickr !== 'undefined') {
-        flatpickr(".flatpickr", {
+        const inputs = document.querySelectorAll('input[type="date"], .datepicker');
+        inputs.forEach(inp => flatpickr(inp, { 
+            dateFormat: "Y-m-d", 
             locale: "es",
-            dateFormat: "Y-m-d",
-            altInput: true,
-            altFormat: "d/m/Y",
-            allowInput: true,
-            disableMobile: "true"
-        });
+            theme: "airbnb" 
+        }));
     }
 }
 
-export function limpiarTexto(valor) { return valor === null || valor === undefined ? '' : valor; }
+export function limpiarTexto(texto) {
+    if (!texto) return '';
+    const span = document.createElement('div');
+    span.innerText = texto;
+    return span.innerHTML;
+}
 
-export function formatearNumero(numero) {
-    if (numero === null || numero === undefined || numero === '') return '';
-    return Number(numero).toLocaleString('es-CL', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+export function formatearNumero(num) {
+    if (num === null || num === undefined) return '0.00';
+    return parseFloat(num).toLocaleString('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 export function formatearFechaHora(fechaString) {
@@ -119,30 +188,21 @@ export function formatearFechaHora(fechaString) {
 
 // --- MODALES ---
 export function mostrarModalError({ titulo, mensaje }) {
-    const modal = document.getElementById("modal-error");
+    const modal = document.getElementById("modal-error"); // Asegúrate de tener este HTML en tus layouts o crearlo dinámicamente
     if(!modal) { alert(mensaje); return; }
     
-    document.getElementById("modal-error-titulo").textContent = titulo;
-    document.getElementById("modal-error-mensaje").textContent = mensaje;
+    const t = document.getElementById("modal-error-titulo");
+    const m = document.getElementById("modal-error-mensaje");
+    if(t) t.textContent = titulo;
+    if(m) m.textContent = mensaje;
+    
     modal.classList.remove("hidden");
     
-    const btnOk = document.getElementById("modal-error-confirmar");
-    if(btnOk) btnOk.onclick = () => modal.classList.add("hidden");
+    const btn = document.getElementById("modal-error-confirmar");
+    if(btn) btn.onclick = () => modal.classList.add("hidden");
 }
 
 export function mostrarModalExitoso({ titulo = "Éxito", mensaje = "Operación realizada" } = {}) {
-    const modal = document.getElementById("modal-exitoso");
-    if(!modal) return;
-    
-    const h2 = modal.querySelector('h2');
-    const p = modal.querySelector('p');
-    if(h2) h2.textContent = titulo;
-    if(p) p.textContent = mensaje;
-
-    modal.classList.remove("hidden");
-    
-    const btnVolver = document.getElementById("volver");
-    if(btnVolver) btnVolver.onclick = () => {
-        modal.classList.add("hidden");
-    };
+    // Implementación similar si tienes un modal de éxito global
+    alert(`${titulo}: ${mensaje}`);
 }

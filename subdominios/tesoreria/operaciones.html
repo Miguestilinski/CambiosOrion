@@ -27,8 +27,17 @@
     <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js" crossorigin="anonymous"></script>
     <header class="flex-shrink-0 z-50 bg-slate-900/80 backdrop-blur-md shadow-lg border-b border-white/10">
         <div class="w-full px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16"> 
-                <div class="flex items-center gap-4">
+            <div class="flex justify-between items-center h-16 relative"> 
+                
+                <div class="flex items-center lg:hidden">
+                    <button id="mobile-menu-btn" type="button" class="text-slate-300 hover:text-white p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-inset focus:ring-amber-500 transition">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="flex items-center gap-4 absolute left-1/2 transform -translate-x-1/2 lg:static lg:transform-none lg:left-auto">
                     <a href="https://cambiosorion.cl/" class="flex-shrink-0 group">
                         <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Logo" class="h-10 w-auto opacity-90 group-hover:opacity-100 transition">
                     </a>
@@ -36,12 +45,14 @@
                         Tesorería
                     </span>
                 </div>
+
                 <nav class="hidden lg:flex space-x-1 bg-white/5 p-1 rounded-lg border border-white/10">
                     <a href="https://admin.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-indigo-600/20 hover:text-indigo-300 transition">Inicio</a>
                     <a href="https://pizarras.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-green-600/20 hover:text-green-300 transition">Pizarras</a>
                     <a href="https://caja.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-cyan-600/20 hover:text-cyan-300 transition">Caja</a>
                     <a href="#" class="px-4 py-2 text-sm font-medium rounded-md text-white bg-amber-600 shadow-lg shadow-amber-500/20 transition">Tesorería</a>
                 </nav>
+
                 <div class="flex items-center gap-4 lg:gap-6 mr-1"> 
                     <div id="user-actions" class="relative ml-2 block">
                         <button id="profile-menu-button" class="flex items-center gap-3 text-sm rounded-full focus:outline-none ring-2 ring-slate-700 hover:ring-amber-500 transition pl-1 pr-3 py-1 bg-slate-800 hover:bg-slate-700 text-white">
