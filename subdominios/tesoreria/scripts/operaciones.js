@@ -74,107 +74,13 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(data => {
                 const lista = data.operaciones || [];
                 const total = parseInt(data.totalFiltrado) || 0;
-                renderTabla(lista);
+                renderizarTabla(lista);
                 renderizarPaginacion(total, parseInt(filtros.mostrar.value), paginaActual);
             })
             .catch(error => {
                 console.error('Error:', error);
                 tablaOperaciones.innerHTML = `<tr><td colspan="12" class="text-center text-red-400 py-4">Error de conexión.</td></tr>`;
             });
-    }
-
-    // --- RENDER TABLA ---
-    function renderTabla(datos) {
-        tablaOperaciones.innerHTML = '';
-        
-        if (!datos || datos.length === 0) {
-            tablaOperaciones.innerHTML = `<tr><td colspan="9" class="px-6 py-8 text-center text-slate-500 italic">No se encontraron operaciones.</td></tr>`;
-            return;
-        }
-
-        datos.forEach(op => {
-            const tr = document.createElement('tr');
-            
-            const tipo = (op.tipo_transaccion || '').toLowerCase();
-            
-            // 1. Determinar si es una fila de color (clara) o normal (oscura)
-            const esFilaColor = (tipo === 'venta' || tipo === 'compra');
-
-            // 2. Clases Base de Tailwind
-            // Usamos 'brightness-95' en hover para oscurecer ligeramente los colores personalizados
-            let rowClasses = "border-b border-slate-700 transition cursor-pointer ";
-
-            if (tipo === 'venta') {
-                rowClasses += "venta text-slate-900 hover:brightness-95"; 
-            } else if (tipo === 'compra') {
-                rowClasses += "compra text-slate-900 hover:brightness-95";
-            } else {
-                // Estilo por defecto (Dark Mode)
-                rowClasses += "bg-slate-900 hover:bg-slate-800 text-slate-300";
-            }
-            
-            tr.className = rowClasses;
-
-            // 3. Variables de color de texto según el fondo para asegurar contraste
-            const txtPrimary = esFilaColor ? "text-slate-900" : "text-white";
-            const txtSecondary = esFilaColor ? "text-slate-600" : "text-slate-400";
-            const txtMuted = esFilaColor ? "text-slate-500" : "text-slate-500";
-            const borderTag = esFilaColor ? "border-slate-400/50 bg-white/40 text-slate-800" : "bg-black/10 border-black/20 text-slate-300";
-
-            // 4. Construcción de celdas
-            const clienteHtml = op.cliente ? 
-                `<div class="font-bold ${txtPrimary}">${limpiarTexto(op.cliente)}</div>` : 
-                `<div class="italic ${txtMuted}">Cliente General</div>`;
-
-            const docHtml = op.tipo_documento && op.numero_documento ? 
-                `<span class="px-2 py-0.5 rounded border ${borderTag} text-[10px] font-bold uppercase">${op.tipo_documento} ${op.numero_documento}</span>` : 
-                `<span class="text-[10px] ${txtMuted} opacity-50">Sin Doc</span>`;
-
-            // Fix temporal para fecha: Reemplazamos clases del helper si es fila clara
-            let fechaHtml = formatearFechaHora(op.fecha);
-            if (esFilaColor) {
-                fechaHtml = fechaHtml.replace('text-slate-300', 'text-slate-800').replace('text-slate-500', 'text-slate-600');
-            }
-
-            tr.innerHTML = `
-                <td class="px-6 py-4">
-                    ${fechaHtml}
-                </td>
-                <td class="px-6 py-4 text-xs font-mono font-bold opacity-70">
-                    #${op.id}
-                </td>
-                <td class="px-6 py-4 text-sm">
-                    ${clienteHtml}
-                </td>
-                <td class="px-6 py-4 text-center">
-                    <span class="text-xs font-bold uppercase tracking-wider">${op.tipo_transaccion}</span>
-                </td>
-                <td class="px-6 py-4 text-center">
-                    <div class="flex items-center justify-center gap-2">
-                        <span class="font-bold ${txtPrimary}">${op.divisa}</span>
-                    </div>
-                </td>
-                <td class="px-6 py-4 text-right font-mono font-bold text-sm ${txtPrimary}">
-                    ${formatearNumero(op.cantidad)}
-                </td>
-                <td class="px-6 py-4 text-right font-mono text-xs ${txtSecondary}">
-                    ${formatearNumero(op.tasa_cambio)}
-                </td>
-                <td class="px-6 py-4 text-right font-mono font-bold text-sm">
-                    $${formatearNumero(op.total_pesos)}
-                </td>
-                <td class="px-4 py-3 text-center">
-                    <span class="px-2 py-0.5 rounded text-[10px] uppercase font-bold ${getEstadoClass(op.estado)}">${op.estado}</span>
-                </td>
-                <td class="px-6 py-4 text-center">
-                    ${docHtml}
-                </td>
-            `;
-            
-            tr.onclick = () => window.location.href = `detalle-op?id=${op.id}`;
-
-            tablaOperaciones.appendChild(tr);
-        });
     }
 
     function renderizarTabla(operaciones) {
