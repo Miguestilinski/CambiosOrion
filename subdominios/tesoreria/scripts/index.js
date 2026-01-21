@@ -128,8 +128,6 @@ function setupUserDropdown() {
 // --- SESIÓN ---
 async function getSession() {
     try {
-        // Nota: Si realmente necesitas usar session_status_admin.php, cambia la URL aquí abajo.
-        // Por ahora mantengo session_status.php que es la que mostró datos en tu log.
         const res = await fetch("https://cambiosorion.cl/data/session_status_admin.php", { credentials: 'include' });
         const data = await res.json();
         
