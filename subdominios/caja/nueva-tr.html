@@ -21,7 +21,6 @@
         .fade-in { animation: fadeIn 0.3s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* Inputs mejorados */
         .input-group { position: relative; }
         .input-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #94a3b8; width: 1.25rem; height: 1.25rem; pointer-events: none; }
         .input-field {
@@ -31,12 +30,12 @@
             color: #1e293b;
             font-size: 0.875rem;
             border-radius: 0.75rem;
-            padding: 0.75rem 1rem 0.75rem 3rem; /* Padding izquierdo para icono */
+            padding: 0.75rem 1rem 0.75rem 3rem;
             transition: all 0.2s;
         }
         .input-field:focus {
             background-color: #fff;
-            border-color: #06b6d4; /* Cyan-500 */
+            border-color: #06b6d4;
             box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
             outline: none;
         }
@@ -48,6 +47,29 @@
             text-transform: uppercase;
             letter-spacing: 0.05em;
             color: #64748b;
+        }
+
+        /* Estilos Tarjetas Método Pago */
+        .payment-card {
+            cursor: pointer;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            background: white;
+            color: #64748b;
+        }
+        .payment-card:hover { border-color: #cbd5e1; background: #f8fafc; }
+        .payment-card.selected {
+            border-color: #06b6d4;
+            background-color: #ecfeff;
+            color: #0e7490;
+            font-weight: bold;
+            box-shadow: 0 4px 6px -1px rgba(6, 182, 212, 0.1);
         }
     </style>
     </head>
@@ -160,7 +182,7 @@
         <div id="sidebar-container" class="hidden lg:block h-full z-10"></div>
         
         <main class="flex-1 overflow-y-auto p-4 md:p-8 relative" id="dashboard-content">
-            <section class="max-w-5xl mx-auto fade-in pb-20">
+            <section class="max-w-6xl mx-auto fade-in pb-20">
                 
                 <div class="flex justify-between items-center mb-8">
                     <div>
@@ -176,27 +198,24 @@
                 <form id="form-nueva-tr" class="grid grid-cols-1 lg:grid-cols-2 gap-8" autocomplete="off">
                     
                     <div class="space-y-6">
-                        
                         <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
                             <h3 class="text-sm font-bold text-slate-800 uppercase border-b border-gray-100 pb-3 mb-5 flex items-center gap-2">
                                 <svg class="w-4 h-4 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                                Datos del Cliente
+                                Cliente
                             </h3>
-                            
                             <div class="space-y-5">
                                 <div class="relative">
-                                    <label class="label-field">Cliente (Nombre o RUT)</label>
+                                    <label class="label-field">Buscar Cliente</label>
                                     <div class="input-group">
                                         <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                                        <input type="text" id="cliente-input" class="input-field" placeholder="Buscar cliente..." required>
+                                        <input type="text" id="cliente-input" class="input-field" placeholder="Nombre o RUT..." required>
                                     </div>
                                     <div id="resultados-cliente" class="absolute z-50 w-full bg-white border border-gray-200 rounded-xl shadow-2xl mt-2 max-h-60 overflow-y-auto hidden"></div>
                                     <input type="hidden" id="cliente_id">
                                     <input type="hidden" id="cliente_email">
                                 </div>
-
                                 <div>
-                                    <label class="label-field">Correo Electrónico</label>
+                                    <label class="label-field">Correo (Opcional)</label>
                                     <div class="input-group">
                                         <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                                         <input type="email" id="email" class="input-field" placeholder="contacto@cliente.com">
@@ -208,43 +227,34 @@
                         <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
                             <h3 class="text-sm font-bold text-slate-800 uppercase border-b border-gray-100 pb-3 mb-5 flex items-center gap-2">
                                 <svg class="w-4 h-4 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                                Respaldo
+                                Documento
                             </h3>
-
                             <div class="grid grid-cols-2 gap-5 mb-5">
                                 <div>
-                                    <label class="label-field">Tipo Documento</label>
+                                    <label class="label-field">Tipo</label>
                                     <div class="relative">
                                         <select id="tipo_documento" class="input-field appearance-none cursor-pointer">
                                             <option value="Boleta" selected>Boleta</option>
                                             <option value="Factura">Factura</option>
                                         </select>
-                                        <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-gray-500">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                                        </div>
-                                        <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-gray-400">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
-                                        </div>
                                     </div>
                                 </div>
                                 <div>
                                     <label class="label-field">N° Documento</label>
                                     <div class="input-group">
                                         <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"></path></svg>
-                                        <input type="text" id="numero_documento" class="input-field font-mono" placeholder="123456">
+                                        <input type="text" id="numero_documento" class="input-field font-mono text-slate-500 bg-slate-100" placeholder="Automático (B-Sale)" readonly>
                                     </div>
                                 </div>
                             </div>
-
                             <div>
-                                <label class="label-field">Notas / Observaciones</label>
-                                <textarea id="numero_nota" rows="2" class="input-field !pl-4 resize-none" placeholder="Agregar detalle opcional..."></textarea>
+                                <label class="label-field">Notas</label>
+                                <textarea id="numero_nota" rows="2" class="input-field !pl-4 resize-none" placeholder="Observaciones..."></textarea>
                             </div>
                         </div>
                     </div>
 
                     <div class="flex flex-col gap-6">
-                        
                         <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden flex flex-col h-full">
                             
                             <div class="grid grid-cols-2 border-b border-gray-200">
@@ -262,32 +272,32 @@
                             <div class="p-6 md:p-8 flex-1 flex flex-col gap-8">
                                 
                                 <div class="relative">
-                                    <label class="label-field">Seleccionar Divisa</label>
-                                    
+                                    <label class="label-field">Divisa</label>
                                     <button type="button" id="divisa-trigger" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 flex items-center justify-between hover:border-cyan-400 hover:bg-white transition-all group focus:outline-none focus:ring-2 focus:ring-cyan-500">
                                         <div class="flex items-center gap-3">
-                                            <div class="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center shadow-sm overflow-hidden">
-                                                <img id="divisa-icon-selected" src="https://cambiosorion.cl/orionapp/icons/default.png" class="w-full h-full object-cover p-0.5 opacity-50">
+                                            <div class="w-9 h-9 rounded-full bg-white border border-gray-200 flex items-center justify-center shadow-sm overflow-hidden p-0.5">
+                                                <img id="divisa-icon-selected" src="https://cambiosorion.cl/orionapp/icons/default.png" class="w-full h-full object-contain rounded-full opacity-50" onerror="this.src='https://cambiosorion.cl/orionapp/icons/default.png'">
                                             </div>
-                                            <span id="divisa-text-selected" class="text-slate-500 font-medium">Seleccione...</span>
+                                            <span id="divisa-text-selected" class="text-slate-500 font-medium">Seleccione Divisa...</span>
                                         </div>
                                         <svg class="w-5 h-5 text-slate-400 group-hover:text-cyan-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                     </button>
-
-                                    <div id="divisa-dropdown" class="absolute z-40 w-full bg-white border border-gray-200 rounded-xl shadow-2xl mt-2 max-h-64 overflow-y-auto hidden">
-                                        </div>
-                                    
+                                    <div id="divisa-dropdown" class="absolute z-40 w-full bg-white border border-gray-200 rounded-xl shadow-2xl mt-2 max-h-64 overflow-y-auto hidden"></div>
                                     <input type="hidden" id="divisa_id" required>
                                 </div>
 
-                                <div class="grid grid-cols-2 gap-6">
+                                <div class="grid grid-cols-2 gap-6 relative">
                                     <div>
                                         <label class="label-field text-right">Monto Divisa</label>
                                         <input type="text" id="monto" class="w-full text-right font-mono text-xl font-bold text-slate-800 border-b-2 border-slate-200 bg-transparent py-2 focus:outline-none focus:border-cyan-500 transition-colors" placeholder="0" inputmode="decimal">
                                     </div>
-                                    <div>
+                                    <div class="relative">
                                         <label class="label-field text-right">Tasa Cambio</label>
                                         <input type="text" id="tasa_cambio" class="w-full text-right font-mono text-xl font-bold text-slate-600 border-b-2 border-slate-200 bg-transparent py-2 focus:outline-none focus:border-cyan-500 transition-colors" placeholder="0" inputmode="decimal">
+                                        
+                                        <div id="loading-tasa" class="absolute top-8 left-0 hidden">
+                                            <svg class="animate-spin h-4 w-4 text-cyan-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -297,21 +307,22 @@
                                 </div>
 
                                 <div>
-                                    <label class="label-field">Método de Pago</label>
-                                    <div class="grid grid-cols-3 gap-2 bg-slate-100 p-1 rounded-lg">
-                                        <label class="cursor-pointer">
-                                            <input type="radio" name="metodo_pago" value="Efectivo" class="peer sr-only" checked>
-                                            <div class="py-2 text-center text-xs font-bold text-slate-500 rounded-md peer-checked:bg-white peer-checked:text-slate-800 peer-checked:shadow-sm transition-all">Efectivo</div>
-                                        </label>
-                                        <label class="cursor-pointer">
-                                            <input type="radio" name="metodo_pago" value="Transferencia" class="peer sr-only">
-                                            <div class="py-2 text-center text-xs font-bold text-slate-500 rounded-md peer-checked:bg-white peer-checked:text-slate-800 peer-checked:shadow-sm transition-all">Transf.</div>
-                                        </label>
-                                        <label class="cursor-pointer">
-                                            <input type="radio" name="metodo_pago" value="Tarjeta" class="peer sr-only">
-                                            <div class="py-2 text-center text-xs font-bold text-slate-500 rounded-md peer-checked:bg-white peer-checked:text-slate-800 peer-checked:shadow-sm transition-all">Tarjeta</div>
-                                        </label>
+                                    <label class="label-field mb-3">Método de Pago</label>
+                                    <div class="grid grid-cols-3 gap-3">
+                                        <div class="payment-card selected" id="pm-efectivo" onclick="selectPayment('Efectivo')">
+                                            <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                            <span class="text-xs uppercase font-bold">Efectivo</span>
+                                        </div>
+                                        <div class="payment-card" id="pm-transferencia" onclick="selectPayment('Transferencia')">
+                                            <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+                                            <span class="text-xs uppercase font-bold">Transf.</span>
+                                        </div>
+                                        <div class="payment-card" id="pm-tarjeta" onclick="selectPayment('Tarjeta')">
+                                            <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                                            <span class="text-xs uppercase font-bold">Tarjeta</span>
+                                        </div>
                                     </div>
+                                    <input type="hidden" id="metodo_pago" value="Efectivo">
                                 </div>
 
                                 <button type="submit" id="btn-guardar" class="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-cyan-600/20 transition-all transform active:scale-95 flex items-center justify-center gap-2 mt-auto">
@@ -343,7 +354,7 @@
 
     <div id="modal-error" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[200] hidden">
         <div class="bg-white rounded-xl shadow-2xl p-6 max-w-sm w-full mx-4 border border-gray-200 text-center">
-            <h2 class="text-lg font-bold text-gray-800 mb-2">Error</h2>
+            <h2 id="modal-error-titulo" class="text-lg font-bold text-gray-800 mb-2">Error</h2>
             <p id="modal-error-mensaje" class="text-sm text-gray-500 mb-6">...</p>
             <button id="modal-error-confirmar" class="w-full bg-red-600 text-white py-2 rounded-lg font-bold">Aceptar</button>
         </div>
@@ -365,5 +376,16 @@
     <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script> <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
     <script type="module" src="./scripts/header.js"></script>
     <script type="module" src="./scripts/nueva-tr.js"></script>
+    <script>
+        // Función global para el onclick en HTML
+        window.selectPayment = function(method) {
+            document.getElementById('metodo_pago').value = method;
+            const cards = document.querySelectorAll('.payment-card');
+            cards.forEach(c => c.classList.remove('selected'));
+            
+            const idMap = { 'Efectivo': 'pm-efectivo', 'Transferencia': 'pm-transferencia', 'Tarjeta': 'pm-tarjeta' };
+            document.getElementById(idMap[method]).classList.add('selected');
+        }
+    </script>
 </body>
 </html>
