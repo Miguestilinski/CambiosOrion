@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         clienteId: document.getElementById('cliente_id'),
         email: document.getElementById('email'),
         tipoDoc: document.getElementById('tipo_documento'),
-        // numero_documento eliminado
         nota: document.getElementById('numero_nota'),
         tipoTrx: document.getElementById('tipo_transaccion'), 
         divisaId: document.getElementById('divisa_id'), 
@@ -40,14 +39,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     let lastTrxId = null;
 
-    // SVG Placeholder (Círculo con ?)
+    // SVG Placeholder (Círculo con ?) para cuando no hay imagen
     const svgPlaceholder = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
 
-    // --- CARGAR DIVISAS DESDE NUEVA-TR.PHP (Para asegurar Iconos) ---
+    // --- 1. CARGAR DIVISAS DESDE TABLA 'DIVISAS' ---
     cargarDivisasCustom();
 
     function cargarDivisasCustom() {
-        // Usamos la acción 'get_divisas' del PHP local
         fetch('https://cambiosorion.cl/data/nueva-tr.php?action=get_divisas')
             .then(res => res.json())
             .then(data => {
@@ -57,52 +55,57 @@ document.addEventListener('DOMContentLoaded', async () => {
                         const item = document.createElement('div');
                         item.className = "flex items-center gap-3 px-4 py-3 hover:bg-slate-50 cursor-pointer border-b border-gray-100 last:border-0 transition-colors";
                         
-                        // Creación de imagen con fallback
+                        // Preparar Imagen
                         const img = document.createElement('img');
                         img.className = "w-full h-full object-contain rounded-full";
-                        img.src = d.icono;
-                        // Si falla la carga, ocultamos imagen e inyectamos SVG
-                        img.onerror = function() {
+                        img.src = d.icono; 
+                        img.onerror = function() { // Si falla la carga, mostramos SVG
                             this.style.display = 'none';
                             this.parentElement.innerHTML = svgPlaceholder;
                             this.parentElement.classList.add('text-gray-300');
                         };
 
+                        // Wrapper del icono
                         const iconWrapper = document.createElement('div');
                         iconWrapper.className = "w-9 h-9 rounded-full bg-white border border-gray-200 flex items-center justify-center p-0.5 shrink-0";
-                        iconWrapper.appendChild(img);
+                        
+                        if (!d.icono) {
+                            iconWrapper.innerHTML = svgPlaceholder;
+                            iconWrapper.classList.add('text-gray-300');
+                        } else {
+                            iconWrapper.appendChild(img);
+                        }
 
+                        // Texto (Nombre Real + Código)
                         const textWrapper = document.createElement('div');
                         textWrapper.className = "flex flex-col";
                         textWrapper.innerHTML = `
-                            <span class="text-sm font-bold text-slate-700">${d.nombre}</span>
-                            <span class="text-[10px] text-slate-400 font-mono">${d.codigo || ''}</span>
+                            <span class="text-sm font-bold text-slate-700">${d.nombre_real}</span>
+                            <span class="text-[10px] text-slate-400 font-mono">${d.id_codigo}</span>
                         `;
 
                         item.appendChild(iconWrapper);
                         item.appendChild(textWrapper);
 
+                        // Click en Item
                         item.onclick = () => {
-                            inputs.divisaId.value = d.id; // ID real
+                            inputs.divisaId.value = d.id_codigo; // Ej: USD
                             
-                            // Actualizar Trigger
+                            // Actualizar Trigger Visual
                             ui.divisaIconContainer.innerHTML = '';
-                            const selectedImg = img.cloneNode(true);
-                            // Re-bind error para el clon
-                            selectedImg.onerror = function() {
-                                this.style.display = 'none';
-                                this.parentElement.innerHTML = svgPlaceholder;
-                            };
-                            ui.divisaIconContainer.appendChild(selectedImg);
-                            ui.divisaIconContainer.classList.remove('text-gray-300'); // Quitar estilo placeholder si aplica
+                            // Clonamos el wrapper del icono seleccionado para mostrarlo arriba
+                            const selectedIcon = iconWrapper.cloneNode(true);
+                            selectedIcon.className = "w-full h-full flex items-center justify-center"; // Ajuste css
+                            ui.divisaIconContainer.appendChild(selectedIcon);
+                            ui.divisaIconContainer.classList.remove('text-gray-300');
 
-                            ui.divisaTextSelected.textContent = d.nombre;
+                            ui.divisaTextSelected.textContent = `${d.nombre_real} (${d.id_codigo})`;
                             ui.divisaTextSelected.classList.add('text-slate-800');
                             ui.divisaTextSelected.classList.remove('text-slate-500');
                             
                             ui.divisaDropdown.classList.add('hidden');
 
-                            // BUSCAR TASA AUTOMÁTICA
+                            // Obtener Tasa Automática
                             obtenerTasaAutomatica();
                         };
                         ui.divisaDropdown.appendChild(item);
@@ -112,7 +115,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             .catch(err => console.error("Error cargando divisas", err));
     }
 
-    // --- OBTENER TASA AUTOMÁTICA ---
+    // --- 2. TASA AUTOMÁTICA ---
     async function obtenerTasaAutomatica() {
         const divisa = inputs.divisaId.value;
         const tipo = inputs.tipoTrx.value; // Compra o Venta
@@ -129,10 +132,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 inputs.tasa.value = data.tasa;
                 calcularTotal();
                 
-                // Efecto visual
+                // Efecto visual flash
                 inputs.tasa.classList.add('bg-cyan-50', 'text-cyan-700');
                 setTimeout(() => inputs.tasa.classList.remove('bg-cyan-50', 'text-cyan-700'), 500);
             } else {
+                // Si no hay tasa (ej: 0), limpiar o dejar que el usuario ponga
                 inputs.tasa.value = "";
             }
         } catch (e) {
@@ -142,7 +146,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // Toggle Dropdown Divisa
+    // --- Listeners Dropdown ---
     ui.divisaTrigger.addEventListener('click', (e) => {
         e.stopPropagation();
         ui.divisaDropdown.classList.toggle('hidden');
@@ -157,7 +161,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // --- TIPO TRANSACCION ---
+    // --- Tipo Transacción ---
     ui.btnCompra.onclick = () => setTipo('Compra');
     ui.btnVenta.onclick = () => setTipo('Venta');
 
@@ -182,7 +186,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     setTipo('Venta');
 
-    // --- CALCULADORA ---
+    // --- Calculadora ---
     inputs.monto.addEventListener('input', formatAndCalc);
     inputs.tasa.addEventListener('input', formatAndCalc);
 
@@ -203,7 +207,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         inputs.total.value = total > 0 ? "$ " + total.toLocaleString('es-CL') : "$ 0";
     }
 
-    // --- BUSCADOR CLIENTES ---
+    // --- Buscador Clientes ---
     inputs.cliente.addEventListener('input', async (e) => {
         const q = e.target.value;
         if (q.length < 2) { ui.resCliente.classList.add('hidden'); return; }
@@ -236,7 +240,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         } catch (err) { console.error(err); }
     });
 
-    // --- SUBMIT ---
+    // --- Submit ---
     document.getElementById('form-nueva-tr').addEventListener('submit', async (e) => {
         e.preventDefault();
         
@@ -259,7 +263,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             email: inputs.email.value,
             tipo_transaccion: inputs.tipoTrx.value,
             tipo_documento: inputs.tipoDoc.value,
-            // numero_documento eliminado
             numero_nota: inputs.nota.value,
             divisa_id: inputs.divisaId.value,
             monto: monto,
