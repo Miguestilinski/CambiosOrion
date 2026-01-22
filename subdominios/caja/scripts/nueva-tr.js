@@ -20,7 +20,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         monto: document.getElementById('monto'),
         tasa: document.getElementById('tasa_cambio'),
         total: document.getElementById('total'),
-        metodo: document.getElementById('metodo_pago')
+        metodo: document.getElementById('metodo_pago'),
+        tipoTarjeta: document.getElementById('tipo_tarjeta')
     };
 
     const ui = {
@@ -38,11 +39,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     let lastTrxId = null;
-
-    // SVG Placeholder (Círculo con ?) para cuando no hay imagen
     const svgPlaceholder = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
 
-    // --- 1. CARGAR DIVISAS DESDE TABLA 'DIVISAS' ---
+    // --- CARGAR DIVISAS ---
     cargarDivisasCustom();
 
     function cargarDivisasCustom() {
@@ -55,28 +54,24 @@ document.addEventListener('DOMContentLoaded', async () => {
                         const item = document.createElement('div');
                         item.className = "flex items-center gap-3 px-4 py-3 hover:bg-slate-50 cursor-pointer border-b border-gray-100 last:border-0 transition-colors";
                         
-                        // Preparar Imagen
                         const img = document.createElement('img');
                         img.className = "w-full h-full object-contain rounded-full";
                         img.src = d.icono; 
-                        img.onerror = function() { // Si falla la carga, mostramos SVG
+                        img.onerror = function() {
                             this.style.display = 'none';
                             this.parentElement.innerHTML = svgPlaceholder;
                             this.parentElement.classList.add('text-gray-300');
                         };
 
-                        // Wrapper del icono
                         const iconWrapper = document.createElement('div');
                         iconWrapper.className = "w-9 h-9 rounded-full bg-white border border-gray-200 flex items-center justify-center p-0.5 shrink-0";
-                        
-                        if (!d.icono) {
+                        if(!d.icono) {
                             iconWrapper.innerHTML = svgPlaceholder;
                             iconWrapper.classList.add('text-gray-300');
                         } else {
                             iconWrapper.appendChild(img);
                         }
 
-                        // Texto (Nombre Real + Código)
                         const textWrapper = document.createElement('div');
                         textWrapper.className = "flex flex-col";
                         textWrapper.innerHTML = `
@@ -87,25 +82,26 @@ document.addEventListener('DOMContentLoaded', async () => {
                         item.appendChild(iconWrapper);
                         item.appendChild(textWrapper);
 
-                        // Click en Item
                         item.onclick = () => {
-                            inputs.divisaId.value = d.id_codigo; // Ej: USD
+                            inputs.divisaId.value = d.id_codigo; 
                             
-                            // Actualizar Trigger Visual
                             ui.divisaIconContainer.innerHTML = '';
-                            // Clonamos el wrapper del icono seleccionado para mostrarlo arriba
                             const selectedIcon = iconWrapper.cloneNode(true);
-                            selectedIcon.className = "w-full h-full flex items-center justify-center"; // Ajuste css
+                            if(selectedIcon.querySelector('img')) {
+                                selectedIcon.querySelector('img').onerror = function() {
+                                    this.style.display = 'none';
+                                    this.parentElement.innerHTML = svgPlaceholder;
+                                };
+                            }
+                            selectedIcon.className = "w-full h-full flex items-center justify-center";
                             ui.divisaIconContainer.appendChild(selectedIcon);
                             ui.divisaIconContainer.classList.remove('text-gray-300');
 
-                            ui.divisaTextSelected.textContent = `${d.nombre_real} (${d.id_codigo})`;
+                            ui.divisaTextSelected.textContent = `${d.nombre_real}`;
                             ui.divisaTextSelected.classList.add('text-slate-800');
                             ui.divisaTextSelected.classList.remove('text-slate-500');
-                            
                             ui.divisaDropdown.classList.add('hidden');
 
-                            // Obtener Tasa Automática
                             obtenerTasaAutomatica();
                         };
                         ui.divisaDropdown.appendChild(item);
@@ -115,10 +111,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             .catch(err => console.error("Error cargando divisas", err));
     }
 
-    // --- 2. TASA AUTOMÁTICA ---
+    // --- TASA AUTOMÁTICA ---
     async function obtenerTasaAutomatica() {
         const divisa = inputs.divisaId.value;
-        const tipo = inputs.tipoTrx.value; // Compra o Venta
+        const tipo = inputs.tipoTrx.value; 
 
         if (!divisa) return;
 
@@ -128,16 +124,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             const res = await fetch(`https://cambiosorion.cl/data/nueva-tr.php?action=get_tasa&divisa=${encodeURIComponent(divisa)}&tipo=${tipo}`);
             const data = await res.json();
 
-            if (data.tasa) {
-                inputs.tasa.value = data.tasa;
+            if (data.tasa && data.tasa > 0) {
+                // Convertimos el punto decimal de la DB a coma para el usuario
+                let tasaStr = data.tasa.toString().replace('.', ',');
+                inputs.tasa.value = tasaStr;
                 calcularTotal();
                 
-                // Efecto visual flash
                 inputs.tasa.classList.add('bg-cyan-50', 'text-cyan-700');
                 setTimeout(() => inputs.tasa.classList.remove('bg-cyan-50', 'text-cyan-700'), 500);
             } else {
-                // Si no hay tasa (ej: 0), limpiar o dejar que el usuario ponga
                 inputs.tasa.value = "";
+                inputs.total.value = "$ 0";
             }
         } catch (e) {
             console.error(e);
@@ -146,12 +143,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // --- Listeners Dropdown ---
+    // Dropdown Listeners
     ui.divisaTrigger.addEventListener('click', (e) => {
         e.stopPropagation();
         ui.divisaDropdown.classList.toggle('hidden');
     });
-
     document.addEventListener('click', (e) => {
         if (!ui.divisaTrigger.contains(e.target) && !ui.divisaDropdown.contains(e.target)) {
             ui.divisaDropdown.classList.add('hidden');
@@ -161,7 +157,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // --- Tipo Transacción ---
+    // --- TIPO TRANSACCION ---
     ui.btnCompra.onclick = () => setTipo('Compra');
     ui.btnVenta.onclick = () => setTipo('Venta');
 
@@ -181,33 +177,49 @@ document.addEventListener('DOMContentLoaded', async () => {
             ui.btnCompra.className = `py-4 text-sm font-bold uppercase tracking-widest transition-all flex items-center justify-center gap-2 ${inactiveClass}`;
             ui.btnGuardar.className = "w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-cyan-600/20 transition-all flex items-center justify-center gap-2 mt-auto";
         }
-        
         obtenerTasaAutomatica();
     }
     setTipo('Venta');
 
-    // --- Calculadora ---
-    inputs.monto.addEventListener('input', formatAndCalc);
-    inputs.tasa.addEventListener('input', formatAndCalc);
-
-    function formatAndCalc(e) {
-        let val = e.target.value.replace(/[^0-9.,]/g, '');
-        e.target.value = val;
+    // --- FORMATEO Y CALCULADORA ---
+    
+    // Formato Monto (Puntos miles)
+    inputs.monto.addEventListener('input', function(e) {
+        // Eliminar todo lo que no sea número
+        let val = this.value.replace(/\D/g, '');
+        // Poner puntos de miles
+        this.value = val.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
         calcularTotal();
-    }
+    });
+
+    // Formato Tasa (Coma decimal)
+    inputs.tasa.addEventListener('input', function(e) {
+        // Permitir números y coma
+        let val = this.value.replace(/[^0-9,]/g, '');
+        // Solo una coma
+        if ((val.match(/,/g) || []).length > 1) {
+            val = val.substring(0, val.length - 1);
+        }
+        this.value = val;
+        calcularTotal();
+    });
 
     function calcularTotal() {
-        const montoRaw = inputs.monto.value.replace(/\./g, '').replace(',', '.');
-        const tasaRaw = inputs.tasa.value.replace(/\./g, '').replace(',', '.');
-        
+        // Convertir formato visual a numérico para cálculo JS
+        // Monto: "1.500" -> 1500
+        const montoRaw = inputs.monto.value.replace(/\./g, '');
         const monto = parseFloat(montoRaw) || 0;
+
+        // Tasa: "800,5" -> 800.5
+        const tasaRaw = inputs.tasa.value.replace(',', '.');
         const tasa = parseFloat(tasaRaw) || 0;
+
         const total = Math.round(monto * tasa);
 
         inputs.total.value = total > 0 ? "$ " + total.toLocaleString('es-CL') : "$ 0";
     }
 
-    // --- Buscador Clientes ---
+    // --- BUSCADOR CLIENTES ---
     inputs.cliente.addEventListener('input', async (e) => {
         const q = e.target.value;
         if (q.length < 2) { ui.resCliente.classList.add('hidden'); return; }
@@ -222,10 +234,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 data.forEach(c => {
                     const div = document.createElement('div');
                     div.className = "px-4 py-3 hover:bg-slate-50 cursor-pointer border-b border-gray-100 flex justify-between items-center";
-                    div.innerHTML = `
-                        <span class="font-bold text-slate-700 text-sm">${c.razon_social}</span>
-                        <span class="text-xs text-slate-400 font-mono bg-slate-100 px-2 py-0.5 rounded">${c.rut || 'S/RUT'}</span>
-                    `;
+                    div.innerHTML = `<span class="font-bold text-slate-700 text-sm">${c.razon_social}</span><span class="text-xs text-slate-400 font-mono bg-slate-100 px-2 py-0.5 rounded">${c.rut || 'S/RUT'}</span>`;
                     div.onclick = () => {
                         inputs.cliente.value = c.razon_social;
                         inputs.clienteId.value = c.id;
@@ -240,19 +249,30 @@ document.addEventListener('DOMContentLoaded', async () => {
         } catch (err) { console.error(err); }
     });
 
-    // --- Submit ---
+    // --- SUBMIT ---
     document.getElementById('form-nueva-tr').addEventListener('submit', async (e) => {
         e.preventDefault();
         
         if (!inputs.divisaId.value) { alert("Seleccione una divisa"); return; }
         
-        const monto = parseFloat(inputs.monto.value.replace(/\./g, '').replace(',', '.'));
+        // Parsear monto quitando puntos
+        const monto = parseFloat(inputs.monto.value.replace(/\./g, ''));
         if (!monto || monto <= 0) { alert("Monto inválido"); return; }
 
         ui.btnGuardar.disabled = true;
         ui.btnGuardar.innerHTML = "Procesando...";
 
         const totalRaw = inputs.total.value.replace('$', '').replace(/\./g, '').trim();
+        
+        // Parsear Tasa (coma a punto)
+        const tasaFinal = parseFloat(inputs.tasa.value.replace(',', '.'));
+
+        // Preparar Nota con detalle de tarjeta si aplica
+        let notaFinal = inputs.nota.value;
+        if (inputs.metodo.value === 'Tarjeta') {
+            const tipoCard = inputs.tipoTarjeta.value;
+            notaFinal += (notaFinal ? " - " : "") + `Pago con Tarjeta ${tipoCard}`;
+        }
 
         const payload = {
             action: 'create',
@@ -263,10 +283,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             email: inputs.email.value,
             tipo_transaccion: inputs.tipoTrx.value,
             tipo_documento: inputs.tipoDoc.value,
-            numero_nota: inputs.nota.value,
+            // Sin numero_documento
+            numero_nota: notaFinal,
             divisa_id: inputs.divisaId.value,
             monto: monto,
-            tasa_cambio: parseFloat(inputs.tasa.value.replace(/\./g, '').replace(',', '.')),
+            tasa_cambio: tasaFinal,
             total: parseInt(totalRaw),
             metodo_pago: inputs.metodo.value
         };
