@@ -183,11 +183,12 @@
                             
                             <div class="space-y-5">
                                 <div>
-                                    <label class="label-field">Tipo de Ingreso (Medio)</label>
+                                    <label class="label-field">Medio de Ingreso</label>
                                     <div class="relative">
                                         <select id="tipo-ingreso" class="input-field appearance-none cursor-pointer font-semibold text-slate-700">
-                                            <option value="Efectivo" selected>Efectivo</option>
-                                            <option value="Cuenta">Cuenta / Transferencia</option>
+                                            <option value="" disabled selected>Seleccione Medio...</option>
+                                            <option value="Efectivo">Efectivo</option>
+                                            <option value="Cuenta">Cuenta Contable</option>
                                         </select>
                                         <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-gray-500">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
@@ -198,11 +199,21 @@
                                     </div>
                                 </div>
 
+                                <div id="bloque-cuenta" class="hidden relative animate-fade-in">
+                                    <label class="label-field text-cyan-600">Cuenta de Origen</label>
+                                    <div class="input-group">
+                                        <svg class="input-icon text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                                        <input type="text" id="cuenta-input" class="input-field border-cyan-300 bg-cyan-50 focus:bg-white" placeholder="Buscar cuenta contable...">
+                                    </div>
+                                    <div id="resultados-cuenta" class="absolute z-50 w-full bg-white border border-gray-200 rounded-xl shadow-2xl mt-2 max-h-60 overflow-y-auto hidden"></div>
+                                    <input type="hidden" id="cuenta_id">
+                                </div>
+
                                 <div class="relative">
-                                    <label class="label-field">Responsable / Cliente (Opcional)</label>
+                                    <label class="label-field">Cliente Asociado (Opcional)</label>
                                     <div class="input-group">
                                         <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                                        <input type="text" id="cliente-input" class="input-field" placeholder="Buscar nombre...">
+                                        <input type="text" id="cliente-input" class="input-field" placeholder="Buscar cliente...">
                                     </div>
                                     <div id="resultados-cliente" class="absolute z-50 w-full bg-white border border-gray-200 rounded-xl shadow-2xl mt-2 max-h-60 overflow-y-auto hidden"></div>
                                     <input type="hidden" id="cliente_id">
@@ -210,16 +221,14 @@
 
                                 <div>
                                     <label class="label-field">Motivo / Detalle</label>
-                                    <textarea id="observaciones" rows="3" class="input-field !pl-4 resize-none" placeholder="Ej: Aporte de capital, Devolución, etc..."></textarea>
+                                    <textarea id="observaciones" rows="3" class="input-field !pl-4 resize-none" placeholder="Ej: Aporte de capital, Devolución, Pago de deuda..."></textarea>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="flex flex-col gap-6">
-                        
                         <div class="bg-white rounded-2xl shadow-lg border-2 border-emerald-500 overflow-hidden flex flex-col h-full">
-                            
                             <div class="bg-emerald-50 px-6 py-4 border-b border-emerald-100 flex items-center gap-3">
                                 <div class="p-2 bg-emerald-100 rounded-lg text-emerald-600">
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
@@ -231,7 +240,6 @@
                             </div>
 
                             <div class="p-6 md:p-8 flex-1 flex flex-col gap-8">
-                                
                                 <div class="relative">
                                     <label class="label-field">Divisa a Ingresar</label>
                                     <button type="button" id="divisa-trigger" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 flex items-center justify-between hover:border-emerald-400 hover:bg-white transition-all group focus:outline-none focus:ring-2 focus:ring-emerald-500">
