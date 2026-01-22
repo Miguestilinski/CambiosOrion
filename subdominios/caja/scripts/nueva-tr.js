@@ -1,302 +1,215 @@
 import { initCajaHeader } from './header.js';
 
-let usuarioSesion = null;
-let clienteSeleccionado = null;
+document.addEventListener('DOMContentLoaded', async () => {
+    
+    // 1. Inicializar Header
+    const sessionData = await initCajaHeader('transacciones');
+    
+    // Validar Caja
+    if (!sessionData || !sessionData.caja_id) {
+        mostrarError("Error de Sesión", "No tienes una caja asignada. No puedes realizar transacciones.");
+        document.getElementById('btn-guardar').disabled = true;
+    }
 
-document.addEventListener('DOMContentLoaded', async() => {
+    // 2. Referencias DOM
+    const form = document.getElementById('form-nueva-tr');
+    const inputs = {
+        cliente: document.getElementById('cliente-input'),
+        clienteId: document.getElementById('cliente_id'),
+        email: document.getElementById('email'),
+        tipoDoc: document.getElementById('tipo_documento'),
+        numDoc: document.getElementById('numero_documento'),
+        nota: document.getElementById('numero_nota'),
+        tipoTrx: document.getElementById('tipo_transaccion'), // Hidden input
+        divisa: document.getElementById('divisa_id'),
+        monto: document.getElementById('monto'),
+        tasa: document.getElementById('tasa_cambio'),
+        total: document.getElementById('total'),
+        metodo: document.getElementById('metodo_pago')
+    };
 
-    await initCajaHeader('index');
+    const ui = {
+        resultadosCliente: document.getElementById('resultados-cliente'),
+        btnCompra: document.getElementById('btn-compra'),
+        btnVenta: document.getElementById('btn-venta'),
+        btnGuardar: document.getElementById('btn-guardar'),
+        modalExito: document.getElementById('modal-exito'),
+        modalError: document.getElementById('modal-error')
+    };
 
+    let lastTrxId = null;
+
+    // 3. Cargar Divisas
     cargarDivisas();
 
-    // 2. Referencias del DOM
-    const clienteInput = document.getElementById("cliente");
-    const resultadoClientes = document.getElementById("resultado-clientes");
-    const montoInput = document.getElementById("monto");
-    const tasaInput = document.getElementById("tasa");
-    const totalInput = document.getElementById("total");
-    const btnCrear = document.getElementById("crear-transaccion");
-    const form = document.getElementById("form-nueva-tr");
+    // 4. Lógica Tipo Transacción (Toggle UI)
+    ui.btnCompra.onclick = () => setTipoTransaccion('Compra');
+    ui.btnVenta.onclick = () => setTipoTransaccion('Venta');
 
-    // --- LÓGICA DE BÚSQUEDA DE CLIENTES ---
-    if (clienteInput && resultadoClientes) {
-        clienteInput.addEventListener("input", async (e) => {
-            const query = e.target.value.trim();
-            
-            // Limpiar selección si el usuario edita el texto
-            if (clienteSeleccionado && clienteSeleccionado.nombre !== query) {
-                clienteSeleccionado = null;
-            }
-
-            if (query.length < 2) {
-                resultadoClientes.classList.add("hidden");
-                resultadoClientes.innerHTML = "";
-                return;
-            }
-
-            try {
-                const res = await fetch(`https://cambiosorion.cl/data/nueva-tr.php?buscar_cliente=${encodeURIComponent(query)}`);
-                const clientes = await res.json();
-                
-                resultadoClientes.innerHTML = "";
-                
-                if (clientes.length > 0) {
-                    clientes.forEach((cliente) => {
-                        const li = document.createElement("li");
-                        li.textContent = `${cliente.nombre} (${cliente.rut || 'S/R'})`;
-                        li.className = "px-4 py-2 hover:bg-cyan-50 cursor-pointer text-sm text-gray-700 border-b border-gray-100 last:border-0";
-                        
-                        li.addEventListener("click", () => {
-                            clienteInput.value = cliente.nombre;
-                            clienteSeleccionado = cliente;
-                            resultadoClientes.classList.add("hidden");
-                        });
-                        resultadoClientes.appendChild(li);
-                    });
-                    resultadoClientes.classList.remove("hidden");
-                } else {
-                    resultadoClientes.classList.add("hidden");
-                }
-            } catch (error) {
-                console.error("Error buscando clientes:", error);
-            }
-        });
-
-        // Ocultar resultados al hacer clic fuera
-        document.addEventListener("click", (e) => {
-            if (!clienteInput.contains(e.target) && !resultadoClientes.contains(e.target)) {
-                resultadoClientes.classList.add("hidden");
-            }
-        });
-    }
-
-    // --- CÁLCULOS MATEMÁTICOS ---
-    function calcularTotal() {
-        const monto = parseFloat(montoInput.value) || 0;
-        const tasa = parseFloat(tasaInput.value) || 0;
-        const total = monto * tasa;
-        totalInput.value = Math.round(total); // Redondear a entero (CLP suele no usar decimales)
-    }
-
-    if (montoInput) montoInput.addEventListener("input", calcularTotal);
-    if (tasaInput) tasaInput.addEventListener("input", calcularTotal);
-
-    // --- ENVÍO DEL FORMULARIO ---
-    if (btnCrear) {
-        btnCrear.addEventListener("click", async () => {
-            if (!validarFormulario()) return;
-
-            const payload = {
-                tipo_transaccion: document.getElementById("tipo_transaccion").value,
-                cliente_id: clienteSeleccionado ? clienteSeleccionado.id : null,
-                nombre_cliente_manual: !clienteSeleccionado ? clienteInput.value : null, // Por si es cliente nuevo/casual
-                divisa: document.getElementById("divisa").value,
-                monto: document.getElementById("monto").value,
-                tasa_cambio: document.getElementById("tasa").value,
-                total: document.getElementById("total").value,
-                forma_pago: document.getElementById("forma_pago").value,
-                tipo_documento: document.getElementById("tipo_documento").value,
-                numero_documento: document.getElementById("numero_documento").value,
-                caja_id: usuarioSesion.caja_id,
-                usuario_id: usuarioSesion.equipo_id
-            };
-
-            // Deshabilitar botón
-            const originalText = btnCrear.innerHTML;
-            btnCrear.disabled = true;
-            btnCrear.innerHTML = `<svg class="animate-spin h-5 w-5 mr-2 inline" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Procesando...`;
-
-            try {
-                const res = await fetch("https://cambiosorion.cl/data/nueva-tr.php", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(payload)
-                });
-
-                const data = await res.json();
-
-                if (data.exito) {
-                    mostrarModalExitoso();
-                } else {
-                    mostrarModalError({ titulo: "Error", mensaje: data.mensaje || "No se pudo crear la transacción." });
-                }
-            } catch (error) {
-                console.error(error);
-                mostrarModalError({ titulo: "Error de conexión", mensaje: "Ocurrió un problema al conectar con el servidor." });
-            } finally {
-                btnCrear.disabled = false;
-                btnCrear.innerHTML = originalText;
-            }
-        });
-    }
-
-    function validarFormulario() {
-        if (!usuarioSesion || !usuarioSesion.caja_id) {
-            mostrarModalError({ titulo: "Error de Sesión", mensaje: "No tienes una caja asignada para operar." });
-            return false;
-        }
-        if (!montoInput.value || parseFloat(montoInput.value) <= 0) {
-            mostrarModalError({ titulo: "Datos incompletos", mensaje: "Ingresa un monto válido." });
-            return false;
-        }
-        if (!tasaInput.value || parseFloat(tasaInput.value) <= 0) {
-            mostrarModalError({ titulo: "Datos incompletos", mensaje: "Ingresa una tasa de cambio válida." });
-            return false;
-        }
-        if (clienteInput.value.trim() === "") {
-            mostrarModalError({ titulo: "Datos incompletos", mensaje: "Debes ingresar un cliente." });
-            return false;
-        }
-        return true;
-    }
-});
-
-// --- FUNCIONES ESTRUCTURALES (Sidebar/Header) ---
-
-function cargarSidebar() {
-    fetch('sidebar.html')
-        .then(response => response.text())
-        .then(html => {
-            const container = document.getElementById('sidebar-container');
-            if (container) {
-                container.innerHTML = html;
-                activarLinkSidebar('nueva-tr');
-            }
-        })
-        .catch(err => console.error("Error cargando sidebar", err));
-}
-
-function activarLinkSidebar(pagina) {
-    setTimeout(() => {
-        const links = document.querySelectorAll('#sidebar-nav a');
-        links.forEach(link => {
-            link.classList.remove('bg-cyan-50', 'text-cyan-800', 'border-l-4', 'border-cyan-600', 'shadow-sm', 'font-bold');
-            link.classList.add('text-gray-600', 'border-transparent');
-            
-            const icon = link.querySelector('svg');
-            if(icon) { icon.classList.remove('text-cyan-600'); icon.classList.add('text-gray-400'); }
-
-            if (link.dataset.page === pagina) {
-                link.classList.remove('text-gray-600', 'border-transparent');
-                link.classList.add('bg-cyan-50', 'text-cyan-800', 'border-l-4', 'border-cyan-600', 'shadow-sm', 'font-bold');
-                if(icon) { icon.classList.remove('text-gray-400'); icon.classList.add('text-cyan-600'); }
-            }
-        });
-    }, 100);
-}
-
-async function getSession() {
-    try {
-        const res = await fetch("https://cambiosorion.cl/data/session_status_admin.php", { credentials: "include" });
-        if (!res.ok) throw new Error("Error sesión");
-        const data = await res.json();
+    function setTipoTransaccion(tipo) {
+        inputs.tipoTrx.value = tipo;
         
-        if (!data.isAuthenticated || !data.equipo_id) {
-            window.location.href = 'https://admin.cambiosorion.cl/login';
+        if (tipo === 'Compra') {
+            // Estilo Compra (Verde)
+            ui.btnCompra.className = "py-2 text-sm font-bold rounded-md transition-all bg-white text-emerald-600 shadow-sm border border-gray-200";
+            ui.btnVenta.className = "py-2 text-sm font-bold rounded-md transition-all text-slate-500 hover:text-slate-700";
+            ui.btnGuardar.className = "w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-xl shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center gap-2 group";
+        } else {
+            // Estilo Venta (Cyan - Default)
+            ui.btnVenta.className = "py-2 text-sm font-bold rounded-md transition-all bg-white text-cyan-600 shadow-sm border border-gray-200";
+            ui.btnCompra.className = "py-2 text-sm font-bold rounded-md transition-all text-slate-500 hover:text-slate-700";
+            ui.btnGuardar.className = "w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 px-4 rounded-xl shadow-lg shadow-cyan-600/30 transition-all flex items-center justify-center gap-2 group";
+        }
+        calcularTotal();
+    }
+
+    // 5. Cálculos en tiempo real
+    inputs.monto.addEventListener('input', formatAndCalc);
+    inputs.tasa.addEventListener('input', formatAndCalc);
+
+    function formatAndCalc(e) {
+        // Permitir solo números y comas/puntos
+        let val = e.target.value.replace(/[^0-9.,]/g, '');
+        e.target.value = val;
+        calcularTotal();
+    }
+
+    function calcularTotal() {
+        // Limpieza para cálculo (remover puntos de miles, cambiar coma decimal a punto)
+        const montoRaw = inputs.monto.value.replace(/\./g, '').replace(',', '.');
+        const tasaRaw = inputs.tasa.value.replace(/\./g, '').replace(',', '.');
+        
+        const monto = parseFloat(montoRaw) || 0;
+        const tasa = parseFloat(tasaRaw) || 0;
+        const total = Math.round(monto * tasa); // CLP suele ser entero
+
+        inputs.total.value = total > 0 ? total.toLocaleString('es-CL') : '';
+    }
+
+    // 6. Buscador Clientes
+    inputs.cliente.addEventListener('input', async (e) => {
+        const query = e.target.value;
+        if (query.length < 2) {
+            ui.resultadosCliente.classList.add('hidden');
             return;
         }
 
-        usuarioSesion = data;
-
-        // Header Info
-        const headerName = document.getElementById('header-user-name');
-        const headerEmail = document.getElementById('dropdown-user-email');
-        if (headerName) headerName.textContent = data.nombre ? data.nombre.split(' ')[0] : 'Admin';
-        if (headerEmail) headerEmail.textContent = data.correo;
-
-        // Validar Caja
-        if (!usuarioSesion.caja_id) {
-            mostrarModalError({ 
-                titulo: "Sin Caja Asignada", 
-                mensaje: "Tu usuario no tiene una caja abierta o asignada. No podrás realizar transacciones.",
-                textoConfirmar: "Volver al Inicio",
-                onConfirmar: () => window.location.href = "https://admin.cambiosorion.cl/"
-            });
+        try {
+            const res = await fetch(`https://cambiosorion.cl/data/nueva-tr.php?action=search_client&q=${encodeURIComponent(query)}`);
+            const data = await res.json();
+            
+            ui.resultadosCliente.innerHTML = '';
+            if (data.length > 0) {
+                ui.resultadosCliente.classList.remove('hidden');
+                data.forEach(c => {
+                    const div = document.createElement('div');
+                    div.className = "px-4 py-2 hover:bg-slate-50 cursor-pointer text-sm border-b border-gray-100 last:border-0";
+                    div.innerHTML = `<span class="font-bold text-slate-700">${c.razon_social}</span> <span class="text-slate-400 text-xs">(${c.rut || 'S/RUT'})</span>`;
+                    div.onclick = () => seleccionarCliente(c);
+                    ui.resultadosCliente.appendChild(div);
+                });
+            } else {
+                ui.resultadosCliente.classList.add('hidden');
+            }
+        } catch (err) {
+            console.error(err);
         }
+    });
 
-    } catch (error) {
-        console.error("Error sesión:", error);
+    function seleccionarCliente(c) {
+        inputs.cliente.value = c.razon_social;
+        inputs.clienteId.value = c.id;
+        if(c.email) inputs.email.value = c.email;
+        ui.resultadosCliente.classList.add('hidden');
     }
-}
 
-// --- FUNCIONES DE CARGA DE DATOS ---
+    // Cerrar buscador al clic fuera
+    document.addEventListener('click', (e) => {
+        if (!inputs.cliente.contains(e.target) && !ui.resultadosCliente.contains(e.target)) {
+            ui.resultadosCliente.classList.add('hidden');
+        }
+    });
 
-async function cargarDivisas() {
-    try {
-        // Ajusta la URL a tu endpoint real de divisas
-        const res = await fetch("https://cambiosorion.cl/data/divisas_api.php"); 
-        const divisas = await res.json();
+    // 7. Guardar Transacción
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
         
-        const selectDivisa = document.getElementById("divisa");
-        if (selectDivisa) {
-            selectDivisa.innerHTML = ""; // Limpiar
-            divisas.forEach(d => {
-                const option = document.createElement("option");
-                option.value = d.nombre; // o d.id
-                option.textContent = d.nombre;
-                selectDivisa.appendChild(option);
+        // Validaciones básicas
+        if (!inputs.divisa.value) { alert("Seleccione una divisa"); return; }
+        
+        const monto = parseFloat(inputs.monto.value.replace(/\./g, '').replace(',', '.'));
+        if (!monto || monto <= 0) { alert("El monto debe ser mayor a 0"); return; }
+
+        ui.btnGuardar.disabled = true;
+        ui.btnGuardar.innerHTML = `<svg class="animate-spin h-5 w-5 mr-2 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Procesando...`;
+
+        const payload = {
+            action: 'create',
+            caja_id: sessionData.caja_id,
+            vendedor_id: sessionData.equipo_id,
+            cliente_id: inputs.clienteId.value || null,
+            nombre_cliente_manual: inputs.cliente.value, // Por si es cliente nuevo/ocasional
+            email: inputs.email.value,
+            tipo_transaccion: inputs.tipoTrx.value,
+            tipo_documento: inputs.tipoDoc.value,
+            numero_documento: inputs.numDoc.value,
+            numero_nota: inputs.nota.value,
+            divisa_id: inputs.divisa.value,
+            monto: monto,
+            tasa_cambio: parseFloat(inputs.tasa.value.replace(/\./g, '').replace(',', '.')),
+            total: parseInt(inputs.total.value.replace(/\./g, '')),
+            metodo_pago: inputs.metodo.value
+        };
+
+        try {
+            const res = await fetch('https://cambiosorion.cl/data/nueva-tr.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
             });
+            const data = await res.json();
+
+            if (data.success) {
+                lastTrxId = data.id;
+                ui.modalExito.classList.remove('hidden');
+            } else {
+                throw new Error(data.error || "Error desconocido");
+            }
+        } catch (err) {
+            mostrarError("Error al guardar", err.message);
+            ui.btnGuardar.disabled = false;
+            ui.btnGuardar.textContent = "Confirmar Transacción";
         }
-    } catch (error) {
-        console.error("Error cargando divisas:", error);
+    });
+
+    // 8. Utilidades
+    function cargarDivisas() {
+        fetch('https://cambiosorion.cl/data/divisas_api.php')
+            .then(res => res.json())
+            .then(data => {
+                if (Array.isArray(data)) {
+                    data.forEach(d => {
+                        const option = document.createElement('option');
+                        option.value = d.nombre; // OJO: Tu sistema usa nombres como ID en algunos lados (USD vs Dolar)
+                        option.textContent = `${d.nombre} (${d.codigo})`;
+                        inputs.divisa.appendChild(option);
+                    });
+                }
+            });
     }
-}
 
-// --- MODALES ---
+    function mostrarError(titulo, mensaje) {
+        const t = document.getElementById('modal-error-titulo');
+        const m = document.getElementById('modal-error-mensaje');
+        if (t) t.textContent = titulo;
+        if (m) m.textContent = mensaje;
+        ui.modalError.classList.remove('hidden');
+        document.getElementById('modal-error-confirmar').onclick = () => ui.modalError.classList.add('hidden');
+    }
 
-function mostrarModalError({ titulo, mensaje, textoConfirmar = "Aceptar", textoCancelar = null, onConfirmar, onCancelar }) {
-  const modal = document.getElementById("modal-error");
-  const tituloElem = document.getElementById("modal-error-titulo");
-  const mensajeElem = document.getElementById("modal-error-mensaje");
-  const btnConfirmar = document.getElementById("modal-error-confirmar");
-  const btnCancelar = document.getElementById("modal-error-cancelar");
-
-  if(tituloElem) tituloElem.textContent = titulo;
-  if(mensajeElem) mensajeElem.textContent = mensaje;
-  if(btnConfirmar) btnConfirmar.textContent = textoConfirmar;
-
-  if (textoCancelar && btnCancelar) {
-    btnCancelar.classList.remove("hidden");
-    btnCancelar.textContent = textoCancelar;
-  } else if(btnCancelar) {
-    btnCancelar.classList.add("hidden");
-  }
-
-  if(modal) modal.classList.remove("hidden");
-
-  if(btnConfirmar) {
-      btnConfirmar.onclick = () => {
-        modal.classList.add("hidden");
-        if (onConfirmar) onConfirmar();
-      };
-  }
-
-  if(btnCancelar) {
-      btnCancelar.onclick = () => {
-        modal.classList.add("hidden");
-        if (onCancelar) onCancelar();
-      };
-  }
-}
-
-function mostrarModalExitoso() {
-  const modal = document.getElementById("modal-exitoso");
-  if(modal) modal.classList.remove("hidden");
-
-  const btnNueva = document.getElementById("nueva-transaccion"); // Botón "Nueva Transacción" dentro del modal
-  if (btnNueva) {
-      btnNueva.onclick = () => {
-        modal.classList.add("hidden");
-        document.getElementById("form-nueva-tr").reset();
-        document.getElementById("resultado-clientes").classList.add("hidden");
-        clienteSeleccionado = null;
-      };
-  }
-
-  const btnVolver = document.getElementById("volver");
-  if(btnVolver) {
-      btnVolver.onclick = () => {
-        window.location.href = "transacciones";
-      };
-  }
-}
+    // Botones Modal Éxito
+    document.getElementById('btn-nueva').onclick = () => location.reload();
+    document.getElementById('btn-ver-detalle').onclick = () => {
+        if (lastTrxId) window.location.href = `detalle-tr.html?id=${lastTrxId}`;
+    };
+});
