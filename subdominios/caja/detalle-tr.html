@@ -128,56 +128,157 @@
         </div>
     </header>
 
-    <div class="header-divider"></div>
-    <div class="main-content">
-        <div id="sidebar-container"></div>
-        <main id="dashboard-content" class="dashboard-content">
-            <section id="detalle-transaccion" class="content-section active">
-                <div class="flex items-center mb-6">
-                  <h1 class="text-2xl font-medium mr-4 leading-none text-white">Detalle de Transacción</h1>
-                    <button type="button" id="anular"
-                        class="text-white bg-red-700 mr-4 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5">
-                        Anular
+    <div class="flex flex-1 overflow-hidden relative layout-container">
+        <div id="sidebar-container" class="hidden lg:block h-full z-10"></div>
+        
+        <main class="flex-1 overflow-y-auto p-4 md:p-8 relative" id="dashboard-content">
+            <section class="max-w-4xl mx-auto fade-in h-full flex flex-col gap-6">
+                
+                <div class="flex justify-between items-center print:hidden">
+                    <button id="btn-volver" class="text-slate-500 hover:text-cyan-700 transition flex items-center text-sm font-medium group">
+                        <div class="bg-white group-hover:bg-cyan-50 p-1.5 rounded-lg mr-2 transition border border-gray-300 group-hover:border-cyan-200 shadow-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                        </div>
+                        Volver a Transacciones
                     </button>
-                    <button type="button" id="imprimir"
-                        class="text-white bg-gray-700 mr-4 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5">
-                        Imprimir
-                    </button>
-                    <button type="button" id="enviar"
-                        class="text-white bg-blue-700 mr-4 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
-                        Enviar
+                    
+                    <button id="btn-imprimir" class="bg-white hover:bg-slate-50 text-slate-700 border border-gray-300 hover:border-cyan-300 font-bold py-2 px-4 rounded-lg shadow-sm text-sm transition flex items-center gap-2">
+                        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                        Imprimir Comprobante
                     </button>
                 </div>
-                <div id="info-transaccion" class="space-y-2 mb-6 text-sm w-1/2 text-white bg-gray-800 rounded-lg p-4 border border-gray-600"></div>
-                <h2 class="text-xl font-semibold text-white mb-3">Divisas</h2>
-                <div id="detalle-divisas" class="space-y-4"></div>
-                <div id="seccion-documento"></div>
 
-                <!-- Modal genérico -->
-                <div id="modal-generico" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-                    <div class="bg-white text-black rounded-lg shadow-lg p-6 max-w-md w-full">
-                        <h2 id="modal-generico-titulo" class="text-lg font-semibold mb-4">Título</h2>
-                        <p id="modal-generico-mensaje" class="mb-4">Mensaje</p>
-                        <div class="flex justify-end space-x-4">
-                        <button id="modal-generico-cancelar" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hidden">Cancelar</button>
-                        <button id="modal-generico-confirmar" class="bg-blue-600 text-white px-4 py-2 rounded">Aceptar</button>
+                <div id="loading-skeleton" class="animate-pulse space-y-4">
+                    <div class="h-8 bg-gray-200 rounded w-1/3"></div>
+                    <div class="h-64 bg-gray-200 rounded-xl"></div>
+                </div>
+
+                <div id="detalle-contenido" class="hidden space-y-6">
+                    
+                    <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-6 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-6 opacity-10 pointer-events-none">
+                            <svg class="w-32 h-32 text-cyan-500" fill="currentColor" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                         </div>
+
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative z-10">
+                            <div>
+                                <div class="flex items-center gap-3 mb-1">
+                                    <h1 class="text-2xl font-bold text-slate-800 tracking-tight" id="trx-titulo">Transacción #...</h1>
+                                    <span id="trx-estado" class="px-3 py-1 rounded-full text-xs font-bold uppercase border">Cargando...</span>
+                                </div>
+                                <p class="text-sm text-slate-500 flex items-center gap-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    <span id="trx-fecha">...</span>
+                                </p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Total Pagado</p>
+                                <p class="text-3xl font-black text-cyan-700 tracking-tight" id="trx-total-clp">$0</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        
+                        <div class="lg:col-span-2 space-y-6">
+                            
+                            <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+                                <div class="bg-gray-50/50 px-6 py-4 border-b border-gray-100">
+                                    <h3 class="font-bold text-slate-700 text-sm flex items-center gap-2">
+                                        <svg class="w-4 h-4 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                        Información General
+                                    </h3>
+                                </div>
+                                <div class="p-6 grid grid-cols-2 gap-y-6 gap-x-8">
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Cliente</label>
+                                        <p class="text-sm font-semibold text-slate-800" id="trx-cliente">...</p>
+                                        <p class="text-xs text-slate-500 font-mono" id="trx-cliente-id">ID: ...</p>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Documento Tributario</label>
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-sm font-medium text-slate-700" id="trx-tipo-doc">...</span>
+                                            <span class="bg-gray-100 text-slate-600 text-xs px-2 py-0.5 rounded border border-gray-200 font-mono" id="trx-num-doc">...</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Caja / Vendedor</label>
+                                        <p class="text-sm text-slate-700" id="trx-caja">Caja #...</p>
+                                        <p class="text-xs text-slate-500" id="trx-vendedor">Atendido por ...</p>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Método de Pago</label>
+                                        <p class="text-sm font-medium text-slate-800 flex items-center gap-2">
+                                            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                            <span id="trx-metodo">...</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-6" id="contenedor-notas">
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Observaciones / Referencias</label>
+                                <p class="text-sm text-slate-600 bg-slate-50 p-3 rounded-lg border border-slate-100 italic" id="trx-obs">Sin observaciones.</p>
+                            </div>
+
+                        </div>
+
+                        <div class="bg-white border border-gray-200 rounded-xl shadow-sm flex flex-col h-full overflow-hidden">
+                            <div class="bg-gray-50/50 px-6 py-4 border-b border-gray-100">
+                                <h3 class="font-bold text-slate-700 text-sm flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    Detalle Financiero
+                                </h3>
+                            </div>
+                            
+                            <div class="p-6 flex-1 flex flex-col justify-center gap-6">
+                                <div class="text-center">
+                                    <span class="block text-xs font-bold text-slate-400 uppercase mb-2">Operación</span>
+                                    <span id="trx-tipo" class="text-lg font-bold px-4 py-1 rounded-full border">...</span>
+                                </div>
+
+                                <div class="space-y-4 border-t border-b border-gray-100 py-6">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm text-slate-500">Divisa</span>
+                                        <span class="text-base font-bold text-slate-800" id="trx-divisa">...</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm text-slate-500">Monto</span>
+                                        <span class="text-base font-mono font-medium text-slate-800" id="trx-monto">0.00</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm text-slate-500">Tasa de Cambio</span>
+                                        <span class="text-base font-mono font-medium text-slate-600" id="trx-tasa">0.00</span>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="flex justify-between items-end mb-1">
+                                        <span class="text-sm font-bold text-slate-700">Total Final</span>
+                                        <span class="text-xl font-black text-slate-900" id="trx-total-final">$0</span>
+                                    </div>
+                                    <p class="text-[10px] text-right text-slate-400">Pesos Chilenos (CLP)</p>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
-                <!-- Modal exitoso -->
-                <div id="modal-pago-exitoso" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-                    <div class="bg-white text-black rounded-lg shadow-lg p-6 max-w-md w-full">
-                        <h2 class="text-lg font-semibold mb-4">✅ Pago Registrado</h2>
-                        <p class="mb-4">El pago se ha registrado correctamente.</p>
-                        <div class="flex justify-end space-x-4">
-                        <button id="nuevo-pago" class="bg-green-600 text-white px-4 py-2 rounded">Nuevo Pago</button>
-                        <button id="volver" class="bg-gray-300 text-gray-700 px-4 py-2 rounded">Volver</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            </section>        
         </main>
+    </div>
+
+    <div id="modal-error" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[200] hidden">
+        <div class="bg-white rounded-xl shadow-2xl p-6 max-w-sm w-full mx-4 border border-gray-200 text-center">
+            <div class="bg-red-100 p-3 rounded-full inline-flex mb-4">
+                <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            </div>
+            <h2 id="modal-error-titulo" class="text-lg font-bold text-gray-800 mb-2">Error</h2>
+            <p id="modal-error-mensaje" class="text-sm text-gray-500 mb-6">...</p>
+            <button id="modal-error-confirmar" class="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 font-bold transition">Volver</button>
+        </div>
     </div>
 
     <footer class="bg-black  mt-auto">

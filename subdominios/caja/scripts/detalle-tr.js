@@ -1,262 +1,141 @@
 import { initCajaHeader } from './header.js';
 
-document.addEventListener('DOMContentLoaded', async() => {
-    await initCajaHeader('index');
+document.addEventListener('DOMContentLoaded', async () => {
+    
+    // 1. Inicializar sistema (Header, Sidebar, Sesión)
+    await initCajaHeader('transacciones');
+
     const params = new URLSearchParams(window.location.search);
     const id = params.get("id");
 
+    const dom = {
+        loader: document.getElementById('loading-skeleton'),
+        content: document.getElementById('detalle-contenido'),
+        modal: document.getElementById('modal-error'),
+        
+        titulo: document.getElementById('trx-titulo'),
+        estado: document.getElementById('trx-estado'),
+        fecha: document.getElementById('trx-fecha'),
+        totalClp: document.getElementById('trx-total-clp'),
+        
+        cliente: document.getElementById('trx-cliente'),
+        clienteId: document.getElementById('trx-cliente-id'),
+        tipoDoc: document.getElementById('trx-tipo-doc'),
+        numDoc: document.getElementById('trx-num-doc'),
+        caja: document.getElementById('trx-caja'),
+        vendedor: document.getElementById('trx-vendedor'),
+        metodo: document.getElementById('trx-metodo'),
+        obs: document.getElementById('trx-obs'),
+        
+        tipo: document.getElementById('trx-tipo'),
+        divisa: document.getElementById('trx-divisa'),
+        monto: document.getElementById('trx-monto'),
+        tasa: document.getElementById('trx-tasa'),
+        totalFinal: document.getElementById('trx-total-final'),
+        
+        btnVolver: document.getElementById('btn-volver'),
+        btnImprimir: document.getElementById('btn-imprimir')
+    };
+
     if (!id) {
-        document.getElementById("info-transaccion").innerHTML = "<p>ID de transacción no proporcionado.</p>";
+        mostrarError("ID Inválido", "No se proporcionó un identificador de transacción.");
         return;
     }
 
-    fetch(`https://cambiosorion.cl/data/detalle-tr.php?id=${id}`)
-        .then(async res => {
-            const text = await res.text();
-            console.log("Respuesta cruda:", text);
-            return JSON.parse(text);
-        })    
-        .then(data => {
-            if (data.error) {
-                document.getElementById("info-transaccion").innerHTML = `<p>${data.error}</p>`;
-                return;
-            }
+    // Configurar botones
+    dom.btnVolver.onclick = () => window.location.href = 'transacciones.html';
+    dom.btnImprimir.onclick = () => window.print();
 
-            const formatNumber = (num) => {
-                const n = parseFloat(num);
-                if (isNaN(n)) return num;
-                return n.toLocaleString('es-CL', {
-                    minimumFractionDigits: 0,
-                    maximumFractionDigits: 3
-                });
-            };
+    // Fetch Datos
+    cargarTransaccion(id);
 
-            function colorEstado(estado) {
-                switch (estado) {
-                    case "Vigente":
-                        return "#3B82F6"; // Azul (Tailwind blue-500)
-                    case "Abonado":
-                        return "#F97316"; // Naranjo (Tailwind orange-500)
-                    case "Pagado":
-                        return "#22C55E"; // Verde (Tailwind green-500)
-                    case "Anulado":
-                        return "#EF4444"; // Rojo (Tailwind red-500)
-                    default:
-                        return "#FFFFFF"; // Blanco por defecto
-                }
-            }
-
-            // Mostrar info general de la transacción
-            const info = data.transaccion;
-            const color = colorEstado(info.estado);
-
-            // Mostrar información general
-            const infoHTML = `
-                <div><span class="font-semibold text-gray-300">Número de transacción:</span> ${info.id}</div>
-                <div><span class="font-semibold text-gray-300">Vendedor:</span> ${info.vendedor}</div>
-                <div><span class="font-semibold text-gray-300">Caja:</span> ${info.caja}</div>
-                <div><span class="font-semibold text-gray-300">Cliente:</span> ${info.nombre_cliente || "Sin cliente"}</div> 
-                <div><span class="font-semibold text-gray-300">Tipo de Transacción:</span> ${info.tipo_transaccion}</div>
-                <div><span class="font-semibold text-gray-300">Método de Pago:</span> ${info.metodo_pago}</div>
-                <div><span class="font-semibold text-gray-300">Total:</span> ${formatToCLP(info.total)}</div>
-                <div><span class="font-semibold text-gray-300">Observaciones:</span> ${info.observaciones || "—"}</div>
-                <div>
-                    <span class="font-semibold text-gray-300">Estado:</span> 
-                    <span style="color: ${color}; font-weight: 700;">${info.estado}</span>
-                </div>
-            `;
-            document.getElementById("info-transaccion").innerHTML = infoHTML;
-
-            // Mostrar divisas
-            const detallesHTML = `
-                <div class="overflow-x-auto w-full mt-4">
-                    <div class="min-w-max border border-gray-300 rounded-lg bg-white shadow-md">
-                        <div class="grid grid-cols-4 rounded-t-lg text-sm font-medium text-gray-700 bg-gray-100 border-b border-black text-center">
-                            <div class="p-2">Divisa</div>
-                            <div class="p-2">Monto</div>
-                            <div class="p-2">Tasa de cambio</div>
-                            <div class="p-2">Subtotal</div>
-                        </div>
-                        ${data.detalles.map(det => `
-                            <div class="grid grid-cols-4 rounded-lg text-sm text-center text-gray-800 border-b border-gray-200">
-                                <div class="p-2 flex items-center justify-center gap-2">
-                                    <img src="${det.divisa_icono}" alt="${det.divisa}" class="w-5 h-5 inline-block" />
-                                    <span>${det.divisa}</span>
-                                </div>
-                                <div class="p-2">${formatNumber(det.monto)}</div>
-                                <div class="p-2">${formatNumber(det.tasa_cambio)}</div>
-                                <div class="p-2">$${formatNumber(det.subtotal)}</div>
-                            </div>
-                        `).join("")}
-                    </div>
-                </div>
-            `;
-            document.getElementById("detalle-divisas").innerHTML = detallesHTML;
-
-            // --- Funcionalidad Botón Anular (el rojo en la fila superior) ---
-            document.getElementById("anular").addEventListener("click", () => {
-                if (info.estado === "Anulado") {
-                    mostrarModal({
-                        titulo: "❌ Error",
-                        mensaje: "La transacción ya está anulada",
-                        textoConfirmar: "Entendido"
-                    });
-                    return;
-                }
-                if (confirm("¿Seguro que deseas anular esta transacción? Esto revertirá el inventario.")) {
-                    fetch(`https://cambiosorion.cl/data/detalle-tr.php`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ id: info.id })
-                    })
-                    .then(res => res.json())
-                    .then(res => {
-                        if (res.success) {
-                            mostrarModal({
-                                titulo: ">✅ Anulación Exitosa",
-                                mensaje: "Transacción anulada",
-                                textoConfirmar: "Entendido"
-                            });
-                            location.reload();
-                        } else {
-                            mostrarModal({
-                                titulo: "❌ Error",
-                                mensaje: "Error al anular: " + res.message,
-                                textoConfirmar: "Entendido"
-                            });
-                        }
-                    })
-                    .catch(() => {
-                        mostrarModal({
-                            titulo: "❌ Error",
-                            mensaje: "Error de conexión al anular transacción",
-                            textoConfirmar: "Entendido"
-                        });
-                    });
-                }
-            });
-
-            // --- Funcionalidad Botón Imprimir ---
-            document.getElementById("imprimir").addEventListener("click", () => {
-                window.print();
-            });
-
-            function formatToCLP(value) {
-                if (!value) return "";
-                // Quitar todo lo que no sea número o coma/punto decimal
-                const cleanValue = value.toString().replace(/[^0-9]/g, "");
-                if (cleanValue === "") return "";
-
-                const number = parseInt(cleanValue, 10);
-                if (isNaN(number)) return "";
-
-                // Formatear usando Intl.NumberFormat para Chile
-                return "$" + number.toLocaleString("es-CL");
-            }
-
-            // Sección de documento
-            let documentoHTML = "";
-
-            // Título h2
-            let documentoTitulo = `<h2 class="text-xl font-semibold text-white mt-6 mb-3">Documento</h2>`;
-
-            if (info.numero_documento) {
-                documentoHTML = `
-                    <div class="mt-4 text-gray-300 font-medium">
-                        Documento emitido al SII: <strong>${info.numero_documento}</strong><br/>
-                        <button onclick="window.open('https://cambiosorion.cl/documentos/${info.numero_documento}.pdf', '_blank')" 
-                                class="mt-2 inline-block bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700">
-                            Ver documento
-                        </button>
-                    </div>
-                `;
-            } else {
-                documentoHTML = `
-                    <div class="mt-4 text-gray-300 font-medium">
-                        Esta transacción fue registrada internamente, pero no fue emitida al SII.
-                    </div>
-                `;
-            }
-
-            const seccionDocumento = document.getElementById("seccion-documento");
-            seccionDocumento.innerHTML = documentoTitulo + documentoHTML;
-
-            // Anular transacción
-            document.getElementById("anular").addEventListener("click", () => {
-            if (!confirm("¿Seguro que deseas anular esta transacción? Esto revertirá el inventario.")) return;
-
-            fetch(`https://cambiosorion.cl/data/detalle-tr.php`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id: info.id })
-            })
+    function cargarTransaccion(trxId) {
+        fetch(`https://cambiosorion.cl/data/detalle-tr.php?id=${trxId}`)
             .then(res => res.json())
-            .then(res => {
-                if (res.success) {
-                    mostrarModal({
-                        titulo: ">✅ Anulación Exitosa",
-                        mensaje: "transacción anulada",
-                        textoConfirmar: "Entendido"
-                    });
-                location.reload();
-                } else {
-                    mostrarModal({
-                        titulo: "❌ Error",
-                        mensaje: "Error al anular: " + res.message,
-                        textoConfirmar: "Entendido"
-                    });
-                }
+            .then(data => {
+                if (data.error) throw new Error(data.error);
+                renderizarDetalle(data);
+            })
+            .catch(err => {
+                console.error(err);
+                mostrarError("Error al cargar", "No se pudo obtener la información de la transacción. " + err.message);
             });
-            });
-        })
-    .catch(err => {
-        console.error(err);
-        document.getElementById("info-transaccion").innerHTML = "<p>Error al cargar la transacción.</p>";
-    });
+    }
 
+    function renderizarDetalle(t) {
+        // Ocultar loader, mostrar contenido
+        dom.loader.classList.add('hidden');
+        dom.content.classList.remove('hidden');
+        dom.content.classList.add('fade-in');
+
+        // Encabezado
+        dom.titulo.textContent = `Transacción #${t.id}`;
+        dom.fecha.textContent = formatearFechaCompleta(t.fecha);
+        dom.totalClp.textContent = formatCurrency(t.total);
+
+        // Estado (Estilos)
+        const estado = String(t.estado).toLowerCase();
+        let estadoClass = "bg-gray-100 text-gray-600 border-gray-200";
+        if (estado === 'vigente') estadoClass = "bg-green-100 text-green-700 border-green-200";
+        if (estado === 'anulado') estadoClass = "bg-red-100 text-red-700 border-red-200";
+        
+        dom.estado.textContent = t.estado;
+        dom.estado.className = `px-3 py-1 rounded-full text-xs font-bold uppercase border ${estadoClass}`;
+
+        // Info General
+        dom.cliente.textContent = t.nombre_cliente || 'Cliente General';
+        dom.clienteId.textContent = t.cliente_id ? `ID: ${t.cliente_id}` : 'Sin ID registrado';
+        dom.tipoDoc.textContent = t.tipo_documento || '-';
+        dom.numDoc.textContent = t.numero_documento || 'N/A';
+        dom.caja.textContent = `Caja #${t.caja || '?'}`;
+        dom.vendedor.textContent = `Vendedor ID: ${t.vendedor || '?'}`; // Si el backend devuelve nombre, mejor
+        dom.metodo.textContent = t.metodo_pago;
+        
+        if (t.observaciones) {
+            dom.obs.textContent = t.observaciones;
+            dom.obs.classList.remove('italic', 'text-slate-400');
+        }
+
+        // Info Financiera
+        const esCompra = String(t.tipo_transaccion).toLowerCase() === 'compra';
+        dom.tipo.textContent = t.tipo_transaccion;
+        dom.tipo.className = `text-lg font-bold px-4 py-1 rounded-full border uppercase ${esCompra ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-blue-100 text-blue-700 border-blue-200'}`;
+
+        dom.divisa.textContent = t.divisa_id; // Ej: USD
+        dom.monto.textContent = formatNumber(t.monto);
+        dom.tasa.textContent = formatNumber(t.tasa_cambio);
+        dom.totalFinal.textContent = formatCurrency(t.total);
+    }
+
+    // --- Helpers ---
+    function formatNumber(num) {
+        if (!num) return '0.00';
+        return parseFloat(num).toLocaleString('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function formatCurrency(num) {
+        if (!num) return '$0';
+        return '$' + parseInt(num).toLocaleString('es-CL');
+    }
+
+    function formatearFechaCompleta(fechaStr) {
+        if (!fechaStr) return '';
+        const d = new Date(fechaStr);
+        if (isNaN(d.getTime())) return fechaStr; // Fallback si no es parseable
+        return d.toLocaleDateString('es-CL', { day: '2-digit', month: 'long', year: 'numeric' }) + 
+               ' - ' + d.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function mostrarError(titulo, mensaje) {
+        const titleEl = document.getElementById('modal-error-titulo');
+        const msgEl = document.getElementById('modal-error-mensaje');
+        const btn = document.getElementById('modal-error-confirmar');
+        
+        if (titleEl) titleEl.textContent = titulo;
+        if (msgEl) msgEl.textContent = mensaje;
+        
+        if (dom.modal) dom.modal.classList.remove('hidden');
+        
+        if (btn) btn.onclick = () => window.location.href = 'transacciones.html';
+    }
 });
-
-function mostrarModal({ titulo, mensaje, textoConfirmar = "Aceptar", textoCancelar = null, onConfirmar, onCancelar }) {
-  const modal = document.getElementById("modal-generico");
-  const tituloElem = document.getElementById("modal-generico-titulo");
-  const mensajeElem = document.getElementById("modal-generico-mensaje");
-  const btnConfirmar = document.getElementById("modal-generico-confirmar");
-  const btnCancelar = document.getElementById("modal-generico-cancelar");
-
-  tituloElem.textContent = titulo;
-  mensajeElem.textContent = mensaje;
-  btnConfirmar.textContent = textoConfirmar;
-
-  if (textoCancelar) {
-    btnCancelar.classList.remove("hidden");
-    btnCancelar.textContent = textoCancelar;
-  } else {
-    btnCancelar.classList.add("hidden");
-  }
-
-  modal.classList.remove("hidden");
-
-  // Remover handlers anteriores
-  btnConfirmar.onclick = () => {
-    modal.classList.add("hidden");
-    if (onConfirmar) onConfirmar();
-  };
-
-  btnCancelar.onclick = () => {
-    modal.classList.add("hidden");
-    if (onCancelar) onCancelar();
-  };
-}
-
-function mostrarModalPagoExitoso() {
-  const modal = document.getElementById("modal-pago-exitoso");
-  modal.classList.remove("hidden");
-
-  document.getElementById("nuevo-pago").onclick = () => {
-    location.reload();
-  };
-
-  document.getElementById("volver").onclick = () => {
-    window.location.href = "https://caja.cambiosorion.cl/transacciones";
-  };
-}
