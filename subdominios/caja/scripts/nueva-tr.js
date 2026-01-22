@@ -56,7 +56,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                         
                         const img = document.createElement('img');
                         img.className = "w-full h-full object-contain rounded-full";
-                        img.src = d.icono; 
+                        // Usamos 'icono_final' que viene de la lógica PHP
+                        img.src = d.icono_final; 
                         img.onerror = function() {
                             this.style.display = 'none';
                             this.parentElement.innerHTML = svgPlaceholder;
@@ -65,7 +66,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                         const iconWrapper = document.createElement('div');
                         iconWrapper.className = "w-9 h-9 rounded-full bg-white border border-gray-200 flex items-center justify-center p-0.5 shrink-0";
-                        if(!d.icono) {
+                        if(!d.icono_final) {
                             iconWrapper.innerHTML = svgPlaceholder;
                             iconWrapper.classList.add('text-gray-300');
                         } else {
@@ -76,15 +77,16 @@ document.addEventListener('DOMContentLoaded', async () => {
                         textWrapper.className = "flex flex-col";
                         textWrapper.innerHTML = `
                             <span class="text-sm font-bold text-slate-700">${d.nombre_real}</span>
-                            <span class="text-[10px] text-slate-400 font-mono">${d.id_codigo}</span>
+                            <span class="text-[10px] text-slate-400 font-mono">${d.codigo_iso}</span>
                         `;
 
                         item.appendChild(iconWrapper);
                         item.appendChild(textWrapper);
 
                         item.onclick = () => {
-                            inputs.divisaId.value = d.id_codigo; 
+                            inputs.divisaId.value = d.id_maestro; // Guardamos ID Maestro (D99)
                             
+                            // Actualizar UI
                             ui.divisaIconContainer.innerHTML = '';
                             const selectedIcon = iconWrapper.cloneNode(true);
                             if(selectedIcon.querySelector('img')) {
@@ -102,6 +104,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             ui.divisaTextSelected.classList.remove('text-slate-500');
                             ui.divisaDropdown.classList.add('hidden');
 
+                            // Buscar tasa usando el ID Maestro
                             obtenerTasaAutomatica();
                         };
                         ui.divisaDropdown.appendChild(item);
@@ -113,7 +116,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // --- TASA AUTOMÁTICA ---
     async function obtenerTasaAutomatica() {
-        const divisa = inputs.divisaId.value;
+        const divisa = inputs.divisaId.value; // D99
         const tipo = inputs.tipoTrx.value; 
 
         if (!divisa) return;
@@ -125,7 +128,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             const data = await res.json();
 
             if (data.tasa && data.tasa > 0) {
-                // Convertimos el punto decimal de la DB a coma para el usuario
                 let tasaStr = data.tasa.toString().replace('.', ',');
                 inputs.tasa.value = tasaStr;
                 calcularTotal();
@@ -133,6 +135,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 inputs.tasa.classList.add('bg-cyan-50', 'text-cyan-700');
                 setTimeout(() => inputs.tasa.classList.remove('bg-cyan-50', 'text-cyan-700'), 500);
             } else {
+                // Si no hay tasa en tabla 'divisas' (ej: Dolar Bahameño), se deja vacio para ingreso manual
                 inputs.tasa.value = "";
                 inputs.total.value = "$ 0";
             }
@@ -143,7 +146,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // Dropdown Listeners
+    // Resto del código (listeners, calculadora, submit) igual que antes...
+    // Se mantiene idéntico porque la lógica de UI no cambia
+    
+    // Toggle Dropdown
     ui.divisaTrigger.addEventListener('click', (e) => {
         e.stopPropagation();
         ui.divisaDropdown.classList.toggle('hidden');
@@ -157,7 +163,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // --- TIPO TRANSACCION ---
+    // Tipo Transacción
     ui.btnCompra.onclick = () => setTipo('Compra');
     ui.btnVenta.onclick = () => setTipo('Venta');
 
@@ -181,54 +187,35 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     setTipo('Venta');
 
-    // --- FORMATEO Y CALCULADORA ---
-    
-    // Formato Monto (Puntos miles)
+    // Calculadora
     inputs.monto.addEventListener('input', function(e) {
-        // Eliminar todo lo que no sea número
         let val = this.value.replace(/\D/g, '');
-        // Poner puntos de miles
         this.value = val.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
         calcularTotal();
     });
 
-    // Formato Tasa (Coma decimal)
     inputs.tasa.addEventListener('input', function(e) {
-        // Permitir números y coma
         let val = this.value.replace(/[^0-9,]/g, '');
-        // Solo una coma
-        if ((val.match(/,/g) || []).length > 1) {
-            val = val.substring(0, val.length - 1);
-        }
+        if ((val.match(/,/g) || []).length > 1) val = val.substring(0, val.length - 1);
         this.value = val;
         calcularTotal();
     });
 
     function calcularTotal() {
-        // Convertir formato visual a numérico para cálculo JS
-        // Monto: "1.500" -> 1500
-        const montoRaw = inputs.monto.value.replace(/\./g, '');
-        const monto = parseFloat(montoRaw) || 0;
-
-        // Tasa: "800,5" -> 800.5
-        const tasaRaw = inputs.tasa.value.replace(',', '.');
-        const tasa = parseFloat(tasaRaw) || 0;
-
+        const monto = parseFloat(inputs.monto.value.replace(/\./g, '')) || 0;
+        const tasa = parseFloat(inputs.tasa.value.replace(',', '.')) || 0;
         const total = Math.round(monto * tasa);
-
         inputs.total.value = total > 0 ? "$ " + total.toLocaleString('es-CL') : "$ 0";
     }
 
-    // --- BUSCADOR CLIENTES ---
+    // Buscador Clientes
     inputs.cliente.addEventListener('input', async (e) => {
         const q = e.target.value;
         if (q.length < 2) { ui.resCliente.classList.add('hidden'); return; }
-
         try {
             const res = await fetch(`https://cambiosorion.cl/data/nueva-tr.php?action=search_client&q=${encodeURIComponent(q)}`);
             const data = await res.json();
             ui.resCliente.innerHTML = '';
-            
             if (data.length > 0) {
                 ui.resCliente.classList.remove('hidden');
                 data.forEach(c => {
@@ -243,19 +230,16 @@ document.addEventListener('DOMContentLoaded', async () => {
                     };
                     ui.resCliente.appendChild(div);
                 });
-            } else {
-                ui.resCliente.classList.add('hidden');
-            }
+            } else { ui.resCliente.classList.add('hidden'); }
         } catch (err) { console.error(err); }
     });
 
-    // --- SUBMIT ---
+    // Submit
     document.getElementById('form-nueva-tr').addEventListener('submit', async (e) => {
         e.preventDefault();
         
         if (!inputs.divisaId.value) { alert("Seleccione una divisa"); return; }
         
-        // Parsear monto quitando puntos
         const monto = parseFloat(inputs.monto.value.replace(/\./g, ''));
         if (!monto || monto <= 0) { alert("Monto inválido"); return; }
 
@@ -263,11 +247,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         ui.btnGuardar.innerHTML = "Procesando...";
 
         const totalRaw = inputs.total.value.replace('$', '').replace(/\./g, '').trim();
-        
-        // Parsear Tasa (coma a punto)
         const tasaFinal = parseFloat(inputs.tasa.value.replace(',', '.'));
 
-        // Preparar Nota con detalle de tarjeta si aplica
         let notaFinal = inputs.nota.value;
         if (inputs.metodo.value === 'Tarjeta') {
             const tipoCard = inputs.tipoTarjeta.value;
@@ -283,9 +264,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             email: inputs.email.value,
             tipo_transaccion: inputs.tipoTrx.value,
             tipo_documento: inputs.tipoDoc.value,
-            // Sin numero_documento
             numero_nota: notaFinal,
-            divisa_id: inputs.divisaId.value,
+            divisa_id: inputs.divisaId.value, // D99
             monto: monto,
             tasa_cambio: tasaFinal,
             total: parseInt(totalRaw),
