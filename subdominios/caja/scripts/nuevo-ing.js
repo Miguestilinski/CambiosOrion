@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const sessionData = await initCajaHeader('ingresos');
     
     if (!sessionData || !sessionData.caja_id) {
-        mostrarError("Error", "Sin caja asignada.");
+        mostrarErrorModal("Error de Sesión", "Sin caja asignada para operar.");
         document.getElementById('btn-guardar').disabled = true;
     }
 
@@ -33,12 +33,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const svgPlaceholder = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
 
-    // --- CARGAR DIVISAS (Lógica Híbrida) ---
+    // --- CARGAR DIVISAS ---
     cargarDivisasCustom();
 
     function cargarDivisasCustom() {
-        // Reutilizamos el backend de nueva-tr.php o creamos uno propio.
-        // Aquí usamos nuevo-ing-caja.php
         fetch('https://cambiosorion.cl/data/nuevo-ing-caja.php?action=get_divisas')
             .then(res => res.json())
             .then(data => {
@@ -79,7 +77,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                         item.onclick = () => {
                             inputs.divisaId.value = d.id_maestro; // D99
                             
-                            // Update UI
                             ui.divisaIconContainer.innerHTML = '';
                             const selectedIcon = iconWrapper.cloneNode(true);
                             if(selectedIcon.querySelector('img')) {
@@ -129,7 +126,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const q = e.target.value;
         if (q.length < 2) { ui.resCliente.classList.add('hidden'); return; }
         try {
-            // Reutilizamos el endpoint de búsqueda
             const res = await fetch(`https://cambiosorion.cl/data/nuevo-ing-caja.php?action=search_client&q=${encodeURIComponent(q)}`);
             const data = await res.json();
             ui.resCliente.innerHTML = '';
@@ -154,11 +150,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('form-nuevo-ing').addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        if (!inputs.tipo.value) { alert("Seleccione el Tipo de Ingreso"); return; }
-        if (!inputs.divisaId.value) { alert("Seleccione una Divisa"); return; }
+        if (!inputs.divisaId.value) { mostrarErrorModal("Faltan Datos", "Seleccione una Divisa"); return; }
         
         const monto = parseFloat(inputs.monto.value.replace(/\./g, ''));
-        if (!monto || monto <= 0) { alert("Ingrese un monto válido"); return; }
+        if (!monto || monto <= 0) { mostrarErrorModal("Monto Inválido", "Ingrese un monto mayor a cero"); return; }
 
         ui.btnGuardar.disabled = true;
         ui.btnGuardar.innerHTML = "Guardando...";
@@ -166,10 +161,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         const payload = {
             action: 'create',
             caja_id: sessionData.caja_id,
-            usuario_id: sessionData.id, // O equipo_id segun tu lógica de sesión
-            tipo_ingreso: inputs.tipo.value,
+            usuario_id: sessionData.id, 
+            tipo_ingreso: inputs.tipo.value, // Efectivo / Cuenta
             cliente_id: inputs.clienteId.value || null,
-            nombre_cliente_manual: inputs.cliente.value,
+            // Importante: No existe 'nombre_cliente_manual' en la tabla, solo cliente_id.
+            // Si el cliente no existe, observaciones es el lugar para poner info extra.
             observaciones: inputs.obs.value,
             divisa_id: inputs.divisaId.value, // D99
             monto: monto
@@ -189,15 +185,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                 throw new Error(data.error);
             }
         } catch (err) {
-            mostrarError("Error", err.message);
+            mostrarErrorModal("Error del Servidor", err.message);
             ui.btnGuardar.disabled = false;
             ui.btnGuardar.textContent = "CONFIRMAR INGRESO";
         }
     });
 
-    function mostrarError(t, m) {
-        document.getElementById('modal-error-titulo').textContent = t;
-        document.getElementById('modal-error-mensaje').textContent = m;
+    function mostrarErrorModal(titulo, mensaje) {
+        document.getElementById('modal-error-titulo').textContent = titulo;
+        document.getElementById('modal-error-mensaje').textContent = mensaje;
         ui.modalError.classList.remove('hidden');
         document.getElementById('modal-error-confirmar').onclick = () => ui.modalError.classList.add('hidden');
     }
