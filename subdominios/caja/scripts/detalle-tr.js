@@ -18,23 +18,23 @@ document.addEventListener('DOMContentLoaded', async () => {
         fecha: document.getElementById('trx-fecha'),
         hora: document.getElementById('trx-hora'),
         
+        // Operativa
+        caja: document.getElementById('trx-caja'),
+        vendedor: document.getElementById('trx-vendedor'),
+        tipoDoc: document.getElementById('trx-tipo-doc'),
+        numDoc: document.getElementById('trx-num-doc'),
+        metodo: document.getElementById('trx-metodo'),
+        
         // Cliente
         cliente: document.getElementById('trx-cliente'),
         clienteId: document.getElementById('trx-cliente-id'),
-        
-        // Doc & Caja
-        tipoDoc: document.getElementById('trx-tipo-doc'),
-        numDoc: document.getElementById('trx-num-doc'),
-        caja: document.getElementById('trx-caja'),
-        vendedor: document.getElementById('trx-vendedor'),
-        metodo: document.getElementById('trx-metodo'),
         obs: document.getElementById('trx-obs'),
         
-        // Financiero (La parte importante)
+        // Ticket Financiero
         tipoBadge: document.getElementById('trx-tipo-badge'),
-        iconoDivisa: document.getElementById('trx-icono-divisa'),
         nombreDivisa: document.getElementById('trx-nombre-divisa'),
         codigoDivisa: document.getElementById('trx-codigo-divisa'),
+        iconoDivisa: document.getElementById('trx-icono-divisa'),
         
         montoDivisa: document.getElementById('trx-monto-divisa'),
         tasaCambio: document.getElementById('trx-tasa-cambio'),
@@ -74,77 +74,66 @@ document.addEventListener('DOMContentLoaded', async () => {
             dom.content.classList.add('fade-in');
         }
 
-        // 1. Datos Header
+        // 1. Header
         if(dom.titulo) dom.titulo.textContent = `Transacción #${t.id}`;
         
-        // Formateo Fecha y Hora separados
-        const dateObj = new Date(t.fecha.replace(/-/g, '/')); // Fix compatibilidad Safari
+        const dateObj = new Date(t.fecha.replace(/-/g, '/'));
         if(dom.fecha) dom.fecha.textContent = dateObj.toLocaleDateString('es-CL', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         if(dom.hora) dom.hora.textContent = dateObj.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
 
         // Estado
         const estado = String(t.estado).toLowerCase();
         let estadoClass = "bg-gray-100 text-gray-600 border-gray-200";
-        if (estado === 'vigente') estadoClass = "bg-green-100 text-green-700 border-green-300 shadow-green-100";
-        if (estado === 'anulado') estadoClass = "bg-red-100 text-red-700 border-red-300 shadow-red-100";
+        if (estado === 'vigente') estadoClass = "bg-green-100 text-green-700 border-green-200";
+        if (estado === 'anulado') estadoClass = "bg-red-100 text-red-700 border-red-200";
         
         if(dom.estado) {
             dom.estado.textContent = t.estado;
-            dom.estado.className = `px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border shadow-sm ${estadoClass}`;
+            dom.estado.className = `px-3 py-1 rounded-full text-xs font-bold uppercase border ${estadoClass}`;
         }
 
-        // 2. Cliente y Caja
-        if(dom.cliente) dom.cliente.textContent = t.nombre_cliente;
-        if(dom.clienteId) dom.clienteId.textContent = t.cliente_id ? t.cliente_id : 'S/I';
-        
+        // 2. Operativa
+        if(dom.caja) dom.caja.textContent = t.nombre_caja || `Caja ${t.caja}`;
+        if(dom.vendedor) dom.vendedor.textContent = t.nombre_vendedor;
         if(dom.tipoDoc) dom.tipoDoc.textContent = t.tipo_documento;
         if(dom.numDoc) dom.numDoc.textContent = t.numero_documento;
-        
-        if(dom.caja) dom.caja.textContent = t.nombre_caja || `Caja ${t.caja}`;
-        if(dom.vendedor) dom.vendedor.textContent = t.nombre_vendedor || 'Sistema'; // Aquí va el nombre real
         if(dom.metodo) dom.metodo.textContent = t.metodo_pago;
-        if(dom.obs) dom.obs.textContent = t.observaciones;
 
-        // 3. Ficha Financiera (Colores Dinámicos)
+        // 3. Cliente
+        if(dom.cliente) dom.cliente.textContent = t.nombre_cliente;
+        if(dom.clienteId) dom.clienteId.textContent = t.cliente_id ? t.cliente_id : 'S/I';
+        if(dom.obs && t.observaciones) {
+            dom.obs.textContent = t.observaciones;
+            dom.obs.classList.remove('italic', 'text-slate-400');
+        }
+
+        // 4. Ticket Financiero
         const esCompra = String(t.tipo_transaccion).toLowerCase() === 'compra';
-        const colorTema = esCompra ? 'emerald' : 'cyan'; // Verde para Compra, Cyan para Venta
-        
-        // Badge Tipo
+        // Badge simple
         if(dom.tipoBadge) {
             dom.tipoBadge.textContent = t.tipo_transaccion;
-            dom.tipoBadge.className = `px-3 py-1 rounded text-[10px] font-black uppercase tracking-widest bg-${colorTema}-100 text-${colorTema}-700 border border-${colorTema}-200`;
+            // Compra: Verde / Venta: Azul (estandar Orion)
+            const bgClass = esCompra ? 'bg-emerald-500 border-emerald-400' : 'bg-blue-500 border-blue-400';
+            dom.tipoBadge.className = `${bgClass} text-white px-3 py-1 rounded text-[10px] font-bold uppercase tracking-widest border`;
         }
 
-        // Divisa
-        if(dom.iconoDivisa) dom.iconoDivisa.src = t.icono_divisa;
-        if(dom.nombreDivisa) dom.nombreDivisa.textContent = t.nombre_divisa || 'Divisa Desconocida';
+        if(dom.nombreDivisa) dom.nombreDivisa.textContent = t.nombre_divisa || 'Divisa';
         if(dom.codigoDivisa) dom.codigoDivisa.textContent = t.divisa_id;
+        if(dom.iconoDivisa) dom.iconoDivisa.src = t.icono_divisa;
 
-        // Montos (Formateo Inteligente)
-        // Usamos el símbolo de la divisa extranjera si existe
-        const simboloExt = t.simbolo_divisa || '$';
+        // Símbolo Divisa (ej: US$)
+        const symbol = t.simbolo_divisa || '$';
+
+        if(dom.montoDivisa) dom.montoDivisa.textContent = `${symbol} ${formatSmart(t.monto)}`;
+        if(dom.tasaCambio) dom.tasaCambio.textContent = `$ ${formatSmart(t.tasa_cambio)}`;
         
-        if(dom.montoDivisa) {
-            dom.montoDivisa.innerHTML = `<span class="text-lg text-slate-400 mr-1">${simboloExt}</span> ${formatSmart(t.monto)}`;
-        }
-        
-        if(dom.tasaCambio) {
-            dom.tasaCambio.textContent = formatSmart(t.tasa_cambio);
-        }
-        
-        if(dom.totalClp) {
-            dom.totalClp.textContent = "$" + formatSmart(t.total);
-            dom.totalClp.className = `text-3xl font-black tracking-tight text-${colorTema}-700`;
-        }
+        if(dom.totalClp) dom.totalClp.textContent = "$" + formatSmart(t.total);
     }
 
-    // --- Helper: Formateo Inteligente (Sin decimales .00 innecesarios) ---
+    // Formateador sin decimales .00
     function formatSmart(num) {
         const n = parseFloat(num);
         if (isNaN(n)) return "0";
-        
-        // Si el número es entero (ej: 5000.00), lo muestra como 5.000
-        // Si tiene decimales (ej: 177.50), lo muestra como 177,5
         return n.toLocaleString('es-CL', {
             minimumFractionDigits: 0, 
             maximumFractionDigits: 2 
@@ -152,6 +141,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function mostrarError(titulo, mensaje) {
+        if(dom.loader) dom.loader.classList.add('hidden');
         const modal = document.getElementById('modal-error');
         if(modal) {
             document.getElementById('modal-error-titulo').textContent = titulo;
