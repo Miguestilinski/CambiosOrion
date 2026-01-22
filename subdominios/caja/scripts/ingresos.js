@@ -156,16 +156,23 @@ document.addEventListener('DOMContentLoaded', async() => {
             btnMostrar.className = 'flex items-center justify-center p-1.5 bg-white/50 rounded-full hover:bg-white shadow-sm border border-transparent hover:border-cyan-300 mx-auto';
             btnMostrar.addEventListener('click', (e) => {
                 e.stopPropagation();
-                window.location.href = `detalle-ingreso?id=${row.id}`;
+                window.location.href = `detalle-ing?id=${row.id}`;
             });
 
             tr.innerHTML = `
                 <td class="px-4 py-3 whitespace-nowrap text-xs">${formatearFechaHora(row.fecha)}</td>
                 <td class="px-4 py-3 font-mono text-xs font-bold text-gray-600">${limpiarTexto(row.id)}</td>
-                <td class="px-4 py-3 font-semibold text-xs truncate max-w-[140px]" title="${limpiarTexto(row.cliente_id)}">${limpiarTexto(row.cliente_id)}</td>
+                <td class="px-4 py-3 font-bold text-gray-700 text-sm truncate max-w-[150px]" title="${row.cliente_nombre}">
+                    ${limpiarTexto(row.cliente_nombre)}
+                </td>
                 <td class="px-4 py-3 text-xs uppercase font-bold text-gray-500 tracking-wide">${limpiarTexto(row.tipo_ingreso)}</td>
                 <td class="px-4 py-3 text-xs text-gray-500 max-w-[150px] truncate" title="${limpiarTexto(row.observaciones)}">${limpiarTexto(row.observaciones)}</td>
-                <td class="px-4 py-3 text-center font-black text-slate-700 text-xs">${limpiarTexto(row.divisa_id)}</td>
+                <td class="px-4 py-3 text-center">
+                    <div class="flex items-center justify-center gap-2">
+                        ${row.divisa_icono ? `<img src="${row.divisa_icono}" class="w-4 h-4 rounded-full">` : ''}
+                        <span class="font-bold text-slate-700 text-xs">${limpiarTexto(row.divisa_nombre || row.divisa_id)}</span>
+                    </div>
+                </td>
                 <td class="px-4 py-3 text-right font-bold font-mono text-slate-800 text-sm">${formatearNumero(row.monto)}</td>
                 <td class="px-4 py-3 text-center">
                     <span class="px-2 py-0.5 rounded text-[10px] uppercase font-bold ${estadoClass}">${limpiarTexto(row.estado)}</span>
