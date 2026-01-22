@@ -35,11 +35,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         divisaDropdown: document.getElementById('divisa-dropdown'),
         divisaIconContainer: document.getElementById('divisa-icon-container'),
         divisaTextSelected: document.getElementById('divisa-text-selected'),
-        loadingTasa: document.getElementById('loading-tasa')
+        divisaSubtext: document.getElementById('divisa-subtext'),
+        loadingTasa: document.getElementById('loading-tasa'),
+        financialCard: document.getElementById('financial-card')
     };
 
     let lastTrxId = null;
-    const svgPlaceholder = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
+    const svgPlaceholder = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
 
     // --- CARGAR DIVISAS ---
     cargarDivisasCustom();
@@ -52,11 +54,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (Array.isArray(data)) {
                     data.forEach(d => {
                         const item = document.createElement('div');
-                        item.className = "flex items-center gap-3 px-4 py-3 hover:bg-slate-50 cursor-pointer border-b border-gray-100 last:border-0 transition-colors";
+                        item.className = "flex items-center gap-3 px-5 py-4 hover:bg-slate-50 cursor-pointer border-b border-gray-100 last:border-0 transition-colors";
                         
                         const img = document.createElement('img');
                         img.className = "w-full h-full object-contain rounded-full";
-                        // Usamos 'icono_final' que viene de la lógica PHP
                         img.src = d.icono_final; 
                         img.onerror = function() {
                             this.style.display = 'none';
@@ -65,7 +66,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         };
 
                         const iconWrapper = document.createElement('div');
-                        iconWrapper.className = "w-9 h-9 rounded-full bg-white border border-gray-200 flex items-center justify-center p-0.5 shrink-0";
+                        iconWrapper.className = "w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center p-0.5 shrink-0";
                         if(!d.icono_final) {
                             iconWrapper.innerHTML = svgPlaceholder;
                             iconWrapper.classList.add('text-gray-300');
@@ -76,17 +77,16 @@ document.addEventListener('DOMContentLoaded', async () => {
                         const textWrapper = document.createElement('div');
                         textWrapper.className = "flex flex-col";
                         textWrapper.innerHTML = `
-                            <span class="text-sm font-bold text-slate-700">${d.nombre_real}</span>
-                            <span class="text-[10px] text-slate-400 font-mono">${d.codigo_iso}</span>
+                            <span class="text-base font-bold text-slate-700">${d.nombre_real}</span>
+                            <span class="text-xs text-slate-400 font-mono">${d.codigo_iso}</span>
                         `;
 
                         item.appendChild(iconWrapper);
                         item.appendChild(textWrapper);
 
                         item.onclick = () => {
-                            inputs.divisaId.value = d.id_maestro; // Guardamos ID Maestro (D99)
+                            inputs.divisaId.value = d.id_maestro; 
                             
-                            // Actualizar UI
                             ui.divisaIconContainer.innerHTML = '';
                             const selectedIcon = iconWrapper.cloneNode(true);
                             if(selectedIcon.querySelector('img')) {
@@ -99,12 +99,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                             ui.divisaIconContainer.appendChild(selectedIcon);
                             ui.divisaIconContainer.classList.remove('text-gray-300');
 
-                            ui.divisaTextSelected.textContent = `${d.nombre_real}`;
-                            ui.divisaTextSelected.classList.add('text-slate-800');
-                            ui.divisaTextSelected.classList.remove('text-slate-500');
+                            ui.divisaTextSelected.textContent = d.nombre_real;
+                            ui.divisaTextSelected.className = "block text-lg font-bold text-slate-800";
+                            ui.divisaSubtext.textContent = d.codigo_iso;
+                            ui.divisaSubtext.classList.remove('opacity-0');
+                            
                             ui.divisaDropdown.classList.add('hidden');
 
-                            // Buscar tasa usando el ID Maestro
                             obtenerTasaAutomatica();
                         };
                         ui.divisaDropdown.appendChild(item);
@@ -116,7 +117,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // --- TASA AUTOMÁTICA ---
     async function obtenerTasaAutomatica() {
-        const divisa = inputs.divisaId.value; // D99
+        const divisa = inputs.divisaId.value; 
         const tipo = inputs.tipoTrx.value; 
 
         if (!divisa) return;
@@ -132,24 +133,56 @@ document.addEventListener('DOMContentLoaded', async () => {
                 inputs.tasa.value = tasaStr;
                 calcularTotal();
                 
-                inputs.tasa.classList.add('bg-cyan-50', 'text-cyan-700');
-                setTimeout(() => inputs.tasa.classList.remove('bg-cyan-50', 'text-cyan-700'), 500);
+                // Efecto Flash (Color según tipo)
+                const flashColor = tipo === 'Compra' ? 'bg-emerald-50 text-emerald-700' : 'bg-cyan-50 text-cyan-700';
+                inputs.tasa.classList.add(...flashColor.split(' '));
+                setTimeout(() => inputs.tasa.classList.remove(...flashColor.split(' ')), 500);
             } else {
-                // Si no hay tasa en tabla 'divisas' (ej: Dolar Bahameño), se deja vacio para ingreso manual
                 inputs.tasa.value = "";
                 inputs.total.value = "$ 0";
             }
-        } catch (e) {
-            console.error(e);
-        } finally {
-            ui.loadingTasa.classList.add('hidden');
-        }
+        } catch (e) { console.error(e); } 
+        finally { ui.loadingTasa.classList.add('hidden'); }
     }
 
-    // Resto del código (listeners, calculadora, submit) igual que antes...
-    // Se mantiene idéntico porque la lógica de UI no cambia
-    
-    // Toggle Dropdown
+    // --- LOGICA DE CAMBIO DE COLOR (THEME) ---
+    ui.btnCompra.onclick = () => updateTheme('Compra');
+    ui.btnVenta.onclick = () => updateTheme('Venta');
+
+    function updateTheme(tipo) {
+        inputs.tipoTrx.value = tipo;
+        
+        // Reset classes
+        ui.btnCompra.className = "py-5 text-base font-black uppercase tracking-widest transition-all flex items-center justify-center gap-3 bg-gray-100 text-gray-400 hover:bg-gray-200";
+        ui.btnVenta.className = "py-5 text-base font-black uppercase tracking-widest transition-all flex items-center justify-center gap-3 bg-gray-100 text-gray-400 hover:bg-gray-200";
+        ui.financialCard.className = "bg-white rounded-2xl shadow-xl border-2 overflow-hidden flex flex-col h-full transition-colors duration-300";
+
+        if (tipo === 'Compra') {
+            // Estilo COMPRA (Verde/Emerald)
+            ui.btnCompra.className = "py-5 text-base font-black uppercase tracking-widest transition-all flex items-center justify-center gap-3 bg-emerald-600 text-white shadow-inner";
+            ui.financialCard.classList.add('border-emerald-500');
+            ui.btnGuardar.className = "w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-5 rounded-2xl shadow-xl shadow-emerald-600/30 transition-all transform active:scale-95 flex items-center justify-center gap-3 text-lg";
+            
+            // Inputs focus color
+            inputs.monto.classList.replace('focus:border-cyan-500', 'focus:border-emerald-500');
+            inputs.tasa.classList.replace('focus:border-cyan-500', 'focus:border-emerald-500');
+        } else {
+            // Estilo VENTA (Azul/Cyan)
+            ui.btnVenta.className = "py-5 text-base font-black uppercase tracking-widest transition-all flex items-center justify-center gap-3 bg-cyan-600 text-white shadow-inner";
+            ui.financialCard.classList.add('border-cyan-500');
+            ui.btnGuardar.className = "w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-5 rounded-2xl shadow-xl shadow-cyan-600/30 transition-all transform active:scale-95 flex items-center justify-center gap-3 text-lg";
+            
+            // Inputs focus color
+            inputs.monto.classList.replace('focus:border-emerald-500', 'focus:border-cyan-500');
+            inputs.tasa.classList.replace('focus:border-emerald-500', 'focus:border-cyan-500');
+        }
+        
+        obtenerTasaAutomatica();
+    }
+    // Set inicial
+    updateTheme('Venta');
+
+    // --- Dropdown Logic ---
     ui.divisaTrigger.addEventListener('click', (e) => {
         e.stopPropagation();
         ui.divisaDropdown.classList.toggle('hidden');
@@ -163,31 +196,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // Tipo Transacción
-    ui.btnCompra.onclick = () => setTipo('Compra');
-    ui.btnVenta.onclick = () => setTipo('Venta');
-
-    function setTipo(t) {
-        inputs.tipoTrx.value = t;
-        const activeClass = t === 'Compra' 
-            ? "bg-emerald-50 text-emerald-700 border-emerald-200 shadow-inner" 
-            : "bg-cyan-50 text-cyan-700 border-cyan-200 shadow-inner";
-        const inactiveClass = "text-slate-400 hover:text-slate-600";
-
-        if(t === 'Compra') {
-            ui.btnCompra.className = `py-4 text-sm font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 border border-emerald-200 rounded-l-xl ${activeClass}`;
-            ui.btnVenta.className = `py-4 text-sm font-bold uppercase tracking-widest transition-all flex items-center justify-center gap-2 ${inactiveClass}`;
-            ui.btnGuardar.className = "w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-emerald-600/20 transition-all flex items-center justify-center gap-2 mt-auto";
-        } else {
-            ui.btnVenta.className = `py-4 text-sm font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 border border-cyan-200 rounded-r-xl ${activeClass}`;
-            ui.btnCompra.className = `py-4 text-sm font-bold uppercase tracking-widest transition-all flex items-center justify-center gap-2 ${inactiveClass}`;
-            ui.btnGuardar.className = "w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-cyan-600/20 transition-all flex items-center justify-center gap-2 mt-auto";
-        }
-        obtenerTasaAutomatica();
-    }
-    setTipo('Venta');
-
-    // Calculadora
+    // --- Calculadora ---
     inputs.monto.addEventListener('input', function(e) {
         let val = this.value.replace(/\D/g, '');
         this.value = val.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -208,7 +217,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         inputs.total.value = total > 0 ? "$ " + total.toLocaleString('es-CL') : "$ 0";
     }
 
-    // Buscador Clientes
+    // --- Clientes ---
     inputs.cliente.addEventListener('input', async (e) => {
         const q = e.target.value;
         if (q.length < 2) { ui.resCliente.classList.add('hidden'); return; }
@@ -234,7 +243,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         } catch (err) { console.error(err); }
     });
 
-    // Submit
+    // --- Submit ---
     document.getElementById('form-nueva-tr').addEventListener('submit', async (e) => {
         e.preventDefault();
         
@@ -265,7 +274,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             tipo_transaccion: inputs.tipoTrx.value,
             tipo_documento: inputs.tipoDoc.value,
             numero_nota: notaFinal,
-            divisa_id: inputs.divisaId.value, // D99
+            divisa_id: inputs.divisaId.value, 
             monto: monto,
             tasa_cambio: tasaFinal,
             total: parseInt(totalRaw),
