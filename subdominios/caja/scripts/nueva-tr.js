@@ -2,16 +2,13 @@ import { initCajaHeader } from './header.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     
-    // 1. Inicializar Header
     const sessionData = await initCajaHeader('transacciones');
     
-    // Validar Caja
     if (!sessionData || !sessionData.caja_id) {
-        mostrarError("Error de Sesión", "No tienes una caja asignada. No puedes realizar transacciones.");
+        mostrarError("Error", "Sin caja asignada.");
         document.getElementById('btn-guardar').disabled = true;
     }
 
-    // 2. Referencias DOM
     const form = document.getElementById('form-nueva-tr');
     const inputs = {
         cliente: document.getElementById('cliente-input'),
@@ -20,145 +17,200 @@ document.addEventListener('DOMContentLoaded', async () => {
         tipoDoc: document.getElementById('tipo_documento'),
         numDoc: document.getElementById('numero_documento'),
         nota: document.getElementById('numero_nota'),
-        tipoTrx: document.getElementById('tipo_transaccion'), // Hidden input
-        divisa: document.getElementById('divisa_id'),
+        tipoTrx: document.getElementById('tipo_transaccion'), 
+        divisaId: document.getElementById('divisa_id'), // Hidden
         monto: document.getElementById('monto'),
         tasa: document.getElementById('tasa_cambio'),
-        total: document.getElementById('total'),
-        metodo: document.getElementById('metodo_pago')
+        total: document.getElementById('total')
     };
 
     const ui = {
-        resultadosCliente: document.getElementById('resultados-cliente'),
+        resCliente: document.getElementById('resultados-cliente'),
         btnCompra: document.getElementById('btn-compra'),
         btnVenta: document.getElementById('btn-venta'),
         btnGuardar: document.getElementById('btn-guardar'),
         modalExito: document.getElementById('modal-exito'),
-        modalError: document.getElementById('modal-error')
+        modalError: document.getElementById('modal-error'),
+        // Custom Select Elements
+        divisaTrigger: document.getElementById('divisa-trigger'),
+        divisaDropdown: document.getElementById('divisa-dropdown'),
+        divisaIconSelected: document.getElementById('divisa-icon-selected'),
+        divisaTextSelected: document.getElementById('divisa-text-selected')
     };
 
     let lastTrxId = null;
 
-    // 3. Cargar Divisas
-    cargarDivisas();
+    // --- CARGAR DIVISAS (CUSTOM DROPDOWN) ---
+    cargarDivisasCustom();
 
-    // 4. Lógica Tipo Transacción (Toggle UI)
-    ui.btnCompra.onclick = () => setTipoTransaccion('Compra');
-    ui.btnVenta.onclick = () => setTipoTransaccion('Venta');
+    function cargarDivisasCustom() {
+        fetch('https://cambiosorion.cl/data/divisas_api.php')
+            .then(res => res.json())
+            .then(data => {
+                ui.divisaDropdown.innerHTML = ''; // Limpiar
+                
+                if (Array.isArray(data)) {
+                    data.forEach(d => {
+                        const item = document.createElement('div');
+                        item.className = "flex items-center gap-3 px-4 py-3 hover:bg-slate-50 cursor-pointer border-b border-gray-100 last:border-0 transition-colors";
+                        
+                        // Icono + Nombre + Codigo
+                        item.innerHTML = `
+                            <div class="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center p-0.5">
+                                <img src="${d.icono || 'https://cambiosorion.cl/orionapp/icons/default.png'}" class="w-full h-full object-contain rounded-full">
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-sm font-bold text-slate-700">${d.nombre}</span>
+                                <span class="text-[10px] text-slate-400 font-mono">${d.codigo || ''}</span>
+                            </div>
+                        `;
 
-    function setTipoTransaccion(tipo) {
-        inputs.tipoTrx.value = tipo;
-        
-        if (tipo === 'Compra') {
-            // Estilo Compra (Verde)
-            ui.btnCompra.className = "py-2 text-sm font-bold rounded-md transition-all bg-white text-emerald-600 shadow-sm border border-gray-200";
-            ui.btnVenta.className = "py-2 text-sm font-bold rounded-md transition-all text-slate-500 hover:text-slate-700";
-            ui.btnGuardar.className = "w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-xl shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center gap-2 group";
-        } else {
-            // Estilo Venta (Cyan - Default)
-            ui.btnVenta.className = "py-2 text-sm font-bold rounded-md transition-all bg-white text-cyan-600 shadow-sm border border-gray-200";
-            ui.btnCompra.className = "py-2 text-sm font-bold rounded-md transition-all text-slate-500 hover:text-slate-700";
-            ui.btnGuardar.className = "w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 px-4 rounded-xl shadow-lg shadow-cyan-600/30 transition-all flex items-center justify-center gap-2 group";
-        }
-        calcularTotal();
+                        // Evento Click en Item
+                        item.onclick = () => {
+                            inputs.divisaId.value = d.nombre; // OJO: Tu sistema usa nombres como ID en algunos casos (USD vs Dolar)
+                            
+                            // Actualizar Trigger
+                            ui.divisaIconSelected.src = d.icono || 'https://cambiosorion.cl/orionapp/icons/default.png';
+                            ui.divisaIconSelected.classList.remove('opacity-50');
+                            ui.divisaTextSelected.textContent = d.nombre;
+                            ui.divisaTextSelected.classList.add('text-slate-800');
+                            ui.divisaTextSelected.classList.remove('text-slate-500');
+                            
+                            // Cerrar
+                            ui.divisaDropdown.classList.add('hidden');
+                        };
+
+                        ui.divisaDropdown.appendChild(item);
+                    });
+                }
+            })
+            .catch(err => console.error("Error cargando divisas", err));
     }
 
-    // 5. Cálculos en tiempo real
+    // Toggle Dropdown Divisa
+    ui.divisaTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        ui.divisaDropdown.classList.toggle('hidden');
+    });
+
+    // Cerrar dropdowns al click fuera
+    document.addEventListener('click', (e) => {
+        if (!ui.divisaTrigger.contains(e.target) && !ui.divisaDropdown.contains(e.target)) {
+            ui.divisaDropdown.classList.add('hidden');
+        }
+        if (!inputs.cliente.contains(e.target) && !ui.resCliente.contains(e.target)) {
+            ui.resCliente.classList.add('hidden');
+        }
+    });
+
+    // --- TIPO TRANSACCION ---
+    ui.btnCompra.onclick = () => setTipo('Compra');
+    ui.btnVenta.onclick = () => setTipo('Venta');
+
+    function setTipo(t) {
+        inputs.tipoTrx.value = t;
+        const activeClass = t === 'Compra' 
+            ? "bg-emerald-50 text-emerald-700 border-emerald-200 shadow-inner" 
+            : "bg-cyan-50 text-cyan-700 border-cyan-200 shadow-inner";
+        const inactiveClass = "text-slate-400 hover:text-slate-600";
+
+        if(t === 'Compra') {
+            ui.btnCompra.className = `py-4 text-sm font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 border border-emerald-200 rounded-l-xl ${activeClass}`;
+            ui.btnVenta.className = `py-4 text-sm font-bold uppercase tracking-widest transition-all flex items-center justify-center gap-2 ${inactiveClass}`;
+            
+            ui.btnGuardar.className = "w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-emerald-600/20 transition-all flex items-center justify-center gap-2 mt-auto";
+        } else {
+            ui.btnVenta.className = `py-4 text-sm font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 border border-cyan-200 rounded-r-xl ${activeClass}`;
+            ui.btnCompra.className = `py-4 text-sm font-bold uppercase tracking-widest transition-all flex items-center justify-center gap-2 ${inactiveClass}`;
+            
+            ui.btnGuardar.className = "w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-cyan-600/20 transition-all flex items-center justify-center gap-2 mt-auto";
+        }
+    }
+    // Set inicial
+    setTipo('Venta');
+
+    // --- CALCULADORA ---
     inputs.monto.addEventListener('input', formatAndCalc);
     inputs.tasa.addEventListener('input', formatAndCalc);
 
     function formatAndCalc(e) {
-        // Permitir solo números y comas/puntos
         let val = e.target.value.replace(/[^0-9.,]/g, '');
         e.target.value = val;
-        calcularTotal();
-    }
-
-    function calcularTotal() {
-        // Limpieza para cálculo (remover puntos de miles, cambiar coma decimal a punto)
-        const montoRaw = inputs.monto.value.replace(/\./g, '').replace(',', '.');
-        const tasaRaw = inputs.tasa.value.replace(/\./g, '').replace(',', '.');
         
-        const monto = parseFloat(montoRaw) || 0;
-        const tasa = parseFloat(tasaRaw) || 0;
-        const total = Math.round(monto * tasa); // CLP suele ser entero
-
-        inputs.total.value = total > 0 ? total.toLocaleString('es-CL') : '';
+        const m = parseFloat(inputs.monto.value.replace(/\./g, '').replace(',', '.')) || 0;
+        const t = parseFloat(inputs.tasa.value.replace(/\./g, '').replace(',', '.')) || 0;
+        const total = Math.round(m * t);
+        
+        inputs.total.value = total > 0 ? "$ " + total.toLocaleString('es-CL') : "$ 0";
     }
 
-    // 6. Buscador Clientes
+    // --- BUSCADOR CLIENTES ---
     inputs.cliente.addEventListener('input', async (e) => {
-        const query = e.target.value;
-        if (query.length < 2) {
-            ui.resultadosCliente.classList.add('hidden');
-            return;
-        }
+        const q = e.target.value;
+        if (q.length < 2) { ui.resCliente.classList.add('hidden'); return; }
 
         try {
-            const res = await fetch(`https://cambiosorion.cl/data/nueva-tr.php?action=search_client&q=${encodeURIComponent(query)}`);
+            const res = await fetch(`https://cambiosorion.cl/data/nueva-tr.php?action=search_client&q=${encodeURIComponent(q)}`);
             const data = await res.json();
+            ui.resCliente.innerHTML = '';
             
-            ui.resultadosCliente.innerHTML = '';
             if (data.length > 0) {
-                ui.resultadosCliente.classList.remove('hidden');
+                ui.resCliente.classList.remove('hidden');
                 data.forEach(c => {
                     const div = document.createElement('div');
-                    div.className = "px-4 py-2 hover:bg-slate-50 cursor-pointer text-sm border-b border-gray-100 last:border-0";
-                    div.innerHTML = `<span class="font-bold text-slate-700">${c.razon_social}</span> <span class="text-slate-400 text-xs">(${c.rut || 'S/RUT'})</span>`;
-                    div.onclick = () => seleccionarCliente(c);
-                    ui.resultadosCliente.appendChild(div);
+                    div.className = "px-4 py-3 hover:bg-slate-50 cursor-pointer border-b border-gray-100 flex justify-between items-center";
+                    div.innerHTML = `
+                        <span class="font-bold text-slate-700 text-sm">${c.razon_social}</span>
+                        <span class="text-xs text-slate-400 font-mono bg-slate-100 px-2 py-0.5 rounded">${c.rut || 'S/RUT'}</span>
+                    `;
+                    div.onclick = () => {
+                        inputs.cliente.value = c.razon_social;
+                        inputs.clienteId.value = c.id;
+                        if(c.email) inputs.email.value = c.email;
+                        ui.resCliente.classList.add('hidden');
+                    };
+                    ui.resCliente.appendChild(div);
                 });
             } else {
-                ui.resultadosCliente.classList.add('hidden');
+                ui.resCliente.classList.add('hidden');
             }
-        } catch (err) {
-            console.error(err);
-        }
+        } catch (err) { console.error(err); }
     });
 
-    function seleccionarCliente(c) {
-        inputs.cliente.value = c.razon_social;
-        inputs.clienteId.value = c.id;
-        if(c.email) inputs.email.value = c.email;
-        ui.resultadosCliente.classList.add('hidden');
-    }
-
-    // Cerrar buscador al clic fuera
-    document.addEventListener('click', (e) => {
-        if (!inputs.cliente.contains(e.target) && !ui.resultadosCliente.contains(e.target)) {
-            ui.resultadosCliente.classList.add('hidden');
-        }
-    });
-
-    // 7. Guardar Transacción
+    // --- SUBMIT ---
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        // Validaciones básicas
-        if (!inputs.divisa.value) { alert("Seleccione una divisa"); return; }
+        if (!inputs.divisaId.value) { alert("Seleccione una divisa"); return; }
         
         const monto = parseFloat(inputs.monto.value.replace(/\./g, '').replace(',', '.'));
-        if (!monto || monto <= 0) { alert("El monto debe ser mayor a 0"); return; }
+        if (!monto || monto <= 0) { alert("Monto inválido"); return; }
 
         ui.btnGuardar.disabled = true;
-        ui.btnGuardar.innerHTML = `<svg class="animate-spin h-5 w-5 mr-2 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Procesando...`;
+        ui.btnGuardar.innerHTML = "Procesando...";
+
+        // Obtener valor del radio button seleccionado
+        const metodo = document.querySelector('input[name="metodo_pago"]:checked').value;
+
+        // Limpiar total (quitar $ y puntos)
+        const totalRaw = inputs.total.value.replace('$', '').replace(/\./g, '').trim();
 
         const payload = {
             action: 'create',
             caja_id: sessionData.caja_id,
             vendedor_id: sessionData.equipo_id,
             cliente_id: inputs.clienteId.value || null,
-            nombre_cliente_manual: inputs.cliente.value, // Por si es cliente nuevo/ocasional
+            nombre_cliente_manual: inputs.cliente.value,
             email: inputs.email.value,
             tipo_transaccion: inputs.tipoTrx.value,
             tipo_documento: inputs.tipoDoc.value,
             numero_documento: inputs.numDoc.value,
             numero_nota: inputs.nota.value,
-            divisa_id: inputs.divisa.value,
+            divisa_id: inputs.divisaId.value,
             monto: monto,
             tasa_cambio: parseFloat(inputs.tasa.value.replace(/\./g, '').replace(',', '.')),
-            total: parseInt(inputs.total.value.replace(/\./g, '')),
-            metodo_pago: inputs.metodo.value
+            total: parseInt(totalRaw),
+            metodo_pago: metodo
         };
 
         try {
@@ -173,41 +225,23 @@ document.addEventListener('DOMContentLoaded', async () => {
                 lastTrxId = data.id;
                 ui.modalExito.classList.remove('hidden');
             } else {
-                throw new Error(data.error || "Error desconocido");
+                throw new Error(data.error);
             }
         } catch (err) {
-            mostrarError("Error al guardar", err.message);
+            mostrarError("Error", err.message);
             ui.btnGuardar.disabled = false;
-            ui.btnGuardar.textContent = "Confirmar Transacción";
+            ui.btnGuardar.innerHTML = "Confirmar Transacción";
         }
     });
 
-    // 8. Utilidades
-    function cargarDivisas() {
-        fetch('https://cambiosorion.cl/data/divisas_api.php')
-            .then(res => res.json())
-            .then(data => {
-                if (Array.isArray(data)) {
-                    data.forEach(d => {
-                        const option = document.createElement('option');
-                        option.value = d.nombre; // OJO: Tu sistema usa nombres como ID en algunos lados (USD vs Dolar)
-                        option.textContent = `${d.nombre} (${d.codigo})`;
-                        inputs.divisa.appendChild(option);
-                    });
-                }
-            });
-    }
-
-    function mostrarError(titulo, mensaje) {
-        const t = document.getElementById('modal-error-titulo');
-        const m = document.getElementById('modal-error-mensaje');
-        if (t) t.textContent = titulo;
-        if (m) m.textContent = mensaje;
+    // Modales
+    function mostrarError(t, m) {
+        document.getElementById('modal-error-titulo').textContent = t;
+        document.getElementById('modal-error-mensaje').textContent = m;
         ui.modalError.classList.remove('hidden');
         document.getElementById('modal-error-confirmar').onclick = () => ui.modalError.classList.add('hidden');
     }
 
-    // Botones Modal Éxito
     document.getElementById('btn-nueva').onclick = () => location.reload();
     document.getElementById('btn-ver-detalle').onclick = () => {
         if (lastTrxId) window.location.href = `detalle-tr.html?id=${lastTrxId}`;
