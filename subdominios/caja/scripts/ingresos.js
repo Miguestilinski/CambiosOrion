@@ -166,7 +166,6 @@ document.addEventListener('DOMContentLoaded', async() => {
                     ${row.cliente_nombre ? limpiarTexto(row.cliente_nombre) : ''} 
                 </td>
                 <td class="px-4 py-3 text-xs uppercase font-bold text-gray-500 tracking-wide">${limpiarTexto(row.tipo_ingreso)}</td>
-                <td class="px-4 py-3 text-xs text-gray-500 max-w-[150px] truncate" title="${limpiarTexto(row.observaciones)}">${limpiarTexto(row.observaciones)}</td>
                 <td class="px-4 py-3 text-center">
                     <div class="flex items-center justify-center gap-2">
                         ${row.divisa_icono ? `<img src="${row.divisa_icono}" class="w-4 h-4 rounded-full">` : ''}

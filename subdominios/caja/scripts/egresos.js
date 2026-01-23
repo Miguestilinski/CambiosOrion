@@ -67,6 +67,18 @@ document.addEventListener('DOMContentLoaded', async() => {
             });
     }
 
+    function formatearFechaHora(fechaString) {
+        if (!fechaString) return '';
+        try {
+            const [datePart, timePart] = fechaString.split(' ');
+            const [y, m, d] = datePart.split('-');
+            const [h, min] = timePart.split(':');
+            return `<div class="flex flex-col"><span class="font-mono font-bold text-gray-600">${h}:${min}</span><span class="text-gray-400 text-[10px]">${d}/${m}/${y}</span></div>`;
+        } catch (e) {
+            return fechaString;
+        }
+    }
+
     function mostrarResultados(data) {
         tablaEgresos.innerHTML = "";
         
@@ -81,16 +93,21 @@ document.addEventListener('DOMContentLoaded', async() => {
 
             // Estilos de Estado
             let estadoClass = "bg-gray-100 text-gray-600";
-            if (String(row.estado).toLowerCase() === 'vigente') estadoClass = "bg-rose-50 text-rose-700 border border-rose-100";
-            if (String(row.estado).toLowerCase() === 'anulado') estadoClass = "bg-slate-100 text-slate-500 line-through decoration-slate-400";
+            if(String(row.estado) === 'Vigente') estadoClass = "bg-green-100 text-green-700 border border-green-200";
+            if(String(row.estado) === 'Anulado') estadoClass = "bg-red-100 text-red-700 border border-red-200";
+            if(String(row.estado) === 'Pagado') estadoClass = "bg-blue-100 text-blue-700 border border-blue-200";
 
             const btnMostrar = document.createElement('button');
-            btnMostrar.innerHTML = `<svg class="w-5 h-5 text-gray-400 hover:text-rose-600 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
-            btnMostrar.onclick = () => window.location.href = `detalle-egr-caja.html?id=${row.id}`; 
+            btnMostrar.innerHTML = `<svg class="w-5 h-5 text-gray-600 hover:text-cyan-700 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
+            btnMostrar.className = 'flex items-center justify-center p-1.5 bg-white/50 rounded-full hover:bg-white shadow-sm border border-transparent hover:border-cyan-300 mx-auto';
+            btnMostrar.addEventListener('click', (e) => {
+                e.stopPropagation();
+                window.location.href = `detalle-egr?id=${row.id}`;
+            });
 
             tr.innerHTML = `
-                <td class="px-4 py-3 font-mono text-xs text-gray-500 text-center">#${row.id}</td>
-                <td class="px-4 py-3 text-xs text-gray-600">${row.fecha_formateada}</td>
+                <td class="px-4 py-3 whitespace-nowrap text-xs">${formatearFechaHora(row.fecha)}</td>
+                <td class="px-4 py-3 font-mono text-xs font-bold text-gray-600">${limpiarTexto(row.id)}</td>
                 
                 <td class="px-4 py-3 font-bold text-gray-700 text-sm truncate max-w-[150px]" title="${row.cliente_nombre}">
                     ${row.cliente_nombre ? limpiarTexto(row.cliente_nombre) : ''}
@@ -134,18 +151,25 @@ document.addEventListener('DOMContentLoaded', async() => {
 
     // --- UTILS (Aquí estaba faltando la función) ---
     
-    function limpiarTexto(t) { 
-        return t ? String(t).replace(/</g, "&lt;").replace(/>/g, "&gt;") : ''; 
-    }
-    
-    function formatearNumero(n) { 
-        return parseFloat(n).toLocaleString('es-CL', { minimumFractionDigits: 0, maximumFractionDigits: 2 }); 
+    function limpiarTexto(valor) { return valor === null || valor === undefined ? '' : valor; }
+
+    function formatearNumero(numero) {
+        if (numero === null || numero === undefined || numero === '') return '';
+        return Number(numero).toLocaleString('es-CL', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
     }
 
     function initDatePickers() {
-        if (window.flatpickr) {
-            flatpickr("#fecha-inicio", { locale: "es", dateFormat: "Y-m-d", defaultDate: new Date(new Date().setDate(new Date().getDate() - 30)) });
-            flatpickr("#fecha-fin", { locale: "es", dateFormat: "Y-m-d", defaultDate: "today" });
+        const config = {
+            locale: "es",
+            dateFormat: "Y-m-d",
+            altInput: true,
+            altFormat: "d/m/Y",
+            allowInput: true,
+            disableMobile: "true"
+        };
+        // Verificar si existe flatpickr antes de llamar
+        if (typeof flatpickr !== 'undefined') {
+            flatpickr(".flatpickr", config);
         }
     }
 
