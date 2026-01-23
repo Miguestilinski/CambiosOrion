@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', async() => {
             btnMostrar.className = 'flex items-center justify-center p-1.5 bg-white/50 rounded-full hover:bg-white shadow-sm border border-transparent hover:border-cyan-300 mx-auto';
             btnMostrar.addEventListener('click', (e) => {
                 e.stopPropagation();
-                window.location.href = `detalle-ing?id=${row.id}`;
+                window.location.href = `detalle-egr?id=${row.id}`;
             });
 
             // Renderizado idéntico a Ingresos (Fecha primero, etc.)
