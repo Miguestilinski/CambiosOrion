@@ -153,9 +153,12 @@ document.addEventListener('DOMContentLoaded', async() => {
 
             // Botón Ver
             const btnMostrar = document.createElement('button');
-            btnMostrar.className = "text-slate-400 hover:text-cyan-600 transition p-1 rounded-md hover:bg-cyan-50";
-            btnMostrar.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
-            btnMostrar.onclick = () => window.location.href = `detalle-ing-caja.html?id=${row.id}`;
+            btnMostrar.innerHTML = `<svg class="w-5 h-5 text-gray-600 hover:text-cyan-700 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
+            btnMostrar.className = 'flex items-center justify-center p-1.5 bg-white/50 rounded-full hover:bg-white shadow-sm border border-transparent hover:border-cyan-300 mx-auto';
+            btnMostrar.addEventListener('click', (e) => {
+                e.stopPropagation();
+                window.location.href = `detalle-ing?id=${row.id}`;
+            });
 
             // Renderizado de celdas en el orden del nuevo HTML
             tr.innerHTML = `
