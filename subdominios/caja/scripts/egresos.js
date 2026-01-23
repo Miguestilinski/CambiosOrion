@@ -93,8 +93,8 @@ document.addEventListener('DOMContentLoaded', async() => {
 
             // Estilos de estado
             let estadoClass = "bg-gray-100 text-gray-600";
-            if (String(row.estado).toLowerCase() === 'vigente') estadoClass = "bg-rose-100 text-rose-700 border border-rose-200";
-            if (String(row.estado).toLowerCase() === 'anulado') estadoClass = "bg-slate-100 text-slate-500 border border-slate-200 line-through decoration-slate-400";
+            if (String(row.estado).toLowerCase() === 'vigente') estadoClass = "bg-emerald-100 text-emerald-700 border border-emerald-200";
+            if (String(row.estado).toLowerCase() === 'anulado') estadoClass = "bg-red-50 text-red-600 border border-red-100 line-through decoration-red-400";
 
             // Botón Ver
             const btnMostrar = document.createElement('button');
@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', async() => {
                     </div>
                 </td>
                 <td class="px-4 py-3 text-center">
-                    <span class="px-2 py-1 rounded-md text-[10px] uppercase font-bold bg-rose-50 text-rose-700 border border-rose-100">
+                    <span class="px-2 py-1 rounded-md text-[10px] uppercase font-bold bg-cyan-50 text-cyan-700 border border-cyan-100">
                         ${limpiarTexto(row.tipo_egreso)}
                     </span>
                 </td>
