@@ -91,23 +91,28 @@ document.addEventListener('DOMContentLoaded', async() => {
             tr.innerHTML = `
                 <td class="px-4 py-3 font-mono text-xs text-gray-500 text-center">#${row.id}</td>
                 <td class="px-4 py-3 text-xs text-gray-600">${row.fecha_formateada}</td>
+                
                 <td class="px-4 py-3 font-bold text-gray-700 text-sm truncate max-w-[150px]" title="${row.cliente_nombre}">
-                    ${row.cliente_nombre || '-'}
+                    ${row.cliente_nombre ? limpiarTexto(row.cliente_nombre) : ''}
                 </td>
+                
                 <td class="px-4 py-3 text-center">
-                    <span class="px-2 py-1 rounded text-[10px] uppercase font-bold bg-amber-50 text-amber-700 border border-amber-100">
+                    <span class="px-2 py-1 rounded text-[10px] uppercase font-bold bg-rose-50 text-rose-700 border border-rose-100">
                         ${limpiarTexto(row.tipo_egreso)}
                     </span>
                 </td>
+                
                 <td class="px-4 py-3 text-center">
                     <div class="flex items-center justify-center gap-2">
                         ${row.divisa_icono ? `<img src="${row.divisa_icono}" class="w-4 h-4 rounded-full">` : ''}
                         <span class="font-bold text-slate-700 text-xs">${limpiarTexto(row.divisa_nombre || row.divisa_id)}</span>
                     </div>
                 </td>
+                
                 <td class="px-4 py-3 text-right font-bold font-mono text-slate-800 text-sm">
                     ${formatearNumero(row.monto)}
                 </td>
+                
                 <td class="px-4 py-3 text-center">
                     <span class="px-2 py-0.5 rounded text-[10px] uppercase font-bold ${estadoClass}">${limpiarTexto(row.estado)}</span>
                 </td>
