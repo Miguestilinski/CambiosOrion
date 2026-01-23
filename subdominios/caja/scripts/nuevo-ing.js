@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const sessionData = await initCajaHeader('ingresos');
     
     if (!sessionData || !sessionData.caja_id) {
-        mostrarErrorModal("Error", "Sin caja asignada.");
+        mostrarErrorModal("Error de Sesión", "Sin caja asignada para operar.");
         document.getElementById('btn-guardar').disabled = true;
     }
 
@@ -95,7 +95,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                         item.onclick = () => {
                             inputs.divisaId.value = d.id_maestro; // D99
                             
-                            // Update UI
                             ui.divisaIconContainer.innerHTML = '';
                             const selectedIcon = iconWrapper.cloneNode(true);
                             if(selectedIcon.querySelector('img')) {
@@ -221,12 +220,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         const payload = {
             action: 'create',
             caja_id: sessionData.caja_id,
-            usuario_id: sessionData.id, 
+            
+            // --- CORRECCIÓN AQUÍ: Usamos equipo_id que es lo que devuelve el PHP ---
+            usuario_id: sessionData.equipo_id || sessionData.id, 
+            
             tipo_ingreso: tipo, 
-            cuenta_id: inputs.cuentaId.value || null, // Se envía si es cuenta
+            cuenta_id: inputs.cuentaId.value || null, 
             cliente_id: inputs.clienteId.value || null,
             observaciones: inputs.obs.value,
-            divisa_id: inputs.divisaId.value, // D99
+            divisa_id: inputs.divisaId.value, 
             monto: monto
         };
 
