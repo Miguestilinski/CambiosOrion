@@ -1,13 +1,10 @@
 import { initCajaHeader } from './header.js';
 
 document.addEventListener('DOMContentLoaded', async() => {
-    // 1. Capturar datos de sesión e inicializar Header
+    // 1. Init
     const sessionData = await initCajaHeader('egresos');
-
-    // 2. Configurar variables globales
     let currentCajaId = null;
     
-    // Asignar ID de caja si viene en la sesión
     if (sessionData && sessionData.caja_id) {
         currentCajaId = sessionData.caja_id;
         console.log("Caja ID detectada para Egresos:", currentCajaId);
@@ -17,107 +14,57 @@ document.addEventListener('DOMContentLoaded', async() => {
 
     initDatePickers();
 
-    // Referencias del DOM
-    const nuevoEgresoBtn = document.getElementById('nuevo-egreso');
+    // Referencias
     const tablaEgresos = document.getElementById('tabla-egresos');
     const borrarFiltrosBtn = document.getElementById('borrar-filtros');
     const contadorRegistros = document.getElementById('contador-registros');
+    
     const btnPrev = document.getElementById('btn-prev');
     const btnNext = document.getElementById('btn-next');
     const pageIndicator = document.getElementById('page-indicator');
     
     let paginaActual = 1;
 
+    // Filtros
     const filtros = {
         fechaInicio: document.getElementById("fecha-inicio"),
         fechaFin: document.getElementById("fecha-fin"),
         id: document.getElementById("id-egreso"),
-        categoria: document.getElementById("categoria"),
-        observacion: document.getElementById("observacion"),
+        cliente: document.getElementById("cliente"),
         tipoEgreso: document.getElementById("tipo-egreso"),
+        observacion: document.getElementById("observacion"),
         divisa: document.getElementById("divisa"),
         estado: document.getElementById("estado"),
         mostrar: document.getElementById("mostrar-registros")
     };
 
-    if (nuevoEgresoBtn) {
-        nuevoEgresoBtn.addEventListener('click', () => {
-            window.location.href = 'https://caja.cambiosorion.cl/nuevo-egr';
-        });
-    }
-
-    function initDatePickers() {
-        const config = {
-            locale: "es",
-            dateFormat: "Y-m-d",
-            altInput: true,
-            altFormat: "d/m/Y",
-            allowInput: true,
-            disableMobile: "true"
-        };
-        if (typeof flatpickr !== 'undefined') {
-            flatpickr(".flatpickr", config);
-        }
-    }
-
-    // --- CARGA DE DATOS ---
-
+    // --- CORE ---
     function obtenerEgresos() {
-        const cajaIdParam = currentCajaId ? currentCajaId : 0;
+        if (!currentCajaId) return;
+
         const params = new URLSearchParams();
-        params.set('caja_id', cajaIdParam);
+        params.append('caja_id', currentCajaId);
+        params.append('pagina', paginaActual);
 
-        for (const [clave, input] of Object.entries(filtros)) { 
-            if (input && input.value) params.set(clave, input.value.trim()); 
-        }
-        params.set('pagina', paginaActual);
+        Object.entries(filtros).forEach(([key, element]) => {
+            if (element && element.value) {
+                params.append(key, element.value);
+            }
+        });
 
-        if(tablaEgresos) {
-            tablaEgresos.innerHTML = `<tr><td colspan="9" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-cyan-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
-        }
+        tablaEgresos.innerHTML = `<tr><td colspan="8" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-rose-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
 
         fetch(`https://cambiosorion.cl/data/egr-caja.php?${params.toString()}`)
-            .then(response => response.json())
+            .then(res => res.json())
             .then(data => {
-                if (Array.isArray(data)) {
-                    mostrarResultados(data);
-                    actualizarPaginacion(data.length);
-                } else if (data && data.egresos) {
-                    mostrarResultados(data.egresos);
-                    actualizarPaginacion(data.egresos.length);
-                } else {
-                    console.error("Respuesta inválida:", data);
-                    if(tablaEgresos) tablaEgresos.innerHTML = `<tr><td colspan="9" class="text-center py-4 text-red-500">Error en formato de datos.</td></tr>`;
-                }
+                if (data.error) throw new Error(data.error);
+                mostrarResultados(data);
+                actualizarPaginacion(data.length);
             })
-            .catch(error => { 
-                console.error('Error fetch:', error); 
-                if(tablaEgresos) tablaEgresos.innerHTML = `<tr><td colspan="9" class="text-center py-4 text-red-500">Error de conexión.</td></tr>`; 
+            .catch(err => {
+                console.error(err);
+                tablaEgresos.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-red-500">Error: ${err.message}</td></tr>`;
             });
-    }
-
-    function actualizarPaginacion(cantidadResultados) {
-        if (pageIndicator) pageIndicator.textContent = `Página ${paginaActual}`;
-        if (contadorRegistros) contadorRegistros.textContent = `${cantidadResultados} registros visibles`;
-        const limite = parseInt(filtros.mostrar.value) || 25;
-        
-        if (btnPrev) btnPrev.disabled = (paginaActual <= 1);
-        if (btnNext) btnNext.disabled = (cantidadResultados < limite);
-    }
-
-    // Event Listeners Paginación
-    if (btnPrev) btnPrev.addEventListener('click', () => { if (paginaActual > 1) { paginaActual--; obtenerEgresos(); } });
-    if (btnNext) btnNext.addEventListener('click', () => { paginaActual++; obtenerEgresos(); });
-
-    // Helpers de Formato
-    function formatearFechaHora(fechaString) {
-        if (!fechaString) return '';
-        try {
-            const [datePart, timePart] = fechaString.split(' ');
-            const [y, m, d] = datePart.split('-');
-            const [h, min] = timePart.split(':');
-            return `<div class="flex flex-col"><span class="font-mono font-bold text-gray-600">${h}:${min}</span><span class="text-gray-400 text-[10px]">${d}/${m}/${y}</span></div>`;
-        } catch (e) { return fechaString; }
     }
 
     function mostrarResultados(data) {
@@ -132,7 +79,7 @@ document.addEventListener('DOMContentLoaded', async() => {
             const tr = document.createElement("tr");
             tr.className = "hover:brightness-95 transition-all text-gray-800 font-medium border-b border-gray-100 last:border-0 bg-white";
 
-            // Estilos de Estado (Rojo por defecto para egresos vigentes)
+            // Estilos de Estado
             let estadoClass = "bg-gray-100 text-gray-600";
             if (String(row.estado).toLowerCase() === 'vigente') estadoClass = "bg-rose-50 text-rose-700 border border-rose-100";
             if (String(row.estado).toLowerCase() === 'anulado') estadoClass = "bg-slate-100 text-slate-500 line-through decoration-slate-400";
@@ -172,14 +119,35 @@ document.addEventListener('DOMContentLoaded', async() => {
         });
     }
 
+    function actualizarPaginacion(cantidad) {
+        if (contadorRegistros) contadorRegistros.textContent = `${cantidad} registros`;
+        const limite = parseInt(filtros.mostrar.value) || 25;
+        if (btnPrev) btnPrev.disabled = (paginaActual <= 1);
+        if (btnNext) btnNext.disabled = (cantidad < limite);
+        if (pageIndicator) pageIndicator.textContent = `Página ${paginaActual}`;
+    }
+
+    // --- UTILS (Aquí estaba faltando la función) ---
+    
+    function limpiarTexto(t) { 
+        return t ? String(t).replace(/</g, "&lt;").replace(/>/g, "&gt;") : ''; 
+    }
+    
+    function formatearNumero(n) { 
+        return parseFloat(n).toLocaleString('es-CL', { minimumFractionDigits: 0, maximumFractionDigits: 2 }); 
+    }
+
+    function initDatePickers() {
+        if (window.flatpickr) {
+            flatpickr("#fecha-inicio", { locale: "es", dateFormat: "Y-m-d", defaultDate: new Date(new Date().setDate(new Date().getDate() - 30)) });
+            flatpickr("#fecha-fin", { locale: "es", dateFormat: "Y-m-d", defaultDate: "today" });
+        }
+    }
+
+    // Listeners
     if (borrarFiltrosBtn) {
         borrarFiltrosBtn.addEventListener('click', () => {
-            Object.values(filtros).forEach(input => { 
-                if(input) { 
-                    input.value = ''; 
-                    if(input._flatpickr) input._flatpickr.clear(); 
-                } 
-            });
+            Object.values(filtros).forEach(input => { if(input) { input.value = ''; if(input._flatpickr) input._flatpickr.clear(); } });
             if(filtros.mostrar) filtros.mostrar.value = '25';
             paginaActual = 1;
             obtenerEgresos();
@@ -187,13 +155,16 @@ document.addEventListener('DOMContentLoaded', async() => {
     }
 
     Object.values(filtros).forEach(input => {
-        if(input) { 
-            const reset = () => { paginaActual = 1; obtenerEgresos(); }; 
-            input.addEventListener('input', reset); 
-            input.addEventListener('change', reset); 
+        if(input) {
+            const resetAndFetch = () => { paginaActual = 1; obtenerEgresos(); };
+            input.addEventListener('input', resetAndFetch);
+            input.addEventListener('change', resetAndFetch);
         }
     });
 
-    // LLAMADA INICIAL IMPORTANTE
+    if (btnPrev) btnPrev.addEventListener('click', () => { if (paginaActual > 1) { paginaActual--; obtenerEgresos(); } });
+    if (btnNext) btnNext.addEventListener('click', () => { paginaActual++; obtenerEgresos(); });
+
+    // Carga inicial
     obtenerEgresos();
 });
