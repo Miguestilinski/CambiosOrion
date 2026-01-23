@@ -167,7 +167,7 @@ document.addEventListener('DOMContentLoaded', async() => {
                 </td>
                 <td class="px-4 py-3 text-center">
                     <span class="px-2 py-1 rounded text-[10px] uppercase font-bold bg-cyan-50 text-cyan-700 border border-cyan-100">
-                        ${limpiarTexto(row.tipo_egreso)}
+                        ${limpiarTexto(row.tipo_ingreso)}
                     </span>
                 </td>
                 <td class="px-4 py-3 text-center">
