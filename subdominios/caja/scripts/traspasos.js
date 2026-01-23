@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', async() => {
     // --- EVENTOS DE BOTONES PRINCIPALES ---
     if (nuevoTraspasoBtn) {
         nuevoTraspasoBtn.addEventListener('click', () => {
-            window.location.href = 'nuevo-traspaso'; 
+            window.location.href = 'nuevo-tp'; 
         });
     }
 
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', async() => {
             tabla.innerHTML = `<tr><td colspan="9" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-cyan-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
         }
 
-        fetch(`https://cambiosorion.cl/data/traspasos-caja.php?${params.toString()}`)
+        fetch(`https://cambiosorion.cl/data/tp-caja.php?${params.toString()}`)
             .then(response => response.json())
             .then(data => {
                 if(Array.isArray(data)) {
@@ -277,7 +277,7 @@ document.addEventListener('DOMContentLoaded', async() => {
                 return;
             }
 
-            fetch('https://cambiosorion.cl/data/traspasos-caja.php', {
+            fetch('https://cambiosorion.cl/data/tp-caja.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ids: ids })
