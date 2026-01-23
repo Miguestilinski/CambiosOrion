@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Navegación
-    dom.btnVolver.onclick = () => window.location.href = 'ingresos.html'; // O egresos.html si existe
+    dom.btnVolver.onclick = () => window.location.href = 'egresos';
     dom.btnImprimir.onclick = () => window.print();
 
     // Cargar Datos
