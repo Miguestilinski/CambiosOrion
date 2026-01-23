@@ -89,49 +89,50 @@ document.addEventListener('DOMContentLoaded', async() => {
 
         data.forEach(row => {
             const tr = document.createElement("tr");
-            tr.className = "hover:brightness-95 transition-all text-gray-800 font-medium border-b border-gray-100 last:border-0 bg-white";
+            tr.className = "hover:bg-slate-50 transition-colors border-b border-gray-100 last:border-0";
 
-            // Estilos de Estado
+            // Estilos de estado
             let estadoClass = "bg-gray-100 text-gray-600";
-            if(String(row.estado) === 'Vigente') estadoClass = "bg-green-100 text-green-700 border border-green-200";
-            if(String(row.estado) === 'Anulado') estadoClass = "bg-red-100 text-red-700 border border-red-200";
-            if(String(row.estado) === 'Pagado') estadoClass = "bg-blue-100 text-blue-700 border border-blue-200";
+            if (String(row.estado).toLowerCase() === 'vigente') estadoClass = "bg-rose-100 text-rose-700 border border-rose-200";
+            if (String(row.estado).toLowerCase() === 'anulado') estadoClass = "bg-slate-100 text-slate-500 border border-slate-200 line-through decoration-slate-400";
 
+            // Botón Ver
             const btnMostrar = document.createElement('button');
-            btnMostrar.innerHTML = `<svg class="w-5 h-5 text-gray-600 hover:text-cyan-700 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
-            btnMostrar.className = 'flex items-center justify-center p-1.5 bg-white/50 rounded-full hover:bg-white shadow-sm border border-transparent hover:border-cyan-300 mx-auto';
-            btnMostrar.addEventListener('click', (e) => {
-                e.stopPropagation();
-                window.location.href = `detalle-egr?id=${row.id}`;
-            });
+            btnMostrar.className = "text-slate-400 hover:text-rose-600 transition p-1 rounded-md hover:bg-rose-50";
+            btnMostrar.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
+            btnMostrar.onclick = () => window.location.href = `detalle-egr-caja.html?id=${row.id}`;
 
+            // Renderizado idéntico a Ingresos (Fecha primero, etc.)
             tr.innerHTML = `
-                <td class="px-4 py-3 whitespace-nowrap text-xs">${formatearFechaHora(row.fecha)}</td>
-                <td class="px-4 py-3 font-mono text-xs font-bold text-gray-600">${limpiarTexto(row.id)}</td>
-                
-                <td class="px-4 py-3 font-bold text-gray-700 text-sm truncate max-w-[150px]" title="${row.cliente_nombre}">
-                    ${row.cliente_nombre ? limpiarTexto(row.cliente_nombre) : ''}
+                <td class="px-4 py-3 whitespace-nowrap font-mono text-xs text-slate-500">
+                    ${row.fecha_formateada || row.fecha}
                 </td>
-                
+                <td class="px-4 py-3 text-center font-bold text-slate-700 text-xs">
+                    #${row.id}
+                </td>
+                <td class="px-4 py-3">
+                    <div class="font-bold text-slate-700 text-xs truncate max-w-[180px]" title="${row.cliente_nombre}">
+                        ${row.cliente_nombre ? limpiarTexto(row.cliente_nombre) : ''}
+                    </div>
+                </td>
                 <td class="px-4 py-3 text-center">
-                    <span class="px-2 py-1 rounded text-[10px] uppercase font-bold bg-cyan-50 text-cyan-700 border border-cyan-100">
+                    <span class="px-2 py-1 rounded-md text-[10px] uppercase font-bold bg-rose-50 text-rose-700 border border-rose-100">
                         ${limpiarTexto(row.tipo_egreso)}
                     </span>
                 </td>
-                
-                <td class="px-4 py-3 text-center">
+                <td class="px-4 py-3">
                     <div class="flex items-center justify-center gap-2">
-                        ${row.divisa_icono ? `<img src="${row.divisa_icono}" class="w-4 h-4 rounded-full">` : ''}
-                        <span class="font-bold text-slate-700 text-xs">${limpiarTexto(row.divisa_nombre || row.divisa_id)}</span>
+                        ${row.divisa_icono ? `<img src="${row.divisa_icono}" class="w-5 h-5 rounded-full shadow-sm border border-gray-100">` : ''}
+                        <span class="font-bold text-slate-600 text-xs">${limpiarTexto(row.divisa_nombre || row.divisa_id)}</span>
                     </div>
                 </td>
-                
-                <td class="px-4 py-3 text-right font-bold font-mono text-slate-800 text-sm">
+                <td class="px-4 py-3 text-right font-black font-mono text-slate-700 text-sm">
                     ${formatearNumero(row.monto)}
                 </td>
-                
                 <td class="px-4 py-3 text-center">
-                    <span class="px-2 py-0.5 rounded text-[10px] uppercase font-bold ${estadoClass}">${limpiarTexto(row.estado)}</span>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] uppercase font-bold ${estadoClass}">
+                        ${limpiarTexto(row.estado)}
+                    </span>
                 </td>
                 <td class="px-4 py-3 text-center mostrar-btn-cell"></td>
             `;
