@@ -165,7 +165,11 @@ document.addEventListener('DOMContentLoaded', async() => {
                 <td class="px-4 py-3 font-bold text-gray-700 text-sm truncate max-w-[150px]" title="${row.cliente_nombre}">
                     ${row.cliente_nombre ? limpiarTexto(row.cliente_nombre) : ''} 
                 </td>
-                <td class="px-4 py-3 text-xs uppercase font-bold text-gray-500 tracking-wide">${limpiarTexto(row.tipo_ingreso)}</td>
+                <td class="px-4 py-3 text-center">
+                    <span class="px-2 py-1 rounded text-[10px] uppercase font-bold bg-cyan-50 text-cyan-700 border border-cyan-100">
+                        ${limpiarTexto(row.tipo_egreso)}
+                    </span>
+                </td>
                 <td class="px-4 py-3 text-center">
                     <div class="flex items-center justify-center gap-2">
                         ${row.divisa_icono ? `<img src="${row.divisa_icono}" class="w-4 h-4 rounded-full">` : ''}
@@ -174,9 +178,7 @@ document.addEventListener('DOMContentLoaded', async() => {
                 </td>
                 <td class="px-4 py-3 text-right font-bold font-mono text-slate-800 text-sm">${formatearNumero(row.monto)}</td>
                 <td class="px-4 py-3 text-center">
-                    <span class="px-2 py-1 rounded text-[10px] uppercase font-bold bg-cyan-50 text-cyan-700 border border-cyan-100">
-                        ${limpiarTexto(row.tipo_egreso)}
-                    </span>
+                    <span class="px-2 py-0.5 rounded text-[10px] uppercase font-bold ${estadoClass}">${limpiarTexto(row.estado)}</span>
                 </td>
                 <td class="px-4 py-3 text-center mostrar-btn-cell"></td>
             `;
