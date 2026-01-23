@@ -5,9 +5,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 1. Init
     const sessionData = await initCajaHeader('ingresos');
     
+    // Validación crítica de sesión y caja
     if (!sessionData || !sessionData.caja_id) {
         mostrarErrorModal("Error de Sesión", "Sin caja asignada para operar.");
         document.getElementById('btn-guardar').disabled = true;
+        return;
+    }
+
+    // Validación crítica de Usuario
+    if (!sessionData.equipo_id) {
+        console.error("Session Data:", sessionData); // Para depuración
+        mostrarErrorModal("Error de Sesión", "No se pudo identificar al usuario (equipo_id faltante). Recargue la página.");
+        document.getElementById('btn-guardar').disabled = true;
+        return;
     }
 
     // 2. Referencias DOM
@@ -221,8 +231,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             action: 'create',
             caja_id: sessionData.caja_id,
             
-            // --- CORRECCIÓN AQUÍ: Usamos equipo_id que es lo que devuelve el PHP ---
-            usuario_id: sessionData.equipo_id || sessionData.id, 
+            // --- CORRECCIÓN FINAL: Usar EXPLICITAMENTE equipo_id ---
+            usuario_id: sessionData.equipo_id, 
             
             tipo_ingreso: tipo, 
             cuenta_id: inputs.cuentaId.value || null, 
