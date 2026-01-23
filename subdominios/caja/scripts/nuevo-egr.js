@@ -2,12 +2,19 @@ import { initCajaHeader } from './header.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     
-    // 1. Init (Usamos 'ingresos' como contexto activo en sidebar, ya que suelen estar juntos)
-    const sessionData = await initCajaHeader('ingresos');
+    // 1. Init (Usamos 'egresos' o 'ingresos')
+    const sessionData = await initCajaHeader('egresos');
     
     if (!sessionData || !sessionData.caja_id) {
-        mostrarError("Error", "Sin caja asignada.");
+        mostrarErrorModal("Error de Sesión", "Sin caja asignada para operar.");
         document.getElementById('btn-guardar').disabled = true;
+        return;
+    }
+
+    if (!sessionData.equipo_id) {
+        mostrarErrorModal("Error Crítico", "No se pudo identificar al usuario (equipo_id). Recargue la página.");
+        document.getElementById('btn-guardar').disabled = true;
+        return;
     }
 
     // 2. Referencias DOM
@@ -15,6 +22,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         tipo: document.getElementById('tipo-egreso'),
         cliente: document.getElementById('cliente-input'),
         clienteId: document.getElementById('cliente_id'),
+        
+        cuentaBlock: document.getElementById('bloque-cuenta'),
+        cuenta: document.getElementById('cuenta-input'),
+        cuentaId: document.getElementById('cuenta_id'),
+        
         obs: document.getElementById('observaciones'),
         divisaId: document.getElementById('divisa_id'),
         monto: document.getElementById('monto')
@@ -22,6 +34,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const ui = {
         resCliente: document.getElementById('resultados-cliente'),
+        resCuenta: document.getElementById('resultados-cuenta'),
         divisaTrigger: document.getElementById('divisa-trigger'),
         divisaDropdown: document.getElementById('divisa-dropdown'),
         divisaIconContainer: document.getElementById('divisa-icon-container'),
@@ -33,11 +46,22 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const svgPlaceholder = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
 
+    // --- MANEJO TIPO EGRESO ---
+    inputs.tipo.addEventListener('change', function() {
+        if (this.value === 'Cuenta') {
+            inputs.cuentaBlock.classList.remove('hidden');
+            inputs.cuenta.focus();
+        } else {
+            inputs.cuentaBlock.classList.add('hidden');
+            inputs.cuenta.value = '';
+            inputs.cuentaId.value = '';
+        }
+    });
+
     // --- CARGAR DIVISAS ---
     cargarDivisasCustom();
 
     function cargarDivisasCustom() {
-        // Apuntamos al endpoint de EGRESO (reutiliza lógica get_divisas)
         fetch('https://cambiosorion.cl/data/nuevo-egr-caja.php?action=get_divisas')
             .then(res => res.json())
             .then(data => {
@@ -76,7 +100,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         item.appendChild(textWrapper);
 
                         item.onclick = () => {
-                            inputs.divisaId.value = d.id_maestro;
+                            inputs.divisaId.value = d.id_maestro; 
                             
                             ui.divisaIconContainer.innerHTML = '';
                             const selectedIcon = iconWrapper.cloneNode(true);
@@ -114,6 +138,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!inputs.cliente.contains(e.target) && !ui.resCliente.contains(e.target)) {
             ui.resCliente.classList.add('hidden');
         }
+        if (!inputs.cuenta.contains(e.target) && !ui.resCuenta.contains(e.target)) {
+            ui.resCuenta.classList.add('hidden');
+        }
     });
 
     // --- FORMATO MONTO ---
@@ -147,15 +174,52 @@ document.addEventListener('DOMContentLoaded', async () => {
         } catch (err) { console.error(err); }
     });
 
+    // --- BUSCADOR CUENTA ---
+    inputs.cuenta.addEventListener('input', async (e) => {
+        const q = e.target.value;
+        if (q.length < 2) { ui.resCuenta.classList.add('hidden'); return; }
+        try {
+            const res = await fetch(`https://cambiosorion.cl/data/nuevo-egr-caja.php?action=search_account&q=${encodeURIComponent(q)}`);
+            const data = await res.json();
+            ui.resCuenta.innerHTML = '';
+            if (data.length > 0) {
+                ui.resCuenta.classList.remove('hidden');
+                data.forEach(c => {
+                    const div = document.createElement('div');
+                    div.className = "px-4 py-3 hover:bg-cyan-50 cursor-pointer border-b border-gray-100 flex justify-between items-center";
+                    div.innerHTML = `
+                        <div class="flex flex-col">
+                            <span class="font-bold text-slate-700 text-sm">${c.nombre}</span>
+                            <span class="text-xs text-slate-400 font-mono">Tipo: ${c.tipo_cuenta}</span>
+                        </div>
+                    `;
+                    div.onclick = () => {
+                        inputs.cuenta.value = c.nombre;
+                        inputs.cuentaId.value = c.id;
+                        ui.resCuenta.classList.add('hidden');
+                    };
+                    ui.resCuenta.appendChild(div);
+                });
+            } else { ui.resCuenta.classList.add('hidden'); }
+        } catch (err) { console.error(err); }
+    });
+
     // --- SUBMIT ---
     document.getElementById('form-nuevo-egr').addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        if (!inputs.tipo.value) { alert("Seleccione el Motivo del Egreso"); return; }
-        if (!inputs.divisaId.value) { alert("Seleccione una Divisa"); return; }
+        const tipo = inputs.tipo.value;
+        if (!tipo) { mostrarErrorModal("Faltan Datos", "Seleccione el Medio de Egreso"); return; }
+        
+        if (tipo === 'Cuenta' && !inputs.cuentaId.value) {
+            mostrarErrorModal("Faltan Datos", "Debe seleccionar una Cuenta Contable válida");
+            return;
+        }
+
+        if (!inputs.divisaId.value) { mostrarErrorModal("Faltan Datos", "Seleccione una Divisa"); return; }
         
         const monto = parseFloat(inputs.monto.value.replace(/\./g, ''));
-        if (!monto || monto <= 0) { alert("Ingrese un monto válido"); return; }
+        if (!monto || monto <= 0) { mostrarErrorModal("Monto Inválido", "Ingrese un monto mayor a cero"); return; }
 
         ui.btnGuardar.disabled = true;
         ui.btnGuardar.innerHTML = "Guardando...";
@@ -163,12 +227,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         const payload = {
             action: 'create',
             caja_id: sessionData.caja_id,
-            usuario_id: sessionData.id,
-            tipo_egreso: inputs.tipo.value,
+            
+            // --- VALIDACIÓN DE ID USUARIO ---
+            usuario_id: sessionData.equipo_id, 
+            
+            tipo_egreso: tipo, 
+            cuenta_id: inputs.cuentaId.value || null, 
             cliente_id: inputs.clienteId.value || null,
-            nombre_cliente_manual: inputs.cliente.value,
             observaciones: inputs.obs.value,
-            divisa_id: inputs.divisaId.value, // D99
+            divisa_id: inputs.divisaId.value, 
             monto: monto
         };
 
@@ -186,15 +253,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                 throw new Error(data.error);
             }
         } catch (err) {
-            mostrarError("Error", err.message);
+            mostrarErrorModal("Error del Servidor", err.message);
             ui.btnGuardar.disabled = false;
             ui.btnGuardar.textContent = "CONFIRMAR EGRESO";
         }
     });
 
-    function mostrarError(t, m) {
-        document.getElementById('modal-error-titulo').textContent = t;
-        document.getElementById('modal-error-mensaje').textContent = m;
+    function mostrarErrorModal(titulo, mensaje) {
+        document.getElementById('modal-error-titulo').textContent = titulo;
+        document.getElementById('modal-error-mensaje').textContent = mensaje;
         ui.modalError.classList.remove('hidden');
         document.getElementById('modal-error-confirmar').onclick = () => ui.modalError.classList.add('hidden');
     }
