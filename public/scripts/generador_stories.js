@@ -84,16 +84,40 @@ function updateDate() {
     if(dateEl) dateEl.innerText = finalDate;
 }
 
-function downloadStory() {
+// Helper para convertir imagen a Base64
+async function convertImageToBase64(url) {
+    try {
+        const response = await fetch(url);
+        const blob = await response.blob();
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.readAsDataURL(blob);
+        });
+    } catch (e) {
+        console.error("Error convirtiendo a Base64", e);
+        return null;
+    }
+}
+
+async function downloadStory() {
     const btn = document.getElementById('btn-download');
     const originalText = btn.innerHTML;
     
-    btn.innerHTML = `Generando (Espere)...`;
+    btn.innerHTML = `Generando...`;
     btn.disabled = true;
+
+    // 1. Convertir la imagen de fondo a Base64 ANTES de clonar
+    // Esto asegura que la imagen exista como datos puros, evitando errores de red en la captura
+    const bgImgElement = document.getElementById('background-img');
+    let base64Bg = null;
+    if (bgImgElement) {
+        base64Bg = await convertImageToBase64(bgImgElement.src);
+    }
 
     const originalCanvas = document.getElementById('story-canvas');
 
-    // Crear Sandbox
+    // 2. Crear Sandbox invisible
     const sandbox = document.createElement('div');
     sandbox.style.position = 'fixed';
     sandbox.style.top = '0';
@@ -102,22 +126,30 @@ function downloadStory() {
     sandbox.style.height = '1920px';
     sandbox.style.zIndex = '-1';
     
-    // Clonar
+    // 3. Clonar
     const clonedCanvas = originalCanvas.cloneNode(true);
     clonedCanvas.style.transform = 'none';
     clonedCanvas.style.margin = '0';
     clonedCanvas.removeAttribute('id');
-    
+
+    // 4. INYECTAR EL BASE64 EN EL CLON
+    if (base64Bg) {
+        const clonedImg = clonedCanvas.querySelector('img[alt="Background"]');
+        if (clonedImg) {
+            clonedImg.src = base64Bg; // ¡Aquí ocurre la magia!
+        }
+    }
+
     sandbox.appendChild(clonedCanvas);
     document.body.appendChild(sandbox);
 
-    // Aumentamos el tiempo de espera a 1 segundo para asegurar que la imagen de fondo cargue en el clon
+    // Esperar un poco a que el DOM se asiente
     setTimeout(() => {
         html2canvas(clonedCanvas, {
             scale: 1, 
-            useCORS: true, // VITAL
+            useCORS: true, 
             allowTaint: true,
-            backgroundColor: null,
+            backgroundColor: null, // Importante para la transparencia
             logging: false,
             width: 1080,
             height: 1920,
@@ -139,5 +171,5 @@ function downloadStory() {
             btn.innerHTML = 'Error';
             btn.disabled = false;
         });
-    }, 1000); // Espera 1 segundo
+    }, 500);
 }
