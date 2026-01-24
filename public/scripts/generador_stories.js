@@ -44,6 +44,7 @@ function renderStory(currencies) {
             const compraFmt = parseFloat(divisa.compra).toLocaleString('es-CL', { maximumFractionDigits: divisa.compra < 100 ? 2 : 0 });
             const ventaFmt = parseFloat(divisa.venta).toLocaleString('es-CL', { maximumFractionDigits: divisa.venta < 100 ? 2 : 0 });
             
+            // Usamos la URL correcta para ORO 100 en el HTML también
             let iconUrl = divisa.icono_circular;
             if (divisa.nombre === 'ORO 100') {
                 iconUrl = 'https://cambiosorion.cl/orionapp/icons/ORO%20100.svg';
@@ -116,12 +117,10 @@ async function downloadStory() {
         base64Bg = await convertImageToBase64(bgImgElement.src);
     }
 
-    // 2. Convertir ICONO ORO a Base64
-    const oroImgElement = document.querySelector('img[alt="ORO 100"]');
-    let base64Oro = null;
-    if (oroImgElement) {
-        base64Oro = await convertImageToBase64(oroImgElement.src);
-    }
+    // 2. Convertir ICONO ORO a Base64 (A prueba de fallos)
+    // Usamos la URL directa y codificada para asegurar que cargue
+    const oroUrl = 'https://cambiosorion.cl/orionapp/icons/ORO%20100.svg';
+    const base64Oro = await convertImageToBase64(oroUrl);
 
     const originalCanvas = document.getElementById('story-canvas');
 
@@ -158,10 +157,13 @@ async function downloadStory() {
         if (clonedImg) clonedImg.src = base64Bg;
     }
 
-    // Inyectar Base64 del ICONO ORO
+    // Inyectar Base64 del ICONO ORO (Si existe en el clon)
     if (base64Oro) {
+        // Buscamos la imagen que tenga el nombre ORO 100 en su src o alt original
         const clonedOro = clonedCanvas.querySelector('img[alt="ORO 100"]');
-        if (clonedOro) clonedOro.src = base64Oro;
+        if (clonedOro) {
+            clonedOro.src = base64Oro;
+        }
     }
 
     sandbox.appendChild(clonedCanvas);
@@ -183,13 +185,16 @@ async function downloadStory() {
                 scrollY: 0,
                 scrollX: 0,
                 onclone: (doc) => {
-                    // --- CORRECCIÓN MASIVA Y AGRESIVA DE ALINEACIÓN ---
+                    // --- AJUSTES FINALES DE PRECISIÓN ---
                     
-                    // 1. Header (Pastilla "Cotización Oficial")
+                    // 1. Header "Cotización Oficial"
                     const headerPill = doc.querySelector('.rounded-full.bg-black\\/40 p');
                     if(headerPill) {
                         headerPill.style.position = 'relative';
-                        headerPill.style.top = '-16px'; // Subido agresivamente
+                        headerPill.style.top = '-20px'; // Subido aún más para centrar
+                        // Fix de brillo: forzamos color y opacidad
+                        headerPill.style.color = '#ffffff';
+                        headerPill.style.opacity = '1';
                     }
 
                     // 2. Fecha
@@ -202,39 +207,35 @@ async function downloadStory() {
                     // 3. Textos de las Cartas
                     doc.querySelectorAll('.story-name').forEach(el => {
                         el.style.position = 'relative';
-                        el.style.top = '-14px'; // Nombres divisas arriba
+                        el.style.top = '-14px';
                     });
                     doc.querySelectorAll('.story-price').forEach(el => {
                         el.style.position = 'relative';
-                        el.style.top = '-14px'; // Precios arriba
+                        el.style.top = '-14px';
                     });
                     doc.querySelectorAll('.story-label').forEach(el => {
                         el.style.position = 'relative';
-                        el.style.top = '-10px'; // Etiquetas arriba
+                        el.style.top = '-10px';
                     });
 
-                    // 4. Footer "IMPORTANTE"
-                    const footerCard = doc.querySelector('.glass-card.mb-8');
-                    if(footerCard) {
-                        // Título IMPORTANTE con icono (el texto)
-                        const importantTitle = footerCard.querySelector('p:first-child');
-                        if(importantTitle) {
-                            importantTitle.style.position = 'relative';
-                            importantTitle.style.top = '-10px';
-                        }
-                        // Texto legal
-                        const legalText = footerCard.querySelector('p:last-child');
-                        if(legalText) {
-                            legalText.style.position = 'relative';
-                            legalText.style.top = '-10px';
-                        }
+                    // 4. Footer "IMPORTANTE" (Solo texto amarillo)
+                    const labelImportante = doc.getElementById('label-importante');
+                    if(labelImportante) {
+                        labelImportante.style.position = 'relative';
+                        labelImportante.style.top = '-4px'; // Ajuste fino respecto al icono
+                    }
+                    
+                    // Texto legal
+                    const legalText = doc.querySelector('.glass-card.mb-8 p:last-child');
+                    if(legalText) {
+                        legalText.style.position = 'relative';
+                        legalText.style.top = '-10px';
                     }
 
                     // 5. Footer Dirección y Web (SOLO TEXTOS)
-                    // Gracias al span .footer-text, solo movemos el texto, el SVG se queda quieto
                     doc.querySelectorAll('.footer-text').forEach(el => {
                         el.style.position = 'relative';
-                        el.style.top = '-10px'; // Subimos solo el texto
+                        el.style.top = '-10px';
                     });
 
                     // 6. Footer "ESCANEA"
@@ -260,6 +261,6 @@ async function downloadStory() {
                 btn.innerHTML = 'Error';
                 btn.disabled = false;
             });
-        }, 1000); // 1 segundo de espera para asegurar carga
+        }, 1000);
     });
 }
