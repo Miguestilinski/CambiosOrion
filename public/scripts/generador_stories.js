@@ -180,38 +180,31 @@ async function downloadStory() {
                 onclone: (doc) => {
                     // --- AJUSTES FINALES DE PRECISIÓN ---
 
-                    // 1. INYECTAR ORO 100 (Buscando por ID único)
+                    // 1. INYECTAR ORO 100 (Usando el ID único)
                     if (base64Oro) {
                         const oroImg = doc.getElementById('special-icon-oro');
                         if (oroImg) {
                             oroImg.src = base64Oro;
-                        } else {
-                            // Fallback: búsqueda por src si el ID falló al clonarse
-                            const allImages = doc.querySelectorAll('.glass-card img');
-                            allImages.forEach(img => {
-                                if (img.src.includes('ORO')) img.src = base64Oro;
-                            });
                         }
                     }
                     
-                    // 2. HEADER "Cotización Oficial" (Brillo y Posición)
+                    // 2. HEADER "Cotización Oficial"
+                    // Problema: Oscuro y bajo.
+                    // Solución: position relative + top para mover. Background sólido en padre para brillo.
                     const headerPillDiv = doc.querySelector('.rounded-full.bg-black\\/40');
                     if (headerPillDiv) {
-                        // Quitamos clase conflictiva y aplicamos estilo directo
-                        headerPillDiv.className = headerPillDiv.className.replace('bg-black/40', '');
-                        headerPillDiv.style.backgroundColor = 'rgba(0, 0, 0, 0.4)';
-                        headerPillDiv.style.border = '1px solid rgba(255, 255, 255, 0.2)';
+                        // Reemplazamos el fondo semitransparente por uno sólido oscuro simulado
+                        // Esto evita que el texto herede opacidad visual en la captura
+                        headerPillDiv.style.backgroundColor = '#222222'; 
+                        headerPillDiv.style.opacity = '1';
                     }
 
                     const headerPillText = doc.getElementById('label-cotizacion');
                     if(headerPillText) {
-                        headerPillText.style.display = 'block'; // Asegurar comportamiento de bloque
-                        headerPillText.style.marginTop = '-5px'; // Subir con margen
-                        headerPillText.style.color = '#ffffff';
-                        headerPillText.style.textShadow = '0 0 1px rgba(255,255,255,0.5)';
-                        // Force z-index
                         headerPillText.style.position = 'relative';
-                        headerPillText.style.zIndex = '1000';
+                        headerPillText.style.top = '-10px'; // Subimos 10px
+                        headerPillText.style.color = '#ffffff';
+                        headerPillText.style.zIndex = '999';
                     }
 
                     // 3. Fecha
@@ -235,13 +228,13 @@ async function downloadStory() {
                         el.style.top = '-10px';
                     });
 
-                    // 5. LABEL IMPORTANTE (Posición)
+                    // 5. LABEL IMPORTANTE
+                    // Solución: position relative + top (la técnica que funcionó antes)
                     const labelImportante = doc.getElementById('label-importante');
                     if(labelImportante) {
-                        labelImportante.style.display = 'inline-block';
-                        // Usamos margin-top negativo, que suele ser más efectivo que top
-                        labelImportante.style.marginTop = '-5px';
+                        labelImportante.style.display = 'inline-block'; // Vital para que span acepte posición
                         labelImportante.style.position = 'relative';
+                        labelImportante.style.top = '-6px'; // Subimos 6px
                     }
                     
                     // Texto legal
