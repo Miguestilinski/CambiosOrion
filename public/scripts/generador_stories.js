@@ -44,7 +44,7 @@ function renderStory(currencies) {
             const compraFmt = parseFloat(divisa.compra).toLocaleString('es-CL', { maximumFractionDigits: divisa.compra < 100 ? 2 : 0 });
             const ventaFmt = parseFloat(divisa.venta).toLocaleString('es-CL', { maximumFractionDigits: divisa.venta < 100 ? 2 : 0 });
             
-            // Usamos %20 para asegurar la carga en el navegador
+            // Usamos codificación explícita para evitar errores de carga
             let iconUrl = divisa.icono_circular;
             if (divisa.nombre === 'ORO 100') {
                 iconUrl = 'https://cambiosorion.cl/orionapp/icons/ORO%20100.svg';
@@ -91,6 +91,7 @@ function updateDate() {
 async function convertImageToBase64(url) {
     try {
         const response = await fetch(url, { cache: 'no-store', mode: 'cors' });
+        if (!response.ok) throw new Error('Network response was not ok');
         const blob = await response.blob();
         return new Promise((resolve) => {
             const reader = new FileReader();
@@ -98,7 +99,7 @@ async function convertImageToBase64(url) {
             reader.readAsDataURL(blob);
         });
     } catch (e) {
-        console.error("Error convirtiendo a Base64", e);
+        console.error("Error convirtiendo a Base64:", url, e);
         return null;
     }
 }
@@ -117,9 +118,12 @@ async function downloadStory() {
         base64Bg = await convertImageToBase64(bgImgElement.src);
     }
 
-    // 2. Cargar ORO 100 explícitamente
-    const oroUrl = 'https://cambiosorion.cl/orionapp/icons/ORO%20100.svg';
-    const base64Oro = await convertImageToBase64(oroUrl);
+    // 2. Cargar ORO 100 (Intento doble por si el espacio falla)
+    let base64Oro = await convertImageToBase64('https://cambiosorion.cl/orionapp/icons/ORO%20100.svg');
+    if (!base64Oro) {
+        // Intento fallback sin codificar por si el servidor es raro
+        base64Oro = await convertImageToBase64('https://cambiosorion.cl/orionapp/icons/ORO 100.svg');
+    }
 
     const originalCanvas = document.getElementById('story-canvas');
 
@@ -150,10 +154,20 @@ async function downloadStory() {
         }
     });
 
-    // Inyectar fondo Base64
+    // Inyectar fondo
     if (base64Bg) {
         const clonedImg = clonedCanvas.querySelector('img[alt="Background"]');
         if (clonedImg) clonedImg.src = base64Bg;
+    }
+
+    // Inyectar ORO 100
+    if (base64Oro) {
+        const allImages = clonedCanvas.querySelectorAll('.glass-card img');
+        allImages.forEach(img => {
+            if (img.src.includes('ORO') || img.alt === 'ORO 100') {
+                img.src = base64Oro;
+            }
+        });
     }
 
     sandbox.appendChild(clonedCanvas);
@@ -175,77 +189,60 @@ async function downloadStory() {
                 scrollY: 0,
                 scrollX: 0,
                 onclone: (doc) => {
-                    // --- AJUSTES FINALES DE PRECISIÓN ---
+                    // --- AJUSTES CON TRANSFORM (Fuerza Bruta Geométrica) ---
 
-                    // 1. INYECTAR ORO 100 (Estrategia de búsqueda robusta)
-                    if (base64Oro) {
-                        // Buscamos cualquier imagen que tenga "ORO" en el src dentro del clon
-                        const allImages = doc.querySelectorAll('.glass-card img');
-                        allImages.forEach(img => {
-                            if (img.src.includes('ORO') || img.alt.includes('ORO')) {
-                                img.src = base64Oro;
-                            }
-                        });
+                    // 1. Header "Cotización Oficial"
+                    const headerPillDiv = doc.querySelector('.rounded-full.bg-black\\/40');
+                    if (headerPillDiv) {
+                        // Quitamos transparencia y ponemos fondo solido oscuro para resaltar texto
+                        headerPillDiv.style.backgroundColor = 'rgba(0,0,0,0.6)'; 
+                        headerPillDiv.style.borderColor = 'rgba(255,255,255,0.4)';
                     }
                     
-                    // 2. Header "Cotización Oficial" (Posición + Brillo)
-                    const headerPill = doc.querySelector('.rounded-full.bg-black\\/40 p');
-                    if(headerPill) {
-                        headerPill.style.position = 'relative';
-                        headerPill.style.top = '-24px'; // Subido más para centrar
-                        // FIX BRILLO: Sombra blanca sutil y filtro de brillo para romper la opacidad
-                        headerPill.style.color = '#ffffff';
-                        headerPill.style.textShadow = '0 0 1px rgba(255,255,255,0.8)';
-                        headerPill.style.filter = 'brightness(1.2)'; 
-                        headerPill.style.opacity = '1';
+                    const headerPillText = doc.querySelector('.rounded-full.bg-black\\/40 p');
+                    if(headerPillText) {
+                        // Subimos con transform
+                        headerPillText.style.transform = 'translateY(-8px)';
+                        headerPillText.style.color = '#ffffff';
+                        // Sombra dura para legibilidad
+                        headerPillText.style.textShadow = '0px 2px 4px rgba(0,0,0,0.8)';
                     }
 
-                    // 3. Fecha
+                    // 2. Fecha
                     const dateEl = doc.getElementById('fecha-story');
                     if(dateEl) {
-                        dateEl.style.position = 'relative';
-                        dateEl.style.top = '-14px';
+                        dateEl.style.transform = 'translateY(-10px)';
                     }
 
-                    // 4. Textos de las Cartas
-                    doc.querySelectorAll('.story-name').forEach(el => {
-                        el.style.position = 'relative';
-                        el.style.top = '-14px';
-                    });
-                    doc.querySelectorAll('.story-price').forEach(el => {
-                        el.style.position = 'relative';
-                        el.style.top = '-14px';
-                    });
-                    doc.querySelectorAll('.story-label').forEach(el => {
-                        el.style.position = 'relative';
-                        el.style.top = '-10px';
-                    });
+                    // 3. Textos Cartas
+                    doc.querySelectorAll('.story-name').forEach(el => el.style.transform = 'translateY(-8px)');
+                    doc.querySelectorAll('.story-price').forEach(el => el.style.transform = 'translateY(-8px)');
+                    doc.querySelectorAll('.story-label').forEach(el => el.style.transform = 'translateY(-5px)');
 
-                    // 5. Footer "IMPORTANTE" (Solo texto amarillo)
+                    // 4. Footer "IMPORTANTE" (Texto Amarillo)
                     const labelImportante = doc.getElementById('label-importante');
                     if(labelImportante) {
-                        labelImportante.style.position = 'relative';
-                        labelImportante.style.top = '-6px'; // Ajustado para alinear con el triángulo
+                        // Subimos el texto amarillo para alinearlo con el SVG
+                        labelImportante.style.display = 'inline-block'; // Necesario para transform
+                        labelImportante.style.transform = 'translateY(-6px)';
                     }
                     
                     // Texto legal
                     const legalText = doc.querySelector('.glass-card.mb-8 p:last-child');
-                    if(legalText) {
-                        legalText.style.position = 'relative';
-                        legalText.style.top = '-10px';
-                    }
+                    if(legalText) legalText.style.transform = 'translateY(-5px)';
 
-                    // 6. Footer Dirección y Web (SOLO TEXTOS)
+                    // 5. Footer Dirección y Web
                     doc.querySelectorAll('.footer-text').forEach(el => {
-                        el.style.position = 'relative';
-                        el.style.top = '-10px';
+                        el.style.display = 'inline-block';
+                        el.style.transform = 'translateY(-5px)';
                     });
 
-                    // 7. Footer "ESCANEA"
+                    // 6. Footer "ESCANEA"
                     const scanText = doc.querySelector('#qrcode').nextElementSibling;
                     if(scanText) {
+                        // Flexbox a veces bloquea transform, usamos margin negativo si hace falta o relative
                         scanText.style.position = 'relative';
-                        scanText.style.top = '-10px';
+                        scanText.style.top = '-5px';
                     }
                 }
             }).then(canvas => {
