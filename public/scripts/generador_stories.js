@@ -44,13 +44,14 @@ function renderStory(currencies) {
             const compraFmt = parseFloat(divisa.compra).toLocaleString('es-CL', { maximumFractionDigits: divisa.compra < 100 ? 2 : 0 });
             const ventaFmt = parseFloat(divisa.venta).toLocaleString('es-CL', { maximumFractionDigits: divisa.venta < 100 ? 2 : 0 });
             
-            // Lógica para el ícono
+            // 1. FIX ORO 100: Codificamos explícitamente el espacio como %20
+            // y añadimos un ID único para encontrarlo sin fallos
             let iconUrl = divisa.icono_circular;
-            let imgIdAttr = ''; // Variable para guardar el ID si es especial
+            let imgIdAttr = '';
             
             if (divisa.nombre === 'ORO 100') {
                 iconUrl = 'https://cambiosorion.cl/orionapp/icons/ORO%20100.svg';
-                imgIdAttr = 'id="special-icon-oro"'; // MARCADOR CRÍTICO PARA ENCONTRARLO LUEGO
+                imgIdAttr = 'id="special-icon-oro"';
             }
 
             html += `
@@ -120,7 +121,7 @@ async function downloadStory() {
         base64Bg = await convertImageToBase64(bgImgElement.src);
     }
 
-    // 2. Cargar ORO 100 explícitamente
+    // 2. Cargar ORO 100 explícitamente (Pre-carga crítica)
     const oroUrl = 'https://cambiosorion.cl/orionapp/icons/ORO%20100.svg';
     const base64Oro = await convertImageToBase64(oroUrl);
 
@@ -180,31 +181,35 @@ async function downloadStory() {
                 onclone: (doc) => {
                     // --- AJUSTES FINALES DE PRECISIÓN ---
 
-                    // 1. INYECTAR ORO 100 (Usando el ID único)
+                    // 1. INYECTAR ORO 100 (Por ID directo)
                     if (base64Oro) {
                         const oroImg = doc.getElementById('special-icon-oro');
                         if (oroImg) {
                             oroImg.src = base64Oro;
+                            // Aseguramos que tenga dimensiones para que no colapse
+                            oroImg.style.width = '6rem'; // w-24 de tailwind
+                            oroImg.style.height = '6rem';
                         }
                     }
-                    
+
                     // 2. HEADER "Cotización Oficial"
                     // Problema: Oscuro y bajo.
-                    // Solución: position relative + top para mover. Background sólido en padre para brillo.
+                    // Solución: Fondo sólido en el padre + margen negativo en el texto
                     const headerPillDiv = doc.querySelector('.rounded-full.bg-black\\/40');
                     if (headerPillDiv) {
-                        // Reemplazamos el fondo semitransparente por uno sólido oscuro simulado
-                        // Esto evita que el texto herede opacidad visual en la captura
-                        headerPillDiv.style.backgroundColor = '#222222'; 
-                        headerPillDiv.style.opacity = '1';
+                        // Quitamos la clase de opacidad y ponemos color sólido oscuro
+                        headerPillDiv.style.backgroundColor = '#2a2a2a'; // Gris oscuro sólido
+                        headerPillDiv.style.border = '1px solid rgba(255,255,255,0.3)';
                     }
 
-                    const headerPillText = doc.getElementById('label-cotizacion');
-                    if(headerPillText) {
-                        headerPillText.style.position = 'relative';
-                        headerPillText.style.top = '-10px'; // Subimos 10px
-                        headerPillText.style.color = '#ffffff';
-                        headerPillText.style.zIndex = '999';
+                    const labelCot = doc.getElementById('label-cotizacion');
+                    if(labelCot) {
+                        labelCot.style.position = 'relative';
+                        // Usamos z-index alto para asegurar que esté sobre el fondo
+                        labelCot.style.zIndex = '999';
+                        // Subimos 8px
+                        labelCot.style.top = '-8px';
+                        labelCot.style.color = '#ffffff';
                     }
 
                     // 3. Fecha
@@ -229,12 +234,13 @@ async function downloadStory() {
                     });
 
                     // 5. LABEL IMPORTANTE
-                    // Solución: position relative + top (la técnica que funcionó antes)
-                    const labelImportante = doc.getElementById('label-importante');
-                    if(labelImportante) {
-                        labelImportante.style.display = 'inline-block'; // Vital para que span acepte posición
-                        labelImportante.style.position = 'relative';
-                        labelImportante.style.top = '-6px'; // Subimos 6px
+                    // Solución: inline-block + top (la técnica que confirmaste que funciona)
+                    const labelImp = doc.getElementById('label-importante');
+                    if(labelImp) {
+                        labelImp.style.display = 'inline-block';
+                        labelImp.style.position = 'relative';
+                        // Ajustamos 5px arriba
+                        labelImp.style.top = '-5px';
                     }
                     
                     // Texto legal
