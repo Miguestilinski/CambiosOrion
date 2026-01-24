@@ -45,7 +45,7 @@ function renderStory(currencies) {
             const ventaFmt = parseFloat(divisa.venta).toLocaleString('es-CL', { maximumFractionDigits: divisa.venta < 100 ? 2 : 0 });
             const iconUrl = divisa.icono_circular; 
 
-            // FIX ALINEACIÓN: Agregado 'leading-none' a todos los textos grandes para eliminar espacios verticales extra
+            // FIX: Eliminado 'leading-none' y 'drop-shadow' para evitar renderizado "raro" del texto
             html += `
             <div class="glass-card rounded-[2.5rem] p-6 flex items-center justify-between shadow-2xl relative overflow-hidden group">
                 <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -53,19 +53,19 @@ function renderStory(currencies) {
                 <div class="flex items-center gap-6 z-10">
                     <img src="${iconUrl}" class="w-24 h-24 rounded-full border-[5px] border-white/20 bg-white object-cover shadow-lg" crossorigin="anonymous" alt="${divisa.nombre}">
                     <div class="flex flex-col justify-center h-full">
-                        <span class="text-2xl text-blue-200 font-bold uppercase tracking-wider mb-1 leading-none">Divisa</span>
-                        <h2 class="text-5xl font-black text-white tracking-tight drop-shadow-md leading-none pt-1">${divisa.nombre}</h2>
+                        <span class="text-2xl text-blue-200 font-bold uppercase tracking-wider mb-1">Divisa</span>
+                        <h2 class="text-5xl font-black text-white tracking-tight">${divisa.nombre}</h2>
                     </div>
                 </div>
                 
                 <div class="flex gap-12 text-right z-10">
                     <div class="flex flex-col items-end justify-center">
-                        <span class="text-xl text-white/70 uppercase font-bold mb-2 tracking-widest leading-none">Compra</span>
-                        <span class="text-5xl font-bold text-white tracking-tighter leading-none pb-1">$${compraFmt}</span>
+                        <span class="text-xl text-white/70 uppercase font-bold mb-2 tracking-widest">Compra</span>
+                        <span class="text-5xl font-bold text-white tracking-tighter">$${compraFmt}</span>
                     </div>
                     <div class="flex flex-col items-end justify-center">
-                        <span class="text-xl text-green-400 uppercase font-bold mb-2 tracking-widest leading-none">Venta</span>
-                        <span class="text-6xl font-black text-green-400 drop-shadow-lg tracking-tighter leading-none pb-1">$${ventaFmt}</span>
+                        <span class="text-xl text-green-400 uppercase font-bold mb-2 tracking-widest">Venta</span>
+                        <span class="text-6xl font-black text-green-400 tracking-tighter">$${ventaFmt}</span>
                     </div>
                 </div>
             </div>
@@ -107,7 +107,6 @@ async function downloadStory() {
     btn.innerHTML = `Generando...`;
     btn.disabled = true;
 
-    // 1. Preparar imagen de fondo
     const bgImgElement = document.getElementById('background-img');
     let base64Bg = null;
     if (bgImgElement) {
@@ -116,7 +115,6 @@ async function downloadStory() {
 
     const originalCanvas = document.getElementById('story-canvas');
 
-    // 2. Crear Sandbox con fondo negro explícito
     const sandbox = document.createElement('div');
     sandbox.style.position = 'fixed';
     sandbox.style.top = '0';
@@ -125,9 +123,8 @@ async function downloadStory() {
     sandbox.style.height = '1920px';
     sandbox.style.zIndex = '-1';
     sandbox.style.overflow = 'hidden'; 
-    sandbox.style.backgroundColor = '#000000'; // Evita franjas blancas
+    sandbox.style.backgroundColor = '#000000';
     
-    // 3. Clonar y limpiar estilos
     const clonedCanvas = originalCanvas.cloneNode(true);
     clonedCanvas.style.transform = 'none';
     clonedCanvas.style.margin = '0';
@@ -135,7 +132,6 @@ async function downloadStory() {
     clonedCanvas.style.height = '1920px';
     clonedCanvas.removeAttribute('id');
 
-    // 4. Copiar Canvas (QR)
     const originalQRCs = originalCanvas.querySelectorAll('canvas');
     const clonedQRCs = clonedCanvas.querySelectorAll('canvas');
     originalQRCs.forEach((orig, index) => {
@@ -145,7 +141,6 @@ async function downloadStory() {
         }
     });
 
-    // 5. Inyectar Base64
     if (base64Bg) {
         const clonedImg = clonedCanvas.querySelector('img[alt="Background"]');
         if (clonedImg) {
@@ -156,15 +151,15 @@ async function downloadStory() {
     sandbox.appendChild(clonedCanvas);
     document.body.appendChild(sandbox);
 
-    // FIX ALINEACIÓN: Esperar a que las fuentes estén listas antes de capturar
     document.fonts.ready.then(() => {
         setTimeout(() => {
             html2canvas(clonedCanvas, {
-                scale: 1, 
+                scale: 2, 
                 useCORS: true, 
                 allowTaint: true,
-                backgroundColor: '#000000', // Fondo negro en la captura
+                backgroundColor: '#000000',
                 logging: false,
+                letterRendering: 1, // MEJORA: Ayuda con el kerning del texto
                 width: 1080,
                 height: 1920,
                 windowWidth: 1080,

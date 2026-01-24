@@ -9,13 +9,10 @@
     flex-shrink: 0;
     box-shadow: 0 20px 50px rgba(0,0,0,0.5);
     color: white;
-    /* Fondo negro base por seguridad */
     background-color: #000;
 }
 
-/*
-   Contenedor para la vista previa en PC.
-*/
+/* Contenedor vista previa */
 #preview-container {
     width: 1080px;
     height: 1920px;
@@ -25,14 +22,22 @@
     margin-top: 20px;
 }
 
-/* Estilos Glassmorphism "A prueba de balas" 
-   Aumentamos la opacidad (0.35) porque html2canvas NO puede renderizar el blur.
-   Así se ve bien tanto en la web como en la imagen descargada.
+/* FIX DISEÑO: Efecto Vidrio Mejorado
+   En lugar de color sólido, usamos un degradado sutil.
+   Esto simula el brillo sin que se vea como un bloque gris/blanco feo.
 */
 .glass-card {
-    background: rgba(255, 255, 255, 0.35); 
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    /* Degradado de arriba-izquierda (brillo) a abajo-derecha (transparencia) */
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+    
+    /* Sin filtro blur para evitar problemas de renderizado, confiamos en el borde y gradiente */
+    backdrop-filter: none; 
+    -webkit-backdrop-filter: none;
+
+    /* Bordes brillantes para definir la forma */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.3); /* Borde superior más brillante */
+    border-left: 1px solid rgba(255, 255, 255, 0.3); /* Borde izquierdo más brillante */
+    
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
 }
