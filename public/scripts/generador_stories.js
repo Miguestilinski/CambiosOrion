@@ -44,7 +44,7 @@ function renderStory(currencies) {
             const compraFmt = parseFloat(divisa.compra).toLocaleString('es-CL', { maximumFractionDigits: divisa.compra < 100 ? 2 : 0 });
             const ventaFmt = parseFloat(divisa.venta).toLocaleString('es-CL', { maximumFractionDigits: divisa.venta < 100 ? 2 : 0 });
             
-            // Usamos la URL correcta y codificada para asegurar que el navegador la pida bien
+            // Usamos %20 para asegurar la carga en el navegador
             let iconUrl = divisa.icono_circular;
             if (divisa.nombre === 'ORO 100') {
                 iconUrl = 'https://cambiosorion.cl/orionapp/icons/ORO%20100.svg';
@@ -117,8 +117,7 @@ async function downloadStory() {
         base64Bg = await convertImageToBase64(bgImgElement.src);
     }
 
-    // 2. Cargar ORO 100 (Forzamos la carga codificada)
-    // Esto es crucial para evitar el problema del espacio en el nombre
+    // 2. Cargar ORO 100 explícitamente
     const oroUrl = 'https://cambiosorion.cl/orionapp/icons/ORO%20100.svg';
     const base64Oro = await convertImageToBase64(oroUrl);
 
@@ -141,7 +140,7 @@ async function downloadStory() {
     clonedCanvas.style.height = '1920px';
     clonedCanvas.removeAttribute('id');
 
-    // Copiar QR
+    // Copiar QR manualmente
     const originalQRCs = originalCanvas.querySelectorAll('canvas');
     const clonedQRCs = clonedCanvas.querySelectorAll('canvas');
     originalQRCs.forEach((orig, index) => {
@@ -151,22 +150,10 @@ async function downloadStory() {
         }
     });
 
-    // Inyectar fondo
+    // Inyectar fondo Base64
     if (base64Bg) {
         const clonedImg = clonedCanvas.querySelector('img[alt="Background"]');
         if (clonedImg) clonedImg.src = base64Bg;
-    }
-
-    // INYECTAR ORO 100 EN EL CLON
-    // Buscamos cualquier imagen dentro de las cards que deba ser el oro
-    if (base64Oro) {
-        const allImages = clonedCanvas.querySelectorAll('.glass-card img');
-        allImages.forEach(img => {
-            // Verificamos por el alt o por si el src original contiene ORO
-            if (img.alt === 'ORO 100' || img.src.includes('ORO')) {
-                img.src = base64Oro;
-            }
-        });
     }
 
     sandbox.appendChild(clonedCanvas);
@@ -188,29 +175,78 @@ async function downloadStory() {
                 scrollY: 0,
                 scrollX: 0,
                 onclone: (doc) => {
-                    // --- CORRECCIONES QUIRÚRGICAS (Solo lo que pediste) ---
+                    // --- AJUSTES FINALES DE PRECISIÓN ---
 
-                    // 1. Header "Cotización Oficial"
-                    // Problema: Oscuro y bajo.
-                    // Solución: Subir con transform y forzar z-index/color para brillo.
-                    const headerPillText = doc.querySelector('.rounded-full.bg-black\\/40 p');
-                    if(headerPillText) {
-                        headerPillText.style.transform = 'translateY(-5px)'; // Subir sutilmente para centrar
-                        headerPillText.style.position = 'relative';
-                        headerPillText.style.zIndex = '50'; // Sacar al frente para evitar opacidad del padre
-                        headerPillText.style.color = '#ffffff'; 
-                    }
-
-                    // 2. Footer "IMPORTANTE" (Texto Amarillo)
-                    // Problema: Desalineado con el icono.
-                    // Solución: Subir solo el texto.
-                    const labelImportante = doc.getElementById('label-importante');
-                    if(labelImportante) {
-                        labelImportante.style.display = 'inline-block'; 
-                        labelImportante.style.transform = 'translateY(-4px)'; // Ajuste fino
+                    // 1. INYECTAR ORO 100 (Estrategia de búsqueda robusta)
+                    if (base64Oro) {
+                        // Buscamos cualquier imagen que tenga "ORO" en el src dentro del clon
+                        const allImages = doc.querySelectorAll('.glass-card img');
+                        allImages.forEach(img => {
+                            if (img.src.includes('ORO') || img.alt.includes('ORO')) {
+                                img.src = base64Oro;
+                            }
+                        });
                     }
                     
-                    // NOTA: No tocamos nada más (divisas, footer, etc.)
+                    // 2. Header "Cotización Oficial" (Posición + Brillo)
+                    const headerPill = doc.querySelector('label-cotizacion');
+                    if(headerPill) {
+                        headerPill.style.position = 'relative';
+                        headerPill.style.top = '-12px'; // Subido más para centrar
+                        // FIX BRILLO: Sombra blanca sutil y filtro de brillo para romper la opacidad
+                        headerPill.style.color = '#ffffff';
+                        headerPill.style.textShadow = '0 0 1px rgba(255,255,255,0.8)';
+                        headerPill.style.filter = 'brightness(1.2)'; 
+                        headerPill.style.opacity = '1';
+                    }
+
+                    // 3. Fecha
+                    const dateEl = doc.getElementById('fecha-story');
+                    if(dateEl) {
+                        dateEl.style.position = 'relative';
+                        dateEl.style.top = '-14px';
+                    }
+
+                    // 4. Textos de las Cartas
+                    doc.querySelectorAll('.story-name').forEach(el => {
+                        el.style.position = 'relative';
+                        el.style.top = '-14px';
+                    });
+                    doc.querySelectorAll('.story-price').forEach(el => {
+                        el.style.position = 'relative';
+                        el.style.top = '-14px';
+                    });
+                    doc.querySelectorAll('.story-label').forEach(el => {
+                        el.style.position = 'relative';
+                        el.style.top = '-10px';
+                    });
+
+                    // 5. Footer "IMPORTANTE" (Solo texto amarillo)
+                    const labelImportante = doc.getElementById('label-importante');
+                    if(labelImportante) {
+                        labelImportante.style.position = 'relative';
+                        labelImportante.style.top = '-14px'; // Ajustado para alinear con el triángulo
+                    }
+                    
+                    // Texto legal
+                    const legalText = doc.querySelector('.glass-card.mb-8 p:last-child');
+                    if(legalText) {
+                        legalText.style.position = 'relative';
+                        legalText.style.top = '-10px';
+                    }
+
+                    // 6. Footer Dirección y Web (SOLO TEXTOS)
+                    doc.querySelectorAll('.footer-text').forEach(el => {
+                        el.style.position = 'relative';
+                        el.style.top = '-10px';
+                    });
+
+                    // 7. Footer "ESCANEA"
+                    const scanText = doc.querySelector('#qrcode').nextElementSibling;
+                    if(scanText) {
+                        scanText.style.position = 'relative';
+                        scanText.style.top = '-10px';
+                    }
                 }
             }).then(canvas => {
                 const fileName = `Orion_Story_${new Date().toISOString().slice(0,10)}.png`;
