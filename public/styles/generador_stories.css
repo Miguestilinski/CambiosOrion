@@ -1,11 +1,9 @@
-/* /orionapp/public/styles/generador_stories.css */
-
 /* El lienzo exacto de una Story (1080x1920) */
 #story-canvas {
     width: 1080px;
     height: 1920px;
-    /* AQUÍ VA TU IMAGEN DE FONDO */
-    background-image: url('https://cambiosorion.cl/orionapp/assets/FondoOrion.jpg') no-repeat center center fixed;
+    /* AQUÍ VA TU IMAGEN DE FONDO ESPECÍFICA */
+    background-image: url('https://cambiosorion.cl/orionapp/assets/FondoOrion.jpg');
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
@@ -13,14 +11,13 @@
     overflow: hidden;
     flex-shrink: 0;
     box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-    /* Asegura que el texto sea blanco por defecto sobre tu fondo */
+    /* Asegura que el texto sea blanco por defecto sobre tu fondo oscuro */
     color: white;
 }
 
 /*
    Contenedor para la vista previa en PC.
    Escala el lienzo gigante para que quepa en la pantalla.
-   html2canvas a veces se marea con esto, lo solucionaremos en el JS.
 */
 #preview-container {
     width: 1080px;
@@ -28,13 +25,15 @@
     transform: scale(0.45); /* Ajusta este valor si se ve muy grande/chico en tu monitor */
     transform-origin: top center;
     margin-bottom: -900px; /* Compensa el espacio vacío que deja al escalar */
+    margin-top: 20px;
 }
 
 
-/* Estilos específicos que son muy complejos para Tailwind solo */
+/* Estilos específicos Glassmorphism */
 .glass-card {
-    background: rgba(255, 255, 255, 0.1); /* Un poco más transparente para que se vea tu fondo */
-    backdrop-filter: blur(12px); /* Efecto vidrio esmerilado */
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px); /* Soporte Safari */
     border: 1px solid rgba(255, 255, 255, 0.15);
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
 }
