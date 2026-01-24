@@ -2,36 +2,36 @@
 document.addEventListener("DOMContentLoaded", () => {
     const faqData = [
         {
+            question: "¿Por qué Cambios Orion es la mejor opción en Santiago Centro?",
+            answer: "Somos líderes en tecnología financiera. A diferencia de las casas tradicionales, en Orion puedes cotizar en tiempo real, congelar tu tasa online y asegurar tu precio antes de llegar a nuestra oficina en Agustinas 1035. Combinamos la mejor tasa del mercado con seguridad total."
+        },
+        {
+            question: "¿Es seguro cambiar grandes sumas de dinero en Orion?",
+            answer: "Absolutamente. Nuestra oficina en Agustinas 1035 (Oficina 13) es un espacio privado y seguro. Además, aceptamos y realizamos transferencias bancarias para que no tengas que transitar con efectivo por el centro de Santiago. Tu seguridad es nuestra prioridad."
+        },
+        {
             question: "¿Qué métodos de pago aceptan?",
-            answer: "Aceptamos efectivo y transferencias bancarias."
+            answer: "Para tu comodidad y seguridad, aceptamos efectivo (pesos chilenos y divisas extranjeras) y transferencias bancarias inmediatas. Esto nos permite ofrecer un servicio más rápido y seguro que la competencia."
         },
         {
-            question: "¿Cuáles son los horarios de atención de Orion?",
-            answer: "Nuestra sucursal está abierta de lunes a viernes de 9:00 a.m. a 5:00 p.m. Consulta los horarios específicos en línea."
+            question: "¿Cuáles son los horarios de atención?",
+            answer: "Atendemos de lunes a viernes de 09:00 a 18:00 hrs y sábados de 10:00 a 14:00 hrs. Recuerda que nuestra web funciona 24/7 para cotizaciones y reservas."
         },
         {
-            question: "¿Cómo puedo contactar al servicio al cliente?",
-            answer: "Puedes escribirnos a nuestro correo electrónico, a través de whatsapp o llamarnos al número de atención disponible en nuestro sitio web. Responderemos dentro del horario de atención."
+            question: "¿Cómo funciona el sistema de Reserva Online?",
+            answer: "Es nuestra herramienta estrella. Cotizas en la web, haces clic en 'Reservar' y congelas el precio por 2 horas. Recibes un QR, vienes a caja preferencial y te respetamos el precio exacto, sin importar si el mercado subió o bajó en ese lapso."
         },
         {
-            question: "¿Hay límites en el monto de cambio de divisas?",
-            answer: "Sí, para montos mayores a $5.000 USD o equivalentes, es posible que se requiera documentación adicional."
+            question: "¿Hay límites en el monto de cambio?",
+            answer: "No hay límites operacionales, pero por normativas de cumplimiento (Compliance), para operaciones superiores a $5.000 USD solicitamos documentación simple de origen de fondos. Esto garantiza que operamos bajo los más altos estándares legales."
         },
         {
-            question: "¿Cómo se calculan los tipos de cambio?",
-            answer: "Los tipos de cambio se actualizan en tiempo real y se basan en el mercado internacional de divisas. Puedes consultar el tipo actual antes de realizar tu operación."
+            question: "¿Realizan envíos de dinero o remesas?",
+            answer: "Sí, gestionamos remesas internacionales y operaciones con divisas digitales (USDT) con la misma seguridad y transparencia que nuestro cambio físico."
         },
         {
-            question: "¿Puedo reservar un tipo de cambio para asegurar el valor?",
-            answer: "Sí, puedes congelar el valor actual de una operación usando nuestro sistema de reservas. Al hacerlo, recibirás un correo con un código QR para presentar en nuestra sucursal y validar la operación."
-        },
-        {
-            question: "¿Qué pasa si no quiero reservar, pero me interesa un precio específico?",
-            answer: "Puedes crear una alerta de precio y te avisaremos por correo cuando la divisa alcance el valor que definiste. Así podrás venir a nuestra sucursal en el mejor momento para ti."
-        },
-        {
-            question: "¿Qué significa que estén comprando o vendiendo una divisa?",
-            answer: "En ciertos momentos del día, o días completos, Cambios Orion puede estar solo comprando o solo vendiendo una divisa específica. Esto depende de nuestra disponibilidad y políticas internas. Siempre revisa si estamos en modo 'comprador' o 'vendedor' para saber si es buen momento para tu operación."
+            question: "¿Qué significa que estén en modo 'Comprador' o 'Vendedor'?",
+            answer: "Significa transparencia total. A veces tenemos exceso de stock de una divisa y mejoramos el precio para venderla rápido (Oferta). Nuestro sistema te avisa para que aproveches esas oportunidades únicas."
         },
     ];
 
