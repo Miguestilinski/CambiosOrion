@@ -44,7 +44,6 @@ function renderStory(currencies) {
             const compraFmt = parseFloat(divisa.compra).toLocaleString('es-CL', { maximumFractionDigits: divisa.compra < 100 ? 2 : 0 });
             const ventaFmt = parseFloat(divisa.venta).toLocaleString('es-CL', { maximumFractionDigits: divisa.venta < 100 ? 2 : 0 });
             
-            // FIX ICONO ORO: Usamos %20 para el espacio de forma explícita
             let iconUrl = divisa.icono_circular;
             if (divisa.nombre === 'ORO 100') {
                 iconUrl = 'https://cambiosorion.cl/orionapp/icons/ORO%20100.svg';
@@ -117,8 +116,7 @@ async function downloadStory() {
         base64Bg = await convertImageToBase64(bgImgElement.src);
     }
 
-    // 2. Convertir ICONO ORO a Base64 (si existe)
-    // Esto asegura que cargue aunque tenga espacios en el nombre
+    // 2. Convertir ICONO ORO a Base64
     const oroImgElement = document.querySelector('img[alt="ORO 100"]');
     let base64Oro = null;
     if (oroImgElement) {
@@ -185,75 +183,65 @@ async function downloadStory() {
                 scrollY: 0,
                 scrollX: 0,
                 onclone: (doc) => {
-                    // --- CORRECCIÓN MASIVA DE ALINEACIÓN VERTICAL ---
+                    // --- CORRECCIÓN MASIVA Y AGRESIVA DE ALINEACIÓN ---
                     
                     // 1. Header (Pastilla "Cotización Oficial")
                     const headerPill = doc.querySelector('.rounded-full.bg-black\\/40 p');
                     if(headerPill) {
                         headerPill.style.position = 'relative';
-                        headerPill.style.top = '-12px'; // Subido considerablemente
+                        headerPill.style.top = '-16px'; // Subido agresivamente
                     }
 
                     // 2. Fecha
                     const dateEl = doc.getElementById('fecha-story');
                     if(dateEl) {
                         dateEl.style.position = 'relative';
-                        dateEl.style.top = '-10px';
+                        dateEl.style.top = '-14px';
                     }
 
-                    // 3. Textos de las Cartas (Nombre Divisa, Etiquetas, Precios)
+                    // 3. Textos de las Cartas
                     doc.querySelectorAll('.story-name').forEach(el => {
                         el.style.position = 'relative';
-                        el.style.top = '-8px';
+                        el.style.top = '-14px'; // Nombres divisas arriba
                     });
                     doc.querySelectorAll('.story-price').forEach(el => {
                         el.style.position = 'relative';
-                        el.style.top = '-8px';
+                        el.style.top = '-14px'; // Precios arriba
                     });
                     doc.querySelectorAll('.story-label').forEach(el => {
                         el.style.position = 'relative';
-                        el.style.top = '-5px';
+                        el.style.top = '-10px'; // Etiquetas arriba
                     });
 
-                    // 4. Footer "IMPORTANTE" y Texto Legal
+                    // 4. Footer "IMPORTANTE"
                     const footerCard = doc.querySelector('.glass-card.mb-8');
                     if(footerCard) {
-                        // Título IMPORTANTE con icono
+                        // Título IMPORTANTE con icono (el texto)
                         const importantTitle = footerCard.querySelector('p:first-child');
                         if(importantTitle) {
                             importantTitle.style.position = 'relative';
-                            importantTitle.style.top = '-6px';
+                            importantTitle.style.top = '-10px';
                         }
                         // Texto legal
                         const legalText = footerCard.querySelector('p:last-child');
                         if(legalText) {
                             legalText.style.position = 'relative';
-                            legalText.style.top = '-6px';
+                            legalText.style.top = '-10px';
                         }
                     }
 
-                    // 5. Footer Dirección y Web
-                    const footerItems = doc.querySelectorAll('.text-left span.flex');
-                    footerItems.forEach(item => {
-                        item.style.display = 'flex';
-                        item.style.alignItems = 'center'; 
-                        
-                        // Icono
-                        const svg = item.querySelector('svg');
-                        if(svg) {
-                            svg.style.position = 'relative';
-                            svg.style.top = '-2px'; // Ajuste fino del icono
-                        }
-                        // Como el texto está "suelto" dentro del span, movemos todo el contenedor un poco arriba
-                        item.style.position = 'relative';
-                        item.style.top = '-5px';
+                    // 5. Footer Dirección y Web (SOLO TEXTOS)
+                    // Gracias al span .footer-text, solo movemos el texto, el SVG se queda quieto
+                    doc.querySelectorAll('.footer-text').forEach(el => {
+                        el.style.position = 'relative';
+                        el.style.top = '-10px'; // Subimos solo el texto
                     });
 
                     // 6. Footer "ESCANEA"
                     const scanText = doc.querySelector('#qrcode').nextElementSibling;
                     if(scanText) {
                         scanText.style.position = 'relative';
-                        scanText.style.top = '-5px';
+                        scanText.style.top = '-10px';
                     }
                 }
             }).then(canvas => {
