@@ -44,7 +44,7 @@ function renderStory(currencies) {
             const compraFmt = parseFloat(divisa.compra).toLocaleString('es-CL', { maximumFractionDigits: divisa.compra < 100 ? 2 : 0 });
             const ventaFmt = parseFloat(divisa.venta).toLocaleString('es-CL', { maximumFractionDigits: divisa.venta < 100 ? 2 : 0 });
             
-            // Definimos la URL. Usamos %20 para evitar problemas iniciales de carga
+            // Usamos %20 para asegurar la carga en el navegador
             let iconUrl = divisa.icono_circular;
             if (divisa.nombre === 'ORO 100') {
                 iconUrl = 'https://cambiosorion.cl/orionapp/icons/ORO%20100.svg';
@@ -88,11 +88,9 @@ function updateDate() {
     if(dateEl) dateEl.innerText = finalDate;
 }
 
-// Función auxiliar para convertir imágenes a Base64
 async function convertImageToBase64(url) {
     try {
         const response = await fetch(url, { cache: 'no-store', mode: 'cors' });
-        if (!response.ok) throw new Error('Network response was not ok');
         const blob = await response.blob();
         return new Promise((resolve) => {
             const reader = new FileReader();
@@ -100,7 +98,7 @@ async function convertImageToBase64(url) {
             reader.readAsDataURL(blob);
         });
     } catch (e) {
-        console.error("Error convirtiendo a Base64:", url, e);
+        console.error("Error convirtiendo a Base64", e);
         return null;
     }
 }
@@ -112,20 +110,19 @@ async function downloadStory() {
     btn.innerHTML = `Generando...`;
     btn.disabled = true;
 
-    // 1. Cargar fondo en Base64
+    // 1. Cargar fondo
     const bgImgElement = document.getElementById('background-img');
     let base64Bg = null;
     if (bgImgElement) {
         base64Bg = await convertImageToBase64(bgImgElement.src);
     }
 
-    // 2. Cargar ORO 100 en Base64 (Pre-carga explicita)
+    // 2. Cargar ORO 100 explícitamente
     const oroUrl = 'https://cambiosorion.cl/orionapp/icons/ORO%20100.svg';
     const base64Oro = await convertImageToBase64(oroUrl);
 
     const originalCanvas = document.getElementById('story-canvas');
 
-    // Crear Sandbox
     const sandbox = document.createElement('div');
     sandbox.style.position = 'fixed';
     sandbox.style.top = '0';
@@ -143,7 +140,7 @@ async function downloadStory() {
     clonedCanvas.style.height = '1920px';
     clonedCanvas.removeAttribute('id');
 
-    // Copiar QR manualmente (los canvas no se clonan solos)
+    // Copiar QR manualmente
     const originalQRCs = originalCanvas.querySelectorAll('canvas');
     const clonedQRCs = clonedCanvas.querySelectorAll('canvas');
     originalQRCs.forEach((orig, index) => {
@@ -153,7 +150,7 @@ async function downloadStory() {
         }
     });
 
-    // Inyectar fondo si existe
+    // Inyectar fondo Base64
     if (base64Bg) {
         const clonedImg = clonedCanvas.querySelector('img[alt="Background"]');
         if (clonedImg) clonedImg.src = base64Bg;
@@ -162,7 +159,6 @@ async function downloadStory() {
     sandbox.appendChild(clonedCanvas);
     document.body.appendChild(sandbox);
 
-    // Esperar fuentes y ejecutar html2canvas
     document.fonts.ready.then(() => {
         setTimeout(() => {
             html2canvas(clonedCanvas, {
@@ -179,7 +175,7 @@ async function downloadStory() {
                 scrollY: 0,
                 scrollX: 0,
                 onclone: (doc) => {
-                    // --- CORRECCIONES EN EL CLON ---
+                    // --- AJUSTES FINALES DE PRECISIÓN ---
 
                     // 1. FIX ICONO ORO 100: Búsqueda agresiva
                     if (base64Oro) {
@@ -191,7 +187,7 @@ async function downloadStory() {
                             }
                         });
                     }
-
+                    
                     // 2. FIX HEADER "Cotización Oficial": Subir y Brillo
                     const labelCot = doc.getElementById('label-cotizacion');
                     if(labelCot) {
@@ -202,12 +198,53 @@ async function downloadStory() {
                         labelCot.style.transform = 'translateY(-8px)'; 
                     }
 
-                    // 3. FIX LABEL IMPORTANTE: Subir
+                    // 3. Fecha
+                    const dateEl = doc.getElementById('fecha-story');
+                    if(dateEl) {
+                        dateEl.style.position = 'relative';
+                        dateEl.style.top = '-14px';
+                    }
+
+                    // 4. Textos de las Cartas
+                    doc.querySelectorAll('.story-name').forEach(el => {
+                        el.style.position = 'relative';
+                        el.style.top = '-14px';
+                    });
+                    doc.querySelectorAll('.story-price').forEach(el => {
+                        el.style.position = 'relative';
+                        el.style.top = '-14px';
+                    });
+                    doc.querySelectorAll('.story-label').forEach(el => {
+                        el.style.position = 'relative';
+                        el.style.top = '-10px';
+                    });
+
+                    // 5. FIX LABEL IMPORTANTE: Subir
                     const labelImp = doc.getElementById('label-importante');
                     if(labelImp) {
                         // inline-block es necesario para que el span acepte transformaciones
                         labelImp.style.display = 'inline-block';
                         labelImp.style.transform = 'translateY(-3px)';
+                    }
+                    
+                    // Texto legal
+                    const legalText = doc.querySelector('.glass-card.mb-8 p:last-child');
+                    if(legalText) {
+                        legalText.style.position = 'relative';
+                        legalText.style.top = '-10px';
+                    }
+
+                    // 6. Footer Dirección y Web (SOLO TEXTOS)
+                    doc.querySelectorAll('.footer-text').forEach(el => {
+                        el.style.position = 'relative';
+                        el.style.top = '-10px';
+                    });
+
+                    // 7. Footer "ESCANEA"
+                    const scanText = doc.querySelector('#qrcode').nextElementSibling;
+                    if(scanText) {
+                        scanText.style.position = 'relative';
+                        scanText.style.top = '-10px';
                     }
                 }
             }).then(canvas => {
