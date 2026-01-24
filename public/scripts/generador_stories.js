@@ -181,34 +181,35 @@ async function downloadStory() {
                 onclone: (doc) => {
                     // --- AJUSTES FINALES DE PRECISIÓN ---
 
-                    // 1. INYECTAR ORO 100 (Por ID directo)
+                    // 1. INYECTAR ORO 100
                     if (base64Oro) {
-                        const oroImg = doc.getElementById('special-icon-oro');
-                        if (oroImg) {
-                            oroImg.src = base64Oro;
-                            // Aseguramos que tenga dimensiones para que no colapse
-                            oroImg.style.width = '6rem'; // w-24 de tailwind
-                            oroImg.style.height = '6rem';
+                        // Buscamos por ID específico (Plan A)
+                        let oroImg = doc.getElementById('special-icon-oro');
+                        // Si no lo encuentra, buscamos por src (Plan B)
+                        if (!oroImg) {
+                            const allImages = doc.querySelectorAll('.glass-card img');
+                            allImages.forEach(img => {
+                                if (img.src.indexOf('ORO') !== -1) oroImg = img;
+                            });
                         }
+                        if (oroImg) oroImg.src = base64Oro;
                     }
 
                     // 2. HEADER "Cotización Oficial"
-                    // Problema: Oscuro y bajo.
-                    // Solución: Fondo sólido en el padre + margen negativo en el texto
                     const headerPillDiv = doc.querySelector('.rounded-full.bg-black\\/40');
                     if (headerPillDiv) {
-                        // Quitamos la clase de opacidad y ponemos color sólido oscuro
-                        headerPillDiv.style.backgroundColor = '#2a2a2a'; // Gris oscuro sólido
+                        // FIX BRILLO: Quitamos transparencia, ponemos fondo sólido gris oscuro
+                        // Así el texto blanco resalta al 100%
+                        headerPillDiv.style.backgroundColor = '#2d2d2d'; 
                         headerPillDiv.style.border = '1px solid rgba(255,255,255,0.3)';
                     }
 
                     const labelCot = doc.getElementById('label-cotizacion');
                     if(labelCot) {
+                        // IGUALDAD DE CONDICIONES:
+                        labelCot.style.display = 'block'; // Aseguramos que sea bloque
                         labelCot.style.position = 'relative';
-                        // Usamos z-index alto para asegurar que esté sobre el fondo
-                        labelCot.style.zIndex = '999';
-                        // Subimos 8px
-                        labelCot.style.top = '-8px';
+                        labelCot.style.top = '-10px'; // Subimos 10px
                         labelCot.style.color = '#ffffff';
                     }
 
@@ -234,13 +235,12 @@ async function downloadStory() {
                     });
 
                     // 5. LABEL IMPORTANTE
-                    // Solución: inline-block + top (la técnica que confirmaste que funciona)
                     const labelImp = doc.getElementById('label-importante');
                     if(labelImp) {
-                        labelImp.style.display = 'inline-block';
+                        // IGUALDAD DE CONDICIONES: Convertimos el span en bloque
+                        labelImp.style.display = 'inline-block'; 
                         labelImp.style.position = 'relative';
-                        // Ajustamos 5px arriba
-                        labelImp.style.top = '-5px';
+                        labelImp.style.top = '-5px'; // Subimos 5px
                     }
                     
                     // Texto legal
