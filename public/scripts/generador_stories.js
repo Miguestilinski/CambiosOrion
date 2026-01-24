@@ -44,10 +44,13 @@ function renderStory(currencies) {
             const compraFmt = parseFloat(divisa.compra).toLocaleString('es-CL', { maximumFractionDigits: divisa.compra < 100 ? 2 : 0 });
             const ventaFmt = parseFloat(divisa.venta).toLocaleString('es-CL', { maximumFractionDigits: divisa.venta < 100 ? 2 : 0 });
             
-            // Usamos %20 para asegurar la carga en el navegador
+            // Lógica para el ícono
             let iconUrl = divisa.icono_circular;
+            let imgIdAttr = ''; // Variable para guardar el ID si es especial
+            
             if (divisa.nombre === 'ORO 100') {
                 iconUrl = 'https://cambiosorion.cl/orionapp/icons/ORO%20100.svg';
+                imgIdAttr = 'id="special-icon-oro"'; // MARCADOR CRÍTICO PARA ENCONTRARLO LUEGO
             }
 
             html += `
@@ -55,7 +58,7 @@ function renderStory(currencies) {
                 <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 
                 <div class="flex items-center gap-6 z-10">
-                    <img src="${iconUrl}" class="w-24 h-24 rounded-full border-[5px] border-white/20 bg-white object-cover shadow-lg" crossorigin="anonymous" alt="${divisa.nombre}">
+                    <img ${imgIdAttr} src="${iconUrl}" class="w-24 h-24 rounded-full border-[5px] border-white/20 bg-white object-cover shadow-lg" crossorigin="anonymous" alt="${divisa.nombre}">
                     <div class="flex flex-col gap-0 justify-center"> 
                         <h2 class="text-5xl font-black text-white leading-none mt-1 story-name">${divisa.nombre}</h2>
                     </div>
@@ -177,25 +180,38 @@ async function downloadStory() {
                 onclone: (doc) => {
                     // --- AJUSTES FINALES DE PRECISIÓN ---
 
-                    // 1. FIX ICONO ORO 100: Búsqueda agresiva
+                    // 1. INYECTAR ORO 100 (Buscando por ID único)
                     if (base64Oro) {
-                        const allImgs = doc.querySelectorAll('img');
-                        allImgs.forEach(img => {
-                            // Buscamos coincidencia flexible en src o alt
-                            if (img.src.indexOf('ORO') !== -1 || img.alt === 'ORO 100') {
-                                img.src = base64Oro;
-                            }
-                        });
+                        const oroImg = doc.getElementById('special-icon-oro');
+                        if (oroImg) {
+                            oroImg.src = base64Oro;
+                        } else {
+                            // Fallback: búsqueda por src si el ID falló al clonarse
+                            const allImages = doc.querySelectorAll('.glass-card img');
+                            allImages.forEach(img => {
+                                if (img.src.includes('ORO')) img.src = base64Oro;
+                            });
+                        }
                     }
                     
-                    // 2. FIX HEADER "Cotización Oficial": Subir y Brillo
-                    const labelCot = doc.getElementById('label-cotizacion');
-                    if(labelCot) {
-                        // position relative y z-index alto evitan que la opacidad del padre lo oscurezca
-                        labelCot.style.position = 'relative';
-                        labelCot.style.zIndex = '999'; 
-                        // Transform es más seguro que top
-                        labelCot.style.transform = 'translateY(-8px)'; 
+                    // 2. HEADER "Cotización Oficial" (Brillo y Posición)
+                    const headerPillDiv = doc.querySelector('.rounded-full.bg-black\\/40');
+                    if (headerPillDiv) {
+                        // Quitamos clase conflictiva y aplicamos estilo directo
+                        headerPillDiv.className = headerPillDiv.className.replace('bg-black/40', '');
+                        headerPillDiv.style.backgroundColor = 'rgba(0, 0, 0, 0.4)';
+                        headerPillDiv.style.border = '1px solid rgba(255, 255, 255, 0.2)';
+                    }
+
+                    const headerPillText = doc.getElementById('label-cotizacion');
+                    if(headerPillText) {
+                        headerPillText.style.display = 'block'; // Asegurar comportamiento de bloque
+                        headerPillText.style.marginTop = '-5px'; // Subir con margen
+                        headerPillText.style.color = '#ffffff';
+                        headerPillText.style.textShadow = '0 0 1px rgba(255,255,255,0.5)';
+                        // Force z-index
+                        headerPillText.style.position = 'relative';
+                        headerPillText.style.zIndex = '1000';
                     }
 
                     // 3. Fecha
@@ -219,12 +235,13 @@ async function downloadStory() {
                         el.style.top = '-10px';
                     });
 
-                    // 5. FIX LABEL IMPORTANTE: Subir
-                    const labelImp = doc.getElementById('label-importante');
-                    if(labelImp) {
-                        // inline-block es necesario para que el span acepte transformaciones
-                        labelImp.style.display = 'inline-block';
-                        labelImp.style.transform = 'translateY(-3px)';
+                    // 5. LABEL IMPORTANTE (Posición)
+                    const labelImportante = doc.getElementById('label-importante');
+                    if(labelImportante) {
+                        labelImportante.style.display = 'inline-block';
+                        // Usamos margin-top negativo, que suele ser más efectivo que top
+                        labelImportante.style.marginTop = '-5px';
+                        labelImportante.style.position = 'relative';
                     }
                     
                     // Texto legal
@@ -263,6 +280,6 @@ async function downloadStory() {
                 btn.innerHTML = 'Error';
                 btn.disabled = false;
             });
-        }, 1000);
+        }, 2500);
     });
 }
