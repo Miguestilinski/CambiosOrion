@@ -45,30 +45,29 @@ function renderStory(currencies) {
             const ventaFmt = parseFloat(divisa.venta).toLocaleString('es-CL', { maximumFractionDigits: divisa.venta < 100 ? 2 : 0 });
             const iconUrl = divisa.icono_circular; 
 
-            // FIX VERTICALIDAD: 
-            // 1. Eliminado 'h-full' y 'justify-center' de los contenedores internos.
-            // 2. El alineamiento vertical ahora depende 100% de 'items-center' del contenedor padre (fila).
-            // 3. Agregado 'leading-snug' para evitar saltos de línea extraños.
+            // FIX ALINEACIÓN:
+            // 1. Usamos 'leading-none' en los números grandes para eliminar el espacio vertical extra (descenders).
+            // 2. Quitamos 'justify-center' de los contenedores internos para que no floten libremente.
             html += `
             <div class="glass-card rounded-[2.5rem] p-6 flex items-center justify-between shadow-2xl relative overflow-hidden group">
                 <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 
                 <div class="flex items-center gap-6 z-10">
                     <img src="${iconUrl}" class="w-24 h-24 rounded-full border-[5px] border-white/20 bg-white object-cover shadow-lg" crossorigin="anonymous" alt="${divisa.nombre}">
-                    <div class="flex flex-col gap-0"> 
-                        <span class="text-2xl text-blue-200 font-bold uppercase tracking-wider leading-snug">Divisa</span>
-                        <h2 class="text-5xl font-black text-white leading-snug">${divisa.nombre}</h2>
+                    <div class="flex flex-col gap-1"> 
+                        <span class="text-2xl text-blue-200 font-bold uppercase tracking-wider leading-none">Divisa</span>
+                        <h2 class="text-5xl font-black text-white leading-none">${divisa.nombre}</h2>
                     </div>
                 </div>
                 
                 <div class="flex gap-14 text-right z-10">
-                    <div class="flex flex-col items-end gap-0">
-                        <span class="text-xl text-white/70 uppercase font-bold tracking-widest mb-1 leading-snug">Compra</span>
-                        <span class="text-5xl font-bold text-white leading-snug">$${compraFmt}</span>
+                    <div class="flex flex-col items-end gap-1">
+                        <span class="text-xl text-white/70 uppercase font-bold tracking-widest mb-1 leading-none">Compra</span>
+                        <span class="text-5xl font-bold text-white leading-none tracking-tight">$${compraFmt}</span>
                     </div>
-                    <div class="flex flex-col items-end gap-0">
-                        <span class="text-xl text-green-400 uppercase font-bold tracking-widest mb-1 leading-snug">Venta</span>
-                        <span class="text-6xl font-black text-green-400 leading-snug">$${ventaFmt}</span>
+                    <div class="flex flex-col items-end gap-1">
+                        <span class="text-xl text-green-400 uppercase font-bold tracking-widest mb-1 leading-none">Venta</span>
+                        <span class="text-6xl font-black text-green-400 leading-none tracking-tight">$${ventaFmt}</span>
                     </div>
                 </div>
             </div>
