@@ -5,7 +5,7 @@
     width: 1080px;
     height: 1920px;
     /* AQUÍ VA TU IMAGEN DE FONDO */
-    background-image: url('/orionapp/public/assets/fondo_stories.jpg');
+    background-image: url('https://cambiosorion.cl/orionapp/assets/FondoOrion.jpg') no-repeat center center fixed;
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
