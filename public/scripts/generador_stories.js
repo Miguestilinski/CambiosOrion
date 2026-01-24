@@ -174,9 +174,10 @@ async function downloadStory() {
                 onclone: (doc) => {
                     // --- AJUSTES FINALES DE PRECISIÓN ---
 
-                    // 1. HEADER (Fondo Sólido)
+                    // 1. HEADER (Fondo Sólido corregido)
                     doc.querySelectorAll('.rounded-full.bg-black\\/40').forEach(el => {
-                        el.style.backgroundColor = '#2d2d2d'; 
+                        // CAMBIO: Usamos rgba negro neutro para evitar el tono amarillento/grisáceo
+                        el.style.backgroundColor = 'rgba(0, 0, 0, 0.6)'; 
                         el.style.border = '1px solid rgba(255,255,255,0.3)';
                     });
 
@@ -228,10 +229,10 @@ async function downloadStory() {
                         el.style.top = '-10px';
                     });
 
-                    // 8. SCANNER TEXT (Seleccionamos el <p> hermano del QR)
-                    doc.querySelectorAll('#qrcode + p').forEach(el => {
+                    // 8. SCANNER TEXT (Ahora atacamos al ID específico, no a todo el párrafo)
+                    doc.querySelectorAll('#scan-text').forEach(el => {
                         el.style.position = 'relative';
-                        el.style.top = '-8px';
+                        el.style.top = '-8px'; // Mueve solo el texto "Escanea"
                     });
                 }
             }).then(canvas => {
