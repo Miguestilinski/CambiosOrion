@@ -45,29 +45,27 @@ function renderStory(currencies) {
             const ventaFmt = parseFloat(divisa.venta).toLocaleString('es-CL', { maximumFractionDigits: divisa.venta < 100 ? 2 : 0 });
             const iconUrl = divisa.icono_circular; 
 
-            // FIX ALINEACIÓN:
-            // 1. Usamos 'leading-none' en los números grandes para eliminar el espacio vertical extra (descenders).
-            // 2. Quitamos 'justify-center' de los contenedores internos para que no floten libremente.
+            // Nota: Agregué clases identificadoras como 'price-sell' y 'price-buy' para poder manipularlas en el onclone
             html += `
             <div class="glass-card rounded-[2.5rem] p-6 flex items-center justify-between shadow-2xl relative overflow-hidden group">
                 <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 
                 <div class="flex items-center gap-6 z-10">
                     <img src="${iconUrl}" class="w-24 h-24 rounded-full border-[5px] border-white/20 bg-white object-cover shadow-lg" crossorigin="anonymous" alt="${divisa.nombre}">
-                    <div class="flex flex-col gap-1"> 
-                        <span class="text-2xl text-blue-200 font-bold uppercase tracking-wider leading-none">Divisa</span>
-                        <h2 class="text-5xl font-black text-white leading-none">${divisa.nombre}</h2>
+                    <div class="flex flex-col gap-0 justify-center"> 
+                        <span class="text-2xl text-blue-200 font-bold uppercase tracking-wider mb-1">Divisa</span>
+                        <h2 class="text-5xl font-black text-white leading-none mt-1">${divisa.nombre}</h2>
                     </div>
                 </div>
                 
-                <div class="flex gap-14 text-right z-10">
-                    <div class="flex flex-col items-end gap-1">
-                        <span class="text-xl text-white/70 uppercase font-bold tracking-widest mb-1 leading-none">Compra</span>
-                        <span class="text-5xl font-bold text-white leading-none tracking-tight">$${compraFmt}</span>
+                <div class="flex gap-12 text-right z-10 items-center">
+                    <div class="flex flex-col items-end gap-0 price-buy-container">
+                        <span class="text-xl text-white/70 uppercase font-bold tracking-widest mb-1">Compra</span>
+                        <span class="text-5xl font-bold text-white leading-none">$${compraFmt}</span>
                     </div>
-                    <div class="flex flex-col items-end gap-1">
-                        <span class="text-xl text-green-400 uppercase font-bold tracking-widest mb-1 leading-none">Venta</span>
-                        <span class="text-6xl font-black text-green-400 leading-none tracking-tight">$${ventaFmt}</span>
+                    <div class="flex flex-col items-end gap-0 price-sell-container">
+                        <span class="text-xl text-green-400 uppercase font-bold tracking-widest mb-1">Venta</span>
+                        <span class="text-6xl font-black text-green-400 leading-none">$${ventaFmt}</span>
                     </div>
                 </div>
             </div>
@@ -117,6 +115,7 @@ async function downloadStory() {
 
     const originalCanvas = document.getElementById('story-canvas');
 
+    // Sandbox
     const sandbox = document.createElement('div');
     sandbox.style.position = 'fixed';
     sandbox.style.top = '0';
@@ -134,6 +133,7 @@ async function downloadStory() {
     clonedCanvas.style.height = '1920px';
     clonedCanvas.removeAttribute('id');
 
+    // Copiar QR manualmente
     const originalQRCs = originalCanvas.querySelectorAll('canvas');
     const clonedQRCs = clonedCanvas.querySelectorAll('canvas');
     originalQRCs.forEach((orig, index) => {
@@ -143,11 +143,10 @@ async function downloadStory() {
         }
     });
 
+    // Inyectar fondo
     if (base64Bg) {
         const clonedImg = clonedCanvas.querySelector('img[alt="Background"]');
-        if (clonedImg) {
-            clonedImg.src = base64Bg;
-        }
+        if (clonedImg) clonedImg.src = base64Bg;
     }
 
     sandbox.appendChild(clonedCanvas);
@@ -168,8 +167,40 @@ async function downloadStory() {
                 windowHeight: 1920,
                 scrollY: 0,
                 scrollX: 0,
-                x: 0, 
-                y: 0 
+                // AQUÍ OCURRE LA MAGIA: Manipulación directa del clon antes de la foto
+                onclone: (doc) => {
+                    // 1. CORRECCIÓN HEADER ("Cotización Oficial")
+                    // Lo subimos manualmente 8px porque html2canvas lo baja
+                    const headerPill = doc.querySelector('.rounded-full.bg-black\\/40 p');
+                    if(headerPill) {
+                        headerPill.style.position = 'relative';
+                        headerPill.style.top = '-8px'; 
+                    }
+
+                    // 2. CORRECCIÓN PRECIOS (El verde se ve más abajo, lo subimos)
+                    const sellPrices = doc.querySelectorAll('.price-sell-container span:last-child');
+                    sellPrices.forEach(price => {
+                        price.style.position = 'relative';
+                        price.style.top = '-10px'; // Subimos el precio verde 10px
+                    });
+
+                    // 3. CORRECCIÓN FOOTER (Iconos vs Texto)
+                    // Forzamos flexbox y alineación
+                    const footerItems = doc.querySelectorAll('.text-left span.flex');
+                    footerItems.forEach(item => {
+                        item.style.display = 'flex';
+                        item.style.alignItems = 'center'; // Centrado vertical estricto
+                        
+                        // Ajuste fino al texto
+                        const textNode = Array.from(item.childNodes).find(n => n.nodeType === 3); // Nodo de texto
+                        // Si pudiéramos envolver el texto en un span sería mejor, pero ajustaremos el SVG
+                        const svg = item.querySelector('svg');
+                        if(svg) {
+                            svg.style.position = 'relative';
+                            svg.style.top = '2px'; // Bajamos un poco el icono para que cuadre con el texto
+                        }
+                    });
+                }
             }).then(canvas => {
                 const fileName = `Orion_Story_${new Date().toISOString().slice(0,10)}.png`;
                 const link = document.createElement('a');
@@ -186,6 +217,6 @@ async function downloadStory() {
                 btn.innerHTML = 'Error';
                 btn.disabled = false;
             });
-        }, 1000);
+        }, 800);
     });
 }
