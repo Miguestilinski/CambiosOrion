@@ -44,8 +44,7 @@ function renderStory(currencies) {
             const compraFmt = parseFloat(divisa.compra).toLocaleString('es-CL', { maximumFractionDigits: divisa.compra < 100 ? 2 : 0 });
             const ventaFmt = parseFloat(divisa.venta).toLocaleString('es-CL', { maximumFractionDigits: divisa.venta < 100 ? 2 : 0 });
             
-            // LÓGICA SIMPLIFICADA PARA ORO 100
-            // Usamos el nuevo nombre de archivo sin espacios
+            // Usamos la URL estándar (sin espacios)
             let iconUrl = divisa.icono_circular;
             if (divisa.nombre === 'ORO 100') {
                 iconUrl = 'https://cambiosorion.cl/orionapp/icons/ORO100.svg';
@@ -91,47 +90,39 @@ function updateDate() {
 
 async function convertImageToBase64(url) {
     try {
-        const response = await fetch(url, { cache: 'no-store', mode: 'cors' });
+        const cacheBuster = `?t=${new Date().getTime()}`;
+        const response = await fetch(url + cacheBuster, { cache: 'no-store', mode: 'cors' });
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const blob = await response.blob();
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.onloadend = () => resolve(reader.result);
+            reader.onerror = reject;
             reader.readAsDataURL(blob);
         });
     } catch (e) {
-        console.error("Error convirtiendo a Base64", e);
+        console.warn("No se pudo pre-cargar imagen:", url, e);
         return null;
     }
 }
 
 async function downloadStory() {
-    console.log("--- 1. INICIANDO PROCESO DE DESCARGA ---"); // LOG 1
-
     const btn = document.getElementById('btn-download');
     const originalText = btn.innerHTML;
     
     btn.innerHTML = `Generando...`;
     btn.disabled = true;
 
-    // === INSERTAR ESTO ===
-    // PRUEBA DE DIAGNÓSTICO: Intentamos leer la imagen manualmente
-    const debugUrl = 'https://cambiosorion.cl/orionapp/icons/ORO100.svg';
-    console.log("Probando acceso a:", debugUrl);
-    fetch(debugUrl, { mode: 'cors' })
-        .then(res => {
-            console.log(`[DEBUG FETCH] Status: ${res.status}`); // Debería ser 200
-            console.log(`[DEBUG FETCH] Type: ${res.type}`);
-            if (!res.ok) console.error("🚨 EL SERVIDOR RECHAZÓ LA IMAGEN");
-        })
-        .catch(err => console.error("🚨 ERROR DE RED/CORS AL PEDIR LA IMAGEN:", err));
-    // =====================
-
-    // 1. Cargar fondo
+    // 1. PRE-CARGA FONDO (BASE64)
     const bgImgElement = document.getElementById('background-img');
-    let base64Bg = null;
-    if (bgImgElement) {
-        base64Bg = await convertImageToBase64(bgImgElement.src);
-    }
+    const bgPromise = bgImgElement ? convertImageToBase64(bgImgElement.src) : Promise.resolve(null);
+
+    // 2. PRE-CARGA ORO 100 (BASE64) - CRÍTICO PARA QUE APAREZCA
+    const oroUrl = 'https://cambiosorion.cl/orionapp/icons/ORO100.svg';
+    const oroPromise = convertImageToBase64(oroUrl);
+
+    // Esperamos ambas
+    const [base64Bg, base64Oro] = await Promise.all([bgPromise, oroPromise]);
 
     const originalCanvas = document.getElementById('story-canvas');
 
@@ -187,28 +178,18 @@ async function downloadStory() {
                 scrollY: 0,
                 scrollX: 0,
                 onclone: (doc) => {
-                    console.log("--- 2. DENTRO DEL CLON (MOMENTO DE LA FOTO) ---");
+                    // --- AJUSTES FINALES DE PRECISIÓN ---
 
-                    // BUSCAR LA IMAGEN DE ORO
-                    // Buscamos cualquier img que tenga 'ORO' en su ruta
-                    const oroImages = Array.from(doc.querySelectorAll('img')).filter(img => img.src.includes('ORO'));
-                    
-                    if (oroImages.length === 0) {
-                        console.error("🚨 ERROR CRÍTICO: No se encontró ninguna etiqueta <img> con 'ORO' en el clon.");
-                    } else {
-                        oroImages.forEach((img, index) => {
-                            console.log(`✅ IMAGEN ORO ENCONTRADA [${index}]:`);
-                            console.log(`   - Src: ${img.src}`);
-                            console.log(`   - Natural Size: ${img.naturalWidth}x${img.naturalHeight}`); // Si es 0x0, no cargó
-                            console.log(`   - Display Size: ${img.width}x${img.height}`);
-                            console.log(`   - Opacity: ${img.style.opacity}`);
-                            
-                            // TEST: Forzamos un borde rojo para ver si está ahí pero invisible
-                            img.style.border = "5px solid red"; 
+                    // 1. INYECTAR ORO 100 (REEMPLAZO POR BASE64)
+                    if (base64Oro) {
+                        // Buscamos todas las imágenes y reemplazamos la que tenga 'ORO100'
+                        const allImages = doc.querySelectorAll('img');
+                        allImages.forEach(img => {
+                            if (img.src.includes('ORO100')) {
+                                img.src = base64Oro; // AQUÍ OCURRE LA MAGIA
+                            }
                         });
                     }
-
-                    // --- AJUSTES FINALES DE PRECISIÓN ---
 
                     // 1. HEADER (Fondo Sólido corregido)
                     doc.querySelectorAll('.rounded-full.bg-black\\/40').forEach(el => {
