@@ -107,6 +107,35 @@ async function convertImageToBase64(url) {
     }
 }
 
+// Nueva función para convertir SVG a PNG (Rasterización)
+function convertSvgToPng(url) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.crossOrigin = 'Anonymous';
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            // Usamos un tamaño fijo suficiente para que se vea nítido
+            canvas.width = 200; 
+            canvas.height = 200;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, 200, 200);
+            try {
+                const pngData = canvas.toDataURL('image/png');
+                resolve(pngData);
+            } catch (e) {
+                console.warn("No se pudo convertir a PNG, devolviendo null", e);
+                resolve(null);
+            }
+        };
+        img.onerror = () => {
+            console.error("Error cargando imagen para conversión PNG");
+            resolve(null);
+        };
+        // Cache buster para evitar problemas de CORS
+        img.src = url + '?t=' + new Date().getTime();
+    });
+}
+
 async function downloadStory() {
     const btn = document.getElementById('btn-download');
     const originalText = btn.innerHTML;
@@ -118,11 +147,12 @@ async function downloadStory() {
     const bgImgElement = document.getElementById('background-img');
     const bgPromise = bgImgElement ? convertImageToBase64(bgImgElement.src) : Promise.resolve(null);
 
-    // 2. PRE-CARGA ORO 100 (BASE64) - CRÍTICO PARA QUE APAREZCA
+    // 2. PRE-CARGA ORO 100 -> AHORA COMO PNG
+    // CAMBIO: Usamos la nueva función convertSvgToPng en lugar de convertImageToBase64
     const oroUrl = 'https://cambiosorion.cl/orionapp/icons/ORO100.svg';
-    const oroPromise = convertImageToBase64(oroUrl);
+    const oroPromise = convertSvgToPng(oroUrl); 
 
-    // Esperamos ambas
+    // Esperamos ambas (ahora base64Oro será un PNG real, no un SVG)
     const [base64Bg, base64Oro] = await Promise.all([bgPromise, oroPromise]);
 
     const originalCanvas = document.getElementById('story-canvas');
@@ -179,45 +209,16 @@ async function downloadStory() {
                 scrollY: 0,
                 scrollX: 0,
                 onclone: (doc) => {
-                    console.log("%c --- INICIO DEBUG ONCLONE ---", "background: yellow; color: black; font-size: 14px");
 
-                    // 1. IMAGEN ORO 100 (DIAGNÓSTICO COMPLETO)
-                    console.log("1. ¿Tenemos base64Oro disponible?", base64Oro ? "SÍ (Longitud: " + base64Oro.length + ")" : "NO - NULL/UNDEFINED");
-
-                    const oroImages = doc.querySelectorAll('img[src*="ORO"]');
-                    console.log(`2. Imágenes encontradas en el clon con 'ORO' en src: ${oroImages.length}`);
-
-                    if (oroImages.length === 0) {
-                        // DIAGNÓSTICO: Si es 0, intentemos listar TODAS las imágenes para ver cómo se llaman
-                        console.error("🚨 ALERTA: No se encontró la imagen ORO. Listando todas las imágenes del clon:");
-                        doc.querySelectorAll('img').forEach((img, i) => {
-                            console.log(`   Img[${i}] src: ${img.src}`);
-                        });
-                    }
-
+                    // 1. INYECTAR ORO 100 (AHORA ES UN PNG)
                     if (base64Oro) {
-                        oroImages.forEach((img, index) => {
-                            console.log(`   🔸 Procesando imagen ORO [${index}]...`);
-                            console.log(`      - SRC Original: ${img.src}`);
-                            console.log(`      - Clases CSS: ${img.className}`);
-                            
-                            // APLICANDO EL PARCHE
+                        // Buscamos cualquier imagen que tenga 'ORO' en su src
+                        doc.querySelectorAll('img[src*="ORO"]').forEach(img => {
                             img.src = base64Oro;
-                            img.removeAttribute('crossorigin');
-                            
-                            // Forzando dimensiones explícitas
-                            img.width = 96; 
-                            img.height = 96;
-                            img.style.width = '96px';
-                            img.style.height = '96px';
-                            // Forzamos display block por si acaso
-                            img.style.display = 'block'; 
-
-                            console.log(`      - SRC Nuevo (Base64): ${img.src.substring(0, 30)}...`);
-                            console.log(`      - Dimensiones forzadas: ${img.style.width} x ${img.style.height}`);
+                            // Al ser PNG, html2canvas lo dibuja sin problemas
+                            // Solo aseguramos que mantenga su estilo visual
+                            img.style.display = 'block';
                         });
-                    } else {
-                        console.error("🚨 ALERTA: No se ejecutó el reemplazo porque base64Oro está vacío.");
                     }
 
                     // 1. HEADER (Fondo Sólido corregido)
@@ -280,8 +281,6 @@ async function downloadStory() {
                         el.style.position = 'relative';
                         el.style.top = '-8px'; // Mueve solo el texto "Escanea"
                     });
-
-                    console.log("%c --- FIN DEBUG ONCLONE ---", "background: yellow; color: black; font-size: 14px");
                 }
             }).then(canvas => {
                 const fileName = `Orion_Story_${new Date().toISOString().slice(0,10)}.png`;
