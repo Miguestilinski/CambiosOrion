@@ -105,11 +105,26 @@ async function convertImageToBase64(url) {
 }
 
 async function downloadStory() {
+    console.log("--- 1. INICIANDO PROCESO DE DESCARGA ---"); // LOG 1
+
     const btn = document.getElementById('btn-download');
     const originalText = btn.innerHTML;
     
     btn.innerHTML = `Generando...`;
     btn.disabled = true;
+
+    // === INSERTAR ESTO ===
+    // PRUEBA DE DIAGNÓSTICO: Intentamos leer la imagen manualmente
+    const debugUrl = 'https://cambiosorion.cl/orionapp/icons/ORO100.svg';
+    console.log("Probando acceso a:", debugUrl);
+    fetch(debugUrl, { mode: 'cors' })
+        .then(res => {
+            console.log(`[DEBUG FETCH] Status: ${res.status}`); // Debería ser 200
+            console.log(`[DEBUG FETCH] Type: ${res.type}`);
+            if (!res.ok) console.error("🚨 EL SERVIDOR RECHAZÓ LA IMAGEN");
+        })
+        .catch(err => console.error("🚨 ERROR DE RED/CORS AL PEDIR LA IMAGEN:", err));
+    // =====================
 
     // 1. Cargar fondo
     const bgImgElement = document.getElementById('background-img');
@@ -172,6 +187,27 @@ async function downloadStory() {
                 scrollY: 0,
                 scrollX: 0,
                 onclone: (doc) => {
+                    console.log("--- 2. DENTRO DEL CLON (MOMENTO DE LA FOTO) ---");
+
+                    // BUSCAR LA IMAGEN DE ORO
+                    // Buscamos cualquier img que tenga 'ORO' en su ruta
+                    const oroImages = Array.from(doc.querySelectorAll('img')).filter(img => img.src.includes('ORO'));
+                    
+                    if (oroImages.length === 0) {
+                        console.error("🚨 ERROR CRÍTICO: No se encontró ninguna etiqueta <img> con 'ORO' en el clon.");
+                    } else {
+                        oroImages.forEach((img, index) => {
+                            console.log(`✅ IMAGEN ORO ENCONTRADA [${index}]:`);
+                            console.log(`   - Src: ${img.src}`);
+                            console.log(`   - Natural Size: ${img.naturalWidth}x${img.naturalHeight}`); // Si es 0x0, no cargó
+                            console.log(`   - Display Size: ${img.width}x${img.height}`);
+                            console.log(`   - Opacity: ${img.style.opacity}`);
+                            
+                            // TEST: Forzamos un borde rojo para ver si está ahí pero invisible
+                            img.style.border = "5px solid red"; 
+                        });
+                    }
+
                     // --- AJUSTES FINALES DE PRECISIÓN ---
 
                     // 1. HEADER (Fondo Sólido corregido)
