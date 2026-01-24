@@ -88,6 +88,7 @@ function updateDate() {
     if(dateEl) dateEl.innerText = finalDate;
 }
 
+// Convertidor robusto a Base64
 async function convertImageToBase64(url) {
     try {
         const cacheBuster = `?t=${new Date().getTime()}`;
@@ -180,14 +181,16 @@ async function downloadStory() {
                 onclone: (doc) => {
                     // --- AJUSTES FINALES DE PRECISIÓN ---
 
-                    // 1. INYECTAR ORO 100 (REEMPLAZO POR BASE64)
+                    // 1. IMAGEN ORO 100 (Sin Ifs, directo al grano)
                     if (base64Oro) {
-                        // Buscamos todas las imágenes y reemplazamos la que tenga 'ORO100'
-                        const allImages = doc.querySelectorAll('img');
-                        allImages.forEach(img => {
-                            if (img.src.includes('ORO100')) {
-                                img.src = base64Oro; // AQUÍ OCURRE LA MAGIA
-                            }
+                        // Selector CSS: Cualquier imagen cuyo src contenga 'ORO'
+                        doc.querySelectorAll('img[src*="ORO"]').forEach(img => {
+                            img.src = base64Oro;
+                            img.removeAttribute('crossorigin'); // Vital para Base64
+                            
+                            // Forzamos dimensiones para que no salga vacío
+                            img.width = 96; 
+                            img.height = 96;
                         });
                     }
 
