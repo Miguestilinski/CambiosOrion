@@ -43,12 +43,14 @@ function renderStory(currencies) {
         if (TARGET_CURRENCIES.includes(divisa.nombre)) {
             const compraFmt = parseFloat(divisa.compra).toLocaleString('es-CL', { maximumFractionDigits: divisa.compra < 100 ? 2 : 0 });
             const ventaFmt = parseFloat(divisa.venta).toLocaleString('es-CL', { maximumFractionDigits: divisa.venta < 100 ? 2 : 0 });
-            const iconUrl = divisa.icono_circular; 
+            
+            // 1. FIX ICONO ORO 100: Forzamos la ruta correcta si es ORO
+            let iconUrl = divisa.icono_circular;
+            if (divisa.nombre === 'ORO 100') {
+                iconUrl = 'https://cambiosorion.cl/orionapp/icons/ORO%20100.svg';
+            }
 
-            // CAMBIOS VISUALES:
-            // 1. Eliminada la palabra "Divisa".
-            // 2. Precios unificados: Ambos son text-white y text-5xl (ya no el verde gigante).
-            // 3. Labels unificados: Ambos son text-white/70.
+            // Nota: Agregué clases 'story-name', 'story-label' y 'story-price' para manipularlas en el onclone
             html += `
             <div class="glass-card rounded-[2.5rem] p-6 flex items-center justify-between shadow-2xl relative overflow-hidden group">
                 <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -56,18 +58,18 @@ function renderStory(currencies) {
                 <div class="flex items-center gap-6 z-10">
                     <img src="${iconUrl}" class="w-24 h-24 rounded-full border-[5px] border-white/20 bg-white object-cover shadow-lg" crossorigin="anonymous" alt="${divisa.nombre}">
                     <div class="flex flex-col gap-0 justify-center"> 
-                        <h2 class="text-5xl font-black text-white leading-none mt-1">${divisa.nombre}</h2>
+                        <h2 class="text-5xl font-black text-white leading-none mt-1 story-name">${divisa.nombre}</h2>
                     </div>
                 </div>
                 
                 <div class="flex gap-12 text-right z-10 items-center">
                     <div class="flex flex-col items-end gap-0">
-                        <span class="text-xl text-white/70 uppercase font-bold tracking-widest mb-1">Compra</span>
-                        <span class="text-5xl font-bold text-white leading-none">$${compraFmt}</span>
+                        <span class="text-xl text-white/70 uppercase font-bold tracking-widest mb-1 story-label">Compra</span>
+                        <span class="text-5xl font-bold text-white leading-none story-price">$${compraFmt}</span>
                     </div>
                     <div class="flex flex-col items-end gap-0">
-                        <span class="text-xl text-white/70 uppercase font-bold tracking-widest mb-1">Venta</span>
-                        <span class="text-5xl font-bold text-white leading-none">$${ventaFmt}</span>
+                        <span class="text-xl text-white/70 uppercase font-bold tracking-widest mb-1 story-label">Venta</span>
+                        <span class="text-5xl font-bold text-white leading-none story-price">$${ventaFmt}</span>
                     </div>
                 </div>
             </div>
@@ -79,7 +81,6 @@ function renderStory(currencies) {
 
 function updateDate() {
     const now = new Date();
-    // CAMBIO: Eliminadas 'hour' y 'minute'
     const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
     const dateStr = now.toLocaleDateString('es-CL', options);
     const finalDate = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
@@ -118,7 +119,6 @@ async function downloadStory() {
 
     const originalCanvas = document.getElementById('story-canvas');
 
-    // Sandbox
     const sandbox = document.createElement('div');
     sandbox.style.position = 'fixed';
     sandbox.style.top = '0';
@@ -136,7 +136,6 @@ async function downloadStory() {
     clonedCanvas.style.height = '1920px';
     clonedCanvas.removeAttribute('id');
 
-    // Copiar QR manualmente
     const originalQRCs = originalCanvas.querySelectorAll('canvas');
     const clonedQRCs = clonedCanvas.querySelectorAll('canvas');
     originalQRCs.forEach((orig, index) => {
@@ -146,7 +145,6 @@ async function downloadStory() {
         }
     });
 
-    // Inyectar fondo
     if (base64Bg) {
         const clonedImg = clonedCanvas.querySelector('img[alt="Background"]');
         if (clonedImg) clonedImg.src = base64Bg;
@@ -171,22 +169,37 @@ async function downloadStory() {
                 scrollY: 0,
                 scrollX: 0,
                 onclone: (doc) => {
-                    // 1. CORRECCIÓN HEADER
+                    // 1. HEADER: Centrado vertical forzado
                     const headerPill = doc.querySelector('.rounded-full.bg-black\\/40 p');
                     if(headerPill) {
                         headerPill.style.position = 'relative';
-                        headerPill.style.top = '-8px'; 
+                        headerPill.style.top = '-10px'; // Subimos más el header
                     }
 
-                    // NOTA: Eliminada la corrección de precios ya que ahora son idénticos en tamaño y fuente,
-                    // por lo que deberían alinearse naturalmente.
+                    // 2. TEXTOS DE CARTAS: Ajuste fino de verticalidad
+                    // Subimos los nombres de las divisas
+                    doc.querySelectorAll('.story-name').forEach(el => {
+                        el.style.position = 'relative';
+                        el.style.top = '-4px';
+                    });
+                    
+                    // Subimos los precios
+                    doc.querySelectorAll('.story-price').forEach(el => {
+                        el.style.position = 'relative';
+                        el.style.top = '-4px';
+                    });
 
-                    // 2. CORRECCIÓN FOOTER
+                    // Subimos los labels (Compra/Venta)
+                    doc.querySelectorAll('.story-label').forEach(el => {
+                        el.style.position = 'relative';
+                        el.style.top = '-2px';
+                    });
+
+                    // 3. FOOTER
                     const footerItems = doc.querySelectorAll('.text-left span.flex');
                     footerItems.forEach(item => {
                         item.style.display = 'flex';
                         item.style.alignItems = 'center'; 
-                        
                         const svg = item.querySelector('svg');
                         if(svg) {
                             svg.style.position = 'relative';
