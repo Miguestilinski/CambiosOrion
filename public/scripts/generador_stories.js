@@ -45,27 +45,28 @@ function renderStory(currencies) {
             const ventaFmt = parseFloat(divisa.venta).toLocaleString('es-CL', { maximumFractionDigits: divisa.venta < 100 ? 2 : 0 });
             const iconUrl = divisa.icono_circular; 
 
-            // FIX: Eliminado 'leading-none' y 'drop-shadow' para evitar renderizado "raro" del texto
+            // FIX: Tipografía simplificada. Eliminado 'tracking' negativo y 'leading' forzado.
+            // Usamos gap en flex para espaciar, que es más estable en canvas que los márgenes.
             html += `
             <div class="glass-card rounded-[2.5rem] p-6 flex items-center justify-between shadow-2xl relative overflow-hidden group">
                 <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 
                 <div class="flex items-center gap-6 z-10">
                     <img src="${iconUrl}" class="w-24 h-24 rounded-full border-[5px] border-white/20 bg-white object-cover shadow-lg" crossorigin="anonymous" alt="${divisa.nombre}">
-                    <div class="flex flex-col justify-center h-full">
-                        <span class="text-2xl text-blue-200 font-bold uppercase tracking-wider mb-1">Divisa</span>
-                        <h2 class="text-5xl font-black text-white tracking-tight">${divisa.nombre}</h2>
+                    <div class="flex flex-col justify-center h-full gap-0">
+                        <span class="text-2xl text-blue-200 font-bold uppercase tracking-wider">Divisa</span>
+                        <h2 class="text-5xl font-black text-white">${divisa.nombre}</h2>
                     </div>
                 </div>
                 
-                <div class="flex gap-12 text-right z-10">
-                    <div class="flex flex-col items-end justify-center">
-                        <span class="text-xl text-white/70 uppercase font-bold mb-2 tracking-widest">Compra</span>
-                        <span class="text-5xl font-bold text-white tracking-tighter">$${compraFmt}</span>
+                <div class="flex gap-14 text-right z-10">
+                    <div class="flex flex-col items-end justify-center gap-0">
+                        <span class="text-xl text-white/70 uppercase font-bold tracking-widest mb-1">Compra</span>
+                        <span class="text-5xl font-bold text-white">$${compraFmt}</span>
                     </div>
-                    <div class="flex flex-col items-end justify-center">
-                        <span class="text-xl text-green-400 uppercase font-bold mb-2 tracking-widest">Venta</span>
-                        <span class="text-6xl font-black text-green-400 tracking-tighter">$${ventaFmt}</span>
+                    <div class="flex flex-col items-end justify-center gap-0">
+                        <span class="text-xl text-green-400 uppercase font-bold tracking-widest mb-1">Venta</span>
+                        <span class="text-6xl font-black text-green-400">$${ventaFmt}</span>
                     </div>
                 </div>
             </div>
@@ -159,13 +160,15 @@ async function downloadStory() {
                 allowTaint: true,
                 backgroundColor: '#000000',
                 logging: false,
-                letterRendering: 1, // MEJORA: Ayuda con el kerning del texto
+                letterRendering: 1, 
                 width: 1080,
                 height: 1920,
                 windowWidth: 1080,
                 windowHeight: 1920,
                 scrollY: 0,
-                scrollX: 0
+                scrollX: 0,
+                x: 0, 
+                y: 0 // Asegura coordenada exacta
             }).then(canvas => {
                 const fileName = `Orion_Story_${new Date().toISOString().slice(0,10)}.png`;
                 const link = document.createElement('a');
