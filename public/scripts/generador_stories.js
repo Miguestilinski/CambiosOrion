@@ -45,26 +45,27 @@ function renderStory(currencies) {
             const ventaFmt = parseFloat(divisa.venta).toLocaleString('es-CL', { maximumFractionDigits: divisa.venta < 100 ? 2 : 0 });
             const iconUrl = divisa.icono_circular; 
 
+            // FIX ALINEACIÓN: Agregado 'leading-none' a todos los textos grandes para eliminar espacios verticales extra
             html += `
             <div class="glass-card rounded-[2.5rem] p-6 flex items-center justify-between shadow-2xl relative overflow-hidden group">
                 <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 
                 <div class="flex items-center gap-6 z-10">
                     <img src="${iconUrl}" class="w-24 h-24 rounded-full border-[5px] border-white/20 bg-white object-cover shadow-lg" crossorigin="anonymous" alt="${divisa.nombre}">
-                    <div class="flex flex-col">
-                        <span class="text-2xl text-blue-200 font-bold uppercase tracking-wider mb-0.5">Divisa</span>
-                        <h2 class="text-5xl font-black text-white tracking-tight drop-shadow-md">${divisa.nombre}</h2>
+                    <div class="flex flex-col justify-center h-full">
+                        <span class="text-2xl text-blue-200 font-bold uppercase tracking-wider mb-1 leading-none">Divisa</span>
+                        <h2 class="text-5xl font-black text-white tracking-tight drop-shadow-md leading-none pt-1">${divisa.nombre}</h2>
                     </div>
                 </div>
                 
                 <div class="flex gap-12 text-right z-10">
-                    <div class="flex flex-col items-end">
-                        <span class="text-xl text-white/70 uppercase font-bold mb-1 tracking-widest">Compra</span>
-                        <span class="text-5xl font-bold text-white tracking-tighter">$${compraFmt}</span>
+                    <div class="flex flex-col items-end justify-center">
+                        <span class="text-xl text-white/70 uppercase font-bold mb-2 tracking-widest leading-none">Compra</span>
+                        <span class="text-5xl font-bold text-white tracking-tighter leading-none pb-1">$${compraFmt}</span>
                     </div>
-                    <div class="flex flex-col items-end">
-                        <span class="text-xl text-green-400 uppercase font-bold mb-1 tracking-widest">Venta</span>
-                        <span class="text-6xl font-black text-green-400 drop-shadow-lg tracking-tighter">$${ventaFmt}</span>
+                    <div class="flex flex-col items-end justify-center">
+                        <span class="text-xl text-green-400 uppercase font-bold mb-2 tracking-widest leading-none">Venta</span>
+                        <span class="text-6xl font-black text-green-400 drop-shadow-lg tracking-tighter leading-none pb-1">$${ventaFmt}</span>
                     </div>
                 </div>
             </div>
@@ -84,10 +85,8 @@ function updateDate() {
     if(dateEl) dateEl.innerText = finalDate;
 }
 
-// Helper para convertir imagen a Base64 con manejo de CORS robusto
 async function convertImageToBase64(url) {
     try {
-        // 'no-store' ayuda a evitar que el navegador use una versión en caché sin headers CORS
         const response = await fetch(url, { cache: 'no-store', mode: 'cors' });
         const blob = await response.blob();
         return new Promise((resolve) => {
@@ -117,7 +116,7 @@ async function downloadStory() {
 
     const originalCanvas = document.getElementById('story-canvas');
 
-    // 2. Crear Sandbox con overflow hidden para evitar franjas blancas
+    // 2. Crear Sandbox con fondo negro explícito
     const sandbox = document.createElement('div');
     sandbox.style.position = 'fixed';
     sandbox.style.top = '0';
@@ -125,7 +124,8 @@ async function downloadStory() {
     sandbox.style.width = '1080px';
     sandbox.style.height = '1920px';
     sandbox.style.zIndex = '-1';
-    sandbox.style.overflow = 'hidden'; // Vital para cortar excesos
+    sandbox.style.overflow = 'hidden'; 
+    sandbox.style.backgroundColor = '#000000'; // Evita franjas blancas
     
     // 3. Clonar y limpiar estilos
     const clonedCanvas = originalCanvas.cloneNode(true);
@@ -135,8 +135,7 @@ async function downloadStory() {
     clonedCanvas.style.height = '1920px';
     clonedCanvas.removeAttribute('id');
 
-    // 4. Copiar el contenido del CANVAS del QR manualmente
-    // cloneNode no copia el dibujo interno de un <canvas>, hay que redibujarlo
+    // 4. Copiar Canvas (QR)
     const originalQRCs = originalCanvas.querySelectorAll('canvas');
     const clonedQRCs = clonedCanvas.querySelectorAll('canvas');
     originalQRCs.forEach((orig, index) => {
@@ -146,7 +145,7 @@ async function downloadStory() {
         }
     });
 
-    // 5. Inyectar Base64 en el fondo
+    // 5. Inyectar Base64
     if (base64Bg) {
         const clonedImg = clonedCanvas.querySelector('img[alt="Background"]');
         if (clonedImg) {
@@ -157,35 +156,37 @@ async function downloadStory() {
     sandbox.appendChild(clonedCanvas);
     document.body.appendChild(sandbox);
 
-    // Esperar a que se renderice el DOM clonado
-    setTimeout(() => {
-        html2canvas(clonedCanvas, {
-            scale: 1, 
-            useCORS: true, 
-            allowTaint: true,
-            backgroundColor: null,
-            logging: false,
-            width: 1080,
-            height: 1920,
-            windowWidth: 1080,
-            windowHeight: 1920,
-            scrollY: 0,  // Fuerza a ignorar el scroll vertical de la ventana
-            scrollX: 0
-        }).then(canvas => {
-            const fileName = `Orion_Story_${new Date().toISOString().slice(0,10)}.png`;
-            const link = document.createElement('a');
-            link.download = fileName;
-            link.href = canvas.toDataURL('image/png', 1.0);
-            link.click();
-            
-            document.body.removeChild(sandbox);
-            btn.innerHTML = originalText;
-            btn.disabled = false;
-        }).catch(err => {
-            console.error("Error:", err);
-            if (document.body.contains(sandbox)) document.body.removeChild(sandbox);
-            btn.innerHTML = 'Error';
-            btn.disabled = false;
-        });
-    }, 1000);
+    // FIX ALINEACIÓN: Esperar a que las fuentes estén listas antes de capturar
+    document.fonts.ready.then(() => {
+        setTimeout(() => {
+            html2canvas(clonedCanvas, {
+                scale: 1, 
+                useCORS: true, 
+                allowTaint: true,
+                backgroundColor: '#000000', // Fondo negro en la captura
+                logging: false,
+                width: 1080,
+                height: 1920,
+                windowWidth: 1080,
+                windowHeight: 1920,
+                scrollY: 0,
+                scrollX: 0
+            }).then(canvas => {
+                const fileName = `Orion_Story_${new Date().toISOString().slice(0,10)}.png`;
+                const link = document.createElement('a');
+                link.download = fileName;
+                link.href = canvas.toDataURL('image/png', 1.0);
+                link.click();
+                
+                document.body.removeChild(sandbox);
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }).catch(err => {
+                console.error("Error:", err);
+                if (document.body.contains(sandbox)) document.body.removeChild(sandbox);
+                btn.innerHTML = 'Error';
+                btn.disabled = false;
+            });
+        }, 1000);
+    });
 }

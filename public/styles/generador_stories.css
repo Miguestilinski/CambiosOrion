@@ -4,14 +4,12 @@
 #story-canvas {
     width: 1080px;
     height: 1920px;
-    /* IMPORTANTE: Quitamos el background-image de aquí.
-       Ahora se maneja con una etiqueta <img> real en el HTML para evitar problemas de descarga. */
     position: relative;
     overflow: hidden;
     flex-shrink: 0;
     box-shadow: 0 20px 50px rgba(0,0,0,0.5);
     color: white;
-    /* Fondo negro base por si la imagen tarda en cargar */
+    /* Fondo negro base por seguridad */
     background-color: #000;
 }
 
@@ -27,11 +25,14 @@
     margin-top: 20px;
 }
 
-/* Estilos Glassmorphism */
+/* Estilos Glassmorphism "A prueba de balas" 
+   Aumentamos la opacidad (0.35) porque html2canvas NO puede renderizar el blur.
+   Así se ve bien tanto en la web como en la imagen descargada.
+*/
 .glass-card {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.35); 
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
 }
