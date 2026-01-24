@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function loadBoard() {
         try {
-            const res = await fetch('https://cambiosorion.cl/data/config-pizarra.php?action=get_board');
+            const res = await fetch('https://cambiosorion.cl/data/editor-pizarras.php?action=get_board');
             const data = await res.json();
             
             // Renderizamos usando el ID numérico de la tabla 'divisas' para identificar el elemento
@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const destacadas = Array.from(listDestacadas.querySelectorAll('.currency-card')).map(el => el.dataset.id);
 
         try {
-            await fetch('https://cambiosorion.cl/data/config-pizarra.php', {
+            await fetch('https://cambiosorion.cl/data/editor-pizarras.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         listCandidates.innerHTML = '<div class="text-center py-4 text-slate-400"><div class="animate-spin h-6 w-6 border-2 border-indigo-500 rounded-full border-t-transparent mx-auto"></div></div>';
         
         try {
-            const res = await fetch('https://cambiosorion.cl/data/config-pizarra.php?action=get_candidates');
+            const res = await fetch('https://cambiosorion.cl/data/editor-pizarras.php?action=get_candidates');
             const candidates = await res.json();
             renderCandidates(candidates);
         } catch (err) {
@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function addCurrency(codigoIso) {
         try {
-            const res = await fetch('https://cambiosorion.cl/data/config-pizarra.php', {
+            const res = await fetch('https://cambiosorion.cl/data/editor-pizarras.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ action: 'add', codigo: codigoIso })
@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!deleteTargetId) return;
         btnConfirmDelete.disabled = true;
         try {
-            await fetch('https://cambiosorion.cl/data/config-pizarra.php', {
+            await fetch('https://cambiosorion.cl/data/editor-pizarras.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ action: 'delete', id: deleteTargetId })
