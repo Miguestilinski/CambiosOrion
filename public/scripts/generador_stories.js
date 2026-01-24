@@ -179,19 +179,45 @@ async function downloadStory() {
                 scrollY: 0,
                 scrollX: 0,
                 onclone: (doc) => {
-                    // --- AJUSTES FINALES DE PRECISIÓN ---
+                    console.log("%c --- INICIO DEBUG ONCLONE ---", "background: yellow; color: black; font-size: 14px");
 
-                    // 1. IMAGEN ORO 100 (Sin Ifs, directo al grano)
+                    // 1. IMAGEN ORO 100 (DIAGNÓSTICO COMPLETO)
+                    console.log("1. ¿Tenemos base64Oro disponible?", base64Oro ? "SÍ (Longitud: " + base64Oro.length + ")" : "NO - NULL/UNDEFINED");
+
+                    const oroImages = doc.querySelectorAll('img[src*="ORO"]');
+                    console.log(`2. Imágenes encontradas en el clon con 'ORO' en src: ${oroImages.length}`);
+
+                    if (oroImages.length === 0) {
+                        // DIAGNÓSTICO: Si es 0, intentemos listar TODAS las imágenes para ver cómo se llaman
+                        console.error("🚨 ALERTA: No se encontró la imagen ORO. Listando todas las imágenes del clon:");
+                        doc.querySelectorAll('img').forEach((img, i) => {
+                            console.log(`   Img[${i}] src: ${img.src}`);
+                        });
+                    }
+
                     if (base64Oro) {
-                        // Selector CSS: Cualquier imagen cuyo src contenga 'ORO'
-                        doc.querySelectorAll('img[src*="ORO"]').forEach(img => {
-                            img.src = base64Oro;
-                            img.removeAttribute('crossorigin'); // Vital para Base64
+                        oroImages.forEach((img, index) => {
+                            console.log(`   🔸 Procesando imagen ORO [${index}]...`);
+                            console.log(`      - SRC Original: ${img.src}`);
+                            console.log(`      - Clases CSS: ${img.className}`);
                             
-                            // Forzamos dimensiones para que no salga vacío
+                            // APLICANDO EL PARCHE
+                            img.src = base64Oro;
+                            img.removeAttribute('crossorigin');
+                            
+                            // Forzando dimensiones explícitas
                             img.width = 96; 
                             img.height = 96;
+                            img.style.width = '96px';
+                            img.style.height = '96px';
+                            // Forzamos display block por si acaso
+                            img.style.display = 'block'; 
+
+                            console.log(`      - SRC Nuevo (Base64): ${img.src.substring(0, 30)}...`);
+                            console.log(`      - Dimensiones forzadas: ${img.style.width} x ${img.style.height}`);
                         });
+                    } else {
+                        console.error("🚨 ALERTA: No se ejecutó el reemplazo porque base64Oro está vacío.");
                     }
 
                     // 1. HEADER (Fondo Sólido corregido)
@@ -254,6 +280,8 @@ async function downloadStory() {
                         el.style.position = 'relative';
                         el.style.top = '-8px'; // Mueve solo el texto "Escanea"
                     });
+
+                    console.log("%c --- FIN DEBUG ONCLONE ---", "background: yellow; color: black; font-size: 14px");
                 }
             }).then(canvas => {
                 const fileName = `Orion_Story_${new Date().toISOString().slice(0,10)}.png`;
