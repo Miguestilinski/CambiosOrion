@@ -50,6 +50,20 @@ function renderStory(currencies) {
                 iconUrl = 'https://cambiosorion.cl/orionapp/icons/ORO100.svg';
             }
 
+            // === NUEVO: AJUSTE DE ESPACIO PARA ORO 100 ===
+            // Definimos variables por defecto
+            let nameSizeClass = 'text-5xl';   // Tamaño normal nombre
+            let priceSizeClass = 'text-5xl';  // Tamaño normal precio
+            let gapClass = 'gap-12';          // Separación normal entre compra y venta
+
+            // Si es ORO 100 (números gigantes), achicamos todo un poco para que entre bien
+            if (divisa.nombre === 'ORO 100') {
+                nameSizeClass = 'text-4xl';  // Nombre un poco más pequeño
+                priceSizeClass = 'text-4xl'; // Precios más pequeños para que quepan los millones
+                gapClass = 'gap-8';          // Reducimos el hueco entre precios para ganar espacio lateral
+            }
+            // =============================================
+
             html += `
             <div class="glass-card rounded-[2.5rem] p-6 flex items-center justify-between shadow-2xl relative overflow-hidden group">
                 <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -57,18 +71,18 @@ function renderStory(currencies) {
                 <div class="flex items-center gap-6 z-10">
                     <img src="${iconUrl}" class="w-24 h-24 rounded-full border-[5px] border-white/20 bg-white object-cover shadow-lg" crossorigin="anonymous" alt="${divisa.nombre}">
                     <div class="flex flex-col gap-0 justify-center"> 
-                        <h2 class="text-5xl font-black text-white leading-none mt-1 story-name">${divisa.nombre}</h2>
+                        <h2 class="${nameSizeClass} font-black text-white leading-none mt-1 story-name">${divisa.nombre}</h2>
                     </div>
                 </div>
                 
-                <div class="flex gap-12 text-right z-10 items-center">
+                <div class="flex ${gapClass} text-right z-10 items-center">
                     <div class="flex flex-col items-end gap-0">
                         <span class="text-xl text-white/70 uppercase font-bold tracking-widest mb-1 story-label">Compra</span>
-                        <span class="text-5xl font-bold text-white leading-none story-price">$${compraFmt}</span>
+                        <span class="${priceSizeClass} font-bold text-white leading-none story-price">$${compraFmt}</span>
                     </div>
                     <div class="flex flex-col items-end gap-0">
                         <span class="text-xl text-white/70 uppercase font-bold tracking-widest mb-1 story-label">Venta</span>
-                        <span class="text-5xl font-bold text-white leading-none story-price">$${ventaFmt}</span>
+                        <span class="${priceSizeClass} font-bold text-white leading-none story-price">$${ventaFmt}</span>
                     </div>
                 </div>
             </div>
