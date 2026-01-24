@@ -44,22 +44,14 @@ function renderStory(currencies) {
             const compraFmt = parseFloat(divisa.compra).toLocaleString('es-CL', { maximumFractionDigits: divisa.compra < 100 ? 2 : 0 });
             const ventaFmt = parseFloat(divisa.venta).toLocaleString('es-CL', { maximumFractionDigits: divisa.venta < 100 ? 2 : 0 });
             
-            // 1. FIX ORO 100: Codificamos explícitamente el espacio como %20
-            // y añadimos un ID único para encontrarlo sin fallos
-            let iconUrl = divisa.icono_circular;
-            let imgIdAttr = '';
-            
-            if (divisa.nombre === 'ORO 100') {
-                iconUrl = 'https://cambiosorion.cl/orionapp/icons/ORO%20100.svg';
-                imgIdAttr = 'id="special-icon-oro"';
-            }
+            const iconUrl = divisa.icono_circular;
 
             html += `
             <div class="glass-card rounded-[2.5rem] p-6 flex items-center justify-between shadow-2xl relative overflow-hidden group">
                 <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 
                 <div class="flex items-center gap-6 z-10">
-                    <img ${imgIdAttr} src="${iconUrl}" class="w-24 h-24 rounded-full border-[5px] border-white/20 bg-white object-cover shadow-lg" crossorigin="anonymous" alt="${divisa.nombre}">
+                    <img src="${iconUrl}" class="w-24 h-24 rounded-full border-[5px] border-white/20 bg-white object-cover shadow-lg" crossorigin="anonymous" alt="${divisa.nombre}">
                     <div class="flex flex-col gap-0 justify-center"> 
                         <h2 class="text-5xl font-black text-white leading-none mt-1 story-name">${divisa.nombre}</h2>
                     </div>
@@ -121,10 +113,6 @@ async function downloadStory() {
         base64Bg = await convertImageToBase64(bgImgElement.src);
     }
 
-    // 2. Cargar ORO 100 explícitamente (Pre-carga crítica)
-    const oroUrl = 'https://cambiosorion.cl/orionapp/icons/ORO%20100.svg';
-    const base64Oro = await convertImageToBase64(oroUrl);
-
     const originalCanvas = document.getElementById('story-canvas');
 
     const sandbox = document.createElement('div');
@@ -181,36 +169,31 @@ async function downloadStory() {
                 onclone: (doc) => {
                     // --- AJUSTES FINALES DE PRECISIÓN ---
 
-                    // 1. INYECTAR ORO 100
-                    if (base64Oro) {
-                        // Buscamos por ID específico (Plan A)
-                        let oroImg = doc.getElementById('special-icon-oro');
-                        // Si no lo encuentra, buscamos por src (Plan B)
-                        if (!oroImg) {
-                            const allImages = doc.querySelectorAll('.glass-card img');
-                            allImages.forEach(img => {
-                                if (img.src.indexOf('ORO') !== -1) oroImg = img;
-                            });
-                        }
-                        if (oroImg) oroImg.src = base64Oro;
-                    }
-
-                    // 2. HEADER "Cotización Oficial"
+                    // 1. HEADER "Cotización Oficial"
+                    // Corrección de brillo (fondo sólido)
                     const headerPillDiv = doc.querySelector('.rounded-full.bg-black\\/40');
                     if (headerPillDiv) {
-                        // FIX BRILLO: Quitamos transparencia, ponemos fondo sólido gris oscuro
-                        // Así el texto blanco resalta al 100%
                         headerPillDiv.style.backgroundColor = '#2d2d2d'; 
                         headerPillDiv.style.border = '1px solid rgba(255,255,255,0.3)';
                     }
 
+                    // Corrección de posición (Igualdad de condiciones: Block + Relative + Top)
                     const labelCot = doc.getElementById('label-cotizacion');
                     if(labelCot) {
-                        // IGUALDAD DE CONDICIONES:
-                        labelCot.style.display = 'block'; // Aseguramos que sea bloque
+                        labelCot.style.display = 'block'; // CRÍTICO: Convertir a bloque para que acepte 'top'
                         labelCot.style.position = 'relative';
-                        labelCot.style.top = '-10px'; // Subimos 10px
+                        labelCot.style.top = '-10px'; // Ajuste vertical
                         labelCot.style.color = '#ffffff';
+                        labelCot.style.zIndex = '999';
+                    }
+
+                    // 2. LABEL IMPORTANTE
+                    // Corrección de posición (Igualdad de condiciones: Inline-Block + Relative + Top)
+                    const labelImp = doc.getElementById('label-importante');
+                    if(labelImp) {
+                        labelImp.style.display = 'inline-block'; // CRÍTICO: Span necesita esto para moverse
+                        labelImp.style.position = 'relative';
+                        labelImp.style.top = '-5px'; // Ajuste vertical
                     }
 
                     // 3. Fecha
@@ -233,15 +216,6 @@ async function downloadStory() {
                         el.style.position = 'relative';
                         el.style.top = '-10px';
                     });
-
-                    // 5. LABEL IMPORTANTE
-                    const labelImp = doc.getElementById('label-importante');
-                    if(labelImp) {
-                        // IGUALDAD DE CONDICIONES: Convertimos el span en bloque
-                        labelImp.style.display = 'inline-block'; 
-                        labelImp.style.position = 'relative';
-                        labelImp.style.top = '-5px'; // Subimos 5px
-                    }
                     
                     // Texto legal
                     const legalText = doc.querySelector('.glass-card.mb-8 p:last-child');
