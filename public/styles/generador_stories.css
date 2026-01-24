@@ -2,7 +2,7 @@
 #story-canvas {
     width: 1080px;
     height: 1920px;
-    background-image: rgba(0, 0, 0, 0.45) url('https://cambiosorion.cl/orionapp/assets/FondoOrion.jpg');
+    background-image: url('https://cambiosorion.cl/orionapp/assets/FondoOrion.jpg');
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
