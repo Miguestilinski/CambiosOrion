@@ -2,20 +2,18 @@
 
 const TARGET_CURRENCIES = ['USD', 'EUR', 'BRL', 'ARS', 'PEN']; 
 
-// Inicializar
 document.addEventListener("DOMContentLoaded", () => {
     generateQR();
     connectStream();
 });
 
 function generateQR() {
-    // Limpiar por si acaso
     const container = document.getElementById("qrcode");
     if(container) {
         container.innerHTML = "";
         new QRCode(container, {
             text: "https://cambiosorion.cl/linktree",
-            width: 110, // Tamaño ajustado para diseño
+            width: 110,
             height: 110,
             colorDark : "#000000",
             colorLight : "#ffffff",
@@ -90,12 +88,12 @@ function downloadStory() {
     const btn = document.getElementById('btn-download');
     const originalText = btn.innerHTML;
     
-    btn.innerHTML = `Generando...`;
+    btn.innerHTML = `Generando (Espere)...`;
     btn.disabled = true;
 
     const originalCanvas = document.getElementById('story-canvas');
 
-    // Crear Sandbox invisible
+    // Crear Sandbox
     const sandbox = document.createElement('div');
     sandbox.style.position = 'fixed';
     sandbox.style.top = '0';
@@ -113,10 +111,11 @@ function downloadStory() {
     sandbox.appendChild(clonedCanvas);
     document.body.appendChild(sandbox);
 
+    // Aumentamos el tiempo de espera a 1 segundo para asegurar que la imagen de fondo cargue en el clon
     setTimeout(() => {
         html2canvas(clonedCanvas, {
             scale: 1, 
-            useCORS: true, 
+            useCORS: true, // VITAL
             allowTaint: true,
             backgroundColor: null,
             logging: false,
@@ -140,5 +139,5 @@ function downloadStory() {
             btn.innerHTML = 'Error';
             btn.disabled = false;
         });
-    }, 800);
+    }, 1000); // Espera 1 segundo
 }
