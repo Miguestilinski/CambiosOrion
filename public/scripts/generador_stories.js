@@ -184,7 +184,7 @@ async function downloadStory() {
                     doc.querySelectorAll('#label-cotizacion').forEach(el => {
                         el.style.display = 'block';
                         el.style.position = 'relative';
-                        el.style.top = '-10px';
+                        el.style.top = '-12px';
                         el.style.color = '#ffffff';
                         el.style.zIndex = '999';
                     });
@@ -193,7 +193,7 @@ async function downloadStory() {
                     doc.querySelectorAll('#label-importante').forEach(el => {
                         el.style.display = 'inline-block';
                         el.style.position = 'relative';
-                        el.style.top = '-5px';
+                        el.style.top = '-10px';
                     });
 
                     // 4. FECHA
@@ -231,7 +231,7 @@ async function downloadStory() {
                     // 8. SCANNER TEXT (Seleccionamos el <p> hermano del QR)
                     doc.querySelectorAll('#qrcode + p').forEach(el => {
                         el.style.position = 'relative';
-                        el.style.top = '-10px';
+                        el.style.top = '-8px';
                     });
                 }
             }).then(canvas => {
