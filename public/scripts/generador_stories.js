@@ -1,6 +1,6 @@
 // /orionapp/public/scripts/generador_stories.js
 
-const TARGET_CURRENCIES = ['USD', 'EUR', 'BRL', 'ARS', 'PEN']; 
+const TARGET_CURRENCIES = ['USD', 'EUR', 'BRL', 'ARS', 'PEN', 'ORO 100']; 
 
 document.addEventListener("DOMContentLoaded", () => {
     generateQR();
