@@ -44,7 +44,12 @@ function renderStory(currencies) {
             const compraFmt = parseFloat(divisa.compra).toLocaleString('es-CL', { maximumFractionDigits: divisa.compra < 100 ? 2 : 0 });
             const ventaFmt = parseFloat(divisa.venta).toLocaleString('es-CL', { maximumFractionDigits: divisa.venta < 100 ? 2 : 0 });
             
-            const iconUrl = divisa.icono_circular;
+            // LÓGICA SIMPLIFICADA PARA ORO 100
+            // Usamos el nuevo nombre de archivo sin espacios
+            let iconUrl = divisa.icono_circular;
+            if (divisa.nombre === 'ORO 100') {
+                iconUrl = 'https://cambiosorion.cl/orionapp/icons/ORO100.svg';
+            }
 
             html += `
             <div class="glass-card rounded-[2.5rem] p-6 flex items-center justify-between shadow-2xl relative overflow-hidden group">
@@ -169,41 +174,35 @@ async function downloadStory() {
                 onclone: (doc) => {
                     // --- AJUSTES FINALES DE PRECISIÓN ---
 
-                    // 1. HEADER "Cotización Oficial"
-                    // Corrección de brillo (fondo sólido)
-                    const headerPillDiv = doc.querySelector('.rounded-full.bg-black\\/40');
-                    if (headerPillDiv) {
-                        headerPillDiv.style.backgroundColor = '#2d2d2d'; 
-                        headerPillDiv.style.border = '1px solid rgba(255,255,255,0.3)';
-                    }
+                    // 1. HEADER (Fondo Sólido)
+                    doc.querySelectorAll('.rounded-full.bg-black\\/40').forEach(el => {
+                        el.style.backgroundColor = '#2d2d2d'; 
+                        el.style.border = '1px solid rgba(255,255,255,0.3)';
+                    });
 
-                    // Corrección de posición (Igualdad de condiciones: Block + Relative + Top)
-                    const labelCot = doc.getElementById('label-cotizacion');
-                    if(labelCot) {
-                        labelCot.style.display = 'block'; // CRÍTICO: Convertir a bloque para que acepte 'top'
-                        labelCot.style.position = 'relative';
-                        labelCot.style.top = '-10px'; // Ajuste vertical
-                        labelCot.style.color = '#ffffff';
-                        labelCot.style.zIndex = '999';
-                    }
+                    // 2. HEADER TEXT (Cotización Oficial)
+                    doc.querySelectorAll('#label-cotizacion').forEach(el => {
+                        el.style.display = 'block';
+                        el.style.position = 'relative';
+                        el.style.top = '-10px';
+                        el.style.color = '#ffffff';
+                        el.style.zIndex = '999';
+                    });
 
-                    // 2. LABEL IMPORTANTE
-                    // Corrección de posición (Igualdad de condiciones: Inline-Block + Relative + Top)
-                    const labelImp = doc.getElementById('label-importante');
-                    if(labelImp) {
-                        labelImp.style.display = 'inline-block'; // CRÍTICO: Span necesita esto para moverse
-                        labelImp.style.position = 'relative';
-                        labelImp.style.top = '-5px'; // Ajuste vertical
-                    }
+                    // 3. LABEL IMPORTANTE
+                    doc.querySelectorAll('#label-importante').forEach(el => {
+                        el.style.display = 'inline-block';
+                        el.style.position = 'relative';
+                        el.style.top = '-5px';
+                    });
 
-                    // 3. Fecha
-                    const dateEl = doc.getElementById('fecha-story');
-                    if(dateEl) {
-                        dateEl.style.position = 'relative';
-                        dateEl.style.top = '-14px';
-                    }
+                    // 4. FECHA
+                    doc.querySelectorAll('#fecha-story').forEach(el => {
+                        el.style.position = 'relative';
+                        el.style.top = '-14px';
+                    });
 
-                    // 4. Textos de las Cartas
+                    // 5. Textos de las Cartas
                     doc.querySelectorAll('.story-name').forEach(el => {
                         el.style.position = 'relative';
                         el.style.top = '-14px';
@@ -217,25 +216,23 @@ async function downloadStory() {
                         el.style.top = '-10px';
                     });
                     
-                    // Texto legal
-                    const legalText = doc.querySelector('.glass-card.mb-8 p:last-child');
-                    if(legalText) {
-                        legalText.style.position = 'relative';
-                        legalText.style.top = '-10px';
-                    }
+                    // 6. TEXTO LEGAL
+                    doc.querySelectorAll('.glass-card.mb-8 p:last-child').forEach(el => {
+                        el.style.position = 'relative';
+                        el.style.top = '-10px';
+                    });
 
-                    // 6. Footer Dirección y Web (SOLO TEXTOS)
+                    // 7. Footer Dirección y Web (SOLO TEXTOS)
                     doc.querySelectorAll('.footer-text').forEach(el => {
                         el.style.position = 'relative';
                         el.style.top = '-10px';
                     });
 
-                    // 7. Footer "ESCANEA"
-                    const scanText = doc.querySelector('#qrcode').nextElementSibling;
-                    if(scanText) {
-                        scanText.style.position = 'relative';
-                        scanText.style.top = '-10px';
-                    }
+                    // 8. SCANNER TEXT (Seleccionamos el <p> hermano del QR)
+                    doc.querySelectorAll('#qrcode + p').forEach(el => {
+                        el.style.position = 'relative';
+                        el.style.top = '-10px';
+                    });
                 }
             }).then(canvas => {
                 const fileName = `Orion_Story_${new Date().toISOString().slice(0,10)}.png`;
