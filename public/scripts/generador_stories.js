@@ -84,10 +84,11 @@ function updateDate() {
     if(dateEl) dateEl.innerText = finalDate;
 }
 
-// Helper para convertir imagen a Base64
+// Helper para convertir imagen a Base64 con manejo de CORS robusto
 async function convertImageToBase64(url) {
     try {
-        const response = await fetch(url);
+        // 'no-store' ayuda a evitar que el navegador use una versión en caché sin headers CORS
+        const response = await fetch(url, { cache: 'no-store', mode: 'cors' });
         const blob = await response.blob();
         return new Promise((resolve) => {
             const reader = new FileReader();
@@ -107,8 +108,7 @@ async function downloadStory() {
     btn.innerHTML = `Generando...`;
     btn.disabled = true;
 
-    // 1. Convertir la imagen de fondo a Base64 ANTES de clonar
-    // Esto asegura que la imagen exista como datos puros, evitando errores de red en la captura
+    // 1. Preparar imagen de fondo
     const bgImgElement = document.getElementById('background-img');
     let base64Bg = null;
     if (bgImgElement) {
@@ -117,7 +117,7 @@ async function downloadStory() {
 
     const originalCanvas = document.getElementById('story-canvas');
 
-    // 2. Crear Sandbox invisible
+    // 2. Crear Sandbox con overflow hidden para evitar franjas blancas
     const sandbox = document.createElement('div');
     sandbox.style.position = 'fixed';
     sandbox.style.top = '0';
@@ -125,36 +125,52 @@ async function downloadStory() {
     sandbox.style.width = '1080px';
     sandbox.style.height = '1920px';
     sandbox.style.zIndex = '-1';
+    sandbox.style.overflow = 'hidden'; // Vital para cortar excesos
     
-    // 3. Clonar
+    // 3. Clonar y limpiar estilos
     const clonedCanvas = originalCanvas.cloneNode(true);
     clonedCanvas.style.transform = 'none';
     clonedCanvas.style.margin = '0';
+    clonedCanvas.style.width = '1080px';
+    clonedCanvas.style.height = '1920px';
     clonedCanvas.removeAttribute('id');
 
-    // 4. INYECTAR EL BASE64 EN EL CLON
+    // 4. Copiar el contenido del CANVAS del QR manualmente
+    // cloneNode no copia el dibujo interno de un <canvas>, hay que redibujarlo
+    const originalQRCs = originalCanvas.querySelectorAll('canvas');
+    const clonedQRCs = clonedCanvas.querySelectorAll('canvas');
+    originalQRCs.forEach((orig, index) => {
+        if (clonedQRCs[index]) {
+            const destCtx = clonedQRCs[index].getContext('2d');
+            destCtx.drawImage(orig, 0, 0);
+        }
+    });
+
+    // 5. Inyectar Base64 en el fondo
     if (base64Bg) {
         const clonedImg = clonedCanvas.querySelector('img[alt="Background"]');
         if (clonedImg) {
-            clonedImg.src = base64Bg; // ¡Aquí ocurre la magia!
+            clonedImg.src = base64Bg;
         }
     }
 
     sandbox.appendChild(clonedCanvas);
     document.body.appendChild(sandbox);
 
-    // Esperar un poco a que el DOM se asiente
+    // Esperar a que se renderice el DOM clonado
     setTimeout(() => {
         html2canvas(clonedCanvas, {
             scale: 1, 
             useCORS: true, 
             allowTaint: true,
-            backgroundColor: null, // Importante para la transparencia
+            backgroundColor: null,
             logging: false,
             width: 1080,
             height: 1920,
             windowWidth: 1080,
-            windowHeight: 1920
+            windowHeight: 1920,
+            scrollY: 0,  // Fuerza a ignorar el scroll vertical de la ventana
+            scrollX: 0
         }).then(canvas => {
             const fileName = `Orion_Story_${new Date().toISOString().slice(0,10)}.png`;
             const link = document.createElement('a');
@@ -167,9 +183,9 @@ async function downloadStory() {
             btn.disabled = false;
         }).catch(err => {
             console.error("Error:", err);
-            document.body.removeChild(sandbox);
+            if (document.body.contains(sandbox)) document.body.removeChild(sandbox);
             btn.innerHTML = 'Error';
             btn.disabled = false;
         });
-    }, 500);
+    }, 1000);
 }
