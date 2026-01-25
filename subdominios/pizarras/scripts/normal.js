@@ -70,12 +70,14 @@ function processData(data) {
         const compraFmt = parseFloat(compra).toLocaleString('es-CL', { minimumFractionDigits: 0, maximumFractionDigits: 10 });
         const ventaFmt = parseFloat(venta).toLocaleString('es-CL', { minimumFractionDigits: 0, maximumFractionDigits: 10 });
 
-        // Detectar números largos (más de 5 caracteres)
-        // Ahora '1.900.000' tiene 9 caracteres, así que la lógica funciona perfecto
         const isLong = (compraFmt.length > 5 || ventaFmt.length > 5);
         
-        // Fuentes reducidas: 1.8vh para millones, 2.5vh para normales
+        // --- AJUSTE DE TAMAÑO PARA PRECIOS ---
         const fontSizeClass = isLong ? 'text-[1.8vh]' : 'text-[2.5vh]';
+
+        // --- AJUSTE DE TAMAÑO PARA NOMBRES LARGOS (NUEVO) ---
+        // Si el nombre tiene más de 3 letras (ej: PLATA OZ), reducimos la fuente
+        const nameSize = key.length > 3 ? 'text-[1.5vh]' : 'text-[1.8vh]';
 
         // Detectar cambios
         let flashClass = "";
@@ -94,7 +96,7 @@ function processData(data) {
             <td class="pl-4 py-0 align-middle">
                 <img src="${icono_circular}" class="h-[2.5vh] w-[2.5vh] object-contain rounded-full shadow-sm">
             </td>
-            <td class="text-left align-middle font-semibold tracking-wide text-shadow text-[1.8vh]">
+            <td class="text-left align-middle font-semibold tracking-wide text-shadow ${nameSize}">
                 ${key}
             </td>
             <td class="text-center align-middle ${fontSizeClass} font-bold bg-black/10 tracking-widest text-shadow font-mono text-white">

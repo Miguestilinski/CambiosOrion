@@ -91,10 +91,13 @@ function processData(data) {
             
             const priceSize = isLongPrice ? 'text-[3.5vh]' : 'text-[4vh]';
 
+            // Ajuste para nombre Hero: si es largo, usar 3vh, si no 4vh
+            const heroNameSize = key.length > 3 ? 'text-[3vh]' : 'text-[4vh]';
+
             card.innerHTML = `
                 <div class="w-[25%] flex items-center gap-3">
                     <img src="${icono_circular}" class="h-[6vh] w-[6vh] rounded-full shadow-lg object-contain">
-                    <span class="text-[4vh] font-black tracking-tighter">${key}</span>
+                    <span class="${heroNameSize} font-black tracking-tighter">${key}</span>
                 </div>
                 
                 <div class="w-[37.5%] flex justify-center">
@@ -117,11 +120,14 @@ function processData(data) {
             
             const listPriceSize = isLongPrice ? 'text-[3vh]' : 'text-[3.8vh]';
 
+            // Ajuste para nombre Lista: si es largo, usar 2.2vh, si no 2.8vh
+            const listNameSize = key.length > 3 ? 'text-[2.2vh]' : 'text-[2.8vh]'
+
             row.innerHTML = `
                 <td class="w-[30%] py-1 pl-6">
                     <div class="flex items-center gap-4">
                         <img src="${icono_circular}" class="h-[4vh] w-[4vh] rounded-full">
-                        <span class="text-[2.8vh] font-bold text-slate-200">${key}</span>
+                        <span class="${listNameSize} font-bold text-slate-200">${key}</span>
                     </div>
                 </td>
                 <td class="w-[35%] text-center align-middle">
