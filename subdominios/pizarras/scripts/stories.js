@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", async() => {
     await initPizarrasHeader('stories');
     generateQR();
     connectStream();
+    updateDate();
 });
 
 function generateQR() {
@@ -38,18 +39,33 @@ function renderStory(currencies) {
     const container = document.getElementById('currency-grid');
     if (!container) return;
 
-    const storiesCurrencies = currencies.filter(d => d.stories == 1 || d.stories === '1');
+    // 1. FILTRAR: Solo las que tienen el flag stories = 1 en base de datos
+    const activeCurrencies = currencies.filter(d => d.stories == 1 || d.stories === '1');
 
-    if (storiesCurrencies.length === 0) {
-        container.innerHTML = '<div class="text-center text-2xl text-white/50">Configure divisas en el Editor</div>';
+    // 2. ORDENAR: Usar la columna orden_stories
+    activeCurrencies.sort((a, b) => {
+        const orderA = a.orden_stories ? parseInt(a.orden_stories) : 999;
+        const orderB = b.orden_stories ? parseInt(b.orden_stories) : 999;
+        return orderA - orderB;
+    });
+
+    if (activeCurrencies.length === 0) {
+        container.innerHTML = '<div class="text-center text-4xl text-slate-500 font-bold">Sin divisas configuradas</div>';
         return;
+    }
+
+    // 3. ADAPTAR GRID: Si son pocas (<=4) usamos lista, si son más, usamos 2 columnas
+    if (activeCurrencies.length <= 4) {
+        container.className = "relative z-10 flex-grow px-16 py-10 flex flex-col justify-center gap-8";
+    } else {
+        container.className = "relative z-10 flex-grow px-10 py-6 grid grid-cols-2 gap-x-6 gap-y-5 content-center";
     }
 
     let html = '';
 
     storiesCurrencies.forEach(divisa => {
-        const compraFmt = parseFloat(divisa.compra).toLocaleString('es-CL', { maximumFractionDigits: divisa.compra < 100 ? 2 : 0 });
-        const ventaFmt = parseFloat(divisa.venta).toLocaleString('es-CL', { maximumFractionDigits: divisa.venta < 100 ? 2 : 0 });
+        const compra = parseFloat(divisa.compra).toLocaleString('es-CL', {minimumFractionDigits: 0, maximumFractionDigits: 3});
+        const venta = parseFloat(divisa.venta).toLocaleString('es-CL', {minimumFractionDigits: 0, maximumFractionDigits: 3});
         
         // Usamos la URL estándar (sin espacios)
         let iconUrl = divisa.icono_circular;
@@ -85,11 +101,11 @@ function renderStory(currencies) {
             <div class="flex ${gapClass} text-right z-10 items-center">
                 <div class="flex flex-col items-end gap-0">
                     <span class="text-xl text-white/70 uppercase font-bold tracking-widest mb-1 story-label">Compra</span>
-                    <span class="${priceSizeClass} font-bold text-white leading-none story-price">$${compraFmt}</span>
+                    <span class="${priceSizeClass} font-bold text-white leading-none story-price">$${compra}</span>
                 </div>
                 <div class="flex flex-col items-end gap-0">
                     <span class="text-xl text-white/70 uppercase font-bold tracking-widest mb-1 story-label">Venta</span>
-                    <span class="${priceSizeClass} font-bold text-white leading-none story-price">$${ventaFmt}</span>
+                    <span class="${priceSizeClass} font-bold text-white leading-none story-price">$${venta}</span>
                 </div>
             </div>
         </div>
