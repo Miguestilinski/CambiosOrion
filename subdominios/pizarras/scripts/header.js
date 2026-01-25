@@ -84,16 +84,45 @@ function activarLinkSidebar(pagina) {
     }, 50);
 }
 
+// --- MOBILE MENU (CORREGIDO) ---
 function setupMobileSidebar() {
-    // Botón hamburguesa (debe estar en el HTML principal si se usa layout mobile)
     const btn = document.getElementById('mobile-menu-btn'); 
+    
+    // 1. Sidebar Clásico (Deslizante)
     const sidebar = document.querySelector('aside');
-    const overlay = document.getElementById('sidebar-overlay'); // Fondo oscuro opcional
+    
+    // 2. Menú Interno del Header (El que tiene Pizarras)
+    const internalMenu = document.getElementById('mobile-internal-menu');
 
-    if (btn && sidebar) {
-        btn.onclick = () => {
-            sidebar.classList.toggle('-translate-x-full'); // Tailwind class para ocultar
+    if (btn) {
+        btn.onclick = (e) => {
+            e.stopPropagation(); // Evitar que el click se propague inmediatamente
+            
+            // Toggle Sidebar lateral (si existe)
+            if (sidebar) {
+                sidebar.classList.toggle('-translate-x-full');
+            }
+
+            // Toggle Menú interno (si existe, como en Pizarras)
+            if (internalMenu) {
+                internalMenu.classList.toggle('hidden');
+            }
         };
+
+        // Cerrar menú al hacer click fuera (opcional, mejora UX)
+        document.addEventListener('click', (e) => {
+            if (!btn.contains(e.target)) {
+                // Si el click no fue en el botón, cerramos los menús si están abiertos
+                if (internalMenu && !internalMenu.contains(e.target) && !internalMenu.classList.contains('hidden')) {
+                    internalMenu.classList.add('hidden');
+                }
+                // Nota: El sidebar suele tener su propia lógica de cierre o overlay, 
+                // pero si quisieras cerrarlo aquí también:
+                // if (sidebar && !sidebar.contains(e.target) && !sidebar.classList.contains('-translate-x-full')) {
+                //    sidebar.classList.add('-translate-x-full');
+                // }
+            }
+        });
     }
 }
 
