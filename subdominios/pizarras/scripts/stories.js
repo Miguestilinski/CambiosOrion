@@ -1,8 +1,9 @@
-// /orionapp/public/scripts/stories.js
+import { initPizarrasHeader } from './header.js';
 
 const TARGET_CURRENCIES = ['USD', 'EUR', 'BRL', 'ARS', 'PEN', 'ORO 100']; 
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async() => {
+    await initPizarrasHeader('stories');
     generateQR();
     connectStream();
 });

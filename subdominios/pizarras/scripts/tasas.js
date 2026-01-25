@@ -3,9 +3,9 @@ import { initPizarrasHeader } from './header.js';
 let editableCurrencies = {};
 let isFetchingCurrencies = false;
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async() => {
     // 1. Inicializar Header Global (Maneja la sesión y validación de usuario)
-    initPizarrasHeader();
+    await initPizarrasHeader('tasas');
 
     // 2. Inicializar carga de datos
     loadCurrenciesForEdit();

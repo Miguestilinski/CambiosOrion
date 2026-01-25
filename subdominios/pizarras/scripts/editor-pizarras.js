@@ -2,7 +2,7 @@ import { initPizarrasHeader } from './header.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     
-    try { await initPizarrasHeader(); } catch (e) { console.warn(e); }
+    await initPizarrasHeader('editor');
 
     const listDestacadas = document.getElementById('list-destacadas');
     const listNormales = document.getElementById('list-normales');
