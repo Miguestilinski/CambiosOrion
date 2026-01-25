@@ -214,7 +214,6 @@ function setupMobileSidebar() {
     const btn = document.getElementById('mobile-menu-btn');
     
     // IMPORTANTE: Buscamos el elemento <aside> dinámicamente porque se carga después
-    // Usamos delegación o lo buscamos al hacer click
     if (btn) {
         btn.onclick = (e) => {
             e.stopPropagation();
@@ -222,9 +221,18 @@ function setupMobileSidebar() {
             const backdrop = document.getElementById('sidebar-backdrop');
             
             if (sidebar && backdrop) {
-                sidebar.classList.remove('-translate-x-full');
-                backdrop.classList.remove('hidden');
-                setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
+                // VERIFICAMOS EL ESTADO ACTUAL
+                const isClosed = sidebar.classList.contains('-translate-x-full');
+
+                if (isClosed) {
+                    // SI ESTÁ CERRADO -> ABRIR
+                    sidebar.classList.remove('-translate-x-full');
+                    backdrop.classList.remove('hidden');
+                    setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
+                } else {
+                    // SI ESTÁ ABIERTO -> CERRAR
+                    closeSidebar();
+                }
             }
         };
     }
@@ -233,6 +241,7 @@ function setupMobileSidebar() {
     if (!document.getElementById('sidebar-backdrop')) {
         const bd = document.createElement('div');
         bd.id = 'sidebar-backdrop';
+        // Asegúrate que el z-index sea menor que el sidebar (150) pero mayor que el contenido
         bd.className = 'fixed inset-0 bg-slate-900/60 z-[140] hidden lg:hidden backdrop-blur-sm transition-opacity opacity-0';
         bd.onclick = closeSidebar;
         document.body.appendChild(bd);
