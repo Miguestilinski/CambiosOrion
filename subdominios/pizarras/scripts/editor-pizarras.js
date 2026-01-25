@@ -2,7 +2,7 @@ import { initPizarrasHeader } from './header.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     
-    await initPizarrasHeader('editor');
+    try { await initPizarrasHeader('estructura'); } catch (e) { console.warn(e); }
 
     const listDestacadas = document.getElementById('list-destacadas');
     const listNormales = document.getElementById('list-normales');
@@ -70,8 +70,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function loadBoard() {
         try {
             const res = await fetch('https://cambiosorion.cl/data/editor-pizarras.php?action=get_board');
+            if (!res.ok) throw new Error("Error en servidor");
             const data = await res.json();
-
+            
             renderList(listNormales, data.normales, 'normal');
             renderList(listDestacadas, data.destacadas, 'destacada');
             renderList(listStories, data.stories, 'stories');
@@ -160,34 +161,29 @@ document.addEventListener('DOMContentLoaded', async () => {
         } catch (err) { console.error("Error guardando:", err); }
     }
 
-    // --- AGREGAR ---
+    // --- AGREGAR DIVISA ---
     btnAdd.onclick = async () => {
         modalAdd.classList.remove('hidden');
-        searchCandidate.value = '';
         listCandidates.innerHTML = '<div class="text-center py-4 text-slate-400">Cargando...</div>';
-        
         try {
             const res = await fetch('https://cambiosorion.cl/data/editor-pizarras.php?action=get_candidates');
-            const candidates = await res.json();
-            renderCandidates(candidates);
-        } catch (err) {
-            listCandidates.innerHTML = '<div class="text-center text-red-400">Error</div>';
-        }
+            const data = await res.json();
+            renderCandidates(data);
+        } catch (err) { listCandidates.innerHTML = '<div class="text-center text-red-400">Error</div>'; }
     };
 
     function renderCandidates(candidates) {
         listCandidates.innerHTML = '';
         if (!candidates || candidates.length === 0) {
-            listCandidates.innerHTML = '<div class="text-center text-slate-500 py-4 text-sm">No hay divisas nuevas.</div>';
+            listCandidates.innerHTML = '<div class="text-center text-slate-500 py-4 text-sm">No hay divisas disponibles.</div>';
             return;
         }
-
         candidates.forEach(c => {
             const el = document.createElement('div');
             el.className = "flex items-center gap-3 p-3 hover:bg-slate-800 rounded-lg cursor-pointer border border-transparent hover:border-slate-700 transition candidate-item shrink-0";
             el.innerHTML = `
                 <div class="w-8 h-8 rounded-full bg-slate-950 flex items-center justify-center overflow-hidden shrink-0">
-                    <img src="${c.icono}" class="w-full h-full object-cover" onerror="this.style.display='none'">
+                    <img src="${c.icono}" class="w-full h-full object-cover">
                 </div>
                 <div class="flex-1 min-w-0">
                     <h4 class="font-bold text-white text-sm truncate">${c.nombre}</h4>
@@ -225,7 +221,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         } catch (err) { console.error(err); }
     }
 
-    // --- ELIMINAR BD ---
+    // --- ELIMINAR ---\
     btnConfirmDelete.onclick = async () => {
         if (!deleteTargetId) return;
         btnConfirmDelete.disabled = true;
@@ -237,11 +233,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
             modalDelete.classList.add('hidden');
             loadBoard();
-        } catch (err) {
-            alert("Error al eliminar");
-        } finally {
-            btnConfirmDelete.disabled = false;
-        }
+        } catch (err) { alert("Error al eliminar"); }
+        finally { btnConfirmDelete.disabled = false; }
     };
 
     btnCloseAdd.onclick = () => modalAdd.classList.add('hidden');
