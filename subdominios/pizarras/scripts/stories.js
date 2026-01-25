@@ -39,10 +39,12 @@ function renderStory(currencies) {
     const container = document.getElementById('currency-grid');
     if (!container) return;
 
-    // 1. FILTRAR: Solo las que tienen el flag stories = 1 en base de datos
+    // 1. FILTRAR: Usamos los datos que ya vienen del stream (stories = 1)
+    // El stream_divisas.php ya trae esta columna, así que esto funcionará dinámicamente.
     const activeCurrencies = currencies.filter(d => d.stories == 1 || d.stories === '1');
 
     // 2. ORDENAR: Usar la columna orden_stories
+    // Si orden_stories es 0 o null, lo mandamos al final (999)
     activeCurrencies.sort((a, b) => {
         const orderA = a.orden_stories ? parseInt(a.orden_stories) : 999;
         const orderB = b.orden_stories ? parseInt(b.orden_stories) : 999;
@@ -51,10 +53,12 @@ function renderStory(currencies) {
 
     if (activeCurrencies.length === 0) {
         container.innerHTML = '<div class="text-center text-4xl text-slate-500 font-bold">Sin divisas configuradas</div>';
+        container.className = "relative z-10 flex-grow px-16 py-10 flex flex-col justify-center gap-8"; // Reset de clases por si acaso
         return;
     }
 
-    // 3. ADAPTAR GRID: Si son pocas (<=4) usamos lista, si son más, usamos 2 columnas
+    // 3. ADAPTAR GRID:
+    // CORRECCIÓN AQUÍ: Usamos 'activeCurrencies' en lugar de 'storiesCurrencies'
     if (activeCurrencies.length <= 4) {
         container.className = "relative z-10 flex-grow px-16 py-10 flex flex-col justify-center gap-8";
     } else {
@@ -63,30 +67,27 @@ function renderStory(currencies) {
 
     let html = '';
 
-    storiesCurrencies.forEach(divisa => {
+    activeCurrencies.forEach(divisa => {
         const compra = parseFloat(divisa.compra).toLocaleString('es-CL', {minimumFractionDigits: 0, maximumFractionDigits: 3});
         const venta = parseFloat(divisa.venta).toLocaleString('es-CL', {minimumFractionDigits: 0, maximumFractionDigits: 3});
         
-        // Usamos la URL estándar (sin espacios)
         let iconUrl = divisa.icono_circular;
         if (divisa.nombre === 'ORO 100') {
             iconUrl = 'https://cambiosorion.cl/orionapp/icons/ORO100.svg';
         }
 
-        // === NUEVO: AJUSTE DE ESPACIO PARA ORO 100 ===
-        // Definimos variables por defecto
-        let nameSizeClass = 'text-5xl';   // Tamaño normal nombre
-        let priceSizeClass = 'text-5xl';  // Tamaño normal precio
-        let gapClass = 'gap-12';          // Separación normal entre compra y venta
+        // Lógica de estilos condicionales (Mantenida intacta)
+        let nameSizeClass = 'text-5xl';
+        let priceSizeClass = 'text-5xl';
+        let gapClass = 'gap-12';
 
-        // Si es ORO 100 (números gigantes), achicamos todo un poco para que entre bien
         if (divisa.nombre === 'ORO 100') {
-            nameSizeClass = 'text-4xl';  // Nombre un poco más pequeño
-            priceSizeClass = 'text-4xl'; // Precios más pequeños para que quepan los millones
-            gapClass = 'gap-8';          // Reducimos el hueco entre precios para ganar espacio lateral
+            nameSizeClass = 'text-4xl';
+            priceSizeClass = 'text-4xl';
+            gapClass = 'gap-8';
         }
-        // =============================================
 
+        // HTML String intacto para no romper html2canvas
         html += `
         <div class="glass-card rounded-[2.5rem] p-6 flex items-center justify-between shadow-2xl relative overflow-hidden group">
             <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -111,7 +112,8 @@ function renderStory(currencies) {
         </div>
         `;
     });
-    if (storiesCurrencies.length <= 4) {
+
+    if (activeCurrencies.length <= 4) {
         container.className = "relative z-10 flex-grow px-14 py-10 flex flex-col justify-center gap-8";
     } else {
         container.className = "relative z-10 flex-grow px-14 py-6 grid grid-cols-2 gap-x-8 gap-y-4 content-center";
