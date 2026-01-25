@@ -20,24 +20,22 @@
 
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #fff; }
-        
-        /* Contenedor Escalable para visualizar el Canvas HD en pantallas pequeñas */
+
+        /* Área de scroll para ver el lienzo */
         #preview-scroll-area {
-            overflow-y: auto;
-            overflow-x: hidden;
+            overflow: auto;
             display: flex;
             justify-content: center;
-            padding-top: 2rem;
-            padding-bottom: 2rem;
+            padding: 2rem;
         }
 
         #preview-wrapper {
-            width: 1080px;  /* Ancho Real Story */
-            height: 1920px; /* Alto Real Story */
+            width: 1080px;
+            height: 1920px;
             transform-origin: top center;
-            transform: scale(0.45); /* Escala por defecto para ver en monitor */
-            box-shadow: 0 0 50px rgba(0,0,0,0.5);
-            background-color: #000;
+            transform: scale(0.45); /* Zoom por defecto */
+            box-shadow: 0 0 100px rgba(0,0,0,0.8);
+            flex-shrink: 0; /* Evita que se aplaste */
         }
 
         /* El lienzo real que se descargará */
