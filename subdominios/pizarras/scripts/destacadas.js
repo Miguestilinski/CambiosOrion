@@ -87,7 +87,7 @@ function processData(data) {
         if (index < 2) {
             // === HERO CARD ===
             const card = document.createElement("div");
-            card.className = `flex-1 flex items-center justify-between bg-white/5 rounded-2xl border border-white/10 shadow-lg px-4 ${flashClass}`; 
+            card.className = `flex-1 flex items-center justify-between bg-white/5 rounded-2xl border border-white/20 shadow-lg px-4 ${flashClass}`; 
             
             const priceSize = isLongPrice ? 'text-[3.5vh]' : 'text-[4vh]';
 
