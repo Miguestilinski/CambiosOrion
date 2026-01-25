@@ -150,70 +150,84 @@
 
     <main class="min-h-screen flex flex-col justify-center items-center px-6 pt-20 pb-12 relative">
         
-        <div class="text-center mb-12 animate-fade-in-down">
+        <div class="text-center mb-10 animate-fade-in-down">
             <h1 class="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-200 via-white to-blue-200 drop-shadow-sm mb-4">
                 Gestión de Pizarras
             </h1>
             <p class="text-lg text-slate-300 max-w-2xl mx-auto font-light">
-                Panel de control centralizado para la gestión de precios y pantallas.
+                Panel de control centralizado para pantallas y precios.
             </p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl w-full">
-            
-            <a href="tasas" class="glass-card rounded-3xl p-8 flex flex-col items-center text-center group relative overflow-hidden transition-all hover:-translate-y-1">
-                <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-500"></div>
-                
-                <div class="bg-indigo-600/20 p-5 rounded-2xl mb-6 border border-indigo-500/30 group-hover:scale-110 transition duration-300 shadow-[0_0_20px_rgba(99,102,241,0.2)]">
-                    <svg class="w-10 h-10 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
-                </div>
-                
-                <h2 class="text-2xl font-bold text-white mb-2 group-hover:text-indigo-300 transition-colors">Editor de Tasas</h2>
-                <p class="text-slate-400 text-sm mb-6 flex-1">Modificar precios de compra y venta en tiempo real para todas las sucursales.</p>
-                
-                <span class="px-6 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-bold shadow-lg shadow-indigo-600/30 group-hover:bg-indigo-500 transition w-full md:w-auto">
-                    Gestionar Precios
-                </span>
-            </a>
+        <div class="w-full max-w-6xl flex flex-col gap-8">
 
-            <a href="editor-pizarras" class="glass-card rounded-3xl p-8 flex flex-col items-center text-center group relative overflow-hidden transition-all hover:-translate-y-1">
-                <div class="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-500"></div>
-                
-                <div class="bg-amber-600/20 p-5 rounded-2xl mb-6 border border-amber-500/30 group-hover:scale-110 transition duration-300 shadow-[0_0_20px_rgba(245,158,11,0.2)]">
-                    <svg class="w-10 h-10 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
-                </div>
-                
-                <h2 class="text-2xl font-bold text-white mb-2 group-hover:text-amber-300 transition-colors">Estructura Pizarra</h2>
-                <p class="text-slate-400 text-sm mb-6 flex-1">Agregar nuevas divisas, reordenar la lista y seleccionar monedas destacadas.</p>
-                
-                <span class="px-6 py-2.5 rounded-xl bg-amber-600 text-white text-sm font-bold shadow-lg shadow-amber-600/30 group-hover:bg-amber-500 transition w-full md:w-auto">
-                    Configurar Orden
-                </span>
-            </a>
+            <div>
+                <h3 class="text-slate-500 text-xs font-bold uppercase tracking-widest mb-4 pl-2 border-l-4 border-slate-600">Pizarras Públicas</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <button onclick="openPopupWindow('https://pizarras.cambiosorion.cl/normal', 'Pizarra Normal', 1080, 1920)" class="glass-card rounded-3xl p-6 flex flex-col items-center text-center group relative overflow-hidden cursor-pointer hover:bg-slate-800/80 transition-all hover:-translate-y-1">
+                        <div class="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition duration-500"></div>
+                        <div class="flex items-center gap-4 mb-3">
+                            <div class="bg-emerald-500/20 p-3 rounded-xl border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.15)]">
+                                <svg class="w-8 h-8 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                            </div>
+                            <h2 class="text-2xl font-bold text-white group-hover:text-emerald-300 transition-colors">Pizarra Normal</h2>
+                        </div>
+                        <p class="text-slate-400 text-sm mb-4">Vista estándar con el listado completo de divisas.</p>
+                        <span class="text-xs font-bold text-emerald-400 border border-emerald-500/30 px-4 py-1.5 rounded-full group-hover:bg-emerald-500/10 transition">Abrir Ventana</span>
+                    </button>
 
-            <button onclick="openPopupWindow('https://pizarras.cambiosorion.cl/normal', 'Pizarra Normal', 1080, 1920)" class="glass-card rounded-3xl p-6 flex flex-col items-center text-center group relative overflow-hidden cursor-pointer hover:bg-slate-800/80">
-                <div class="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition duration-500"></div>
-                <div class="flex items-center gap-4 mb-3">
-                    <div class="bg-emerald-500/20 p-3 rounded-xl border border-emerald-500/30">
-                        <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                    </div>
-                    <h2 class="text-xl font-bold text-white group-hover:text-emerald-300 transition-colors">Pizarra Normal</h2>
-                </div>
-                <p class="text-slate-500 text-xs mb-4">Vista pública estándar (Lista completa).</p>
-                <span class="text-xs font-bold text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full group-hover:bg-emerald-500/10 transition">Abrir Ventana</span>
-            </button>
+                    <button onclick="openPopupWindow('https://pizarras.cambiosorion.cl/destacadas', 'Pizarra Destacadas', 1080, 1920)" class="glass-card rounded-3xl p-6 flex flex-col items-center text-center group relative overflow-hidden cursor-pointer hover:bg-slate-800/80 transition-all hover:-translate-y-1">
+                        <div class="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition duration-500"></div>
+                        <div class="flex items-center gap-4 mb-3">
+                            <div class="bg-purple-500/20 p-3 rounded-xl border border-purple-500/30 shadow-[0_0_15px_rgba(168,85,247,0.15)]">
+                                <svg class="w-8 h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
+                            </div>
+                            <h2 class="text-2xl font-bold text-white group-hover:text-purple-300 transition-colors">Pizarra Destacada</h2>
+                        </div>
+                        <p class="text-slate-400 text-sm mb-4">Vista enfocada en divisas de alta rotación.</p>
+                        <span class="text-xs font-bold text-purple-400 border border-purple-500/30 px-4 py-1.5 rounded-full group-hover:bg-purple-500/10 transition">Abrir Ventana</span>
+                    </button>
 
-            <button onclick="openPopupWindow('https://pizarras.cambiosorion.cl/destacadas', 'Pizarra Destacadas', 1080, 1920)" class="glass-card rounded-3xl p-6 flex flex-col items-center text-center group relative overflow-hidden cursor-pointer hover:bg-slate-800/80">
-                <div class="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition duration-500"></div>
-                <div class="flex items-center gap-4 mb-3">
-                    <div class="bg-purple-500/20 p-3 rounded-xl border border-purple-500/30">
-                        <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
-                    </div>
-                    <h2 class="text-xl font-bold text-white group-hover:text-purple-300 transition-colors">Pizarra Destacada</h2>
                 </div>
-                <p class="text-slate-500 text-xs mb-4">Vista enfocada en divisas de alta rotación.</p>
-                <span class="text-xs font-bold text-purple-400 border border-purple-500/30 px-3 py-1 rounded-full group-hover:bg-purple-500/10 transition">Abrir Ventana</span>
-            </button>
+            </div>
+
+            <div>
+                <h3 class="text-slate-500 text-xs font-bold uppercase tracking-widest mb-4 pl-2 border-l-4 border-slate-600">Herramientas de Gestión</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    
+                    <a href="tasas" class="glass-card rounded-3xl p-6 flex flex-col items-center text-center group relative overflow-hidden transition-all hover:-translate-y-1">
+                        <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-500"></div>
+                        <div class="bg-indigo-600/20 p-4 rounded-2xl mb-4 border border-indigo-500/30 group-hover:scale-110 transition duration-300">
+                            <svg class="w-8 h-8 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                        </div>
+                        <h2 class="text-xl font-bold text-white mb-2 group-hover:text-indigo-300 transition-colors">Editor de Tasas</h2>
+                        <p class="text-slate-400 text-xs mb-4 flex-1">Actualizar precios de compra/venta.</p>
+                        <span class="px-4 py-2 rounded-lg bg-indigo-600 text-white text-xs font-bold shadow-lg shadow-indigo-600/30 group-hover:bg-indigo-500 transition w-full">Ingresar</span>
+                    </a>
+
+                    <a href="editor-pizarras" class="glass-card rounded-3xl p-6 flex flex-col items-center text-center group relative overflow-hidden transition-all hover:-translate-y-1">
+                        <div class="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-500"></div>
+                        <div class="bg-amber-600/20 p-4 rounded-2xl mb-4 border border-amber-500/30 group-hover:scale-110 transition duration-300">
+                            <svg class="w-8 h-8 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                        </div>
+                        <h2 class="text-xl font-bold text-white mb-2 group-hover:text-amber-300 transition-colors">Editor Pizarras</h2>
+                        <p class="text-slate-400 text-xs mb-4 flex-1">Configurar orden y monedas visibles.</p>
+                        <span class="px-4 py-2 rounded-lg bg-amber-600 text-white text-xs font-bold shadow-lg shadow-amber-600/30 group-hover:bg-amber-500 transition w-full">Ingresar</span>
+                    </a>
+
+                    <a href="stories" class="glass-card rounded-3xl p-6 flex flex-col items-center text-center group relative overflow-hidden transition-all hover:-translate-y-1">
+                        <div class="absolute inset-0 bg-gradient-to-br from-pink-500/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-500"></div>
+                        <div class="bg-pink-600/20 p-4 rounded-2xl mb-4 border border-pink-500/30 group-hover:scale-110 transition duration-300">
+                            <svg class="w-8 h-8 text-pink-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        </div>
+                        <h2 class="text-xl font-bold text-white mb-2 group-hover:text-pink-300 transition-colors">Generador de Stories</h2>
+                        <p class="text-slate-400 text-xs mb-4 flex-1">Crear imágenes compactas para Stories.</p>
+                        <span class="px-4 py-2 rounded-lg bg-pink-600 text-white text-xs font-bold shadow-lg shadow-pink-600/30 group-hover:bg-pink-500 transition w-full">Ingresar</span>
+                    </a>
+
+                </div>
+            </div>
 
         </div>
     </main>

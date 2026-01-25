@@ -1,4 +1,4 @@
-// /orionapp/public/scripts/generador_stories.js
+// /orionapp/public/scripts/stories.js
 
 const TARGET_CURRENCIES = ['USD', 'EUR', 'BRL', 'ARS', 'PEN', 'ORO 100']; 
 
