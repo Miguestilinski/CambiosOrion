@@ -87,7 +87,7 @@ function processData(data) {
         if (index < 2) {
             // === HERO CARD ===
             const card = document.createElement("div");
-            card.className = `flex-1 flex items-center justify-between bg-white/5 rounded-2xl border border-white/20 shadow-lg px-4 ${flashClass}`; 
+            card.className = `flex-1 flex items-center justify-between bg-white/5 rounded-2xl border border-white/10 shadow-lg px-4 ${flashClass}`; 
             
             const priceSize = isLongPrice ? 'text-[3.5vh]' : 'text-[4vh]';
 
@@ -116,7 +116,7 @@ function processData(data) {
         } else {
             // === LISTA NORMAL (Resto) ===
             const row = document.createElement("tr");
-            row.className = `border-b border-white/5 ${flashClass}`;
+            row.className = `border-b border-white/15 ${flashClass}`;
             
             const listPriceSize = isLongPrice ? 'text-[2.6vh]' : 'text-[3.2vh]';
 
