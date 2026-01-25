@@ -81,10 +81,13 @@ function activarLinkSidebar(pagina) {
     }, 50);
 }
 
-// --- MENU MÓVIL (LÓGICA IDÉNTICA A TESORERÍA/INDEX.JS) ---
+// --- MENU MÓVIL (CORREGIDO) ---
 function setupMobileSidebar() {
     const btnMenu = document.getElementById('mobile-menu-btn');
     const sidebar = document.getElementById('sidebar-container');
+    
+    // CORRECCIÓN: Definimos la variable que faltaba
+    const internalMenu = document.getElementById('mobile-internal-menu');
     
     if (!btnMenu || !sidebar) return;
 
@@ -109,29 +112,28 @@ function setupMobileSidebar() {
     });
 
     function openSidebar() {
-        // 1. Mostrar Sidebar en modo Móvil (Fixed, Z-Index alto, Estilo Cajón)
+        // 1. Mostrar Sidebar
         sidebar.classList.remove('hidden');
-        // Estas clases son las que hacen la magia de "slide-in" y posición fija
-        sidebar.classList.add('fixed', 'inset-y-0', 'left-0', 'z-50', 'w-64', 'bg-slate-900', 'shadow-2xl', 'border-r', 'border-white/10', 'slide-in-animation');
+        sidebar.classList.add('fixed', 'inset-y-0', 'left-0', 'z-[150]', 'w-64', 'bg-slate-900', 'shadow-2xl', 'border-r', 'border-white/10', 'slide-in-animation');
         
         // 2. Mostrar Backdrop
         backdrop.classList.remove('hidden');
         setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
 
-        // 3. Mostrar menú interno si es necesario (opcional, dependiendo de si quieres ambos)
+        // 3. Mostrar menú interno (CORREGIDO: Ahora la variable existe)
         if (internalMenu) internalMenu.classList.remove('hidden');
     }
 
     function closeSidebar() {
-        // 1. Ocultar y limpiar clases móviles (volvemos al estado hidden lg:block)
+        // 1. Ocultar Sidebar
         sidebar.classList.add('hidden');
-        sidebar.classList.remove('fixed', 'inset-y-0', 'left-0', 'z-50', 'w-64', 'bg-slate-900', 'shadow-2xl', 'border-r', 'border-white/10', 'slide-in-animation');
+        sidebar.classList.remove('fixed', 'inset-y-0', 'left-0', 'z-[150]', 'w-64', 'bg-slate-900', 'shadow-2xl', 'border-r', 'border-white/10', 'slide-in-animation');
         
         // 2. Ocultar Backdrop
         backdrop.classList.add('opacity-0');
         setTimeout(() => backdrop.classList.add('hidden'), 300);
 
-        // 3. Ocultar menú interno
+        // 3. Ocultar menú interno (CORREGIDO: Ahora la variable existe)
         if (internalMenu) internalMenu.classList.add('hidden');
     }
 }
