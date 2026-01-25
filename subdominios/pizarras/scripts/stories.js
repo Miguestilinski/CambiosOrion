@@ -39,15 +39,26 @@ function renderStory(currencies) {
     const container = document.getElementById('currency-grid');
     if (!container) return;
 
-    // --- DEBUG: VER QUÉ LLEGA ---
-    console.log("Total divisas recibidas:", currencies.length);
-    if(currencies.length > 0) {
-        // Imprime la primera para ver si trae la columna 'stories'
-        console.log("Ejemplo de divisa (raw):", currencies[0]); 
-        console.log("Tiene propiedad 'stories'?:", 'stories' in currencies[0]);
-        console.log("Valor de 'stories' en USD:", currencies.find(c => c.nombre === 'USD')?.stories);
-    }
-    // -----------------------------
+    // ================================================================
+    // PARCHE DE EMERGENCIA (SIMULACIÓN DE DATOS)
+    // Como el PHP no está enviando la columna 'stories', la forzamos aquí
+    // para que puedas terminar el diseño.
+    // ================================================================
+    currencies.forEach(c => {
+        // Aquí define manualmente qué divisas quieres que aparezcan
+        if (['USD', 'EUR', 'BRL', 'ORO 100'].includes(c.nombre)) {
+            // Si la propiedad no existe, la creamos
+            if (c.stories === undefined) {
+                c.stories = '1'; 
+                // Asignamos un orden ficticio
+                if(c.nombre === 'USD') c.orden_stories = 1;
+                if(c.nombre === 'EUR') c.orden_stories = 2;
+                if(c.nombre === 'BRL') c.orden_stories = 3;
+                if(c.nombre === 'ORO 100') c.orden_stories = 4;
+            }
+        }
+    });
+    // ================================================================
 
     // 1. FILTRAR: Hacemos el filtro un poco más permisivo para depurar
     // Aceptamos 1 (number), "1" (string) o true (boolean)
@@ -104,7 +115,7 @@ function renderStory(currencies) {
             priceSizeClass = 'text-4xl';
             gapClass = 'gap-8';
         }
-        
+
         // HTML String intacto para no romper html2canvas
         html += `
         <div class="glass-card rounded-[2.5rem] p-6 flex items-center justify-between shadow-2xl relative overflow-hidden group">
