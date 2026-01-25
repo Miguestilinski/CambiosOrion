@@ -81,29 +81,25 @@ function activarLinkSidebar(pagina) {
     }, 50);
 }
 
-// --- MENU MÓVIL (CORREGIDO) ---
+// --- MENU MÓVIL (CORREGIDO GEOMETRÍA) ---
 function setupMobileSidebar() {
     const btnMenu = document.getElementById('mobile-menu-btn');
     const sidebar = document.getElementById('sidebar-container');
-    
-    // CORRECCIÓN: Definimos la variable que faltaba
     const internalMenu = document.getElementById('mobile-internal-menu');
     
     if (!btnMenu || !sidebar) return;
 
-    // Crear Backdrop (Fondo oscuro) si no existe
+    // Crear Backdrop
     let backdrop = document.getElementById('sidebar-backdrop');
     if (!backdrop) {
         backdrop = document.createElement('div');
         backdrop.id = 'sidebar-backdrop';
-        backdrop.className = 'fixed inset-0 bg-black/60 z-40 hidden lg:hidden backdrop-blur-sm transition-opacity opacity-0';
+        backdrop.className = 'fixed inset-0 bg-black/60 z-[140] hidden lg:hidden backdrop-blur-sm transition-opacity opacity-0';
         document.body.appendChild(backdrop);
-        
-        // Click en fondo cierra menú
         backdrop.addEventListener('click', closeSidebar);
     }
 
-    // Toggle Botón
+    // Toggle
     btnMenu.addEventListener('click', (e) => {
         e.stopPropagation();
         const isHidden = sidebar.classList.contains('hidden');
@@ -112,28 +108,30 @@ function setupMobileSidebar() {
     });
 
     function openSidebar() {
-        // 1. Mostrar Sidebar
         sidebar.classList.remove('hidden');
-        sidebar.classList.add('fixed', 'inset-y-0', 'left-0', 'z-[150]', 'w-64', 'bg-slate-900', 'shadow-2xl', 'border-r', 'border-white/10', 'slide-in-animation');
+        // IMPORTANTE: Quitamos 'h-full' para que no se estire más allá de la pantalla al bajarlo
+        sidebar.classList.remove('h-full'); 
         
-        // 2. Mostrar Backdrop
+        // Usamos top-16 (debajo del header) y bottom-0 (hasta el final)
+        sidebar.classList.add('fixed', 'top-16', 'bottom-0', 'left-0', 'z-[150]', 'w-64', 'bg-slate-900', 'shadow-2xl', 'border-r', 'border-white/10', 'slide-in-animation');
+        
         backdrop.classList.remove('hidden');
         setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
 
-        // 3. Mostrar menú interno (CORREGIDO: Ahora la variable existe)
         if (internalMenu) internalMenu.classList.remove('hidden');
     }
 
     function closeSidebar() {
-        // 1. Ocultar Sidebar
         sidebar.classList.add('hidden');
-        sidebar.classList.remove('fixed', 'inset-y-0', 'left-0', 'z-[150]', 'w-64', 'bg-slate-900', 'shadow-2xl', 'border-r', 'border-white/10', 'slide-in-animation');
+        // Restauramos h-full por si se usa en otras vistas
+        sidebar.classList.add('h-full');
         
-        // 2. Ocultar Backdrop
+        // Limpiamos las clases de posición
+        sidebar.classList.remove('fixed', 'top-16', 'bottom-0', 'left-0', 'z-[150]', 'w-64', 'bg-slate-900', 'shadow-2xl', 'border-r', 'border-white/10', 'slide-in-animation');
+        
         backdrop.classList.add('opacity-0');
         setTimeout(() => backdrop.classList.add('hidden'), 300);
 
-        // 3. Ocultar menú interno (CORREGIDO: Ahora la variable existe)
         if (internalMenu) internalMenu.classList.add('hidden');
     }
 }
