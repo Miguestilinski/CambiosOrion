@@ -1,9 +1,9 @@
 import { initPizarrasHeader } from './header.js';
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async() => {
     // 1. Inicializar Header Global 
     // (Maneja: Sesión Admin, Context Switcher, Menú Móvil, Perfil)
-    initPizarrasHeader();
+    await initPizarrasHeader('home');
 
     // Aquí puedes agregar lógica específica del Dashboard de Pizarras si la necesitas en el futuro
 });

@@ -12,13 +12,20 @@ const SystemConfig = {
  * @param {string} activePageId - ID de la sección actual para marcar en el sidebar (data-section)
  */
 export async function initAdminHeader(activePageId = '') {
-    // 1. Verificar Sesión
+    // 1. Obtener sesión
     const sessionData = await getSession();
 
-    // 2. Cargar Sidebar
+    if (!sessionData.isAuthenticated) {
+        return sessionData; // El getSession ya redirige, pero por seguridad retornamos.
+    }
+
+    // 2. Cargar Sidebar y aplicar lógica de roles
     await loadSidebar(activePageId, sessionData);
 
-    // 3. Inicializar Componentes UI
+    // 3. Configurar UI del Header (Badge, Textos)
+    updateHeaderUI(sessionData);
+
+    // 4. Inicializar Componentes UI
     setupUserDropdown();      // Menú perfil (arriba derecha)
     setupSystemSwitcher();    // Selector de sistemas (móvil)
     setupMobileSidebar();     // Menú hamburguesa (Sidebar lateral)
@@ -45,6 +52,49 @@ async function getSession() {
     }
 }
 
+// --- LOGICA UI HEADER (Migrada de index.js) ---
+function updateHeaderUI(userData) {
+    const rol = (userData.rol || '').toLowerCase().trim();
+    const nombre = userData.nombre || 'Usuario';
+    const primerNombre = nombre.split(' ')[0];
+
+    // Referencias
+    const headerName = document.getElementById('header-user-name');
+    const headerEmail = document.getElementById('dropdown-user-email');
+    const headerBadge = document.getElementById('header-badge');
+    const logoutBtn = document.getElementById('logout-button');
+
+    // Llenar datos básicos
+    if (headerName) headerName.textContent = primerNombre;
+    if (headerEmail) headerEmail.textContent = userData.correo;
+
+    // Configurar Badge y Roles (SuperUsuario)
+    const superUsers = ['socio', 'admin', 'gerente', 'administrador', 'jefe de operaciones'];
+    const isSuperUser = superUsers.includes(rol);
+
+    if (headerBadge) {
+        // Estilos base compartidos
+        const baseClasses = "hidden md:inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold text-white border tracking-wider uppercase shadow-lg transition-all";
+        
+        if (isSuperUser) {
+            headerBadge.textContent = "PORTAL ADMIN";
+            headerBadge.className = `${baseClasses} bg-indigo-600 border-indigo-500/30 shadow-indigo-500/20`;
+        } else {
+            headerBadge.textContent = "PORTAL ORION";
+            headerBadge.className = `${baseClasses} bg-slate-600 border-slate-500/30 shadow-slate-500/20`;
+        }
+    }
+
+    // Configurar Logout
+    if (logoutBtn) {
+        logoutBtn.onclick = (e) => {
+            e.preventDefault();
+            fetch(SystemConfig.apiLogout).then(() => window.location.href = SystemConfig.loginUrl);
+        };
+    }
+}
+
+// --- LOGICA UI HEADER ---
 function updateHeaderUserInfo(data) {
     // Actualizar nombre en el header
     const userNameEl = document.getElementById('header-user-name');
