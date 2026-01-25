@@ -1,19 +1,24 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // --- REFERENCIAS DOM ---
-    // Header y Sidebar
-    const headerName = document.getElementById('header-user-name');
-    const headerEmail = document.getElementById('dropdown-user-email');
-    const sidebarContainer = document.getElementById('sidebar-container');
-    const headerBadge = document.getElementById('header-badge');
+import { initAdminHeader } from './header.js';
 
-    // UI Perfil
+document.addEventListener('DOMContentLoaded', async() => {
+
+    // 1. INICIALIZAR HEADER GLOBAL (Sesión, Sidebar, Menú Móvil)
+    // Pasamos 'mi-perfil' para que quede marcado en el sidebar
+    const sessionData = await initAdminHeader('mi-perfil');
+
+    if (!sessionData.isAuthenticated) return; // initAdminHeader ya redirige si falla
+
+    // 2. CONFIGURACIÓN ESPECÍFICA DE LA PÁGINA
+    let userCanEdit = false;
+    let currentUserId = sessionData.equipo_id;
+
+    // Referencias UI específicas de Perfil
     const editButtonContainer = document.getElementById('edit-button-container'); 
     const editBtn = document.getElementById('edit-button');
     const saveButton = document.getElementById('save_changes');
     const saveBar = document.getElementById('save-bar');
     const passwordGroup = document.getElementById('password-group');
     
-    // UI Datos Perfil
     const userTypeElement = document.getElementById('user-type');
     const userNameElement = document.getElementById('user-name-dashboard');
     const roleTypeElement = document.getElementById('role-type');
@@ -30,98 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'numero_cuenta', viewId: 'numero_cuenta-view', inputId: 'numero_cuenta' }
     ];
 
-    let userCanEdit = false;
-    let currentUserId = null; 
-
-    // --- 1. INICIALIZACIÓN: Obtener Sesión ---
-    async function initProfile() {
-        try {
-            // Pedir sesión a session_status.php
-            const sessionRes = await fetch('https://cambiosorion.cl/data/session_status.php', {
-                credentials: 'include' 
-            });
-            const sessionData = await sessionRes.json();
-
-            // Validar sesión
-            if (!sessionData.isAuthenticated || !sessionData.equipo_id) {
-                console.warn("No hay sesión activa. Redirigiendo...");
-                window.location.href = 'https://admin.cambiosorion.cl/login';
-                return;
-            }
-
-            // Guardar datos clave
-            currentUserId = sessionData.equipo_id;
-            const rol = (sessionData.rol || '').toLowerCase().trim();
-            const nombre = sessionData.nombre || 'Usuario';
-            const primerNombre = nombre.split(' ')[0];
-
-            // A) ACTUALIZAR HEADER (Nombre y Correo arriba a la derecha)
-            if (headerName) headerName.textContent = primerNombre;
-            if (headerEmail) headerEmail.textContent = sessionData.correo;
-
-            // B) CARGAR SIDEBAR
-            configureDashboardByRole(rol);
-
-            // C) CARGAR DATOS DEL PERFIL
-            loadUserProfile(currentUserId);
-
-        } catch (error) {
-            console.error("Error verificando sesión:", error);
-        }
-    }
-
-    // --- 2. LOGICA DEL SIDEBAR ---
-    function configureDashboardByRole(rol) {
-        const superUsers = ['socio', 'admin', 'gerente']; 
-        const isSuperUser = superUsers.includes(rol);
-
-        // Cargar Sidebar Único
-        fetch('sidebar.html')
-            .then(response => response.text())
-            .then(html => {
-                if(sidebarContainer) {
-                    sidebarContainer.innerHTML = html;
-                    
-                    const adminItems = sidebarContainer.querySelectorAll('.admin-only');
-                    
-                    if (isSuperUser) {
-                        adminItems.forEach(item => item.classList.remove('hidden'));
-                    } else {
-                        adminItems.forEach(item => item.remove());
-                    }
-                    
-                    // Marcar activo el link "Inicio"
-                    const activeLink = sidebarContainer.querySelector('a[href="mi-perfil"]');
-                    if(activeLink) {
-                        activeLink.classList.add('bg-indigo-50', 'text-indigo-700', 'font-bold');
-                        activeLink.classList.remove('text-slate-600');
-                    }
-                }
-            })
-            .catch(err => console.error("Error cargando sidebar:", err));
-
-        // Ajustes visuales Dashboard
-        if (isSuperUser) {
-            // Estilos ADMIN
-            if(headerBadge) {
-                headerBadge.textContent = "PORTAL ADMIN";
-                headerBadge.className = "hidden md:inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-indigo-600 text-white border border-indigo-500/30 tracking-wider uppercase shadow-lg shadow-indigo-500/20";
-            }
-            // Mostrar sección exclusiva de Admin en el Dashboard
-            const adminSections = document.querySelectorAll('.admin-only');
-            adminSections.forEach(el => el.classList.remove('hidden'));
-
-        } else {
-            // Estilos NORMAL
-            if(headerBadge) {
-                headerBadge.textContent = "PORTAL ORION";
-                headerBadge.className = "hidden md:inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-indigo-600 text-white border border-indigo-500/30 tracking-wider uppercase shadow-lg shadow-indigo-500/20";
-            }
-            // Asegurar que secciones admin estén ocultas
-            const adminSections = document.querySelectorAll('.admin-only');
-            adminSections.forEach(el => el.classList.add('hidden'));
-        }
-    }
+    // Cargar datos del perfil específico
+    loadUserProfile(currentUserId);
 
     // --- 3. LOGICA DE DATOS DEL PERFIL ---
     async function loadUserProfile(id) {
@@ -263,6 +178,4 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Arrancar
-    initProfile();
 });
