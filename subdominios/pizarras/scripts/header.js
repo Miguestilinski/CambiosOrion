@@ -10,8 +10,6 @@ const SystemConfig = {
  * @param {string} activePageId - ID de la página actual para marcar en el sidebar (ej: 'tasas')
  */
 export async function initPizarrasHeader(activePageId = '') {
-    console.log('Iniciando Sistema Pizarras...');
-    
     // 1. Datos de Sesión
     const sessionData = await getSession();
 
@@ -21,7 +19,7 @@ export async function initPizarrasHeader(activePageId = '') {
     // 3. Inicializar Componentes
     setupUserDropdown();      // Perfil
     setupSystemSwitcher();    // Context Switcher
-    setupMobileSidebar();     // Menú Hamburguesa
+    setupMobileSidebar();     // Menú Hamburguesa (Lógica Tesorería)
     
     // Devolvemos datos por si el script local los necesita
     return sessionData;
@@ -31,8 +29,7 @@ export async function initPizarrasHeader(activePageId = '') {
 async function cargarSidebar(activePageId) {
     const container = document.getElementById('sidebar-container');
     
-    // Si no hay contenedor explícito, intentamos crearlo o inyectar header simple
-    // Para Pizarras, asumimos que si hay sidebar-container, queremos el sidebar.
+    // Si no hay contenedor explícito, no hacemos nada
     if (!container) return;
 
     try {
@@ -84,45 +81,61 @@ function activarLinkSidebar(pagina) {
     }, 50);
 }
 
-// --- MOBILE MENU (CORREGIDO) ---
+// --- MENU MÓVIL (LÓGICA IDÉNTICA A TESORERÍA/INDEX.JS) ---
 function setupMobileSidebar() {
-    const btn = document.getElementById('mobile-menu-btn'); 
+    const btnMenu = document.getElementById('mobile-menu-btn');
+    const sidebar = document.getElementById('sidebar-container');
     
-    // 1. Sidebar Clásico (Deslizante)
-    const sidebar = document.querySelector('aside');
-    
-    // 2. Menú Interno del Header (El que tiene Pizarras)
+    // También controlamos el menú interno específico de Pizarras si existe
     const internalMenu = document.getElementById('mobile-internal-menu');
+    
+    if (!btnMenu || !sidebar) return;
 
-    if (btn) {
-        btn.onclick = (e) => {
-            e.stopPropagation(); // Evitar que el click se propague inmediatamente
-            
-            // Toggle Sidebar lateral (si existe)
-            if (sidebar) {
-                sidebar.classList.toggle('-translate-x-full');
-            }
+    // Crear Backdrop (Fondo oscuro) si no existe
+    let backdrop = document.getElementById('sidebar-backdrop');
+    if (!backdrop) {
+        backdrop = document.createElement('div');
+        backdrop.id = 'sidebar-backdrop';
+        backdrop.className = 'fixed inset-0 bg-black/60 z-40 hidden lg:hidden backdrop-blur-sm transition-opacity opacity-0';
+        document.body.appendChild(backdrop);
+        
+        // Click en fondo cierra menú
+        backdrop.addEventListener('click', closeSidebar);
+    }
 
-            // Toggle Menú interno (si existe, como en Pizarras)
-            if (internalMenu) {
-                internalMenu.classList.toggle('hidden');
-            }
-        };
+    // Toggle Botón
+    btnMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isHidden = sidebar.classList.contains('hidden');
+        if (isHidden) openSidebar();
+        else closeSidebar();
+    });
 
-        // Cerrar menú al hacer click fuera (opcional, mejora UX)
-        document.addEventListener('click', (e) => {
-            if (!btn.contains(e.target)) {
-                // Si el click no fue en el botón, cerramos los menús si están abiertos
-                if (internalMenu && !internalMenu.contains(e.target) && !internalMenu.classList.contains('hidden')) {
-                    internalMenu.classList.add('hidden');
-                }
-                // Nota: El sidebar suele tener su propia lógica de cierre o overlay, 
-                // pero si quisieras cerrarlo aquí también:
-                // if (sidebar && !sidebar.contains(e.target) && !sidebar.classList.contains('-translate-x-full')) {
-                //    sidebar.classList.add('-translate-x-full');
-                // }
-            }
-        });
+    function openSidebar() {
+        // 1. Mostrar Sidebar en modo Móvil (Fixed, Z-Index alto, Estilo Cajón)
+        sidebar.classList.remove('hidden');
+        // Estas clases son las que hacen la magia de "slide-in" y posición fija
+        sidebar.classList.add('fixed', 'inset-y-0', 'left-0', 'z-50', 'w-64', 'bg-slate-900', 'shadow-2xl', 'border-r', 'border-white/10', 'slide-in-animation');
+        
+        // 2. Mostrar Backdrop
+        backdrop.classList.remove('hidden');
+        setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
+
+        // 3. Mostrar menú interno si es necesario (opcional, dependiendo de si quieres ambos)
+        if (internalMenu) internalMenu.classList.remove('hidden');
+    }
+
+    function closeSidebar() {
+        // 1. Ocultar y limpiar clases móviles (volvemos al estado hidden lg:block)
+        sidebar.classList.add('hidden');
+        sidebar.classList.remove('fixed', 'inset-y-0', 'left-0', 'z-50', 'w-64', 'bg-slate-900', 'shadow-2xl', 'border-r', 'border-white/10', 'slide-in-animation');
+        
+        // 2. Ocultar Backdrop
+        backdrop.classList.add('opacity-0');
+        setTimeout(() => backdrop.classList.add('hidden'), 300);
+
+        // 3. Ocultar menú interno
+        if (internalMenu) internalMenu.classList.add('hidden');
     }
 }
 
@@ -215,11 +228,15 @@ function setupSystemSwitcher() {
 
 // --- USER DROPDOWN (Perfil) ---
 function setupUserDropdown() {
-    const btn = document.getElementById('user-menu-btn');
-    const dropdown = document.getElementById('user-dropdown');
+    const btn = document.getElementById('user-menu-btn'); // Busca ID genérico
+    const btnProfile = document.getElementById('profile-menu-button'); // Busca ID específico del HTML proporcionado
     
-    if (btn && dropdown) {
-        btn.onclick = (e) => {
+    // Usamos el que encuentre
+    const triggerBtn = btn || btnProfile;
+    const dropdown = document.getElementById('dropdownInformation'); // ID específico del HTML proporcionado
+    
+    if (triggerBtn && dropdown) {
+        triggerBtn.onclick = (e) => {
             e.stopPropagation();
             const isHidden = dropdown.classList.contains('hidden');
             closeAllMenus();
@@ -227,7 +244,7 @@ function setupUserDropdown() {
         };
 
         document.addEventListener('click', (e) => {
-            if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
+            if (!triggerBtn.contains(e.target) && !dropdown.contains(e.target)) {
                 dropdown.classList.add('hidden');
             }
         });
@@ -235,7 +252,7 @@ function setupUserDropdown() {
 }
 
 function closeAllMenus() {
-    const dropdowns = document.querySelectorAll('#system-switcher-dropdown, #user-dropdown');
+    const dropdowns = document.querySelectorAll('#system-switcher-dropdown, #dropdownInformation, #user-dropdown');
     dropdowns.forEach(d => {
         d.classList.add('hidden');
         d.classList.remove('flex');
