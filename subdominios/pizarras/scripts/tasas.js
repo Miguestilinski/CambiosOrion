@@ -89,6 +89,13 @@ function fillEditCurrencyTable(divisas) {
     const tableBody = document.querySelector('#currency-list');
     if (!tableBody) return;
 
+    // Usamos 'orden' para definir la secuencia. Si es null, va al final (999).
+    divisas.sort((a, b) => {
+        const orderA = (a.orden !== null && a.orden !== undefined) ? parseInt(a.orden) : 999;
+        const orderB = (b.orden !== null && b.orden !== undefined) ? parseInt(b.orden) : 999;
+        return orderA - orderB;
+    });
+
     tableBody.innerHTML = ''; 
     editableCurrencies = {};  
 
