@@ -39,16 +39,6 @@ function renderStory(currencies) {
     const container = document.getElementById('currency-grid');
     if (!container) return;
 
-    // --- DEBUG: VER QUÉ LLEGA ---
-    console.log("Total divisas recibidas:", currencies.length);
-    if(currencies.length > 0) {
-        // Imprime la primera para ver si trae la columna 'stories'
-        console.log("Ejemplo de divisa (raw):", currencies[0]); 
-        console.log("Tiene propiedad 'stories'?:", 'stories' in currencies[0]);
-        console.log("Valor de 'stories' en USD:", currencies.find(c => c.nombre === 'USD')?.stories);
-    }
-    // -----------------------------
-
     // 1. FILTRAR: Hacemos el filtro un poco más permisivo para depurar
     // Aceptamos 1 (number), "1" (string) o true (boolean)
     const activeCurrencies = currencies.filter(d => {
@@ -377,3 +367,5 @@ async function downloadStory() {
         }, 2500);
     });
 }
+
+window.downloadStory = downloadStory;
