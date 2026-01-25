@@ -73,7 +73,7 @@ function processData(data) {
         const isLong = (compraFmt.length > 5 || ventaFmt.length > 5);
         
         // --- AJUSTE DE TAMAÑO PARA PRECIOS ---
-        const fontSizeClass = isLong ? 'text-[1.8vh]' : 'text-[2.2vh]';
+        const fontSizeClass = isLong ? 'text-[1.8vh]' : 'text-[2.3vh]';
 
         // --- AJUSTE DE TAMAÑO PARA NOMBRES LARGOS (NUEVO) ---
         // Si el nombre tiene más de 3 letras (ej: PLATA OZ), reducimos la fuente
