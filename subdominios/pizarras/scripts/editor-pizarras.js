@@ -25,8 +25,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // --- CONFIGURACIÓN DRAG & DROP ---
     
-    const sortableOptions = {
-        group: 'shared', 
+    const baseOptions = {
         animation: 150,
         ghostClass: 'sortable-ghost',
         dragClass: 'sortable-drag',
@@ -36,28 +35,35 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // 1. LISTA GENERAL (ORIGEN - Clonadora)
     new Sortable(listNormales, {
-        ...sortableOptions,
-        pull: 'clone', // CLAVE: Al sacar, clona. Se mantiene en ambos lados.
-        put: false     // No puedes arrastrar cosas "hacia" general, ya están ahí.
+        ...baseOptions,
+        group: {
+            name: 'shared',
+            pull: 'clone', // ¡AQUÍ ESTABA EL DETALLE! Debe ir dentro de group
+            put: false     // No acepta devoluciones
+        },
+        sort: true
     });
 
-    // 2. DEFINICIÓN DE LA FUNCIÓN QUE FALTABA
+    // 2. LISTAS DE DESTINO (Receptoras)
     const setupTargetList = (element) => {
         new Sortable(element, {
-            ...sortableOptions,
-            pull: false, // No se sacan arrastrando (se borran con botón)
-            put: true,   // Acepta items de General
+            ...baseOptions,
+            group: {
+                name: 'shared',
+                pull: false, // No se sacan arrastrando (se borran con botón)
+                put: true    // Aceptan items
+            },
             onAdd: function (evt) {
-                // Evitar duplicados visuales en la misma lista
+                // Evitar duplicados visuales: si ya existe el ID, borramos el clon
                 const id = evt.item.dataset.id;
                 const items = element.querySelectorAll(`.currency-card[data-id="${id}"]`);
                 if (items.length > 1) {
-                    evt.item.remove(); // Ya estaba, borramos el nuevo clon
+                    evt.item.remove(); 
                 } else {
                     saveOrder();
                 }
             },
-            onUpdate: function () { saveOrder(); } // Reordenamiento interno
+            onUpdate: function () { saveOrder(); }
         });
     };
 
