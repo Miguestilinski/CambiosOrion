@@ -210,50 +210,52 @@ function toggleMenu(menu, chevron = null) {
     }
 }
 
+// --- MENU MÓVIL (AJUSTADO) ---
 function setupMobileSidebar() {
-    const btn = document.getElementById('mobile-menu-btn');
+    const btnMenu = document.getElementById('mobile-menu-btn');
+    const sidebar = document.getElementById('sidebar-container');
+    const internalMenu = document.getElementById('mobile-internal-menu'); // Referencia al menú interno
     
-    // IMPORTANTE: Buscamos el elemento <aside> dinámicamente porque se carga después
-    if (btn) {
-        btn.onclick = (e) => {
-            e.stopPropagation();
-            const sidebar = document.querySelector('aside');
-            const backdrop = document.getElementById('sidebar-backdrop');
-            
-            if (sidebar && backdrop) {
-                // VERIFICAMOS EL ESTADO ACTUAL
-                const isClosed = sidebar.classList.contains('-translate-x-full');
+    if (!btnMenu || !sidebar) return;
 
-                if (isClosed) {
-                    // SI ESTÁ CERRADO -> ABRIR
-                    sidebar.classList.remove('-translate-x-full');
-                    backdrop.classList.remove('hidden');
-                    setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
-                } else {
-                    // SI ESTÁ ABIERTO -> CERRAR
-                    closeSidebar();
-                }
-            }
-        };
+    // Crear Backdrop
+    let backdrop = document.getElementById('sidebar-backdrop');
+    if (!backdrop) {
+        backdrop = document.createElement('div');
+        backdrop.id = 'sidebar-backdrop';
+        backdrop.className = 'fixed inset-0 bg-black/60 z-[140] hidden lg:hidden backdrop-blur-sm transition-opacity opacity-0';
+        document.body.appendChild(backdrop);
+        backdrop.addEventListener('click', closeSidebar);
     }
 
-    // Crear Backdrop si no existe (para cerrar al clickear fuera)
-    if (!document.getElementById('sidebar-backdrop')) {
-        const bd = document.createElement('div');
-        bd.id = 'sidebar-backdrop';
-        // Asegúrate que el z-index sea menor que el sidebar (150) pero mayor que el contenido
-        bd.className = 'fixed inset-0 bg-slate-900/60 z-[140] hidden lg:hidden backdrop-blur-sm transition-opacity opacity-0';
-        bd.onclick = closeSidebar;
-        document.body.appendChild(bd);
-    }
-}
+    // Evento Toggle
+    btnMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isHidden = sidebar.classList.contains('hidden');
+        if (isHidden) openSidebar();
+        else closeSidebar();
+    });
 
-function closeSidebar() {
-    const sidebar = document.querySelector('aside');
-    const backdrop = document.getElementById('sidebar-backdrop');
-    if (sidebar) sidebar.classList.add('-translate-x-full');
-    if (backdrop) {
+    function openSidebar() {
+        sidebar.classList.remove('hidden');
+        // CAMBIO CLAVE: Usamos 'top-16 bottom-0' en lugar de 'inset-y-0'
+        // Esto hace que el sidebar nazca exactamente debajo del header (que mide h-16)
+        sidebar.classList.add('fixed', 'top-16', 'bottom-0', 'left-0', 'z-[150]', 'w-64', 'bg-slate-900', 'shadow-2xl', 'border-r', 'border-white/10', 'slide-in-animation');
+        
+        backdrop.classList.remove('hidden');
+        setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
+
+        if (internalMenu) internalMenu.classList.remove('hidden');
+    }
+
+    function closeSidebar() {
+        sidebar.classList.add('hidden');
+        // Limpiamos las mismas clases nuevas
+        sidebar.classList.remove('fixed', 'top-16', 'bottom-0', 'left-0', 'z-[150]', 'w-64', 'bg-slate-900', 'shadow-2xl', 'border-r', 'border-white/10', 'slide-in-animation');
+        
         backdrop.classList.add('opacity-0');
         setTimeout(() => backdrop.classList.add('hidden'), 300);
+
+        if (internalMenu) internalMenu.classList.add('hidden');
     }
 }
