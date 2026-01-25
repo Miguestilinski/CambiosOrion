@@ -175,13 +175,21 @@ function activarLinkSidebar(section) {
         links.forEach(link => {
             // Reset estilos base
             link.className = 'menu-item flex items-center px-4 py-3 text-slate-600 rounded-xl hover:bg-slate-50 hover:text-indigo-600 transition group w-full';
+            
             const icon = link.querySelector('svg');
-            if(icon) icon.className = "w-6 h-6 mr-3 text-slate-400 group-hover:text-indigo-500 group-hover:scale-110 transition-transform";
+            // CORRECCIÓN AQUÍ: Usar setAttribute para SVG
+            if (icon) {
+                icon.setAttribute('class', "w-6 h-6 mr-3 text-slate-400 group-hover:text-indigo-500 group-hover:scale-110 transition-transform");
+            }
 
             // Estilo Activo (Indigo)
             if (link.dataset.section === section) {
                 link.className = 'menu-item flex items-center px-4 py-3 bg-indigo-50 text-indigo-700 rounded-xl font-bold transition group w-full shadow-sm border border-indigo-100';
-                if(icon) icon.className = "w-6 h-6 mr-3 text-indigo-600 scale-110 transition-transform";
+                
+                // CORRECCIÓN AQUÍ: Usar setAttribute para SVG
+                if (icon) {
+                    icon.setAttribute('class', "w-6 h-6 mr-3 text-indigo-600 scale-110 transition-transform");
+                }
             }
         });
     }, 50);
