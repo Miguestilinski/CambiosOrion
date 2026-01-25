@@ -25,52 +25,43 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // --- CONFIGURACIÓN DRAG & DROP ---
     
+    const sortableOptions = {
+        group: 'shared', 
+        animation: 150,
+        ghostClass: 'sortable-ghost',
+        dragClass: 'sortable-drag',
+        handle: '.drag-handle',
+        onEnd: function () { saveOrder(); }
+    };
+
     // 1. LISTA GENERAL (ORIGEN - Clonadora)
     new Sortable(listNormales, {
-        group: {
-            name: 'shared',
-            pull: 'clone', // CLAVE: Al sacar, clona. Se mantiene en ambos lados.
-            put: false     // No puedes arrastrar cosas "hacia" general, ya están ahí.
-        },
-        animation: 150,
-        sort: true, // Se puede reordenar internamente
-        ghostClass: 'sortable-ghost',
-        dragClass: 'sortable-drag',
-        handle: '.drag-handle',
-        onEnd: function (evt) {
-            if (evt.to === listNormales) saveOrder();
-        }
+        ...sortableOptions,
+        pull: 'clone', // CLAVE: Al sacar, clona. Se mantiene en ambos lados.
+        put: false     // No puedes arrastrar cosas "hacia" general, ya están ahí.
     });
 
-    // 2. LISTA DESTACADA (DESTINO - Receptora)
-    new Sortable(listDestacadas, {
-        group: {
-            name: 'shared',
-            pull: false, // No se sacan arrastrando (se borran con boton)
-            put: true    // Acepta items de General
-        },
-        animation: 150,
-        ghostClass: 'sortable-ghost',
-        dragClass: 'sortable-drag',
-        handle: '.drag-handle',
-        onAdd: function (evt) {
-            // Verificar duplicados al soltar
-            const id = evt.item.dataset.id;
-            // Buscar si ya existe otro elemento con el mismo ID en esta lista
-            const items = listDestacadas.querySelectorAll(`.currency-card[data-id="${id}"]`);
-            
-            // Si hay más de 1 (el que ya estaba + el nuevo clonado), borramos el nuevo
-            if (items.length > 1) {
-                evt.item.remove();
-            } else {
-                saveOrder();
-            }
-        },
-        onUpdate: function () {
-            saveOrder(); // Reordenamiento interno
-        }
-    });
+    // 2. DEFINICIÓN DE LA FUNCIÓN QUE FALTABA
+    const setupTargetList = (element) => {
+        new Sortable(element, {
+            ...sortableOptions,
+            pull: false, // No se sacan arrastrando (se borran con botón)
+            put: true,   // Acepta items de General
+            onAdd: function (evt) {
+                // Evitar duplicados visuales en la misma lista
+                const id = evt.item.dataset.id;
+                const items = element.querySelectorAll(`.currency-card[data-id="${id}"]`);
+                if (items.length > 1) {
+                    evt.item.remove(); // Ya estaba, borramos el nuevo clon
+                } else {
+                    saveOrder();
+                }
+            },
+            onUpdate: function () { saveOrder(); } // Reordenamiento interno
+        });
+    };
 
+    // 3. APLICAR A LAS LISTAS DE DESTINO
     setupTargetList(listDestacadas);
     setupTargetList(listStories);
 
@@ -103,19 +94,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             el.className = "currency-card bg-slate-800/80 hover:bg-slate-700 transition p-3 rounded-lg border border-white/5 flex items-center gap-3 group relative select-none shrink-0";
             el.dataset.id = item.id; 
             
-            // Botones de acción
             let actionBtn = '';
-            
-            // Filtro para CLP (por si acaso pasa el backend)
+            // Protección para no borrar CLP
             const esCLP = (item.nombre === 'CLP' || item.id == 99);
 
             if (!esCLP) {
                 if (context === 'destacada') {
-                    // Botón para quitar de destacadas (X ambar)
-                    actionBtn = `<button class="btn-remove-destacada opacity-0 group-hover:opacity-100 transition text-amber-500 hover:bg-amber-500/10 p-2 rounded-lg" title="Quitar Destacado"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>`;
+                    actionBtn = `<button class="btn-remove opacity-0 group-hover:opacity-100 transition text-amber-500 hover:bg-amber-500/10 p-2 rounded-lg" title="Quitar"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>`;
+                } else if (context === 'stories') {
+                    actionBtn = `<button class="btn-remove opacity-0 group-hover:opacity-100 transition text-pink-500 hover:bg-pink-500/10 p-2 rounded-lg" title="Quitar"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>`;
                 } else {
-                    // Botón para eliminar de BD (Basurero rojo)
-                    actionBtn = `<button class="btn-delete-global opacity-0 group-hover:opacity-100 transition text-red-500 hover:bg-red-500/10 p-2 rounded-lg" title="Eliminar del Sistema"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>`;
+                    actionBtn = `<button class="btn-delete-global opacity-0 group-hover:opacity-100 transition text-red-500 hover:bg-red-500/10 p-2 rounded-lg" title="Eliminar"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>`;
                 }
             } else {
                 actionBtn = `<div class="p-2 opacity-30 cursor-not-allowed"><svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg></div>`;
@@ -137,21 +126,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 ${actionBtn}
             `;
 
-            // Eventos seguros (check if element exists)
-            const btnRemove = el.querySelector('.btn-remove-destacada');
+            // Eventos seguros
+            const btnRemove = el.querySelector('.btn-remove');
             if (btnRemove) {
-                btnRemove.onclick = () => {
-                    el.remove(); // Quitar visualmente de la lista derecha
-                    saveOrder(); // Guardar el nuevo estado (ya no estará en la lista enviada)
-                };
+                btnRemove.onclick = () => { el.remove(); saveOrder(); };
             }
-
             const btnDelete = el.querySelector('.btn-delete-global');
             if (btnDelete) {
-                btnDelete.onclick = () => {
-                    deleteTargetId = item.id;
-                    modalDelete.classList.remove('hidden');
-                };
+                btnDelete.onclick = () => { deleteTargetId = item.id; document.getElementById('modal-delete').classList.remove('hidden'); };
             }
 
             container.appendChild(el);
@@ -159,9 +141,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     async function saveOrder() {
-        const normalesIds = Array.from(listNormales.querySelectorAll('.currency-card')).map(el => el.dataset.id);
-        const destacadasIds = Array.from(listDestacadas.querySelectorAll('.currency-card')).map(el => el.dataset.id);
-        const storiesIds = Array.from(listStories.querySelectorAll('.currency-card')).map(el => el.dataset.id);
+        const normales = Array.from(listNormales.querySelectorAll('.currency-card')).map(el => el.dataset.id);
+        const destacadas = Array.from(listDestacadas.querySelectorAll('.currency-card')).map(el => el.dataset.id);
+        const stories = Array.from(listStories.querySelectorAll('.currency-card')).map(el => el.dataset.id);
 
         try {
             await fetch('https://cambiosorion.cl/data/editor-pizarras.php', {
@@ -169,15 +151,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     action: 'update_order',
-                    normales: normalesIds,
-                    destacadas: destacadasIds,
-                    stories: storiesIds
+                    normales: normales,
+                    destacadas: destacadas,
+                    stories: stories
                 })
             });
             updateCounters();
-        } catch (err) {
-            console.error("Error guardando orden:", err);
-        }
+        } catch (err) { console.error("Error guardando:", err); }
     }
 
     // --- AGREGAR ---
