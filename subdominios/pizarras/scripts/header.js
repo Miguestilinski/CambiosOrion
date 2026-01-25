@@ -86,9 +86,6 @@ function setupMobileSidebar() {
     const btnMenu = document.getElementById('mobile-menu-btn');
     const sidebar = document.getElementById('sidebar-container');
     
-    // También controlamos el menú interno específico de Pizarras si existe
-    const internalMenu = document.getElementById('mobile-internal-menu');
-    
     if (!btnMenu || !sidebar) return;
 
     // Crear Backdrop (Fondo oscuro) si no existe
