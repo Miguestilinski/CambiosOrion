@@ -72,11 +72,14 @@ function renderStory(currencies) {
         return;
     }
 
-    // 3. ADAPTAR CONTENEDOR (SOLO UNA COLUMNA)
-    // Si son muchas divisas (más de 5), reducimos un poco el padding y el gap 
-    // para que quepan bien verticalmente sin necesidad de dos columnas.
-    if (activeCurrencies.length > 5) {
-        container.className = "relative z-10 flex-grow px-16 py-4 flex flex-col justify-center gap-5";
+    // 3. ADAPTAR CONTENEDOR
+    // --- LÓGICA DE MODO COMPACTO ---
+    // Si hay más de 5 divisas, activamos el modo compacto para que quepan bien
+    const isCompact = activeCurrencies.length > 5;
+
+    if (isCompact) {
+        // Menos padding vertical (py-2) y menos espacio entre tarjetas (gap-4)
+        container.className = "relative z-10 flex-grow px-16 py-2 flex flex-col justify-center gap-4";
     } else {
         container.className = "relative z-10 flex-grow px-16 py-10 flex flex-col justify-center gap-8";
     }
@@ -91,33 +94,36 @@ function renderStory(currencies) {
         const compra = isNaN(rawCompra) ? '---' : rawCompra.toLocaleString('es-CL', {minimumFractionDigits: 0, maximumFractionDigits: 3});
         const venta = isNaN(rawVenta) ? '---' : rawVenta.toLocaleString('es-CL', {minimumFractionDigits: 0, maximumFractionDigits: 3});
         
-        // --- LÓGICA DE ICONOS (ORO Y PLATA) ---
+        // --- ICONOS ---
         let iconUrl = divisa.icono_circular;
-        if (divisa.nombre === 'ORO 100') {
-            iconUrl = 'https://cambiosorion.cl/orionapp/icons/ORO100.svg';
-        } else if (divisa.nombre === 'PLATA OZ') {
-            iconUrl = 'https://cambiosorion.cl/orionapp/icons/Plata.svg';
-        }
+        if (divisa.nombre === 'ORO 100') iconUrl = 'https://cambiosorion.cl/orionapp/icons/ORO100.svg';
+        else if (divisa.nombre === 'PLATA OZ') iconUrl = 'https://cambiosorion.cl/orionapp/icons/Plata.svg';
 
-        // --- LÓGICA DE ESTILOS (ORO Y PLATA) ---
-        let nameSizeClass = 'text-5xl';
-        let priceSizeClass = 'text-5xl';
-        let gapClass = 'gap-12';
+        // --- ESTILOS DINÁMICOS (Compacto vs Normal) ---
+        // Definimos las clases base dependiendo del modo
+        const cardPadding = isCompact ? 'p-4' : 'p-6';
+        const iconSize = isCompact ? 'w-20 h-20' : 'w-24 h-24'; // Iconos más pequeños
+        const labelSize = isCompact ? 'text-lg' : 'text-xl';
+        
+        // Tamaños de fuente por defecto
+        let nameSizeClass = isCompact ? 'text-4xl' : 'text-5xl';
+        let priceSizeClass = isCompact ? 'text-4xl' : 'text-5xl';
+        let gapClass = isCompact ? 'gap-8' : 'gap-12';
 
-        // Aplicamos el mismo tratamiento a ORO 100 y PLATA OZ
+        // Ajuste especial para ORO y PLATA (siempre un poco más chicos que el resto)
         if (divisa.nombre === 'ORO 100' || divisa.nombre === 'PLATA OZ') {
-            nameSizeClass = 'text-4xl';
-            priceSizeClass = 'text-4xl';
-            gapClass = 'gap-8';
+            nameSizeClass = isCompact ? 'text-3xl' : 'text-4xl';
+            priceSizeClass = isCompact ? 'text-3xl' : 'text-4xl';
+            gapClass = 'gap-6';
         }
         
         // HTML String intacto para no romper html2canvas
         html += `
-        <div class="glass-card rounded-[2.5rem] p-6 flex items-center justify-between shadow-2xl relative overflow-hidden group">
+        <div class="glass-card rounded-[2.5rem] ${cardPadding} flex items-center justify-between shadow-2xl relative overflow-hidden group">
             <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             
-            <div class="flex items-center gap-6 z-10">
-                <img src="${iconUrl}" class="w-24 h-24 rounded-full border-[5px] border-white/20 bg-white object-cover shadow-lg" crossorigin="anonymous" alt="${divisa.nombre}">
+            <div class="flex items-center gap-5 z-10">
+                <img src="${iconUrl}" class="${iconSize} rounded-full border-[4px] border-white/20 bg-white object-cover shadow-lg" crossorigin="anonymous" alt="${divisa.nombre}">
                 <div class="flex flex-col gap-0 justify-center"> 
                     <h2 class="${nameSizeClass} font-black text-white leading-none mt-1 story-name">${divisa.nombre}</h2>
                 </div>
@@ -125,11 +131,11 @@ function renderStory(currencies) {
             
             <div class="flex ${gapClass} text-right z-10 items-center">
                 <div class="flex flex-col items-end gap-0">
-                    <span class="text-xl text-white/70 uppercase font-bold tracking-widest mb-1 story-label">Compra</span>
+                    <span class="${labelSize} text-white/70 uppercase font-bold tracking-widest mb-1 story-label">Compra</span>
                     <span class="${priceSizeClass} font-bold text-white leading-none story-price">$${compra}</span>
                 </div>
                 <div class="flex flex-col items-end gap-0">
-                    <span class="text-xl text-white/70 uppercase font-bold tracking-widest mb-1 story-label">Venta</span>
+                    <span class="${labelSize} text-white/70 uppercase font-bold tracking-widest mb-1 story-label">Venta</span>
                     <span class="${priceSizeClass} font-bold text-white leading-none story-price">$${venta}</span>
                 </div>
             </div>
