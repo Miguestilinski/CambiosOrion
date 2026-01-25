@@ -1,16 +1,13 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // --- REFERENCIAS ---
-    const headerBadge = document.getElementById('header-badge');
-    const headerName = document.getElementById('header-user-name');
-    const sidebarContainer = document.getElementById('sidebar-container');
+import { initAdminHeader } from './header.js';
+
+document.addEventListener('DOMContentLoaded', async() => {
+    // --- REFERENCIAS UI LOCALES ---
     const tableBody = document.getElementById('liquidaciones-table-body');
-    
-    // Filtros
     const filterMonth = document.getElementById('filter-month');
     const filterYear = document.getElementById('filter-year');
     const colMain = document.getElementById('col-main');
 
-    // Modal
+    // Referencias del Modal
     const modal = document.getElementById('modal-upload');
     const btnClose = document.getElementById('close-modal');
     const btnCancel = document.getElementById('cancel-upload');
@@ -20,14 +17,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const uploadEmpName = document.getElementById('upload-emp-name');
     const uploadPeriodText = document.getElementById('upload-period-text');
 
-    // Estado
-    let currentUserId = null;
-    let isAdmin = false;
-    let selectedEmpId = null; // Para el modal
+    // --- 1. INICIALIZACIÓN GLOBAL ---
+    // Carga sesión, sidebar, header y marca 'liquidaciones' como activo
+    const sessionData = await initAdminHeader('liquidaciones');
+    
+    if (!sessionData.isAuthenticated) return;
 
-    // --- INICIO ---
+    // --- 2. CONFIGURACIÓN LOCAL ---
+    let currentUserId = sessionData.equipo_id;
+    let selectedEmpId = null; 
+
+    // Determinar si es Admin para la lógica de la tabla (subir archivos vs descargar)
+    const role = (sessionData.rol || '').toLowerCase().trim();
+    const isAdmin = ['socio', 'admin', 'gerente', 'rrhh'].includes(role);
+
+    // Ajuste UI específico de esta página
+    if (colMain) colMain.textContent = isAdmin ? "Colaborador" : "Periodo / Mes";
+
+    // --- 3. INICIAR LÓGICA DE NEGOCIO ---
     initSelectors();
-    getSession();
+    fetchLiquidaciones();
 
     // --- FUNCIONES ---
 
@@ -46,45 +55,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         filterMonth.addEventListener('change', fetchLiquidaciones);
         filterYear.addEventListener('change', fetchLiquidaciones);
-    }
-
-    async function getSession() {
-        try {
-            const res = await fetch("https://cambiosorion.cl/data/session_status.php", { credentials: "include" });
-            const data = await res.json();
-            
-            if (!data.isAuthenticated) return window.location.href = 'https://admin.cambiosorion.cl/login';
-
-            currentUserId = data.equipo_id;
-            headerName.textContent = (data.nombre || 'Usuario').split(' ')[0];
-            
-            // Determinar si es Admin/Socio/RRHH
-            const role = (data.rol || '').toLowerCase();
-            isAdmin = ['socio', 'admin', 'gerente', 'rrhh'].includes(role);
-
-            if (headerBadge) {
-                headerBadge.textContent = isAdmin ? "PORTAL ADMIN" : "PORTAL ORION";
-                headerBadge.className = "hidden md:inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-indigo-600 text-white border border-indigo-500/30 tracking-wider uppercase shadow-lg shadow-indigo-500/20";
-            }
-
-            // Si es admin, el título de la columna cambia
-            if (colMain) colMain.textContent = isAdmin ? "Colaborador" : "Periodo / Mes";
-
-            loadSidebar();
-            fetchLiquidaciones();
-
-        } catch (e) { console.error(e); }
-    }
-
-    function loadSidebar() {
-        fetch('sidebar.html').then(r => r.text()).then(html => {
-            if (sidebarContainer) {
-                sidebarContainer.innerHTML = html;
-                if(isAdmin) sidebarContainer.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
-                const link = sidebarContainer.querySelector('a[href="liquidaciones"]');
-                if(link) link.classList.add('bg-indigo-50', 'text-indigo-700', 'font-bold');
-            }
-        });
     }
 
     async function fetchLiquidaciones() {
