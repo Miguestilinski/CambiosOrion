@@ -220,19 +220,8 @@
 
     <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script type="module" src="https://cambiosorion.cl/orionapp/public/scripts/header.js" crossorigin="anonymous"></script>
+    <script type="module" src="https://admin.cambiosorion.cl/scripts/header.js"></script>
     <script type="module" src="https://admin.cambiosorion.cl/scripts/liquidaciones.js"></script>
-    
-    <script>
-        // Menu toggle móvil
-        const navBtn = document.getElementById('nav-menu-button');
-        const mobileMenu = document.getElementById('nav-mobile-menu');
-        if(navBtn && mobileMenu) {
-            navBtn.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
-            });
-        }
-        // El resto de la lógica de perfil la maneja header.js
-    </script>
+
 </body>
 </html>
