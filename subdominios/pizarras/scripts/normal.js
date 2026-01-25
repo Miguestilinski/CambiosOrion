@@ -50,59 +50,62 @@ function processData(data) {
     list.innerHTML = ''; 
     let cambios = false;
 
-    const divisasOrdenadas = [
-        "USD", "EUR", "ARS", "BRL", "PEN", "COP",
-        "UYU", "BOB", "CAD", "GBP", "JPY", "CNY",
-        "SEK", "AUD", "MXN", "NZD", "CHF", "DKK",
-        "NOK", "ORO 100"
-    ];
+    // 1. FILTRAR Y ORDENAR
+    // Quitamos CLP y ordenamos por la columna 'orden' (ascendente)
+    // Si 'orden' es null o 0, lo mandamos al final (999)
+    const divisas = data
+    .filter(d => d.nombre !== 'CLP')
+    .sort((a, b) => {
+        const orderA = (a.orden && a.orden > 0) ? parseInt(a.orden) : 999;
+        const orderB = (b.orden && b.orden > 0) ? parseInt(b.orden) : 999;
+        return orderA - orderB;
+    });
 
-    divisasOrdenadas.forEach((key) => {
-        const divisa = data.find(d => d.nombre === key);
-        if (divisa) {
-            const { icono_circular, compra, venta } = divisa;
+    divisas.forEach((divisa) => {
+        const { nombre, icono_circular, compra, venta } = divisa;
+        const key = nombre;
             
-            // FORMATEO CON PUNTOS Y COMAS (es-CL)
-            // maximumFractionDigits: 10 asegura que no se corten decimales importantes (ej: 0,00005)
-            const compraFmt = parseFloat(compra).toLocaleString('es-CL', { minimumFractionDigits: 0, maximumFractionDigits: 10 });
-            const ventaFmt = parseFloat(venta).toLocaleString('es-CL', { minimumFractionDigits: 0, maximumFractionDigits: 10 });
+        // FORMATEO CON PUNTOS Y COMAS (es-CL)
+        // maximumFractionDigits: 10 asegura que no se corten decimales importantes (ej: 0,00005)
+        const compraFmt = parseFloat(compra).toLocaleString('es-CL', { minimumFractionDigits: 0, maximumFractionDigits: 10 });
+        const ventaFmt = parseFloat(venta).toLocaleString('es-CL', { minimumFractionDigits: 0, maximumFractionDigits: 10 });
 
-            // Detectar números largos (más de 5 caracteres)
-            // Ahora '1.900.000' tiene 9 caracteres, así que la lógica funciona perfecto
-            const isLong = (compraFmt.length > 5 || ventaFmt.length > 5);
-            
-            // Fuentes reducidas: 1.8vh para millones, 2.5vh para normales
-            const fontSizeClass = isLong ? 'text-[1.8vh]' : 'text-[2.5vh]';
+        // Detectar números largos (más de 5 caracteres)
+        // Ahora '1.900.000' tiene 9 caracteres, así que la lógica funciona perfecto
+        const isLong = (compraFmt.length > 5 || ventaFmt.length > 5);
+        
+        // Fuentes reducidas: 1.8vh para millones, 2.5vh para normales
+        const fontSizeClass = isLong ? 'text-[1.8vh]' : 'text-[2.5vh]';
 
-            // Detectar cambios
-            let flashClass = "";
-            if (preciosAnteriores[key]) {
-                if (preciosAnteriores[key].compra !== compra || preciosAnteriores[key].venta !== venta) {
-                    cambios = true;
-                    flashClass = "bg-white/20 transition-colors duration-1000";
-                }
+        // Detectar cambios
+        let flashClass = "";
+        if (preciosAnteriores[key]) {
+            if (preciosAnteriores[key].compra !== compra || preciosAnteriores[key].venta !== venta) {
+                cambios = true;
+                flashClass = "bg-white/20 transition-colors duration-1000";
             }
-            preciosAnteriores[key] = { compra, venta };
-
-            const row = document.createElement("tr");
-            row.className = `h-row hover:bg-white/5 ${flashClass}`; 
-            
-            row.innerHTML = `
-                <td class="pl-4 py-0 align-middle">
-                    <img src="${icono_circular}" class="h-[2.5vh] w-[2.5vh] object-contain rounded-full shadow-sm">
-                </td>
-                <td class="text-left align-middle font-semibold tracking-wide text-shadow text-[1.8vh]">
-                    ${key}
-                </td>
-                <td class="text-center align-middle ${fontSizeClass} font-bold bg-black/10 tracking-widest text-shadow font-mono text-white">
-                    ${compraFmt}
-                </td>
-                <td class="text-center align-middle ${fontSizeClass} font-bold tracking-widest text-shadow font-mono text-white">
-                    ${ventaFmt}
-                </td>
-            `;
-            list.appendChild(row);
         }
+        preciosAnteriores[key] = { compra, venta };
+
+        const row = document.createElement("tr");
+        row.className = `h-row hover:bg-white/5 ${flashClass}`; 
+        
+        row.innerHTML = `
+            <td class="pl-4 py-0 align-middle">
+                <img src="${icono_circular}" class="h-[2.5vh] w-[2.5vh] object-contain rounded-full shadow-sm">
+            </td>
+            <td class="text-left align-middle font-semibold tracking-wide text-shadow text-[1.8vh]">
+                ${key}
+            </td>
+            <td class="text-center align-middle ${fontSizeClass} font-bold bg-black/10 tracking-widest text-shadow font-mono text-white">
+                ${compraFmt}
+            </td>
+            <td class="text-center align-middle ${fontSizeClass} font-bold tracking-widest text-shadow font-mono text-white">
+                ${ventaFmt}
+            </td>
+        `;
+        list.appendChild(row);
+    
     });
 
     if (cambios) {
