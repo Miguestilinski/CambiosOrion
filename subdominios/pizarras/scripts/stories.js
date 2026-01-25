@@ -72,11 +72,13 @@ function renderStory(currencies) {
         return;
     }
 
-    // 3. ADAPTAR GRID
-    if (activeCurrencies.length <= 4) {
-        container.className = "relative z-10 flex-grow px-16 py-10 flex flex-col justify-center gap-8";
+    // 3. ADAPTAR CONTENEDOR (SOLO UNA COLUMNA)
+    // Si son muchas divisas (más de 5), reducimos un poco el padding y el gap 
+    // para que quepan bien verticalmente sin necesidad de dos columnas.
+    if (activeCurrencies.length > 5) {
+        container.className = "relative z-10 flex-grow px-16 py-4 flex flex-col justify-center gap-5";
     } else {
-        container.className = "relative z-10 flex-grow px-10 py-6 grid grid-cols-2 gap-x-6 gap-y-5 content-center";
+        container.className = "relative z-10 flex-grow px-16 py-10 flex flex-col justify-center gap-8";
     }
 
     let html = '';
@@ -89,17 +91,21 @@ function renderStory(currencies) {
         const compra = isNaN(rawCompra) ? '---' : rawCompra.toLocaleString('es-CL', {minimumFractionDigits: 0, maximumFractionDigits: 3});
         const venta = isNaN(rawVenta) ? '---' : rawVenta.toLocaleString('es-CL', {minimumFractionDigits: 0, maximumFractionDigits: 3});
         
+        // --- LÓGICA DE ICONOS (ORO Y PLATA) ---
         let iconUrl = divisa.icono_circular;
         if (divisa.nombre === 'ORO 100') {
             iconUrl = 'https://cambiosorion.cl/orionapp/icons/ORO100.svg';
+        } else if (divisa.nombre === 'PLATA OZ') {
+            iconUrl = 'https://cambiosorion.cl/orionapp/icons/Plata.svg';
         }
 
-        // Lógica de estilos condicionales
+        // --- LÓGICA DE ESTILOS (ORO Y PLATA) ---
         let nameSizeClass = 'text-5xl';
         let priceSizeClass = 'text-5xl';
         let gapClass = 'gap-12';
 
-        if (divisa.nombre === 'ORO 100') {
+        // Aplicamos el mismo tratamiento a ORO 100 y PLATA OZ
+        if (divisa.nombre === 'ORO 100' || divisa.nombre === 'PLATA OZ') {
             nameSizeClass = 'text-4xl';
             priceSizeClass = 'text-4xl';
             gapClass = 'gap-8';
@@ -130,12 +136,6 @@ function renderStory(currencies) {
         </div>
         `;
     });
-
-    if (activeCurrencies.length <= 4) {
-        container.className = "relative z-10 flex-grow px-14 py-10 flex flex-col justify-center gap-8";
-    } else {
-        container.className = "relative z-10 flex-grow px-14 py-6 grid grid-cols-2 gap-x-8 gap-y-4 content-center";
-    }
 
     container.innerHTML = html;
 }
@@ -209,13 +209,15 @@ async function downloadStory() {
     const bgImgElement = document.getElementById('background-img');
     const bgPromise = bgImgElement ? convertImageToBase64(bgImgElement.src) : Promise.resolve(null);
 
-    // 2. PRE-CARGA ORO 100 -> AHORA COMO PNG
-    // CAMBIO: Usamos la nueva función convertSvgToPng en lugar de convertImageToBase64
+    /// 2. PRE-CARGA ICONOS ESPECIALES (SVG -> PNG)
     const oroUrl = 'https://cambiosorion.cl/orionapp/icons/ORO100.svg';
+    const plataUrl = 'https://cambiosorion.cl/orionapp/icons/Plata.svg';
+
     const oroPromise = convertSvgToPng(oroUrl); 
+    const plataPromise = convertSvgToPng(plataUrl);
 
     // Esperamos ambas (ahora base64Oro será un PNG real, no un SVG)
-    const [base64Bg, base64Oro] = await Promise.all([bgPromise, oroPromise]);
+    const [base64Bg, base64Oro, base64Plata] = await Promise.all([bgPromise, oroPromise, plataPromise]);
 
     const originalCanvas = document.getElementById('story-canvas');
 
@@ -277,8 +279,14 @@ async function downloadStory() {
                         // Buscamos cualquier imagen que tenga 'ORO' en su src
                         doc.querySelectorAll('img[src*="ORO"]').forEach(img => {
                             img.src = base64Oro;
-                            // Al ser PNG, html2canvas lo dibuja sin problemas
-                            // Solo aseguramos que mantenga su estilo visual
+                            img.style.display = 'block';
+                        });
+                    }
+
+                    // INYECTAR PLATA OZ (NUEVO)
+                    if (base64Plata) {
+                        doc.querySelectorAll('img[src*="Plata"]').forEach(img => {
+                            img.src = base64Plata;
                             img.style.display = 'block';
                         });
                     }
