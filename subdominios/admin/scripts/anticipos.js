@@ -1,9 +1,8 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // DOM Elements
-    const headerBadge = document.getElementById('header-badge');
-    const headerName = document.getElementById('header-user-name');
-    const headerEmail = document.getElementById('dropdown-user-email');
-    const sidebarContainer = document.getElementById('sidebar-container');
+import { initAdminHeader } from './header.js';
+
+document.addEventListener('DOMContentLoaded', async() => {
+    // --- DOM ELEMENTS (Solo los propios de la página) ---
+    // Nota: Eliminamos headerBadge, headerName, sidebarContainer porque header.js los maneja.
     
     // Personal UI
     const availableAmountEl = document.getElementById('available-amount');
@@ -30,71 +29,26 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 101, userId: 1, user: "Juan Pérez", fecha: "2025-05-10", monto: 50000, sueldo: 600000, estado: "pendiente" },
         { id: 102, userId: 2, user: "Maria Soto", fecha: "2025-05-11", monto: 120000, sueldo: 800000, estado: "aprobado" },
         { id: 103, userId: 3, user: "Carlos Diaz", fecha: "2025-05-12", monto: 30000, sueldo: 550000, estado: "rechazado" },
-        // Mis datos simulados (userId: 99 es el usuario logueado en este ejemplo)
         { id: 104, userId: 99, user: "Yo Mismo", fecha: "2025-04-15", monto: 45000, sueldo: 900000, estado: "aprobado" }
     ];
 
-    // --- INITIALIZATION ---
-    getSession();
+    // --- 1. INICIALIZACIÓN GLOBAL ---
+    const sessionData = await initAdminHeader('anticipos');
+
+    if (!sessionData.isAuthenticated) return;
+
+    currentUser = sessionData; // Guardamos datos para uso local
+
+    // --- 2. INICIALIZACIÓN LOCAL ---
     initFilters();
+    loadPersonalData(); // Carga la vista de empleado para todos
 
-    // --- SESSION & ROLE LOGIC ---
-    async function getSession() {
-        try {
-            const res = await fetch("https://cambiosorion.cl/data/session_status.php", { credentials: "include" });
-            if (!res.ok) throw new Error("Error sesión");
-            const data = await res.json();
-            
-            if (!data.isAuthenticated) {
-                window.location.href = 'https://admin.cambiosorion.cl/login';
-                return;
-            }
-
-            currentUser = data;
-            
-            // Setup Basic UI
-            if(headerName) headerName.textContent = (data.nombre || 'Usuario').split(' ')[0];
-            if(headerEmail) headerEmail.textContent = data.correo;
-
-            // Load Sidebar
-            configureSidebar((data.rol || '').toLowerCase().trim());
-
-            // Load Data based on Role
-            loadPersonalData(); // Everyone loads this
-            
-            const superUsers = ['socio', 'admin', 'gerente'];
-            if (superUsers.includes((data.rol || '').toLowerCase())) {
-                setupAdminView();
-            } else {
-                if(headerBadge) {
-                    headerBadge.textContent = "PORTAL ORION";
-                    headerBadge.className = "hidden md:inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-indigo-600 text-white border border-indigo-500/30 tracking-wider uppercase shadow-lg shadow-indigo-500/20";
-                }
-            }
-
-        } catch (error) {
-            console.error(error);
-            // window.location.href = 'https://admin.cambiosorion.cl/login';
-        }
-    }
-
-    function configureSidebar(rol) {
-        const superUsers = ['socio', 'admin', 'gerente']; 
-        const isSuperUser = superUsers.includes(rol);
-
-        fetch('sidebar.html')
-            .then(res => res.text())
-            .then(html => {
-                if(sidebarContainer) {
-                    sidebarContainer.innerHTML = html;
-                    const adminItems = sidebarContainer.querySelectorAll('.admin-only');
-                    if (isSuperUser) adminItems.forEach(item => item.classList.remove('hidden'));
-                    else adminItems.forEach(item => item.remove());
-                    
-                    const active = sidebarContainer.querySelector('a[href="anticipos"]');
-                    if(active) active.classList.add('bg-indigo-50', 'text-indigo-700', 'font-bold');
-                }
-            });
+    // Lógica de Roles para ver panel Admin
+    const rol = (sessionData.rol || '').toLowerCase().trim();
+    const superUsers = ['socio', 'admin', 'gerente', 'rrhh']; // Agregué RRHH por consistencia
+    
+    if (superUsers.includes(rol)) {
+        setupAdminView();
     }
 
     // --- PERSONAL DATA LOGIC ---
@@ -159,11 +113,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- ADMIN LOGIC ---
     function setupAdminView() {
+        // Solo mostramos la sección del cuerpo de la página
         if(adminSection) adminSection.classList.remove('hidden');
-        if(headerBadge) {
-            headerBadge.textContent = "PORTAL ADMIN";
-            headerBadge.className = "hidden md:inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-indigo-600 text-white border border-indigo-500/30 tracking-wider uppercase shadow-lg shadow-indigo-500/20";
-        }
         renderAdminTable();
     }
 
