@@ -23,21 +23,52 @@ document.addEventListener('DOMContentLoaded', async () => {
     loadBoard();
 
     // --- CONFIGURACIÓN DRAG & DROP ---
-    // Usamos el mismo grupo 'shared' para permitir movimiento fluido entre ambas listas
-    const sortableOptions = {
-        group: 'shared', // Permite mover de una lista a la otra
+    
+    // 1. LISTA GENERAL (ORIGEN - Clonadora)
+    new Sortable(listNormales, {
+        group: {
+            name: 'shared',
+            pull: 'clone', // CLAVE: Al sacar, clona. Se mantiene en ambos lados.
+            put: false     // No puedes arrastrar cosas "hacia" general, ya están ahí.
+        },
         animation: 150,
+        sort: true, // Se puede reordenar internamente
         ghostClass: 'sortable-ghost',
         dragClass: 'sortable-drag',
         handle: '.drag-handle',
         onEnd: function (evt) {
-            // Se ejecuta al soltar en cualquier lista
-            saveOrder();
+            if (evt.to === listNormales) saveOrder();
         }
-    };
+    });
 
-    new Sortable(listNormales, sortableOptions);
-    new Sortable(listDestacadas, sortableOptions);
+    // 2. LISTA DESTACADA (DESTINO - Receptora)
+    new Sortable(listDestacadas, {
+        group: {
+            name: 'shared',
+            pull: false, // No se sacan arrastrando (se borran con boton)
+            put: true    // Acepta items de General
+        },
+        animation: 150,
+        ghostClass: 'sortable-ghost',
+        dragClass: 'sortable-drag',
+        handle: '.drag-handle',
+        onAdd: function (evt) {
+            // Verificar duplicados al soltar
+            const id = evt.item.dataset.id;
+            // Buscar si ya existe otro elemento con el mismo ID en esta lista
+            const items = listDestacadas.querySelectorAll(`.currency-card[data-id="${id}"]`);
+            
+            // Si hay más de 1 (el que ya estaba + el nuevo clonado), borramos el nuevo
+            if (items.length > 1) {
+                evt.item.remove();
+            } else {
+                saveOrder();
+            }
+        },
+        onUpdate: function () {
+            saveOrder(); // Reordenamiento interno
+        }
+    });
 
     // --- FUNCIONES ---
 
@@ -46,7 +77,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             const res = await fetch('https://cambiosorion.cl/data/editor-pizarras.php?action=get_board');
             const data = await res.json();
             
+            // Renderizar Normales (Maestro: Muestra TODAS las de la tabla divisas)
             renderList(listNormales, data.normales, 'normal');
+            
+            // Renderizar Destacadas (Solo las que tienen flag destacada=1)
             renderList(listDestacadas, data.destacadas, 'destacada');
             
             updateCounters();
@@ -67,14 +101,22 @@ document.addEventListener('DOMContentLoaded', async () => {
             el.className = "currency-card bg-slate-800/80 hover:bg-slate-700 transition p-3 rounded-lg border border-white/5 flex items-center gap-3 group relative select-none shrink-0";
             el.dataset.id = item.id; 
             
-            // Iconos de acción según contexto
+            // Botones de acción
             let actionBtn = '';
-            if (context === 'destacada') {
-                // En destacada: Botón para "Bajar a Normal" (Visualmente parece quitar)
-                actionBtn = `<button class="btn-demote opacity-0 group-hover:opacity-100 transition text-amber-500 hover:bg-amber-500/10 p-2 rounded-lg" title="Mover a Normal"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button>`;
+            
+            // Filtro para CLP (por si acaso pasa el backend)
+            const esCLP = (item.nombre === 'CLP' || item.id == 99);
+
+            if (!esCLP) {
+                if (context === 'destacada') {
+                    // Botón para quitar de destacadas (X ambar)
+                    actionBtn = `<button class="btn-remove-destacada opacity-0 group-hover:opacity-100 transition text-amber-500 hover:bg-amber-500/10 p-2 rounded-lg" title="Quitar Destacado"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>`;
+                } else {
+                    // Botón para eliminar de BD (Basurero rojo)
+                    actionBtn = `<button class="btn-delete-global opacity-0 group-hover:opacity-100 transition text-red-500 hover:bg-red-500/10 p-2 rounded-lg" title="Eliminar del Sistema"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>`;
+                }
             } else {
-                // En normal: Botón Eliminar definitivo
-                actionBtn = `<button class="btn-delete opacity-0 group-hover:opacity-100 transition text-red-500 hover:bg-red-500/10 p-2 rounded-lg" title="Eliminar de Pizarra"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>`;
+                actionBtn = `<div class="p-2 opacity-30 cursor-not-allowed"><svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg></div>`;
             }
 
             el.innerHTML = `
@@ -87,31 +129,26 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <div class="flex-1 min-w-0">
                     <h4 class="font-bold text-sm text-white truncate">${item.nombre}</h4>
                     <div class="flex gap-2 text-[10px] text-slate-400 font-mono">
-                        <span>C: $${parseFloat(item.compra)}</span> <span>V: $${parseFloat(item.venta)}</span>
+                        <span>$${parseFloat(item.compra)}</span> / <span>$${parseFloat(item.venta)}</span>
                     </div>
                 </div>
                 ${actionBtn}
             `;
 
-            // Configurar eventos SIN ERROR DE NULL
-            const btnDelete = el.querySelector('.btn-delete');
+            // Eventos seguros (check if element exists)
+            const btnRemove = el.querySelector('.btn-remove-destacada');
+            if (btnRemove) {
+                btnRemove.onclick = () => {
+                    el.remove(); // Quitar visualmente de la lista derecha
+                    saveOrder(); // Guardar el nuevo estado (ya no estará en la lista enviada)
+                };
+            }
+
+            const btnDelete = el.querySelector('.btn-delete-global');
             if (btnDelete) {
                 btnDelete.onclick = () => {
                     deleteTargetId = item.id;
                     modalDelete.classList.remove('hidden');
-                };
-            }
-
-            const btnDemote = el.querySelector('.btn-demote');
-            if (btnDemote) {
-                btnDemote.onclick = () => {
-                    // Mover visualmente a Normal y guardar
-                    listNormales.appendChild(el);
-                    // Re-renderizamos para actualizar el icono del botón
-                    // Pero para efectos visuales rápidos, saveOrder() se encarga de la lógica
-                    saveOrder();
-                    // Opcional: Recargar todo para actualizar iconos correctos
-                    setTimeout(loadBoard, 200); 
                 };
             }
 
@@ -139,7 +176,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // --- AGREGAR DIVISA ---
+    // --- AGREGAR ---
     btnAdd.onclick = async () => {
         modalAdd.classList.remove('hidden');
         searchCandidate.value = '';
@@ -157,7 +194,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     function renderCandidates(candidates) {
         listCandidates.innerHTML = '';
         if (!candidates || candidates.length === 0) {
-            listCandidates.innerHTML = '<div class="text-center text-slate-500 py-4 text-sm">No hay divisas disponibles.</div>';
+            listCandidates.innerHTML = '<div class="text-center text-slate-500 py-4 text-sm">No hay divisas nuevas.</div>';
             return;
         }
 
@@ -204,7 +241,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         } catch (err) { console.error(err); }
     }
 
-    // --- ELIMINAR ---
+    // --- ELIMINAR BD ---
     btnConfirmDelete.onclick = async () => {
         if (!deleteTargetId) return;
         btnConfirmDelete.disabled = true;
