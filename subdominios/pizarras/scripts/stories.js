@@ -38,59 +38,70 @@ function renderStory(currencies) {
     const container = document.getElementById('currency-grid');
     if (!container) return;
 
+    const storiesCurrencies = currencies.filter(d => d.stories == 1 || d.stories === '1');
+
+    if (storiesCurrencies.length === 0) {
+        container.innerHTML = '<div class="text-center text-2xl text-white/50">Configure divisas en el Editor</div>';
+        return;
+    }
+
     let html = '';
 
-    currencies.forEach(divisa => {
-        if (TARGET_CURRENCIES.includes(divisa.nombre)) {
-            const compraFmt = parseFloat(divisa.compra).toLocaleString('es-CL', { maximumFractionDigits: divisa.compra < 100 ? 2 : 0 });
-            const ventaFmt = parseFloat(divisa.venta).toLocaleString('es-CL', { maximumFractionDigits: divisa.venta < 100 ? 2 : 0 });
+    storiesCurrencies.forEach(divisa => {
+        const compraFmt = parseFloat(divisa.compra).toLocaleString('es-CL', { maximumFractionDigits: divisa.compra < 100 ? 2 : 0 });
+        const ventaFmt = parseFloat(divisa.venta).toLocaleString('es-CL', { maximumFractionDigits: divisa.venta < 100 ? 2 : 0 });
+        
+        // Usamos la URL estándar (sin espacios)
+        let iconUrl = divisa.icono_circular;
+        if (divisa.nombre === 'ORO 100') {
+            iconUrl = 'https://cambiosorion.cl/orionapp/icons/ORO100.svg';
+        }
+
+        // === NUEVO: AJUSTE DE ESPACIO PARA ORO 100 ===
+        // Definimos variables por defecto
+        let nameSizeClass = 'text-5xl';   // Tamaño normal nombre
+        let priceSizeClass = 'text-5xl';  // Tamaño normal precio
+        let gapClass = 'gap-12';          // Separación normal entre compra y venta
+
+        // Si es ORO 100 (números gigantes), achicamos todo un poco para que entre bien
+        if (divisa.nombre === 'ORO 100') {
+            nameSizeClass = 'text-4xl';  // Nombre un poco más pequeño
+            priceSizeClass = 'text-4xl'; // Precios más pequeños para que quepan los millones
+            gapClass = 'gap-8';          // Reducimos el hueco entre precios para ganar espacio lateral
+        }
+        // =============================================
+
+        html += `
+        <div class="glass-card rounded-[2.5rem] p-6 flex items-center justify-between shadow-2xl relative overflow-hidden group">
+            <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             
-            // Usamos la URL estándar (sin espacios)
-            let iconUrl = divisa.icono_circular;
-            if (divisa.nombre === 'ORO 100') {
-                iconUrl = 'https://cambiosorion.cl/orionapp/icons/ORO100.svg';
-            }
-
-            // === NUEVO: AJUSTE DE ESPACIO PARA ORO 100 ===
-            // Definimos variables por defecto
-            let nameSizeClass = 'text-5xl';   // Tamaño normal nombre
-            let priceSizeClass = 'text-5xl';  // Tamaño normal precio
-            let gapClass = 'gap-12';          // Separación normal entre compra y venta
-
-            // Si es ORO 100 (números gigantes), achicamos todo un poco para que entre bien
-            if (divisa.nombre === 'ORO 100') {
-                nameSizeClass = 'text-4xl';  // Nombre un poco más pequeño
-                priceSizeClass = 'text-4xl'; // Precios más pequeños para que quepan los millones
-                gapClass = 'gap-8';          // Reducimos el hueco entre precios para ganar espacio lateral
-            }
-            // =============================================
-
-            html += `
-            <div class="glass-card rounded-[2.5rem] p-6 flex items-center justify-between shadow-2xl relative overflow-hidden group">
-                <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                
-                <div class="flex items-center gap-6 z-10">
-                    <img src="${iconUrl}" class="w-24 h-24 rounded-full border-[5px] border-white/20 bg-white object-cover shadow-lg" crossorigin="anonymous" alt="${divisa.nombre}">
-                    <div class="flex flex-col gap-0 justify-center"> 
-                        <h2 class="${nameSizeClass} font-black text-white leading-none mt-1 story-name">${divisa.nombre}</h2>
-                    </div>
-                </div>
-                
-                <div class="flex ${gapClass} text-right z-10 items-center">
-                    <div class="flex flex-col items-end gap-0">
-                        <span class="text-xl text-white/70 uppercase font-bold tracking-widest mb-1 story-label">Compra</span>
-                        <span class="${priceSizeClass} font-bold text-white leading-none story-price">$${compraFmt}</span>
-                    </div>
-                    <div class="flex flex-col items-end gap-0">
-                        <span class="text-xl text-white/70 uppercase font-bold tracking-widest mb-1 story-label">Venta</span>
-                        <span class="${priceSizeClass} font-bold text-white leading-none story-price">$${ventaFmt}</span>
-                    </div>
+            <div class="flex items-center gap-6 z-10">
+                <img src="${iconUrl}" class="w-24 h-24 rounded-full border-[5px] border-white/20 bg-white object-cover shadow-lg" crossorigin="anonymous" alt="${divisa.nombre}">
+                <div class="flex flex-col gap-0 justify-center"> 
+                    <h2 class="${nameSizeClass} font-black text-white leading-none mt-1 story-name">${divisa.nombre}</h2>
                 </div>
             </div>
-            `;
-        }
+            
+            <div class="flex ${gapClass} text-right z-10 items-center">
+                <div class="flex flex-col items-end gap-0">
+                    <span class="text-xl text-white/70 uppercase font-bold tracking-widest mb-1 story-label">Compra</span>
+                    <span class="${priceSizeClass} font-bold text-white leading-none story-price">$${compraFmt}</span>
+                </div>
+                <div class="flex flex-col items-end gap-0">
+                    <span class="text-xl text-white/70 uppercase font-bold tracking-widest mb-1 story-label">Venta</span>
+                    <span class="${priceSizeClass} font-bold text-white leading-none story-price">$${ventaFmt}</span>
+                </div>
+            </div>
+        </div>
+        `;
     });
-    if (html) container.innerHTML = html;
+    if (storiesCurrencies.length <= 4) {
+        container.className = "relative z-10 flex-grow px-14 py-10 flex flex-col justify-center gap-8";
+    } else {
+        container.className = "relative z-10 flex-grow px-14 py-6 grid grid-cols-2 gap-x-8 gap-y-4 content-center";
+    }
+
+    container.innerHTML = html;
 }
 
 function updateDate() {

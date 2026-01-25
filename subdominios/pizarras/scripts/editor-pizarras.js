@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const listDestacadas = document.getElementById('list-destacadas');
     const listNormales = document.getElementById('list-normales');
+    const listStories = document.getElementById('list-stories');
     
     const modalAdd = document.getElementById('modal-add');
     const btnAdd = document.getElementById('btn-add-currency');
@@ -70,18 +71,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
+    setupTargetList(listDestacadas);
+    setupTargetList(listStories);
+
     // --- FUNCIONES ---
 
     async function loadBoard() {
         try {
             const res = await fetch('https://cambiosorion.cl/data/editor-pizarras.php?action=get_board');
             const data = await res.json();
-            
-            // Renderizar Normales (Maestro: Muestra TODAS las de la tabla divisas)
+
             renderList(listNormales, data.normales, 'normal');
-            
-            // Renderizar Destacadas (Solo las que tienen flag destacada=1)
             renderList(listDestacadas, data.destacadas, 'destacada');
+            renderList(listStories, data.stories, 'stories');
             
             updateCounters();
         } catch (err) {
@@ -159,6 +161,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function saveOrder() {
         const normalesIds = Array.from(listNormales.querySelectorAll('.currency-card')).map(el => el.dataset.id);
         const destacadasIds = Array.from(listDestacadas.querySelectorAll('.currency-card')).map(el => el.dataset.id);
+        const storiesIds = Array.from(listStories.querySelectorAll('.currency-card')).map(el => el.dataset.id);
 
         try {
             await fetch('https://cambiosorion.cl/data/editor-pizarras.php', {
@@ -167,7 +170,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 body: JSON.stringify({
                     action: 'update_order',
                     normales: normalesIds,
-                    destacadas: destacadasIds
+                    destacadas: destacadasIds,
+                    stories: storiesIds
                 })
             });
             updateCounters();
@@ -266,5 +270,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     function updateCounters() {
         document.getElementById('count-destacadas').textContent = listDestacadas.querySelectorAll('.currency-card').length;
         document.getElementById('count-normales').textContent = listNormales.querySelectorAll('.currency-card').length;
+        document.getElementById('count-stories').textContent = listStories.querySelectorAll('.currency-card').length;
     }
 });
