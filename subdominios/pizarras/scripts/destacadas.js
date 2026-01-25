@@ -118,7 +118,7 @@ function processData(data) {
             const row = document.createElement("tr");
             row.className = `border-b border-white/5 ${flashClass}`;
             
-            const listPriceSize = isLongPrice ? 'text-[3vh]' : 'text-[3.2vh]';
+            const listPriceSize = isLongPrice ? 'text-[2.6vh]' : 'text-[3.2vh]';
 
             // Ajuste para nombre Lista: si es largo, usar 2.2vh, si no 2.8vh
             const listNameSize = key.length > 3 ? 'text-[2.2vh]' : 'text-[2.8vh]'
