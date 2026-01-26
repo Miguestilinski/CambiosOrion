@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mercados Globales | Orion</title>
+
+    <link rel="stylesheet" href="https://pizarras.cambiosorion.cl/styles/index.css">
+    <link href="https://cambiosorion.cl/orionapp/public/styles/output.css" rel="stylesheet">
+    <link rel="icon" href="https://cambiosorion.cl/orionapp/icons/IsotipoOrion-blue.svg" type="image/png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="h-screen flex flex-col overflow-hidden bg-slate-900">
+    
+    <header class="fixed w-full z-[200] bg-slate-900/80 backdrop-blur-md shadow-lg border-b border-white/10 relative">
+        <div class="w-full px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16 relative"> 
+                
+                <div class="flex items-center lg:hidden">
+                    <button id="nav-menu-button" type="button" class="text-slate-300 hover:text-white p-2 rounded-md transition">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="flex items-center absolute left-1/2 transform -translate-x-1/2 lg:static lg:transform-none lg:left-auto">
+                    <div class="hidden lg:flex items-center gap-4">
+                        <a href="https://admin.cambiosorion.cl/" class="flex-shrink-0 group">
+                            <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Logo" class="h-10 w-auto opacity-90 group-hover:opacity-100 transition">
+                        </a>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-indigo-600 text-white border border-indigo-500/30 tracking-wider uppercase shadow-lg shadow-indigo-500/20">
+                            Mercados
+                        </span>
+                    </div>
+                </div>
+
+                <nav class="hidden lg:flex space-x-1 bg-white/5 p-1 rounded-lg border border-white/10">
+                    <a href="https://admin.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-white/5 transition">Inicio</a>
+                    <a href="tasas.html" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-white/5 transition">Pizarras</a>
+                    <a href="#" class="px-4 py-2 text-sm font-medium rounded-md text-white bg-indigo-600 shadow-lg shadow-indigo-500/20 transition">Mercados</a>
+                    <a href="https://caja.cambiosorion.cl/" class="px-4 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-cyan-600/20 hover:text-cyan-300 transition">Caja</a>
+                </nav>
+
+                <div class="flex items-center gap-4 lg:gap-6 mr-1"> 
+                     <div id="user-actions" class="relative z-20 ml-2 block">
+                        <button id="profile-menu-button" class="flex items-center gap-3 text-sm rounded-full bg-slate-800 hover:bg-slate-700 text-white pl-1 pr-3 py-1 ring-1 ring-white/10 transition">
+                            <img class="h-8 w-8 rounded-full object-cover border border-slate-600" src="https://cambiosorion.cl/orionapp/icons/profile-white.png" alt="Profile">
+                            <span class="hidden md:block text-slate-200 font-medium text-xs" id="header-user-name">Usuario</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden relative">
+        <main class="flex-1 overflow-y-auto p-4 md:p-8 relative" id="dashboard-content">
+            <section class="max-w-7xl mx-auto fade-in h-full flex flex-col">
+
+                <div class="relative px-4 sm:px-6 lg:px-8 py-6 max-w-full mx-auto w-full">
+                    
+                    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 gap-4">
+                        <div>
+                            <h1 class="text-3xl font-bold text-white drop-shadow-md">Mercados Globales</h1>
+                            <p class="text-blue-200 text-sm mt-1">Monitoreo en tiempo real (Fuente: TradingView)</p>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs text-slate-400 bg-black/30 px-3 py-1 rounded-full border border-white/5">
+                            <span class="relative flex h-2 w-2">
+                              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                              <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                            </span>
+                            Live Data
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                        
+                        <div class="glass-card rounded-2xl p-1 bg-slate-800/50 border border-white/10 h-80 overflow-hidden relative">
+                            <div class="absolute inset-0 z-0">
+                                <div class="tradingview-widget-container h-full w-full">
+                                    <div class="tradingview-widget-container__widget h-full w-full"></div>
+                                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                                    {
+                                    "symbol": "FX_IDC:USDCLP",
+                                    "width": "100%",
+                                    "height": "100%",
+                                    "locale": "es",
+                                    "dateRange": "1D",
+                                    "colorTheme": "dark",
+                                    "isTransparent": true,
+                                    "autosize": true,
+                                    "largeChartUrl": ""
+                                    }
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass-card rounded-2xl p-1 bg-slate-800/50 border border-white/10 h-80 overflow-hidden relative">
+                            <div class="absolute inset-0 z-0">
+                                <div class="tradingview-widget-container h-full w-full">
+                                    <div class="tradingview-widget-container__widget h-full w-full"></div>
+                                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                                    {
+                                    "symbol": "FX_IDC:EURCLP",
+                                    "width": "100%",
+                                    "height": "100%",
+                                    "locale": "es",
+                                    "dateRange": "1D",
+                                    "colorTheme": "dark",
+                                    "isTransparent": true,
+                                    "autosize": true
+                                    }
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass-card rounded-2xl p-1 bg-slate-800/50 border border-white/10 h-80 overflow-hidden relative">
+                            <div class="absolute inset-0 z-0">
+                                <div class="tradingview-widget-container h-full w-full">
+                                    <div class="tradingview-widget-container__widget h-full w-full"></div>
+                                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                                    {
+                                    "symbol": "OANDA:XAUUSD",
+                                    "width": "100%",
+                                    "height": "100%",
+                                    "locale": "es",
+                                    "dateRange": "1D",
+                                    "colorTheme": "dark",
+                                    "isTransparent": true,
+                                    "autosize": true
+                                    }
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+
+                         <div class="glass-card rounded-2xl p-1 bg-slate-800/50 border border-white/10 h-80 overflow-hidden relative">
+                            <div class="absolute inset-0 z-0">
+                                <div class="tradingview-widget-container h-full w-full">
+                                    <div class="tradingview-widget-container__widget h-full w-full"></div>
+                                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                                    {
+                                    "symbol": "COMEX:HG1!",
+                                    "width": "100%",
+                                    "height": "100%",
+                                    "locale": "es",
+                                    "dateRange": "1D",
+                                    "colorTheme": "dark",
+                                    "isTransparent": true,
+                                    "autosize": true
+                                    }
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass-card rounded-2xl p-1 bg-slate-800/50 border border-white/10 h-80 overflow-hidden relative">
+                            <div class="absolute inset-0 z-0">
+                                <div class="tradingview-widget-container h-full w-full">
+                                    <div class="tradingview-widget-container__widget h-full w-full"></div>
+                                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                                    {
+                                    "symbol": "TVC:USOIL",
+                                    "width": "100%",
+                                    "height": "100%",
+                                    "locale": "es",
+                                    "dateRange": "1D",
+                                    "colorTheme": "dark",
+                                    "isTransparent": true,
+                                    "autosize": true
+                                    }
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass-card rounded-2xl p-1 bg-slate-800/50 border border-white/10 h-80 overflow-hidden relative">
+                            <div class="absolute inset-0 z-0">
+                                <div class="tradingview-widget-container h-full w-full">
+                                    <div class="tradingview-widget-container__widget h-full w-full"></div>
+                                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                                    {
+                                    "symbol": "TVC:DXY"
+                                    "width": "100%",
+                                    "height": "100%",
+                                    "locale": "es",
+                                    "dateRange": "1D",
+                                    "colorTheme": "dark",
+                                    "isTransparent": true,
+                                    "autosize": true
+                                    }
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="glass-card rounded-xl overflow-hidden border border-white/10">
+                        <div class="tradingview-widget-container">
+                            <div class="tradingview-widget-container__widget"></div>
+                            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+                            {
+                            "symbols": [
+                                { "proName": "FOREXCOM:SPXUSD", "title": "S&P 500" },
+                                { "proName": "FOREXCOM:NSXUSD", "title": "US 100" },
+                                { "proName": "FX_IDC:USDCLP", "title": "USD/CLP" },
+                                { "proName": "BITSTAMP:BTCUSD", "title": "Bitcoin" },
+                                { "proName": "BINANCE:ETHUSD", "title": "Ethereum" }
+                            ],
+                            "showSymbolLogo": true,
+                            "colorTheme": "dark",
+                            "isTransparent": true,
+                            "displayMode": "adaptive",
+                            "locale": "es"
+                            }
+                            </script>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script type="module" src="https://pizarras.cambiosorion.cl/scripts/header.js"></script>
+    <script type="module" src="https://pizarras.cambiosorion.cl/scripts/mercados.js"></script>
+</body>
+</html>

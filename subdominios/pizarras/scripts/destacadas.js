@@ -89,10 +89,10 @@ function processData(data) {
             const card = document.createElement("div");
             card.className = `flex-1 flex items-center justify-between bg-white/5 rounded-2xl border border-white/10 shadow-lg px-4 ${flashClass}`; 
             
-            const priceSize = isLongPrice ? 'text-[3.5vh]' : 'text-[4vh]';
+            const priceSize = isLongPrice ? 'text-[3.5vh]' : 'text-[4.2vh]';
 
             // Ajuste para nombre Hero: si es largo, usar 3vh, si no 4vh
-            const heroNameSize = key.length > 3 ? 'text-[2.6vh]' : 'text-[3.4vh]';
+            const heroNameSize = key.length > 3 ? 'text-[2.6vh]' : 'text-[3vh]';
 
             card.innerHTML = `
                 <div class="w-[25%] flex items-center gap-3">
