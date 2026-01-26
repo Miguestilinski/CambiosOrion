@@ -13,7 +13,10 @@ const requestOptions = {
     redirect: "follow",
 };
 
-// Función genérica para cargar países
+// ==========================================
+// 1. HELPERS Y FUNCIONES DE API (GEO)
+// ==========================================
+
 const cargarPaises = async (selectId) => {
     try {
         const response = await fetch("https://api.countrystatecity.in/v1/countries", requestOptions);
@@ -24,7 +27,6 @@ const cargarPaises = async (selectId) => {
     }
 };
 
-// Función genérica para cargar regiones
 const cargarRegiones = async (countryCode, regionSelectId, citySelectId) => {
     try {
         const response = await fetch(`https://api.countrystatecity.in/v1/countries/${countryCode}/states`, requestOptions);
@@ -32,15 +34,12 @@ const cargarRegiones = async (countryCode, regionSelectId, citySelectId) => {
         const regionSelect = document.getElementById(regionSelectId);
         populateSelect(regionSelect, states, "Selecciona una región");
         regionSelect.disabled = states.length === 0;
-
-        // Reiniciar la lista de ciudades
         resetCitySelect(citySelectId);
     } catch (error) {
         console.error("Error al cargar regiones:", error);
     }
 };
 
-// Función genérica para cargar ciudades
 const cargarCiudades = async (countryCode, stateCode, citySelectId) => {
     try {
         const response = await fetch(`https://api.countrystatecity.in/v1/countries/${countryCode}/states/${stateCode}/cities`, requestOptions);
@@ -53,8 +52,8 @@ const cargarCiudades = async (countryCode, stateCode, citySelectId) => {
     }
 };
 
-// Helper para llenar un select
 const populateSelect = (selectElement, items, placeholder) => {
+    if (!selectElement) return;
     selectElement.innerHTML = "";
     const defaultOption = document.createElement("option");
     defaultOption.value = "";
@@ -71,15 +70,21 @@ const populateSelect = (selectElement, items, placeholder) => {
     });
 };
 
-// Helper para reiniciar un select de ciudades
 const resetCitySelect = (citySelectId) => {
     const citySelect = document.getElementById(citySelectId);
+    if (!citySelect) return;
     citySelect.innerHTML = "<option value='' disabled selected>Selecciona una ciudad</option>";
     citySelect.disabled = true;
 };
 
+// ==========================================
+// 2. LÓGICA DE INTERFAZ (TOGGLES Y FORMATOS)
+// ==========================================
+
 const toggleEmpresaTipo = () => {
-    const tipoEmpresa = document.querySelector('input[name="tipo-empresa"]:checked').value;
+    const tipoEmpresa = document.querySelector('input[name="tipo-empresa"]:checked')?.value;
+    if (!tipoEmpresa) return;
+
     const rutEmpresaContainer = document.getElementById("rut-empresa-container");
     const taxIdContainer = document.getElementById("tax-id-container");
     const rutEmpresaInput = document.getElementById("rut-empresa");
@@ -90,18 +95,20 @@ const toggleEmpresaTipo = () => {
         taxIdContainer.classList.add("hidden");
         rutEmpresaInput.required = true;
         taxIdInput.required = false;
-        rutEmpresaInput.value = ""; // Limpia el campo al cambiar
+        rutEmpresaInput.value = "";
     } else if (tipoEmpresa === "extranjera") {
         rutEmpresaContainer.classList.add("hidden");
         taxIdContainer.classList.remove("hidden");
         rutEmpresaInput.required = false;
         taxIdInput.required = true;
-        taxIdInput.value = ""; // Limpia el campo al cambiar
+        taxIdInput.value = "";
     }
 };
 
 const toggleNacionalidadRlegal = () => {
-    const nacionalidadRlegal = document.querySelector('input[name="nacionalidad-rlegal"]:checked').value;
+    const nacionalidadRlegal = document.querySelector('input[name="nacionalidad-rlegal"]:checked')?.value;
+    if (!nacionalidadRlegal) return;
+
     const rutRlegalContainer = document.getElementById("rut-rlegal-container");
     const docIdRlegalContainer = document.getElementById("doc-id-rlegal-container");
     const rutRlegalInput = document.getElementById("rut-rlegal");
@@ -112,18 +119,20 @@ const toggleNacionalidadRlegal = () => {
         docIdRlegalContainer.classList.add("hidden");
         rutRlegalInput.required = true;
         docIdRlegalInput.required = false;
-        rutRlegalInput.value = ""; // Limpia el campo al cambiar
+        rutRlegalInput.value = "";
     } else if (nacionalidadRlegal === "extranjera") {
         rutRlegalContainer.classList.add("hidden");
         docIdRlegalContainer.classList.remove("hidden");
         rutRlegalInput.required = false;
         docIdRlegalInput.required = true;
-        docIdRlegalInput.value = ""; // Limpia el campo al cambiar
+        docIdRlegalInput.value = "";
     }
 };
 
 const toggleNacionalidadDec = () => {
-    const nacionalidadDec = document.querySelector('input[name="nacionalidad-dec"]:checked').value;
+    const nacionalidadDec = document.querySelector('input[name="nacionalidad-dec"]:checked')?.value;
+    if (!nacionalidadDec) return;
+
     const rutDecContainer = document.getElementById("rut-dec-container");
     const docIdDecContainer = document.getElementById("doc-id-dec-container");
     const rutDecInput = document.getElementById("rut-dec");
@@ -134,47 +143,44 @@ const toggleNacionalidadDec = () => {
         docIdDecContainer.classList.add("hidden");
         rutDecInput.required = true;
         docIdDecInput.required = false;
-        rutDecInput.value = ""; // Limpia el campo al cambiar
+        rutDecInput.value = "";
     } else if (nacionalidadDec === "extranjera") {
         rutDecContainer.classList.add("hidden");
         docIdDecContainer.classList.remove("hidden");
         rutDecInput.required = false;
         docIdDecInput.required = true;
-        docIdDecInput.value = ""; // Limpia el campo al cambiar
+        docIdDecInput.value = "";
     }
 };
 
-// Formatear el RUT automáticamente
-document.getElementById("rut-empresa").addEventListener("input", (event) => {
-    const input = event.target;
-    input.value = formatRUT(input.value);
-});
-
-document.getElementById("rut-rlegal").addEventListener("input", (event) => {
-    const input = event.target;
-    input.value = formatRUT(input.value);
-});
-
-document.getElementById("rut-dec").addEventListener("input", (event) => {
-    const input = event.target;
-    input.value = formatRUT(input.value);
-});
-
 const formatRUT = (rut) => {
-    rut = rut.replace(/[^0-9kK]/g, ""); // Elimina caracteres no válidos
+    rut = rut.replace(/[^0-9kK]/g, "");
     if (rut.length > 1) {
         rut = rut.slice(0, -1).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.") + "-" + rut.slice(-1);
     }
     return rut.toUpperCase();
 };
 
+// Event Listeners para RUT
+["rut-empresa", "rut-rlegal", "rut-dec"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+        el.addEventListener("input", (event) => {
+            event.target.value = formatRUT(event.target.value);
+        });
+    }
+});
+
+// Exponer funciones al scope global para el HTML inline
 window.toggleEmpresaTipo = toggleEmpresaTipo;
 window.toggleNacionalidadDec = toggleNacionalidadDec;
 window.toggleNacionalidadRlegal = toggleNacionalidadRlegal;
+window.cargarRegiones = cargarRegiones;
+window.cargarCiudades = cargarCiudades;
 
-// Contador de personas autorizadas
-let autorizadosCount = 0;
-let beneficiariosCount = 0;
+// ==========================================
+// 3. GENERACIÓN DE PDF
+// ==========================================
 
 async function completarPDF(formularioData, autorizadosCount, beneficiariosCount) {
     try {
@@ -183,431 +189,359 @@ async function completarPDF(formularioData, autorizadosCount, beneficiariosCount
         const pdfDoc = await PDFDocument.load(existingPdfBytes);
         const form = pdfDoc.getForm();
 
+        // --- Mapeo de Campos ---
+
         // Fecha
         const fechaField = form.getTextField('fecha:date');
         const fechaInput = document.querySelector('#fecha');
-        const fecha = new Date(fechaInput.value);
+        if (fechaField && fechaInput.value) {
+            const fecha = new Date(fechaInput.value);
+            // Ajuste de zona horaria simple o uso directo de componentes
+            // Nota: fechaInput.value viene en YYYY-MM-DD
+            const parts = fechaInput.value.split('-');
+            const year = parts[0];
+            const month = parts[1];
+            const day = parts[2];
+            fechaField.setText(`${day}/${month}/${year}`);
+        }
 
-        const dia = (fecha.getDate() + 1).toString().padStart(2, '0');
-        const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
-        const año = fecha.getFullYear();
-
-        fechaField.setText(`${dia}/${mes}/${año}`);
-
-        // Tipo de empresa
+        // Checkboxes Tipo Empresa
         const tipoEmpresaValue = document.querySelector('input[name="tipo-empresa"]:checked')?.value;
+        if (tipoEmpresaValue === 'nacional') form.getCheckBox('tipo-empresa-nacional')?.check();
+        if (tipoEmpresaValue === 'extranjera') form.getCheckBox('tipo-empresa-extranjera')?.check();
 
-        // Comprobar cuál radio button está seleccionado
-        if (tipoEmpresaValue === 'nacional') {
-            const tipoEmpresaNacional = form.getCheckBox('tipo-empresa-nacional');
-            tipoEmpresaNacional.check();
-        } else if (tipoEmpresaValue === 'extranjera') {
-            const tipoEmpresaExtranjera = form.getCheckBox('tipo-empresa-extranjera');
-            tipoEmpresaExtranjera.check();
-        }
-
-        // Tipo de Órdenes a Recibir
+        // Tipo Órdenes
         const tipoOrdenesValue = document.querySelector('input[name="tipo-ordenes"]:checked')?.value;
-        if (tipoOrdenesValue) {
-            const tipoOrdenesField = form.getCheckBox(`tipo-ordenes-${tipoOrdenesValue}`);
-            if (tipoOrdenesField) {
-                tipoOrdenesField.check();
-            }
-        }
-
-        let tipo = '';
-
-        const esExtranjero = document.querySelector('input[name="nacionalidad-dec"]:checked')?.value === 'extranjera';
-        const esPersonaJuridica = document.querySelector('input[name="tipo-empresa"]:checked')?.value === 'nacional';
-
-        if (esExtranjero) {
-            tipo = 'Extranjero';
-        } else if (esPersonaJuridica) {
-            tipo = 'Persona Juridica';
-        } else {
-            tipo = 'Persona Natural';
-        }
-        datosRecopilados.tipo = datosRecopilados.tipo.trim();
-
-        console.log("Tipo determinado:", datosRecopilados.tipo);
+        if (tipoOrdenesValue) form.getCheckBox(`tipo-ordenes-${tipoOrdenesValue}`)?.check();
 
         // Uso Interno
         const usoIntValue = document.querySelector('input[name="uso-int"]:checked')?.value;
         if (usoIntValue) {
-            const usoIntField = form.getCheckBox(`uso-int-${usoIntValue}`);
-            if (usoIntField) {
-                usoIntField.check();
-            }
-
-            // Campo de texto adicional para "otros antecedentes"
+            form.getCheckBox(`uso-int-${usoIntValue}`)?.check();
             if (usoIntValue === 'otros') {
                 const otrosAntValue = document.querySelector('input[name="otros-ant"]')?.value || '';
-                const otrosAntField = form.getTextField('uso-int-otros-ant');
-                if (otrosAntField) {
-                    otrosAntField.setText(otrosAntValue);
+                form.getTextField('uso-int-otros-ant')?.setText(otrosAntValue);
+            }
+        }
+
+        // Función Helper interna para textos
+        const setPDFText = (pdfFieldId, domIdOrValue, isDirectValue = false) => {
+            try {
+                const field = form.getTextField(pdfFieldId);
+                if (!field) return;
+                
+                let val = "";
+                if (isDirectValue) {
+                    val = domIdOrValue || "";
+                } else {
+                    // Intenta buscar en formularioData primero, luego en DOM
+                    val = formularioData[domIdOrValue] || document.getElementById(domIdOrValue)?.value || "";
                 }
+                field.setText(val);
+            } catch (e) {
+                console.warn(`Campo PDF ${pdfFieldId} no encontrado o error al setear.`);
             }
-        }
+        };
 
-        // PEP
-        const pepValue = document.querySelector('input[name="pep"]:checked')?.value;
-        if (pepValue) {
-            const pepField = form.getCheckBox(`pep-${pepValue}`);
-            if (pepField) {
-                pepField.check();
-            }
-        }
-
-        // Función para asignar un campo basado en la lógica de nacionalidad/tipo
-        const asignarCampoSegunTipo = (campoPDF, tipoCampo, idNacional, idExtranjero) => {
-            const tipoSeleccionado = document.querySelector(`input[name="${tipoCampo}"]:checked`)?.value;
+        // Asignación Inteligente (RUT vs Tax ID)
+        const asignarCampoCondicional = (campoPDF, tipo, idNacional, idExtranjero) => {
+            const tipoVal = document.querySelector(`input[name="${tipo}"]:checked`)?.value;
             let valor = "";
-
-            if (tipoSeleccionado === "chilena" || tipoSeleccionado === "nacional") {
-                valor = document.getElementById(idNacional)?.value || "";
-            } else if (tipoSeleccionado === "extranjera") {
-                valor = document.getElementById(idExtranjero)?.value || "";
+            if (tipoVal === "chilena" || tipoVal === "nacional") {
+                valor = document.getElementById(idNacional)?.value;
+            } else if (tipoVal === "extranjera") {
+                valor = document.getElementById(idExtranjero)?.value;
             }
-
-            const campoPdf = form.getTextField(campoPDF);
-            if (campoPdf) {
-                campoPdf.setText(valor);
-            }
+            if (valor) form.getTextField(campoPDF)?.setText(valor);
         };
 
-        // Asignar valores al PDF para cada caso
-        asignarCampoSegunTipo("doc-id-empresa", "tipo-empresa", "rut-empresa", "tax-id");
-        asignarCampoSegunTipo("doc-id-rlegal", "nacionalidad-rlegal", "rut-rlegal", "doc-id-rlegal");
-        asignarCampoSegunTipo("doc-id-dec", "nacionalidad-dec", "rut-dec", "doc-id-dec");
+        asignarCampoCondicional("doc-id-empresa", "tipo-empresa", "rut-empresa", "tax-id");
+        asignarCampoCondicional("doc-id-rlegal", "nacionalidad-rlegal", "rut-rlegal", "doc-id-rlegal");
+        asignarCampoCondicional("doc-id-dec", "nacionalidad-dec", "rut-dec", "doc-id-dec");
 
-        // Asignar valores de texto del formulario web
-        const asignarCampoTexto = (campoId, nombreVariable) => {
-            const valor = document.querySelector(`#${nombreVariable}`)?.value || "";
-            const campoPdf = form.getTextField(campoId);
-            if (campoPdf) {
-                campoPdf.setText(valor);
-            }
-        };
+        // Campos de Texto Directos
+        const camposSimples = [
+            'razon-social-empresa', 'rubro-empresa', 'nombre-empresa', 'tipo-sociedad',
+            'direccion-empresa', 'ciudad-empresa', 'pais-empresa', 'email-empresa', 'telefono-empresa',
+            'estado-civil-rlegal', 'nombre-rlegal', 'direccion-rlegal', 'email-rlegal',
+            'nombre-dec', 'actividad', 'origen-fondos', 'destino-fondos'
+        ];
 
-        asignarCampoTexto('dia', 'dia');
-        asignarCampoTexto('mes', 'mes');
-        asignarCampoTexto('año', 'año');
+        camposSimples.forEach(id => setPDFText(id, id));
 
-        asignarCampoTexto('razon-social-empresa', 'razon-social-empresa');
-        asignarCampoTexto('rubro-empresa', 'rubro-empresa');
-        asignarCampoTexto('nombre-empresa', 'nombre-empresa');
-        asignarCampoTexto('tipo-sociedad', 'tipo-sociedad');
-        asignarCampoTexto('direccion-empresa', 'direccion-empresa');
-        asignarCampoTexto('ciudad-empresa', 'ciudad-empresa');
-        asignarCampoTexto('pais-empresa', 'pais-empresa');
-        asignarCampoTexto('email-empresa', 'email-empresa');
-        asignarCampoTexto('telefono-empresa', 'telefono-empresa');
+        // Nacionalidades (radio buttons en web -> texto en PDF)
+        const nacRlegal = document.querySelector('input[name="nacionalidad-rlegal"]:checked')?.value;
+        if(nacRlegal) setPDFText('nacionalidad-rlegal', nacRlegal.toUpperCase(), true);
 
-        asignarCampoTexto('estado-civil-rlegal', 'estado-civil-rlegal');
-        asignarCampoTexto('nombre-rlegal', 'nombre-rlegal');
-        asignarCampoTexto('nacionalidad-rlegal', 'nacionalidad-rlegal');
-        asignarCampoTexto('direccion-rlegal', 'direccion-rlegal');
-        asignarCampoTexto('email-rlegal', 'email-rlegal');
+        const nacDec = document.querySelector('input[name="nacionalidad-dec"]:checked')?.value;
+        if(nacDec) {
+             // Si es extranjera, usamos el input de texto, si es chilena, texto fijo
+             const val = nacDec === 'extranjera' 
+                ? document.querySelector('input[name="nacionalidad-dec-ext"]')?.value 
+                : 'CHILENA';
+             setPDFText('nacionalidad-dec', val, true);
+        }
 
+        // Bucles para Autorizados
         for (let i = 1; i <= autorizadosCount; i++) {
-            asignarCampoTexto(`nombre-autorizado${i}`, `nombre-autorizado${i}`);
-            asignarCampoTexto(`doc-id-autorizado${i}`, `doc-id-autorizado${i}`);
-            asignarCampoTexto(`cargo-autorizado${i}`, `cargo-autorizado${i}`);
-            asignarCampoTexto(`email-autorizado${i}`, `email-autorizado${i}`);
-            console.log("autorizados:", i);
+            setPDFText(`nombre-autorizado${i}`, `nombre-autorizado${i}`);
+            setPDFText(`doc-id-autorizado${i}`, `doc-id-autorizado${i}`);
+            setPDFText(`cargo-autorizado${i}`, `cargo-autorizado${i}`);
+            setPDFText(`email-autorizado${i}`, `email-autorizado${i}`);
         }
 
-        asignarCampoTexto('nombre-dec', 'nombre-dec');
-        asignarCampoTexto('nacionalidad-dec', 'nacionalidad-dec');
-
+        // Bucles para Beneficiarios
         for (let i = 1; i <= beneficiariosCount; i++) {
-            asignarCampoTexto(`nombre-ben${i}`, `nombre-ben${i}`);
-            asignarCampoTexto(`doc-id-ben{i}`, `doc-id-ben${i}`);
-            asignarCampoTexto(`cargo-ben${i}`, `cargo-ben${i}`);
-            asignarCampoTexto(`email-ben${i}`, `email-ben${i}`);
-            console.log("beneficiarios:", i);
+            setPDFText(`nombre-ben${i}`, `nombre-ben${i}`);
+            // Corrección: Interpolación correcta de strings
+            setPDFText(`doc-id-ben${i}`, `doc-id-ben${i}`); 
+            setPDFText(`direccion-ben${i}`, `direccion-ben${i}`); 
+            setPDFText(`porc-ben${i}`, `porc-ben${i}`);
         }
 
-        asignarCampoTexto('actividad', 'actividad');
-        asignarCampoTexto('origen-fondos', 'origen-fondos');
-        asignarCampoTexto('destino-fondos', 'destino-fondos');
-
-        // Función para completar la sección PEP
-        const completarPEP = (tipo, index, nombre, docId, nacionalidad, pep) => {
-            const pepPrefix = tipo === 'rlegal' ? '' : `${tipo}${index}`;
-            form.getTextField(`nombre-${pepPrefix}`).setText(nombre);
-            form.getTextField(`doc-id-${pepPrefix}`).setText(docId);
-            form.getTextField(`nacionalidad-${pepPrefix}`).setText(nacionalidad);
-            form.getCheckBox(`pep-${pep}-ser-${pepPrefix}`).check();
+        // PEPs (Personas Expuestas Políticamente)
+        const checkPEP = (prefix, index = '') => {
+            // Lógica para marcar SI/NO en PEP
+            // El formulario web solo tiene un radio PEP general en el paso 4, 
+            // pero el PDF tiene PEP por cada persona.
+            // Asumiremos el valor general para el Declarante/RLegal si aplica.
+            const pepVal = document.querySelector('input[name="pep"]:checked')?.value;
+            if(pepVal === 'ser') {
+                // Checkbox específico en PDF
+                form.getCheckBox(`pep-ser-${prefix}${index}`)?.check();
+            } else {
+                 form.getCheckBox(`pep-no-ser-${prefix}${index}`)?.check();
+            }
         };
 
-        // Obtener datos del formulario
-        const rlegal = {
-            nombre: formularioData['nombre-rlegal'],
-            docId: formularioData['doc-id-rlegal'],
-            nacionalidad: formularioData['nacionalidad-rlegal'],
-            pep: formularioData['pep-rlegal'],
-        };
+        // Esta parte depende de cómo esté estructurado tu PDF exactamente para PEPs
+        // Se mantiene la lógica simple basada en tu código anterior
+        const pepValue = document.querySelector('input[name="pep"]:checked')?.value;
+        if(pepValue === 'ser') form.getCheckBox('pep-ser')?.check();
+        if(pepValue === 'no-ser') form.getCheckBox('pep-no-ser')?.check();
 
-        const autorizados = [];
-        for (let i = 1; i <= 2; i++) {
-            if (formularioData[`nombre-autorizado${i}`]) {
-                autorizados.push({
-                    nombre: formularioData[`nombre-autorizado${i}`],
-                    docId: formularioData[`doc-id-autorizado${i}`],
-                    nacionalidad: formularioData[`nacionalidad-autorizado${i}`],
-                    pep: formularioData[`pep-autorizado${i}`],
-                });
-            }
-        }
 
-        const beneficiarios = [];
-        for (let i = 1; i <= 9; i++) {
-            if (formularioData[`nombre-ben${i}`]) {
-                beneficiarios.push({
-                    nombre: formularioData[`nombre-ben${i}`],
-                    docId: formularioData[`doc-id-ben${i}`],
-                    nacionalidad: formularioData[`nacionalidad-ben${i}`],
-                    pep: formularioData[`pep-ben${i}`],
-                });
-            }
-        }
-
-        // Completar datos de la sección PEP
-        completarPEP('rlegal', '', rlegal.nombre, rlegal.docId, rlegal.nacionalidad, rlegal.pep);
-        
-        autorizados.forEach((aut, index) => {
-            completarPEP('autorizado', index + 1, aut.nombre, aut.docId, aut.nacionalidad, aut.pep);
-        });
-
-        beneficiarios.forEach((ben, index) => {
-            completarPEP('ben', index + 1, ben.nombre, ben.docId, ben.nacionalidad, ben.pep);
-        });
-
-        // Generar y descargar el PDF
+        // Generar y descargar
         const pdfBytes = await pdfDoc.save();
         const blob = new Blob([pdfBytes], { type: "application/pdf" });
         const link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
-        link.download = "Documentacion Orion.pdf";
+        link.download = `Documentacion_Orion_${new Date().getTime()}.pdf`;
         link.click();
+
     } catch (error) {
         console.error("Error al completar el PDF:", error);
+        alert("Hubo un error al generar el PDF. Revise la consola.");
     }
 }
+
+// ==========================================
+// 4. INICIALIZACIÓN (DOM LOADED)
+// ==========================================
 
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("dynamic-form");
     const autorizadosContainer = document.getElementById("autorizados-container");
     const addAutorizadoButton = document.getElementById("add-autorizado");
+    const beneficiariosContainer = document.getElementById("bens-container");
+    const addBeneficiarioButton = document.getElementById("add-ben");
+    
+    // Contadores globales
+    let autorizadosCount = 0;
+    let beneficiariosCount = 0;
 
-    // Array para almacenar los datos del formulario
-    let formularioData = [];
-
-    // Función para agregar una persona autorizada
+    // --- Agregar Autorizados (Con estilo Dark Mode) ---
     const agregarPersonaAutorizada = () => {
         if (autorizadosCount >= 2) {
             alert("Solo puedes agregar un máximo de 2 personas autorizadas.");
             return;
         }
-
         autorizadosCount++;
 
-        const autorizadoDiv = document.createElement("div");
-        autorizadoDiv.classList.add("mb-6", "autorizado-item");
-        autorizadoDiv.dataset.index = autorizadosCount;
+        const div = document.createElement("div");
+        div.classList.add("bg-slate-800/50", "p-4", "rounded-xl", "border", "border-white/10", "mb-4", "autorizado-item", "fade-in");
+        div.dataset.index = autorizadosCount;
 
-        autorizadoDiv.innerHTML = `
-            <div class="mb-6">
-                <label class="block mt-2 mb-2 text-sm font-medium text-white">Nombre:</label>
-                <input type="text" name="nombre-autorizado${autorizadosCount}" class="bg-white border border-gray-600 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+        div.innerHTML = `
+            <div class="flex justify-between items-center mb-4">
+                <h4 class="text-blue-400 font-bold text-sm">Autorizado #${autorizadosCount}</h4>
+                <button type="button" class="remove-autorizado text-red-400 hover:text-red-300 text-xs font-medium">Eliminar</button>
             </div>
-            <div class="mb-6">
-                <label class="block mt-2 mb-2 text-sm font-medium text-white">Nº Doc. Identidad:</label>
-                <input type="text" name="doc-id-autorizado${autorizadosCount}" class="bg-white border border-gray-600 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block mb-2 text-xs font-medium text-gray-400">Nombre Completo</label>
+                    <input type="text" name="nombre-autorizado${autorizadosCount}" class="input-dark w-full p-2.5 text-sm" required>
+                </div>
+                <div>
+                    <label class="block mb-2 text-xs font-medium text-gray-400">Nº Doc. Identidad</label>
+                    <input type="text" name="doc-id-autorizado${autorizadosCount}" class="input-dark w-full p-2.5 text-sm" required>
+                </div>
+                <div>
+                    <label class="block mb-2 text-xs font-medium text-gray-400">Cargo</label>
+                    <input type="text" name="cargo-autorizado${autorizadosCount}" class="input-dark w-full p-2.5 text-sm" required>
+                </div>
+                <div>
+                    <label class="block mb-2 text-xs font-medium text-gray-400">Email</label>
+                    <input type="email" name="email-autorizado${autorizadosCount}" class="input-dark w-full p-2.5 text-sm" required>
+                </div>
             </div>
-            <div class="mb-6">
-                <label class="block mt-2 mb-2 text-sm font-medium text-white">Cargo:</label>
-                <input type="text" name="cargo-autorizado${autorizadosCount}" class="bg-white border border-gray-600 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
-            </div>
-            <div class="mb-6">
-                <label class="block mt-2 mb-2 text-sm font-medium text-white">Email:</label>
-                <input type="email" name="email-autorizado${autorizadosCount}" class="bg-white border border-gray-600 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
-            </div>
-            <button type="button" class="remove-autorizado text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2">Eliminar</button>
         `;
 
-        autorizadosContainer.appendChild(autorizadoDiv);
+        autorizadosContainer.appendChild(div);
 
-        autorizadoDiv.querySelector(".remove-autorizado").addEventListener("click", () => {
-            autorizadoDiv.remove();
+        div.querySelector(".remove-autorizado").addEventListener("click", () => {
+            div.remove();
             autorizadosCount--;
         });
     };
 
-    addAutorizadoButton.addEventListener("click", agregarPersonaAutorizada);
-
-    const beneficiariosContainer = document.getElementById("bens-container");
-    const addBeneficiarioButton = document.getElementById("add-ben");
-
-    // Función para agregar una persona autorizada
+    // --- Agregar Beneficiarios (Con estilo Dark Mode) ---
     const agregarBen = () => {
-        if (beneficiariosCount >= 2) {
-            alert("Solo puedes agregar un máximo de 2 personas autorizadas.");
+        if (beneficiariosCount >= 4) { // Aumentado a 4 por si acaso, PDF permite varios
+            alert("Máximo de beneficiarios alcanzado.");
             return;
         }
-
         beneficiariosCount++;
 
-        const beneficiarioDiv = document.createElement("div");
-        beneficiarioDiv.classList.add("mb-6", "ben-item");
-        beneficiarioDiv.dataset.index = beneficiariosCount;
+        const div = document.createElement("div");
+        div.classList.add("bg-slate-800/50", "p-4", "rounded-xl", "border", "border-white/10", "mb-4", "ben-item", "fade-in");
+        div.dataset.index = beneficiariosCount;
 
-        beneficiarioDiv.innerHTML = `
-            <div class="mb-6">
-                <label class="block mt-2 mb-2 text-sm font-medium text-white">Nombre:</label>
-                <input type="text" name="nombre-ben${beneficiariosCount}" class="bg-white border border-gray-600 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+        div.innerHTML = `
+            <div class="flex justify-between items-center mb-4">
+                <h4 class="text-blue-400 font-bold text-sm">Beneficiario #${beneficiariosCount}</h4>
+                <button type="button" class="remove-ben text-red-400 hover:text-red-300 text-xs font-medium">Eliminar</button>
             </div>
-            <div class="mb-6">
-                <label class="block mt-2 mb-2 text-sm font-medium text-white">Nº Doc. Identidad:</label>
-                <input type="text" name="doc-id-ben${beneficiariosCount}" class="bg-white border border-gray-600 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block mb-2 text-xs font-medium text-gray-400">Nombre Completo</label>
+                    <input type="text" name="nombre-ben${beneficiariosCount}" class="input-dark w-full p-2.5 text-sm" required>
+                </div>
+                <div>
+                    <label class="block mb-2 text-xs font-medium text-gray-400">Nº Doc. Identidad</label>
+                    <input type="text" name="doc-id-ben${beneficiariosCount}" class="input-dark w-full p-2.5 text-sm" required>
+                </div>
+                <div>
+                    <label class="block mb-2 text-xs font-medium text-gray-400">Dirección</label>
+                    <input type="text" name="direccion-ben${beneficiariosCount}" class="input-dark w-full p-2.5 text-sm" required>
+                </div>
+                <div>
+                    <label class="block mb-2 text-xs font-medium text-gray-400">% Participación</label>
+                    <input type="text" name="porc-ben${beneficiariosCount}" class="input-dark w-full p-2.5 text-sm" placeholder="Ej: 25%" required>
+                </div>
             </div>
-            <div class="mb-6">
-                <label class="block mt-2 mb-2 text-sm font-medium text-white">Direccion:</label>
-                <input type="text" name="direccion-ben${beneficiariosCount}" class="bg-white border border-gray-600 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
-            </div>
-            <div class="mb-6">
-                <label class="block mt-2 mb-2 text-sm font-medium text-white">Porcentaje:</label>
-                <input type="text" name="porc-ben${beneficiariosCount}" class="bg-white border border-gray-600 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
-            </div>
-            <button type="button" class="remove-autorizado text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2">Eliminar</button>
         `;
 
-        beneficiariosContainer.appendChild(beneficiarioDiv);
+        beneficiariosContainer.appendChild(div);
 
-        beneficiarioDiv.querySelector(".remove-ben").addEventListener("click", () => {
-            beneficiarioDiv.remove();
+        div.querySelector(".remove-ben").addEventListener("click", () => {
+            div.remove();
             beneficiariosCount--;
         });
     };
 
-    addBeneficiarioButton.addEventListener("click", agregarBen);
+    if(addAutorizadoButton) addAutorizadoButton.addEventListener("click", agregarPersonaAutorizada);
+    if(addBeneficiarioButton) addBeneficiarioButton.addEventListener("click", agregarBen);
 
+    // --- Inicializar Fecha ---
     const fechaInput = document.getElementById("fecha");
-
     if (fechaInput) {
         const today = new Date();
-
-        // Formatear la fecha como yyyy-MM-dd para el campo
-        const isoDate = [
-            today.getFullYear(),
-            String(today.getMonth() + 1).padStart(2, '0'),
-            String(today.getDate()).padStart(2, '0')
-        ].join('-');
-
-        // Establecer el valor ISO en el campo de fecha
+        const isoDate = today.toISOString().split('T')[0];
         fechaInput.value = isoDate;
-
-        // Opcional: Mostrar el formato dd/mm/yyyy en un elemento de texto si lo necesitas
-        const formattedDate = [
-            String(today.getDate()).padStart(2, '0'),
-            String(today.getMonth() + 1).padStart(2, '0'),
-            today.getFullYear()
-        ].join('/');
-
-    } else {
-        console.error("No se encontró el campo con ID 'fecha'");
     }
 
-    // Evento para manejar el envío del formulario
+    // --- Inicializar Selects GEO ---
+    cargarPaises("pais-empresa");
+    cargarPaises("pais-rlegal");
+
+    document.getElementById("pais-empresa")?.addEventListener("change", (e) => {
+        cargarRegiones(e.target.value, "region-empresa", "ciudad-empresa");
+    });
+    document.getElementById("region-empresa")?.addEventListener("change", (e) => {
+        const country = document.getElementById("pais-empresa").value;
+        cargarCiudades(country, e.target.value, "ciudad-empresa");
+    });
+
+    document.getElementById("pais-rlegal")?.addEventListener("change", (e) => {
+        cargarRegiones(e.target.value, "region-rlegal", "ciudad-rlegal");
+    });
+    document.getElementById("region-rlegal")?.addEventListener("change", (e) => {
+        const country = document.getElementById("pais-rlegal").value;
+        cargarCiudades(country, e.target.value, "ciudad-rlegal");
+    });
+
+    // --- MANEJO DEL SUBMIT ---
     form.addEventListener("submit", async (event) => {
-        const valoresPermitidos = ["Persona Juridica", "Persona Natural", "Extranjero"];
-        if (!valoresPermitidos.includes(datosRecopilados.tipo)) {
-            console.error("Valor de tipo inválido:", datosRecopilados.tipo);
-            return;
+        event.preventDefault();
+
+        // 1. Determinar Tipo de Cliente (Lógica corregida)
+        let tipoCliente = "Persona Natural";
+        const esExtranjero = document.querySelector('input[name="nacionalidad-dec"][value="extranjera"]')?.checked;
+        const esEmpresa = document.querySelector('input[name="tipo-empresa"][value="nacional"]')?.checked || 
+                          document.querySelector('input[name="tipo-empresa"][value="extranjera"]')?.checked; // Asumiendo que si llena la ficha 2 es empresa
+
+        // La lógica original usaba radios de nacionalidad y empresa.
+        // Si llenó datos de empresa (Paso 2), prioridad a Jurídica.
+        if (esEmpresa) {
+            tipoCliente = "Persona Juridica";
+        } else if (esExtranjero) {
+            tipoCliente = "Extranjero";
         }
 
-        event.preventDefault(); // Evitar envío normal del formulario
-
-        // Recopilar todos los datos del formulario
+        // 2. Recopilar Datos
         const formData = new FormData(form);
-
         let formularioData = {};
         formData.forEach((value, key) => {
             formularioData[key] = value;
         });
 
-        console.log("Datos recopilados:", formularioData);
+        // Agregar tipo calculado
+        formularioData['tipo_cliente'] = tipoCliente; 
 
-        // Lógica para la firma en celular
-        const signaturePadContainer = document.getElementById("signature-pad-container");
-        const startSignatureButton = document.getElementById("start-signature");
+        console.log("Enviando datos:", formularioData);
 
-        startSignatureButton.addEventListener('click', function() {
-            if (window.innerWidth <= 887) {
-                signaturePadContainer.style.display = "block";
-                signaturePadContainer.scrollIntoView({ behavior: 'smooth' });
-            }
-        });
-
-        // Enviar los datos al servidor
+        // 3. Enviar al Backend
         try {
             const response = await fetch("https://cambiosorion.cl/data/save_cliente.php", {
                 method: "POST",
+                headers: {
+                    'Content-Type': 'application/json' // Aseguramos que se envíe como JSON
+                },
                 body: JSON.stringify(formularioData)
             });
 
+            // Intentar parsear respuesta, manejando texto plano por si acaso
             const textResponse = await response.text();
-            console.log("Respuesta del servidor:", textResponse);
-
-            const result = await response.json();
-            console.log("Respuesta del servidor:", result);
-
-            if (result.success) {
-                alert("Formulario enviado y guardado en la base de datos correctamente.");
-
-                // Completar y descargar el PDF
-                await completarPDF(formularioData, autorizadosCount);
-                alert("Formulario enviado, PDF generado y descargado exitosamente.");
-
-            } else {
-                alert("Error al guardar los datos: " + result.message);
+            let result;
+            try {
+                result = JSON.parse(textResponse);
+            } catch (e) {
+                console.warn("Respuesta no es JSON puro:", textResponse);
+                result = { success: false, message: textResponse };
             }
+
+            if (result.success || textResponse.includes('success')) { // Fallback por si el backend devuelve string
+                // 4. Generar PDF
+                alert("Datos guardados correctamente. Generando documento PDF...");
+                await completarPDF(formularioData, autorizadosCount, beneficiariosCount);
+            } else {
+                alert("Error al guardar en base de datos: " + (result.message || "Error desconocido"));
+            }
+
         } catch (error) {
-            console.error("Error en la solicitud:", error);
-            alert("Hubo un problema al enviar los datos.");
-        } 
+            console.error("Error crítico:", error);
+            alert("Error de conexión al enviar el formulario.");
+        }
     });
 
-    // Cargar países para ambos conjuntos
-    cargarPaises("pais-empresa");
-    cargarPaises("pais-rlegal");
-
-    // Listener para el primer conjunto
-    document.getElementById("pais-empresa").addEventListener("change", (e) => {
-        const countryCode = e.target.value;
-        cargarRegiones(countryCode, "region-empresa", "ciudad-empresa");
-    });
-
-    document.getElementById("region-empresa").addEventListener("change", (e) => {
-        const stateCode = e.target.value;
-        const countryCode = document.getElementById("pais-empresa").value;
-        cargarCiudades(countryCode, stateCode, "ciudad-empresa");
-    });
-
-    // Listener para el segundo conjunto
-    document.getElementById("pais-rlegal").addEventListener("change", (e) => {
-        const countryCode = e.target.value;
-        cargarRegiones(countryCode, "region-rlegal", "ciudad-rlegal");
-    });
-
-    document.getElementById("region-rlegal").addEventListener("change", (e) => {
-        const stateCode = e.target.value;
-        const countryCode = document.getElementById("pais-rlegal").value;
-        cargarCiudades(countryCode, stateCode, "ciudad-rlegal");
-    });
-
-    window.cargarRegiones = cargarRegiones;
-    window.cargarCiudades = cargarCiudades;
-
+    // Lógica opcional para firma digital en móvil
+    const startSignatureButton = document.getElementById("start-signature");
+    if(startSignatureButton) {
+        startSignatureButton.addEventListener('click', function() {
+            const container = document.getElementById("signature-pad-container");
+            container.classList.remove("hidden");
+            container.scrollIntoView({ behavior: 'smooth' });
+        });
+    }
 });
