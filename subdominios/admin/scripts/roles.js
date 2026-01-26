@@ -235,30 +235,54 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // --- MODALES (Asignación sin cambios) ---
+   // --- MODALES (Asignación) ---
     window.openAssignModal = (boxId, boxName) => {
         modalBoxName.textContent = boxName;
         targetBoxIdInput.value = boxId;
         modalUserSelect.innerHTML = '<option value="">Seleccione...</option>';
+        
         const sortedUsers = [...usersData].sort((a,b) => formatName(a.name).localeCompare(formatName(b.name)));
+        
         sortedUsers.forEach(u => {
             const r = u.role.toLowerCase();
+            // Los socios nunca se asignan a cajas
             if (r.includes('socio')) return;
 
-            // Definir si es VIP (Oficial o Gerente)
-            const isVip = r.includes('oficial') || r.includes('cumplimiento') || r.includes('gerente');
+            // Identificar roles clave
+            const isOficial = r.includes('oficial') || r.includes('cumplimiento');
+            const isGerente = r.includes('gerente');
+            const isTesorero = r.includes('tesorero');
+            const hasPermiso = u.permissions.manejo_caja; // El check verde en la tabla
 
-            // Lógica Caja 0 (Fantasma/Cuadratura)
+            let showUser = false;
+
+            // 1. Lógica Caja 0 (Fantasma/Cuadratura)
             if (boxId === 0) {
-                // Solo Tesoreros, RRHH y VIPs
-                if (!r.includes('tesorero') && !r.includes('rrhh') && !isVip) return;
+                // "En caja 0 solo el oficial de cumplimiento"
+                if (isOficial || isGerente) showUser = true;
             } 
-            // Lógica Cajas Físicas (Caja 1, Tesorería 99, etc)
-            else if (boxId >= 1) {
-                // Requiere permiso explícito O ser VIP
-                if (!u.permissions.manejo_caja && !isVip) return;
+            // 2. Lógica Tesorería (Caja 99)
+            else if (boxId === 99) {
+                // "En tesoreria solo los tesoreros y el of de cumplimiento"
+                if (isTesorero || isOficial || isGerente) showUser = true;
+            }
+            // 3. Lógica Cajas Normales (Caja 1, 2, etc.)
+            else {
+                // "Cajeros y gente con permiso de manejo caja"
+                // Si es cajero, debería tener el permiso activado. Nos guiamos por el permiso explícito.
+                if (hasPermiso || isOficial || isGerente) showUser = true;
+            }
+
+            // --- FIX: AGREGAR AL SELECT ---
+            if (showUser) {
+                const opt = document.createElement('option');
+                opt.value = u.id;
+                // Mostramos Nombre + Rol para facilitar la elección
+                opt.textContent = `${formatName(u.name)} (${u.role})`; 
+                modalUserSelect.appendChild(opt);
             }
         });
+        
         modalAssign.classList.remove('hidden');
     };
 
