@@ -1,10 +1,7 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // Referencias DOM
-    const headerName = document.getElementById('header-user-name');
-    const headerEmail = document.getElementById('dropdown-user-email');
-    const headerBadge = document.getElementById('header-badge');
-    const sidebarContainer = document.getElementById('sidebar-container');
-    
+import { initAdminHeader } from './header.js';
+
+document.addEventListener('DOMContentLoaded', async () => {
+    // --- REFERENCIAS DOM LOCALES ---
     const tableBody = document.getElementById('payroll-table-body');
     const kpiTotal = document.getElementById('total-payroll');
     const kpiEmployees = document.getElementById('total-employees');
@@ -21,7 +18,31 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     }
 
-    // Modal
+    // --- 1. INICIALIZACIÓN GLOBAL ---
+    // Carga sesión, sidebar, header y marca 'remuneraciones' como activo
+    const sessionData = await initAdminHeader('remuneraciones');
+
+    if (!sessionData.isAuthenticated) return;
+
+    // --- 2. SEGURIDAD Y CONFIGURACIÓN ---
+    let currentUserId = sessionData.equipo_id;
+    const role = (sessionData.rol || '').toLowerCase().trim();
+    
+    // Lista de roles permitidos para ver Remuneraciones
+    const allowedRoles = ['socio', 'admin', 'gerente', 'rrhh'];
+
+    if (!allowedRoles.includes(role)) {
+        window.location.href = 'index'; // Redirigir si no tiene permiso
+        return;
+    }
+
+    let employeesData = [];
+
+    // --- 3. INICIAR LÓGICA DE PÁGINA ---
+    initDateSelectors();
+    fetchEmployees();
+
+    // Modal Refs
     const modal = document.getElementById('modal-payroll');
     const modalClose = document.getElementById('modal-close');
     const modalCancel = document.getElementById('modal-cancel');
@@ -34,53 +55,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputId = document.getElementById('modal-id');
     const inputBonuses = document.getElementById('modal-bonuses');
     const inputDiscounts = document.getElementById('modal-discounts');
-
-    let currentUserId = null;
-    let employeesData = [];
-
-    // --- INIT ---
-    initDateSelectors();
-    getSession();
-
-    // --- SESIÓN ---
-    async function getSession() {
-        try {
-            const res = await fetch("https://cambiosorion.cl/data/session_status.php", { credentials: "include" });
-            const data = await res.json();
-            
-            if (!data.isAuthenticated) {
-                window.location.href = 'https://admin.cambiosorion.cl/login';
-                return;
-            }
-            
-            currentUserId = data.equipo_id;
-            const role = (data.rol || '').toLowerCase();
-            
-            if (!['socio', 'admin', 'gerente', 'rrhh'].includes(role)) {
-                window.location.href = 'index';
-                return;
-            }
-
-            if(headerName) headerName.textContent = (data.nombre || 'Usuario').split(' ')[0];
-            if(headerEmail) headerEmail.textContent = data.correo;
-            if(headerBadge) headerBadge.textContent = "PORTAL ADMIN";
-
-            loadSidebar();
-            fetchEmployees();
-
-        } catch (e) { console.error(e); }
-    }
-
-    function loadSidebar() {
-        fetch('sidebar.html').then(r => r.text()).then(html => {
-            if(sidebarContainer) {
-                sidebarContainer.innerHTML = html;
-                sidebarContainer.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
-                const link = sidebarContainer.querySelector('a[href="remuneraciones"]');
-                if(link) link.classList.add('bg-indigo-50', 'text-indigo-700', 'font-bold');
-            }
-        });
-    }
 
     // --- DATOS ---
     async function fetchEmployees() {
