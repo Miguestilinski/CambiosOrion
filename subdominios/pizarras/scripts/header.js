@@ -25,27 +25,29 @@ export async function initPizarrasHeader(activePageId = '') {
     return sessionData;
 }
 
-// --- SIDEBAR LOADER ---
+// --- SIDEBAR LOADER (CORREGIDO CACHÉ) ---
 async function cargarSidebar(activePageId) {
     const container = document.getElementById('sidebar-container');
     
-    // Si no hay contenedor explícito, no hacemos nada
     if (!container) return;
 
     try {
-        const response = await fetch(SystemConfig.sidebarFile);
+        // TRUCO ANTI-CACHÉ: Agregamos ?v=fecha_actual
+        // Esto obliga al navegador a descargar el archivo nuevo siempre.
+        const antiCache = new Date().getTime(); 
+        const response = await fetch(`${SystemConfig.sidebarFile}?v=${antiCache}`);
+        
         if (response.ok) {
             const html = await response.text();
             container.innerHTML = html;
             
-            // Actualizar datos de usuario en el sidebar recién cargado
             updateSidebarUserInfo();
-            
-            // Marcar link activo
             activarLinkSidebar(activePageId);
+        } else {
+            console.error(`Error HTTP ${response.status} al cargar sidebar`);
         }
     } catch (e) {
-        console.error("Error cargando sidebar:", e);
+        console.error("Error crítico cargando sidebar:", e);
     }
 }
 
