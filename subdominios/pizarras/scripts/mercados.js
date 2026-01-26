@@ -4,35 +4,47 @@ import { initPizarrasHeader } from './header.js';
 document.addEventListener('DOMContentLoaded', async() => {
     await initPizarrasHeader('mercados');
     
-    fetchMarketData();
-    // Actualizamos cada 60s
-    setInterval(fetchMarketData, 60000); 
+    // Iniciar SSE (Tiempo Real Real)
+    startLiveUpdates();
 
-    console.log("Orion Markets: Lista Extendida Activa");
+    console.log("Orion Markets: Modo SSE (Tiempo Real) Activo ⚡");
 });
 
-async function fetchMarketData() {
-    try {
-        const response = await fetch('data/mercados.json?t=' + new Date().getTime());
-        if (!response.ok) throw new Error("Error JSON");
-        
-        const data = await response.json();
-        
-        if (data.bci) {
-            // Separar
-            const currencies = data.bci.filter(i => i.type === 'currency');
-            const commodities = data.bci.filter(i => i.type === 'commodity');
+function startLiveUpdates() {
+    const timeBadge = document.getElementById('last-update-display');
+    if(timeBadge) timeBadge.innerText = "Conectando stream...";
 
-            renderBCITable('table-bci-currencies', currencies);
-            renderBCITable('table-bci-commodities', commodities);
+    // Conectar al endpoint SSE PHP
+    const evtSource = new EventSource("https://cambiosorion.cl/data/mercados_sse.php");
+
+    evtSource.onmessage = function(event) {
+        try {
+            const data = JSON.parse(event.data);
+            
+            if (data.bci) {
+                const currencies = data.bci.filter(i => i.type === 'currency');
+                const commodities = data.bci.filter(i => i.type === 'commodity');
+
+                renderBCITable('table-bci-currencies', currencies);
+                renderBCITable('table-bci-commodities', commodities);
+            }
+
+            if(timeBadge) {
+                timeBadge.innerText = `En vivo: ${data.last_update}`;
+                timeBadge.classList.add('text-green-400');
+                // Efecto visual de pulso
+                setTimeout(() => timeBadge.classList.remove('text-green-400'), 500);
+            }
+
+        } catch (e) {
+            console.error("Error parseando SSE:", e);
         }
-        
-        const timeBadge = document.getElementById('last-update-display');
-        if(timeBadge) timeBadge.innerText = `Actualizado: ${data.last_update}`;
+    };
 
-    } catch (error) {
-        console.error(error);
-    }
+    evtSource.onerror = function() {
+        if(timeBadge) timeBadge.innerText = "Reconectando...";
+        // EventSource intenta reconectar automáticamente, no necesitamos lógica extra
+    };
 }
 
 function renderBCITable(elementId, items) {
@@ -54,15 +66,19 @@ function renderBCITable(elementId, items) {
              priceFmt = 'US$ ' + item.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         } else {
              // Divisas en CLP
-             // Si el valor es muy pequeño (ej: COP, JPY), mostramos más decimales
+             // Si el valor es muy pequeño (ej: COP, JPY), mostramos 4 decimales
              let decimals = item.price < 10 ? 4 : 2;
              priceFmt = '$ ' + item.price.toLocaleString('es-CL', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
         }
 
         html += `
-        <tr class="hover:bg-white/5 transition border-b border-white/5 last:border-0">
-            <td class="py-3 pl-2 font-bold text-slate-200 text-sm whitespace-nowrap">${item.symbol}</td>
-            <td class="py-3 text-right font-mono text-white text-base tracking-wide">${priceFmt}</td>
+        <tr class="hover:bg-white/5 transition border-b border-white/5 last:border-0 group">
+            <td class="py-3 pl-2 font-bold text-slate-200 text-sm whitespace-nowrap flex items-center gap-2">
+                ${item.symbol}
+            </td>
+            <td class="py-3 text-right font-mono text-white text-base tracking-wide group-hover:scale-105 transition-transform origin-right">
+                ${priceFmt}
+            </td>
             <td class="py-3 text-right pr-2">
                 <span class="text-[10px] font-bold px-1.5 py-0.5 rounded ${colorClass}">
                     ${changeSign}${item.change.toFixed(2)}% ${icon}
