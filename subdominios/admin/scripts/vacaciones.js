@@ -1,27 +1,7 @@
 import { initAdminHeader } from './header.js';
 
 document.addEventListener('DOMContentLoaded', async() => {
-    // --- 1. INICIALIZACIÓN GLOBAL ---
-    // Carga sesión, sidebar (marcando 'vacaciones'), header y lógica de usuario
-    const sessionData = await initAdminHeader('vacaciones');
-
-    if (!sessionData.isAuthenticated) return;
-
-    // --- 2. LÓGICA DE ROLES ---
-    const rol = (sessionData.rol || '').toLowerCase().trim();
-    const superUsers = ['socio', 'admin', 'gerente', 'rrhh'];
-    
-    // Iniciar componentes de la página
-    loadPersonalStats();
-    renderCalendar();
-    renderMyRequestsList();
-
-    if (superUsers.includes(rol)) {
-        setupAdminView();
-    }
-
-    // --- Referencias DOM ----
-    
+    // --- 1. REFERENCIAS DOM (MOVER AL PRINCIPIO) ---
     // Calendar DOM
     const calendarDays = document.getElementById('calendar-days');
     const monthYearText = document.getElementById('current-month-year');
@@ -40,6 +20,25 @@ document.addEventListener('DOMContentLoaded', async() => {
     // Admin DOM
     const adminPanel = document.getElementById('admin-vacations-panel');
     const pendingContainer = document.getElementById('pending-requests-container');
+
+    // --- 2. INICIALIZACIÓN GLOBAL ---
+    // Carga sesión, sidebar, header y lógica de usuario
+    const sessionData = await initAdminHeader('vacaciones');
+
+    if (!sessionData.isAuthenticated) return;
+
+    // --- 3. LÓGICA DE ROLES Y CARGA DE DATOS ---
+    const rol = (sessionData.rol || '').toLowerCase().trim();
+    const superUsers = ['socio', 'admin', 'gerente', 'rrhh'];
+    
+    // Iniciar componentes de la página (AHORA SI FUNCIONARÁ)
+    loadPersonalStats();
+    renderCalendar();
+    renderMyRequestsList();
+
+    if (superUsers.includes(rol)) {
+        setupAdminView();
+    }
 
     // State
     let currentDate = new Date(); // Mes visualizado
