@@ -5,9 +5,10 @@ document.addEventListener('DOMContentLoaded', async() => {
     await initPizarrasHeader('mercados');
     
     fetchMarketData();
+    // Actualizamos cada 60s
     setInterval(fetchMarketData, 60000); 
 
-    console.log("Orion Markets: Conectado");
+    console.log("Orion Markets: Lista Extendida Activa");
 });
 
 async function fetchMarketData() {
@@ -18,8 +19,8 @@ async function fetchMarketData() {
         const data = await response.json();
         
         if (data.bci) {
-            // Separa Monedas de Commodities
-            const currencies = data.bci.filter(i => i.type === 'currency' || i.type === 'indicator');
+            // Separar
+            const currencies = data.bci.filter(i => i.type === 'currency');
             const commodities = data.bci.filter(i => i.type === 'commodity');
 
             renderBCITable('table-bci-currencies', currencies);
@@ -45,28 +46,25 @@ function renderBCITable(elementId, items) {
         let colorClass = item.status === 'up' ? 'text-emerald-400 bg-emerald-400/10' : (item.status === 'down' ? 'text-red-400 bg-red-400/10' : 'text-slate-400');
         let changeSign = item.status === 'up' ? '+' : '';
 
-        // Formateo de Precios
+        // Formateo Inteligente
         let priceFmt;
         
-        // 1. UF: Sin decimales
-        if (item.symbol === 'UF') {
-            priceFmt = '$ ' + Math.round(item.price).toLocaleString('es-CL');
-        } 
-        // 2. ORO y PLATA: En Dólares (US$)
-        else if (item.symbol.includes('Oro') || item.symbol.includes('Plata') || item.symbol.includes('Gold') || item.symbol.includes('Silver')) {
+        if (item.type === 'commodity') {
+             // Commodities en USD
              priceFmt = 'US$ ' + item.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        } 
-        // 3. MONEDAS (USD/EUR): En Pesos ($)
-        else {
-             priceFmt = '$ ' + item.price.toLocaleString('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        } else {
+             // Divisas en CLP
+             // Si el valor es muy pequeño (ej: COP, JPY), mostramos más decimales
+             let decimals = item.price < 10 ? 4 : 2;
+             priceFmt = '$ ' + item.price.toLocaleString('es-CL', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
         }
 
         html += `
         <tr class="hover:bg-white/5 transition border-b border-white/5 last:border-0">
-            <td class="py-4 pl-2 font-bold text-slate-200">${item.symbol}</td>
-            <td class="py-4 text-right font-mono text-white text-lg">${priceFmt}</td>
-            <td class="py-4 text-right pr-2">
-                <span class="text-xs font-bold px-2 py-1 rounded ${colorClass}">
+            <td class="py-3 pl-2 font-bold text-slate-200 text-sm whitespace-nowrap">${item.symbol}</td>
+            <td class="py-3 text-right font-mono text-white text-base tracking-wide">${priceFmt}</td>
+            <td class="py-3 text-right pr-2">
+                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded ${colorClass}">
                     ${changeSign}${item.change.toFixed(2)}% ${icon}
                 </span>
             </td>
