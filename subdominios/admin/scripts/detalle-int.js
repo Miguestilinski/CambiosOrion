@@ -2,7 +2,7 @@ import { initAdminHeader } from './header.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
 
-    // --- 1. CONFIGURACIÓN UI: MODAL (Reemplazo de alerts) ---
+    // --- 1. CONFIGURACIÓN UI: MODAL ---
     const modalNotif = document.getElementById('modal-notification');
     const modalIcon = document.getElementById('modal-icon-container');
     const modalTitle = document.getElementById('modal-title');
@@ -38,7 +38,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // --- 2. INICIALIZACIÓN GLOBAL ---
-    // Marcamos 'equipo' como activo
     const sessionData = await initAdminHeader('equipo');
 
     if (!sessionData.isAuthenticated) return;
@@ -48,17 +47,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     const allowedRoles = ['socio', 'admin', 'gerente', 'rrhh'];
     
     if (!allowedRoles.includes(role)) {
-        showAlert("Acceso Denegado", "No tienes permisos para editar integrantes.", true, () => {
+        showAlert("Acceso Denegado", "No tienes permisos para gestionar integrantes.", true, () => {
             window.location.href = 'equipo';
         });
         return;
     }
 
-    // --- 4. REFERENCIAS DOM (FORMULARIO) ---
+    // --- 4. REFERENCIAS DOM ---
     const pageTitle = document.getElementById('page-title-crumb');
     const profileName = document.getElementById('profile-name');
     
-    // Inputs
+    // Inputs del formulario
     const fId = document.getElementById('f-id');
     const fNombre = document.getElementById('f-nombre');
     const fRut = document.getElementById('f-rut');
@@ -73,58 +72,89 @@ document.addEventListener('DOMContentLoaded', async () => {
     const fIngreso = document.getElementById('f-ingreso');
     const fSueldo = document.getElementById('f-sueldo');
     
+    // Inputs Bancarios (Si existen en tu HTML detalle-int.html)
+    const fBanco = document.getElementById('f-banco');
+    const fTipoCuenta = document.getElementById('f-tipo-cuenta');
+    const fNumeroCuenta = document.getElementById('f-numero-cuenta');
+    
     const btnSave = document.getElementById('btn-save');
 
-    // --- 5. LÓGICA DE CARGA DE DATOS ---
+    // --- 5. LÓGICA DE MODO (CREAR vs EDITAR) ---
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get('id');
+    const isCreateMode = (userId === 'new');
 
-    if (userId) {
+    if (isCreateMode) {
+        // MODO CREACIÓN
+        setupCreateMode();
+    } else if (userId) {
+        // MODO EDICIÓN
         loadUserDetails(userId);
     } else {
-        showAlert("Error", "No se especificó un ID de integrante.", true, () => {
+        showAlert("Error", "No se especificó un ID válido.", true, () => {
             window.location.href = 'equipo';
         });
     }
 
     setupEventListeners();
 
+
     // --- FUNCIONES ---
+
+    function setupCreateMode() {
+        if(profileName) profileName.textContent = "Nuevo Integrante";
+        if(pageTitle) pageTitle.textContent = "Agregando Integrante";
+        if(btnSave) btnSave.textContent = "Crear Integrante";
+        
+        // Limpiar campos por seguridad
+        if(fNombre) fNombre.value = "";
+        if(fRut) fRut.value = "";
+        if(fRol) fRol.value = "Staff"; // Valor por defecto
+        if(fContrato) fContrato.value = "Indefinido";
+    }
 
     async function loadUserDetails(id) {
         try {
-            // Asumimos que existe un endpoint GET que devuelve los datos del usuario por ID
             const res = await fetch(`https://cambiosorion.cl/data/detalle-int.php?id=${id}`);
             const json = await res.json();
 
             if (json.success && json.data) {
                 const u = json.data;
                 
-                // Llenar campos
-                fId.value = u.id;
-                fNombre.value = u.nombre;
-                fRut.value = u.rut;
-                fNacimiento.value = u.fecha_nacimiento;
-                fCivil.value = u.estado_civil;
-                fDireccion.value = u.direccion;
-                fEmail.value = u.email;
-                fTelefono.value = u.telefono;
-                fIngreso.value = u.fecha_ingreso;
-                fSueldo.value = u.sueldo_liquido;
-                fContrato.value = u.tipo_contrato;
+                // Llenar campos principales
+                if(fId) fId.value = u.id;
+                if(fNombre) fNombre.value = u.nombre;
+                if(fRut) fRut.value = u.rut;
+                if(fNacimiento) fNacimiento.value = u.fecha_nacimiento;
+                if(fCivil) fCivil.value = u.estado_civil;
+                if(fDireccion) fDireccion.value = u.direccion;
+                if(fEmail) fEmail.value = u.email;
+                if(fTelefono) fTelefono.value = u.telefono;
+                if(fIngreso) fIngreso.value = u.fecha_ingreso;
+                if(fSueldo) fSueldo.value = u.sueldo_liquido;
+                if(fContrato) fContrato.value = u.tipo_contrato;
+
+                // Llenar datos bancarios si existen
+                if(fBanco && u.banco) fBanco.value = u.banco;
+                if(fTipoCuenta && u.tipo_cuenta) fTipoCuenta.value = u.tipo_cuenta;
+                if(fNumeroCuenta && u.numero_cuenta) fNumeroCuenta.value = u.numero_cuenta;
 
                 // UI Header Profile Name
                 if(profileName) profileName.textContent = u.nombre;
 
                 // Lógica de Roles (Custom vs Select)
-                const standardRoles = ['Socio', 'Gerente', 'Admin', 'RRHH', 'Cajero', 'Contador'];
-                if (standardRoles.includes(u.rol)) {
-                    fRol.value = u.rol;
-                    fRolCustom.classList.add('hidden');
-                } else {
-                    fRol.value = 'custom';
-                    fRolCustom.classList.remove('hidden');
-                    fRolCustom.value = u.rol;
+                const standardRoles = ['Socio', 'Gerente', 'Admin', 'RRHH', 'Cajero', 'Contador', 'Staff'];
+                if (fRol) {
+                    if (standardRoles.includes(u.rol)) {
+                        fRol.value = u.rol;
+                        if(fRolCustom) fRolCustom.classList.add('hidden');
+                    } else {
+                        fRol.value = 'custom';
+                        if(fRolCustom) {
+                            fRolCustom.classList.remove('hidden');
+                            fRolCustom.value = u.rol;
+                        }
+                    }
                 }
 
             } else {
@@ -140,7 +170,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function saveProfile() {
         // Validaciones básicas
-        if (!fNombre.value || !fRut.value || !fEmail.value) {
+        if (!fNombre?.value || !fRut?.value || !fEmail?.value) {
             showAlert("Datos Faltantes", "Nombre, RUT y Email son obligatorios.", true);
             return;
         }
@@ -155,26 +185,56 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
 
-        const payload = {
-            id: fId.value,
-            nombre: fNombre.value,
-            rut: fRut.value,
-            fecha_nacimiento: fNacimiento.value,
-            estado_civil: fCivil.value,
-            direccion: fDireccion.value,
-            email: fEmail.value,
-            telefono: fTelefono.value,
-            rol: finalRol,
-            tipo_contrato: fContrato.value,
-            fecha_ingreso: fIngreso.value,
-            sueldo_liquido: fSueldo.value
-        };
-
         btnSave.disabled = true;
-        btnSave.textContent = "Guardando...";
+        btnSave.textContent = isCreateMode ? "Creando..." : "Guardando...";
 
         try {
-            const res = await fetch("https://cambiosorion.cl/data/detalle-int.php", {
+            let url, payload;
+
+            if (isCreateMode) {
+                // === LÓGICA DE CREACIÓN (Usa nuevo-int.php) ===
+                url = "https://cambiosorion.cl/data/nuevo-int.php";
+                payload = {
+                    nombre: fNombre.value,
+                    rut: fRut.value,
+                    estadoCivil: fCivil?.value || '',
+                    fechaNacimiento: fNacimiento?.value || '',
+                    direccion: fDireccion?.value || '',
+                    telefono: fTelefono?.value || '',
+                    email: fEmail.value,
+                    fechaIngreso: fIngreso?.value || '',
+                    rol: finalRol,
+                    tipoContrato: fContrato?.value || '',
+                    sueldoLiquido: fSueldo?.value || 0,
+                    // Campos bancarios opcionales
+                    banco: fBanco?.value || '',
+                    tipoCuenta: fTipoCuenta?.value || '',
+                    numeroCuenta: fNumeroCuenta?.value || ''
+                };
+            } else {
+                // === LÓGICA DE EDICIÓN (Usa detalle-int.php) ===
+                url = "https://cambiosorion.cl/data/detalle-int.php";
+                payload = {
+                    id: fId.value,
+                    nombre: fNombre.value,
+                    rut: fRut.value,
+                    fecha_nacimiento: fNacimiento?.value,
+                    estado_civil: fCivil?.value,
+                    direccion: fDireccion?.value,
+                    email: fEmail.value,
+                    telefono: fTelefono?.value,
+                    rol: finalRol,
+                    tipo_contrato: fContrato?.value,
+                    fecha_ingreso: fIngreso?.value,
+                    sueldo_liquido: fSueldo?.value,
+                    // Campos bancarios opcionales (si el PHP los soporta)
+                    banco: fBanco?.value,
+                    tipo_cuenta: fTipoCuenta?.value,
+                    numero_cuenta: fNumeroCuenta?.value
+                };
+            }
+
+            const res = await fetch(url, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
@@ -183,43 +243,51 @@ document.addEventListener('DOMContentLoaded', async () => {
             const json = await res.json();
 
             if (json.success) {
-                showAlert("¡Éxito!", "Perfil actualizado correctamente.", false, () => {
-                    location.reload();
+                const msg = isCreateMode ? "Integrante creado correctamente." : "Perfil actualizado correctamente.";
+                showAlert("¡Éxito!", msg, false, () => {
+                    if (isCreateMode) window.location.href = 'equipo';
+                    else location.reload();
                 });
             } else {
-                showAlert("Error", json.message || "No se pudo actualizar.", true);
+                showAlert("Error", json.message || json.error || "No se pudo guardar.", true);
             }
         } catch (e) {
             console.error(e);
             showAlert("Error de Conexión", "No se pudo contactar al servidor.", true);
         } finally {
             btnSave.disabled = false;
-            btnSave.textContent = "Guardar Cambios";
+            btnSave.textContent = isCreateMode ? "Crear Integrante" : "Guardar Cambios";
         }
     }
 
     function setupEventListeners() {
-        btnSave.addEventListener('click', (e) => {
-            e.preventDefault();
-            saveProfile();
-        });
+        if(btnSave) {
+            btnSave.addEventListener('click', (e) => {
+                e.preventDefault();
+                saveProfile();
+            });
+        }
 
-        // Evento cambio de Rol (Mostrar/Ocultar custom)
-        fRol.addEventListener('change', () => {
-            if (fRol.value === 'custom') {
-                fRolCustom.classList.remove('hidden');
-                fRolCustom.value = ''; 
-                fRolCustom.focus();
-            } else {
-                fRolCustom.classList.add('hidden');
-            }
+        // Evento cambio de Rol
+        if(fRol) {
+            fRol.addEventListener('change', () => {
+                if (fRol.value === 'custom') {
+                    if(fRolCustom) {
+                        fRolCustom.classList.remove('hidden');
+                        fRolCustom.value = ''; 
+                        fRolCustom.focus();
+                    }
+                } else {
+                    if(fRolCustom) fRolCustom.classList.add('hidden');
+                }
 
-            // Lógica Automática Socio -> Dueño
-            if (fRol.value === 'Socio') {
-                fContrato.value = 'Dueño';
-            } else if (fContrato.value === 'Dueño') {
-                fContrato.value = 'Indefinido';
-            }
-        });
+                // Lógica Automática
+                if (fRol.value === 'Socio') {
+                    if(fContrato) fContrato.value = 'Dueño';
+                } else if (fContrato && fContrato.value === 'Dueño') {
+                    fContrato.value = 'Indefinido';
+                }
+            });
+        }
     }
 });
