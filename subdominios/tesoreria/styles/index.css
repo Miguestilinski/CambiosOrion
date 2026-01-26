@@ -55,6 +55,15 @@ tr.compra:hover {
     cursor: pointer;
 }
 
+/* ANULADO (Rojo) */
+tr.anulado, .anulado {
+    background-color: #f9b8a4 !important;
+}
+/* Hover ligeramente más oscuro */
+tr.anulado:hover {
+    background-color: #e8a694 !important; 
+}
+
 /* Filas normales hover */
 tbody tr:hover {
     background-color: rgba(255, 255, 255, 0.05);
