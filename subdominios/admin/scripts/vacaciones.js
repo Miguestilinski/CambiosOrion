@@ -1,14 +1,12 @@
 import { initAdminHeader } from './header.js';
 
 document.addEventListener('DOMContentLoaded', async() => {
-    // --- 1. REFERENCIAS DOM (MOVER AL PRINCIPIO) ---
-    // Calendar DOM
+    // 1. REFERENCIAS DOM
     const calendarDays = document.getElementById('calendar-days');
     const monthYearText = document.getElementById('current-month-year');
     const prevMonthBtn = document.getElementById('prev-month');
     const nextMonthBtn = document.getElementById('next-month');
     
-    // Stats & Request DOM
     const daysAvailableEl = document.getElementById('days-available');
     const daysEarnedEl = document.getElementById('days-earned');
     const daysTakenEl = document.getElementById('days-taken');
@@ -17,44 +15,39 @@ document.addEventListener('DOMContentLoaded', async() => {
     const requestBtn = document.getElementById('btn-request-vacation');
     const myRequestsList = document.getElementById('my-requests-list');
 
-    // Admin DOM
     const adminPanel = document.getElementById('admin-vacations-panel');
     const pendingContainer = document.getElementById('pending-requests-container');
 
-    // --- 2. INICIALIZACIÓN GLOBAL ---
-    // Carga sesión, sidebar, header y lógica de usuario
+    // 2. INICIALIZACIÓN GLOBAL
     const sessionData = await initAdminHeader('vacaciones');
-
     if (!sessionData.isAuthenticated) return;
 
-    // --- 3. LÓGICA DE ROLES Y CARGA DE DATOS ---
-    const rol = (sessionData.rol || '').toLowerCase().trim();
-    const superUsers = ['socio', 'admin', 'gerente', 'rrhh'];
-    
-    // Iniciar componentes de la página (AHORA SI FUNCIONARÁ)
-    loadPersonalStats();
-    renderCalendar();
-    renderMyRequestsList();
-
-    if (superUsers.includes(rol)) {
-        setupAdminView();
-    }
-
-    // State
-    let currentDate = new Date(); // Mes visualizado
-    let selectedDates = new Set(); // Fechas seleccionadas (Set para unicidad)
-    let holidays = ['2025-01-01', '2025-04-18', '2025-04-19', '2025-05-01', '2025-05-21', '2025-06-20', '2025-07-16', '2025-08-15', '2025-09-18', '2025-09-19', '2025-10-31', '2025-11-01', '2025-12-08', '2025-12-25']; // Mock Feriados CL
+    // 3. STATE (MOVER ESTE BLOQUE AQUÍ, ANTES DE USARLO)
+    let currentDate = new Date(); 
+    let selectedDates = new Set(); 
+    let holidays = ['2025-01-01', '2025-04-18', '2025-04-19', '2025-05-01', '2025-05-21', '2025-06-20', '2025-07-16', '2025-08-15', '2025-09-18', '2025-09-19', '2025-10-31', '2025-11-01', '2025-12-08', '2025-12-25']; 
     let myVacations = [
         { date: '2025-02-10', status: 'approved' },
         { date: '2025-02-11', status: 'approved' },
         { date: '2025-02-12', status: 'approved' },
         { date: '2025-03-20', status: 'pending' }
-    ]; // Mock Mis Vacaciones
-
+    ];
     let pendingRequests = [
         { id: 101, name: "Maria Gonzalez", dates: ["2025-06-10", "2025-06-11"], total: 2 },
         { id: 102, name: "Juan Perez", dates: ["2025-07-01", "2025-07-02", "2025-07-03"], total: 3 }
-    ]; // Mock Admin Requests
+    ];
+
+    // 4. LÓGICA DE ROLES Y EJECUCIÓN (AHORA SÍ PUEDES LLAMAR A LAS FUNCIONES)
+    const rol = (sessionData.rol || '').toLowerCase().trim();
+    const superUsers = ['socio', 'admin', 'gerente', 'rrhh'];
+    
+    loadPersonalStats();
+    renderCalendar();      // Ahora 'currentDate' ya existe, así que esto funcionará
+    renderMyRequestsList();
+
+    if (superUsers.includes(rol)) {
+        setupAdminView();
+    }
 
     // --- INITIALIZATION ---
     getSession();
