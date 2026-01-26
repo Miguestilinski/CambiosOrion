@@ -1,10 +1,7 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // DOM Refs
-    const headerBadge = document.getElementById('header-badge');
-    const headerName = document.getElementById('header-user-name');
-    const headerEmail = document.getElementById('dropdown-user-email');
-    const sidebarContainer = document.getElementById('sidebar-container');
-    
+import { initAdminHeader } from './header.js';
+
+document.addEventListener('DOMContentLoaded', async() => {
+    // --- REFERENCIAS DOM LOCALES ---
     // Upload Refs
     const uploadSection = document.getElementById('upload-section');
     const newLicenseBtn = document.getElementById('btn-new-license');
@@ -18,12 +15,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const employeeSelect = document.getElementById('employee-select');
     const tableBody = document.getElementById('licenses-table-body');
 
-    // State
-    let currentUserId = null;
-    let currentUserRole = null;
+    // --- 1. INICIALIZACIÓN GLOBAL ---
+    // Carga sesión, sidebar (marcando 'licencias-medicas'), header y lógica de usuario
+    const sessionData = await initAdminHeader('licencias-medicas');
+
+    if (!sessionData.isAuthenticated) return;
+
+    // --- 2. CONFIGURACIÓN LOCAL ---
+    let currentUserId = sessionData.equipo_id || 99; // Mock ID fallback si no hay real
+    let currentUserRole = (sessionData.rol || '').toLowerCase().trim();
     let filterUserId = 'all';
 
-    // Mock Data
+    // Mock Data (Se mantiene igual)
     const mockLicenses = [
         { id: 1, folio: "12345678", user_id: 99, user_name: "Yo Mismo", start: "2025-05-10", days: 3, status: "tramite", url: "#" },
         { id: 2, folio: "87654321", user_id: 101, user_name: "Juan Pérez", start: "2025-04-20", days: 15, status: "aprobada", url: "#" },
@@ -31,70 +34,20 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 4, folio: "11223344", user_id: 99, user_name: "Yo Mismo", start: "2025-01-15", days: 2, status: "aprobada", url: "#" }
     ];
 
-    // --- INIT ---
-    getSession();
+    // Lógica de Roles (Admin ve selector de empleados)
+    const superUsers = ['socio', 'admin', 'gerente', 'rrhh']; 
+    const isSuperUser = superUsers.includes(currentUserRole);
+
+    if (isSuperUser) {
+        if(adminControls) adminControls.classList.remove('hidden');
+        loadEmployeesList();
+    } else {
+        if(adminControls) adminControls.remove();
+    }
+
+    // --- 3. INICIAR LÓGICA DE PÁGINA ---
     setupFormLogic();
-
-    // --- SESSION ---
-    async function getSession() {
-        try {
-            const res = await fetch("https://cambiosorion.cl/data/session_status.php", { credentials: "include" });
-            if (!res.ok) throw new Error("Error sesión");
-            const data = await res.json();
-            
-            if (!data.isAuthenticated) {
-                window.location.href = 'https://admin.cambiosorion.cl/login';
-                return;
-            }
-
-            currentUserId = data.equipo_id || 99; // Mock ID fallback
-            currentUserRole = (data.rol || '').toLowerCase().trim();
-            
-            if(headerName) headerName.textContent = (data.nombre || 'Usuario').split(' ')[0];
-            if(headerEmail) headerEmail.textContent = data.correo;
-
-            configureViewByRole(currentUserRole);
-            renderTable();
-
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    // --- VIEW CONFIG ---
-    function configureViewByRole(rol) {
-        const superUsers = ['socio', 'admin', 'gerente']; 
-        const isSuperUser = superUsers.includes(rol);
-
-        fetch('sidebar.html')
-            .then(res => res.text())
-            .then(html => {
-                if(sidebarContainer) {
-                    sidebarContainer.innerHTML = html;
-                    const adminItems = sidebarContainer.querySelectorAll('.admin-only');
-                    if (isSuperUser) adminItems.forEach(item => item.classList.remove('hidden'));
-                    else adminItems.forEach(item => item.remove());
-                    
-                    const active = sidebarContainer.querySelector('a[href="licencias-medicas"]');
-                    if(active) active.classList.add('bg-indigo-50', 'text-indigo-700', 'font-bold');
-                }
-            });
-
-        if(isSuperUser) {
-            if(headerBadge) {
-                headerBadge.textContent = "PORTAL ADMIN";
-                headerBadge.className = "hidden md:inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-indigo-600 text-white border border-indigo-500/30 tracking-wider uppercase shadow-lg shadow-indigo-500/20";
-            }
-            adminControls.classList.remove('hidden');
-            loadEmployeesList();
-        } else {
-            if(headerBadge) {
-                headerBadge.textContent = "PORTAL ORION";
-                headerBadge.className = "hidden md:inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-indigo-600 text-white border border-indigo-500/30 tracking-wider uppercase shadow-lg shadow-indigo-500/20";
-            }
-            adminControls.remove();
-        }
-    }
+    renderTable();
 
     // --- DATA HANDLING ---
     function renderTable() {
