@@ -193,18 +193,19 @@ document.addEventListener('DOMContentLoaded', async () => {
                 payload = {
                     nombre: fNombre.value,
                     rut: fRut.value,
-                    estadoCivil: fCivil?.value || '',
-                    fechaNacimiento: fNacimiento?.value || '',
+                    // AQUÍ ESTÁ EL CAMBIO: Usar nombres con guion bajo
+                    estado_civil: fCivil?.value || '',      // Antes: estadoCivil
+                    fecha_nacimiento: fNacimiento?.value || '', // Antes: fechaNacimiento
                     direccion: fDireccion?.value || '',
                     telefono: fTelefono?.value || '',
                     email: fEmail.value,
-                    fechaIngreso: fIngreso?.value || '',
+                    fecha_ingreso: fIngreso?.value || '',   // Antes: fechaIngreso
                     rol: finalRol,
-                    tipoContrato: fContrato?.value || '',
-                    sueldoLiquido: fSueldo?.value || 0,
+                    tipo_contrato: fContrato?.value || '',  // Antes: tipoContrato
+                    sueldo_liquido: fSueldo?.value || 0,    // Antes: sueldoLiquido
                     banco: fBanco?.value || '',
-                    tipoCuenta: fTipoCuenta?.value || '',
-                    numeroCuenta: fNumeroCuenta?.value || ''
+                    tipo_cuenta: fTipoCuenta?.value || '',  // Antes: tipoCuenta
+                    numero_cuenta: fNumeroCuenta?.value || '' // Antes: numeroCuenta
                 };
             } else {
                 url = "https://cambiosorion.cl/data/detalle-int.php";
