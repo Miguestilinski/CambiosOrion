@@ -131,12 +131,12 @@ function processData(data) {
                     </div>
                 </td>
                 <td class="w-[35%] text-center align-middle">
-                    <span class="${listPriceSize} font-bold font-mono tracking-wide text-shadow-glow bg-black/10 rounded-lg px-3 py-1 whitespace-nowrap">
+                    <span class="${listPriceSize} font-extrabold font-mono tracking-wide text-shadow-glow bg-black/10 rounded-lg px-3 py-1 whitespace-nowrap">
                         ${compraFmt}
                     </span>
                 </td>
                 <td class="w-[35%] text-center align-middle">
-                    <span class="${listPriceSize} font-bold font-mono tracking-wide text-shadow-glow px-3 py-1 whitespace-nowrap">
+                    <span class="${listPriceSize} font-extrabold font-mono tracking-wide text-shadow-glow px-3 py-1 whitespace-nowrap">
                         ${ventaFmt}
                     </span>
                 </td>
