@@ -503,7 +503,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // 3. Enviar al Backend
         try {
-            const response = await fetch("https://cambiosorion.cl/data/save_cliente.php", {
+            const response = await fetch("https://cambiosorion.cl/data/form_doc.php", {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json' // Aseguramos que se envíe como JSON
