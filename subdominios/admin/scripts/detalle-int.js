@@ -139,6 +139,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if(fNumeroCuenta && u.numero_cuenta) fNumeroCuenta.value = u.numero_cuenta;
 
                 if(profileName) profileName.textContent = u.nombre;
+                if(pageTitle) pageTitle.textContent = "Editando Integrante";
 
                 // Roles
                 const standardRoles = ['Socio', 'Gerente', 'Admin', 'RRHH', 'Cajero', 'Contador', 'Staff'];
