@@ -48,9 +48,6 @@ document.addEventListener('DOMContentLoaded', async() => {
     if (superUsers.includes(rol)) {
         setupAdminView();
     }
-
-    // --- INITIALIZATION ---
-    getSession();
     
     prevMonthBtn.addEventListener('click', () => {
         currentDate.setMonth(currentDate.getMonth() - 1);
