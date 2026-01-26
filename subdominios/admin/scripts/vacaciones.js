@@ -1,9 +1,26 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // Referencias DOM
-    const headerBadge = document.getElementById('header-badge');
-    const headerName = document.getElementById('header-user-name');
-    const headerEmail = document.getElementById('dropdown-user-email');
-    const sidebarContainer = document.getElementById('sidebar-container');
+import { initAdminHeader } from './header.js';
+
+document.addEventListener('DOMContentLoaded', async() => {
+    // --- 1. INICIALIZACIÓN GLOBAL ---
+    // Carga sesión, sidebar (marcando 'vacaciones'), header y lógica de usuario
+    const sessionData = await initAdminHeader('vacaciones');
+
+    if (!sessionData.isAuthenticated) return;
+
+    // --- 2. LÓGICA DE ROLES ---
+    const rol = (sessionData.rol || '').toLowerCase().trim();
+    const superUsers = ['socio', 'admin', 'gerente', 'rrhh'];
+    
+    // Iniciar componentes de la página
+    loadPersonalStats();
+    renderCalendar();
+    renderMyRequestsList();
+
+    if (superUsers.includes(rol)) {
+        setupAdminView();
+    }
+
+    // --- Referencias DOM ----
     
     // Calendar DOM
     const calendarDays = document.getElementById('calendar-days');
@@ -58,61 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
         updateSelectionUI();
         renderCalendar();
     });
-
-    // --- LOGIC ---
-    async function getSession() {
-        try {
-            const res = await fetch("https://cambiosorion.cl/data/session_status.php", { credentials: "include" });
-            if (!res.ok) throw new Error("Error sesión");
-            const data = await res.json();
-            
-            if (!data.isAuthenticated) {
-                window.location.href = 'https://admin.cambiosorion.cl/login';
-                return;
-            }
-
-            if(headerName) headerName.textContent = (data.nombre || 'Usuario').split(' ')[0];
-            if(headerEmail) headerEmail.textContent = data.correo;
-
-            const role = (data.rol || '').toLowerCase().trim();
-            configureSidebar(role);
-            loadPersonalStats();
-            renderCalendar();
-            renderMyRequestsList();
-
-            const superUsers = ['socio', 'admin', 'gerente'];
-            if (superUsers.includes(role)) {
-                setupAdminView();
-            } else {
-                if(headerBadge) {
-                    headerBadge.textContent = "PORTAL ORION";
-                    headerBadge.className = "hidden md:inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-indigo-600 text-white border border-indigo-500/30 tracking-wider uppercase shadow-lg shadow-indigo-500/20";
-                }
-            }
-
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    function configureSidebar(rol) {
-        const superUsers = ['socio', 'admin', 'gerente']; 
-        const isSuperUser = superUsers.includes(rol);
-
-        fetch('sidebar.html')
-            .then(res => res.text())
-            .then(html => {
-                if(sidebarContainer) {
-                    sidebarContainer.innerHTML = html;
-                    const adminItems = sidebarContainer.querySelectorAll('.admin-only');
-                    if (isSuperUser) adminItems.forEach(item => item.classList.remove('hidden'));
-                    else adminItems.forEach(item => item.remove());
-                    
-                    const active = sidebarContainer.querySelector('a[href="vacaciones"]');
-                    if(active) active.classList.add('bg-indigo-50', 'text-indigo-700', 'font-bold');
-                }
-            });
-    }
 
     // --- CALENDAR LOGIC ---
     function renderCalendar() {
@@ -252,10 +214,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- ADMIN LOGIC ---
     function setupAdminView() {
         if(adminPanel) adminPanel.classList.remove('hidden');
-        if(headerBadge) {
-            headerBadge.textContent = "PORTAL ADMIN";
-            headerBadge.className = "hidden md:inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-indigo-600 text-white border border-indigo-500/30 tracking-wider uppercase shadow-lg shadow-indigo-500/20";
-        }
         renderPendingRequests();
     }
 
