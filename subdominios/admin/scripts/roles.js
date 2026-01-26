@@ -1,8 +1,7 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // Referencias
-    const headerName = document.getElementById('header-user-name');
-    const headerBadge = document.getElementById('header-badge');
-    const sidebarContainer = document.getElementById('sidebar-container');
+import { initAdminHeader } from './header.js';
+
+document.addEventListener('DOMContentLoaded', async () => {
+    // --- REFERENCIAS DOM LOCALES ---
     const boxesGrid = document.getElementById('boxes-grid');
     const permissionsTable = document.getElementById('permissions-table-body');
     const readOnlyBadge = document.getElementById('read-only-badge');
@@ -26,17 +25,35 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalMsg = document.getElementById('modal-message');
     const modalBtn = document.getElementById('modal-btn');
 
-    let currentUserId = null;
-    let isSocio = false; // Flag de permisos
+    // --- 1. INICIALIZACIÓN GLOBAL ---
+    // Carga sesión, sidebar, header y marca 'roles' como activo
+    const sessionData = await initAdminHeader('roles');
+
+    if (!sessionData.isAuthenticated) return;
+
+    // --- 2. SEGURIDAD Y CONFIGURACIÓN ---
+    let currentUserId = sessionData.equipo_id;
+    const role = (sessionData.rol || '').toLowerCase().trim();
+
+    // Validar permisos de acceso a esta página
+    const allowedRoles = ['socio', 'admin', 'gerente'];
+    
+    if (!allowedRoles.includes(role)) {
+        // Necesitamos definir showAlert antes de usarla, o mover este check después de definirla.
+        // Como showAlert está definida más abajo, usamos un alert simple + redirect por seguridad inmediata,
+        // o asegúrate de que showAlert esté disponible (ver paso 3).
+        alert("Acceso Denegado: No tienes permisos para gestionar roles.");
+        window.location.href = 'index';
+        return;
+    }
+
+    let isSocio = false; 
     let boxesData = [];
     let usersData = [];
 
-    init();
-
-    function init() {
-        getSession();
-        setupEventListeners();
-    }
+    // --- 3. INICIAR LÓGICA ---
+    setupEventListeners();
+    fetchData();
 
     // --- ALERTAS ---
     function showAlert(title, message, isError = false, callback = null) {
@@ -63,38 +80,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (parts.length >= 3) return `${parts[0]} ${parts[2]}`;
         if (parts.length === 2) return `${parts[0]} ${parts[1]}`;
         return parts[0];
-    }
-
-    async function getSession() {
-        try {
-            const res = await fetch("https://cambiosorion.cl/data/session_status_admin.php", { credentials: "include" });
-            const data = await res.json();
-            
-            if (!data.isAuthenticated) return window.location.href = 'https://admin.cambiosorion.cl/login';
-
-            currentUserId = data.equipo_id;
-            const role = (data.rol || '').toLowerCase().trim();
-            if (!['socio', 'admin', 'gerente'].includes(role)) {
-                showAlert("Acceso Denegado", "No autorizado.", true, () => window.location.href = 'index');
-                return;
-            }
-
-            headerName.textContent = formatName(data.nombre);
-            loadSidebar();
-            fetchData(); 
-
-        } catch (error) { console.error(error); }
-    }
-
-    function loadSidebar() {
-        fetch('sidebar.html').then(r => r.text()).then(html => {
-            if(sidebarContainer) {
-                sidebarContainer.innerHTML = html;
-                sidebarContainer.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
-                const active = sidebarContainer.querySelector('a[href="roles"]');
-                if(active) active.classList.add('bg-indigo-50', 'text-indigo-700', 'font-bold');
-            }
-        });
     }
 
     async function fetchData() {
