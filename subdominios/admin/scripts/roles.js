@@ -125,9 +125,23 @@ document.addEventListener('DOMContentLoaded', async () => {
             const row = document.createElement('tr');
             row.className = "bg-white border-b hover:bg-slate-50 transition";
             
-            let roleBadgeClass = 'bg-slate-100 text-slate-600';
-            if(u.role.toLowerCase() === 'tesorero') roleBadgeClass = 'bg-indigo-100 text-indigo-700';
-            if(u.role.toLowerCase() === 'rrhh') roleBadgeClass = 'bg-pink-100 text-pink-700';
+            // LÓGICA DE BADGES (ETIQUETAS)
+            const rLower = u.role.toLowerCase();
+            let roleBadgeClass = 'bg-slate-100 text-slate-600 border border-slate-200'; // Default Staff
+
+            if(rLower.includes('tesorero')) {
+                roleBadgeClass = 'bg-indigo-100 text-indigo-700 border border-indigo-200';
+            }
+            if(rLower.includes('rrhh')) {
+                roleBadgeClass = 'bg-pink-100 text-pink-700 border border-pink-200';
+            }
+            // OFICIAL DE CUMPLIMIENTO (ESTILO PREMIUM - DORADO)
+            if(rLower.includes('oficial') || rLower.includes('cumplimiento')) {
+                roleBadgeClass = 'bg-amber-100 text-amber-800 border border-amber-300 shadow-sm font-bold'; 
+            }
+            if(rLower.includes('gerente')) {
+                roleBadgeClass = 'bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-sm font-bold';
+            }
 
             // Deshabilitar si NO soy socio
             const isDisabled = !isSocio;
@@ -135,7 +149,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             row.innerHTML = `
                 <td class="px-6 py-4">
                     <div class="font-bold text-slate-800">${formatName(u.name)}</div>
-                    <span class="inline-flex mt-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide ${roleBadgeClass}">${u.role}</span>
+                    <span class="inline-flex mt-1 px-2 py-0.5 rounded text-[10px] uppercase tracking-wide ${roleBadgeClass}">${u.role}</span>
                 </td>
                 <td class="px-6 py-4 text-center">${createToggle(u.id, 'acceso_rrhh', p.acceso_rrhh, isDisabled)}</td>
                 <td class="px-6 py-4 text-center">${createToggle(u.id, 'autorizar_traslados', p.autorizar_traslados, isDisabled)}</td>
@@ -230,19 +244,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         sortedUsers.forEach(u => {
             const r = u.role.toLowerCase();
             if (r.includes('socio')) return;
+
+            // Definir si es VIP (Oficial o Gerente)
+            const isVip = r.includes('oficial') || r.includes('cumplimiento') || r.includes('gerente');
+
+            // Lógica Caja 0 (Fantasma/Cuadratura)
             if (boxId === 0) {
-                if (!r.includes('tesorero') && !r.includes('rrhh') && !r.includes('gerente') && !r.includes('oficial')) return;
-            } else if (boxId >= 1) {
-                if (!u.permissions.manejo_caja) return;
+                // Solo Tesoreros, RRHH y VIPs
+                if (!r.includes('tesorero') && !r.includes('rrhh') && !isVip) return;
+            } 
+            // Lógica Cajas Físicas (Caja 1, Tesorería 99, etc)
+            else if (boxId >= 1) {
+                // Requiere permiso explícito O ser VIP
+                if (!u.permissions.manejo_caja && !isVip) return;
             }
-            let statusLabel = '(Disponible)';
-            if (u.caja_id === 99) statusLabel = '(En Tesorería)';
-            else if (u.caja_id === 0) statusLabel = '(En Caja 0)';
-            else if (u.caja_id !== null) statusLabel = `(En Caja ${u.caja_id})`;
-            const opt = document.createElement('option');
-            opt.value = u.id;
-            opt.textContent = `${formatName(u.name)} ${statusLabel}`;
-            modalUserSelect.appendChild(opt);
         });
         modalAssign.classList.remove('hidden');
     };
