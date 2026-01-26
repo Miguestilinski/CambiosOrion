@@ -16,8 +16,8 @@ document.addEventListener('DOMContentLoaded', async() => {
     const tableBody = document.getElementById('licenses-table-body');
 
     // --- 1. INICIALIZACIÓN GLOBAL ---
-    // Carga sesión, sidebar (marcando 'licencias-medicas'), header y lógica de usuario
-    const sessionData = await initAdminHeader('licencias-medicas');
+    // Carga sesión, sidebar (marcando 'lic-medicas'), header y lógica de usuario
+    const sessionData = await initAdminHeader('lic-medicas');
 
     if (!sessionData.isAuthenticated) return;
 
