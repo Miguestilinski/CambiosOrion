@@ -4,22 +4,27 @@ import { initPizarrasHeader } from './header.js';
 document.addEventListener('DOMContentLoaded', async() => {
     await initPizarrasHeader('mercados');
     
-    // Iniciar carga inmediata
-    fetchMarketData();
-    
-    // Actualizar cada 4 segundos (Polling rápido en lugar de SSE)
-    // Esto NO bloquea conexiones y deja libre a stream_divisas.php
-    setInterval(fetchMarketData, 4000); 
+    // Iniciamos el bucle de "Alta Frecuencia"
+    startHighFrequencyPolling();
 
-    console.log("Orion Markets: Modo Polling (Compatibilidad)");
+    console.log("Orion Markets: High Frequency Mode (2s) ⚡");
 });
+
+// Bucle Recursivo Inteligente
+async function startHighFrequencyPolling() {
+    await fetchMarketData();
+    
+    // Esperamos 2 segundos y nos llamamos a nosotros mismos
+    // Esto evita saturación si la red está lenta
+    setTimeout(startHighFrequencyPolling, 2000);
+}
 
 async function fetchMarketData() {
     try {
-        // Leemos el JSON que genera Python. Agregamos ?t=timestamp para evitar caché
+        // Agregamos timestamp para romper caché del navegador obligatoriamente
         const response = await fetch('data/mercados.json?t=' + new Date().getTime());
         
-        if (!response.ok) return; // Silencioso si falla
+        if (!response.ok) return; 
         
         const data = await response.json();
         
@@ -34,13 +39,13 @@ async function fetchMarketData() {
         const timeBadge = document.getElementById('last-update-display');
         if(timeBadge) {
             timeBadge.innerText = `Actualizado: ${data.last_update}`;
-            // Pequeño efecto visual para indicar vida
-            timeBadge.style.opacity = 0.5;
-            setTimeout(() => timeBadge.style.opacity = 1, 200);
+            // Efecto visual sutil de pulso verde
+            timeBadge.classList.add('text-emerald-400');
+            setTimeout(() => timeBadge.classList.remove('text-emerald-400'), 500);
         }
 
     } catch (error) {
-        console.warn("Esperando datos...", error);
+        // Silencioso para no ensuciar la consola en producción
     }
 }
 
@@ -48,6 +53,9 @@ function renderBCITable(elementId, items) {
     const tbody = document.getElementById(elementId);
     if (!tbody || !items) return;
 
+    // Nota: Re-renderizar toda la tabla cada 2 seg es rápido, 
+    // pero si quisieras optimizar más, podrías actualizar solo las celdas. 
+    // Por ahora, esto funciona excelente.
     let html = '';
     
     items.forEach(item => {
