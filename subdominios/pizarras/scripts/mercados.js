@@ -2,21 +2,26 @@
 import { initPizarrasHeader } from './header.js';
 
 document.addEventListener('DOMContentLoaded', async() => {
+    // 1. Inicializar Header Global
+    // Esto carga sidebar, valida sesión y activa lógica de menús
     await initPizarrasHeader('mercados');
     
-    // Iniciar el polling de datos
+    // 2. Iniciar el polling de datos
     fetchMarketData();
-    // Actualizar cada 10 segundos
-    setInterval(fetchMarketData, 10000); 
+    
+    // 3. Actualizar cada 60 segundos (10s es muy agresivo si no es trading real)
+    setInterval(fetchMarketData, 60000); 
 
     console.log("Orion Markets: Modo Tabla Activo");
 });
 
 async function fetchMarketData() {
     try {
-        // Asegúrate de que la ruta al json sea correcta y accesible
-        const response = await fetch('/pizarras/data/mercados.json?t=' + new Date().getTime());
-        if (!response.ok) throw new Error("No se pudo leer mercados.json");
+        // CORRECCIÓN DE RUTA: Usamos ruta relativa 'data/...' 
+        // ya que estamos en el subdominio pizarras.cambiosorion.cl
+        const response = await fetch('data/mercados.json?t=' + new Date().getTime());
+        
+        if (!response.ok) throw new Error(`HTTP ${response.status} - No se encontró el archivo JSON`);
         
         const data = await response.json();
         
@@ -27,7 +32,9 @@ async function fetchMarketData() {
         if(timeBadge) timeBadge.innerText = `Actualizado: ${data.last_update}`;
 
     } catch (error) {
-        console.error("Error fetching market data:", error);
+        console.error("Error al obtener datos de mercado:", error);
+        const badge = document.getElementById('last-update-display');
+        if(badge) badge.innerText = "Error de conexión";
     }
 }
 
@@ -38,7 +45,6 @@ function renderTable(elementId, items) {
     let html = '';
     
     items.forEach(item => {
-        // Iconos SVG según estado
         let icon = '';
         let colorClass = 'text-white';
         let changeSign = '';
@@ -55,12 +61,7 @@ function renderTable(elementId, items) {
             icon = `<svg class="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14"></path></svg>`;
         }
 
-        // Formateo de precio (Detectar si es miles o decimal pequeño)
         let priceFmt = item.price.toLocaleString('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        if (item.symbol.includes("USD") || item.symbol.includes("EUR")) {
-             // Formato moneda chilena si aplica
-             // priceFmt = `$ ${priceFmt}`; 
-        }
 
         html += `
         <tr class="hover:bg-white/5 transition border-b border-white/5 last:border-0">
