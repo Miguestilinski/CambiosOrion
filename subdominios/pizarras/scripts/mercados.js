@@ -14,9 +14,8 @@ document.addEventListener('DOMContentLoaded', async() => {
 async function startHighFrequencyPolling() {
     await fetchMarketData();
     
-    // Esperamos 2 segundos y nos llamamos a nosotros mismos
-    // Esto evita saturación si la red está lenta
-    setTimeout(startHighFrequencyPolling, 2000);
+    // En tu función startHighFrequencyPolling()
+    setTimeout(startHighFrequencyPolling, 4000);
 }
 
 async function fetchMarketData() {
