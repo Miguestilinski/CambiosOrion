@@ -1,12 +1,66 @@
 import { initAdminHeader } from './header.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // --- REFERENCIAS DOM LOCALES ---
+    // --- 1. CONFIGURACIÓN UI: MODAL DE NOTIFICACIÓN ---
+    // Definimos esto primero para usarlo en el bloqueo de seguridad
+    const modalNotif = document.getElementById('modal-notification');
+    const modalIcon = document.getElementById('modal-icon-container');
+    const modalTitle = document.getElementById('modal-title');
+    const modalMsg = document.getElementById('modal-message');
+    const modalBtn = document.getElementById('modal-btn');
+
+    // Función para mostrar mensajes bonitos (reemplaza alert)
+    function showAlert(title, message, isError = false, redirectUrl = null) {
+        const iconSuccess = `<svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
+        const iconError = `<svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>`;
+
+        if(modalIcon) {
+            modalIcon.innerHTML = isError ? iconError : iconSuccess;
+            modalIcon.className = isError 
+                ? "w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4"
+                : "w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4";
+        }
+
+        if(modalTitle) modalTitle.textContent = title;
+        if(modalMsg) modalMsg.textContent = message;
+        
+        if(modalBtn) {
+            modalBtn.className = isError 
+                ? "w-full px-4 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 font-bold transition shadow-lg shadow-red-500/30"
+                : "w-full px-4 py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-bold transition shadow-lg shadow-indigo-500/30";
+
+            // Si hay URL de redirección (ej: bloqueo de seguridad), ir allí al cerrar
+            modalBtn.onclick = () => {
+                if(modalNotif) modalNotif.classList.add('hidden');
+                if (redirectUrl) window.location.href = redirectUrl;
+            };
+        }
+
+        if(modalNotif) modalNotif.classList.remove('hidden');
+    }
+
+    // --- 2. INICIALIZACIÓN GLOBAL ---
+    const sessionData = await initAdminHeader('roles');
+
+    if (!sessionData.isAuthenticated) return;
+
+    // --- 3. SEGURIDAD ---
+    let currentUserId = sessionData.equipo_id;
+    const role = (sessionData.rol || '').toLowerCase().trim();
+    const allowedRoles = ['socio', 'admin', 'gerente'];
+    
+    if (!allowedRoles.includes(role)) {
+        // AHORA USAMOS EL MODAL EN LUGAR DE ALERT
+        showAlert("Acceso Denegado", "No tienes permisos para gestionar roles.", true, 'index');
+        return; // Detenemos la ejecución del script
+    }
+
+    // --- 4. REFERENCIAS DOM LOCALES ---
     const boxesGrid = document.getElementById('boxes-grid');
     const permissionsTable = document.getElementById('permissions-table-body');
     const readOnlyBadge = document.getElementById('read-only-badge');
 
-    // Modales
+    // Modales de Acción
     const modalAssign = document.getElementById('modal-assign');
     const modalBoxName = document.getElementById('modal-box-name');
     const modalUserSelect = document.getElementById('user-select');
@@ -19,60 +73,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     const modalUnassignConfirm = document.getElementById('modal-unassign-confirm');
     const targetUnassignUserIdInput = document.getElementById('target-unassign-user-id');
 
-    const modalNotif = document.getElementById('modal-notification');
-    const modalIcon = document.getElementById('modal-icon-container');
-    const modalTitle = document.getElementById('modal-title');
-    const modalMsg = document.getElementById('modal-message');
-    const modalBtn = document.getElementById('modal-btn');
-
-    // --- 1. INICIALIZACIÓN GLOBAL ---
-    // Carga sesión, sidebar, header y marca 'roles' como activo
-    const sessionData = await initAdminHeader('roles');
-
-    if (!sessionData.isAuthenticated) return;
-
-    // --- 2. SEGURIDAD Y CONFIGURACIÓN ---
-    let currentUserId = sessionData.equipo_id;
-    const role = (sessionData.rol || '').toLowerCase().trim();
-
-    // Validar permisos de acceso a esta página
-    const allowedRoles = ['socio', 'admin', 'gerente'];
-    
-    if (!allowedRoles.includes(role)) {
-        // Necesitamos definir showAlert antes de usarla, o mover este check después de definirla.
-        // Como showAlert está definida más abajo, usamos un alert simple + redirect por seguridad inmediata,
-        // o asegúrate de que showAlert esté disponible (ver paso 3).
-        alert("Acceso Denegado: No tienes permisos para gestionar roles.");
-        window.location.href = 'index';
-        return;
-    }
-
     let isSocio = false; 
     let boxesData = [];
     let usersData = [];
 
-    // --- 3. INICIAR LÓGICA ---
+    // --- 5. INICIAR LÓGICA ---
     setupEventListeners();
     fetchData();
-
-    // --- ALERTAS ---
-    function showAlert(title, message, isError = false, callback = null) {
-        const iconSuccess = `<svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
-        const iconError = `<svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>`;
-
-        modalIcon.innerHTML = isError ? iconError : iconSuccess;
-        modalIcon.className = isError ? "w-16 h-16 bg-red-100 rounded-full flex justify-center items-center mx-auto mb-4" : "w-16 h-16 bg-green-100 rounded-full flex justify-center items-center mx-auto mb-4";
-        modalTitle.textContent = title;
-        modalMsg.textContent = message;
-        
-        modalBtn.className = isError ? "w-full px-4 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 font-bold" : "w-full px-4 py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-bold";
-
-        modalBtn.onclick = () => {
-            modalNotif.classList.add('hidden');
-            if(callback) callback();
-        };
-        modalNotif.classList.remove('hidden');
-    }
 
     function formatName(fullName) {
         if (!fullName) return '';
