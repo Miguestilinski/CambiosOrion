@@ -42,8 +42,17 @@ export function activarLinkSidebar(pagina) {
         links.forEach(link => {
             // Estilo base (Gris)
             link.className = 'flex items-center px-4 py-2.5 text-slate-400 hover:bg-white/5 hover:text-amber-400 rounded-lg transition-colors group mb-1 border border-transparent';
-            // Estilo activo (Ámbar)
-            if (link.href.includes(pagina)) {
+            
+            // --- CORRECCIÓN AQUÍ ---
+            // Obtenemos la ruta limpia sin parámetros query (?id=...) y sin slash final
+            const linkPath = link.href.split('?')[0].replace(/\/$/, '');
+            const attrHref = link.getAttribute('href'); // El valor exacto en el HTML
+
+            // Verificamos si termina con "/pagina" O si es exactamente igual al atributo (para rutas relativas)
+            // Esto evita que 'operaciones' active 'operaciones-uaf'
+            const esActivo = linkPath.endsWith('/' + pagina) || attrHref === pagina;
+
+            if (esActivo) {
                 link.className = 'flex items-center px-4 py-2.5 bg-amber-600 text-white rounded-lg shadow-lg shadow-amber-500/20 group mb-1 border border-amber-500 font-medium';
             }
         });
