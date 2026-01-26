@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const fIngreso = document.getElementById('f-ingreso');
     const fSueldo = document.getElementById('f-sueldo');
     
-    // Inputs Bancarios (Si existen en tu HTML detalle-int.html)
+    // Inputs Bancarios
     const fBanco = document.getElementById('f-banco');
     const fTipoCuenta = document.getElementById('f-tipo-cuenta');
     const fNumeroCuenta = document.getElementById('f-numero-cuenta');
@@ -85,10 +85,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const isCreateMode = (userId === 'new');
 
     if (isCreateMode) {
-        // MODO CREACIÓN
         setupCreateMode();
     } else if (userId) {
-        // MODO EDICIÓN
         loadUserDetails(userId);
     } else {
         showAlert("Error", "No se especificó un ID válido.", true, () => {
@@ -106,22 +104,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         if(pageTitle) pageTitle.textContent = "Agregando Integrante";
         if(btnSave) btnSave.textContent = "Crear Integrante";
         
-        // Limpiar campos por seguridad
         if(fNombre) fNombre.value = "";
         if(fRut) fRut.value = "";
-        if(fRol) fRol.value = "Staff"; // Valor por defecto
+        if(fRol) fRol.value = "Staff"; 
         if(fContrato) fContrato.value = "Indefinido";
     }
 
     async function loadUserDetails(id) {
         try {
-            const res = await fetch(`https://cambiosorion.cl/data/detalle-int.php?id=${id}`);
+            // CORRECCIÓN: Agregamos credentials: 'include'
+            const res = await fetch(`https://cambiosorion.cl/data/detalle-int.php?id=${id}`, {
+                credentials: 'include' 
+            });
             const json = await res.json();
 
             if (json.success && json.data) {
                 const u = json.data;
                 
-                // Llenar campos principales
+                // Llenar campos
                 if(fId) fId.value = u.id;
                 if(fNombre) fNombre.value = u.nombre;
                 if(fRut) fRut.value = u.rut;
@@ -134,15 +134,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if(fSueldo) fSueldo.value = u.sueldo_liquido;
                 if(fContrato) fContrato.value = u.tipo_contrato;
 
-                // Llenar datos bancarios si existen
                 if(fBanco && u.banco) fBanco.value = u.banco;
                 if(fTipoCuenta && u.tipo_cuenta) fTipoCuenta.value = u.tipo_cuenta;
                 if(fNumeroCuenta && u.numero_cuenta) fNumeroCuenta.value = u.numero_cuenta;
 
-                // UI Header Profile Name
                 if(profileName) profileName.textContent = u.nombre;
 
-                // Lógica de Roles (Custom vs Select)
+                // Roles
                 const standardRoles = ['Socio', 'Gerente', 'Admin', 'RRHH', 'Cajero', 'Contador', 'Staff'];
                 if (fRol) {
                     if (standardRoles.includes(u.rol)) {
@@ -169,13 +167,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     async function saveProfile() {
-        // Validaciones básicas
         if (!fNombre?.value || !fRut?.value || !fEmail?.value) {
             showAlert("Datos Faltantes", "Nombre, RUT y Email son obligatorios.", true);
             return;
         }
 
-        // Determinar rol final
         let finalRol = fRol.value;
         if (finalRol === 'custom') {
             finalRol = fRolCustom.value.trim();
@@ -192,7 +188,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             let url, payload;
 
             if (isCreateMode) {
-                // === LÓGICA DE CREACIÓN (Usa nuevo-int.php) ===
                 url = "https://cambiosorion.cl/data/nuevo-int.php";
                 payload = {
                     nombre: fNombre.value,
@@ -206,13 +201,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                     rol: finalRol,
                     tipoContrato: fContrato?.value || '',
                     sueldoLiquido: fSueldo?.value || 0,
-                    // Campos bancarios opcionales
                     banco: fBanco?.value || '',
                     tipoCuenta: fTipoCuenta?.value || '',
                     numeroCuenta: fNumeroCuenta?.value || ''
                 };
             } else {
-                // === LÓGICA DE EDICIÓN (Usa detalle-int.php) ===
                 url = "https://cambiosorion.cl/data/detalle-int.php";
                 payload = {
                     id: fId.value,
@@ -227,17 +220,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                     tipo_contrato: fContrato?.value,
                     fecha_ingreso: fIngreso?.value,
                     sueldo_liquido: fSueldo?.value,
-                    // Campos bancarios opcionales (si el PHP los soporta)
                     banco: fBanco?.value,
                     tipo_cuenta: fTipoCuenta?.value,
                     numero_cuenta: fNumeroCuenta?.value
                 };
             }
 
+            // CORRECCIÓN: Agregamos credentials: 'include'
             const res = await fetch(url, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
+                body: JSON.stringify(payload),
+                credentials: 'include' 
             });
             
             const json = await res.json();
@@ -268,7 +262,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         }
 
-        // Evento cambio de Rol
         if(fRol) {
             fRol.addEventListener('change', () => {
                 if (fRol.value === 'custom') {
@@ -281,7 +274,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     if(fRolCustom) fRolCustom.classList.add('hidden');
                 }
 
-                // Lógica Automática
                 if (fRol.value === 'Socio') {
                     if(fContrato) fContrato.value = 'Dueño';
                 } else if (fContrato && fContrato.value === 'Dueño') {
