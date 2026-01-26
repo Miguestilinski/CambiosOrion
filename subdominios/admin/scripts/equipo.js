@@ -1,9 +1,7 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // DOM Elements
-    const headerBadge = document.getElementById('header-badge');
-    const headerName = document.getElementById('header-user-name');
-    const headerEmail = document.getElementById('dropdown-user-email');
-    const sidebarContainer = document.getElementById('sidebar-container');
+import { initAdminHeader } from './header.js';
+
+document.addEventListener('DOMContentLoaded', async () => {
+    // --- REFERENCIAS DOM LOCALES ---
     const tableBody = document.getElementById('team-table-body');
     const searchInput = document.getElementById('search-input');
     const roleFilter = document.getElementById('filter-role');
@@ -16,15 +14,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalMsg = document.getElementById('modal-message');
     const modalBtn = document.getElementById('modal-btn');
 
-    let currentUserId = null;
-    let currentUserRole = ''; // Para validar permisos en UI
+    // --- 1. INICIALIZACIÓN GLOBAL ---
+    // Carga sesión, sidebar, header y marca 'equipo' como activo
+    const sessionData = await initAdminHeader('equipo');
 
-    init();
+    if (!sessionData.isAuthenticated) return;
 
-    function init() {
-        getSession();
-        setupEventListeners();
+    // --- 2. SEGURIDAD Y CONFIGURACIÓN ---
+    let currentUserId = sessionData.equipo_id;
+    let currentUserRole = (sessionData.rol || '').toLowerCase().trim();
+
+    // Validar permisos de acceso a esta página
+    const allowedRoles = ['socio', 'admin', 'gerente', 'rrhh'];
+    
+    if (!allowedRoles.includes(currentUserRole)) {
+        showAlert("Acceso Restringido", "No tienes permisos para ver el equipo.", true);
+        setTimeout(() => window.location.href = 'index', 2000);
+        return;
     }
+
+    // --- 3. INICIAR LÓGICA ---
+    setupEventListeners();
+    fetchEmployees();
 
     function showAlert(title, message, isError = false) {
         const iconSuccess = `<svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
@@ -65,52 +76,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function getInitials(name) {
         if(!name) return '??';
         return name.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
-    }
-
-    // --- SESIÓN ---
-    async function getSession() {
-        try {
-            const res = await fetch("https://cambiosorion.cl/data/session_status.php", { credentials: "include" });
-            const data = await res.json();
-            
-            if (!data.isAuthenticated) {
-                window.location.href = 'https://admin.cambiosorion.cl/login';
-                return;
-            }
-
-            currentUserId = data.equipo_id;
-            const role = (data.rol || '').toLowerCase().trim();
-            
-            if (!['socio', 'admin', 'gerente', 'rrhh'].includes(role)) {
-                showAlert("Acceso Restringido", "No tienes permisos para ver el equipo.", true);
-                setTimeout(() => window.location.href = 'index', 2000);
-                return;
-            }
-
-            if(headerName) headerName.textContent = formatName(data.nombre);
-            if(headerEmail) headerEmail.textContent = data.correo;
-            if(headerBadge) {
-                headerBadge.textContent = "PORTAL ADMIN";
-                headerBadge.className = "hidden md:inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-indigo-600 text-white border border-indigo-500/30 tracking-wider uppercase shadow-lg shadow-indigo-500/20";
-            }
-
-            loadSidebar();
-            fetchEmployees();
-
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    function loadSidebar() {
-        fetch('sidebar.html').then(r => r.text()).then(html => {
-            if(sidebarContainer) {
-                sidebarContainer.innerHTML = html;
-                sidebarContainer.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
-                const active = sidebarContainer.querySelector('a[href="equipo"]');
-                if(active) active.classList.add('bg-indigo-50', 'text-indigo-700', 'font-bold');
-            }
-        });
     }
 
     // --- DATA ---
