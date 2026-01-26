@@ -4,24 +4,21 @@ import { initPizarrasHeader } from './header.js';
 document.addEventListener('DOMContentLoaded', async() => {
     await initPizarrasHeader('mercados');
     
-    // Iniciar el polling
     fetchMarketData();
     setInterval(fetchMarketData, 60000); 
 
-    console.log("Orion Markets: Modo BCI Activo");
+    console.log("Orion Markets: Conectado");
 });
 
 async function fetchMarketData() {
     try {
         const response = await fetch('data/mercados.json?t=' + new Date().getTime());
-        
-        if (!response.ok) throw new Error(`HTTP ${response.status} - No se encontró el archivo JSON`);
+        if (!response.ok) throw new Error("Error JSON");
         
         const data = await response.json();
         
-        // Renderizar BCI
         if (data.bci) {
-            // Filtrar por tipo para ponerlos en tablas separadas
+            // Separa Monedas de Commodities
             const currencies = data.bci.filter(i => i.type === 'currency' || i.type === 'indicator');
             const commodities = data.bci.filter(i => i.type === 'commodity');
 
@@ -29,17 +26,11 @@ async function fetchMarketData() {
             renderBCITable('table-bci-commodities', commodities);
         }
         
-        // Mantenemos lógica vieja oculta pero funcional si quisieras reactivarla
-        // renderTable('table-capitaria', data.capitaria);
-        // renderTable('table-investing', data.investing);
-        
         const timeBadge = document.getElementById('last-update-display');
         if(timeBadge) timeBadge.innerText = `Actualizado: ${data.last_update}`;
 
     } catch (error) {
-        console.error("Error al obtener datos de mercado:", error);
-        const badge = document.getElementById('last-update-display');
-        if(badge) badge.innerText = "Error de conexión";
+        console.error(error);
     }
 }
 
@@ -50,51 +41,36 @@ function renderBCITable(elementId, items) {
     let html = '';
     
     items.forEach(item => {
-        let icon = '';
-        let colorClass = 'text-white';
-        let changeSign = '';
+        let icon = item.status === 'up' ? '▲' : (item.status === 'down' ? '▼' : '-');
+        let colorClass = item.status === 'up' ? 'text-emerald-400 bg-emerald-400/10' : (item.status === 'down' ? 'text-red-400 bg-red-400/10' : 'text-slate-400');
+        let changeSign = item.status === 'up' ? '+' : '';
 
-        if (item.status === 'up') {
-            colorClass = 'text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded';
-            changeSign = '+';
-            icon = '▲';
-        } else if (item.status === 'down') {
-            colorClass = 'text-red-400 bg-red-400/10 px-2 py-1 rounded';
-            changeSign = '';
-            icon = '▼';
-        } else {
-            colorClass = 'text-slate-400';
-            icon = '-';
-        }
-
-        // Formateo inteligente
+        // Formateo de Precios
         let priceFmt;
+        
+        // 1. UF: Sin decimales
         if (item.symbol === 'UF') {
-            // UF sin decimales, con punto mil
             priceFmt = '$ ' + Math.round(item.price).toLocaleString('es-CL');
-        } else if (item.symbol.includes('Cobre') || item.symbol.includes('Petróleo')) {
-             // Commodities en USD con 2 decimales
+        } 
+        // 2. ORO y PLATA: En Dólares (US$)
+        else if (item.symbol.includes('Oro') || item.symbol.includes('Plata') || item.symbol.includes('Gold') || item.symbol.includes('Silver')) {
              priceFmt = 'US$ ' + item.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        } else {
-             // Dólar/Euro en CLP
+        } 
+        // 3. MONEDAS (USD/EUR): En Pesos ($)
+        else {
              priceFmt = '$ ' + item.price.toLocaleString('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
 
         html += `
-        <tr class="hover:bg-white/5 transition">
-            <td class="py-4 pl-2 font-bold text-slate-200">
-                ${item.symbol}
-            </td>
-            <td class="py-4 text-right font-mono text-white text-lg">
-                ${priceFmt}
-            </td>
+        <tr class="hover:bg-white/5 transition border-b border-white/5 last:border-0">
+            <td class="py-4 pl-2 font-bold text-slate-200">${item.symbol}</td>
+            <td class="py-4 text-right font-mono text-white text-lg">${priceFmt}</td>
             <td class="py-4 text-right pr-2">
-                <span class="text-xs font-bold ${colorClass}">
+                <span class="text-xs font-bold px-2 py-1 rounded ${colorClass}">
                     ${changeSign}${item.change.toFixed(2)}% ${icon}
                 </span>
             </td>
-        </tr>
-        `;
+        </tr>`;
     });
 
     tbody.innerHTML = html;
