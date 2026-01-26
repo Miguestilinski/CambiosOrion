@@ -39,7 +39,7 @@ function handleConnectionError() {
     if (!offlineTimer) {
         offlineTimer = setTimeout(() => {
             document.getElementById('offline-popup').classList.remove('hidden');
-        }, 5000);
+        }, 10000);
     }
 }
 
