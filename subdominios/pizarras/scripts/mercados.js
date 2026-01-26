@@ -2,31 +2,36 @@
 import { initPizarrasHeader } from './header.js';
 
 document.addEventListener('DOMContentLoaded', async() => {
-    // 1. Inicializar Header Global
-    // Esto carga sidebar, valida sesión y activa lógica de menús
     await initPizarrasHeader('mercados');
     
-    // 2. Iniciar el polling de datos
+    // Iniciar el polling
     fetchMarketData();
-    
-    // 3. Actualizar cada 60 segundos (10s es muy agresivo si no es trading real)
     setInterval(fetchMarketData, 60000); 
 
-    console.log("Orion Markets: Modo Tabla Activo");
+    console.log("Orion Markets: Modo BCI Activo");
 });
 
 async function fetchMarketData() {
     try {
-        // CORRECCIÓN DE RUTA: Usamos ruta relativa 'data/...' 
-        // ya que estamos en el subdominio pizarras.cambiosorion.cl
         const response = await fetch('data/mercados.json?t=' + new Date().getTime());
         
         if (!response.ok) throw new Error(`HTTP ${response.status} - No se encontró el archivo JSON`);
         
         const data = await response.json();
         
-        renderTable('table-capitaria', data.capitaria);
-        renderTable('table-investing', data.investing);
+        // Renderizar BCI
+        if (data.bci) {
+            // Filtrar por tipo para ponerlos en tablas separadas
+            const currencies = data.bci.filter(i => i.type === 'currency' || i.type === 'indicator');
+            const commodities = data.bci.filter(i => i.type === 'commodity');
+
+            renderBCITable('table-bci-currencies', currencies);
+            renderBCITable('table-bci-commodities', commodities);
+        }
+        
+        // Mantenemos lógica vieja oculta pero funcional si quisieras reactivarla
+        // renderTable('table-capitaria', data.capitaria);
+        // renderTable('table-investing', data.investing);
         
         const timeBadge = document.getElementById('last-update-display');
         if(timeBadge) timeBadge.innerText = `Actualizado: ${data.last_update}`;
@@ -38,7 +43,7 @@ async function fetchMarketData() {
     }
 }
 
-function renderTable(elementId, items) {
+function renderBCITable(elementId, items) {
     const tbody = document.getElementById(elementId);
     if (!tbody || !items) return;
 
@@ -50,32 +55,43 @@ function renderTable(elementId, items) {
         let changeSign = '';
 
         if (item.status === 'up') {
-            colorClass = 'trend-up';
+            colorClass = 'text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded';
             changeSign = '+';
-            icon = `<svg class="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>`;
+            icon = '▲';
         } else if (item.status === 'down') {
-            colorClass = 'trend-down';
-            icon = `<svg class="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"></path></svg>`;
+            colorClass = 'text-red-400 bg-red-400/10 px-2 py-1 rounded';
+            changeSign = '';
+            icon = '▼';
         } else {
-            colorClass = 'trend-neutral';
-            icon = `<svg class="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14"></path></svg>`;
+            colorClass = 'text-slate-400';
+            icon = '-';
         }
 
-        let priceFmt = item.price.toLocaleString('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        // Formateo inteligente
+        let priceFmt;
+        if (item.symbol === 'UF') {
+            // UF sin decimales, con punto mil
+            priceFmt = '$ ' + Math.round(item.price).toLocaleString('es-CL');
+        } else if (item.symbol.includes('Cobre') || item.symbol.includes('Petróleo')) {
+             // Commodities en USD con 2 decimales
+             priceFmt = 'US$ ' + item.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        } else {
+             // Dólar/Euro en CLP
+             priceFmt = '$ ' + item.price.toLocaleString('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
 
         html += `
-        <tr class="hover:bg-white/5 transition border-b border-white/5 last:border-0">
-            <td class="py-4 pl-2 font-bold text-white flex items-center gap-2">
+        <tr class="hover:bg-white/5 transition">
+            <td class="py-4 pl-2 font-bold text-slate-200">
                 ${item.symbol}
             </td>
-            <td class="py-4 text-right font-mono text-slate-200">
+            <td class="py-4 text-right font-mono text-white text-lg">
                 ${priceFmt}
             </td>
-            <td class="py-4 text-right pr-2 font-bold ${colorClass}">
-                <div class="flex items-center justify-end gap-1">
-                    ${changeSign}${item.change.toFixed(2)}
-                    ${icon}
-                </div>
+            <td class="py-4 text-right pr-2">
+                <span class="text-xs font-bold ${colorClass}">
+                    ${changeSign}${item.change.toFixed(2)}% ${icon}
+                </span>
             </td>
         </tr>
         `;
