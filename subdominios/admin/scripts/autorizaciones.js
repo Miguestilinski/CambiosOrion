@@ -1,10 +1,23 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // DOM Refs
-    const headerBadge = document.getElementById('header-badge');
-    const headerName = document.getElementById('header-user-name');
-    const headerEmail = document.getElementById('dropdown-user-email');
-    const sidebarContainer = document.getElementById('sidebar-container');
-    
+import { initAdminHeader } from './header.js';
+
+document.addEventListener('DOMContentLoaded', async () => {
+    // --- 1. INICIALIZACIÓN GLOBAL ---
+    const sessionData = await initAdminHeader('autorizaciones');
+
+    if (!sessionData.isAuthenticated) return;
+
+    // --- 2. SEGURIDAD DE PÁGINA ---
+    // Definir quiénes pueden ver esta página de gestión
+    const role = (sessionData.rol || '').toLowerCase().trim();
+    const allowedRoles = ['socio', 'admin', 'gerente', 'rrhh']; // Agregado RRHH por consistencia
+
+    if (!allowedRoles.includes(role)) {
+        alert("Acceso denegado: No tienes permisos para ver esta página.");
+        window.location.href = 'index'; 
+        return;
+    }
+
+    // --- 3. REFERENCIAS DOM LOCALES ---
     const filterType = document.getElementById('filter-type');
     const filterStatus = document.getElementById('filter-status');
     const tableBody = document.getElementById('auth-table-body');
@@ -33,69 +46,12 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     let actionTargetId = null;
-    let actionType = null; // 'approve' or 'reject'
+    let actionType = null; 
 
-    // --- INIT ---
-    getSession();
+    // --- 4. INICIAR LÓGICA ---
     setupFilters();
     setupModal();
-
-    // --- SESSION & SECURITY ---
-    async function getSession() {
-        try {
-            const res = await fetch("https://cambiosorion.cl/data/session_status.php", { credentials: "include" });
-            if (!res.ok) throw new Error("Error sesión");
-            const data = await res.json();
-            
-            // 1. Verificar Autenticación
-            if (!data.isAuthenticated) {
-                window.location.href = 'https://admin.cambiosorion.cl/login';
-                return;
-            }
-
-            const role = (data.rol || '').toLowerCase().trim();
-            const superUsers = ['socio', 'admin', 'gerente']; 
-
-            // 2. Verificar Rol (Seguridad)
-            if (!superUsers.includes(role)) {
-                // Si no es admin, fuera
-                alert("Acceso denegado: No tienes permisos para ver esta página.");
-                window.location.href = 'index'; 
-                return;
-            }
-
-            // 3. Cargar UI
-            if(headerName) headerName.textContent = (data.nombre || 'Usuario').split(' ')[0];
-            if(headerEmail) headerEmail.textContent = data.correo;
-            
-            if(headerBadge) {
-                headerBadge.textContent = "PORTAL ADMIN";
-                headerBadge.className = "hidden md:inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-indigo-600 text-white border border-indigo-500/30 tracking-wider uppercase shadow-lg shadow-indigo-500/20";
-            }
-
-            loadSidebar();
-            updateDashboard();
-
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    function loadSidebar() {
-        fetch('sidebar.html')
-            .then(res => res.text())
-            .then(html => {
-                if(sidebarContainer) {
-                    sidebarContainer.innerHTML = html;
-                    // Mostrar menú admin
-                    const adminItems = sidebarContainer.querySelectorAll('.admin-only');
-                    adminItems.forEach(item => item.classList.remove('hidden'));
-                    
-                    const active = sidebarContainer.querySelector('a[href="autorizaciones"]');
-                    if(active) active.classList.add('bg-indigo-50', 'text-indigo-700', 'font-bold');
-                }
-            });
-    }
+    updateDashboard(); // Carga inicial
 
     // --- LOGIC ---
     function setupFilters() {
