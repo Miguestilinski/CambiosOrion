@@ -12,19 +12,15 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/airbnb.css">
-
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { font-family: 'Inter', sans-serif; }
         .fade-in { animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .layout-container { min-height: calc(100vh - 64px); }
     </style> 
 </head>
 <body>
-    <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js" crossorigin="anonymous"></script>
+        <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js" crossorigin="anonymous"></script>
     <header class="flex-shrink-0 z-[100] bg-slate-900/80 backdrop-blur-md shadow-lg border-b border-white/10 relative">
         <div class="w-full px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16 relative"> 
@@ -128,104 +124,87 @@
         </div>
     </header>
 
-
-    <div class="flex flex-1 overflow-hidden relative">
+    <div class="flex flex-1 overflow-hidden relative h-[calc(100vh-64px)]">
         <div id="sidebar-container" class="hidden lg:block h-full z-10"></div>
         
-        <main class="flex-1 overflow-y-auto p-4 md:p-8 relative" id="dashboard-content">
-            <section id="posiciones" class="content-section active">
-                <!-- Título y botón Nueva Operación -->
-                <div class="flex items-center mb-6">
-                    <h1 class="text-2xl font-medium mr-4 leading-none text-white">Posiciones</h1>
-                    <button type="button" id="exportar" href="#"
-                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
+        <main class="flex-1 overflow-y-auto p-4 md:p-8 relative bg-slate-900" id="dashboard-content">
+            <section id="posiciones" class="max-w-7xl mx-auto fade-in h-full flex flex-col">
+                
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-2xl font-bold text-white drop-shadow-md tracking-tight">Posiciones Financieras</h1>
+                    <button type="button" id="exportar" class="text-slate-300 bg-slate-800 hover:bg-slate-700 border border-slate-600 font-medium rounded-lg text-sm px-5 py-2.5 transition flex items-center shadow-lg hover:border-amber-500/50 hover:text-amber-400">
+                        <svg class="w-4 h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                         Exportar Excel
                     </button>
                 </div>
-                
-                <!-- Filtros avanzados -->
-                <div class="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-6">
-                    <div style="position: relative; width: fit-content; max-width: 300px;">
-                        <label for="divisa-input" class="block mb-1 text-sm text-white">Divisa</label>
-                        <input
-                            id="divisa-input"
-                            type="text"
-                            placeholder="Buscar divisa..."
-                            autocomplete="off"
-                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                        />
-                        <ul id="divisa-list" class="border border-gray-600 max-h-40 overflow-y-auto bg-white rounded mt-1 hidden absolute z-10 w-full"></ul>
+
+                <div class="bg-slate-900/80 backdrop-blur-md rounded-xl shadow-2xl border border-white/10 p-5 mb-6 relative z-30">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        
+                        <div class="relative">
+                            <label class="block mb-1 text-[10px] font-bold text-slate-400 uppercase">Divisa</label>
+                            <input type="text" id="divisa" class="w-full text-xs border-slate-700 bg-slate-800 text-white rounded-lg focus:ring-amber-500 focus:border-amber-500 h-9 placeholder-slate-600" placeholder="Buscar divisa..." autocomplete="off">
+                            </div>
+
+                        <div>
+                            <label class="block mb-1 text-[10px] font-bold text-slate-400 uppercase">Monto Exacto</label>
+                            <input type="text" id="monto" class="w-full text-xs border-slate-700 bg-slate-800 text-white rounded-lg focus:ring-amber-500 focus:border-amber-500 h-9 placeholder-slate-600">
+                        </div>
+
+                        <div>
+                            <label class="block mb-1 text-[10px] font-bold text-slate-400 uppercase">Precio Promedio</label>
+                            <input type="text" id="precio-promedio" class="w-full text-xs border-slate-700 bg-slate-800 text-white rounded-lg focus:ring-amber-500 focus:border-amber-500 h-9 placeholder-slate-600">
+                        </div>
+
+                        <div class="flex items-end">
+                            <button type="button" id="borrar-filtros" class="w-full text-slate-400 hover:text-amber-400 hover:bg-white/5 bg-transparent border border-slate-600 hover:border-amber-500/50 font-medium rounded-lg text-xs px-4 py-2.5 transition flex items-center justify-center h-[38px]">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                                Limpiar Filtros
+                            </button>
+                        </div>
                     </div>
-                    <div>
-                        <label for="monto" class="block mb-1 text-sm text-white">Monto</label>
-                        <input type="text" id="monto" 
-                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+                    
+                    <input type="hidden" id="buscar"> 
+                </div>
+
+                <div class="bg-slate-900/80 backdrop-blur-md rounded-xl shadow-xl border border-white/10 overflow-hidden flex flex-col w-full flex-1">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left border-collapse">
+                            <thead class="text-xs uppercase bg-slate-950/80 text-slate-400 font-extrabold tracking-wide sticky top-0 z-20 shadow-sm border-b border-white/10">
+                                <tr>
+                                    <th class="px-6 py-4">Divisa</th>
+                                    <th class="px-6 py-4 text-right">Cantidad (Stock)</th>
+                                    <th class="px-6 py-4 text-right">Precio Promedio (PMP)</th>
+                                    <th class="px-6 py-4 text-right">Total Valorizado (CLP)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-posiciones" class="divide-y divide-white/5 text-slate-300">
+                                </tbody>
+                        </table>
                     </div>
-                    <div>
-                        <label for="precio-promedio" class="block mb-1 text-sm text-white">Precio Promedio</label>
-                        <input type="text" id="precio-promedio" 
-                            class="block w-full px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <button type="button" id="borrar-filtros" 
-                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mt-6">
-                        Borrar Filtros
-                        </button>
+
+                    <div class="bg-slate-900 px-4 py-3 border-t border-white/10 flex justify-between items-center text-xs text-slate-400 mt-auto">
+                        <div class="flex items-center gap-3">
+                            <span class="text-sm font-medium">Mostrar</span>
+                            <select id="mostrar-registros" class="text-xs border-slate-700 rounded-md focus:ring-amber-500 focus:border-amber-500 bg-slate-800 text-white px-3 py-1">
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                            <span id="conteo-resultados" class="font-medium">Cargando...</span>
+                        </div>
+
+                        <div class="flex items-center gap-2" id="pagination-controls">
+                            </div>
                     </div>
                 </div>
-                
-                <!-- Mostrar registros y buscar -->
-                <div class="flex items-center justify-between mb-6">
-                    <div class="flex items-center space-x-2">
-                        <label for="mostrar-registros" class="text-sm text-white">Mostrar</label>
-                        <select id="mostrar-registros" 
-                            class="block px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="25">25</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                        </select>
-                        <span class="text-sm text-white">registros</span>
-                    </div>
-                    <div>
-                        <input type="text" id="buscar" placeholder="Buscar" 
-                            class="block w-64 px-2 py-2.5 text-sm rounded-lg bg-white border border-gray-600 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                </div>
-                
-                <!-- Tabla de operaciones -->
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left text-white bg-gray-800">
-                        <thead class="text-xs uppercase bg-gray-800 text-white">
-                            <tr>
-                                <th class="px-4 py-2">Icono</th>
-                                <th class="px-4 py-2">Divisa</th>
-                                <th class="px-4 py-2">Monto</th>
-                                <th class="px-4 py-2">Precio Promedio</th>
-                                <th class="px-4 py-2">Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="border-b bg-white border-gray-700 text-gray-700">
-                                <td class="px-4 py-2"></td>
-                                <td class="px-4 py-2">USD</td>
-                                <td class="px-4 py-2">203</td>
-                                <td class="px-4 py-2">$75.0000</td>
-                                <td class="px-4 py-2">$1.800.0000</td>
-                            </tr>
-                            <!-- Más filas -->
-                        </tbody>
-                    </table>
-                </div>
-                <div class="flex items-center justify-between mt-4 text-white">
-                    <div id="conteo-resultados" class="text-sm">Cargando...</div>
-                    <nav id="paginacion-container" aria-label="Paginación"></nav>
-                </div>
+
             </section>        
         </main>
     </div>
 
-    <footer class="bg-black  mt-auto">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <footer class="bg-black  mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div class="flex flex-col md:flex-row justify-between items-center gap-4">
                 <div class="flex items-center gap-3">
                     <img src="https://cambiosorion.cl/orionapp/assets/LogoOrion-white.svg" alt="Orion" class="h-12 grayscale hover:grayscale-0 transition">
@@ -236,7 +215,6 @@
         </div>
     </footer>
 
-    <script src="https://cambiosorion.cl/orionapp/node_modules/flowbite/dist/flowbite.min.js"></script>
     <script type="module" src="./scripts/index.js"></script>
     <script type="module" src="./scripts/posiciones.js"></script>
 </body>
