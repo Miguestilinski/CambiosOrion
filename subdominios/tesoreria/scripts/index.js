@@ -25,7 +25,7 @@ export async function initSystem(currentPageId) {
 
 // --- SIDEBAR & HEADER ---
 export function cargarSidebar(activePageId) {
-    return fetch(SystemConfig.sidebarFile)
+    return fetch(`${SystemConfig.sidebarFile}?v=${new Date().getTime()}`)
         .then(response => response.text())
         .then(html => {
             const container = document.getElementById('sidebar-container');
