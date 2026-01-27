@@ -18,6 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let paginaActual = 1;
 
+    let sortColumn = null;
+    let sortDirection = 'none'; // 'asc', 'desc', 'none'
+
     const filtros = {
         fechaInicio: document.getElementById("fecha-inicio"),
         fechaFin: document.getElementById("fecha-fin"),
@@ -66,6 +69,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (filtros.estado.value) params.set('estado', filtros.estado.value);
         if (filtros.mostrar.value) params.set('mostrar_registros', filtros.mostrar.value);
         params.set('pagina', paginaActual);
+
+        if (sortColumn && sortDirection !== 'none') {
+            params.set('order_by', sortColumn);
+            params.set('order_dir', sortDirection);
+        }
 
         tablaOperaciones.innerHTML = `<tr><td colspan="12" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-amber-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
 
@@ -321,6 +329,54 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         );
     }
+
+    // --- LÓGICA DE ORDENAMIENTO ---
+    document.querySelectorAll('.sortable').forEach(th => {
+        th.addEventListener('click', () => {
+            const column = th.dataset.sort;
+
+            // Ciclo: none -> asc -> desc -> none
+            if (sortColumn === column) {
+                if (sortDirection === 'none') sortDirection = 'asc';
+                else if (sortDirection === 'asc') sortDirection = 'desc';
+                else { sortDirection = 'none'; sortColumn = null; }
+            } else {
+                sortColumn = column;
+                sortDirection = 'asc';
+            }
+
+            actualizarIconosOrden();
+            obtenerOperaciones();
+        });
+    });
+
+    function actualizarIconosOrden() {
+        document.querySelectorAll('.sortable').forEach(th => {
+            const iconContainer = th.querySelector('.sort-icon');
+            const column = th.dataset.sort;
+            
+            // Icono por defecto (flechas arriba/abajo tenues)
+            let iconSVG = `<svg class="w-3 h-3 opacity-20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3l-5 5h10l-5-5zm0 18l5-5h-10l5 5z"/></svg>`;
+
+            if (sortColumn === column && sortDirection !== 'none') {
+                if (sortDirection === 'asc') {
+                    // Flecha Arriba (Activa)
+                    iconSVG = `<svg class="w-3 h-3 text-amber-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3l-8 8h16l-8-8z"/></svg>`;
+                } else {
+                    // Flecha Abajo (Activa)
+                    iconSVG = `<svg class="w-3 h-3 text-amber-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21l8-8H4l8 8z"/></svg>`;
+                }
+            }
+            iconContainer.innerHTML = iconSVG;
+        });
+        // Inicializar iconos por defecto al cargar
+        if(sortDirection === 'none') {
+             document.querySelectorAll('.sort-icon').forEach(span => {
+                 span.innerHTML = `<svg class="w-3 h-3 opacity-20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3l-5 5h10l-5-5zm0 18l5-5h-10l5 5z"/></svg>`;
+             });
+        }
+    }
+    actualizarIconosOrden(); // Ejecutar al inicio
 
     obtenerOperaciones(); // Llamada original
 });

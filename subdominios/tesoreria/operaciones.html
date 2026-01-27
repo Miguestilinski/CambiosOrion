@@ -245,17 +245,32 @@
                         <table class="w-full text-sm text-left border-collapse">
                             <thead class="text-xs uppercase bg-slate-950/80 text-slate-400 font-extrabold tracking-wide sticky top-0 z-20 shadow-sm border-b border-white/10">
                                 <tr>
-                                    <th class="px-4 py-4">Fecha</th>
-                                    <th class="px-4 py-4">Nº Op</th>
-                                    <th class="px-4 py-4">Cliente</th>
-                                    <th class="px-4 py-4">Tipo Doc</th>
-                                    <th class="px-4 py-4">Nº Doc</th>
-                                    <th class="px-4 py-4 text-center">Tipo Transacción</th>
-                                    <th class="px-4 py-4">Divisas</th>
-                                    <th class="px-4 py-4 text-right">Monto</th>
+                                    <th class="px-4 py-4 cursor-pointer hover:text-white group select-none sortable" data-sort="fecha">
+                                        <div class="flex items-center gap-1">Fecha <span class="sort-icon ml-1 text-slate-600"></span></div>
+                                    </th>
+                                    <th class="px-4 py-4 cursor-pointer hover:text-white group select-none sortable" data-sort="id">
+                                        <div class="flex items-center gap-1">Nº Op <span class="sort-icon ml-1 text-slate-600"></span></div>
+                                    </th>
+                                    <th class="px-4 py-4 cursor-pointer hover:text-white group select-none sortable" data-sort="cliente">
+                                        <div class="flex items-center gap-1">Cliente <span class="sort-icon ml-1 text-slate-600"></span></div>
+                                    </th>
+                                    <th class="px-4 py-4 cursor-pointer hover:text-white group select-none sortable" data-sort="tipo_doc">
+                                        <div class="flex items-center gap-1">Tipo Doc <span class="sort-icon ml-1 text-slate-600"></span></div>
+                                    </th>
+                                    <th class="px-4 py-4 cursor-pointer hover:text-white group select-none sortable" data-sort="n_doc">
+                                        <div class="flex items-center gap-1">Nº Doc <span class="sort-icon ml-1 text-slate-600"></span></div>
+                                    </th>
+                                    <th class="px-4 py-4 text-center cursor-pointer hover:text-white group select-none sortable" data-sort="tipo_transaccion">
+                                        <div class="flex items-center justify-center gap-1">Tipo Transacción <span class="sort-icon ml-1 text-slate-600"></span></div>
+                                    </th>
+                                    <th class="px-4 py-4">Divisas</th> <th class="px-4 py-4 text-right">Monto</th>
                                     <th class="px-4 py-4 text-right">Tasa</th>
-                                    <th class="px-4 py-4 text-right">Total</th>
-                                    <th class="px-4 py-4 text-center">Estado</th>
+                                    <th class="px-4 py-4 text-right cursor-pointer hover:text-white group select-none sortable" data-sort="total">
+                                        <div class="flex items-center justify-end gap-1">Total <span class="sort-icon ml-1 text-slate-600"></span></div>
+                                    </th>
+                                    <th class="px-4 py-4 text-center cursor-pointer hover:text-white group select-none sortable" data-sort="estado">
+                                        <div class="flex items-center justify-center gap-1">Estado <span class="sort-icon ml-1 text-slate-600"></span></div>
+                                    </th>
                                     <th class="px-4 py-4 text-center">Detalle</th>
                                 </tr>
                             </thead>
