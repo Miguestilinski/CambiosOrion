@@ -84,6 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const total = parseInt(data.totalFiltrado) || 0;
                 renderizarTabla(lista);
                 renderizarPaginacion(total, parseInt(filtros.mostrar.value), paginaActual);
+                renderizarTotales(data.totales);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -328,6 +329,31 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
             }
         );
+    }
+
+    function renderizarTotales(totales) {
+        const tfoot = document.getElementById('tabla-totales');
+        if (!tfoot) return;
+
+        // Si no hay datos, ocultamos el footer
+        if (!totales || (parseFloat(totales.monto) === 0 && parseFloat(totales.total) === 0)) {
+            tfoot.classList.add('hidden');
+            return;
+        }
+
+        tfoot.classList.remove('hidden');
+        
+        tfoot.innerHTML = `
+            <tr>
+                <td colspan="7" class="px-4 py-4 text-right text-slate-400">Totales Generales:</td>
+                <td class="px-4 py-4 text-right font-mono text-amber-400 text-xs">${formatearNumero(totales.monto)}</td>
+                <td></td>
+                <td class="px-4 py-4 text-right font-mono text-emerald-400 text-sm border-t border-emerald-500/30 bg-emerald-900/10 shadow-[inset_0_0_20px_rgba(16,185,129,0.1)]">
+                    ${formatearNumero(totales.total)}
+                </td>
+                <td colspan="2"></td>
+            </tr>
+        `;
     }
 
     // --- LÓGICA DE ORDENAMIENTO ---
