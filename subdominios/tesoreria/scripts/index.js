@@ -41,21 +41,26 @@ export function activarLinkSidebar(pagina) {
     setTimeout(() => {
         const links = document.querySelectorAll('aside a');
         links.forEach(link => {
-            // Estilo base (Gris)
+            const svg = link.querySelector('svg'); // 1. Capturamos el icono
+
+            // ESTADO INACTIVO (Base)
             link.className = 'flex items-center px-4 py-2.5 text-slate-400 hover:bg-white/5 hover:text-amber-400 rounded-lg transition-colors group mb-1 border border-transparent';
+            // Restauramos el color original del icono (Slate -> Amber al hover)
+            if (svg) svg.setAttribute('class', 'w-5 h-5 mr-3 text-slate-500 group-hover:text-amber-500 transition-colors');
             
-            // --- CORRECCIÓN AQUÍ ---
-            // Obtenemos la ruta limpia sin parámetros query (?id=...) y sin slash final
+            // Lógica de coincidencia
             const linkPath = link.href.split('?')[0].replace(/\/$/, '');
-            const attrHref = link.getAttribute('href'); // El valor exacto en el HTML
+            const attrHref = link.getAttribute('href'); 
             const dataPage = link.getAttribute('data-page');
 
-            // Verificamos si termina con "/pagina" O si es exactamente igual al atributo (para rutas relativas)
-            // Esto evita que 'operaciones' active 'operaciones-uaf'
-            const esActivo = linkPath.endsWith('/' + pagina) || attrHref === pagina;
+            const esActivo = (dataPage && dataPage === pagina) || linkPath.endsWith('/' + pagina) || attrHref === pagina;
 
             if (esActivo) {
+                // ESTADO ACTIVO
                 link.className = 'flex items-center px-4 py-2.5 bg-amber-600 text-white rounded-lg shadow-lg shadow-amber-500/20 group mb-1 border border-amber-500 font-medium';
+                
+                // CAMBIO SOLICITADO: Icono Amber-200 -> Blanco al hover
+                if (svg) svg.setAttribute('class', 'w-5 h-5 mr-3 text-amber-200 group-hover:text-white transition-colors');
             }
         });
     }, 50);
