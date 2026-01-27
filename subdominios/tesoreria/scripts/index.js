@@ -32,6 +32,7 @@ export function cargarSidebar(activePageId) {
             if (container) {
                 container.innerHTML = html;
                 activarLinkSidebar(activePageId);
+                updateSidebarUserInfo();
             }
         });
 }
@@ -47,6 +48,7 @@ export function activarLinkSidebar(pagina) {
             // Obtenemos la ruta limpia sin parámetros query (?id=...) y sin slash final
             const linkPath = link.href.split('?')[0].replace(/\/$/, '');
             const attrHref = link.getAttribute('href'); // El valor exacto en el HTML
+            const dataPage = link.getAttribute('data-page');
 
             // Verificamos si termina con "/pagina" O si es exactamente igual al atributo (para rutas relativas)
             // Esto evita que 'operaciones' active 'operaciones-uaf'
@@ -59,7 +61,7 @@ export function activarLinkSidebar(pagina) {
     }, 50);
 }
 
-// --- NUEVA FUNCIÓN: CONTEXT SWITCHER (MÓVIL) ---
+// --- CONTEXT SWITCHER (MÓVIL) ---
 function setupSystemSwitcher() {
     const btn = document.getElementById('system-switcher-btn');
     const dropdown = document.getElementById('system-switcher-dropdown');
@@ -111,15 +113,15 @@ function setupMobileSidebar() {
     
     if (!btnMenu || !sidebar) return;
 
-    // Crear Backdrop (Fondo oscuro) si no existe
+    // Crear Backdrop (Fondo oscuro) con Z-Index ajustado
     let backdrop = document.getElementById('sidebar-backdrop');
     if (!backdrop) {
         backdrop = document.createElement('div');
         backdrop.id = 'sidebar-backdrop';
-        backdrop.className = 'fixed inset-0 bg-black/60 z-40 hidden lg:hidden backdrop-blur-sm transition-opacity opacity-0';
+        // z-[140] para estar debajo del sidebar (z-150) pero encima del header (z-100)
+        backdrop.className = 'fixed inset-0 bg-black/60 z-[140] hidden lg:hidden backdrop-blur-sm transition-opacity opacity-0';
         document.body.appendChild(backdrop);
         
-        // Click en fondo cierra menú
         backdrop.addEventListener('click', closeSidebar);
     }
 
@@ -132,21 +134,27 @@ function setupMobileSidebar() {
     });
 
     function openSidebar() {
-        // Mostrar Sidebar en modo Móvil (Fixed, Z-Index alto)
         sidebar.classList.remove('hidden');
-        sidebar.classList.add('fixed', 'inset-y-0', 'left-0', 'z-50', 'w-64', 'bg-slate-900', 'shadow-2xl', 'border-r', 'border-white/10', 'slide-in-animation');
         
-        // Mostrar Backdrop
+        // IMPORTANTE: Quitamos h-full temporalmente para evitar problemas de layout móvil
+        sidebar.classList.remove('h-full');
+
+        // Posicionamiento exacto: top-16 (debajo del header), bottom-0 (hasta el final), z-150 (encima de todo)
+        sidebar.classList.add('fixed', 'top-16', 'bottom-0', 'left-0', 'z-[150]', 'w-64', 'bg-slate-900', 'shadow-2xl', 'border-r', 'border-white/10', 'slide-in-animation');
+        
         backdrop.classList.remove('hidden');
         setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
     }
 
     function closeSidebar() {
-        // Ocultar y limpiar clases móviles
         sidebar.classList.add('hidden');
-        sidebar.classList.remove('fixed', 'inset-y-0', 'left-0', 'z-50', 'w-64', 'bg-slate-900', 'shadow-2xl', 'border-r', 'border-white/10', 'slide-in-animation');
         
-        // Ocultar Backdrop
+        // Restauramos h-full para el modo escritorio (si se redimensiona la ventana)
+        sidebar.classList.add('h-full');
+
+        // Limpiamos las clases móviles
+        sidebar.classList.remove('fixed', 'top-16', 'bottom-0', 'left-0', 'z-[150]', 'w-64', 'bg-slate-900', 'shadow-2xl', 'border-r', 'border-white/10', 'slide-in-animation');
+        
         backdrop.classList.add('opacity-0');
         setTimeout(() => backdrop.classList.add('hidden'), 300);
     }
@@ -181,6 +189,8 @@ function setupUserDropdown() {
 }
 
 // --- SESIÓN ---
+let globalSessionData = null; // Almacenar datos para uso global si es necesario
+
 async function getSession() {
     try {
         const res = await fetch("https://cambiosorion.cl/data/session_status_admin.php", { credentials: 'include' });
@@ -208,6 +218,8 @@ async function getSession() {
                         .then(() => window.location.href = SystemConfig.loginUrl);
                 };
             }
+            updateSidebarUserInfo();
+
             return data;
         } else {
             window.location.href = SystemConfig.loginUrl;
@@ -217,6 +229,14 @@ async function getSession() {
         console.error("Error de sesión", error);
         return { isAuthenticated: false };
     }
+}
+
+function updateSidebarUserInfo() {
+    if (!globalSessionData) return;
+    
+    // Elementos del footer del sidebar (sidebar-tesoreria.html)
+    // Nota: Tesorería no tiene un footer de usuario explícito en el HTML proporcionado,
+    // pero si decides agregarlo, esta función lo manejaría.
 }
 
 // --- TOOLS ---
