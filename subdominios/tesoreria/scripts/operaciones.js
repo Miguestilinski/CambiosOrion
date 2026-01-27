@@ -184,6 +184,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const resetAndFetch = () => { paginaActual = 1; obtenerOperaciones(); };
 
+    function initDatePickers() {
+        const config = {
+            locale: "es",
+            dateFormat: "Y-m-d", // Formato que se envía a la BD
+            altInput: true,      // Crea el input visual
+            altFormat: "d/m/Y",  // Formato que ve el usuario
+            allowInput: true,
+            disableMobile: "true",
+            // IMPORTANTE: Esto hace que el filtro busque apenas seleccionas la fecha
+            onChange: function(selectedDates, dateStr, instance) {
+                resetAndFetch();
+            }
+        };
+        flatpickr(".flatpickr", config);
+    }
+
+    initDatePickers();
+
     borrarFiltrosBtn.addEventListener('click', () => {
         Object.values(filtros).forEach(input => {
             if(!input) return;
