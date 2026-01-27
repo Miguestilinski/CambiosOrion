@@ -222,5 +222,105 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    obtenerOperaciones();
+    // 1. Obtener datos de clientes y divisas
+    let datosFiltros = { clientes: [], divisas: [] };
+    
+    fetch('https://cambiosorion.cl/data/operaciones.php?get_filter_data=1')
+        .then(res => res.json())
+        .then(data => {
+            datosFiltros = data;
+            inicializarAutocompletes();
+        })
+        .catch(err => console.error("Error cargando filtros:", err));
+
+    // 2. Función constructora del dropdown
+    function setupAutocomplete(inputId, getData, filterFn, renderFn) {
+        const input = document.getElementById(inputId);
+        if (!input) return;
+
+        // Crear contenedor del dropdown
+        const dropdown = document.createElement('div');
+        dropdown.className = 'absolute z-50 left-0 w-full mt-1 bg-slate-800 border border-slate-600 rounded-lg shadow-xl max-h-60 overflow-y-auto hidden';
+        input.parentNode.appendChild(dropdown);
+
+        const showResults = () => {
+            const query = input.value.toLowerCase().trim();
+            const sourceData = getData();
+            
+            // Si el input está vacío, mostrar todo. Si no, filtrar.
+            const results = query === '' 
+                ? sourceData 
+                : sourceData.filter(item => filterFn(item, query));
+
+            dropdown.innerHTML = '';
+
+            if (results.length === 0) {
+                dropdown.innerHTML = '<div class="px-3 py-2 text-xs text-slate-500 italic">No hay resultados</div>';
+            } else {
+                results.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'px-3 py-2 hover:bg-slate-700 cursor-pointer text-xs text-slate-300 flex items-center gap-2 border-b border-white/5 last:border-0 transition-colors';
+                    div.innerHTML = renderFn(item); // HTML personalizado (con icono, etc)
+                    
+                    div.addEventListener('click', (e) => {
+                        e.stopPropagation(); // Evitar cerrar inmediatamente
+                        // Al hacer clic, llenamos el input con el valor principal
+                        input.value = item.valorInput; 
+                        dropdown.classList.add('hidden');
+                        resetAndFetch(); // Ejecutar búsqueda principal
+                    });
+                    dropdown.appendChild(div);
+                });
+            }
+            dropdown.classList.remove('hidden');
+        };
+
+        // Eventos
+        input.addEventListener('focus', showResults);
+        input.addEventListener('input', showResults);
+        
+        // Cerrar al hacer clic fuera
+        document.addEventListener('click', (e) => {
+            if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
+    }
+
+    function inicializarAutocompletes() {
+        // A. Configurar Cliente
+        setupAutocomplete(
+            'cliente',
+            () => datosFiltros.clientes.map(c => ({ ...c, valorInput: c.razon_social })), // Datos
+            (item, query) => item.razon_social.toLowerCase().includes(query), // Filtro
+            (item) => `<span class="font-medium">${item.razon_social}</span>` // Render HTML
+        );
+
+        // B. Configurar Divisa
+        setupAutocomplete(
+            'divisa',
+            () => datosFiltros.divisas.map(d => ({ ...d, valorInput: d.codigo })), // Usamos código para el input final
+            (item, query) => {
+                // Buscar por Nombre O por Código
+                return item.nombre.toLowerCase().includes(query) || item.codigo.toLowerCase().includes(query);
+            },
+            (item) => {
+                // Render con Icono + Nombre + Código
+                // Asumo que 'item.icono' es una URL. Si no tienes iconos, quita la etiqueta <img>.
+                const iconHtml = item.icono 
+                    ? `<img src="${item.icono}" class="w-4 h-4 rounded-full object-cover">` 
+                    : `<span class="w-4 h-4 rounded-full bg-slate-600 flex items-center justify-center text-[8px]">${item.codigo.substring(0,2)}</span>`;
+                
+                return `
+                    ${iconHtml}
+                    <div class="flex flex-col">
+                        <span class="font-bold text-white leading-none">${item.nombre}</span>
+                        <span class="text-[10px] text-slate-500 font-mono">${item.codigo}</span>
+                    </div>
+                `;
+            }
+        );
+    }
+
+    obtenerOperaciones(); // Llamada original
 });
