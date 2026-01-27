@@ -100,33 +100,55 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        const filtroDivisa = filtros.divisa.value.trim().toLowerCase();
+
         operaciones.forEach(op => {
             const tr = document.createElement('tr');
             // En modo oscuro, eliminamos el bg-white. Por defecto es transparente.
             tr.className = 'transition-all border-b border-white/5 last:border-0 text-slate-300';
 
             const tipo = String(op.tipo_transaccion).toLowerCase();
-            
-            // CSS se encarga de los colores !important
-            if (tipo === 'compra') {
-                tr.classList.add('compra');
-            } else if (tipo === 'venta') {
-                tr.classList.add('venta');
-            } 
+            if (tipo === 'compra') tr.classList.add('compra');
+            else if (tipo === 'venta') tr.classList.add('venta');
 
             if (op.estado === 'Anulado') tr.classList.add('opacity-50', 'line-through');
 
-            const divHTML = (op.divisas || '').split(', ').map(d => `<div>${d}</div>`).join('');
-            const montoHTML = (op.montos_por_divisa || '').split('|').map(m => `<div>${formatearNumero(m)}</div>`).join('');
-            const tasaHTML = (op.tasas_cambio || '').split('|').map(t => `<div>${formatearNumero(t)}</div>`).join('');
+            // Procesar listas (divisas vienen como "Nombre:Codigo|Otro:Codigo")
+            const divisasRaw = (op.divisas_data || '').split('|');
+            const montos = (op.montos_por_divisa || '').split('|');
+            const tasas = (op.tasas_cambio || '').split('|');
+            // NUEVO: Subtotales individuales
+            const subtotales = (op.subtotales_por_divisa || '').split('|');
+
+            // Generar HTML interno con lógica de "Dimming" (Atenuado)
+            let divHTML = '', montoHTML = '', tasaHTML = '', subtotalHTML = '';
+
+            divisasRaw.forEach((dStr, index) => {
+                const [nombre, codigo] = dStr.split(':');
+                const monto = montos[index] || 0;
+                const tasa = tasas[index] || 0;
+                const subtotal = subtotales[index] || 0;
+
+                // Lógica de atenuado: 
+                // Si hay filtro Y ni el nombre ni el código coinciden -> Opacidad baja
+                let opacityClass = '';
+                if (filtroDivisa) {
+                    const match = nombre.toLowerCase().includes(filtroDivisa) || (codigo && codigo.toLowerCase().includes(filtroDivisa));
+                    if (!match) opacityClass = 'opacity-25 blur-[0.5px]'; // Atenuado fuerte
+                    else opacityClass = 'font-bold text-white'; // Destacado
+                }
+
+                divHTML += `<div class="${opacityClass} transition-all">${nombre}</div>`;
+                montoHTML += `<div class="${opacityClass} transition-all">${formatearNumero(monto)}</div>`;
+                tasaHTML += `<div class="${opacityClass} transition-all">${formatearNumero(tasa)}</div>`;
+                // El subtotal reemplaza al total único visualmente
+                subtotalHTML += `<div class="${opacityClass} transition-all">${formatearNumero(subtotal)}</div>`;
+            });
 
             const btnVer = document.createElement('button');
             btnVer.innerHTML = `<svg class="w-5 h-5 text-slate-400 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
             btnVer.className = 'flex items-center justify-center p-1.5 bg-white/5 rounded-full hover:bg-amber-600 shadow-sm border border-transparent transition-all mx-auto';
-            btnVer.onclick = (e) => {
-                e.stopPropagation();
-                window.location.href = `detalle-op?id=${op.id}`;
-            };
+            btnVer.onclick = (e) => { e.stopPropagation(); window.location.href = `detalle-op?id=${op.id}`; };
 
             tr.innerHTML = `
                 <td class="px-4 py-3 whitespace-nowrap text-xs">${formatearFechaHora(op.fecha)}</td>
@@ -138,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="px-4 py-3 text-xs font-bold text-amber-400">${divHTML}</td>
                 <td class="px-4 py-3 text-right font-mono text-xs text-white">${montoHTML}</td>
                 <td class="px-4 py-3 text-right font-mono text-xs text-slate-500">${tasaHTML}</td>
-                <td class="px-4 py-3 text-right font-bold font-mono text-sm text-emerald-400">${formatearNumero(op.total)}</td>
+                <td class="px-4 py-3 text-right font-mono text-sm text-emerald-400">${subtotalHTML}</td>
                 <td class="px-4 py-3 text-center">
                     <span class="px-2 py-0.5 rounded text-[10px] uppercase font-bold ${getEstadoClass(op.estado)}">${op.estado}</span>
                 </td>
@@ -335,21 +357,37 @@ document.addEventListener('DOMContentLoaded', () => {
         const tfoot = document.getElementById('tabla-totales');
         if (!tfoot) return;
 
-        // Si no hay datos, ocultamos el footer
-        if (!totales || (parseFloat(totales.monto) === 0 && parseFloat(totales.total) === 0)) {
+        // Ocultar si no hay datos relevantes
+        if (!totales || (parseFloat(totales.total) === 0 && !totales.es_multidivisa)) {
             tfoot.classList.add('hidden');
             return;
         }
-
         tfoot.classList.remove('hidden');
+        
+        // Configurar etiqueta y valor de Monto según si es Multidivisa o Filtro
+        let labelMonto = '';
+        let classMonto = '';
+
+        if (totales.es_multidivisa) {
+            labelMonto = '<span class="text-slate-500 text-[10px] tracking-widest">MULTIDIVISA</span>';
+            classMonto = 'text-center italic';
+        } else {
+            // Si hay filtro, mostramos ej: EUR 500,00
+            // Intentamos obtener el código del filtro si el PHP no lo devolvió explícito, o usamos el input
+            const divisaCode = totales.divisa_filtro || filtros.divisa.value.substring(0,3).toUpperCase();
+            labelMonto = `<span class="mr-1 text-slate-500 text-[10px]">${divisaCode}</span> ${formatearNumero(totales.monto)}`;
+            classMonto = 'text-right font-mono text-amber-400 text-xs';
+        }
         
         tfoot.innerHTML = `
             <tr>
-                <td colspan="7" class="px-4 py-4 text-right text-slate-400">Totales Generales:</td>
-                <td class="px-4 py-4 text-right font-mono text-amber-400 text-xs">${formatearNumero(totales.monto)}</td>
+                <td colspan="7" class="px-4 py-4 text-right text-slate-400 text-[10px]">TOTALES GENERALES:</td>
+                <td class="px-4 py-4 ${classMonto}">
+                    ${labelMonto}
+                </td>
                 <td></td>
-                <td class="px-4 py-4 text-right font-mono text-emerald-400 text-sm border-t border-emerald-500/30 bg-emerald-900/10 shadow-[inset_0_0_20px_rgba(16,185,129,0.1)]">
-                    ${formatearNumero(totales.total)}
+                <td class="px-4 py-4 text-right font-mono text-sm text-emerald-400 border-t border-emerald-500/30 bg-emerald-900/10 shadow-[inset_0_0_20px_rgba(16,185,129,0.1)]">
+                    <span class="mr-1 text-emerald-600 text-[10px]">$</span>${formatearNumero(totales.total)}
                 </td>
                 <td colspan="2"></td>
             </tr>
