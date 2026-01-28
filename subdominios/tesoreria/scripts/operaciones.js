@@ -104,14 +104,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
         operaciones.forEach(op => {
             const tr = document.createElement('tr');
-            // En modo oscuro, eliminamos el bg-white. Por defecto es transparente.
+            
+            // Clase base: Transición y bordes
+            // Eliminamos 'text-slate-300' global para que los colores específicos definan el texto si es necesario
             tr.className = 'transition-all border-b border-white/5 last:border-0 text-slate-300';
 
-            const tipo = String(op.tipo_transaccion).toLowerCase();
-            if (tipo === 'compra') tr.classList.add('compra');
-            else if (tipo === 'venta') tr.classList.add('venta');
+            // --- LÓGICA DE COLORES DE FILA (Prioridad: Anulado > Tipo) ---
+            const estado = String(op.estado || '').toLowerCase();
+            const tipo = String(op.tipo_transaccion || '').toLowerCase();
 
-            if (op.estado === 'Anulado') tr.classList.add('opacity-50', 'line-through');
+            if (estado === 'anulado' || estado === 'anulada') {
+                // Si está anulado, gana el rojo pastel y NO se tacha (según tu requerimiento anterior)
+                tr.classList.add('anulado'); 
+                // Nota: Ya no agregamos 'line-through' ni 'opacity-50' porque querías que se viera rojo claro.
+            } else {
+                // Si no está anulado, aplicamos color por tipo
+                if (tipo === 'compra') tr.classList.add('compra');
+                else if (tipo === 'venta') tr.classList.add('venta');
+            }
 
             // Procesar listas (divisas vienen como "Nombre:Codigo|Otro:Codigo")
             const divisasRaw = (op.divisas_data || '').split('|');
@@ -145,11 +155,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 subtotalHTML += `<div class="${opacityClass} transition-all">${formatearNumero(subtotal)}</div>`;
             });
 
+            // Botón Ver Detalle
             const btnVer = document.createElement('button');
-            btnVer.innerHTML = `<svg class="w-5 h-5 text-slate-400 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
-            btnVer.className = 'flex items-center justify-center p-1.5 bg-white/5 rounded-full hover:bg-amber-600 shadow-sm border border-transparent transition-all mx-auto';
+            // Usamos un color oscuro para el icono porque el fondo ahora es claro (pastel)
+            btnVer.innerHTML = `<svg class="w-5 h-5 text-slate-600 hover:text-slate-900 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
+            btnVer.className = 'flex items-center justify-center p-1.5 bg-white/40 rounded-full hover:bg-white shadow-sm border border-transparent transition-all mx-auto';
             btnVer.onclick = (e) => { e.stopPropagation(); window.location.href = `detalle-op?id=${op.id}`; };
 
+            // Renderizado de columnas. 
+            // IMPORTANTE: Eliminé las clases de colores fijos (text-white, text-amber-400) en las celdas de datos 
+            // para permitir que el CSS de .compra/.venta/.anulado controle el color del texto (gris oscuro).
             tr.innerHTML = `
                 <td class="px-4 py-3 whitespace-nowrap text-xs">${formatearFechaHora(op.fecha)}</td>
                 <td class="px-4 py-3 font-mono text-xs font-bold text-slate-400 opacity-80">${op.id}</td>
