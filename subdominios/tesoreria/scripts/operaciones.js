@@ -105,32 +105,26 @@ document.addEventListener('DOMContentLoaded', () => {
         operaciones.forEach(op => {
             const tr = document.createElement('tr');
             
-            // Clase base: Transición y bordes
-            // Eliminamos 'text-slate-300' global para que los colores específicos definan el texto si es necesario
-            tr.className = 'transition-all border-b border-white/5 last:border-0 text-slate-300';
+            // Clase base Modo Claro: Fondo blanco por defecto, hover gris muy claro
+            // text-slate-600 para texto general
+            tr.className = 'transition-all border-b border-slate-200 last:border-0 text-slate-600 hover:bg-slate-50';
 
-            // --- LÓGICA DE COLORES DE FILA (Prioridad: Anulado > Tipo) ---
+            // --- LÓGICA DE COLORES DE FILA (Las clases .compra, .venta, .anulado ya tienen colores pastel definidos en CSS) ---
             const estado = String(op.estado || '').toLowerCase();
             const tipo = String(op.tipo_transaccion || '').toLowerCase();
 
             if (estado === 'anulado' || estado === 'anulada') {
-                // Si está anulado, gana el rojo pastel y NO se tacha (según tu requerimiento anterior)
                 tr.classList.add('anulado'); 
-                // Nota: Ya no agregamos 'line-through' ni 'opacity-50' porque querías que se viera rojo claro.
             } else {
-                // Si no está anulado, aplicamos color por tipo
                 if (tipo === 'compra') tr.classList.add('compra');
                 else if (tipo === 'venta') tr.classList.add('venta');
             }
 
-            // Procesar listas (divisas vienen como "Nombre:Codigo|Otro:Codigo")
             const divisasRaw = (op.divisas_data || '').split('|');
             const montos = (op.montos_por_divisa || '').split('|');
             const tasas = (op.tasas_cambio || '').split('|');
-            // NUEVO: Subtotales individuales
             const subtotales = (op.subtotales_por_divisa || '').split('|');
 
-            // Generar HTML interno con lógica de "Dimming" (Atenuado)
             let divHTML = '', montoHTML = '', tasaHTML = '', subtotalHTML = '';
 
             divisasRaw.forEach((dStr, index) => {
@@ -139,43 +133,42 @@ document.addEventListener('DOMContentLoaded', () => {
                 const tasa = tasas[index] || 0;
                 const subtotal = subtotales[index] || 0;
 
-                // Lógica de atenuado: 
-                // Si hay filtro Y ni el nombre ni el código coinciden -> Opacidad baja
+                // Lógica de atenuado para Modo Claro:
+                // Si coincide, texto OSCURO (text-slate-900) y negrita.
+                // Si no, opacidad baja.
                 let opacityClass = '';
                 if (filtroDivisa) {
                     const match = nombre.toLowerCase().includes(filtroDivisa) || (codigo && codigo.toLowerCase().includes(filtroDivisa));
-                    if (!match) opacityClass = 'opacity-25 blur-[0.5px]'; // Atenuado fuerte
-                    else opacityClass = 'font-bold text-white'; // Destacado
+                    if (!match) opacityClass = 'opacity-25 blur-[0.5px]'; 
+                    else opacityClass = 'font-bold text-slate-900'; // Destacado oscuro
                 }
 
                 divHTML += `<div class="${opacityClass} transition-all">${nombre}</div>`;
                 montoHTML += `<div class="${opacityClass} transition-all">${formatearNumero(monto)}</div>`;
                 tasaHTML += `<div class="${opacityClass} transition-all">${formatearNumero(tasa)}</div>`;
-                // El subtotal reemplaza al total único visualmente
                 subtotalHTML += `<div class="${opacityClass} transition-all">${formatearNumero(subtotal)}</div>`;
             });
 
-            // Botón Ver Detalle
+            // Botón Ver Detalle (Modo Claro)
             const btnVer = document.createElement('button');
-            // Usamos un color oscuro para el icono porque el fondo ahora es claro (pastel)
-            btnVer.innerHTML = `<svg class="w-5 h-5 text-slate-600 hover:text-slate-900 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
-            btnVer.className = 'flex items-center justify-center p-1.5 bg-white/40 rounded-full hover:bg-white shadow-sm border border-transparent transition-all mx-auto';
+            // Fondo gris muy claro, hover ambar muy claro, texto oscuro
+            btnVer.innerHTML = `<svg class="w-5 h-5 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
+            btnVer.className = 'flex items-center justify-center p-1.5 bg-slate-100 text-slate-500 rounded-full hover:bg-amber-100 hover:text-amber-600 shadow-sm border border-slate-200 transition-all mx-auto';
             btnVer.onclick = (e) => { e.stopPropagation(); window.location.href = `detalle-op?id=${op.id}`; };
 
-            // Renderizado de columnas. 
-            // IMPORTANTE: Eliminé las clases de colores fijos (text-white, text-amber-400) en las celdas de datos 
-            // para permitir que el CSS de .compra/.venta/.anulado controle el color del texto (gris oscuro).
+            // HTML interno ajustado para fondo blanco
+            // Reemplazamos text-white por text-slate-900/800
             tr.innerHTML = `
-                <td class="px-4 py-3 whitespace-nowrap text-xs">${formatearFechaHora(op.fecha)}</td>
+                <td class="px-4 py-3 whitespace-nowrap text-xs text-slate-600">${formatearFechaHora(op.fecha)}</td>
                 <td class="px-4 py-3 font-mono text-xs font-bold text-slate-400 opacity-80">${op.id}</td>
-                <td class="px-4 py-3 font-semibold text-xs text-white truncate max-w-[140px]" title="${limpiarTexto(op.nombre_cliente)}">${limpiarTexto(op.nombre_cliente)}</td>
+                <td class="px-4 py-3 font-semibold text-xs text-slate-800 truncate max-w-[140px]" title="${limpiarTexto(op.nombre_cliente)}">${limpiarTexto(op.nombre_cliente)}</td>
                 <td class="px-4 py-3 text-xs uppercase font-bold text-slate-500 tracking-wide">${limpiarTexto(op.tipo_documento)}</td>
-                <td class="px-4 py-3 font-mono text-xs text-slate-400">${limpiarTexto(op.numero_documento)}</td>
-                <td class="px-4 py-3 text-center text-xs font-extrabold uppercase tracking-wider text-slate-300">${limpiarTexto(op.tipo_transaccion)}</td>
-                <td class="px-4 py-3 text-xs font-bold text-amber-400">${divHTML}</td>
-                <td class="px-4 py-3 text-right font-mono text-xs text-white">${montoHTML}</td>
+                <td class="px-4 py-3 font-mono text-xs text-slate-500">${limpiarTexto(op.numero_documento)}</td>
+                <td class="px-4 py-3 text-center text-xs font-extrabold uppercase tracking-wider text-slate-700">${limpiarTexto(op.tipo_transaccion)}</td>
+                <td class="px-4 py-3 text-xs font-bold text-slate-700">${divHTML}</td>
+                <td class="px-4 py-3 text-right font-mono text-xs text-slate-900 font-medium">${montoHTML}</td>
                 <td class="px-4 py-3 text-right font-mono text-xs text-slate-500">${tasaHTML}</td>
-                <td class="px-4 py-3 text-right font-mono text-sm text-emerald-400">${subtotalHTML}</td>
+                <td class="px-4 py-3 text-right font-mono text-sm text-slate-900 font-bold">${subtotalHTML}</td>
                 <td class="px-4 py-3 text-center">
                     <span class="px-2 py-0.5 rounded text-[10px] uppercase font-bold ${getEstadoClass(op.estado)}">${op.estado}</span>
                 </td>
@@ -189,10 +182,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function getEstadoClass(estado) {
         const est = String(estado).toLowerCase();
-        if(est === 'vigente') return 'bg-green-900/40 text-green-300 border border-green-500/30';
-        if(est === 'anulado') return 'bg-red-900/40 text-red-300 border border-red-500/30';
-        if(est === 'pagado') return 'bg-blue-900/40 text-blue-300 border border-blue-500/30';
-        return 'bg-slate-700 text-slate-400';
+        // Colores sólidos y legibles para las etiquetas de estado
+        if(est === 'vigente') return 'bg-green-100 text-green-800 border border-green-200';
+        if(est === 'anulado') return 'bg-red-100 text-red-800 border border-red-200';
+        if(est === 'pagado') return 'bg-blue-100 text-blue-800 border border-blue-200';
+        return 'bg-slate-100 text-slate-600 border border-slate-200';
     }
 
     function renderizarPaginacion(totalRegistros, porPagina, pagina) {
