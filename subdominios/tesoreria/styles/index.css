@@ -53,7 +53,7 @@ tr.anulado, .anulado {
 
 /* Hover effects */
 tr.venta:hover {
-    background-color: #c9e18c !important;
+    background-color: #d8f199 !important;
     cursor: pointer;
 }
 
@@ -64,7 +64,7 @@ tr.compra:hover {
 
 /* Hover ligeramente más oscuro */
 tr.anulado:hover {
-    background-color: #e79c88 !important; 
+    background-color: #f3a590 !important; 
 }
 
 /* Filas normales hover */
