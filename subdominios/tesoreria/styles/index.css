@@ -53,7 +53,7 @@ tr.anulado, .anulado {
 
 /* Hover effects */
 tr.venta:hover {
-    background-color: #d8f199 !important;
+    background-color: #cee88c !important;
     cursor: pointer;
 }
 
