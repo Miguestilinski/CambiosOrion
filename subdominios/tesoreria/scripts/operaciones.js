@@ -104,12 +104,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         operaciones.forEach(op => {
             const tr = document.createElement('tr');
-            
-            // Clase base Modo Claro: Fondo blanco por defecto, hover gris muy claro
-            // text-slate-600 para texto general
-            tr.className = 'transition-all border-b border-slate-200 last:border-0 text-slate-600 hover:bg-slate-50';
+            tr.className = 'hover:brightness-95 transition-all text-gray-800 font-medium border-b border-gray-200 last:border-0';
 
-            // --- LÓGICA DE COLORES DE FILA (Las clases .compra, .venta, .anulado ya tienen colores pastel definidos en CSS) ---
+            // --- LÓGICA DE COLORES DE FILA ---
             const estado = String(op.estado || '').toLowerCase();
             const tipo = String(op.tipo_transaccion || '').toLowerCase();
 
@@ -118,8 +115,10 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 if (tipo === 'compra') tr.classList.add('compra');
                 else if (tipo === 'venta') tr.classList.add('venta');
+                else tr.style.backgroundColor = '#ffffff'; // Blanco por defecto si no es compra/venta
             }
 
+            // Procesamiento de múltiples divisas (Lógica de Tesorería)
             const divisasRaw = (op.divisas_data || '').split('|');
             const montos = (op.montos_por_divisa || '').split('|');
             const tasas = (op.tasas_cambio || '').split('|');
@@ -133,14 +132,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const tasa = tasas[index] || 0;
                 const subtotal = subtotales[index] || 0;
 
-                // Lógica de atenuado para Modo Claro:
-                // Si coincide, texto OSCURO (text-slate-900) y negrita.
-                // Si no, opacidad baja.
+                // Lógica de atenuado para Modo Claro
                 let opacityClass = '';
                 if (filtroDivisa) {
                     const match = nombre.toLowerCase().includes(filtroDivisa) || (codigo && codigo.toLowerCase().includes(filtroDivisa));
                     if (!match) opacityClass = 'opacity-25 blur-[0.5px]'; 
-                    else opacityClass = 'font-bold text-slate-900'; // Destacado oscuro
+                    else opacityClass = 'font-bold text-gray-900'; // Destacado muy oscuro
                 }
 
                 divHTML += `<div class="${opacityClass} transition-all">${nombre}</div>`;
@@ -149,26 +146,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 subtotalHTML += `<div class="${opacityClass} transition-all">${formatearNumero(subtotal)}</div>`;
             });
 
-            // Botón Ver Detalle (Modo Claro)
+            // Botón Ver Detalle (Estilo Cajas: Hover Cyan)
             const btnVer = document.createElement('button');
-            // Fondo gris muy claro, hover ambar muy claro, texto oscuro
-            btnVer.innerHTML = `<svg class="w-5 h-5 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
-            btnVer.className = 'flex items-center justify-center p-1.5 bg-slate-100 text-slate-500 rounded-full hover:bg-amber-100 hover:text-amber-600 shadow-sm border border-slate-200 transition-all mx-auto';
+            btnVer.innerHTML = `
+                <svg class="w-5 h-5 text-gray-600 hover:text-cyan-700 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                </svg>
+            `;
+            // Clases exactas del botón de Cajas
+            btnVer.className = 'flex items-center justify-center p-1.5 bg-white/50 rounded-full hover:bg-white shadow-sm border border-transparent hover:border-cyan-300 transition-all mx-auto';
             btnVer.onclick = (e) => { e.stopPropagation(); window.location.href = `detalle-op?id=${op.id}`; };
 
-            // HTML interno ajustado para fondo blanco
-            // Reemplazamos text-white por text-slate-900/800
+            // Renderizado de Celdas (Tipografía adaptada a Gray/Slate oscuro)
             tr.innerHTML = `
-                <td class="px-4 py-3 whitespace-nowrap text-xs text-slate-600">${formatearFechaHora(op.fecha)}</td>
-                <td class="px-4 py-3 font-mono text-xs font-bold text-slate-400 opacity-80">${op.id}</td>
-                <td class="px-4 py-3 font-semibold text-xs text-slate-800 truncate max-w-[140px]" title="${limpiarTexto(op.nombre_cliente)}">${limpiarTexto(op.nombre_cliente)}</td>
-                <td class="px-4 py-3 text-xs uppercase font-bold text-slate-500 tracking-wide">${limpiarTexto(op.tipo_documento)}</td>
-                <td class="px-4 py-3 font-mono text-xs text-slate-500">${limpiarTexto(op.numero_documento)}</td>
-                <td class="px-4 py-3 text-center text-xs font-extrabold uppercase tracking-wider text-slate-700">${limpiarTexto(op.tipo_transaccion)}</td>
-                <td class="px-4 py-3 text-xs font-bold text-slate-700">${divHTML}</td>
-                <td class="px-4 py-3 text-right font-mono text-xs text-slate-900 font-medium">${montoHTML}</td>
-                <td class="px-4 py-3 text-right font-mono text-xs text-slate-500">${tasaHTML}</td>
-                <td class="px-4 py-3 text-right font-mono text-sm text-slate-900 font-bold">${subtotalHTML}</td>
+                <td class="px-4 py-3 whitespace-nowrap text-xs text-gray-600">${formatearFechaHora(op.fecha)}</td>
+                <td class="px-4 py-3 font-mono text-xs font-bold text-gray-600 opacity-90">${op.id}</td>
+                <td class="px-4 py-3 font-semibold text-xs text-gray-800 truncate max-w-[140px]" title="${limpiarTexto(op.nombre_cliente)}">${limpiarTexto(op.nombre_cliente)}</td>
+                <td class="px-4 py-3 text-xs uppercase font-bold text-gray-500 tracking-wide">${limpiarTexto(op.tipo_documento)}</td>
+                <td class="px-4 py-3 font-mono text-xs text-gray-500">${limpiarTexto(op.numero_documento)}</td>
+                <td class="px-4 py-3 text-center text-xs font-bold uppercase tracking-wider text-gray-700">${limpiarTexto(op.tipo_transaccion)}</td>
+                <td class="px-4 py-3 text-xs font-black text-slate-700">${divHTML}</td>
+                <td class="px-4 py-3 text-right font-mono text-xs text-gray-800 font-medium">${montoHTML}</td>
+                <td class="px-4 py-3 text-right font-mono text-xs text-gray-600">${tasaHTML}</td>
+                <td class="px-4 py-3 text-right font-mono text-sm text-gray-900 font-bold">${subtotalHTML}</td>
                 <td class="px-4 py-3 text-center">
                     <span class="px-2 py-0.5 rounded text-[10px] uppercase font-bold ${getEstadoClass(op.estado)}">${op.estado}</span>
                 </td>
@@ -395,7 +396,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     ${labelMonto}
                 </td>
                 <td></td>
-                <td class="px-4 py-4 text-right font-mono text-sm text-emerald-400 border-t border-emerald-500/30 bg-emerald-900/10 shadow-[inset_0_0_20px_rgba(16,185,129,0.1)]">
+                <td class="px-4 py-4 text-right font-mono text-sm text-emerald-400 border-t border-emerald-500/30 bg-emerald-900/5 shadow-[inset_0_0_20px_rgba(16,185,129,0.1)]">
                     <span class="mr-1 text-emerald-600 text-[10px]">$</span>${formatearNumero(totales.total)}
                 </td>
                 <td colspan="2"></td>
