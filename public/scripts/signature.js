@@ -12,32 +12,32 @@ function printAsciiSignature() {
         'padding: 40px 40px;', 
         `background: url("${svgData}") no-repeat center center;`,
         'background-size: contain;',
+        'line-height: 80px;' // Asegura que la línea del logo tenga altura suficiente
     ].join(' ');
 
     // 2. Estilo Badge Empresa (Línea 1)
     const companyStyle = [
-        'display: block',
         'color: #fff',
         'background: #2f3957',
         'padding: 4px 8px',
-        'border-radius: 4px',    // Bordes redondeados completos
+        'border-radius: 4px',
         'font-family: "Segoe UI", sans-serif',
         'font-weight: 700',
         'font-size: 12px',
         'letter-spacing: 0.5px',
-        'margin-bottom: 4px'     // Separación con la línea de abajo
+        'line-height: 25px;' // Espaciado vertical para que no se pegue al logo
     ].join(';');
 
     // 3. Estilo Badge Dev + Versión (Línea 2)
     const devStyle = [
-        'display: block',
         'color: #2f3957',
         'background: #e2e8f0',
         'padding: 4px 8px',
         'border-radius: 4px',
         'font-family: "Segoe UI", sans-serif',
         'font-weight: 600',
-        'font-size: 12px'
+        'font-size: 12px',
+        'line-height: 25px;'
     ].join(';');
 
     // 4. Estilo de Advertencia (Línea 3)
@@ -46,15 +46,21 @@ function printAsciiSignature() {
         'font-size: 11px',
         'font-family: sans-serif', 
         'font-style: italic',
-        'margin-top: 6px'
+        'line-height: 20px;'
     ].join(';');
 
-    // --- Renderizado Apilado ---
-    // Usamos múltiples console.log para forzar el salto de línea en consolas estrechas
-
-    console.log(''); // Espacio inicial
-    console.log('%c ', logoStyle); // Logo
-    console.log('%cORION FINANCIAL GROUP', companyStyle); // Línea 1
-    console.log('%cDesarrollado por Miguel Muñoz  |  v1.0.0', devStyle); // Línea 2
-    console.log('%cAcceso de desarrollador detectado. Actúa con responsabilidad.', warningStyle); // Línea 3
+    // --- Renderizado UNIFICADO ---
+    // El carácter '\n' hace el salto de línea, y usamos %c para cambiar el estilo en cada parte.
+    // El primer %c es para el espacio en blanco (que tiene el logo de fondo).
+    
+    console.log(
+        '%c \n' +                          // Logo
+        '%c ORION FINANCIAL GROUP SPA \n' +    // Badge Empresa
+        '%c Desarrollado por Miguel Muñoz | v1.0.0 \n' + // Badge Dev
+        '%c Acceso de desarrollador detectado. Actúa con responsabilidad.', // Advertencia
+        logoStyle, 
+        companyStyle, 
+        devStyle, 
+        warningStyle
+    );
 }
