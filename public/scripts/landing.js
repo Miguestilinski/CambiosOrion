@@ -6,6 +6,7 @@ let activeDropdown = null;
 let displayedCurrencies = ["CLP", "USD", "EUR", "ARS"];
 
 function initializePage() {
+    if (typeof printAsciiSignature === 'function') printAsciiSignature();
     showSkeleton();
     loadCurrenciesWithSSE();
     fetchIndicators();
