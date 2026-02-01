@@ -48,7 +48,7 @@ function printAsciiSignature() {
         'font-size: 10px',
         'font-family: sans-serif', 
         'font-style: italic',
-        'padding-top: 5px' // Un poco de aire arriba
+        'padding-top: 2px' // Un poco de aire arriba
     ].join(';');
 
     // --- Renderizado LIMPIO ---
@@ -57,7 +57,7 @@ function printAsciiSignature() {
     console.log(
         '%c %c\n' +                                     // Logo + Reset
         '%c ORION FINANCIAL GROUP SPA %c\n' +           // Badge 1 + Reset
-        '%c Desarrollado por Miguel Muñoz | v1.0.0 %c\n\n' + // Badge 2 + Reset + Doble enter
+        '%c Desarrollado por Miguel Muñoz | v1.0.0 %c\n' + // Badge 2 + Reset
         '%c Acceso de desarrollador detectado. Actúa con responsabilidad.', // Advertencia
         
         logoStyle, resetStyle,    // Aplica logo, luego resetea
