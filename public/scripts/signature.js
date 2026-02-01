@@ -48,7 +48,7 @@ function printAsciiSignature() {
         'font-size: 10px',
         'font-family: sans-serif', 
         'font-style: italic',
-        'padding-top: 2px' // Un poco de aire arriba
+        'padding-top: 5px' // Un poco de aire arriba
     ].join(';');
 
     // --- Renderizado LIMPIO ---
