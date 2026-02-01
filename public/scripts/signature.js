@@ -1,9 +1,7 @@
 // Archivo: signature.js
 
 function printAsciiSignature() {
-    const asciiArt = `
-                                                                                                    
-                                                                                                    
+    const asciiArt = `                                                                                                                                                                    
                                                                                                     
                                                                                            %%%#     
                                                                                          %%%%%      
@@ -53,7 +51,8 @@ function printAsciiSignature() {
          %%#%%                   %%%%%%%%%%%%#%%%%#%%%%%%#%%%%%%%%%                                 
         %#%%%                         %%##%%%%%%%%%%%%%#%%%%%                                       
       %##%%                                                                                         
-     #%%%                                                                                           `;
+     #%%%                                                                                           
+                                                                                                                                                                                                                                                                                             `;
 
     // Estilos CSS para la consola
     const styles = [
