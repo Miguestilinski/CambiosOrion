@@ -12,10 +12,10 @@ function printAsciiSignature() {
     // 1. Estilo del Logo
     const logoStyle = [
         'font-size: 1px;', 
-        'padding: 25px 35px;', // Ajusté un poco para que no se corte 
+        'padding: 20px 35px;', // Ajusté un poco para que no se corte 
         `background: url("${svgData}") no-repeat center center;`,
         'background-size: contain;',
-        'line-height: 50px;',
+        'line-height: 45px;',
         'color: transparent;' 
     ].join(' ');
 
