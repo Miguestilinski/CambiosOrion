@@ -6,7 +6,7 @@ function printAsciiSignature() {
 
     // --- Estilos CSS ---
 
-    // 1. Logo: Aumenté el padding a 40px para que se vea más grande y claro
+    // 1. Estilo del Logo
     const logoStyle = [
         'font-size: 1px;', 
         'padding: 40px 40px;', 
@@ -14,59 +14,47 @@ function printAsciiSignature() {
         'background-size: contain;',
     ].join(' ');
 
-    // 2. Badge Principal (Orion): Azul oscuro, letra espaciada
-    const badgeCompanyStyle = [
+    // 2. Estilo Badge Empresa (Línea 1)
+    const companyStyle = [
+        'display: block',
         'color: #fff',
         'background: #2f3957',
         'padding: 4px 8px',
-        'border-radius: 4px 0 0 4px',
+        'border-radius: 4px',    // Bordes redondeados completos
         'font-family: "Segoe UI", sans-serif',
         'font-weight: 700',
         'font-size: 12px',
-        'letter-spacing: 0.5px' // Un toque elegante
+        'letter-spacing: 0.5px',
+        'margin-bottom: 4px'     // Separación con la línea de abajo
     ].join(';');
 
-    // 3. Badge Secundario (Dev): Gris azulado para contraste
-    const badgeDevStyle = [
+    // 3. Estilo Badge Dev + Versión (Línea 2)
+    const devStyle = [
+        'display: block',
         'color: #2f3957',
         'background: #e2e8f0',
         'padding: 4px 8px',
+        'border-radius: 4px',
         'font-family: "Segoe UI", sans-serif',
         'font-weight: 600',
-        'font-size: 12px',
-        'border-top: 1px solid #2f3957',    // Bordes sutiles para unir
-        'border-bottom: 1px solid #2f3957'
-    ].join(';');
-
-    // 4. Badge Versión: Un toque de color (rojo/naranja sutil) o gris oscuro
-    const badgeVerStyle = [
-        'color: #fff',
-        'background: #4a5568', // Gris oscuro
-        'padding: 4px 8px',
-        'border-radius: 0 4px 4px 0',
-        'font-family: monospace',
         'font-size: 12px'
     ].join(';');
 
-    // --- Renderizado ---
+    // 4. Estilo de Advertencia (Línea 3)
+    const warningStyle = [
+        'color: #718096',
+        'font-size: 11px',
+        'font-family: sans-serif', 
+        'font-style: italic',
+        'margin-top: 6px'
+    ].join(';');
 
-    // Espacio en blanco antes para limpiar visualmente
-    console.log(''); 
+    // --- Renderizado Apilado ---
+    // Usamos múltiples console.log para forzar el salto de línea en consolas estrechas
 
-    // Imprimir Logo
-    console.log('%c ', logoStyle);
-
-    // Imprimir Badges en una sola línea conectada
-    console.log(
-        '%c ORION FINANCIAL GROUP %c Desarrollado por Miguel Muñoz %c v1.0.0 ', 
-        badgeCompanyStyle, 
-        badgeDevStyle,
-        badgeVerStyle
-    );
-
-    // Mensaje final sutil
-    console.log(
-        '%cAcceso de desarrollador detectado. Actúa con responsabilidad.', 
-        'color: #718096; font-size: 11px; margin-top: 4px; font-family: sans-serif; font-style: italic;'
-    );
+    console.log(''); // Espacio inicial
+    console.log('%c ', logoStyle); // Logo
+    console.log('%cORION FINANCIAL GROUP', companyStyle); // Línea 1
+    console.log('%cDesarrollado por Miguel Muñoz  |  v1.0.0', devStyle); // Línea 2
+    console.log('%cAcceso de desarrollador detectado. Actúa con responsabilidad.', warningStyle); // Línea 3
 }
