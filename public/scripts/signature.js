@@ -58,7 +58,7 @@ function printAsciiSignature() {
 
     // Imprimir Badges en una sola línea conectada
     console.log(
-        '%c ORION FINANCIAL GROUP %c Miguel Muñoz %c v1.0.0 ', 
+        '%c ORION FINANCIAL GROUP %c Desarrollado por Miguel Muñoz %c v1.0.0 ', 
         badgeCompanyStyle, 
         badgeDevStyle,
         badgeVerStyle
@@ -66,7 +66,7 @@ function printAsciiSignature() {
 
     // Mensaje final sutil
     console.log(
-        '%cIngeniería Civil Informática 💻', 
+        '%cAcceso de desarrollador detectado. Actúa con responsabilidad.', 
         'color: #718096; font-size: 11px; margin-top: 4px; font-family: sans-serif; font-style: italic;'
     );
 }
