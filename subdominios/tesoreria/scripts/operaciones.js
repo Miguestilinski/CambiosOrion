@@ -94,13 +94,26 @@ document.addEventListener('DOMContentLoaded', () => {
         tablaOperaciones.innerHTML = `<tr><td colspan="12" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-amber-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
 
         fetch(`https://cambiosorion.cl/data/operaciones.php?${params.toString()}`)
-            .then(res => res.json())
-            .then(data => {
+            .then(response => {
+                // Si la respuesta no es OK, leemos el texto para ver el error de PHP
+                if (!response.ok) {
+                    return response.text().then(text => { throw new Error(text) });
+                }
+                return response.text(); // Leemos como texto primero
+            })
+            .then(text => {
+                try {
+                const data = JSON.parse(text);
                 const lista = data.operaciones || [];
                 const total = parseInt(data.totalFiltrado) || 0;
                 renderizarTabla(lista);
                 renderizarPaginacion(total, parseInt(filtros.mostrar.value), paginaActual);
                 renderizarTotales(data.totales);
+                } catch (e) {
+                    // ¡AQUÍ ESTÁ EL TRUCO!
+                    console.error("EL PHP DEVOLVIÓ ESTO (NO ES JSON):", text);
+                    throw new Error("El servidor devolvió un error de formato. Revisa la consola.");
+                }
             })
             .catch(error => {
                 console.error('Error:', error);
