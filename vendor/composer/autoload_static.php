@@ -12,7 +12,6 @@ class ComposerStaticInitce559b9fbd0e097bccee77e6c3cc8be1
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '662a729f963d39afe703c9d9b7ab4a8c' => __DIR__ . '/..' . '/symfony/polyfill-php83/bootstrap.php',
-        '2cffec82183ee1cea088009cef9a6fc3' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier.composer.php',
         '3be16222a6efa6dd226a219eaaff823b' => __DIR__ . '/..' . '/ratchet/pawl/src/functions_include.php',
     );
 
@@ -44,7 +43,6 @@ class ComposerStaticInitce559b9fbd0e097bccee77e6c3cc8be1
         array (
             'Psr\\SimpleCache\\' => 16,
             'Psr\\Http\\Message\\' => 17,
-            'Psr\\Http\\Client\\' => 16,
             'PhpOffice\\PhpSpreadsheet\\' => 25,
             'PHPMailer\\PHPMailer\\' => 20,
         ),
@@ -142,10 +140,6 @@ class ComposerStaticInitce559b9fbd0e097bccee77e6c3cc8be1
             0 => __DIR__ . '/..' . '/psr/http-factory/src',
             1 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
-        'Psr\\Http\\Client\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/psr/http-client/src',
-        ),
         'PhpOffice\\PhpSpreadsheet\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet',
@@ -188,16 +182,6 @@ class ComposerStaticInitce559b9fbd0e097bccee77e6c3cc8be1
         ),
     );
 
-    public static $prefixesPsr0 = array (
-        'H' => 
-        array (
-            'HTMLPurifier' => 
-            array (
-                0 => __DIR__ . '/..' . '/ezyang/htmlpurifier/library',
-            ),
-        ),
-    );
-
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'DateError' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateError.php',
@@ -218,7 +202,6 @@ class ComposerStaticInitce559b9fbd0e097bccee77e6c3cc8be1
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInitce559b9fbd0e097bccee77e6c3cc8be1::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInitce559b9fbd0e097bccee77e6c3cc8be1::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInitce559b9fbd0e097bccee77e6c3cc8be1::$prefixesPsr0;
             $loader->classMap = ComposerStaticInitce559b9fbd0e097bccee77e6c3cc8be1::$classMap;
 
         }, null, ClassLoader::class);
