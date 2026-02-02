@@ -104,9 +104,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         operaciones.forEach(op => {
             const tr = document.createElement('tr');
+            
+            // ESTILO BASE IDÉNTICO AL DE CAJAS:
+            // hover:brightness-95 para oscurecer ligeramente el color de fondo (sea blanco o pastel)
             tr.className = 'hover:brightness-95 transition-all text-gray-800 font-medium border-b border-gray-200 last:border-0';
 
-            // --- LÓGICA DE COLORES DE FILA ---
+            // --- LÓGICA DE COLORES DE FONDO ---
+            // Mantenemos tus clases CSS (.compra, .venta, .anulado) que definimos antes
+            // porque ya contienen los colores pastel exactos (#c3e8f1, #dbf599, etc.)
             const estado = String(op.estado || '').toLowerCase();
             const tipo = String(op.tipo_transaccion || '').toLowerCase();
 
@@ -146,16 +151,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 subtotalHTML += `<div class="${opacityClass} transition-all">${formatearNumero(subtotal)}</div>`;
             });
 
-            // Botón Ver Detalle (Estilo Cajas: Hover Cyan)
+            // Botón Ver Detalle (Estilo Cajas: Hover Amber)
             const btnVer = document.createElement('button');
             btnVer.innerHTML = `
-                <svg class="w-5 h-5 text-gray-600 hover:text-cyan-700 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5 text-gray-600 hover:text-amber-700 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                 </svg>
             `;
             // Clases exactas del botón de Cajas
-            btnVer.className = 'flex items-center justify-center p-1.5 bg-white/50 rounded-full hover:bg-white shadow-sm border border-transparent hover:border-cyan-300 transition-all mx-auto';
+            btnVer.className = 'flex items-center justify-center p-1.5 bg-white/50 rounded-full hover:bg-white shadow-sm border border-transparent hover:border-amber-300 transition-all mx-auto';
             btnVer.onclick = (e) => { e.stopPropagation(); window.location.href = `detalle-op?id=${op.id}`; };
 
             // Renderizado de Celdas (Tipografía adaptada a Gray/Slate oscuro)
