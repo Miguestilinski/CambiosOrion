@@ -409,7 +409,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // 3. Redireccionamos a la API
             // Esto disparará la descarga automática del archivo .xlsx
-            window.location.href = `api/operaciones.php?${params.toString()}`;
+            window.location.href = `https://cambiosorion.cl/data/operaciones.php?${params.toString()}`;
         });
     }
 
