@@ -53,6 +53,22 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    const obtenerParametrosFiltros = () => {
+        return new URLSearchParams({
+            fecha_inicio: filtros.fechaInicio.value,
+            fecha_fin: filtros.fechaFin.value,
+            emitidas: filtros.emitidas.checked ? '1' : '0',
+            no_emitidas: filtros.noEmitidas.checked ? '1' : '0',
+            numero: filtros.numero.value,
+            cliente: filtros.cliente.value,
+            tipo_doc: filtros.tipoDoc.value,
+            n_doc: filtros.nDoc.value,
+            tipo_transaccion: filtros.tipoTransaccion.value,
+            divisa: filtros.divisa.value,
+            estado: filtros.estado.value
+        });
+    };
+
     function obtenerOperaciones() {
         const params = new URLSearchParams();
 
@@ -366,6 +382,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
             }
         );
+    }
+
+    const btnExportar = document.getElementById('btnExportar');
+
+    if (btnExportar) {
+        btnExportar.addEventListener('click', () => {
+            // 1. Obtenemos los filtros actuales
+            const params = obtenerParametrosFiltros();
+            
+            // 2. Agregamos la bandera de exportación
+            params.append('export', 'excel');
+
+            // 3. Redireccionamos a la API
+            // Esto disparará la descarga automática del archivo .xlsx
+            window.location.href = `api/operaciones.php?${params.toString()}`;
+        });
     }
 
     function renderizarTotales(totales) {
