@@ -9,6 +9,39 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. Inicializar sistema
     initSystem('clientes');
 
+    const configPicker = {
+        dateFormat: "Y-m-d", // Formato que se envía al PHP
+        altInput: true,      // Activa el input visual alternativo
+        altFormat: "d-m-Y",  // Formato que ve el usuario
+        locale: {
+            firstDayOfWeek: 1,
+            weekdays: {
+                shorthand: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
+                longhand: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+            },
+            months: {
+                shorthand: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                longhand: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+            },
+        },
+        allowInput: true,
+        theme: "airbnb"
+    };
+
+    // Inicializar Fecha Inicio
+    const fpInicio = flatpickr("#fecha-inicio", {
+        ...configPicker,
+        defaultDate: "1900-01-01",
+        onChange: () => { paginaActual = 1; obtenerClientes(); }
+    });
+
+    // Inicializar Fecha Fin
+    const fpFin = flatpickr("#fecha-fin", {
+        ...configPicker,
+        defaultDate: "2100-12-31",
+        onChange: () => { paginaActual = 1; obtenerClientes(); }
+    });
+
     // Referencias DOM
     const tablaClientes = document.getElementById('tabla-clientes');
     const conteoResultados = document.getElementById('conteo-resultados');
@@ -143,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const inputNombre = filtros.nombre;
         // Crear el contenedor del dropdown dinámicamente
         const suggestionsContainer = document.createElement('div');
-        suggestionsContainer.className = 'absolute z-50 w-full bg-slate-800 border border-slate-700 rounded-lg mt-1 shadow-xl hidden';
+        suggestionsContainer.className = 'absolute z-[100] w-full bg-slate-800 border border-slate-700 rounded-lg mt-1 shadow-2xl hidden max-h-60 overflow-y-auto';
         inputNombre.parentNode.classList.add('relative');
         inputNombre.parentNode.appendChild(suggestionsContainer);
 
@@ -226,13 +259,20 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     borrarFiltrosBtn.addEventListener('click', () => {
+        // Limpiar inputs normales
         Object.values(filtros).forEach(input => {
             if(!input) return;
             input.value = '';
-            if(input._flatpickr) input._flatpickr.clear();
         });
+
+        // Limpiar fechas reseteando a valores por defecto
+        fpInicio.setDate("1900-01-01");
+        fpFin.setDate("2100-12-31");
+
+        // Resetear select y buscar
         if(filtros.mostrar) filtros.mostrar.value = '25';
-        resetAndFetch();
+        paginaActual = 1;
+        obtenerClientes();
     });
 
     Object.values(filtros).forEach(input => {
