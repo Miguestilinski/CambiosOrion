@@ -139,6 +139,52 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function configurarBusquedaPredictiva() {
+        const inputNombre = filtros.nombre;
+        // Crear el contenedor del dropdown dinámicamente
+        const suggestionsContainer = document.createElement('div');
+        suggestionsContainer.className = 'absolute z-50 w-full bg-slate-800 border border-slate-700 rounded-lg mt-1 shadow-xl hidden';
+        inputNombre.parentNode.classList.add('relative');
+        inputNombre.parentNode.appendChild(suggestionsContainer);
+
+        inputNombre.addEventListener('input', async (e) => {
+            const query = e.target.value.trim();
+            if (query.length < 2) {
+                suggestionsContainer.classList.add('hidden');
+                return;
+            }
+
+            const res = await fetch(`api/clientes.php?buscar_sugerencia=${encodeURIComponent(query)}`);
+            const sugerencias = await res.json();
+
+            if (sugerencias.length > 0) {
+                suggestionsContainer.innerHTML = sugerencias.map(s => `
+                    <div class="px-4 py-2 hover:bg-slate-700 cursor-pointer border-b border-slate-700 last:border-none text-sm" 
+                        onclick="seleccionarSugerencia('${s.razon_social}')">
+                        <div class="font-bold text-white">${s.razon_social}</div>
+                        <div class="text-xs text-slate-400">${s.rut || 'Sin RUT'}</div>
+                    </div>
+                `).join('');
+                suggestionsContainer.classList.remove('hidden');
+            } else {
+                suggestionsContainer.classList.add('hidden');
+            }
+        });
+
+        // Cerrar si se hace clic fuera
+        document.addEventListener('click', (e) => {
+            if (!inputNombre.contains(e.target)) suggestionsContainer.classList.add('hidden');
+        });
+
+        // Función global para que el onclick del HTML funcione
+        window.seleccionarSugerencia = (nombre) => {
+            inputNombre.value = nombre;
+            suggestionsContainer.classList.add('hidden');
+            paginaActual = 1;
+            obtenerClientes(); // Refrescar tabla con el cliente elegido
+        };
+    }
+
     // --- PAGINACIÓN ---
     function actualizarPaginacion(totalRegistros, porPagina, pagina) {
         conteoResultados.textContent = `Total: ${totalRegistros}`;
@@ -211,4 +257,5 @@ document.addEventListener('DOMContentLoaded', () => {
     [filtros.tipo, filtros.estadoDoc, filtros.estado, filtros.mostrar, filtros.fechaInicio, filtros.fechaFin].forEach(el => el.addEventListener('change', () => { paginaActual = 1; obtenerClientes(); }));
 
     obtenerClientes();
+    configurarBusquedaPredictiva();
 });
