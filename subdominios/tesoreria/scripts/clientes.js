@@ -221,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Usamos la búsqueda predictiva del servidor (la que añadimos antes a clientes.php)
             try {
-                const res = await fetch(`api/clientes.php?buscar_sugerencia=${encodeURIComponent(query)}`);
+                const res = await fetch(`https://cambiosorion.cl/data/clientes.php?buscar_sugerencia=${encodeURIComponent(query)}`);
                 const results = await res.json();
 
                 dropdown.innerHTML = '';
