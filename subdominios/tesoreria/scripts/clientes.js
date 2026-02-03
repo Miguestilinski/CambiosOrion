@@ -67,12 +67,20 @@ document.addEventListener('DOMContentLoaded', () => {
         tablaClientes.innerHTML = `<tr><td colspan="9" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-amber-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
 
         fetch(`https://cambiosorion.cl/data/clientes.php?${params.toString()}`)
-            .then(res => res.json())
-            .then(data => {
-                const lista = data.clientes || [];
-                const total = parseInt(data.totalFiltrado) || 0;
-                renderizarTabla(lista);
-                renderizarPaginacion(total, parseInt(filtros.mostrar.value), paginaActual);
+            .then(response => {
+                if (!response.ok) return response.text().then(t => { throw new Error(t) });
+                return response.text(); // Leemos como texto primero
+            })
+            .then(text => {
+                try {
+                    const data = JSON.parse(text);
+                    const lista = data.clientes || [];
+                    const total = parseInt(data.totalFiltrado) || 0;
+                    renderizarTabla(lista);
+                    renderizarPaginacion(total, parseInt(filtros.mostrar.value), paginaActual);
+                } catch (e) {
+                    console.error("ERROR PHP DETECTADO:", text); // Aquí verás el error real
+                }
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -194,6 +202,22 @@ document.addEventListener('DOMContentLoaded', () => {
             input.addEventListener('input', resetAndFetch);
             input.addEventListener('change', resetAndFetch);
         }
+    });
+
+    // Actualizar al escribir (Búsqueda dinámica)
+    ['nombre-cliente', 'rut-cliente'].forEach(id => {
+        document.getElementById(id)?.addEventListener('input', () => {
+            paginaActual = 1;
+            obtenerClientes();
+        });
+    });
+
+    // Actualizar al cambiar selectores
+    ['tipo-cliente', 'estado-doc', 'estado-cliente', 'mostrar-registros'].forEach(id => {
+        document.getElementById(id)?.addEventListener('change', () => {
+            paginaActual = 1;
+            obtenerClientes();
+        });
     });
 
     // Dropdown/Búsqueda dinámica en tiempo real
