@@ -48,12 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- FETCH DATOS ---
     function obtenerClientes() {
-        // LOG PARA DEPURAR: Ver qué estamos enviando
-        console.log("Enviando Filtros:", {
-            rut: filtros.rut.value,
-            nombre: filtros.nombre.value
-        });
-
         const params = new URLSearchParams({
             fecha_inicio: filtros.fechaInicio.value,
             fecha_fin: filtros.fechaFin.value,
@@ -304,7 +298,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Listener ESPECÍFICO para RUT (para asegurar que capture el evento input)
     if (filtros.rut) {
         filtros.rut.addEventListener('input', () => {
-            console.log("Escribiendo en RUT:", filtros.rut.value);
             resetAndFetch();
         });
     }
