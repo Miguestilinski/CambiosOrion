@@ -199,8 +199,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Dropdown/Búsqueda dinámica en tiempo real
     [filtros.nombre, filtros.rut].forEach(input => {
         input.addEventListener('input', () => {
-            paginaActual = 1; // Reiniciar a pag 1 al filtrar
-            obtenerClientes();
+            paginaActual = 1; 
+            obtenerClientes(); // Esto dispara la búsqueda en cada letra
         });
     });
 
