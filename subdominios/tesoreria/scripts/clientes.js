@@ -40,7 +40,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- FETCH DATOS ---
     function obtenerClientes() {
-        const params = new URLSearchParams();
+        const params = new URLSearchParams({
+            fecha_inicio: filtros.fechaInicio.value,
+            fecha_fin: filtros.fechaFin.value,
+            nombre: filtros.nombre.value,
+            rut: filtros.rut.value,
+            tipo: filtros.tipo.value,
+            estado_doc: filtros.estadoDoc.value,
+            estado: filtros.estado.value,
+            mostrar_registros: filtros.mostrar.value,
+            pagina: paginaActual
+        });
 
         if (filtros.fechaInicio.value) params.set('fecha_inicio', filtros.fechaInicio.value);
         if (filtros.fechaFin.value) params.set('fecha_fin', filtros.fechaFin.value);
@@ -184,6 +194,22 @@ document.addEventListener('DOMContentLoaded', () => {
             input.addEventListener('input', resetAndFetch);
             input.addEventListener('change', resetAndFetch);
         }
+    });
+
+    // Dropdown/Búsqueda dinámica en tiempo real
+    [filtros.nombre, filtros.rut].forEach(input => {
+        input.addEventListener('input', () => {
+            paginaActual = 1; // Reiniciar a pag 1 al filtrar
+            obtenerClientes();
+        });
+    });
+
+    // Para los Selects
+    [filtros.tipo, filtros.estadoDoc, filtros.estado, filtros.mostrar].forEach(select => {
+        select.addEventListener('change', () => {
+            paginaActual = 1;
+            obtenerClientes();
+        });
     });
 
     obtenerClientes();
