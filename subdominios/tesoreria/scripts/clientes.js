@@ -17,6 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const nuevoClienteBtn = document.getElementById('nuevo-cliente');
     const borrarFiltrosBtn = document.getElementById('borrar-filtros');
 
+    const filterContainer = document.querySelector('#nombre-cliente')?.closest('.bg-slate-900\\/90');
+    if (filterContainer) {
+        filterContainer.classList.add('relative', 'z-30');
+    }
+
     let paginaActual = 1;
 
     // Filtros
@@ -39,119 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 4. CONFIGURACIÓN FLATPICKR (Idéntica a Operaciones) ---
-    // Definimos el idioma español manualmente para asegurar consistencia visual
-    const SpanishLocale = {
-        firstDayOfWeek: 1,
-        weekdays: {
-            shorthand: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
-            longhand: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
-        },
-        months: {
-            shorthand: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-            longhand: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-        },
-    };
-
-    const configPicker = {
-        dateFormat: "Y-m-d", // Formato para la BD
-        altInput: true,      // Input visual amigable
-        altFormat: "d-m-Y",  // Formato visual dd-mm-yyyy
-        locale: SpanishLocale,
-        allowInput: true,
-        theme: "airbnb"
-    };
-
-    // Inicializar Date Pickers
-    const fpInicio = flatpickr(filtros.fechaInicio, {
-        ...configPicker,
-        defaultDate: "1900-01-01",
-        onChange: () => resetAndFetch()
-    });
-
-    const fpFin = flatpickr(filtros.fechaFin, {
-        ...configPicker,
-        defaultDate: "2100-12-31",
-        onChange: () => resetAndFetch()
-    });
-
-    // --- 5. BÚSQUEDA PREDICTIVA (Dropdown Idéntico a Operaciones) ---
-    function setupBusquedaPredictiva(inputElement, tipoBusqueda) {
-        if (!inputElement) return;
-
-        // Crear contenedor de sugerencias
-        const wrapper = document.createElement('div');
-        wrapper.className = 'relative w-full';
-        inputElement.parentNode.insertBefore(wrapper, inputElement);
-        wrapper.appendChild(inputElement);
-
-        const suggestionsBox = document.createElement('div');
-        // Z-INDEX 100 para flotar sobre la tabla
-        suggestionsBox.className = 'absolute z-[100] left-0 right-0 mt-1 bg-slate-800 border border-slate-700 rounded-lg shadow-2xl max-h-60 overflow-y-auto hidden';
-        wrapper.appendChild(suggestionsBox);
-
-        inputElement.addEventListener('input', async (e) => {
-            const query = e.target.value.trim();
-            
-            // Si está vacío, resetear tabla
-            if (query.length === 0) {
-                suggestionsBox.classList.add('hidden');
-                resetAndFetch();
-                return;
-            }
-
-            // Refrescar tabla mientras escribe
-            resetAndFetch();
-
-            // Buscar sugerencias (solo si hay más de 1 caracter)
-            if (query.length < 2) {
-                suggestionsBox.classList.add('hidden');
-                return;
-            }
-
-            try {
-                // Usamos el parámetro buscar_sugerencia que agregamos al PHP
-                const res = await fetch(`https://cambiosorion.cl/data/clientes.php?buscar_sugerencia=${encodeURIComponent(query)}`);
-                const data = await res.json();
-
-                if (data.length > 0) {
-                    suggestionsBox.innerHTML = data.map(item => `
-                        <div class="px-4 py-2 hover:bg-slate-700 cursor-pointer border-b border-slate-700 last:border-none transition-colors"
-                             onclick="seleccionarSugerencia('${item.razon_social}', '${inputElement.id}')">
-                            <div class="text-sm font-bold text-white">${item.razon_social}</div>
-                            <div class="text-xs text-slate-400">${item.rut || 'Sin RUT'}</div>
-                        </div>
-                    `).join('');
-                    suggestionsBox.classList.remove('hidden');
-                } else {
-                    suggestionsBox.classList.add('hidden');
-                }
-            } catch (error) {
-                console.error("Error buscando sugerencias:", error);
-            }
-        });
-
-        // Cerrar al hacer clic fuera
-        document.addEventListener('click', (e) => {
-            if (!wrapper.contains(e.target)) {
-                suggestionsBox.classList.add('hidden');
-            }
-        });
-    }
-
-    // Función global para el onclick del HTML inyectado
-    window.seleccionarSugerencia = (valor, inputId) => {
-        const input = document.getElementById(inputId);
-        if (input) {
-            input.value = valor;
-            // Ocultar dropdowns
-            document.querySelectorAll('.absolute.z-\\[100\\]').forEach(el => el.classList.add('hidden'));
-            resetAndFetch();
-        }
-    };
-
-    // Inicializar la búsqueda predictiva en el input de Nombre
-    setupBusquedaPredictiva(filtros.nombre, 'cliente');
+    const resetAndFetch = () => { paginaActual = 1; obtenerClientes(); };
 
     // --- FETCH DATOS ---
     function obtenerClientes() {
@@ -173,16 +66,16 @@ document.addEventListener('DOMContentLoaded', () => {
         fetch(`https://cambiosorion.cl/data/clientes.php?${params.toString()}`)
             .then(response => {
                 if (!response.ok) return response.text().then(t => { throw new Error(t) });
-                return response.text(); // Leemos como texto primero
+                return response.text();
             })
             .then(text => {
                 try {
                     const data = JSON.parse(text);
                     renderizarTabla(data.clientes);
-                    actualizarPaginacion(data.total_paginas, data.pagina_actual);
-                    conteoResultados.textContent = `Mostrando ${data.clientes.length} de ${data.total_registros} clientes`;
+                    renderizarPaginacion(data.total_registros, parseInt(filtros.mostrar.value), data.pagina_actual);
                 } catch (e) {
-                    console.error("ERROR PHP DETECTADO:", text); // Aquí verás el error real
+                    console.error("ERROR PHP:", text);
+                    mostrarModalError("Error de datos", "El servidor devolvió una respuesta inválida.");
                 }
             })
             .catch(error => {
@@ -253,9 +146,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- PAGINACIÓN ---
-    function actualizarPaginacion(totalRegistros, porPagina, pagina) {
-        conteoResultados.textContent = `Total: ${totalRegistros}`;
+    function renderizarPaginacion(totalRegistros, porPagina, pagina) {
+        if(conteoResultados) conteoResultados.textContent = `Total: ${totalRegistros}`;
         paginationControls.innerHTML = '';
 
         const totalPaginas = Math.ceil(totalRegistros / porPagina);
@@ -287,47 +179,111 @@ document.addEventListener('DOMContentLoaded', () => {
         obtenerClientes();
     }
 
+    // --- DATE PICKERS (Idéntico a Operaciones) ---
+    function initDatePickers() {
+        const config = {
+            locale: {
+                firstDayOfWeek: 1,
+                weekdays: { shorthand: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'], longhand: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'] },
+                months: { shorthand: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'], longhand: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'] },
+            },
+            dateFormat: "Y-m-d",
+            altInput: true,
+            altFormat: "d/m/Y",
+            allowInput: true,
+            disableMobile: "true",
+            onChange: function(selectedDates, dateStr, instance) {
+                resetAndFetch();
+            }
+        };
+        // Inicializamos todos los inputs con la clase .flatpickr (presente en tu HTML)
+        flatpickr(".flatpickr", config);
+    }
+
+    // --- AUTOCOMPLETE (Estructura idéntica a Operaciones) ---
+    function setupAutocomplete(inputId) {
+        const input = document.getElementById(inputId);
+        if (!input) return;
+
+        // Crear contenedor (z-50 es suficiente ahora que el padre tiene z-30)
+        const dropdown = document.createElement('div');
+        dropdown.className = 'absolute z-50 left-0 w-full mt-1 bg-slate-800 border border-slate-600 rounded-lg shadow-xl max-h-60 overflow-y-auto hidden';
+        input.parentNode.appendChild(dropdown);
+
+        const buscarYMostrar = async () => {
+            const query = input.value.trim();
+            if (query.length < 2) {
+                dropdown.classList.add('hidden');
+                // Si borra todo, reseteamos la tabla
+                if(query.length === 0) resetAndFetch();
+                return;
+            }
+
+            // Usamos la búsqueda predictiva del servidor (la que añadimos antes a clientes.php)
+            try {
+                const res = await fetch(`api/clientes.php?buscar_sugerencia=${encodeURIComponent(query)}`);
+                const results = await res.json();
+
+                dropdown.innerHTML = '';
+                if (results.length === 0) {
+                    dropdown.innerHTML = '<div class="px-3 py-2 text-xs text-slate-500 italic">No hay resultados</div>';
+                } else {
+                    results.forEach(item => {
+                        const div = document.createElement('div');
+                        div.className = 'px-3 py-2 hover:bg-slate-700 cursor-pointer text-xs text-slate-300 flex flex-col border-b border-white/5 last:border-0 transition-colors';
+                        div.innerHTML = `
+                            <span class="font-bold text-white">${item.razon_social}</span>
+                            <span class="text-[10px] text-slate-500 font-mono">${item.rut || 'Sin RUT'}</span>
+                        `;
+                        
+                        div.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            input.value = item.razon_social;
+                            dropdown.classList.add('hidden');
+                            resetAndFetch();
+                        });
+                        dropdown.appendChild(div);
+                    });
+                }
+                dropdown.classList.remove('hidden');
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
+        input.addEventListener('input', buscarYMostrar);
+        
+        document.addEventListener('click', (e) => {
+            if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
+    }
+
     // --- 7. EVENTOS Y LISTENERS ---
     
-    // Función helper para resetear paginación al filtrar
-    const resetAndFetch = () => { 
-        paginaActual = 1; 
-        obtenerClientes(); 
-    };
+    // Inicializaciones
+    initDatePickers();
+    setupAutocomplete('nombre-cliente'); // Nombre
+    // Si quieres también RUT: setupAutocomplete('rut-cliente');
 
-    // Listeners inputs normales (RUT)
-    if(filtros.rut) filtros.rut.addEventListener('input', resetAndFetch);
-
-    // Listeners selects
-    [filtros.tipo, filtros.estadoDoc, filtros.estado, filtros.mostrar].forEach(select => {
-        if(select) select.addEventListener('change', resetAndFetch);
+    // Botón Borrar Filtros (Idéntico a Operaciones)
+    borrarFiltrosBtn.addEventListener('click', () => {
+        Object.values(filtros).forEach(input => {
+            if(!input) return;
+            input.value = '';
+            if(input._flatpickr) input._flatpickr.clear();
+        });
+        if(filtros.mostrar) filtros.mostrar.value = '25';
+        resetAndFetch();
     });
 
-    // Botón Borrar Filtros (Idéntico a Operaciones: limpia Flatpickrs)
-    if (borrarFiltrosBtn) {
-        borrarFiltrosBtn.addEventListener('click', () => {
-            // Limpiar valores de inputs
-            Object.values(filtros).forEach(input => {
-                if(input) input.value = '';
-            });
-            
-            // Limpiar calendarios flatpickr
-            fpInicio.setDate("1900-01-01");
-            fpFin.setDate("2100-12-31");
-            
-            // Resetear selectores por defecto
-            if(filtros.mostrar) filtros.mostrar.value = '25';
-            
-            resetAndFetch();
-        });
-    }
-
-    // Botón Nuevo Cliente
-    if (nuevoClienteBtn) {
-        nuevoClienteBtn.addEventListener('click', () => {
-            window.location.href = 'https://tesoreria.cambiosorion.cl/nuevo-cl';
-        });
-    }
+    // Listeners generales para selects
+    Object.values(filtros).forEach(input => {
+        if(input && input.tagName === 'SELECT') {
+            input.addEventListener('change', resetAndFetch);
+        }
+    });
 
     // Carga inicial
     obtenerClientes();
