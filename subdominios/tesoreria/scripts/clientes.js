@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            const res = await fetch(`api/clientes.php?buscar_sugerencia=${encodeURIComponent(query)}`);
+            const res = await fetch(`https://cambiosorion.cl/data/clientes.php?buscar_sugerencia=${encodeURIComponent(query)}`);
             const sugerencias = await res.json();
 
             if (sugerencias.length > 0) {
