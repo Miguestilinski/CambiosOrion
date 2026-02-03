@@ -1,135 +1,98 @@
-import { initAdminHeader } from './header.js';
+document.addEventListener('DOMContentLoaded', () => {
+    // Configuración de Flatpickr (Español)
+    const fpConfig = {
+        locale: "es",
+        dateFormat: "Y-m-d",
+        onChange: () => renderAll()
+    };
 
-document.addEventListener('DOMContentLoaded', async () => {
-    // 1. REFERENCIAS DOM
-    const historyContent = document.getElementById('history-content');
-    const filterUser = document.getElementById('filter-user');
-    const filterMonth = document.getElementById('filter-month');
-    const btnViewList = document.getElementById('view-list');
-    const btnViewCalendar = document.getElementById('view-calendar');
+    const startPicker = flatpickr("#fecha-inicio", fpConfig);
+    const endPicker = flatpickr("#fecha-fin", fpConfig);
 
-    // 2. ESTADO
-    let currentView = 'list'; // 'list' o 'calendar'
-    let allVacations = [
-        { id: 1, name: "Maria Gonzalez", start: "2025-06-10", end: "2025-06-11", status: "approved", days: 2 },
-        { id: 2, name: "Juan Perez", start: "2025-07-01", end: "2025-07-03", status: "approved", days: 3 },
-        { id: 3, name: "Maria Gonzalez", start: "2025-02-10", end: "2025-02-12", status: "approved", days: 3 },
-        { id: 4, name: "Diego Jara", start: "2025-02-15", end: "2025-02-20", status: "pending", days: 5 }
+    // Mock de datos (Aquí conectarás con tu DB de Orion)
+    const vacationData = [
+        { id: 1, user: "Juan Pérez", start: "2026-02-10", end: "2026-02-15", days: 6 },
+        { id: 2, user: "Maria Jara", start: "2026-02-01", end: "2026-02-05", days: 5 },
+        { id: 3, user: "Diego Soto", start: "2026-02-20", end: "2026-02-28", days: 9 }
     ];
 
-    const sessionData = await initAdminHeader('vacaciones');
-    if (!sessionData.isAuthenticated) return;
-
-    // 3. INICIALIZACIÓN
-    populateUserFilter();
-    render();
-
-    // 4. EVENTOS
-    filterUser.addEventListener('change', render);
-    filterMonth.addEventListener('change', render);
-
-    btnViewList.addEventListener('click', () => {
-        currentView = 'list';
-        updateViewButtons();
-        render();
-    });
-
-    btnViewCalendar.addEventListener('click', () => {
-        currentView = 'calendar';
-        updateViewButtons();
-        render();
-    });
-
-    // 5. FUNCIONES DE RENDERIZADO
-    function render() {
+    function renderAll() {
         const filtered = applyFilters();
-        historyContent.innerHTML = '';
-
-        if (currentView === 'list') {
-            renderTableView(filtered);
-        } else {
-            renderCalendarView(filtered);
-        }
+        renderTable(filtered);
+        renderCalendar(filtered);
     }
 
     function applyFilters() {
-        return allVacations.filter(v => {
-            const matchUser = filterUser.value === 'all' || v.name === filterUser.value;
-            const matchMonth = !filterMonth.value || v.start.startsWith(filterMonth.value);
-            return matchUser && matchMonth;
+        const user = document.getElementById('filter-user').value;
+        const start = document.getElementById('fecha-inicio').value;
+        const end = document.getElementById('fecha-fin').value;
+
+        return vacationData.filter(v => {
+            const matchUser = user === 'all' || v.user === user;
+            // Lógica simple de solapamiento de fechas
+            const matchDate = (!start || v.end >= start) && (!end || v.start <= end);
+            return matchUser && matchDate;
         });
     }
 
-    function renderTableView(data) {
+    function renderTable(data) {
+        const container = document.getElementById('table-container');
         if (data.length === 0) {
-            historyContent.innerHTML = `<div class="text-center py-10 text-slate-400">No se encontraron registros.</div>`;
+            container.innerHTML = `<div class="p-10 text-center text-slate-400 text-sm">No hay registros para este filtro.</div>`;
             return;
         }
 
-        const table = document.createElement('div');
-        table.className = "bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm";
-        table.innerHTML = `
+        let html = `
             <table class="w-full text-left text-sm">
-                <thead class="bg-slate-50 border-b border-gray-100 text-slate-500 uppercase text-[10px] font-bold">
+                <thead class="bg-slate-50 border-b border-slate-100 text-[10px] font-bold text-slate-500 uppercase">
                     <tr>
                         <th class="px-6 py-4">Colaborador</th>
-                        <th class="px-6 py-4">Periodo</th>
-                        <th class="px-6 py-4 text-center">Días</th>
-                        <th class="px-6 py-4 text-right">Estado</th>
+                        <th class="px-6 py-4 text-center">Desde - Hasta</th>
+                        <th class="px-6 py-4 text-right">Días Corridos</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-50" id="table-body"></tbody>
-            </table>
-        `;
+                <tbody class="divide-y divide-slate-50">
+                    ${data.map(v => `
+                        <tr class="hover:bg-slate-50/50 transition-colors">
+                            <td class="px-6 py-4 font-bold text-slate-700">${v.user}</td>
+                            <td class="px-6 py-4 text-center text-slate-500 font-mono text-xs">${v.start} <span class="text-indigo-300 mx-2">→</span> ${v.end}</td>
+                            <td class="px-6 py-4 text-right"><span class="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full font-bold text-xs">${v.days}</span></td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>`;
+        container.innerHTML = html;
+    }
 
-        const tbody = table.querySelector('#table-body');
-        data.forEach(item => {
-            const statusClass = item.status === 'approved' ? 'text-green-600 bg-green-50' : 'text-amber-600 bg-amber-50';
-            const row = document.createElement('tr');
-            row.className = "hover:bg-slate-50/50 transition";
-            row.innerHTML = `
-                <td class="px-6 py-4 font-bold text-slate-700">${item.name}</td>
-                <td class="px-6 py-4 text-slate-500">${item.start} al ${item.end}</td>
-                <td class="px-6 py-4 text-center font-medium">${item.days}</td>
-                <td class="px-6 py-4 text-right">
-                    <span class="px-2 py-1 rounded-full text-[10px] font-bold uppercase ${statusClass}">${item.status === 'approved' ? 'Aprobado' : 'Pendiente'}</span>
-                </td>
+    function renderCalendar(data) {
+        const container = document.getElementById('calendar-container');
+        container.innerHTML = '';
+        
+        // Obtenemos el mes actual para el calendario visual (puedes dinamizarlo)
+        const now = new Date();
+        const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+
+        for (let i = 1; i <= daysInMonth; i++) {
+            const dateStr = `2026-02-${String(i).padStart(2, '0')}`;
+            const activeVacations = data.filter(v => dateStr >= v.start && dateStr <= v.end);
+            
+            const dayCard = document.createElement('div');
+            dayCard.className = `min-h-[80px] p-2 bg-white flex flex-col gap-1 border-slate-50`;
+            
+            dayCard.innerHTML = `
+                <span class="text-[10px] font-bold text-slate-300">${i}</span>
+                <div class="flex flex-col gap-1">
+                    ${activeVacations.map(v => `
+                        <div class="text-[9px] bg-indigo-500 text-white p-1 rounded-sm leading-none truncate" title="${v.user}">
+                            ${v.user.split(' ')[0]}
+                        </div>
+                    `).join('')}
+                </div>
             `;
-            tbody.appendChild(row);
-        });
-        historyContent.appendChild(table);
-    }
-
-    function renderCalendarView(data) {
-        // Aquí podrías integrar FullCalendar.js o reutilizar tu lógica de celdas.
-        // Por simplicidad para el socio, mostraremos un "Heatmap" o lista resumida por mes.
-        historyContent.innerHTML = `
-            <div class="bg-indigo-900 text-white p-8 rounded-2xl text-center">
-                <p class="opacity-70 mb-2 uppercase text-xs font-bold tracking-widest">Vista de Calendario Global</p>
-                <h3 class="text-xl font-medium">Esta vista permite ver solapamientos entre equipos.</h3>
-                <div class="mt-6 grid grid-cols-7 gap-2 max-w-md mx-auto" id="mini-calendar-placeholder">
-                    </div>
-            </div>
-        `;
-    }
-
-    function updateViewButtons() {
-        if (currentView === 'list') {
-            btnViewList.classList.add('bg-white', 'shadow-sm', 'text-indigo-600');
-            btnViewCalendar.classList.remove('bg-white', 'shadow-sm', 'text-indigo-600');
-        } else {
-            btnViewCalendar.classList.add('bg-white', 'shadow-sm', 'text-indigo-600');
-            btnViewList.classList.remove('bg-white', 'shadow-sm', 'text-indigo-600');
+            container.appendChild(dayCard);
         }
     }
 
-    function populateUserFilter() {
-        const names = [...new Set(allVacations.map(v => v.name))];
-        names.forEach(name => {
-            const opt = document.createElement('option');
-            opt.value = name;
-            opt.textContent = name;
-            filterUser.appendChild(opt);
-        });
-    }
+    // Inicializar
+    renderAll();
 });
