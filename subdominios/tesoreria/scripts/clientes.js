@@ -200,28 +200,29 @@ document.addEventListener('DOMContentLoaded', () => {
         flatpickr(".flatpickr", config);
     }
 
-    // --- AUTOCOMPLETE (Estructura idéntica a Operaciones) ---
+    // --- AUTOCOMPLETE MEJORADO (Comportamiento Idéntico a Operaciones) ---
     function setupAutocomplete(inputId) {
         const input = document.getElementById(inputId);
         if (!input) return;
 
-        // Crear contenedor (z-50 es suficiente ahora que el padre tiene z-30)
+        // Crear contenedor del dropdown
         const dropdown = document.createElement('div');
-        dropdown.className = 'absolute z-50 left-0 w-full mt-1 bg-slate-800 border border-slate-600 rounded-lg shadow-xl max-h-60 overflow-y-auto hidden';
-        input.parentNode.appendChild(dropdown);
+        dropdown.className = 'absolute z-[100] left-0 w-full mt-1 bg-slate-800 border border-slate-600 rounded-lg shadow-xl max-h-60 overflow-y-auto hidden';
+        
+        // Insertar después del input
+        if (input.parentNode) {
+            input.parentNode.style.position = 'relative'; // Asegurar referencia
+            input.parentNode.appendChild(dropdown);
+        }
 
         const buscarYMostrar = async () => {
             const query = input.value.trim();
-            if (query.length < 2) {
-                dropdown.classList.add('hidden');
-                // Si borra todo, reseteamos la tabla
-                if(query.length === 0) resetAndFetch();
-                return;
-            }
+            // AQUI ESTA EL CAMBIO: No restringimos por longitud mínima para el clic
+            // Si está vacío, traerá los primeros 5 resultados por defecto
 
-            // Usamos la búsqueda predictiva del servidor (la que añadimos antes a clientes.php)
             try {
-                const res = await fetch(`https://cambiosorion.cl/data/clientes.php?buscar_sugerencia=${encodeURIComponent(query)}`);
+                // Fetch al backend
+                const res = await fetch(`api/clientes.php?buscar_sugerencia=${encodeURIComponent(query)}`);
                 const results = await res.json();
 
                 dropdown.innerHTML = '';
@@ -230,6 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     results.forEach(item => {
                         const div = document.createElement('div');
+                        // Estilo idéntico: slate-800 con hover a slate-700
                         div.className = 'px-3 py-2 hover:bg-slate-700 cursor-pointer text-xs text-slate-300 flex flex-col border-b border-white/5 last:border-0 transition-colors';
                         div.innerHTML = `
                             <span class="font-bold text-white">${item.razon_social}</span>
@@ -238,9 +240,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         
                         div.addEventListener('click', (e) => {
                             e.stopPropagation();
-                            input.value = item.razon_social;
-                            dropdown.classList.add('hidden');
-                            resetAndFetch();
+                            input.value = item.razon_social; // Poner valor en input
+                            dropdown.classList.add('hidden'); // Ocultar
+                            resetAndFetch(); // Filtrar tabla principal
                         });
                         dropdown.appendChild(div);
                     });
@@ -251,8 +253,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
-        input.addEventListener('input', buscarYMostrar);
+        // 1. Evento INPUT: Filtrar mientras escribe
+        input.addEventListener('input', () => {
+            resetAndFetch(); // Filtrar tabla principal
+            buscarYMostrar(); // Mostrar dropdown filtrado
+        });
+
+        // 2. Evento FOCUS (Click): Mostrar resultados de inmediato
+        input.addEventListener('focus', () => {
+            buscarYMostrar(); 
+        });
         
+        // Cerrar al hacer clic fuera
         document.addEventListener('click', (e) => {
             if (!input.contains(e.target) && !dropdown.contains(e.target)) {
                 dropdown.classList.add('hidden');
@@ -264,10 +276,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Inicializaciones
     initDatePickers();
-    setupAutocomplete('nombre-cliente'); // Nombre
-    // Si quieres también RUT: setupAutocomplete('rut-cliente');
+    setupAutocomplete('nombre-cliente'); // Activamos en Nombre
 
-    // Botón Borrar Filtros (Idéntico a Operaciones)
+    // Botón Borrar Filtros
     borrarFiltrosBtn.addEventListener('click', () => {
         Object.values(filtros).forEach(input => {
             if(!input) return;
