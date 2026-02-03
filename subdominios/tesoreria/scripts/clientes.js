@@ -174,7 +174,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- EVENTOS ---
-    const resetAndFetch = () => { paginaActual = 1; obtenerClientes(); };
+    const resetAndFetch = () => { 
+        paginaActual = 1; 
+        obtenerClientes(); 
+    };
 
     borrarFiltrosBtn.addEventListener('click', () => {
         Object.values(filtros).forEach(input => {
@@ -193,20 +196,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Actualizar al escribir (Búsqueda dinámica)
+    // Listeners para búsqueda predictiva (Inputs)
     ['nombre-cliente', 'rut-cliente'].forEach(id => {
-        document.getElementById(id)?.addEventListener('input', () => {
-            paginaActual = 1;
-            obtenerClientes();
-        });
+        document.getElementById(id)?.addEventListener('input', resetAndFetch);
     });
 
-    // Actualizar al cambiar selectores
-    ['tipo-cliente', 'estado-doc', 'estado-cliente', 'mostrar-registros'].forEach(id => {
-        document.getElementById(id)?.addEventListener('change', () => {
-            paginaActual = 1;
-            obtenerClientes();
-        });
+    // Listeners para cambios inmediatos (Selects y Fechas)
+    ['tipo-cliente', 'estado-doc', 'estado-cliente', 'mostrar-registros', 'fecha-inicio', 'fecha-fin'].forEach(id => {
+        document.getElementById(id)?.addEventListener('change', resetAndFetch);
     });
 
     // Dropdown/Búsqueda dinámica en tiempo real
