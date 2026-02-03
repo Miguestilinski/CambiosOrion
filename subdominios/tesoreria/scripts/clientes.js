@@ -9,39 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. Inicializar sistema
     initSystem('clientes');
 
-    const configPicker = {
-        dateFormat: "Y-m-d", // Formato que se envía al PHP
-        altInput: true,      // Activa el input visual alternativo
-        altFormat: "d-m-Y",  // Formato que ve el usuario
-        locale: {
-            firstDayOfWeek: 1,
-            weekdays: {
-                shorthand: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
-                longhand: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
-            },
-            months: {
-                shorthand: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-                longhand: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-            },
-        },
-        allowInput: true,
-        theme: "airbnb"
-    };
-
-    // Inicializar Fecha Inicio
-    const fpInicio = flatpickr("#fecha-inicio", {
-        ...configPicker,
-        defaultDate: "1900-01-01",
-        onChange: () => { paginaActual = 1; obtenerClientes(); }
-    });
-
-    // Inicializar Fecha Fin
-    const fpFin = flatpickr("#fecha-fin", {
-        ...configPicker,
-        defaultDate: "2100-12-31",
-        onChange: () => { paginaActual = 1; obtenerClientes(); }
-    });
-
     // Referencias DOM
     const tablaClientes = document.getElementById('tabla-clientes');
     const conteoResultados = document.getElementById('conteo-resultados');
@@ -71,6 +38,120 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = 'https://tesoreria.cambiosorion.cl/nuevo-cl';
         });
     }
+
+    // --- 4. CONFIGURACIÓN FLATPICKR (Idéntica a Operaciones) ---
+    // Definimos el idioma español manualmente para asegurar consistencia visual
+    const SpanishLocale = {
+        firstDayOfWeek: 1,
+        weekdays: {
+            shorthand: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
+            longhand: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+        },
+        months: {
+            shorthand: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+            longhand: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+        },
+    };
+
+    const configPicker = {
+        dateFormat: "Y-m-d", // Formato para la BD
+        altInput: true,      // Input visual amigable
+        altFormat: "d-m-Y",  // Formato visual dd-mm-yyyy
+        locale: SpanishLocale,
+        allowInput: true,
+        theme: "airbnb"
+    };
+
+    // Inicializar Date Pickers
+    const fpInicio = flatpickr(filtros.fechaInicio, {
+        ...configPicker,
+        defaultDate: "1900-01-01",
+        onChange: () => resetAndFetch()
+    });
+
+    const fpFin = flatpickr(filtros.fechaFin, {
+        ...configPicker,
+        defaultDate: "2100-12-31",
+        onChange: () => resetAndFetch()
+    });
+
+    // --- 5. BÚSQUEDA PREDICTIVA (Dropdown Idéntico a Operaciones) ---
+    function setupBusquedaPredictiva(inputElement, tipoBusqueda) {
+        if (!inputElement) return;
+
+        // Crear contenedor de sugerencias
+        const wrapper = document.createElement('div');
+        wrapper.className = 'relative w-full';
+        inputElement.parentNode.insertBefore(wrapper, inputElement);
+        wrapper.appendChild(inputElement);
+
+        const suggestionsBox = document.createElement('div');
+        // Z-INDEX 100 para flotar sobre la tabla
+        suggestionsBox.className = 'absolute z-[100] left-0 right-0 mt-1 bg-slate-800 border border-slate-700 rounded-lg shadow-2xl max-h-60 overflow-y-auto hidden';
+        wrapper.appendChild(suggestionsBox);
+
+        inputElement.addEventListener('input', async (e) => {
+            const query = e.target.value.trim();
+            
+            // Si está vacío, resetear tabla
+            if (query.length === 0) {
+                suggestionsBox.classList.add('hidden');
+                resetAndFetch();
+                return;
+            }
+
+            // Refrescar tabla mientras escribe
+            resetAndFetch();
+
+            // Buscar sugerencias (solo si hay más de 1 caracter)
+            if (query.length < 2) {
+                suggestionsBox.classList.add('hidden');
+                return;
+            }
+
+            try {
+                // Usamos el parámetro buscar_sugerencia que agregamos al PHP
+                const res = await fetch(`api/clientes.php?buscar_sugerencia=${encodeURIComponent(query)}`);
+                const data = await res.json();
+
+                if (data.length > 0) {
+                    suggestionsBox.innerHTML = data.map(item => `
+                        <div class="px-4 py-2 hover:bg-slate-700 cursor-pointer border-b border-slate-700 last:border-none transition-colors"
+                             onclick="seleccionarSugerencia('${item.razon_social}', '${inputElement.id}')">
+                            <div class="text-sm font-bold text-white">${item.razon_social}</div>
+                            <div class="text-xs text-slate-400">${item.rut || 'Sin RUT'}</div>
+                        </div>
+                    `).join('');
+                    suggestionsBox.classList.remove('hidden');
+                } else {
+                    suggestionsBox.classList.add('hidden');
+                }
+            } catch (error) {
+                console.error("Error buscando sugerencias:", error);
+            }
+        });
+
+        // Cerrar al hacer clic fuera
+        document.addEventListener('click', (e) => {
+            if (!wrapper.contains(e.target)) {
+                suggestionsBox.classList.add('hidden');
+            }
+        });
+    }
+
+    // Función global para el onclick del HTML inyectado
+    window.seleccionarSugerencia = (valor, inputId) => {
+        const input = document.getElementById(inputId);
+        if (input) {
+            input.value = valor;
+            // Ocultar dropdowns
+            document.querySelectorAll('.absolute.z-\\[100\\]').forEach(el => el.classList.add('hidden'));
+            resetAndFetch();
+        }
+    };
+
+    // Inicializar la búsqueda predictiva en el input de Nombre
+    setupBusquedaPredictiva(filtros.nombre, 'cliente');
 
     // --- FETCH DATOS ---
     function obtenerClientes() {
@@ -172,52 +253,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function configurarBusquedaPredictiva() {
-        const inputNombre = filtros.nombre;
-        // Crear el contenedor del dropdown dinámicamente
-        const suggestionsContainer = document.createElement('div');
-        suggestionsContainer.className = 'absolute z-[100] w-full bg-slate-800 border border-slate-700 rounded-lg mt-1 shadow-2xl hidden max-h-60 overflow-y-auto';
-        inputNombre.parentNode.classList.add('relative');
-        inputNombre.parentNode.appendChild(suggestionsContainer);
-
-        inputNombre.addEventListener('input', async (e) => {
-            const query = e.target.value.trim();
-            if (query.length < 2) {
-                suggestionsContainer.classList.add('hidden');
-                return;
-            }
-
-            const res = await fetch(`https://cambiosorion.cl/data/clientes.php?buscar_sugerencia=${encodeURIComponent(query)}`);
-            const sugerencias = await res.json();
-
-            if (sugerencias.length > 0) {
-                suggestionsContainer.innerHTML = sugerencias.map(s => `
-                    <div class="px-4 py-2 hover:bg-slate-700 cursor-pointer border-b border-slate-700 last:border-none text-sm" 
-                        onclick="seleccionarSugerencia('${s.razon_social}')">
-                        <div class="font-bold text-white">${s.razon_social}</div>
-                        <div class="text-xs text-slate-400">${s.rut || 'Sin RUT'}</div>
-                    </div>
-                `).join('');
-                suggestionsContainer.classList.remove('hidden');
-            } else {
-                suggestionsContainer.classList.add('hidden');
-            }
-        });
-
-        // Cerrar si se hace clic fuera
-        document.addEventListener('click', (e) => {
-            if (!inputNombre.contains(e.target)) suggestionsContainer.classList.add('hidden');
-        });
-
-        // Función global para que el onclick del HTML funcione
-        window.seleccionarSugerencia = (nombre) => {
-            inputNombre.value = nombre;
-            suggestionsContainer.classList.add('hidden');
-            paginaActual = 1;
-            obtenerClientes(); // Refrescar tabla con el cliente elegido
-        };
-    }
-
     // --- PAGINACIÓN ---
     function actualizarPaginacion(totalRegistros, porPagina, pagina) {
         conteoResultados.textContent = `Total: ${totalRegistros}`;
@@ -252,50 +287,48 @@ document.addEventListener('DOMContentLoaded', () => {
         obtenerClientes();
     }
 
-    // --- EVENTOS ---
+    // --- 7. EVENTOS Y LISTENERS ---
+    
+    // Función helper para resetear paginación al filtrar
     const resetAndFetch = () => { 
         paginaActual = 1; 
         obtenerClientes(); 
     };
 
-    borrarFiltrosBtn.addEventListener('click', () => {
-        // Limpiar inputs normales
-        Object.values(filtros).forEach(input => {
-            if(!input) return;
-            input.value = '';
+    // Listeners inputs normales (RUT)
+    if(filtros.rut) filtros.rut.addEventListener('input', resetAndFetch);
+
+    // Listeners selects
+    [filtros.tipo, filtros.estadoDoc, filtros.estado, filtros.mostrar].forEach(select => {
+        if(select) select.addEventListener('change', resetAndFetch);
+    });
+
+    // Botón Borrar Filtros (Idéntico a Operaciones: limpia Flatpickrs)
+    if (borrarFiltrosBtn) {
+        borrarFiltrosBtn.addEventListener('click', () => {
+            // Limpiar valores de inputs
+            Object.values(filtros).forEach(input => {
+                if(input) input.value = '';
+            });
+            
+            // Limpiar calendarios flatpickr
+            fpInicio.setDate("1900-01-01");
+            fpFin.setDate("2100-12-31");
+            
+            // Resetear selectores por defecto
+            if(filtros.mostrar) filtros.mostrar.value = '25';
+            
+            resetAndFetch();
         });
+    }
 
-        // Limpiar fechas reseteando a valores por defecto
-        fpInicio.setDate("1900-01-01");
-        fpFin.setDate("2100-12-31");
+    // Botón Nuevo Cliente
+    if (nuevoClienteBtn) {
+        nuevoClienteBtn.addEventListener('click', () => {
+            window.location.href = 'https://tesoreria.cambiosorion.cl/nuevo-cl';
+        });
+    }
 
-        // Resetear select y buscar
-        if(filtros.mostrar) filtros.mostrar.value = '25';
-        paginaActual = 1;
-        obtenerClientes();
-    });
-
-    Object.values(filtros).forEach(input => {
-        if(input) {
-            input.addEventListener('input', resetAndFetch);
-            input.addEventListener('change', resetAndFetch);
-        }
-    });
-
-    // Listeners para búsqueda predictiva (Inputs)
-    ['nombre-cliente', 'rut-cliente'].forEach(id => {
-        document.getElementById(id)?.addEventListener('input', resetAndFetch);
-    });
-
-    // Listeners para cambios inmediatos (Selects y Fechas)
-    ['tipo-cliente', 'estado-doc', 'estado-cliente', 'mostrar-registros', 'fecha-inicio', 'fecha-fin'].forEach(id => {
-        document.getElementById(id)?.addEventListener('change', resetAndFetch);
-    });
-
-    // Dropdown/Búsqueda dinámica en tiempo real
-    [filtros.nombre, filtros.rut].forEach(el => el.addEventListener('input', () => { paginaActual = 1; obtenerClientes(); }));
-    [filtros.tipo, filtros.estadoDoc, filtros.estado, filtros.mostrar, filtros.fechaInicio, filtros.fechaFin].forEach(el => el.addEventListener('change', () => { paginaActual = 1; obtenerClientes(); }));
-
+    // Carga inicial
     obtenerClientes();
-    configurarBusquedaPredictiva();
 });
