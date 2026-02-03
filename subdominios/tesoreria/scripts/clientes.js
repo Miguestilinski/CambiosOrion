@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
         estado: document.getElementById("estado-cliente"),
         mostrar: document.getElementById("mostrar-registros")
     };
+    
 
     // Botón Nuevo
     if (nuevoClienteBtn) {
@@ -52,17 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
             pagina: paginaActual
         });
 
-        if (filtros.fechaInicio.value) params.set('fecha_inicio', filtros.fechaInicio.value);
-        if (filtros.fechaFin.value) params.set('fecha_fin', filtros.fechaFin.value);
-        if (filtros.nombre.value) params.set('nombre', filtros.nombre.value.trim());
-        if (filtros.rut.value) params.set('rut', filtros.rut.value.trim());
-        if (filtros.tipo.value) params.set('tipo', filtros.tipo.value);
-        if (filtros.estadoDoc.value) params.set('estado_doc', filtros.estadoDoc.value);
-        if (filtros.estado.value) params.set('estado', filtros.estado.value);
-        
-        if (filtros.mostrar.value) params.set('mostrar_registros', filtros.mostrar.value);
-        params.set('pagina', paginaActual);
-
         // Spinner Ámbar
         tablaClientes.innerHTML = `<tr><td colspan="9" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-amber-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
 
@@ -74,10 +64,9 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(text => {
                 try {
                     const data = JSON.parse(text);
-                    const lista = data.clientes || [];
-                    const total = parseInt(data.totalFiltrado) || 0;
-                    renderizarTabla(lista);
-                    renderizarPaginacion(total, parseInt(filtros.mostrar.value), paginaActual);
+                    renderizarTabla(data.clientes);
+                    actualizarPaginacion(data.total_paginas, data.pagina_actual);
+                    conteoResultados.textContent = `Mostrando ${data.clientes.length} de ${data.total_registros} clientes`;
                 } catch (e) {
                     console.error("ERROR PHP DETECTADO:", text); // Aquí verás el error real
                 }
@@ -151,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- PAGINACIÓN ---
-    function renderizarPaginacion(totalRegistros, porPagina, pagina) {
+    function actualizarPaginacion(totalRegistros, porPagina, pagina) {
         conteoResultados.textContent = `Total: ${totalRegistros}`;
         paginationControls.innerHTML = '';
 
@@ -221,20 +210,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Dropdown/Búsqueda dinámica en tiempo real
-    [filtros.nombre, filtros.rut].forEach(input => {
-        input.addEventListener('input', () => {
-            paginaActual = 1; 
-            obtenerClientes(); // Esto dispara la búsqueda en cada letra
-        });
-    });
-
-    // Para los Selects
-    [filtros.tipo, filtros.estadoDoc, filtros.estado, filtros.mostrar].forEach(select => {
-        select.addEventListener('change', () => {
-            paginaActual = 1;
-            obtenerClientes();
-        });
-    });
+    [filtros.nombre, filtros.rut].forEach(el => el.addEventListener('input', () => { paginaActual = 1; obtenerClientes(); }));
+    [filtros.tipo, filtros.estadoDoc, filtros.estado, filtros.mostrar, filtros.fechaInicio, filtros.fechaFin].forEach(el => el.addEventListener('change', () => { paginaActual = 1; obtenerClientes(); }));
 
     obtenerClientes();
 });
