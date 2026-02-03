@@ -222,7 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             try {
                 // Fetch al backend
-                const res = await fetch(`api/clientes.php?buscar_sugerencia=${encodeURIComponent(query)}`);
+                const res = await fetch(`https://cambiosorion.cl/data/clientes.php?buscar_sugerencia=${encodeURIComponent(query)}`);
                 const results = await res.json();
 
                 dropdown.innerHTML = '';
