@@ -231,18 +231,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     results.forEach(item => {
                         const div = document.createElement('div');
-                        // Estilo idéntico: slate-800 con hover a slate-700
                         div.className = 'px-3 py-2 hover:bg-slate-700 cursor-pointer text-xs text-slate-300 flex flex-col border-b border-white/5 last:border-0 transition-colors';
+                        
                         div.innerHTML = `
-                            <span class="font-bold text-white">${item.razon_social}</span>
-                            <span class="text-[10px] text-slate-500 font-mono">${item.rut || 'Sin RUT'}</span>
+                            <span class="font-bold text-white text-sm">${item.razon_social}</span>
                         `;
                         
                         div.addEventListener('click', (e) => {
                             e.stopPropagation();
-                            input.value = item.razon_social; // Poner valor en input
-                            dropdown.classList.add('hidden'); // Ocultar
-                            resetAndFetch(); // Filtrar tabla principal
+                            input.value = item.razon_social;
+                            dropdown.classList.add('hidden');
+                            resetAndFetch();
                         });
                         dropdown.appendChild(div);
                     });
