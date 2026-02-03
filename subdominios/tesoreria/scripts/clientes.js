@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             try {
                 // Usamos el parámetro buscar_sugerencia que agregamos al PHP
-                const res = await fetch(`api/clientes.php?buscar_sugerencia=${encodeURIComponent(query)}`);
+                const res = await fetch(`https://cambiosorion.cl/data/clientes.php?buscar_sugerencia=${encodeURIComponent(query)}`);
                 const data = await res.json();
 
                 if (data.length > 0) {
