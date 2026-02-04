@@ -531,11 +531,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (!monto || monto <= 0) return mostrarModal({ tipo: 'error', titulo: "Monto Inválido", mensaje: "Ingrese un monto mayor a 0." });
             if ((tipo === 'cuenta' || tipo === 'transferencia') && !cuentaId) return mostrarModal({ tipo: 'error', titulo: "Cuenta Requerida", mensaje: "Seleccione una cuenta válida." });
 
-            let nuevoEstado = "Abonado";
-            if (Math.abs(monto - restante) < 10) nuevoEstado = "Pagado"; 
-
             const payload = {
-                id: op.id, estado: nuevoEstado, pagos: monto, caja_id: 99, tipo_pago: tipo, divisa: divisa, origen: origen, cliente_id: op.cliente_id, cuenta_id: cuentaId
+                id: op.id, pagos: monto, caja_id: 99, tipo_pago: tipo, divisa: divisa, origen: origen, cliente_id: op.cliente_id, cuenta_id: cuentaId
             };
 
             fetch(`https://cambiosorion.cl/data/detalle-op.php`, {
