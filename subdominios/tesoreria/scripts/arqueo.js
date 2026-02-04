@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 async function cargarDatosIniciales() {
     try {
         console.log("📡 Fetching arqueo-tesoreria.php...");
-        const res = await fetch(`https://cambiosorion.cl/data/arqueo-tesoreria.php`, { credentials: "include" });
+        const res = await fetch(`https://tesoreria.cambiosorion.cl/api/arqueo.php`, { credentials: "include" });
         
         console.log("📡 Respuesta Status:", res.status);
         if (!res.ok) throw new Error(`Error de red: ${res.status}`);
@@ -435,7 +435,7 @@ async function guardarArqueoFinal() {
     };
 
     try {
-        const res = await fetch("https://cambiosorion.cl/data/arqueo-tesoreria.php", {
+        const res = await fetch("https://tesoreria.cambiosorion.cl/api/arqueo.php", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
