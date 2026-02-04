@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // --- CARGAR DATOS ---
     function cargarIngreso() {
-        fetch(`https://cambiosorion.cl/data/detalle-ing.php?id=${ingresoId}`)
+        fetch(`https://tesoreria.cambiosorion.cl/api/detalle-ing.php?id=${ingresoId}`)
             .then(res => res.json())
             .then(data => {
                 if (data.error) throw new Error(data.error);
@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         btnCancelarAnular.addEventListener('click', () => modalConfirmar.classList.add('hidden'));
         
         btnConfirmarAnular.addEventListener('click', () => {
-            fetch(`https://cambiosorion.cl/data/detalle-ing.php`, {
+            fetch(`https://tesoreria.cambiosorion.cl/api/detalle-ing.php`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ action: 'anular', id: ingresoId })

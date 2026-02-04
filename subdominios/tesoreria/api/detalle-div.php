@@ -25,9 +25,6 @@ try {
         throw new Exception("Error: No se pudo cargar la conexión centralizada.");
     }
 
-    // Aseguramos charset utf8mb4 (igual que tu archivo original)
-    $conn->set_charset("utf8mb4");
-
     $method = $_SERVER['REQUEST_METHOD'];
 
     // --- GET DETALLE ---

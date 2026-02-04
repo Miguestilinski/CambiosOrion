@@ -24,9 +24,6 @@ try {
         throw new Exception("Error: No se pudo cargar la conexión centralizada.");
     }
 
-    // Mantenemos la codificación robusta de este archivo
-    $conn->set_charset("utf8mb4");
-
     $method = $_SERVER['REQUEST_METHOD'];
 
     // --- POST: ANULAR ---

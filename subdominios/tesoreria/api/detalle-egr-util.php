@@ -12,9 +12,6 @@ if (!isset($conn)) {
     die(json_encode(["error" => "Error: No se pudo cargar la conexión centralizada."]));
 }
 
-// Mantenemos la codificación robusta que traía este archivo específico
-$conn->set_charset("utf8mb4");
-
 // --- POST: Anular Egreso de Utilidad ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents("php://input"), true);
