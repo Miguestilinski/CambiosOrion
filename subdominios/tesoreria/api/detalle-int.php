@@ -1,36 +1,19 @@
 <?php
-// detalle-int.php
+// 1. Incluir la conexión centralizada
+// Esto reemplaza headers manuales, manejo de OPTIONS y conexión a DB
+require_once __DIR__ . '/../../../../data/conexion.php';
 
-// 1. CONFIGURACIÓN DE CABECERAS (CORS y JSON)
-header("Access-Control-Allow-Credentials: true");
-header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type");
-header("Content-Type: application/json; charset=UTF-8");
-
-// Manejo de Preflight (OPTIONS)
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit;
-}
-
-// 2. INICIO DE SESIÓN Y ERRORES
+// 2. Configuración local y Sesión
 ini_set('display_errors', 0);
 error_reporting(E_ALL);
+
+// IMPORTANTE: Este archivo usa sesión para verificar roles, así que la iniciamos aquí.
 session_start();
 
-// 3. CONEXIÓN A BASE DE DATOS
-$servername = "localhost";
-$username = "cambioso_admin";
-$password = "sFI2J7P.%3bO";
-$dbname = "cambioso_db";
-
-try {
-    $conn = new mysqli($servername, $username, $password, $dbname);
-    if ($conn->connect_error) throw new Exception("Error BD: " . $conn->connect_error);
-    $conn->set_charset("utf8");
-} catch (Exception $e) {
+// Verificación de seguridad
+if (!isset($conn)) {
     http_response_code(500);
-    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+    echo json_encode(['success' => false, 'message' => 'Error: No se cargó la conexión centralizada.']);
     exit;
 }
 
