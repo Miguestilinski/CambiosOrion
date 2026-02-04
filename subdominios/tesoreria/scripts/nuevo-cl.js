@@ -130,7 +130,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         };
 
         try {
-            const res = await fetch("https://cambiosorion.cl/data/nuevo-cl.php", {
+            const res = await fetch("https://tesoreria.cambiosorion.cl/api/nuevo-cl.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data),
