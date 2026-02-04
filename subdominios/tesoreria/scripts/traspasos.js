@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             tablaTraspasos.innerHTML = `<tr><td colspan="9" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-amber-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
         }
 
-        fetch(`https://cambiosorion.cl/data/traspasos.php?${params.toString()}`)
+        fetch(`https://tesoreria.cambiosorion.cl/api/traspasos.php?${params.toString()}`)
             .then(res => res.json())
             .then(response => {
                 // traspasos.php devuelve { exito: true, data: [...] }
