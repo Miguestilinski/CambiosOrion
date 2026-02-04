@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // --- CARGAR DATOS ---
     function cargarEgreso() {
         // Usamos el mismo endpoint PHP que ya tenías
-        fetch(`https://cambiosorion.cl/data/detalle-egr-util.php?id=${egresoId}`)
+        fetch(`https://tesoreria.cambiosorion.cl/api/detalle-egr-util.php?id=${egresoId}`)
             .then(res => res.json())
             .then(data => {
                 if (data.error) throw new Error(data.error);
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         btnCancelarAnular.addEventListener('click', () => modalConfirmar.classList.add('hidden'));
         
         btnConfirmarAnular.addEventListener('click', () => {
-            fetch(`https://cambiosorion.cl/data/detalle-egr-util.php`, {
+            fetch(`https://tesoreria.cambiosorion.cl/api/detalle-egr-util.php`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ action: 'anular', id: egresoId })
