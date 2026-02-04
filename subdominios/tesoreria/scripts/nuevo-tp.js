@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     async function cargarDatos() {
         try {
             // 1. Cajas (Tesorería primero)
-            const resCajas = await fetch("https://cambiosorion.cl/data/nuevo-tp.php?buscar_cajas=1");
+            const resCajas = await fetch("https://tesoreria.cambiosorion.cl/api/nuevo-tp.php?buscar_cajas=1");
             const cajas = await resCajas.json();
             
             // Llenar ambos selects
@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             else if(cajas.length > 0) origenSelect.value = cajas[0].id;
 
             // 2. Divisas
-            const resDiv = await fetch("https://cambiosorion.cl/data/nuevo-tp.php?buscar_divisas=1");
+            const resDiv = await fetch("https://tesoreria.cambiosorion.cl/api/nuevo-tp.php?buscar_divisas=1");
             const dataDiv = await resDiv.json();
             if(Array.isArray(dataDiv)) {
                 divisasCache = dataDiv;
@@ -184,7 +184,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         };
 
         try {
-            const res = await fetch("https://cambiosorion.cl/data/nuevo-tp.php", {
+            const res = await fetch("https://tesoreria.cambiosorion.cl/api/nuevo-tp.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
