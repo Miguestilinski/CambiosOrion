@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 2. Cargar Cajas
     async function cargarCajas() {
         try {
-            const res = await fetch("https://cambiosorion.cl/data/nueva-op.php?buscar_cajas=1");
+            const res = await fetch("https://tesoreria.cambiosorion.cl/api/nueva-op.php?buscar_cajas=1");
             const cajas = await res.json();
             cajaSelect.innerHTML = '';
             cajas.forEach(c => {
@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         
         clienteTimeout = setTimeout(async () => {
             try {
-                const res = await fetch(`https://cambiosorion.cl/data/nueva-op.php?buscar_cliente=${encodeURIComponent(q)}`);
+                const res = await fetch(`https://tesoreria.cambiosorion.cl/api/nueva-op.php?buscar_cliente=${encodeURIComponent(q)}`);
                 const clientes = await res.json();
                 resultadoClientes.innerHTML = "";
                 clientes.forEach(c => {
@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             if(q.length < 1) { ulDivisa.classList.add("hidden"); return; }
             
             try {
-                const res = await fetch(`https://cambiosorion.cl/data/nueva-op.php?buscar_divisa=${encodeURIComponent(q)}`);
+                const res = await fetch(`https://tesoreria.cambiosorion.cl/api/nueva-op.php?buscar_divisa=${encodeURIComponent(q)}`);
                 const divisas = await res.json();
                 ulDivisa.innerHTML = "";
                 divisas.forEach(d => {
@@ -117,7 +117,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         
                         // Buscar Precio Sugerido
                         const tipoOp = document.querySelector('input[name="tipo_op"]:checked').value; // Compra o Venta
-                        fetch(`https://cambiosorion.cl/data/nueva-op.php?precio_divisa=${encodeURIComponent(d.nombre)}&tipo=${tipoOp.toLowerCase()}`)
+                        fetch(`https://tesoreria.cambiosorion.cl/api/nueva-op.php?precio_divisa=${encodeURIComponent(d.nombre)}&tipo=${tipoOp.toLowerCase()}`)
                             .then(r => r.json())
                             .then(p => {
                                 if(p.precio) {
@@ -216,7 +216,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         };
 
         try {
-            const res = await fetch("https://cambiosorion.cl/data/nueva-op.php", {
+            const res = await fetch("https://tesoreria.cambiosorion.cl/api/nueva-op.php", {
                 method: "POST", credentials: 'include', headers: {"Content-Type":"application/json"}, body: JSON.stringify(payload)
             });
             const data = await res.json();
@@ -317,7 +317,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     // Feedback visual (opacidad) mientras carga
                     inpTasa.classList.add("opacity-50", "cursor-wait");
                     
-                    fetch(`https://cambiosorion.cl/data/nueva-op.php?precio_divisa=${encodeURIComponent(nombreDivisa)}&tipo=${nuevoTipo}`)
+                    fetch(`https://tesoreria.cambiosorion.cl/api/nueva-op.php?precio_divisa=${encodeURIComponent(nombreDivisa)}&tipo=${nuevoTipo}`)
                         .then(res => res.json())
                         .then(data => {
                             if (data.precio) {

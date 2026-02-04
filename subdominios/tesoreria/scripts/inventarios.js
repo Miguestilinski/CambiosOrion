@@ -201,7 +201,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         usuarioSesion = sessionData;
         if (selectCaja) {
             try {
-                const res = await fetch('https://cambiosorion.cl/data/nueva-op.php?buscar_cajas=1');
+                const res = await fetch('https://tesoreria.cambiosorion.cl/api/nueva-op.php?buscar_cajas=1');
                 const cajas = await res.json();
                 selectCaja.innerHTML = ''; 
                 cajas.forEach(c => {
