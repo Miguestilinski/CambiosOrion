@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // --- CARGAR DATOS ---
     function cargarCliente() {
-        fetch(`https://cambiosorion.cl/data/detalle-cl.php?id=${clienteId}`)
+        fetch(`https://tesoreria.cambiosorion.cl/api/detalle-cl.php?id=${clienteId}`)
             .then(res => res.json())
             .then(data => {
                 if (data.error) throw new Error(data.error);
@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 activo: inputs.activo.value === "1"
             };
 
-            fetch("https://cambiosorion.cl/data/detalle-cl.php", {
+            fetch("https://tesoreria.cambiosorion.cl/api/detalle-cl.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
