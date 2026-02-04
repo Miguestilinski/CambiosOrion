@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     async function cargarDatos() {
         try {
             // 1. Cajas
-            const resCajas = await fetch("https://cambiosorion.cl/data/nuevo-ing.php?buscar_cajas=1");
+            const resCajas = await fetch("https://tesoreria.cambiosorion.cl/api/nuevo-ing.php?buscar_cajas=1");
             const cajas = await resCajas.json();
             cajaSelect.innerHTML = '<option value="">Seleccione Caja</option>';
             if(Array.isArray(cajas)) {
@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
 
             // 2. Divisas
-            const resDiv = await fetch("https://cambiosorion.cl/data/nuevo-ing.php?buscar_divisas=1");
+            const resDiv = await fetch("https://tesoreria.cambiosorion.cl/api/nuevo-ing.php?buscar_divisas=1");
             const dataDiv = await resDiv.json();
             if(Array.isArray(dataDiv)) {
                 divisasCache = dataDiv;
@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
 
             // 3. Cuentas
-            const resCuentas = await fetch("https://cambiosorion.cl/data/nuevo-ing.php?buscar_cuentas=1");
+            const resCuentas = await fetch("https://tesoreria.cambiosorion.cl/api/nuevo-ing.php?buscar_cuentas=1");
             const dataCuentas = await resCuentas.json();
             if (Array.isArray(dataCuentas)) {
                 cuentasCache = dataCuentas;
@@ -124,7 +124,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         timeoutBusqueda = setTimeout(async () => {
             try {
-                const res = await fetch(`https://cambiosorion.cl/data/nuevo-ing.php?buscar_clientes=${encodeURIComponent(val)}`);
+                const res = await fetch(`https://tesoreria.cambiosorion.cl/api/nuevo-ing.php?buscar_clientes=${encodeURIComponent(val)}`);
                 const clientes = await res.json();
                 
                 if(clientes.length > 0) {
@@ -288,7 +288,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         };
 
         try {
-            const res = await fetch("https://cambiosorion.cl/data/nuevo-ing.php", {
+            const res = await fetch("https://tesoreria.cambiosorion.cl/api/nuevo-ing.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
