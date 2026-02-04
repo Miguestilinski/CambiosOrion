@@ -453,7 +453,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (!tipo || !divisaId || !origen) return;
 
             if (tipo === "cuenta") {
-                let url = `https://cambiosorion.cl/data/cuentas.php?activa=1&divisa_id=${divisaId}`;
+                let url = `https://tesoreria.cambiosorion.cl/api/cuentas.php?activa=1&divisa_id=${divisaId}`;
                 if (origen === "orion") url += `&tipo_cuenta=administrativa`; 
                 
                 try {
@@ -491,7 +491,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 } catch (e) { inputCuentaContainer.innerHTML = "<p class='text-xs text-red-500'>Error cargando cuentas</p>"; }
 
             } else if (tipo === "transferencia" || tipo === "tarjeta") {
-                let url = `https://cambiosorion.cl/data/cuentas.php?activa=1&divisa_id=D47&tipo_cuenta=administrativa`;
+                let url = `https://tesoreria.cambiosorion.cl/api/cuentas.php?activa=1&divisa_id=D47&tipo_cuenta=administrativa`;
                 try {
                     inputCuentaContainer.innerHTML = "<p class='text-xs text-slate-400'>Cargando bancos...</p>";
                     const res = await fetch(url);
