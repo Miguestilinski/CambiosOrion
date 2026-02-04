@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../../../../data/conexion.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/data/conexion.php';
 
 // =================================================================================
 // FUNCIÓN CENTRAL: RECALCULAR ESTADO MATEMÁTICAMENTE
