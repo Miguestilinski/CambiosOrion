@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let datosDivisas = [];
     
     // Usamos el endpoint existente en posiciones.php que devuelve { divisas: [...] }
-    fetch('https://cambiosorion.cl/data/posiciones.php?action=divisas')
+    fetch('https://tesoreria.cambiosorion.cl/api/posiciones.php?action=divisas')
         .then(res => res.json())
         .then(data => {
             if(data.divisas) {
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Loading State
         tablaPosiciones.innerHTML = `<tr><td colspan="4" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-amber-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
 
-        fetch(`https://cambiosorion.cl/data/posiciones.php?${params.toString()}`)
+        fetch(`https://tesoreria.cambiosorion.cl/api/posiciones.php?${params.toString()}`)
             .then(res => res.json())
             .then(data => {
                 if (data.posiciones) {
