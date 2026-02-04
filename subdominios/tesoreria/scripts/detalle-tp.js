@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
 
     function cargarDetalle() {
-        fetch(`https://cambiosorion.cl/data/detalle-tp.php?id=${tpId}`)
+        fetch(`https://tesoreria.cambiosorion.cl/api/detalle-tp.php?id=${tpId}`)
             .then(async res => {
                 const text = await res.text();
                 try { return JSON.parse(text); } catch (e) { throw new Error("Error en respuesta del servidor."); }
@@ -186,7 +186,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 textoConfirmar: "Sí, Anular",
                 textoCancelar: "Cancelar",
                 onConfirmar: () => {
-                    fetch(`https://cambiosorion.cl/data/detalle-tp.php`, {
+                    fetch(`https://tesoreria.cambiosorion.cl/api/detalle-tp.php`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ id: tpId, action: "anular" })
