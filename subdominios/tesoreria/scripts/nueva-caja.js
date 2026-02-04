@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
   cargarDivisas();
 
   function cargarDivisas() {
-    fetch("https://cambiosorion.cl/data/nueva-caja.php", {
+    fetch("https://tesoreria.cambiosorion.cl/api/nueva-caja.php", {
         method: "GET"
     })
     .then(res => res.text())
@@ -127,7 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    fetch("https://cambiosorion.cl/data/nueva-caja.php", {
+    fetch("https://tesoreria.cambiosorion.cl/api/nueva-caja.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ nombre, tipo: tipoCaja, divisas: seleccionadas })
