@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
 
     // --- CARGA DE DATOS ---
-    fetch(`https://cambiosorion.cl/data/detalle-op.php?id=${id}`)
+    fetch(`https://tesoreria.cambiosorion.cl/api/detalle-op.php?id=${id}`)
         .then(async res => {
             const text = await res.text();
             try { return JSON.parse(text); } 
@@ -535,7 +535,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 id: op.id, pagos: monto, caja_id: 99, tipo_pago: tipo, divisa: divisa, origen: origen, cliente_id: op.cliente_id, cuenta_id: cuentaId
             };
 
-            fetch(`https://cambiosorion.cl/data/detalle-op.php`, {
+            fetch(`https://tesoreria.cambiosorion.cl/api/detalle-op.php`, {
                 method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload)
             }).then(res => res.json()).then(res => {
                 if (res.success) mostrarModalPagoExitoso();
@@ -557,7 +557,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             textoConfirmar: "Sí, Anular", 
             textoCancelar: "Cancelar", 
             onConfirmar: () => {
-                fetch(`https://cambiosorion.cl/data/detalle-op.php`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: op.id }) })
+                fetch(`https://tesoreria.cambiosorion.cl/api/detalle-op.php`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: op.id }) })
                 .then(r => r.json())
                 .then(r => r.success ? location.reload() : mostrarModal({ tipo: 'error', titulo: "No se pudo anular", mensaje: r.message }));
             }
@@ -568,7 +568,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const divisaSelect = document.getElementById("divisa-select");
         divisaSelect.innerHTML = '<option value="">Cargando...</option>';
         try {
-            const res = await fetch(`https://cambiosorion.cl/data/detalle-op.php?buscar_divisas=1&operacion_id=${operacionId}`);
+            const res = await fetch(`https://tesoreria.cambiosorion.cl/api/detalle-op.php?buscar_divisas=1&operacion_id=${operacionId}`);
             const divisas = await res.json();
             divisaSelect.innerHTML = '<option value="">Seleccione...</option>';
 
@@ -691,7 +691,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             textoConfirmar: "Sí, Eliminar", 
             textoCancelar: "Cancelar",
             onConfirmar: () => {
-                fetch(`https://cambiosorion.cl/data/detalle-op.php`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: id, origen: origen }) })
+                fetch(`https://tesoreria.cambiosorion.cl/api/detalle-op.php`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: id, origen: origen }) })
                 .then(res => res.json())
                 .then(res => { 
                     if(res.success) mostrarModal({ tipo: 'exito', titulo: "Eliminado", mensaje: "El pago ha sido eliminado correctamente.", onConfirmar: () => location.reload() }); 
