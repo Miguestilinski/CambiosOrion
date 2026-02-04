@@ -1,3 +1,5 @@
+import { initAdminHeader } from './header.js';
+
 // Simulación de sesión (Para pruebas)
 const currentUser = {
     name: "Benjamin Socio",
@@ -18,7 +20,10 @@ const attendanceDB = [
 const WORK_START_TIME = "09:00:00";
 const TOLERANCE_MINUTES = 15;
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async() => {
+    const sessionData = await initAdminHeader('horario');
+    if (!sessionData.isAuthenticated) return;
+
     initHeader();
     populateSelectors();
     
