@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </td>
             </tr>`;
 
-        fetch(`https://cambiosorion.cl/data/inventarios.php?${params.toString()}`)
+        fetch(`https://tesoreria.cambiosorion.cl/api/inventarios.php?${params.toString()}`)
             .then(res => res.text().then(text => {
                 try { return JSON.parse(text); } 
                 catch (e) { throw new Error(`Respuesta no válida del servidor: ${text.substring(0, 50)}...`); }
