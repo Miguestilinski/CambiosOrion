@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     function cargarDetalle(id) {
         tablaDetalle.innerHTML = `<tr><td colspan="5" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-amber-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
         
-        fetch(`https://cambiosorion.cl/data/detalle-arqueo.php?id=${id}`)
+        fetch(`https://tesoreria.cambiosorion.cl/api/detalle-arqueo.php?id=${id}`)
             .then(res => res.json())
             .then(data => {
                 if(data.error) throw new Error(data.error);
