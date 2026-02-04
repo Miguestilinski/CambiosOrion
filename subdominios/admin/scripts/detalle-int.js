@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function loadUserDetails(id) {
         try {
             // CORRECCIÓN: Agregamos credentials: 'include'
-            const res = await fetch(`https://tesoreria.cambiosorion.cl/api/detalle-int.php?id=${id}`, {
+            const res = await fetch(`https://admin.cambiosorion.cl/api/detalle-int.php?id=${id}`, {
                 credentials: 'include' 
             });
             const json = await res.json();
@@ -208,7 +208,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     numero_cuenta: fNumeroCuenta?.value || '' // Antes: numeroCuenta
                 };
             } else {
-                url = "https://tesoreria.cambiosorion.cl/api/detalle-int.php";
+                url = "https://admin.cambiosorion.cl/api/detalle-int.php";
                 payload = {
                     id: fId.value,
                     nombre: fNombre.value,
