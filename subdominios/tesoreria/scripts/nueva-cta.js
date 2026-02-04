@@ -82,7 +82,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         clienteTimeout = setTimeout(async () => {
             try {
-                const res = await fetch(`https://cambiosorion.cl/data/nueva-cta.php?buscar_cliente=${encodeURIComponent(query)}`);
+                const res = await fetch(`https://tesoreria.cambiosorion.cl/api/nueva-cta.php?buscar_cliente=${encodeURIComponent(query)}`);
                 if (!res.ok) throw new Error("Error en búsqueda");
                 
                 const clientes = await res.json();
@@ -134,7 +134,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     async function verificarFuncionario(rut) {
         if (!rut || rut.trim() === '') return { esFuncionario: false };
         try {
-            const res = await fetch(`https://cambiosorion.cl/data/nueva-cta.php?rut=${encodeURIComponent(rut)}`);
+            const res = await fetch(`https://tesoreria.cambiosorion.cl/api/nueva-cta.php?rut=${encodeURIComponent(rut)}`);
             if (!res.ok) return { esFuncionario: false };
             const data = await res.json();
             return { esFuncionario: !!data.es_funcionario };
@@ -155,7 +155,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         divisaTimeout = setTimeout(async () => {
             try {
-                const res = await fetch(`https://cambiosorion.cl/data/nueva-cta.php?buscar_divisa=${encodeURIComponent(query)}`);
+                const res = await fetch(`https://tesoreria.cambiosorion.cl/api/nueva-cta.php?buscar_divisa=${encodeURIComponent(query)}`);
                 const divisas = await res.json();
                 divisaSugerencias.innerHTML = "";
                 
@@ -224,7 +224,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function enviarDatos(payload, forzar = false) {
         try {
-            const url = forzar ? `https://cambiosorion.cl/data/nueva-cta.php?forzar=1` : `https://cambiosorion.cl/data/nueva-cta.php`;
+            const url = forzar ? `https://tesoreria.cambiosorion.cl/api/nueva-cta.php?forzar=1` : `https://tesoreria.cambiosorion.cl/api/nueva-cta.php`;
             
             const res = await fetch(url, {
                 method: "POST",
