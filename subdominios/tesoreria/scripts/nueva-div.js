@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Cargar Iconos (Banderas)
     async function cargarIconos() {
         try {
-            const res = await fetch("https://cambiosorion.cl/data/nueva-div.php");
+            const res = await fetch("https://tesoreria.cambiosorion.cl/api/nueva-div.php");
             const iconos = await res.json();
 
             if (!Array.isArray(iconos)) throw new Error("Formato de iconos inválido");
@@ -93,7 +93,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if(!data.codigo || !data.simbolo) return mostrarModal({ tipo: 'error', titulo: "Faltan Datos", mensaje: "Código y Símbolo son obligatorios." });
 
         try {
-            const res = await fetch("https://cambiosorion.cl/data/nueva-div.php", {
+            const res = await fetch("https://tesoreria.cambiosorion.cl/api/nueva-div.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data),

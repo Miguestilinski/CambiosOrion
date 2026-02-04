@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function cargarIconosDisponibles() {
         try {
             // Reutilizamos el endpoint de nueva-div que ya devuelve la lista
-            const res = await fetch("https://cambiosorion.cl/data/nueva-div.php");
+            const res = await fetch("https://tesoreria.cambiosorion.cl/api/nueva-div.php");
             const data = await res.json();
             if (Array.isArray(data)) {
                 iconosCache = data;
