@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </td>
             </tr>`;
 
-        fetch(`https://cambiosorion.cl/data/divisas-int.php?${params.toString()}`)
+        fetch(`https://tesoreria.cambiosorion.cl/api/divisas-int.php?${params.toString()}`)
             .then(res => res.json())
             .then(data => {
                 if (data.error) throw new Error(data.error);
