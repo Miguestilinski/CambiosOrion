@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // --- CARGAR DATOS ---
     function cargarCuenta() {
-        fetch(`https://cambiosorion.cl/data/detalle-cta.php?id=${cuentaId}`)
+        fetch(`https://tesoreria.cambiosorion.cl/api/detalle-cta.php?id=${cuentaId}`)
             .then(res => res.json())
             .then(data => {
                 if (data.error) throw new Error(data.error);
@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             try {
-                const res = await fetch(`https://cambiosorion.cl/data/detalle-cta.php?buscar_divisa=${encodeURIComponent(term)}`);
+                const res = await fetch(`https://tesoreria.cambiosorion.cl/api/detalle-cta.php?buscar_divisa=${encodeURIComponent(term)}`);
                 const divisas = await res.json();
                 
                 inputs.divisaLista.innerHTML = '';
@@ -151,7 +151,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 por_pagar: inputs.porPagar.checked
             };
 
-            fetch("https://cambiosorion.cl/data/detalle-cta.php", {
+            fetch("https://tesoreria.cambiosorion.cl/api/detalle-cta.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
