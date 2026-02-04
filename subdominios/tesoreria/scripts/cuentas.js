@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Spinner Ámbar
         tablaCuentas.innerHTML = `<tr><td colspan="10" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-amber-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
 
-        fetch(`https://cambiosorion.cl/data/cuentas.php?${params.toString()}`)
+        fetch(`https://tesoreria.cambiosorion.cl/api/cuentas.php?${params.toString()}`)
             .then(res => res.json())
             .then(data => {
                 const lista = data.cuentas || [];

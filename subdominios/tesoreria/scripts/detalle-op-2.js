@@ -340,7 +340,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     const clienteId = info.cliente_id;
 
                     // Armar el query según si es cliente o interno (orion)
-                    let url = `https://cambiosorion.cl/data/cuentas.php?activa=1&divisa_id=${divisaSeleccionada}`;
+                    let url = `https://tesoreria.cambiosorion.cl/api/cuentas.php?activa=1&divisa_id=${divisaSeleccionada}`;
                     if (origen === "cliente") {
                         url += `&cliente_id=${clienteId}`;
                     } else if (origen === "orion") {
@@ -373,7 +373,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 } else if (tipo === "transferencia" || tipo === "tarjeta") {
                     // Lógica original para cuentas bancarias Orion
-                    const res = await fetch(`https://cambiosorion.cl/data/cuentas.php?activa=1&divisa_id=${divisaSeleccionada}&tipo_cuenta=administrativa`);
+                    const res = await fetch(`https://tesoreria.cambiosorion.cl/api/cuentas.php?activa=1&divisa_id=${divisaSeleccionada}&tipo_cuenta=administrativa`);
                     const cuentas = await res.json();
 
                     if (cuentas.success && Array.isArray(cuentas.data)) {
