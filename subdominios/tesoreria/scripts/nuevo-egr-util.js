@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     async function cargarDatos() {
         try {
             // 1. Cajas
-            const resCajas = await fetch("https://cambiosorion.cl/data/nuevo-egr-util.php?buscar_cajas=1");
+            const resCajas = await fetch("https://tesoreria.cambiosorion.cl/api/nuevo-egr-util.php?buscar_cajas=1");
             const cajas = await resCajas.json();
             cajaSelect.innerHTML = '<option value="">Seleccione Caja</option>';
             if(Array.isArray(cajas)) {
@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
 
             // 2. Divisas
-            const resDiv = await fetch("https://cambiosorion.cl/data/nuevo-egr-util.php?buscar_divisas=1");
+            const resDiv = await fetch("https://tesoreria.cambiosorion.cl/api/nuevo-egr-util.php?buscar_divisas=1");
             const dataDivisas = await resDiv.json();
             if(Array.isArray(dataDivisas)) {
                 divisasCache = dataDivisas;
@@ -67,12 +67,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
 
             // 3. Conceptos (Cache)
-            const resCon = await fetch("https://cambiosorion.cl/data/nuevo-egr-util.php?buscar_conceptos=1");
+            const resCon = await fetch("https://tesoreria.cambiosorion.cl/api/nuevo-egr-util.php?buscar_conceptos=1");
             const dataConceptos = await resCon.json();
             if(Array.isArray(dataConceptos)) conceptosCache = dataConceptos;
 
             // 4. Cuentas (Cache)
-            const resCuentas = await fetch("https://cambiosorion.cl/data/nuevo-egr-util.php?buscar_cuentas=1");
+            const resCuentas = await fetch("https://tesoreria.cambiosorion.cl/api/nuevo-egr-util.php?buscar_cuentas=1");
             const dataCuentas = await resCuentas.json();
             // VALIDACIÓN CRÍTICA:
             if(Array.isArray(dataCuentas)) {
@@ -286,7 +286,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         };
 
         try {
-            const res = await fetch("https://cambiosorion.cl/data/nuevo-egr-util.php", {
+            const res = await fetch("https://tesoreria.cambiosorion.cl/api/nuevo-egr-util.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
