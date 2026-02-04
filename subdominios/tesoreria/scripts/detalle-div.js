@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // --- CARGAR DATOS ---
     function cargarDatos() {
-        let url = `https://cambiosorion.cl/data/detalle-div.php?id=${divisaId}`;
+        let url = `https://tesoreria.cambiosorion.cl/api/detalle-div.php?id=${divisaId}`;
         if (cajaId) url += `&caja_id=${cajaId}`;
 
         fetch(url)
@@ -241,7 +241,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 url_icono: inputs.iconoUrl.value
             };
 
-            fetch('https://cambiosorion.cl/data/detalle-div.php', {
+            fetch('https://tesoreria.cambiosorion.cl/api/detalle-div.php', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(payload)
