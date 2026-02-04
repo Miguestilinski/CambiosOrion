@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         tablaOperaciones.innerHTML = `<tr><td colspan="12" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-amber-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
 
-        fetch(`https://cambiosorion.cl/data/operaciones.php?${params.toString()}`)
+        fetch(`https://tesoreria.cambiosorion.cl/api/operaciones.php?${params.toString()}`)
             .then(response => {
                 // Si la respuesta no es OK, leemos el texto para ver el error de PHP
                 if (!response.ok) {
@@ -300,7 +300,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. Obtener datos de clientes y divisas
     let datosFiltros = { clientes: [], divisas: [] };
     
-    fetch('https://cambiosorion.cl/data/operaciones.php?get_filter_data=1')
+    fetch('https://tesoreria.cambiosorion.cl/api/operaciones.php?get_filter_data=1')
         .then(res => res.json())
         .then(data => {
             datosFiltros = data;
@@ -409,7 +409,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // 3. Redireccionamos a la API
             // Esto disparará la descarga automática del archivo .xlsx
-            window.location.href = `https://cambiosorion.cl/data/operaciones.php?${params.toString()}`;
+            window.location.href = `https://tesoreria.cambiosorion.cl/api/operaciones.php?${params.toString()}`;
         });
     }
 
