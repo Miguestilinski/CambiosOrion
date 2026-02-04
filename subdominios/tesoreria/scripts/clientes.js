@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Spinner Ámbar
         tablaClientes.innerHTML = `<tr><td colspan="9" class="text-center py-10"><div class="animate-spin h-8 w-8 border-4 border-amber-500 rounded-full border-t-transparent mx-auto"></div></td></tr>`;
 
-        fetch(`https://cambiosorion.cl/data/clientes.php?${params.toString()}`)
+        fetch(`https://tesoreria.cambiosorion.cl/api/clientes.php?${params.toString()}`)
             .then(response => {
                 if (!response.ok) return response.text().then(t => { throw new Error(t) });
                 return response.text();
@@ -222,7 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             try {
                 // Fetch al backend
-                const res = await fetch(`https://cambiosorion.cl/data/clientes.php?buscar_sugerencia=${encodeURIComponent(query)}`);
+                const res = await fetch(`https://tesoreria.cambiosorion.cl/api/clientes.php?buscar_sugerencia=${encodeURIComponent(query)}`);
                 const results = await res.json();
 
                 dropdown.innerHTML = '';
