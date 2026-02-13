@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const formData = new FormData(loginForm);
 
         try {
-            const response = await fetch('https://cambiosorion.cl/data/login_admin.php', {
+            const response = await fetch('https://admin.cambiosorion.cl/api/login_admin.php', {
                 method: 'POST',
                 body: formData,
                 credentials: "include"
